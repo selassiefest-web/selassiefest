@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Indika Reggae Band | SelassieFest</title>
+
+    <!-- Google Fonts (Jost + fallback) -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ===== Global reset and base (Jost) ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Jost', sans-serif;
+            background: #0D0D0D;
+            color: #F5F5F5;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        /* ===== SelassieFest header ===== */
+        .site-header {
+            padding: 28px 32px 16px 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(13,13,13,0.96);
+            backdrop-filter: blur(2px);
+            text-align: center;
+        }
+        .brand-link {
+            display: inline-block;
+            transition: opacity 0.2s;
+        }
+        .brand-link:hover { opacity: 0.85; }
+        .site-title {
+            font-weight: 200;
+            font-size: 2.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #F5F5F5;
+        }
+        .tagline {
+            font-weight: 300;
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            color: #E5A93C;
+            border-top: 1px solid #0E5E36;
+            display: inline-block;
+            padding-top: 8px;
+            margin-top: 6px;
+        }
+
+        /* ===== SelassieFest navbar ===== */
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+            background-color: rgba(10,10,10,0.95);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links li a:hover {
+            color: #E5A93C;
+            border-bottom-color: #E5A93C;
+        }
+
+        /* ===== Hero section (background image) ===== */
+        .hero-section {
+            background: url('../assets/images/Indika.jpg') center/cover no-repeat;
+            min-height: 100vh;
+            padding: 120px 24px 200px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(249deg, rgba(28,28,36,0.95) 35%, rgba(28,28,36,0.2) 51%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            padding-left: 60px; /* shift content right */
+        }
+        .hero-content h1 {
+            font-weight: 200;
+            font-size: 4.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #EEF1F5;
+            margin-bottom: 0.5rem;
+        }
+        .hero-content h1 a {
+            color: #EEF1F5;
+            text-decoration: none;
+        }
+        .hero-content h1 a:hover {
+            color: #E5A93C;
+        }
+        .hero-content .sub {
+            font-weight: 300;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0;
+        }
+
+        /* ===== Main content container ===== */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* ===== History section ===== */
+        .history-text {
+            text-align: left;
+            color: #ddd;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        .history-text p {
+            margin-bottom: 1rem;
+        }
+        .history-text strong {
+            color: #E5A93C;
+            font-weight: 500;
+        }
+
+        /* ===== Member cards ===== */
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0 3rem;
+        }
+        .member-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 1.8rem 1.2rem;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+            color: #F5F5F5; /* ensure light text */
+        }
+        .member-card:hover {
+            border-color: #E5A93C;
+            transform: translateY(-5px);
+        }
+        .member-card i {
+            font-size: 2.8rem;
+            color: #E5A93C;
+            margin-bottom: 0.6rem;
+        }
+        .member-card h4 {
+            font-weight: 400;
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+            color: #fff;
+        }
+        .member-card p {
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: #ccc; /* light grey, visible on dark */
+            margin: 0;
+        }
+        .member-card .role-desc {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* ===== SelassieFest note ===== */
+        .selassie-note {
+            background: rgba(229,169,60,0.08);
+            border-left: 4px solid #E5A93C;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            color: #ddd;
+        }
+        .selassie-note h3 {
+            font-weight: 400;
+            color: #E5A93C;
+            font-size: 1.8rem;
+            margin-top: 0;
+        }
+
+        /* ===== Footer ===== */
+        .page-footer {
+            background: #050505;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 48px 24px 32px;
+            text-align: center;
+            font-weight: 300;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* ===== Responsive tweaks ===== */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding-left: 20px;
+                text-align: center;
+            }
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SELASSIEFEST HEADER ===== -->
+    <header class="site-header">
+        <span class="brand-link">
+            <span class="site-title">SELASSIEFEST</span>
+            <span class="tagline">One Day. One Love. One Community.</span>
+        </span>
+    </header>
+
+    <!-- ===== SELASSIEFEST NAVBAR ===== -->
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>
+                <a href="https://reggaeindika.com/" target="_blank" rel="noopener noreferrer">
+                    Indika Reggae Band
+                </a>
+            </h1>
+            <p class="sub">Award Winning Reggae Band From Chicago</p>
+            <!-- "Dates" and "Booking Info" removed as requested -->
+        </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+        <!-- History -->
+        <h2 style="text-align: center; font-weight: 300; font-size: 2.8rem; color: #E5A93C; letter-spacing: 0.05em; margin-bottom: 1.5rem;">The Indika History</h2>
+        <div class="history-text">
+            <p><strong>Indika Reggae Band stands as one of Chicago’s top Cultural Ambassadors.</strong></p>
+            <p>They blend world-class musicianship with the deep traditions of the Caribbean, Africa, and the Americas. Since their start in the mid-1990s, the band has become a staple of the city’s music scene, known for electrifying live shows and a genuine commitment to bringing people together through music. From the 1990’s to Today – <strong>Indika is still one of Chicago’s Top Reggae Bands.</strong></p>
+            <p>The band is currently led by U-Roy Muslar, a Belizean-born vocalist with incredible stage presence. He is guiding Indika into a powerful new era of growth and visibility. His leadership respects the band’s long legacy while adding fresh energy and a renewed focus on reggae’s universal themes of love, resilience, and justice.</p>
+            <p><strong>Indika’s lineup truly reflects the diversity of Chicago.</strong> With musicians representing Central America, the Caribbean, and Africa, their sound is a massive celebration of global rhythm. While roots reggae is at the core, they seamlessly mix in elements of dancehall, soca, calypso, punta, R&amp;B, jazz, and compa. This unique blend allows them to transcend borders and connect with fans from all walks of life.</p>
+            <p>As a trusted name in live entertainment, Indika has performed at iconic venues like The Wild Hare, Navy Pier, and the United Center. Their reach extends far beyond Chicago, with a loyal following across Illinois, Indiana, Michigan, Minnesota, Kansas, and Arkansas.</p>
+            <p>The band has also earned the respect of reggae royalty. Over the years, Indika has served as the backing band for legends such as Gregory Isaacs, Luciano, Richie Spice, and Calypso Rose. With multiple Martin Intercultural Music Awards to their name, Indika remains a vital part of Chicago’s multicultural identity, proving that music has the power to heal, uplift, and unite communities across generations.</p>
+        </div>
+
+        <!-- ===== BAND MEMBER CARDS ===== -->
+        <h3 style="text-align: center; font-weight: 300; font-size: 2.4rem; color: #E5A93C; margin-top: 3rem;">The Indika Family</h3>
+        <div class="member-grid">
+            <div class="member-card">
+                <i class="fas fa-user-circle"></i>
+                <h4>Courtney</h4>
+                <p>Band Leader</p>
+            </div>
+            <div class="member-card">
+                <i class="fas fa-microphone"></i>
+                <h4>U‑Roy Muslar</h4>
+                <p>Lead Singer</p>
+                <div class="role-desc">Renowned Belizean‑born vocalist who fuses roots reggae with dancehall, punta, and soca; an essential fixture of the Chicago Caribbean music circuit.</div>
+            </div>
+            <div class="member-card">
+                <i class="fas fa-guitar"></i>
+                <h4>Guitar</h4>
+                <p>(Member)</p>
+            </div>
+            <div class="member-card">
+                <i class="fas fa-drum"></i>
+                <h4>Drums</h4>
+                <p>(Member)</p>
+            </div>
+            <div class="member-card">
+                <i class="fas fa-bass"></i>
+                <h4>Bass</h4>
+                <p>(Member)</p>
+            </div>
+            <div class="member-card">
+                <i class="fas fa-keyboard"></i>
+                <h4>Keyboard</h4>
+                <p>(Member)</p>
+            </div>
+        </div>
+
+        <!-- ===== WHY INDIKA FOR SELASSIEFEST ===== -->
+        <div class="selassie-note">
+            <h3>Why Indika is the Heartbeat of SelassieFest</h3>
+            <p>
+                Indika Reggae Band embodies everything SelassieFest stands for: roots, rhythm, and revelation. Their music is not just entertainment—it’s a spiritual journey that honors the legacy of reggae while embracing the diverse cultures of Chicago. With a lineup that mirrors the global unity we celebrate, Indika brings a message of love, resilience, and community that resonates deeply with our festival’s mission. Their ability to blend traditional roots with modern energy makes them the perfect anchor for our main stage, where they will uplift and unite thousands of souls under the golden Chicago sky. Indika doesn’t just play music; they create a sacred space where the past, present, and future of reggae converge—exactly what SelassieFest is all about.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="page-footer">
+        © 2026 Indika Reggae Band · Curated for SelassieFest
+    </footer>
+
+</body>
+</html>

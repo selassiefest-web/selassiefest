@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Village – SelassieFest | Hosted by Frontline Book Publishing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255,255,255,0.04);
+            --border-dim: rgba(255,255,255,0.08);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+        }
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(6px);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+        .breadcrumb {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: rgba(245,245,245,0.35);
+            padding: 14px 32px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .breadcrumb a {
+            color: rgba(245,245,245,0.4);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { color: var(--gold-accent); }
+        .breadcrumb span { color: var(--gold-accent); }
+        .hero-banner {
+            background: linear-gradient(135deg, #07120a 0%, #0c1f12 45%, #102c19 100%);
+            padding: 64px 32px 56px;
+            text-align: center;
+            border-bottom: 1px solid rgba(14,94,54,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 75% 35% at 30% 70%, rgba(14,94,54,0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            font-weight: 300;
+            font-size: 0.8rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--roots-green);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .hero-banner h1 {
+            font-weight: 200;
+            font-size: clamp(2.5rem, 7vw, 4.2rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-banner h1 span {
+            color: var(--gold-accent);
+        }
+        .hero-description {
+            max-width: 780px;
+            margin: 0 auto;
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: rgba(245,245,245,0.7);
+            letter-spacing: 0.02em;
+            line-height: 1.65;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 28px;
+        }
+        .section-label {
+            font-weight: 300;
+            font-size: 0.72rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-weight: 200;
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 16px;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+        .heritage-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            transition: all 0.25s;
+            overflow: hidden;
+        }
+        .heritage-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(229,169,60,0.4);
+            background: rgba(255,255,255,0.07);
+        }
+        .card-icon {
+            padding: 28px 28px 12px 28px;
+            font-size: 2.6rem;
+            color: var(--gold-accent);
+        }
+        .card-content {
+            padding: 0 28px 22px 28px;
+        }
+        .card-title {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .card-desc {
+            font-weight: 300;
+            font-size: 0.9rem;
+            color: rgba(245,245,245,0.7);
+            line-height: 1.55;
+            margin-bottom: 24px;
+        }
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: var(--gold-accent);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-outline:hover {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+        }
+        .host-badge {
+            background: rgba(229,169,60,0.12);
+            border-left: 4px solid var(--gold-accent);
+            padding: 20px 28px;
+            margin: 30px 0 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .schedule-teaser {
+            background: rgba(255,255,255,0.02);
+            border-radius: 28px;
+            padding: 32px;
+            margin: 48px 0;
+            border: 1px solid var(--border-dim);
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .schedule-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .schedule-time {
+            font-weight: 500;
+            color: var(--gold-accent);
+            font-size: 0.8rem;
+        }
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover { color: var(--gold-accent); }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.5rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover { color: var(--gold-accent); }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 32px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+        @media (max-width:780px) {
+            .site-title { font-size:1.8rem; }
+            .nav-links { gap:0.8rem; }
+            .nav-links li a { font-size:0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/" class="active">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> &rsaquo;
+    <span>Heritage Village</span>
+</div>
+
+<div class="hero-banner">
+    <div class="hero-eyebrow"><i class="fas fa-store"></i> presented by</div>
+    <h1>Frontline Book <span>Publishing</span></h1>
+    <p class="hero-description">
+        Chicago’s premier Rastafari & Pan‑African bookstore brings you a living, breathing heritage village –<br>
+        not exhibits behind glass, but <strong>hands‑on livity, hot Ital food, healing herbs, and living authors</strong>.
+    </p>
+</div>
+
+<div class="container">
+
+    <!-- HOST BADGE WITH OWNER'S VOICE -->
+    <div class="host-badge">
+        <div style="flex:2">
+            <i class="fas fa-book-open" style="color: var(--gold-accent); font-size: 1.6rem; margin-right: 12px;"></i>
+            <strong style="font-size: 1.1rem;">“This is not a museum. This is our living room.”</strong><br>
+            <span style="font-weight: 300;">– Frontline Book Publishing. I’ll be in the reasoning circle all day. Pull up a stool.</span>
+        </div>
+        <a href="https://frontlinebookpublishing.com" target="_blank" class="btn-outline" style="white-space: nowrap;"><i class="fas fa-external-link-alt"></i> Visit Our Online Store</a>
+    </div>
+
+    <!-- FOUR CORE EXPERIENCES (the ones that get me excited) -->
+    <div class="section-label">What we’re actually doing</div>
+    <h2 class="section-title">Four Active Experiences</h2>
+    <div class="cards-grid">
+        
+        <!-- 1. Rastafari Livity & Reasoning Circle -->
+        <div class="heritage-card">
+            <div class="card-icon"><i class="fas fa-hand-holding-heart"></i></div>
+            <div class="card-content">
+                <div class="card-title">Rastafari Livity<br> & Reasoning Circle</div>
+                <div class="card-desc">Live dialogue on Ital living, the holy herb, Nazirite vows, and the role of the Empress. Not a lecture – a conversation. Led by elders and frontline staff.</div>
+                <a href="rastafari-livity.html" class="btn-outline">Join the circle →</a>
+            </div>
+        </div>
+
+        <!-- 2. Ital Cooking + Ethiopian Coffee Ceremony -->
+        <div class="heritage-card">
+            <div class="card-icon"><i class="fas fa-mug-hot"></i><i class="fas fa-carrot" style="margin-left: 8px;"></i></div>
+            <div class="card-content">
+                <div class="card-title">Ital Cooking Demo<br> & Coffee Ceremony</div>
+                <div class="card-desc">Watch (and taste) a plant‑based Ital meal made with ingredients from the Ital Marketplace. Paired with a traditional jebena coffee ritual. Recipes included.</div>
+                <a href="ital-coffee-ceremony.html" class="btn-outline">Come hungry →</a>
+            </div>
+        </div>
+
+        <!-- 3. Metaphysical & Herbal Healing Station -->
+        <div class="heritage-card">
+            <div class="card-icon"><i class="fas fa-leaf"></i><i class="fas fa-mortar-pestle"></i></div>
+            <div class="card-content">
+                <div class="card-title">Metaphysical &<br> Herbal Healing</div>
+                <div class="card-desc">Frankincense, myrrh, sage, and medicinal herbs from the Bible and African traditions. Hands‑on tincture demos and a mini‑workshop on spiritual bathing.</div>
+                <a href="metaphysical-healing.html" class="btn-outline">Heal with us →</a>
+            </div>
+        </div>
+
+        <!-- 4. Black Author Spotlight & Pop‑Up Bookstore -->
+        <div class="heritage-card">
+            <div class="card-icon"><i class="fas fa-book"></i><i class="fas fa-microphone-alt"></i></div>
+            <div class="card-content">
+                <div class="card-title">Author Spotlight &<br> Pop‑Up Bookstore</div>
+                <div class="card-desc">Live readings, signings, and a full selling tent of Frontline’s catalog – Rastafari, Pan‑African history, metaphysics, children’s books, and more. Cash, card, or Venmo.</div>
+                <a href="frontline-bookstore.html" class="btn-outline">Shop & meet authors →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAILY SCHEDULE TEASER (shows active participation) -->
+    <div class="schedule-teaser">
+        <div class="section-label" style="margin-bottom: 8px;">Saturday, July 25th – Tent schedule</div>
+        <h2 class="section-title" style="margin-bottom: 16px;">Come for the vibe, stay for the session</h2>
+        <div class="schedule-grid">
+            <div class="schedule-item">
+                <div class="schedule-time">9:00 AM</div>
+                <strong>Morning Ital Breakfast Demo</strong><br>
+                <span style="font-size: 0.75rem;">Plantain porridge + coffee ceremony</span>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">11:00 AM</div>
+                <strong>Reasoning Circle: “Cannabis as Sacrament”</strong><br>
+                <span style="font-size: 0.75rem;">With Rastafari elders</span>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">1:00 PM</div>
+                <strong>Author Reading: “Chanting Down Babylon”</strong><br>
+                <span style="font-size: 0.75rem;">Plus Q&A and book signing</span>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">3:00 PM</div>
+                <strong>Herbal Workshop: Spiritual Baths & Teas</strong><br>
+                <span style="font-size: 0.75rem;">Make your own herbal satchel</span>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">5:00 PM</div>
+                <strong>Evening Reasoning: “Reparations & Black Economics”</strong><br>
+                <span style="font-size: 0.75rem;">Panel with local cooperative leaders</span>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-time">7:00 PM</div>
+                <strong>Closing Nyabinghi Chant & Libation</strong><br>
+                <span style="font-size: 0.75rem;">All voices welcome</span>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 24px; font-weight: 300; font-size: 0.85rem;">
+            <i class="fas fa-clock"></i> Full schedule available at the Frontline tent. All sessions are drop‑in, free with festival admission.
+        </p>
+    </div>
+
+    <!-- CALL TO ACTION FOR AUTHORS & VENDORS (makes me feel like I'm building something) -->
+    <div style="background: rgba(14,94,54,0.2); border-radius: 24px; padding: 32px; text-align: center; margin: 40px 0;">
+        <i class="fas fa-chalkboard-user" style="font-size: 2rem; color: var(--gold-accent);"></i>
+        <h3 style="margin: 16px 0;">Calling Black Authors & Healers</h3>
+        <p style="max-width: 600px; margin: 0 auto 24px; font-weight: 300;">Want to lead a reasoning circle, sell your books, or offer a healing demo at the Heritage Village? We’re looking for co‑creators. Email us directly.</p>
+        <a href="mailto:heritage@frontlinebookpublishing.com" class="btn-outline" style="background: var(--gold-accent); color:#0D0D0D;"><i class="fas fa-envelope"></i> heritage@frontlinebookpublishing.com</a>
+    </div>
+
+    <!-- WHY I'M EXCITED (in my own words) -->
+    <div style="text-align: center; border-top: 1px solid var(--border-dim); padding-top: 48px; margin-top: 20px;">
+        <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--gold-accent); opacity: 0.5;"></i>
+        <p style="font-weight: 300; font-size: 1rem; max-width: 700px; margin: 16px auto; font-style: italic;">
+        “This is the first time I’ve been asked to do more than just sell books. I'm building a village at SelassieFest – a real one, with reasoning, Ital food, healing, and living authors. That’s why I’m all in.”
+        </p>
+        <p style="font-weight: 400;">— Frontline Book Publishing</p>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> Heritage Village presented by Frontline Book Publishing — Rooted in Ethiopian & Jamaican Heritage.<br>
+        &copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+    </div>
+</footer>
+
+</body>
+</html>

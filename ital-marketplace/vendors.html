@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ital Marketplace · Vendors | SelassieFest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #050805;
+      --surface-elevated: #0f130f;
+      --text-cream: #F5F2E8;
+      --green-roots: #2C8C5A;
+      --gold-livity: #E5A93C;
+      --red-power: #C83737;
+      --card-border: rgba(255,255,255,0.08);
+      --glow-gold: rgba(229,169,60,0.15);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.8rem;
+    }
+
+    /* Hero Section */
+    .vendor-hero {
+      text-align: center;
+      padding: 2.5rem 1rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      background: radial-gradient(ellipse at 50% 0%, rgba(44,140,90,0.2), transparent 70%);
+      margin-bottom: 1rem;
+    }
+
+    .vendor-hero h1 {
+      font-weight: 300;
+      font-size: 2.8rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #F5F2E8, var(--gold-livity));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .vendor-hero p {
+      max-width: 750px;
+      margin: 0.8rem auto 0;
+      font-weight: 300;
+      color: #ccc6b5;
+      font-size: 1.05rem;
+    }
+
+    /* filter bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 2rem 0 1.8rem;
+    }
+
+    .filter-btn {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 400;
+      transition: 0.2s;
+      color: var(--text-cream);
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--green-roots);
+      border-color: var(--gold-livity);
+      color: white;
+    }
+
+    /* vendor grid */
+    .vendor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+      margin: 1.5rem 0;
+    }
+
+    .vendor-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--card-border);
+      border-radius: 1.8rem;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s;
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vendor-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold-livity);
+      box-shadow: 0 12px 20px -12px rgba(0,0,0,0.6);
+    }
+
+    .card-header {
+      background: linear-gradient(95deg, #0b1a10, #071008);
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid rgba(229,169,60,0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .cuisine-tag {
+      background: var(--red-power);
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .neighborhood {
+      font-size: 0.75rem;
+      color: var(--gold-livity);
+      background: rgba(0,0,0,0.5);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    .vendor-name {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 0.8rem 1rem 0.2rem;
+    }
+
+    .vendor-details {
+      margin: 0.3rem 1rem;
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      color: #bcb6a5;
+    }
+
+    .vendor-details i {
+      width: 1.2rem;
+      color: var(--gold-livity);
+    }
+
+    .signature {
+      margin: 0.8rem 1rem;
+      font-weight: 300;
+      font-size: 0.9rem;
+      background: rgba(44,140,90,0.1);
+      padding: 0.5rem 0.8rem;
+      border-radius: 1rem;
+      border-left: 2px solid var(--gold-livity);
+    }
+
+    .vendor-desc {
+      margin: 0.5rem 1rem;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: #ddd0bc;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .contact-btn {
+      display: block;
+      margin: 0.8rem 1rem 1.2rem;
+      background: transparent;
+      border: 1px solid var(--gold-livity);
+      border-radius: 2rem;
+      padding: 0.55rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 400;
+      color: var(--gold-livity);
+      text-decoration: none;
+    }
+
+    .contact-btn:hover {
+      background: var(--gold-livity);
+      color: #0a0c0a;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      border-radius: 1.2rem;
+      padding: 1rem 1.5rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--gold-livity);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.8rem;
+      border-top: 1px solid var(--card-border);
+      font-size: 0.8rem;
+      color: #7c7c6c;
+    }
+
+    @media (max-width: 750px) {
+      .vendor-hero h1 { font-size: 2.2rem; }
+      .container { padding: 1.2rem; }
+      .vendor-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="vendor-hero">
+    <h1><i class="fas fa-store"></i> Ital Marketplace · Vendor Village</h1>
+    <p>We are inviting the finest Jamaican and Caribbean restaurants from across Chicago to share their authentic flavors at SelassieFest. Below is a curated list of community gems, from family-owned takeout spots to award-winning Afro-Caribbean kitchens.</p>
+  </div>
+
+  <!-- filter row -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all">All Vendors</button>
+    <button class="filter-btn" data-filter="jamaican">Jamaican</button>
+    <button class="filter-btn" data-filter="caribbean">Pan-Caribbean</button>
+    <button class="filter-btn" data-filter="trinidad">Trinidadian</button>
+    <button class="filter-btn" data-filter="belizean">Belizean</button>
+  </div>
+
+  <!-- vendor grid injected -->
+  <div id="vendorGrid" class="vendor-grid"></div>
+
+  <!-- stats & call to action -->
+  <div class="stats-row">
+    <div class="stat-item"><span class="stat-number"><i class="fas fa-utensils"></i> 20+</span><br>Vendors Invited</div>
+    <div class="stat-item"><span class="stat-number"><i class="fas fa-drumstick-bite"></i> 10+</span><br>Cuisine Styles</div>
+    <div class="stat-item"><span class="stat-number"><i class="fas fa-city"></i> 15+</span><br>Chicago Neighborhoods</div>
+    <div class="stat-item"><span class="stat-number"><i class="fas fa-handshake"></i> Partner</span><br>Community-driven</div>
+  </div>
+
+  <footer>
+    <i class="fas fa-leaf"></i> Calling all Caribbean culinary artists! Join SelassieFest as a vendor.<br>
+    📧 <strong>vendors@selassiefest.com</strong> | 🌿 SelassieFest Ital Marketplace — July 25, 2026
+  </footer>
+</div>
+
+<script>
+  // Vendor data — curated list of Jamaican & Caribbean restaurants in Chicago
+  const vendors = [
+    { name: "Ja' Grill", cuisine: "Jamaican", neighborhood: "Hyde Park", address: "1510 East Harper Court, Chicago, IL", signature: "Jerk chicken, curried goat, escoveitch snapper, Ital stew", description: "Authentic Jamaican since 2007 — legendary Jerk & rum punch, vibrant island atmosphere.", contact: "https://jagrillchicago.com/", type: "jamaican" },
+    { name: "Jamaican Gates", cuisine: "Jamaican", neighborhood: "Roseland", address: "10226 S. Halsted St, Chicago, IL", signature: "Jerk chicken, oxtail, brown stew, cabbage & rice/peas", description: "Family-owned for 20+ years, renowned for the best Caribbean food on the South Side. True neighborhood treasure.", contact: "tel:7737791708", type: "jamaican" },
+    { name: "Mahari", cuisine: "Afro-Caribbean", neighborhood: "Hyde Park", address: "1504 East 55th Street, Chicago, IL", signature: "Jerk lamb chops, Caribbean curries, plantains", description: "Winner of 'Best Neighborhood Restaurant' 2026 Jean Banchet Awards — fine-dining Afro-Caribbean.", contact: "https://maharirestaurant.com/", type: "caribbean" },
+    { name: "Tropic Island Jerk Chicken", cuisine: "Jamaican", neighborhood: "Chatham", address: "553 E 79th St, Chicago, IL", signature: "Jerk chicken, oxtail, curry goat, callaloo", description: "Vibrant Chatham spot known for bold, aromatic jerk chicken and classic Jamaican sides.", contact: "tel:7739946464", type: "jamaican" },
+    { name: "The Wild Hare", cuisine: "Jamaican / Reggae Lounge", neighborhood: "Fulton Market", address: "950 W Fulton St, Chicago, IL", signature: "Jerk wings, oxtail, rum cocktails", description: "Iconic reggae club & restaurant, famous for live music and generous Caribbean plates.", contact: "https://www.thewildharechicago.com/", type: "jamaican" },
+    { name: "Poppi's Jamaican Jerk", cuisine: "Jamaican", neighborhood: "Calumet Park", address: "13055 S. Ashland Ave, Calumet Park, IL", signature: "Jerk chicken, rice & peas, plantains", description: "Spicy jerk chicken marinated with freshly ground spices; great for takeout and delivery.", contact: "tel:7083883944", type: "jamaican" },
+    { name: "876 Jamaican Jerk Restaurant", cuisine: "Jamaican", neighborhood: "Brainerd", address: "9044 South Ashland Avenue, Chicago, IL", signature: "Jerk chicken tacos, jerk wings, jerk catfish", description: "Community favorite for creative jerk tacos and hearty combo dinners.", contact: "tel:7732335377", type: "jamaican" },
+    { name: "WI Jammin", cuisine: "Jamaican", neighborhood: "West Pullman", address: "222 W 111th St, Chicago, IL", signature: "Jerk chicken, curry chicken, festival bread", description: "Family-owned, authentic Jamaican — 'bringing great food with each visit.'", contact: "tel:7732335700", type: "jamaican" },
+    { name: "Caribbean American Bakery", cuisine: "Jamaican Bakery", neighborhood: "Chatham", address: "322 E 79th St, Chicago, IL", signature: "Beef patties, jerk pork, coco bread, cakes", description: "Famous Jamaican baked goods — patties, spiced buns, and hearty jerk meat.", contact: "tel:7732246658", type: "jamaican" },
+    { name: "Garifuna Flava: A Taste of Belize", cuisine: "Belizean / Caribbean", neighborhood: "Chicago Lawn", address: "2518 W 63rd St, Chicago, IL", signature: "Jerk chicken, Belizean stew chicken, red snapper, mac & cheese", description: "Highly rated Belizean spot, known for daily cultural specials and incredible seafood.", contact: "tel:7734341234", type: "belizean" },
+    { name: "Jerk Soule", cuisine: "Jamaican", neighborhood: "Ashburn", address: "8216 S Kedzie Ave, Chicago, IL", signature: "Jerk chicken, curry goat, jerk salmon", description: "Takeout gem praised for generous portions and authentic jerk flavor.", contact: "tel:7739946464", type: "jamaican" },
+    { name: "D's Roti & Trini Cuisine", cuisine: "Trinidadian", neighborhood: "Cornell", address: "1200 East 79th Street, Chicago, IL", signature: "Curry chicken dhalpuri, doubles, goat roti", description: "Perfect 4.8-star Trini spot, famous for huge rotis and authentic doubles.", contact: "tel:7739946464", type: "trinidad" },
+    { name: "La Bomba Restaurant", cuisine: "Puerto Rican / Caribbean", neighborhood: "Logan Square", address: "3221 W Armitage Ave, Chicago, IL", signature: "Mofongo, arroz con gandules, pernil", description: "Top-rated family-style Puerto Rican kitchen, known for festive atmosphere.", contact: "tel:7739043204", type: "caribbean" },
+    { name: "14 Parish Restaurant & Rhum Bar", cuisine: "Caribbean", neighborhood: "South Loop", address: "2333 S Michigan Ave, Chicago, IL", signature: "Jerk chicken, coconut shrimp, tropical cocktails", description: "Island-inspired lunch & dinner with vibrant rhum bar and Caribbean seafood plates.", contact: "https://www.14parish.com/", type: "caribbean" },
+    { name: "Dr. Bird's", cuisine: "Jamaican", neighborhood: "Noble Square", address: "1355 N Milwaukee Ave, Chicago, IL", signature: "Wood-smoked jerk wings, rasta pasta, oxtail", description: "Modern Jamaican with wood-smoked jerk wings and creative rasta pasta.", contact: "tel:7733606978", type: "jamaican" },
+    { name: "Good To Go Jamaican", cuisine: "Jamaican", neighborhood: "Rogers Park", address: "7520 N Rogers Ave, Chicago, IL", signature: "Curry chicken, jerk pork, beef patties", description: "Cozy Rogers Park takeout with classic Jamaican comfort dishes.", contact: "tel:7732620459", type: "jamaican" },
+    { name: "Taste of Jamaica Evanston", cuisine: "Jamaican", neighborhood: "Rogers Park", address: "7012 N Clark St, Chicago, IL", signature: "Oxtail, curry chicken, festival, plantains", description: "Traditional Jamaican fare with large portions and friendly service.", contact: "tel:7733816350", type: "jamaican" },
+    { name: "Jerk. Jamaican Barbecue", cuisine: "Jamaican BBQ", neighborhood: "Goose Island", address: "1131 W Blackhawk St, Chicago, IL", signature: "Jerk chicken sandwich, rude girl jerk sauce", description: "Fast-casual jerk barbecue with signature sauces and brisket-style jerk meats.", contact: "tel:3125660966", type: "jamaican" },
+    { name: "Bayan Ko", cuisine: "Filipino-Cuban Fusion", neighborhood: "Ravenswood", address: "2632 N Clark St, Chicago, IL", signature: "Five-course tasting menu, lechon, plantains", description: "Inventive fusion tasting menu combining Filipino and Cuban influences.", contact: "https://www.bayankochicago.com/", type: "caribbean" },
+    { name: "Deborincuba", cuisine: "Cuban / Puerto Rican / West Indian", neighborhood: "Logan Square", address: "2727 W Fullerton Ave, Chicago, IL", signature: "Ropa vieja, mofongo, bistec", description: "Authentic Caribbean fusion: Cuban, Puerto Rican & West Indian flavors.", contact: "tel:7739043204", type: "caribbean" }
+  ];
+
+  let activeFilter = "all";
+
+  function renderVendors() {
+    const container = document.getElementById("vendorGrid");
+    const filtered = activeFilter === "all" ? vendors : vendors.filter(v => v.type === activeFilter);
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:3rem;">🌿 No vendors match this filter. Explore more Caribbean gems!</div>`;
+      return;
+    }
+    container.innerHTML = filtered.map(vendor => `
+      <div class="vendor-card" data-type="${vendor.type}">
+        <div class="card-header">
+          <span class="cuisine-tag"><i class="fas fa-utensil-spoon"></i> ${vendor.cuisine}</span>
+          <span class="neighborhood"><i class="fas fa-location-dot"></i> ${vendor.neighborhood}</span>
+        </div>
+        <div class="vendor-name">${vendor.name}</div>
+        <div class="vendor-details">
+          <span><i class="fas fa-map-pin"></i> ${vendor.address}</span>
+        </div>
+        <div class="signature">
+          <i class="fas fa-fire"></i> <strong>Signature:</strong> ${vendor.signature}
+        </div>
+        <div class="vendor-desc">
+          ${vendor.description}
+        </div>
+        <a href="${vendor.contact}" target="_blank" class="contact-btn"><i class="fas fa-envelope"></i> Contact / Vendor Info</a>
+      </div>
+    `).join('');
+  }
+
+  function initFilters() {
+    const btns = document.querySelectorAll('.filter-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.getAttribute('data-filter');
+        renderVendors();
+      });
+    });
+  }
+
+  renderVendors();
+  initFilters();
+</script>
+</body>
+</html>

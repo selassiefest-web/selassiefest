@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelassieFest - about mission</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap');
+    :root {
+        --bg-black: #0D0D0D;
+        --text-white: #F5F5F5;
+        --roots-green: #0E5E36;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(255,255,255,0.04);
+        --border-dim: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+    }
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+        background: #0a0a0a;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    .nav-links li a:hover {
+        color: var(--gold-accent);
+        border-bottom-color: var(--gold-accent);
+    }
+    .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 60px 24px;
+    }
+    .festival-badge {
+        background: rgba(229,169,60,0.15);
+        border-left: 4px solid var(--gold-accent);
+        padding: 16px 24px;
+        margin-bottom: 40px;
+        border-radius: 12px;
+        font-weight: 300;
+    }
+    .footer {
+        background: #050505;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--gold-accent); }
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #666;
+    }
+    .mission-block {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 36px;
+        border: 1px solid var(--border-dim);
+        margin-bottom: 48px;
+    }
+    .mission-statement {
+        font-size: 1.8rem;
+        font-weight: 400;
+        line-height: 1.3;
+        text-align: center;
+        color: var(--gold-accent);
+        margin: 24px 0;
+    }
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+        margin: 48px 0;
+    }
+    .value-card {
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+        padding: 28px;
+        border: 1px solid var(--border-dim);
+        transition: all 0.2s;
+    }
+    .value-card:hover {
+        border-color: var(--gold-accent);
+        background: rgba(229,169,60,0.05);
+    }
+    .value-card i {
+        font-size: 2rem;
+        color: var(--gold-accent);
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+    .value-card h3 {
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        margin-bottom: 16px;
+    }
+    .donate-btn {
+        display: inline-block;
+        background: var(--gold-accent);
+        color: var(--bg-black);
+        text-decoration: none;
+        padding: 12px 32px;
+        border-radius: 40px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        margin-top: 24px;
+        transition: 0.2s;
+    }
+    .donate-btn:hover {
+        background: #c48a2c;
+        transform: translateY(-2px);
+    }
+    @media (max-width: 780px) {
+        .site-title { font-size:1.8rem; }
+        .nav-links { gap:0.8rem; }
+        .nav-links li a { font-size:0.7rem; }
+        .mission-statement { font-size:1.4rem; }
+    }
+    </style>
+</head>
+<body>
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+    <div class='container'>
+        <div class='festival-badge'>
+            <i class="fas fa-calendar-alt"></i> Saturday, July 25th, 2026 | 6:00 AM – 10:00 PM
+        </div>
+        
+        <h1>Our Mission, Vision & Values</h1>
+        <p style="font-size:1.2rem; margin-bottom: 24px;">SelassieFest Inc. is a registered 501(c)(3) nonprofit organization dedicated to cultural preservation, education, and community empowerment through the celebration of Ethiopian and Rastafari heritage.</p>
+        
+        <div class="mission-block">
+            <i class="fas fa-bullseye" style="font-size: 2rem; color: var(--gold-accent); display: block; text-align: center; margin-bottom: 16px;"></i>
+            <div class="mission-statement">
+                “To honor the living legacy of Emperor Haile Selassie I by nurturing Pan‑African unity, preserving Rastafari traditions, and building a just, educated, and spiritually rooted community through festival, education, and service.”
+            </div>
+            <p style="text-align: center; max-width: 700px; margin: 24px auto 0;">We achieve this through an annual cultural festival, year‑round educational programming, youth mentorship, Ital food initiatives, and support for Ethiopian and Caribbean diaspora communities in Chicago and beyond.</p>
+        </div>
+
+        <h2 style="margin-top: 48px;">Vision Statement</h2>
+        <div class="mission-block" style="background: rgba(14,94,54,0.1); border-left: 4px solid var(--roots-green);">
+            <p style="font-size: 1.3rem; font-weight: 300;">A world where African and diasporic heritage is celebrated, where Rastafari principles of love, equity, and natural living guide community life, and where every generation knows the name and teachings of His Imperial Majesty Haile Selassie I as a beacon of African redemption.</p>
+        </div>
+
+        <h2>Core Values</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>Unity & Community</h3>
+                <p>We build bridges across generations, cultures, and faiths. SelassieFest is a family‑friendly, inclusive space where all are welcome to share in the spirit of “One Love, One Destiny.”</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-book-open"></i>
+                <h3>Cultural Education</h3>
+                <p>We teach the true history of Ethiopia, the Rastafari movement, Pan‑Africanism, and Chicago’s unique role in these global struggles. Knowledge is liberation.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-drum"></i>
+                <h3>Tradition & Sacred Practice</h3>
+                <p>We preserve Nyabinghi drumming, reasoning circles, Ital cooking, and the liturgical calendar of Rastafari — ensuring these living traditions are passed to the next generation.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-apple-alt"></i>
+                <h3>Health & Ital Living</h3>
+                <p>We promote natural, plant‑based (Ital) nutrition, holistic wellness, and environmental stewardship as acts of reverence for the earth and the body as the temple of Jah.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>Youth Empowerment</h3>
+                <p>Through the Youth Village, scholarships, and mentorship programs, we invest in young leaders who will carry the message of African pride and social justice forward.</p>
+            </div>
+            <div class="value-card">
+                <i class="fas fa-globe-africa"></i>
+                <h3>Pan‑African Solidarity</h3>
+                <p>We stand with African peoples worldwide, supporting reparatory justice, cultural exchange, and economic cooperation within the diaspora.</p>
+            </div>
+        </div>
+
+        <hr style="border-color: var(--border-dim); margin: 48px 0;">
+        
+        <div style="text-align: center; max-width: 720px; margin: 0 auto;">
+            <i class="fas fa-dove" style="font-size: 2rem; color: var(--gold-accent); margin-bottom: 16px; display: inline-block;"></i>
+            <p style="font-weight: 300;">As a 501(c)(3) nonprofit, every donation, ticket purchase, and volunteer hour helps sustain our work. Join us in building a legacy of love, learning, and liberation.</p>
+            <a href="/donate/" class="donate-btn"><i class="fas fa-heart"></i> Support SelassieFest</a>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST -- One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+            <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM - 10:00 PM
+        </div>
+    </footer>
+</body>
+</html>

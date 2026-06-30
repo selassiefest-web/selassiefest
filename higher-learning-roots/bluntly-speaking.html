@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelassieFest - higher-learning-roots › Bluntly Speaking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap');
+    :root {
+        --bg-black: #0D0D0D;
+        --text-white: #F5F5F5;
+        --roots-green: #0E5E36;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(255,255,255,0.04);
+        --border-dim: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+    }
+
+    /* HEADER */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+    /* NAV */
+    .main-nav { background:#0a0a0a; padding:12px 24px; border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; backdrop-filter:blur(4px); }
+    .nav-links { display:flex; flex-wrap:wrap; justify-content:center; gap:1.25rem; list-style:none; max-width:1400px; margin:0 auto; }
+    .nav-links li a { font-weight:400; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:#ddd; text-decoration:none; padding:6px 0; border-bottom:2px solid transparent; transition:0.2s; }
+    .nav-links li a:hover, .nav-links li a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
+
+    /* BREADCRUMB */
+    .breadcrumb { font-size:0.75rem; font-weight:300; letter-spacing:0.08em; color:rgba(245,245,245,0.35); padding:14px 32px; border-bottom:1px solid var(--border-dim); }
+    .breadcrumb a { color:rgba(245,245,245,0.4); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold-accent); }
+    .breadcrumb span { color:var(--gold-accent); }
+
+    /* HERO */
+    .hero-banner {
+        background: linear-gradient(135deg, #060f09 0%, #0a1f10 40%, #0d2b18 70%, #091408 100%);
+        border-bottom: 2px solid var(--roots-green);
+        padding: 56px 32px 48px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-banner::before {
+        content:'';
+        position:absolute; inset:0;
+        background:
+            radial-gradient(ellipse 60% 40% at 20% 60%, rgba(14,94,54,0.18) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(229,169,60,0.10) 0%, transparent 70%);
+        pointer-events:none;
+    }
+    .smoke-anim {
+        position:absolute; top:0; left:0; right:0; bottom:0;
+        background-image:
+            radial-gradient(ellipse 220px 90px at 10% 85%, rgba(255,255,255,0.028) 0%, transparent 80%),
+            radial-gradient(ellipse 180px 70px at 88% 15%, rgba(255,255,255,0.022) 0%, transparent 80%),
+            radial-gradient(ellipse 140px 60px at 55% 55%, rgba(14,94,54,0.13) 0%, transparent 80%);
+        animation: smokedrift 20s ease-in-out infinite alternate;
+        pointer-events:none;
+    }
+    @keyframes smokedrift {
+        0%   { transform: translateY(0) translateX(0) scale(1); opacity:1; }
+        50%  { transform: translateY(-14px) translateX(8px) scale(1.02); opacity:0.8; }
+        100% { transform: translateY(-5px) translateX(-5px) scale(1); opacity:1; }
+    }
+    .hero-eyebrow { font-weight:300; font-size:0.78rem; letter-spacing:0.45em; text-transform:uppercase; color:var(--roots-green); margin-bottom:14px; position:relative;z-index:2; }
+    .hero-title { font-weight:200; font-size:clamp(2.4rem,6vw,4.2rem); letter-spacing:0.08em; text-transform:uppercase; color:var(--text-white); line-height:1.1; margin-bottom:10px; position:relative;z-index:2; }
+    .hero-title span { color:var(--gold-accent); }
+    .hero-subtitle { font-weight:300; font-size:1.05rem; color:rgba(245,245,245,0.65); max-width:680px; margin:0 auto 28px; letter-spacing:0.03em; line-height:1.7; position:relative;z-index:2; }
+    .hero-meta { display:flex; flex-wrap:wrap; justify-content:center; gap:24px; position:relative;z-index:2; }
+    .hero-meta-item { display:flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:400; letter-spacing:0.1em; text-transform:uppercase; color:#ccc; }
+    .hero-meta-item i { color:var(--gold-accent); font-size:1rem; }
+
+    /* CONTAINER */
+    .container { max-width:1280px; margin:0 auto; padding:60px 24px; }
+
+    /* CALLOUTS */
+    .festival-badge { background:rgba(229,169,60,0.15); border-left:4px solid var(--gold-accent); padding:16px 24px; margin-bottom:40px; border-radius:12px; font-weight:300; }
+    .festival-badge i { color:var(--gold-accent); margin-right:12px; }
+    .one-love-callout { background:rgba(200,55,55,0.2); border:1px solid var(--red-accent); border-radius:60px; padding:12px 24px; text-align:center; margin:30px 0; }
+
+    /* SECTION TYPOGRAPHY */
+    .section-label { font-weight:300; font-size:0.72rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold-accent); margin-bottom:8px; }
+    .section-title { font-weight:200; font-size:clamp(1.6rem,3.5vw,2.4rem); letter-spacing:0.06em; text-transform:uppercase; color:var(--text-white); margin-bottom:8px; }
+    .section-desc { font-weight:300; font-size:0.95rem; color:rgba(245,245,245,0.6); max-width:700px; margin-bottom:36px; line-height:1.7; }
+    .section-divider { border:none; border-top:1px solid var(--border-dim); margin:60px 0; }
+
+    /* PHASE HEADERS */
+    .phase-header { display:flex; align-items:center; gap:16px; margin:48px 0 20px; }
+    .phase-pill { font-weight:500; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; padding:5px 16px; border-radius:30px; white-space:nowrap; }
+    .phase-morning   { background:rgba(76,175,130,0.18); color:#4caf82; border:1px solid rgba(76,175,130,0.3); }
+    .phase-midday    { background:rgba(229,169,60,0.18); color:var(--gold-accent); border:1px solid rgba(229,169,60,0.3); }
+    .phase-afternoon { background:rgba(193,122,204,0.18); color:#c17acc; border:1px solid rgba(193,122,204,0.3); }
+    .phase-evening   { background:rgba(200,55,55,0.18); color:#e06060; border:1px solid rgba(200,55,55,0.3); }
+    .phase-line { flex:1; height:1px; background:var(--border-dim); }
+    .phase-time-range { font-weight:300; font-size:0.72rem; letter-spacing:0.12em; color:rgba(245,245,245,0.35); white-space:nowrap; }
+
+    /* SESSION BLOCKS */
+    .session-block { display:grid; grid-template-columns:120px 1fr; gap:0 28px; margin-bottom:20px; }
+    .session-time-col { display:flex; flex-direction:column; align-items:flex-end; padding-top:20px; }
+    .session-time { font-weight:500; font-size:0.8rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-accent); text-align:right; white-space:nowrap; }
+    .session-duration { font-weight:300; font-size:0.68rem; letter-spacing:0.08em; color:rgba(245,245,245,0.35); text-align:right; margin-top:2px; }
+
+    /* SESSION CARDS */
+    .session-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:14px; padding:22px 26px; transition:border-color 0.25s,background 0.25s; }
+    .session-card:hover { border-color:rgba(255,255,255,0.18); background:rgba(255,255,255,0.07); }
+    .session-card.tier-morning   { border-left:3px solid #4caf82; }
+    .session-card.tier-midday    { border-left:3px solid var(--gold-accent); }
+    .session-card.tier-afternoon { border-left:3px solid #c17acc; }
+    .session-card.tier-evening   { border-left:3px solid var(--red-accent); }
+    .session-card.tier-break     { border-left:3px solid rgba(255,255,255,0.15); opacity:0.6; }
+
+    .session-card-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:10px; }
+    .session-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .icon-green  { background:rgba(76,175,130,0.15); color:#4caf82; }
+    .icon-gold   { background:rgba(229,169,60,0.15); color:var(--gold-accent); }
+    .icon-purple { background:rgba(193,122,204,0.15); color:#c17acc; }
+    .icon-red    { background:rgba(200,55,55,0.15); color:var(--red-accent); }
+    .icon-dim    { background:rgba(255,255,255,0.06); color:rgba(245,245,245,0.4); }
+
+    .session-title { font-weight:500; font-size:1rem; letter-spacing:0.04em; color:var(--text-white); margin-bottom:2px; }
+    .session-presenter { font-weight:300; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,245,245,0.45); }
+    .session-desc { font-weight:300; font-size:0.88rem; color:rgba(245,245,245,0.65); line-height:1.65; margin-bottom:12px; }
+
+    .session-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { font-size:0.65rem; font-weight:400; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid; }
+    .tag-green  { border-color:rgba(76,175,130,0.4); color:#4caf82; background:rgba(76,175,130,0.08); }
+    .tag-gold   { border-color:rgba(229,169,60,0.4); color:var(--gold-accent); background:rgba(229,169,60,0.08); }
+    .tag-purple { border-color:rgba(193,122,204,0.4); color:#c17acc; background:rgba(193,122,204,0.08); }
+    .tag-red    { border-color:rgba(200,55,55,0.4); color:#e06060; background:rgba(200,55,55,0.08); }
+    .tag-dim    { border-color:rgba(255,255,255,0.12); color:rgba(245,245,245,0.4); background:transparent; }
+
+    /* METHOD GRID */
+    .method-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; margin-top:32px; }
+    .method-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:14px; padding:24px; transition:0.25s; }
+    .method-card:hover { border-color:rgba(229,169,60,0.3); background:rgba(229,169,60,0.04); transform:translateY(-2px); }
+    .method-icon { font-size:2rem; margin-bottom:12px; }
+    .method-name { font-weight:500; font-size:0.95rem; letter-spacing:0.04em; margin-bottom:6px; }
+    .method-desc { font-weight:300; font-size:0.82rem; color:rgba(245,245,245,0.55); line-height:1.6; }
+
+    /* SUPPLY LIST */
+    .supply-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-top:24px; }
+    .supply-item { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:12px; font-weight:300; font-size:0.86rem; color:rgba(245,245,245,0.75); }
+    .supply-item i { color:var(--roots-green); font-size:1rem; flex-shrink:0; }
+
+    /* CLOSING */
+    .closing-callout { background:linear-gradient(135deg,rgba(14,94,54,0.2),rgba(229,169,60,0.1)); border:1px solid rgba(14,94,54,0.4); border-radius:20px; padding:48px 40px; text-align:center; margin-top:60px; }
+    .closing-callout h2 { font-weight:200; font-size:2rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px; }
+    .closing-callout p { font-weight:300; font-size:0.95rem; color:rgba(245,245,245,0.65); max-width:580px; margin:0 auto; line-height:1.7; }
+
+    /* FOOTER */
+    .footer { background:#050505; border-top:1px solid var(--border-dim); padding:48px 24px 32px; text-align:center; }
+    .footer-links { display:flex; flex-wrap:wrap; justify-content:center; gap:32px; margin-bottom:32px; }
+    .footer-links a { color:#aaa; text-decoration:none; font-weight:300; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; }
+    .footer-links a:hover { color:var(--gold-accent); }
+    .social-icons a { color:#ddd; font-size:1.5rem; margin:0 12px; transition:0.2s; display:inline-block; }
+    .social-icons a:hover { color:var(--gold-accent); }
+    .copyright { font-weight:300; font-size:0.7rem; margin-top:32px; letter-spacing:0.1em; color:#666; }
+
+    /* RESPONSIVE */
+    @media (max-width:780px) {
+        .site-title { font-size:1.8rem; }
+        .nav-links { gap:0.8rem; }
+        .nav-links li a { font-size:0.7rem; }
+        .session-block { grid-template-columns:80px 1fr; gap:0 14px; }
+        .closing-callout { padding:32px 20px; }
+    }
+    @media (max-width:520px) {
+        .session-block { grid-template-columns:1fr; }
+        .session-time-col { flex-direction:row; align-items:center; gap:10px; padding-top:0; margin-bottom:6px; }
+    }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/" class="active">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> &rsaquo;
+    <a href="/higher-learning-roots/">Higher Learning Roots</a> &rsaquo;
+    <span>Bluntly Speaking</span>
+</div>
+
+<!-- HERO -->
+<div class="hero-banner">
+    <div class="smoke-anim"></div>
+    <div style="position:relative;z-index:2;">
+        <div class="hero-eyebrow">Higher Learning Roots &mdash; The Craft of Consumption</div>
+        <h1 class="hero-title">Bluntly <span>Speaking</span></h1>
+        <p class="hero-subtitle">One full day devoted to the art, craft, and ritual of rolling, packing, and smoking — from the hand-rolled blunt to the sacred chalice. Master every method. Respect every tradition. Roll with intention.</p>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><i class="fas fa-calendar-day"></i> Saturday, July 25th, 2026</div>
+            <div class="hero-meta-item"><i class="fas fa-clock"></i> 6:00 AM – 10:00 PM</div>
+            <div class="hero-meta-item"><i class="fas fa-map-marker-alt"></i> Higher Learning Roots Village</div>
+            <div class="hero-meta-item"><i class="fas fa-id-card"></i> 21+ Required</div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="festival-badge">
+        <i class="fas fa-fire-alt"></i>
+        <strong>Bluntly Speaking</strong> is SelassieFest's all-day hands-on craft workshop dedicated entirely to the smoke experience — rolling technique, grind quality, wrap selection, pipe culture, chalice ceremony, and every method in between. All sessions are participatory. Supplies provided. 21+ ID required to enter the village.
+    </div>
+
+    <div class="one-love-callout">
+        <i class="fas fa-hands" style="color:var(--red-accent);margin-right:10px;"></i>
+        <strong>This is a craft space. We roll with patience, pride, and respect for the plant and the people who've passed this knowledge down.</strong>
+    </div>
+
+    <!-- WHAT WE COVER -->
+    <hr class="section-divider">
+    <div class="section-label">The Methods</div>
+    <h2 class="section-title">Every Smoke System, All Day</h2>
+    <p class="section-desc">From leaf selection to the final pull — Bluntly Speaking covers every major method of preparation and consumption across six workshop tracks running throughout the day.</p>
+
+    <div class="method-grid">
+        <div class="method-card">
+            <div class="method-icon">🍃</div>
+            <div class="method-name">The Blunt</div>
+            <div class="method-desc">Cigar leaf selection, emptying techniques, moisture management, packing density, the seal, and the torch. Backwoods, Swishers, fronto leaf, and natural wraps — all covered.</div>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">📜</div>
+            <div class="method-name">The Joint & Spliff</div>
+            <div class="method-desc">Paper selection (rice, hemp, wood pulp, flavored), rolling size from pinner to cannagar-style, the crutch/filter, cone rolling, and machine vs. hand technique.</div>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">🏺</div>
+            <div class="method-name">The Chalice</div>
+            <div class="method-desc">The Rastafari coconut shell chalice — its spiritual origins, construction, the chillum pipe insert, water filtration, the ritual of preparation, and how to approach it with proper overstanding.</div>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">🪨</div>
+            <div class="method-name">Pipes & One-Hitters</div>
+            <div class="method-desc">Glass, wood, stone, and clay. Chillum tradition from India to Jamaica. How to pack a bowl properly, cornering etiquette, cleaning, and pipe culture across traditions.</div>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">💧</div>
+            <div class="method-name">Water Pipes & Bongs</div>
+            <div class="method-desc">How water filtration works, percolator types, downstem angle and size, ice catches, cleaning chemistry, and how to get the smoothest pull your lungs will thank you for.</div>
+        </div>
+        <div class="method-card">
+            <div class="method-icon">⚙️</div>
+            <div class="method-name">The Grind</div>
+            <div class="method-desc">Why the grind matters more than most people think — grinder types, mesh screen collection, hand-breaking technique, stem use, and how grind consistency changes your burn entirely.</div>
+        </div>
+    </div>
+
+    <!-- WHAT TO BRING -->
+    <hr class="section-divider">
+    <div class="section-label">Come Prepared</div>
+    <h2 class="section-title">What's Provided & What to Bring</h2>
+    <p class="section-desc">All rolling supplies, papers, wraps, demonstration materials, and tools are provided free with festival admission. Bring your own product. Bring your hands. Bring patience.</p>
+
+    <div class="supply-grid">
+        <div class="supply-item"><i class="fas fa-check"></i> Rolling papers (hemp, rice, clear)</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Blunt wraps — multiple brands</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Fronto / grabba whole leaf</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Crutch/filter card stock</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Grinders (2, 3 & 4-piece)</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Rolling trays at every station</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Humidity packs & storage jars</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Demonstration chalices</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Chillum pipes for handling</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Torches, lighters & hemp wick</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Pipe cleaning kits</div>
+        <div class="supply-item"><i class="fas fa-check"></i> Practice flower (dry herb) for rolling demos</div>
+    </div>
+
+    <!-- FULL SCHEDULE -->
+    <hr class="section-divider">
+    <div class="section-label">Full Day Programme</div>
+    <h2 class="section-title">Bluntly Speaking — Schedule</h2>
+    <p class="section-desc">July 25th, 2026 · 6:00 AM to 10:00 PM · All sessions hands-on · All Central Time</p>
+
+    <!-- MORNING -->
+    <div class="phase-header">
+        <div class="phase-pill phase-morning"><i class="fas fa-sun" style="margin-right:6px;"></i> Morning Fire</div>
+        <div class="phase-line"></div>
+        <div class="phase-time-range">6:00 AM – 12:00 PM</div>
+    </div>
+
+    <!-- 6:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">6:00 AM</div>
+            <div class="session-duration">30 min</div>
+        </div>
+        <div class="session-card tier-morning">
+            <div class="session-card-header">
+                <div class="session-icon icon-red"><i class="fas fa-fire"></i></div>
+                <div>
+                    <div class="session-title">Rise & Fire — Village Opening Ceremony</div>
+                    <div class="session-presenter">SelassieFest Elders Council · Outdoors, Main Fire Pit</div>
+                </div>
+            </div>
+            <p class="session-desc">The day begins with the lighting of the communal fire — a nod to the role of fire in every smoke tradition on earth. Spoken word, intention-setting, and a blessing of the hands that will roll and pack throughout the day. No demonstrations yet. Just breath, fire, and community.</p>
+            <div class="session-tags"><span class="tag tag-red">Ceremony</span><span class="tag tag-dim">All Welcome</span><span class="tag tag-dim">Outdoor</span></div>
+        </div>
+    </div>
+
+    <!-- 6:30 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">6:30 AM</div>
+            <div class="session-duration">75 min</div>
+        </div>
+        <div class="session-card tier-morning">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-cog"></i></div>
+                <div>
+                    <div class="session-title">The Grind — Foundation Workshop</div>
+                    <div class="session-presenter">Master Roller Darius King · Rolling Room A</div>
+                </div>
+            </div>
+            <p class="session-desc">Every perfect smoke starts before the wrap ever touches your hands. Darius opens the day at the very beginning: anatomy of a grinder (2, 3, and 4-piece), kief screen management, hand-breaking vs. ground bud and why both have a place, how grind consistency and grind size directly affect burn rate, airflow, and flavor. Participants grind alongside the instructor at individual stations. You will never look at this step the same way again.</p>
+            <div class="session-tags"><span class="tag tag-green">Foundation</span><span class="tag tag-dim">Hands-On</span><span class="tag tag-dim">Individual Stations</span></div>
+        </div>
+    </div>
+
+    <!-- 7:45 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">7:45 AM</div>
+            <div class="session-duration">90 min</div>
+        </div>
+        <div class="session-card tier-morning">
+            <div class="session-card-header">
+                <div class="session-icon icon-green"><i class="fas fa-scroll"></i></div>
+                <div>
+                    <div class="session-title">Paper School — Joint & Spliff Rolling Fundamentals</div>
+                    <div class="session-presenter">Roller Nadia Bloom · Rolling Room A</div>
+                </div>
+            </div>
+            <p class="session-desc">The joint is the most universal form in the world — and most people have never been properly taught. This 90-minute workshop starts at zero: paper composition (rice vs. hemp vs. wood pulp), how paper weight affects draw resistance, the crutch (why it exists, how to fold a roach tip that holds), the spread, the tuck, the lick, and the roll. We advance through pinner joints, standard 1¼ size, King Slims, the dutch tulip, and the cross joint. Everyone rolls at least three joints during the session. Bring your patience — perfection takes practice.</p>
+            <div class="session-tags"><span class="tag tag-green">Joint</span><span class="tag tag-green">Spliff</span><span class="tag tag-dim">Beginner to Intermediate</span><span class="tag tag-dim">Hands-On</span></div>
+        </div>
+    </div>
+
+    <!-- 9:15 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">9:15 AM</div>
+            <div class="session-duration">45 min</div>
+        </div>
+        <div class="session-card tier-break">
+            <div class="session-card-header">
+                <div class="session-icon icon-dim"><i class="fas fa-mug-hot"></i></div>
+                <div>
+                    <div class="session-title">Morning Break — Herbal Tea & Station Reset</div>
+                    <div class="session-presenter">Open Village · All Stations Casual</div>
+                </div>
+            </div>
+            <p class="session-desc">Rest your hands, sip some ital herbal tea, and inspect the rolling tray at your station. Instructors available for informal one-on-one questions. Grinder and paper stations remain open for free practice.</p>
+            <div class="session-tags"><span class="tag tag-dim">Break</span><span class="tag tag-dim">Open Practice</span></div>
+        </div>
+    </div>
+
+    <!-- 10:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">10:00 AM</div>
+            <div class="session-duration">90 min</div>
+        </div>
+        <div class="session-card tier-morning">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-leaf"></i></div>
+                <div>
+                    <div class="session-title">The Blunt — Wrap Selection, Prep & Rolling Mastery</div>
+                    <div class="session-presenter">Blunt Artist Camille Osei · Rolling Room B</div>
+                </div>
+            </div>
+            <p class="session-desc">The blunt is a culture unto itself. Camille Osei — whose rolling videos have 4M+ views — spends 90 minutes breaking down everything the internet glosses over. We begin with wrap selection: machine-made cigar wraps (Swisher, Dutch Masters, White Owl), backwoods whole-leaf (the cult choice), and natural fronto/grabba leaf — their moisture content, thickness, burn speed, and flavor contribution to the final smoke. Then: emptying a cigar cleanly without cracking the outer leaf, splitting a backwood without tearing, reconditioning a dry wrap with breath and touch. The fill: pack density, how to distribute product evenly from tip to tip, what "too tight" and "too loose" feel like and how to correct. The seal: saliva chemistry, the pinch-roll technique, and tucking the cap. The dry: why you torch the outside seam before lighting, and how to use a lighter vs. hemp wick vs. a torch correctly. Everyone rolls two blunts minimum.</p>
+            <div class="session-tags"><span class="tag tag-gold">Blunt</span><span class="tag tag-dim">All Wrap Types</span><span class="tag tag-dim">Hands-On</span><span class="tag tag-dim">Intermediate Welcome</span></div>
+        </div>
+    </div>
+
+    <!-- 11:30 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">11:30 AM</div>
+            <div class="session-duration">30 min</div>
+        </div>
+        <div class="session-card tier-morning">
+            <div class="session-card-header">
+                <div class="session-icon icon-green"><i class="fas fa-fire-alt"></i></div>
+                <div>
+                    <div class="session-title">Hemp Wick & Lighting Ritual — Fire Matters</div>
+                    <div class="session-presenter">Darius King · Open Stage</div>
+                </div>
+            </div>
+            <p class="session-desc">Most people have never thought critically about HOW they light — but butane lighters introduce chemicals, and technique determines whether the first pull is even or scorched. This short session covers hemp wick (what it is, how to wrap it, why it burns cooler and cleaner), proper torch angles for blunts vs. bowls vs. chalice, the "toast don't roast" approach to the first light, and the art of the corner on a bowl so a group doesn't kill a fresh pack in one hit.</p>
+            <div class="session-tags"><span class="tag tag-green">Lighting Technique</span><span class="tag tag-dim">Quick Session</span><span class="tag tag-dim">Open Format</span></div>
+        </div>
+    </div>
+
+    <!-- MIDDAY -->
+    <div class="phase-header">
+        <div class="phase-pill phase-midday"><i class="fas fa-fire" style="margin-right:6px;"></i> High Noon</div>
+        <div class="phase-line"></div>
+        <div class="phase-time-range">12:00 PM – 4:00 PM</div>
+    </div>
+
+    <!-- 12:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">12:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-midday">
+            <div class="session-card-header">
+                <div class="session-icon icon-purple"><i class="fas fa-water"></i></div>
+                <div>
+                    <div class="session-title">Water Pipe Masterclass — Bong Science & Setup</div>
+                    <div class="session-presenter">Glass Artist & Educator Trey Nolan · Pipe Pavilion</div>
+                </div>
+            </div>
+            <p class="session-desc">The water pipe is one of the oldest filtration systems in human smoking history — and one of the most misunderstood. Trey Nolan (glassblower, 15 years) walks through the full anatomy of a bong: base, tube, downstem angle and diameter, the bowl piece and gasket, diffused downstems, tree percolators, honeycomb percs, splash guards, and ice catches. The science of what water actually filters (combustion byproducts, heat) vs. what it doesn't. Ideal water levels. How to fill, pack a bowl correctly (not too tight, not too loose, ground medium-fine), the carb cap concept, pulling technique, and clearing the chamber cleanly. Participants handle multiple glass pieces. Cleaning demonstration using isopropyl and salt included.</p>
+            <div class="session-tags"><span class="tag tag-purple">Water Pipe</span><span class="tag tag-purple">Bong</span><span class="tag tag-dim">Science Explained</span><span class="tag tag-dim">Hands-On</span></div>
+        </div>
+    </div>
+
+    <!-- 12:00 parallel -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">12:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-midday">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-leaf"></i></div>
+                <div>
+                    <div class="session-title">Fronto & Grabba — The Full Leaf Way</div>
+                    <div class="session-presenter">Elder Rohan Campbell · Rolling Room B</div>
+                </div>
+            </div>
+            <p class="session-desc">Before the convenience store wrap, there was the whole tobacco leaf — and in Caribbean tradition it still reigns. Elder Rohan Campbell walks through the difference between fronto (full outer leaf, used as a wrap) and grabba (inner leaf, crumbled and blended into the roll for flavor and buzz). How to select a good leaf by color, flexibility, and vein pattern. How to clean, cut, and condition the leaf. The art of rolling a fronto blunt from a whole unprocessed leaf — trimming, splitting the vein, moistening, filling, and the final form. This is the OG way.</p>
+            <div class="session-tags"><span class="tag tag-gold">Fronto</span><span class="tag tag-gold">Grabba</span><span class="tag tag-red">Caribbean Tradition</span><span class="tag tag-dim">Hands-On</span></div>
+        </div>
+    </div>
+
+    <!-- 1:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">1:00 PM</div>
+            <div class="session-duration">45 min</div>
+        </div>
+        <div class="session-card tier-break">
+            <div class="session-card-header">
+                <div class="session-icon icon-dim"><i class="fas fa-utensils"></i></div>
+                <div>
+                    <div class="session-title">Midday Break — Ital Lunch & Open Rolling</div>
+                    <div class="session-presenter">Open Village · All Rooms Casual</div>
+                </div>
+            </div>
+            <p class="session-desc">Eat, rest, practice. All rolling stations remain stocked and open for free practice during lunch. Instructors rotate through informally. The Pipe Pavilion runs open handling time on the glass collection.</p>
+            <div class="session-tags"><span class="tag tag-dim">Break</span><span class="tag tag-dim">Open Practice</span><span class="tag tag-dim">Casual</span></div>
+        </div>
+    </div>
+
+    <!-- 1:45 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">1:45 PM</div>
+            <div class="session-duration">75 min</div>
+        </div>
+        <div class="session-card tier-midday">
+            <div class="session-card-header">
+                <div class="session-icon icon-red"><i class="fas fa-monument"></i></div>
+                <div>
+                    <div class="session-title">The Chalice — Sacred Construction & Ceremonial Use</div>
+                    <div class="session-presenter">Ras Kenyatta Morrison · Chalice Ceremony Space</div>
+                </div>
+            </div>
+            <p class="session-desc">The coconut shell chalice is not a pipe — it is a sacrament vessel. Ras Kenyatta Morrison opens with the cultural and spiritual roots of the chalice in Rastafari: why the coconut was chosen, what water in the base represents (purity, Jah's creation), and the significance of the chillum pipe insert as a channel between the earth and the higher self. Then, the construction: selecting the right coconut shell half, sealing the bowl, fitting the chillum insert at the correct angle, the stem piece, and the clay cap that forms the bowl. Packing the chalice bowl: how much, how compressed, the herb-to-air ratio that makes the chalice smoke smooth and long. The ritual of gathering — how a chalice is passed, what words are spoken, what is owed to the tradition by those participating. Participants who wish to may handle and examine demonstration chalices. This session is held with reverence.</p>
+            <div class="session-tags"><span class="tag tag-red">Chalice</span><span class="tag tag-red">Rastafari Tradition</span><span class="tag tag-dim">Ceremonial</span><span class="tag tag-dim">Respectful Participation</span></div>
+        </div>
+    </div>
+
+    <!-- 3:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">3:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-midday">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-pipe"></i></div>
+                <div>
+                    <div class="session-title">Pipes, One-Hitters & Chillums — The Oldest Tools</div>
+                    <div class="session-presenter">Historian & Collector Amara Diallo · Pipe Pavilion</div>
+                </div>
+            </div>
+            <p class="session-desc">Before paper, before glass, humans smoked from stone, clay, bone, and wood. Amara Diallo brings her private collection of over 80 pipes spanning 12 traditions — from Ethiopian clay pipes to Jamaican chillums, Native American ceremonial pipes to the modern American spoon pipe. The session covers: how to read a pipe for quality (wall thickness, bore diameter, bowl depth, mouthpiece seal), how bowl shape affects how a pack burns, the correct pack for a spoon vs. a chillum vs. a one-hitter bat, cornering technique so a full bowl lasts and every person in the circle gets the green, and cleaning methods for each material. Participants handle pieces from the traveling collection with white gloves provided.</p>
+            <div class="session-tags"><span class="tag tag-gold">Pipes</span><span class="tag tag-gold">Chillum</span><span class="tag tag-gold">One-Hitter</span><span class="tag tag-dim">History</span><span class="tag tag-dim">Collection Viewing</span></div>
+        </div>
+    </div>
+
+    <!-- AFTERNOON -->
+    <div class="phase-header">
+        <div class="phase-pill phase-afternoon"><i class="fas fa-star" style="margin-right:6px;"></i> Afternoon Craft</div>
+        <div class="phase-line"></div>
+        <div class="phase-time-range">4:00 PM – 7:00 PM</div>
+    </div>
+
+    <!-- 4:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">4:00 PM</div>
+            <div class="session-duration">90 min</div>
+        </div>
+        <div class="session-card tier-afternoon">
+            <div class="session-card-header">
+                <div class="session-icon icon-purple"><i class="fas fa-award"></i></div>
+                <div>
+                    <div class="session-title">Advanced Rolls — Cones, Cannagars & Competition Technique</div>
+                    <div class="session-presenter">Camille Osei & Nadia Bloom · Rolling Room A</div>
+                </div>
+            </div>
+            <p class="session-desc">This is the graduate workshop. Prerequisite: at least one morning rolling session attended. Camille and Nadia co-lead the most ambitious rolling curriculum of the day — starting with perfect cone rolling from scratch (the inside-out wrap, the cone tuck, why cones burn slower), moving into pre-rolled cone packing technique (the layer-and-tap method, the poker, avoiding air pockets), and culminating in the cannagar: the ultimate hand-rolled format — the cannabis cigar. Participants learn to use a cannagar mold, the wrap-and-layer method around a compressed core, multi-leaf sealing, and the 24-hour cure that separates a great cannagar from a crumbling mess. Every participant completes one cone and begins one cannagar to take home. The class is small — 20 seats, advanced sign-up required at the door.</p>
+            <div class="session-tags"><span class="tag tag-purple">Advanced</span><span class="tag tag-purple">Cannagar</span><span class="tag tag-purple">Cone</span><span class="tag tag-dim">20 Seats Only</span><span class="tag tag-dim">Sign-Up Required</span></div>
+        </div>
+    </div>
+
+    <!-- 4:00 parallel -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">4:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-afternoon">
+            <div class="session-card-header">
+                <div class="session-icon icon-green"><i class="fas fa-wrench"></i></div>
+                <div>
+                    <div class="session-title">Piece Maintenance — Cleaning, Storage & Longevity</div>
+                    <div class="session-presenter">Trey Nolan · Pipe Pavilion</div>
+                </div>
+            </div>
+            <p class="session-desc">A dirty piece is a disrespectful piece. Trey covers the full maintenance cycle for every smoke system in the curriculum: isopropyl + coarse salt method for glass (the shake, rinse, and repeat cycle), cleaning wood and stone pipes without cracking, replacing rubber grommets and gaskets on water pipes, unclogging downstems, and how to store glass safely so it doesn't tip and shatter. Bonus: how to rehydrate a dry wooden pipe bowl that has started to crack, using food-grade hemp oil.</p>
+            <div class="session-tags"><span class="tag tag-green">Maintenance</span><span class="tag tag-green">Cleaning</span><span class="tag tag-dim">All Piece Types</span><span class="tag tag-dim">Hands-On</span></div>
+        </div>
+    </div>
+
+    <!-- 5:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">5:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-afternoon">
+            <div class="session-card-header">
+                <div class="session-icon icon-red"><i class="fas fa-people-group"></i></div>
+                <div>
+                    <div class="session-title">Circle Etiquette — The Culture of Passing</div>
+                    <div class="session-presenter">Elder Rohan Campbell · Open Stage</div>
+                </div>
+            </div>
+            <p class="session-desc">Nobody teaches this — and everybody needs it. Elder Rohan leads a candid, funny, and deeply informative session on the unwritten laws of the smoke circle: puff-puff-pass and why it exists, how long is too long, what to say when you don't want to smoke but are in the circle, never blowing smoke in anyone's face, the correct direction of the pass (always counterclockwise in a Rastafari reasoning, but why?), who lights, who holds the conversation, and how the chalice circle differs fundamentally in protocol from a casual group smoke. Includes stories from Elder Rohan's 40 years of participating in circles from Kingston to Amsterdam. The most disarming session of the day — come ready to laugh and learn.</p>
+            <div class="session-tags"><span class="tag tag-red">Circle Culture</span><span class="tag tag-red">Etiquette</span><span class="tag tag-dim">Community Session</span><span class="tag tag-dim">Open Format</span></div>
+        </div>
+    </div>
+
+    <!-- 5:30 break -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">5:30 PM</div>
+            <div class="session-duration">30 min</div>
+        </div>
+        <div class="session-card tier-break">
+            <div class="session-card-header">
+                <div class="session-icon icon-dim"><i class="fas fa-wind"></i></div>
+                <div>
+                    <div class="session-title">Transition Break — Sunset & Open Stations</div>
+                    <div class="session-presenter">Open Village</div>
+                </div>
+            </div>
+            <p class="session-desc">Watch the sunset over the festival grounds. All rolling stations stocked for open practice. Instructors informally available. The cannagar molds from the advanced workshop are available for participants to check on their in-progress pieces.</p>
+            <div class="session-tags"><span class="tag tag-dim">Break</span><span class="tag tag-dim">Open Practice</span></div>
+        </div>
+    </div>
+
+    <!-- 6:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">6:00 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-afternoon">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-trophy"></i></div>
+                <div>
+                    <div class="session-title">The Roll-Off — Community Rolling Competition</div>
+                    <div class="session-presenter">Judged by All Instructors · Open Stage</div>
+                </div>
+            </div>
+            <p class="session-desc">At the end of a full day of learning, we find out who has leveled up. The Roll-Off is SelassieFest's community rolling competition — open to all Bluntly Speaking attendees. Three categories: Best Blunt, Best Joint, Best Creative Roll (anything goes — tulip, cross, braided, or your own invention). Judging criteria: structural integrity, evenness of pack, quality of seal, aesthetic beauty, and how well it burns. Prizes courtesy of the Ital Marketplace. Entries submitted by 5:45 PM at the sign-up board.</p>
+            <div class="session-tags"><span class="tag tag-gold">Competition</span><span class="tag tag-gold">Community</span><span class="tag tag-dim">Prizes Awarded</span><span class="tag tag-dim">All Welcome</span></div>
+        </div>
+    </div>
+
+    <!-- EVENING -->
+    <div class="phase-header">
+        <div class="phase-pill phase-evening"><i class="fas fa-moon" style="margin-right:6px;"></i> Evening Reasoning</div>
+        <div class="phase-line"></div>
+        <div class="phase-time-range">7:00 PM – 10:00 PM</div>
+    </div>
+
+    <!-- 7:00 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">7:00 PM</div>
+            <div class="session-duration">90 min</div>
+        </div>
+        <div class="session-card tier-evening">
+            <div class="session-card-header">
+                <div class="session-icon icon-red"><i class="fas fa-monument"></i></div>
+                <div>
+                    <div class="session-title">Chalice Evening Ceremony — Communal Reasoning Circle</div>
+                    <div class="session-presenter">Ras Kenyatta Morrison & Elders · Chalice Ceremony Space</div>
+                </div>
+            </div>
+            <p class="session-desc">As the sky darkens and the festival music rises from the main stage, the Bluntly Speaking village gathers for its most sacred session: the evening chalice ceremony. In the Rastafari tradition, this is not recreation — it is reasoning; a communal seeking of truth and Jah's guidance through the holy herb. Ras Kenyatta leads. Words are spoken. The chalice passes. Those who do not participate in consumption are equally welcomed to sit, listen, and be present. Participants are asked to come with a reflection from the day — one thing learned, one thing felt, one thing carried forward. Shoes optional. All hearts required.</p>
+            <div class="session-tags"><span class="tag tag-red">Chalice</span><span class="tag tag-red">Ceremony</span><span class="tag tag-red">Reasoning Circle</span><span class="tag tag-dim">Sacred Space</span><span class="tag tag-dim">All Welcome</span></div>
+        </div>
+    </div>
+
+    <!-- 8:30 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">8:30 PM</div>
+            <div class="session-duration">60 min</div>
+        </div>
+        <div class="session-card tier-evening">
+            <div class="session-card-header">
+                <div class="session-icon icon-gold"><i class="fas fa-fire-alt"></i></div>
+                <div>
+                    <div class="session-title">Smoke Systems of the World — A Guided Visual Journey</div>
+                    <div class="session-presenter">Amara Diallo · The Leaf Library (Screening Format)</div>
+                </div>
+            </div>
+            <p class="session-desc">Every culture that has encountered cannabis has developed its own system for consuming it — shaped by local materials, spiritual beliefs, and social structure. Amara Diallo presents a 45-minute curated visual journey through smoking systems across Africa, South Asia, the Middle East, the Caribbean, and the Americas — from the ancient Ethiopian clay pipe to the Moroccan sebsi, the Himalayan chillum to the Jamaican chalice, the hookah to the modern American glass culture. Commentary on what each system says about the community that created it. Followed by open Q&A and handling of representative pieces from Amara's traveling collection.</p>
+            <div class="session-tags"><span class="tag tag-gold">Global Traditions</span><span class="tag tag-red">History</span><span class="tag tag-dim">Screening + Q&A</span><span class="tag tag-dim">Collection Viewing</span></div>
+        </div>
+    </div>
+
+    <!-- 9:30 -->
+    <div class="session-block">
+        <div class="session-time-col">
+            <div class="session-time">9:30 PM</div>
+            <div class="session-duration">30 min</div>
+        </div>
+        <div class="session-card tier-evening">
+            <div class="session-card-header">
+                <div class="session-icon icon-red"><i class="fas fa-hands-praying"></i></div>
+                <div>
+                    <div class="session-title">Closing — The Last Roll & Village Farewell</div>
+                    <div class="session-presenter">Full Community · Open Stage</div>
+                </div>
+            </div>
+            <p class="session-desc">The day ends where all good things end — with community. Certificates of participation for all who attended three or more sessions. The Roll-Off winners are recognized. Every attendee who completed a cannagar today can collect it to cure at home. Instructors share final words. The communal fire is reduced to embers. The village doesn't close — it sends you home with new hands and new knowledge.</p>
+            <div class="session-tags"><span class="tag tag-red">Closing</span><span class="tag tag-gold">Certificates</span><span class="tag tag-dim">Full Community</span></div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- GROUND RULES -->
+    <div class="section-label">Village Agreements</div>
+    <h2 class="section-title">Come Correct</h2>
+    <p class="section-desc">This is a craft and culture space. These agreements keep it that way for everyone.</p>
+
+    <div class="one-love-callout">
+        <i class="fas fa-shield-heart" style="color:var(--red-accent);margin-right:10px;"></i>
+        <strong>Consumption happens in designated areas only. Rolling and handling demonstrations are the work of the classroom — not the excuse for open session smoking in non-designated spaces.</strong>
+    </div>
+
+    <div class="supply-grid">
+        <div class="supply-item"><i class="fas fa-id-card"></i> 21+ ID strictly enforced at village entrance</div>
+        <div class="supply-item"><i class="fas fa-ban"></i> No open consumption outside designated zones</div>
+        <div class="supply-item"><i class="fas fa-hands"></i> Handle shared pieces and supplies with care</div>
+        <div class="supply-item"><i class="fas fa-circle-info"></i> Ask before photographing other participants</div>
+        <div class="supply-item"><i class="fas fa-heart"></i> Chalice ceremony space is sacred — enter with respect</div>
+        <div class="supply-item"><i class="fas fa-shield-alt"></i> Green-shirted Wellness Guides are always present</div>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing-callout">
+        <h2>Roll With Intention. Smoke With Respect.</h2>
+        <p>Bluntly Speaking is not just about technique — it's about understanding the full depth of what you hold in your hands. The paper, the leaf, the chalice, the pipe: each one carries centuries of human ritual, ingenuity, and community. We roll because people before us showed us how. We pass because we were taught to share.</p>
+        <div style="margin-top:28px;display:flex;flex-wrap:wrap;justify-content:center;gap:16px;">
+            <a href="/tickets/" style="display:inline-block;background:var(--gold-accent);color:#0D0D0D;font-weight:500;font-size:0.82rem;letter-spacing:0.14em;text-transform:uppercase;padding:14px 32px;border-radius:40px;text-decoration:none;">
+                <i class="fas fa-ticket" style="margin-right:8px;"></i>Get Tickets
+            </a>
+            <a href="/higher-learning-roots/" style="display:inline-block;background:transparent;color:var(--text-white);font-weight:400;font-size:0.82rem;letter-spacing:0.14em;text-transform:uppercase;padding:14px 32px;border-radius:40px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);">
+                <i class="fas fa-arrow-left" style="margin-right:8px;"></i>Back to Higher Learning Roots
+            </a>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+        <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+    </div>
+</footer>
+
+</body>
+</html>

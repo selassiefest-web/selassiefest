@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Microphone Bill | SelassieFest — Reggae Ambassador, Selector, WHPK</title>
+  <meta name="description" content="Microphone Bill — Raider Sound System selector, host of 'Relentless Reggae' on WHPK 88.5 FM. A guardian of Chicago's reggae legacy and sound system culture.">
+  
+  <!-- Google Fonts: Jost same as selassiefest -->
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <style>
+    /* ===== EXACT SAME STYLES AS SELASSIEFEST (sacrosanct) ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+      --transition-default: all 0.25s ease;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      transition: var(--transition-default);
+    }
+
+    /* Header */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+    /* Navigation (identical) */
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+      background-color: rgba(10, 10, 10, 0.95);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.25rem;
+      list-style: none;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      transition: 0.2s;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+
+    /* Breadcrumb (selassiefest style) */
+    .breadcrumb {
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(245,245,245,0.35);
+      padding: 14px 32px;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .breadcrumb a {
+      color: rgba(245,245,245,0.4);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      color: var(--gold-accent);
+    }
+    .breadcrumb span {
+      color: var(--gold-accent);
+    }
+
+    /* HERO for artist page */
+    .artist-hero {
+      background: linear-gradient(135deg, #0a120c 0%, #0b1f10 50%, #0a1a0e 100%);
+      border-bottom: 1px solid var(--roots-green);
+      padding: 56px 32px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .artist-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 20% 60%, rgba(14,94,54,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--roots-green);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-name {
+      font-weight: 200;
+      font-size: clamp(2.8rem, 7vw, 4.8rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .hero-name span {
+      color: var(--gold-accent);
+    }
+    .hero-title-line {
+      font-weight: 300;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #ccc;
+      margin-bottom: 24px;
+    }
+    .hero-quote {
+      max-width: 720px;
+      margin: 24px auto 0;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.1rem;
+      color: rgba(245,245,245,0.7);
+      border-left: 2px solid var(--gold-accent);
+      padding-left: 24px;
+      text-align: left;
+    }
+    
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-left: 4px solid var(--gold-accent);
+      padding-left: 20px;
+      margin-bottom: 48px;
+    }
+    .section-title span {
+      color: var(--gold-accent);
+    }
+    
+    /* Bio grid layout */
+    .bio-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      margin-bottom: 64px;
+      align-items: flex-start;
+    }
+    .bio-text {
+      flex: 2;
+    }
+    .bio-side {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 24px;
+      padding: 28px;
+    }
+    .bio-text p {
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+    .highlight-gold {
+      color: var(--gold-accent);
+      font-weight: 500;
+    }
+    .show-card {
+      background: rgba(14,94,54,0.15);
+      border-left: 4px solid var(--gold-accent);
+      padding: 20px 24px;
+      border-radius: 20px;
+      margin-top: 24px;
+    }
+    .show-card i {
+      color: var(--gold-accent);
+      margin-right: 12px;
+      font-size: 1.5rem;
+    }
+    .side-item {
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border-dim);
+      padding-bottom: 20px;
+    }
+    .side-item:last-child {
+      border-bottom: none;
+    }
+    .side-item h4 {
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    /* Legacy grid */
+    .legacy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin: 32px 0;
+    }
+    .legacy-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 20px;
+      padding: 28px;
+      transition: 0.2s;
+    }
+    .legacy-card:hover {
+      border-color: var(--gold-accent);
+    }
+    .legacy-card i {
+      font-size: 2rem;
+      color: var(--gold-accent);
+      margin-bottom: 16px;
+    }
+    .legacy-card h3 {
+      font-weight: 500;
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    .button-outline {
+      display: inline-block;
+      margin-top: 16px;
+      font-weight: 400;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      border: 1px solid var(--gold-accent);
+      padding: 6px 16px;
+      border-radius: 60px;
+    }
+    .button-outline:hover {
+      background: var(--gold-accent);
+      color: #0D0D0D;
+    }
+    /* footer same as selassiefest */
+    .footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .footer-links a {
+      color: #aaa;
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .footer-links a:hover {
+      color: var(--gold-accent);
+    }
+    .social-icons a {
+      color: #ddd;
+      font-size: 1.4rem;
+      margin: 0 12px;
+      transition: 0.2s;
+    }
+    .social-icons a:hover {
+      color: var(--gold-accent);
+    }
+    .copyright {
+      font-weight: 300;
+      font-size: 0.7rem;
+      margin-top: 32px;
+      letter-spacing: 0.1em;
+      color: #666;
+    }
+    @media (max-width: 780px) {
+      .site-title {
+        font-size: 1.8rem;
+      }
+      .bio-grid {
+        flex-direction: column;
+      }
+      .hero-name {
+        font-size: 2.4rem;
+      }
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SELASSIEFEST HEADER (identical to index) -->
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN NAVIGATION -->
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+    <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+    <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+    <li><a href="/healing-grove/">HEALING GROVE</a></li>
+    <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+    <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+    <li><a href="/marketplace/">MARKETPLACE</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+    <li><a href="/contact/">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="/">SelassieFest</a> &rsaquo;
+  <a href="/sound-system-yard/">Sound System Yard</a> &rsaquo;
+  <span>Microphone Bill</span>
+</div>
+
+<!-- HERO SECTION for Microphone Bill -->
+<section class="artist-hero">
+  <div class="hero-eyebrow">RAIDER SOUND · SELECTOR · EDUCATOR</div>
+  <h1 class="hero-name">Microphone <span>Bill</span></h1>
+  <div class="hero-title-line">Host of "Relentless Reggae" • WHPK 88.5 FM</div>
+  <div class="hero-quote">
+    <i class="fas fa-quote-left" style="color: var(--gold-accent); margin-right: 10px;"></i>
+    The future of reggae depends on the youth. It's a whole new class — but the roots must be passed generation to generation.
+  </div>
+</section>
+
+<div class="container">
+  <!-- BIO + SIDEBAR -->
+  <div class="bio-grid">
+    <div class="bio-text">
+      <div class="section-title"><span>✦</span> The Voice of Chicago Reggae</div>
+      <p><span class="highlight-gold">Microphone Bill</span> (also known as Raider DJ Microphone Bill) is one of the most enduring and respected voices in Chicago’s reggae ecosystem. A cornerstone of the <strong>Raider Sound System</strong> collective, Bill has dedicated decades to preserving the authentic soundsystem culture, spinning roots reggae, dub, and conscious dancehall across the city.</p>
+      <p>From the golden era of Chicago reggae — where sound systems like <strong>Selective Sound, Talus, Saggy, and Conquering Lion</strong> ruled parks and community halls — Bill has remained a faithful archivist. He recalls buying records from the legendary <strong>Chucky</strong> (rest in peace) and standing alongside figures such as <strong>Root Master Sun Sound System</strong> and the wider reggae fraternity.</p>
+      <p>In a 2021 panel on the state of reggae in Chicago, Bill spoke with clarity about the shrinking circle: <em>“The culture has died down a little bit … it’s a much smaller circle now.”</em> Yet rather than surrender, he continues to nurture the flame through his long-running radio show, live sound clashes, and mentorship of younger selectors.</p>
+      <div class="show-card">
+        <i class="fas fa-microphone-alt"></i> <strong style="font-size: 1.1rem;">Relentless Reggae</strong><br>
+        Every <strong>Tuesday</strong> | <strong>6:00 PM – 7:00 PM</strong> (often extended)<br>
+        <span style="color: var(--gold-accent);">WHPK 88.5 FM</span> — Chicago's community radio & online stream at whpk.org<br>
+        <span style="font-size: 0.85rem; opacity: 0.7;">One hour of pure vinyl, new roots, dubplates and exclusive selections.</span>
+      </div>
+      <p>Bill’s philosophy is simple: reggae education starts with listening. “We have children and children that have children — and the future of reggae depends on the youth accepting this music and understanding it.” At SelassieFest, Microphone Bill brings not only his selector skills but also his deep knowledge of sound system history, record preservation, and the social power of bass weight.</p>
+    </div>
+    <div class="bio-side">
+      <div class="side-item">
+        <i class="fas fa-head-side-headphones" style="color: var(--gold-accent); font-size: 1.4rem;"></i>
+        <h4>Sound System Affiliations</h4>
+        <p>Raider Sound System · Guest selector for Root Master Sun · Early days with Talus & Saggy</p>
+      </div>
+      <div class="side-item">
+        <i class="fas fa-map-pin"></i>
+        <h4>Chicago Reggae Landmarks</h4>
+        <p>Former record dig spots: Chucky's shop · The parks where sound systems clashed · WHPK studios since the 90s.</p>
+      </div>
+      <div class="side-item">
+        <i class="fas fa-hand-fist"></i>
+        <h4>Legacy Statement</h4>
+        <p><em>“To keep reggae alive we need younger artists. When reggae was big in Chicago, all of those artists were young. We must inspire the next generation of selectors.”</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOUND SYSTEM LEGACY SECTION (CULTURAL IMPACT) -->
+  <div class="section-title"><span>🔊</span> Preserving the Sound System Yard</div>
+  <div class="legacy-grid">
+    <div class="legacy-card">
+      <i class="fas fa-record-vinyl"></i>
+      <h3>The Vinyl Guardian</h3>
+      <p>Microphone Bill maintains an extensive collection of 7” and 12” reggae singles — many out of print. He regularly hosts digging sessions at SelassieFest’s <strong>Leaf Library</strong> and shares restoration techniques.</p>
+      <a href="/sound-system-yard/vinyl-culture.html" class="button-outline">Discover archive →</a>
+    </div>
+    <div class="legacy-card">
+      <i class="fas fa-chalkboard-user"></i>
+      <h3>Mentorship Circle</h3>
+      <p>Through the <strong>Higher Learning Roots</strong> pavilion, Bill leads workshops: “Build Your Own Sound System”, “The Art of the Dubplate”, and “Reggae Radio: Then & Now”.</p>
+      <a href="/higher-learning-roots/workshops.html" class="button-outline">Join workshop →</a>
+    </div>
+    <div class="legacy-card">
+      <i class="fas fa-tower-broadcast"></i>
+      <h3>Relentless Reggae – Live Sessions</h3>
+      <p>Every week, Microphone Bill brings fresh riddims, forgotten gems, and live interviews with Chicago’s reggae artists. Tune in Tuesday evenings or stream the archive.</p>
+      <a href="https://whpk.org/" target="_blank" class="button-outline">Listen live →</a>
+    </div>
+  </div>
+
+  <!-- QUOTE / APPEARANCE AT SELASSIEFEST 2026 -->
+  <div style="background: rgba(229,169,60,0.08); border-radius: 32px; padding: 36px 32px; margin: 48px 0; text-align: center; border: 1px solid rgba(229,169,60,0.2);">
+    <i class="fas fa-calendar-alt" style="font-size: 2.2rem; color: var(--roots-green);"></i>
+    <h3 style="font-weight: 300; font-size: 1.6rem; margin: 16px 0;">Microphone Bill @ SelassieFest 2026</h3>
+    <p style="max-width: 720px; margin: 0 auto; font-weight: 300;">Saturday, July 25th — Sound System Yard (12:00 PM – 2:00 PM)<br>
+    <strong>“Roots Vinyl Set & Sound System Reasoning”</strong> — Microphone Bill spins heavyweight dubplates and shares stories from Chicago’s reggae golden era. Followed by open discussion on keeping the culture alive.</p>
+    <div style="margin-top: 28px;">
+      <a href="/tickets/" class="button-outline" style="background: var(--gold-accent); color: #0D0D0D; padding: 10px 28px;">Secure your spot →</a>
+    </div>
+  </div>
+
+  <!-- ADDITIONAL RECOGNITION / TRIBUTE -->
+  <div class="section-title"><span>🌍</span> From the Archives: Chicago Reggae Voices</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between;">
+    <div style="flex: 1; background: var(--card-bg); border-radius: 24px; padding: 24px;">
+      <i class="fas fa-quote-right" style="color: var(--gold-accent); font-size: 2rem;"></i>
+      <p style="margin-top: 16px;">“I remember Chucky, rest in peace — during the SelassieFest half-day, correct. And on the north side we have great stars. But a lot of sound systems don’t really put what it is as a sound system.”</p>
+      <footer style="margin-top: 16px;">— Microphone Bill, State of Reggae in Chicago (2021)</footer>
+    </div>
+    <div style="flex: 1; background: var(--card-bg); border-radius: 24px; padding: 24px;">
+      <i class="fas fa-hand-peace" style="color: var(--gold-accent); font-size: 2rem;"></i>
+      <p style="margin-top: 16px;">Bill is a vital link between the generation of soundmen who built Chicago’s reggae infrastructure and today’s emerging selectors. His humility and passion are unmatched.</p>
+      <footer style="margin-top: 16px;">— SelassieFest Heritage Council</footer>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (identical to selassiefest) -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/about/mission.html">MISSION</a>
+    <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+    <a href="/media/press-kit.html">PRESS KIT</a>
+    <a href="/scholarship/">SCHOLARSHIP</a>
+    <a href="/community-projects/">COMMUNITY PROJECTS</a>
+    <a href="/contact/">CONTACT</a>
+  </div>
+  <div class="social-icons">
+    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" aria-label="SoundCloud"><i class="fab fa-soundcloud"></i></a>
+    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="#" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
+  </div>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian & Jamaican Heritage. Respect to H.I.M. Haile Selassie I.
+    <br>© 2026 SelassieFest Collective | Honoring Microphone Bill's decades of service to reggae & community.
+  </div>
+</footer>
+
+</body>
+</html>

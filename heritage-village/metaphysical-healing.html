@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metaphysical & Herbal Healing – Heritage Village | SelassieFest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255,255,255,0.04);
+            --border-dim: rgba(255,255,255,0.08);
+            --herb-purple: #9b6d9b;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+        }
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(6px);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+        .breadcrumb {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: rgba(245,245,245,0.35);
+            padding: 14px 32px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .breadcrumb a {
+            color: rgba(245,245,245,0.4);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { color: var(--gold-accent); }
+        .breadcrumb span { color: var(--gold-accent); }
+        .hero-banner {
+            background: linear-gradient(135deg, #0f0a1a 0%, #1a1225 40%, #0e1a2a 100%);
+            padding: 56px 32px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 80%, rgba(155,109,155,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            font-weight: 300;
+            font-size: 0.78rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--herb-purple);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-weight: 200;
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.1;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title span {
+            color: var(--gold-accent);
+        }
+        .hero-subtitle {
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: rgba(245,245,245,0.7);
+            max-width: 720px;
+            margin: 0 auto 28px;
+            letter-spacing: 0.03em;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+        .section-label {
+            font-weight: 300;
+            font-size: 0.72rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-weight: 200;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 16px;
+        }
+        .two-col {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .two-col > div {
+            flex: 1;
+            min-width: 250px;
+        }
+        .herb-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+        .herb-card:hover {
+            border-color: var(--herb-purple);
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .session-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 18px;
+            padding: 22px;
+            border-left: 3px solid var(--herb-purple);
+        }
+        .session-time {
+            font-weight: 500;
+            color: var(--gold-accent);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: var(--gold-accent);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-outline:hover {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+        }
+        .testimonial {
+            background: rgba(155,109,155,0.1);
+            border-radius: 28px;
+            padding: 32px;
+            margin: 48px 0;
+            text-align: center;
+        }
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover { color: var(--gold-accent); }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.5rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover { color: var(--gold-accent); }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 32px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+        @media (max-width:780px) {
+            .site-title { font-size:1.8rem; }
+            .nav-links { gap:0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/" class="active">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> &rsaquo;
+    <a href="/heritage-village/">Heritage Village</a> &rsaquo;
+    <span>Metaphysical & Herbal Healing</span>
+</div>
+
+<div class="hero-banner">
+    <div class="hero-eyebrow"><i class="fas fa-mortar-pestle"></i> plants • spirit • ancestors</div>
+    <h1 class="hero-title">Metaphysical &<br> <span>Herbal Healing</span></h1>
+    <p class="hero-subtitle">
+        Step into an apothecary of the spirit. Learn to make tinctures, prepare spiritual baths, and work with herbs from the African diaspora – frankincense, myrrh, sage, and roots that heal the body and clear the mind.
+    </p>
+</div>
+
+<div class="container">
+
+    <!-- sensory invitation -->
+    <div class="testimonial">
+        <i class="fas fa-smile" style="font-size: 2rem; color: var(--herb-purple);"></i>
+        <p style="font-size: 1rem; max-width: 700px; margin: 16px auto; font-style: italic;">
+        “I came for a headache tincture. I left with a spiritual bath recipe, a new understanding of my ancestors, and a bundle of dried sage. This is not a booth – it’s a reconnection.”
+        </p>
+        <p>— Danielle, 2024 attendee</p>
+    </div>
+
+    <div class="section-label">What is metaphysical healing?</div>
+    <h2 class="section-title">Roots, rituals, remedies</h2>
+    <div class="two-col">
+        <div>
+            <p>Metaphysical healing is the practice of using plants, minerals, and spiritual intention to restore balance – not just to the body, but to the mind and spirit. In the African and Rastafari traditions, every herb has a spirit, and every ailment has both a physical and a spiritual root.</p>
+            <p style="margin-top: 20px;">At our tent, you’ll encounter:</p>
+            <ul style="margin-top: 12px; margin-left: 20px;">
+                <li><strong>Herbal tinctures & teas</strong> – for sleep, digestion, immunity, and stress</li>
+                <li><strong>Spiritual bathing</strong> – using herbs, salts, and prayers to cleanse negative energy</li>
+                <li><strong>Frankincense & myrrh</strong> – the resins of the Bible, used for protection and meditation</li>
+                <li><strong>Ancestral altar setup</strong> – how to honor those who came before</li>
+            </ul>
+        </div>
+        <div>
+            <div class="herb-card">
+                <i class="fas fa-leaf" style="color: var(--herb-purple); font-size: 1.6rem;"></i>
+                <h3 style="margin: 10px 0;">Holy Basil (Tulsi)</h3>
+                <p>Reduces cortisol, lifts mood, and opens the crown chakra. We’ll serve fresh tulsi tea all day.</p>
+            </div>
+            <div class="herb-card">
+                <i class="fas fa-dragon" style="color: var(--gold-accent); font-size: 1.6rem;"></i>
+                <h3 style="margin: 10px 0;">Frankincense & Myrrh</h3>
+                <p>Burn them as incense or mix into oil for anointing. Learn the difference between grades and how to source ethically.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- hands-on schedule -->
+    <div class="section-label">Get your hands dirty</div>
+    <h2 class="section-title">Workshops & Healing Circles</h2>
+    <div class="schedule-grid">
+        <div class="session-card">
+            <div class="session-time">9:30 AM – 10:15 AM</div>
+            <h3>Morning Tea Tasting & Herb ID</h3>
+            <p>Sip three different herbal infusions (tulsi, peppermint, lemongrass) while learning to identify common medicinal plants by leaf and smell.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">10:30 AM – 11:30 AM</div>
+            <h3>Make Your Own Tincture</h3>
+            <p>Choose from dried herbs (echinacea, calendula, or holy basil), pack a small jar, and cover with alcohol or glycerin. Take it home to cure. Materials fee $5.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">11:45 AM – 12:30 PM</div>
+            <h3>Spiritual Bath Demo</h3>
+            <p>Watch a full spiritual bath preparation – herbs, salts, flowers, and the prayer said over the water. Handout includes recipes for protection, love, and cleansing.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">1:00 PM – 1:45 PM</div>
+            <h3>Incense Making: Frankincense & Resin Blends</h3>
+            <p>Grind resin, add powdered herbs, and roll your own incense cones. Take three cones home.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">2:00 PM – 3:00 PM</div>
+            <h3>Ancestral Altar Workshop</h3>
+            <p>Learn the basics of setting up a small ancestral altar – photos, water, candles, and offerings. Bring a small photo of a loved one if you wish.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">3:30 PM – 4:30 PM</div>
+            <h3>Herbal First Aid for Festivals</h3>
+            <p>Quick remedies for headaches, dehydration, nausea, and anxiety using plants you can carry in a small tin.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">5:00 PM – 6:00 PM</div>
+            <h3>Community Healing Circle</h3>
+            <p>Gather in a circle. Share a name of an ancestor or a prayer. We’ll burn sage and pass a talking stick. No experience needed.</p>
+        </div>
+    </div>
+
+    <!-- products available -->
+    <div class="section-label">Take the healing home</div>
+    <h2 class="section-title">Frontline’s Apothecary Tent</h2>
+    <div class="two-col">
+        <div>
+            <p>Right next to the workshop area, Frontline Book Publishing will have a pop‑up apothecary selling:</p>
+            <ul style="margin-top: 12px; margin-left: 20px;">
+                <li>Dried herbs (organic, ethically sourced) – sage, lavender, rosemary, mugwort</li>
+                <li>Tincture kits & empty bottles</li>
+                <li>Incense resins (frankincense, myrrh, copal)</li>
+                <li>Handmade spiritual bath salts</li>
+                <li>Books on herbalism, hoodoo, and African spirituality</li>
+            </ul>
+            <p style="margin-top: 16px;">All purchases support the Heritage Village and local Black herb growers.</p>
+        </div>
+        <div style="background: var(--card-bg); border-radius: 24px; padding: 24px;">
+            <i class="fas fa-book-open" style="font-size: 2rem; color: var(--gold-accent);"></i>
+            <h3 style="margin: 12px 0;">Recommended Reading</h3>
+            <p><em>Jambalaya: The Natural Woman’s Book</em> by Luisah Teish<br>
+            <em>The Hoodoo Herb and Root Magic</em> by Catherine Yronwode<br>
+            <em>Sacred Woman</em> by Queen Afua<br>
+            <em>Plant Witchery</em> by Juliet Diaz</p>
+            <a href="frontline-bookstore.html" class="btn-outline" style="margin-top: 16px;">Browse all books →</a>
+        </div>
+    </div>
+
+    <!-- final call -->
+    <div style="text-align: center; margin: 60px 0 30px;">
+        <i class="fas fa-hand-sparkles" style="font-size: 2.5rem; color: var(--herb-purple);"></i>
+        <h2 style="font-weight: 200; margin: 16px 0;">The plants are waiting. Your ancestors are listening.</h2>
+        <a href="/tickets/" class="btn-outline" style="background: var(--gold-accent); color: #0D0D0D; padding: 12px 32px;"><i class="fas fa-ticket-alt"></i> Join the healing</a>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> Heritage Village presented by Frontline Book Publishing — Rooted in Ethiopian & Jamaican Heritage.<br>
+        &copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+    </div>
+</footer>
+
+</body>
+</html>

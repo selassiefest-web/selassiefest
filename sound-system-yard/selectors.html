@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Explore the vintage sound systems of Jamaica: original hand-built stacks, tube amps, and the architects who turned speakers into legend. SelassieFest Sound System Yard.">
+  <title>SelassieFest | Vintage Sound Systems – Original Heavyweights</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+      --transition: all 0.25s ease;
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      list-style: none;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links li a:hover, .nav-links li a.active {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+    .hero-vintage {
+      text-align: center;
+      padding: 70px 24px 80px;
+      background: radial-gradient(circle at 30% 30%, rgba(14,94,54,0.3), #0a0a0a);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .hero-vintage h1 {
+      font-weight: 200;
+      font-size: 3.4rem;
+      letter-spacing: 0.1em;
+    }
+    .hero-vintage .gold {
+      color: var(--gold-accent);
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      border-left: 4px solid var(--gold-accent);
+      padding-left: 24px;
+      margin-bottom: 48px;
+    }
+    .vintage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 40px;
+      margin-bottom: 70px;
+    }
+    .vintage-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 32px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .vintage-card:hover {
+      border-color: var(--gold-accent);
+      transform: translateY(-5px);
+    }
+    .card-img-placeholder {
+      background: #111;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--gold-accent);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .card-content {
+      padding: 28px 24px;
+    }
+    .vintage-card h3 {
+      font-weight: 500;
+      font-size: 1.6rem;
+    }
+    .tech-badge {
+      display: inline-block;
+      background: rgba(229,169,60,0.2);
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      margin: 12px 0;
+    }
+    .audio-fact {
+      background: rgba(0,0,0,0.4);
+      border-radius: 24px;
+      padding: 28px;
+      margin: 48px 0;
+      border-left: 3px solid var(--roots-green);
+    }
+    .footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .hero-vintage h1 { font-size: 2rem; }
+      .section-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="/" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/" class="active">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+  </ul>
+</nav>
+
+<section class="hero-vintage">
+  <h1>THE ORIGINALS: <span class="gold">VINTAGE SOUND SYSTEMS</span></h1>
+  <p style="max-width: 700px; margin: 24px auto 0; font-weight: 300;">Before streaming, before clubs, there were trucks stacked with hand‑built speakers, tube amplifiers, and selectors who turned the street into a sanctuary. These are the legendary systems that birthed reggae, dub, and sound clash culture.</p>
+  <div class="hero-badges" style="margin-top: 32px;">
+    <span class="hero-badge" style="background:rgba(229,169,60,0.2); padding:6px 16px; border-radius:40px;"><i class="fas fa-wood"></i> Hand-built boxes</span>
+    <span class="hero-badge" style="background:rgba(229,169,60,0.2); padding:6px 16px; border-radius:40px; margin-left:12px;"><i class="fas fa-tachometer-alt"></i> Tube amps</span>
+  </div>
+</section>
+
+<div class="container">
+  <div class="section-title"><span>🔊</span> PIONEERS OF THE DANCE</div>
+  <div class="vintage-grid">
+    <!-- Tom the Great Sebastian -->
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-volume-up"></i> <i class="fas fa-history"></i></div>
+      <div class="card-content">
+        <h3>Tom the Great Sebastian</h3>
+        <div class="tech-badge"><i class="fas fa-calendar-alt"></i> 1940s–50s</div>
+        <p>The original sound system. Tom Wong built the first massive mobile rig in Kingston, playing American R&B and jump blues. He inspired a generation of selectors.</p>
+        <p><i class="fas fa-microphone-alt"></i> <strong>Signature:</strong> Giant speaker scoops, raw power.</p>
+      </div>
+    </div>
+    <!-- Sir Coxsone's Downbeat -->
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-crown"></i></div>
+      <div class="card-content">
+        <h3>Sir Coxsone's Downbeat</h3>
+        <div class="tech-badge"><i class="fas fa-music"></i> Legendary rivalry</div>
+        <p>Clement "Coxsone" Dodd’s system was the first to play ska and early reggae. He later founded Studio One, the heartbeat of Jamaican music.</p>
+        <p><i class="fas fa-drum"></i> Known for heavy bass and exclusive dubplates.</p>
+      </div>
+    </div>
+    <!-- King Tubby's Hi-Fi -->
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-wrench"></i> <i class="fas fa-magic"></i></div>
+      <div class="card-content">
+        <h3>King Tubby's Hi-Fi</h3>
+        <div class="tech-badge"><i class="fas fa-waveform"></i> Dub pioneer</div>
+        <p>Osbourne "King Tubby" Ruddock started as a sound engineer, then invented dub music. His system was known for crystal‑clear mids and earth‑shaking low end.</p>
+        <p><i class="fas fa-flask"></i> Home of the “version” and the remix.</p>
+      </div>
+    </div>
+    <!-- Stone Love -->
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-heart"></i> <i class="fas fa-bolt"></i></div>
+      <div class="card-content">
+        <h3>Stone Love</h3>
+        <div class="tech-badge"><i class="fas fa-globe"></i> Global ambassador</div>
+        <p>Founded in 1972, Stone Love modernized sound system culture and took it worldwide. Still active, still dominating clashes with rare dubplates.</p>
+        <p><i class="fas fa-trophy"></i> Multiple World Clash champion.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- interactive vintage gallery: gear spotlight -->
+  <div class="section-title"><span>📼</span> THE GEAR THAT SHOOK THE WORLD</div>
+  <div class="vintage-grid">
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-microchip"></i> <i class="fas fa-radio"></i></div>
+      <div class="card-content">
+        <h3>Valve Amplifiers</h3>
+        <p>Warm, natural compression, and harmonic distortion. Vintage tube amps (like the McIntosh MC275) gave sound systems their signature "fat" sound.</p>
+      </div>
+    </div>
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-chess-board"></i></div>
+      <div class="card-content">
+        <h3>Horn & Scoop Bins</h3>
+        <p>Hand‑built wooden enclosures designed to project bass for blocks. Folded horn designs made every chest vibrate.</p>
+      </div>
+    </div>
+    <div class="vintage-card">
+      <div class="card-img-placeholder"><i class="fas fa-cut"></i> <i class="fas fa-record-vinyl"></i></div>
+      <div class="card-content">
+        <h3>Lathe‑cut Dubplates</h3>
+        <p>Before digital, custom acetates were cut in real time. A selector’s secret weapon: exclusive vocals, special rewinds, and “dubplate specials.”</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- fun fact / deeper roots -->
+  <div class="audio-fact">
+    <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--gold-accent); opacity: 0.7;"></i>
+    <p style="font-size: 1.1rem; margin-top: 8px;"><strong>Did you know?</strong> Many original sound system boxes were built from discarded furniture, old cinema speakers, and car batteries. Engineers would tune the system by ear, walking the dance to feel the bass pressure. That's the birth of “bass culture.”</p>
+    <p style="margin-top: 20px;">At SelassieFest, you can see a fully restored vintage system from the 1970s — a working monument to Jamaican ingenuity. Come touch the wood, hear the tubes glow, and experience the warmth no digital system can replicate.</p>
+  </div>
+
+  <!-- Back to Sound Yard link -->
+  <div style="text-align: center; margin-top: 48px;">
+    <a href="index.html" class="card-link" style="font-size: 1rem;"><i class="fas fa-arrow-left"></i> BACK TO SOUND SYSTEM YARD</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/sound-system-yard/">SOUND YARD</a>
+    <a href="/about/">ABOUT</a>
+    <a href="/festival/schedule/">SCHEDULE</a>
+    <a href="/contact/">CONTACT</a>
+  </div>
+  <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SelassieFest — Keeping the analog spirit alive. Jah bless the engineers.
+  </div>
+</footer>
+
+</body>
+</html>

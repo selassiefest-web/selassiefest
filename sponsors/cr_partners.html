@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SelassieFest · Caribbean Restaurant Raffle Partner System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-bg-page: #fef9ef;
+      --color-surface: #ffffff;
+      --color-surface-muted: #f9f3e8;
+      --color-border-light: #e2d9ce;
+      --color-text-primary: #2c2b26;
+      --color-text-secondary: #5e5b55;
+      --color-text-tertiary: #8e887c;
+      --color-accent: #2e7d52;
+      --color-accent-light: #4caf7d;
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+      --radius-card: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 14px rgba(0,0,0,0.05);
+    }
+
+    body {
+      background: var(--color-bg-page);
+      font-family: var(--font-sans);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .fest-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1f543b 0%, #3c8b5e 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subhead {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      border-left: 3px solid var(--color-accent);
+      padding-left: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-bar {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-light);
+      border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    .contact-bar span {
+      font-family: monospace;
+      color: var(--color-accent);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border-light);
+    }
+
+    /* Card scene */
+    .card-scene {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .card-side {
+      flex: 0 0 auto;
+      text-align: center;
+    }
+
+    .caption {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.6rem;
+    }
+
+    .smartcard {
+      width: 300px;
+      min-height: 190px;
+      border-radius: var(--radius-card);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.15s ease;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .smartcard:hover {
+      transform: translateY(-3px);
+    }
+
+    .card-front {
+      background: #1c2a23;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      flex: 1;
+    }
+
+    .front-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(76, 175, 125, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .front-icon span {
+      color: var(--color-accent-light);
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .card-front-logo {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f0ede5;
+    }
+
+    .event-details {
+      text-align: center;
+      margin-top: 0.2rem;
+    }
+
+    .event-date {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-accent-light);
+      letter-spacing: 0.5px;
+    }
+
+    .event-time {
+      font-size: 0.7rem;
+      color: rgba(240, 237, 229, 0.8);
+    }
+
+    .brand-belief {
+      font-size: 0.7rem;
+      color: #cbd5c0;
+      text-align: center;
+      font-style: italic;
+      margin-top: 0.6rem;
+      padding: 0 0.5rem;
+      line-height: 1.4;
+      border-top: 0.5px solid rgba(76, 175, 125, 0.3);
+      padding-top: 0.5rem;
+    }
+
+    .gold-stripe {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2e7d52, #4caf7d, #2e7d52);
+    }
+
+    .card-back {
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border: 1px solid var(--color-border-light);
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .card-back-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-back-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    .mirror-quote {
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--color-text-secondary);
+      font-style: italic;
+      border-left: 2px solid var(--color-accent);
+      padding-left: 0.6rem;
+      margin: 0.5rem 0;
+    }
+
+    .qr-caption {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--color-accent);
+      margin-top: 0.4rem;
+    }
+
+    .qr-block {
+      width: 48px;
+      height: 48px;
+      background: #f4efe6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0.5px solid var(--color-border-light);
+      margin-top: 0.5rem;
+      align-self: flex-end;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 0.5rem 0 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-light);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--color-text-secondary);
+    }
+
+    .nav-btn:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: white;
+    }
+
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0 1.5rem;
+      max-height: 560px;
+      overflow-y: auto;
+      padding: 0.2rem;
+    }
+
+    .partner-card {
+      background: var(--color-surface);
+      border-radius: 1rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--color-border-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .partner-card:hover {
+      border-color: var(--color-accent);
+      background: #fefcf7;
+      transform: translateY(-1px);
+    }
+
+    .partner-card.hot {
+      border-left: 3px solid var(--color-accent);
+    }
+
+    .partner-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .partner-mirror {
+      font-size: 0.7rem;
+      color: var(--color-text-tertiary);
+      margin-top: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .partner-status {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2rem;
+    }
+
+    .status-hot {
+      background: #e0f2e9;
+      color: #1a5c38;
+    }
+
+    .status-warm {
+      background: #e6f0fa;
+      color: #185fa5;
+    }
+
+    .status-cold {
+      background: #f0ede8;
+      color: #6a6254;
+    }
+
+    .intel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .intel-card {
+      background: var(--color-surface);
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--color-border-light);
+    }
+
+    .intel-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--color-text-tertiary);
+    }
+
+    .intel-val {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    .draft-preview-area {
+      background: var(--color-surface-muted);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+      border: 1px solid var(--color-border-light);
+    }
+
+    .draft-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--color-accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .draft-content {
+      font-size: 0.9rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 0.8rem;
+      border-left: 2px solid var(--color-accent);
+      white-space: pre-wrap;
+      line-height: 1.55;
+    }
+
+    .draft-placeholder {
+      color: var(--color-text-tertiary);
+      font-style: italic;
+    }
+
+    .url-box {
+      background: var(--color-surface-muted);
+      border-left: 4px solid var(--color-accent);
+      border-radius: 0.75rem;
+      padding: 0.9rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin: 1rem 0 1.5rem;
+      word-break: break-all;
+    }
+
+    hr {
+      margin: 1rem 0;
+      border: 0;
+      height: 1px;
+      background: var(--color-border-light);
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 1rem; }
+      .smartcard { width: 280px; }
+    }
+  </style>
+</head>
+<body>
+<div class="fest-container">
+  <div class="page-title">🇯🇲 SelassieFest · Caribbean Restaurant Raffle Partners</div>
+  <div class="page-subhead">SmartCard outreach — request a raffle prize (dinner for two, gift certificate) to support our community festival.</div>
+
+  <!-- Contact info bar -->
+  <div class="contact-bar">
+    📞 <span>(414) 909-3279</span> &nbsp;|&nbsp; ✉️ <span>selassiefest@gmail.com</span>
+  </div>
+
+  <!-- PHYSICAL CARD DISPLAY -->
+  <div class="section-label">The partnership card</div>
+  <div class="card-scene">
+    <div class="card-side">
+      <div class="caption">SIDE A · festival identity + their belief</div>
+      <div class="smartcard card-front">
+        <div class="front-icon"><span>S</span></div>
+        <div class="card-front-logo">SelassieFest</div>
+        <div class="event-details">
+          <div class="event-date">JULY 25 · CHICAGO</div>
+          <div class="event-time">Noon 'Till Midnight</div>
+        </div>
+        <div class="brand-belief" id="brandBelief">Twenty years in, and the founding family is still in the kitchen.</div>
+        <div class="gold-stripe"></div>
+      </div>
+    </div>
+    <div class="card-side">
+      <div class="caption">SIDE B · their mirror & invitation</div>
+      <div class="smartcard card-back">
+        <div class="card-back-header">
+          <span class="card-back-name" id="cardPartnerName">Jerk Villa Bar & Grill</span>
+        </div>
+        <div class="mirror-quote" id="mirrorStatement">"Twenty years in, and the founding family is still in the kitchen."</div>
+        <div class="qr-caption" id="qrCaption">⚡ Scan to see how you can support →</div>
+        <div class="qr-block">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <rect x="2" y="2" width="16" height="16" rx="2" fill="none" stroke="#2e7d52" stroke-width="1.5"/>
+            <rect x="5" y="5" width="10" height="10" rx="1" fill="#2e7d52"/>
+            <rect x="26" y="2" width="16" height="16" rx="2" fill="none" stroke="#2e7d52" stroke-width="1.5"/>
+            <rect x="29" y="5" width="10" height="10" rx="1" fill="#2e7d52"/>
+            <rect x="2" y="26" width="16" height="16" rx="2" fill="none" stroke="#2e7d52" stroke-width="1.5"/>
+            <rect x="5" y="29" width="10" height="10" rx="1" fill="#2e7d52"/>
+            <rect x="26" y="26" width="4" height="4" fill="#2e7d52"/>
+            <rect x="32" y="26" width="4" height="4" fill="#2e7d52"/>
+            <rect x="38" y="26" width="4" height="4" fill="#2e7d52"/>
+            <rect x="26" y="32" width="4" height="4" fill="#2e7d52"/>
+            <rect x="32" y="38" width="4" height="4" fill="#2e7d52"/>
+            <rect x="38" y="32" width="4" height="4" fill="#2e7d52"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION BUTTONS -->
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevPartnerBtn">← Previous partner</button>
+    <button class="nav-btn" id="nextPartnerBtn">Next partner →</button>
+  </div>
+
+  <!-- PARTNER DIRECTORY (all Caribbean restaurants) -->
+  <div class="section-label">📋 All Caribbean partners — click to preview card & raffle request</div>
+  <div class="partner-grid" id="partnerGrid"></div>
+
+  <!-- INTELLIGENCE DASHBOARD -->
+  <div class="section-label">📊 Live prospect intelligence</div>
+  <div class="intel-grid">
+    <div class="intel-card"><div class="intel-label">Cards sent</div><div class="intel-val" id="totalPartners">32</div><div class="intel-sub">unique Caribbean spots</div></div>
+    <div class="intel-card"><div class="intel-label">Scans logged</div><div class="intel-val" id="totalScans">18</div><div class="intel-sub">real engagement</div></div>
+    <div class="intel-card"><div class="intel-label">Hot leads</div><div class="intel-val" id="hotCount">4</div><div class="intel-sub">multiple scans</div></div>
+    <div class="intel-card"><div class="intel-label">Raffle value goal</div><div class="intel-val">$1,200</div><div class="intel-sub">prizes for attendees</div></div>
+  </div>
+
+  <!-- EMAIL DRAFT PREVIEW (specific raffle ask) -->
+  <div class="draft-preview-area">
+    <div class="draft-title">✍️ Smart raffle request email (ready to personalise)</div>
+    <div class="draft-content draft-placeholder" id="draftMessage">
+      Click any restaurant above → generates a warm ask for a dinner-for-two or gift certificate to be raffled at SelassieFest.
+    </div>
+  </div>
+  <p style="font-size: 0.7rem; text-align: center; margin-top: 0.5rem; color: var(--color-text-tertiary);">
+    🔄 Use arrows or click any card in the grid — each request is tailored to their unique story.
+  </p>
+</div>
+
+<script>
+  // --------------------------------------------------------------
+  // PARTNER DATA (same 28 unique restaurants + mirror statements)
+  // Updated email asks for a SPECIFIC RAFFLE PRIZE (dinner for two / gift card)
+  // Contact info: (414) 909-3279 & selassiefest@gmail.com in signature
+  // --------------------------------------------------------------
+  const partnersData = [
+    { name: "14 Parish Restaurant & Rhum Bar", belief: "The South Side deserves a rum bar that feels like Sunday dinner.", mirror: "You built the dining room the South Side didn't know it was missing.", qr: "What would you build if you knew the whole neighborhood would show up?", scans: 2, lastActive: "1d ago", intensity: "hot" },
+    { name: "Caribbean American Baking Co", belief: "Fresh coco bread and patties — that's how we've fed three generations.", mirror: "The oven's been on since 1992. The line never got shorter.", qr: "What does a family recipe look like at a festival?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "FH JerkGOD", belief: "Jerk is a ritual, not a recipe. We bring the fire.", mirror: "Every sauce tells a story. Ours starts with Scotch bonnet and legacy.", qr: "What happens when the grill meets the main stage?", scans: 1, lastActive: "3d ago", intensity: "warm" },
+    { name: "Garifuna Flava", belief: "Honduran-Caribbean soul — yucca, coconut, and pride.", mirror: "We're the only Garifuna kitchen in the city. That weight, and that gift.", qr: "How does culture travel from the kitchen to a crowd of 15,000?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Irie Jerk", belief: "Irie isn't just a word. It's a feeling we cook into every plate.", mirror: "One location turned into three because the people kept asking.", qr: "What happens when you feed a movement?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "Irie Jerk Hut", belief: "Hut-sized kitchen, stadium-sized flavor. Family owned.", mirror: "You don't need a big sign when the smell does the talking.", qr: "What could a festival stage do for a neighborhood hut?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Ja' Grill Hyde Park", belief: "Hyde Park fell in love with oxtail first. Then the vibe.", mirror: "You showed Hyde Park what Jamaican dining is supposed to feel like.", qr: "What's next after you've already won the neighborhood?", scans: 3, lastActive: "12h ago", intensity: "hot" },
+    { name: "Jamaica Jerk King", belief: "King of jerk since '94. Crown still fits.", mirror: "Every other spot measures themselves against us.", qr: "What does a king owe the next generation?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "JamGrill", belief: "We put reggae on the speakers and jerk on the grill. Daily.", mirror: "The music never stops. Neither does the flavor.", qr: "What could a festival crowd teach a restaurant?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Jerk 48", belief: "24 hours wasn't enough — we marinate for 48.", mirror: "Patience makes the difference between dry and divine.", qr: "What takes time that's worth the wait?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Jerk Choice", belief: "You have a choice. We make it easy to choose right.", mirror: "The line forms before noon. That's not an accident.", qr: "What happens when a food truck becomes a landmark?", scans: 1, lastActive: "4d ago", intensity: "warm" },
+    { name: "Jerk Villa Bar & Grill", belief: "Twenty years in, and the founding family is still in the kitchen.", mirror: "Twenty years in, and the founding family is still in the kitchen.", qr: "What does two decades of trust look like at a festival?", scans: 2, lastActive: "5h ago", intensity: "hot" },
+    { name: "Jerk Yard", belief: "Three locations later, the culture still travels with you.", mirror: "Three locations later, the culture still travels with you.", qr: "What does it mean to export a vibe, not just a plate?", scans: 2, lastActive: "3h ago", intensity: "hot" },
+    { name: "Jerk. Jamaican Barbecue", belief: "Barbecue is slow. Jerk is spiritual. We do both.", mirror: "The pitmaster wakes up at 4am. The reward is empty pans by 8pm.", qr: "What is the sound of a perfect jerk chicken pop‑up?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Jerky Jerk", belief: "We jerk everything — chicken, pork, even cauliflower.", mirror: "No shortcuts. No fake smoke. Only real pimento wood.", qr: "What happens when tradition meets curiosity?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Little Jamaica Jerk Cuisine, LLC", belief: "Little Jamaica on a plate — that's the promise.", mirror: "We built a LLC to protect a legacy. Now we feed thousands.", qr: "What does incorporation mean for a family kitchen?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Mr. B's Caribbean Grill", belief: "Mr. B's is where the neighborhood comes to celebrate.", mirror: "Birthdays, graduations, and first dates — all happened here.", qr: "How do you celebrate 15,000 new friends?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "One Stop Jamaica Jerk", belief: "One stop. All the flavors of the island.", mirror: "You don't need a plane ticket. Just an appetite.", qr: "What if the festival became your second location for a day?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "SHATTAZ Jerk Bar & Grill", belief: "Upscale Jamaican, unapologetic flavor.", mirror: "You brought upscale Jamaican to a neighborhood still figuring out what it wanted.", qr: "What does 'upscale' mean when you're feeding a festival crowd?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "The Perfect Jerk", belief: "Perfection is a moving target. We get closer every day.", mirror: "We've catered for the Bears, the Bulls, and your block party.", qr: "What does 'perfect' look like at SelassieFest?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Tropic Island Jerk Chicken", belief: "Tropic Island is a taste of the Caribbean, no passport needed.", mirror: "The jerk chicken is why people drive across town.", qr: "How far would you travel for real island flavor?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Tropical Jerk", belief: "Sun, spice, and everything nice.", mirror: "Our secret is the family marinade. And we're not sharing.", qr: "What secret would you trade for a festival presence?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Uncle Joe's Jerk Chicken", belief: "Uncle Joe's has been the neighborhood's favorite for 18 years.", mirror: "Time Out, The Infatuation, and Yelp all agreed — the neighborhood was right first.", qr: "What does it feel like when the critics catch up to the locals?", scans: 1, lastActive: "1d ago", intensity: "warm" },
+    { name: "West Indies Bakery", belief: "Fresh bread, patties, and pastries — the heartbeat of the West Indies.", mirror: "The ovens never cool down. Neither does our love for the craft.", qr: "What could a bakery do with a stage?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Wi Jammin", belief: "We jammin', we jammin', and we hope you like jammin' too.", mirror: "The name says it all — music, food, and good energy.", qr: "What's the rhythm of a perfect festival food stall?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Jerk Factory", belief: "Factory precision, family warmth.", mirror: "We produce thousands of meals a week. Each one tastes like home.", qr: "How do you scale soul without losing it?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Saint Bess", belief: "Named for St. Elizabeth parish — the breadbasket of Jamaica.", mirror: "Our ingredients come from the land. Our heart comes from the parish.", qr: "What does a parish name mean in Chicago?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Reggae Boys", belief: "Reggae and jerk — two things Jamaica gave the world.", mirror: "The boys are back with the hottest grill in town.", qr: "What would Bob Marley eat at a festival?", scans: 0, lastActive: "sent", intensity: "cold" }
+  ];
+
+  let currentIndex = 0;
+
+  function updateCardDisplay(index) {
+    const p = partnersData[index];
+    if (!p) return;
+    document.getElementById('brandBelief').innerHTML = `“${p.belief}”`;
+    document.getElementById('cardPartnerName').innerText = p.name;
+    document.getElementById('mirrorStatement').innerHTML = `“${p.mirror}”`;
+    document.getElementById('qrCaption').innerHTML = `⚡ ${p.qr}`;
+  }
+
+  // NEW EMAIL: specific raffle ask (dinner for two or $50 gift certificate)
+  function generateRaffleEmail(p) {
+    const scanNote = p.scans === 0 ? "card delivered" : `scanned ${p.scans} time(s) · last ${p.lastActive}`;
+    let body = `Hi ${p.name} team,\n\n`;
+    body += `“${p.belief}” — that’s what we love about your spot. We’re reaching out because SelassieFest (July 25, Chicago · noon to midnight) is a free community celebration of Caribbean culture, reggae, and food. We’re expecting 5,000–8,000 people from across Chicago.\n\n`;
+    body += `**Here’s the specific ask:** would you be willing to donate **one dinner for two (or a $50 gift certificate)** to our festival raffle? We’ll promote your restaurant on stage, on our social media (10k+ followers), and in our event program. The raffle raises funds to keep the festival free for families.\n\n`;
+    if (p.scans === 0) {
+      body += `We hand‑delivered your SmartCard — inside is a QR code that leads to a page about the raffle. Even if you can’t donate a full dinner, a small gift card or branded merchandise would mean the world. Every donor gets a shout‑out on our main stage.\n\n`;
+    } else if (p.scans === 1) {
+      body += `You already scanned the card (${p.lastActive}) — so you know we’re serious about community. A dinner-for-two from your kitchen would be an incredible prize, and we’ll make sure your logo is visible to every single attendee.\n\n`;
+    } else {
+      body += `You’ve scanned multiple times — that tells us you’re interested. Let’s make it official: a dinner raffle prize in exchange for massive visibility. We’ll also invite you to set up a small info table at the festival if you’d like.\n\n`;
+    }
+    body += `To donate, just reply to this email or call/text (414) 909-3279. We can pick up the gift certificate or you can email a digital version.\n\n`;
+    body += `Thank you for feeding our culture — let’s build something beautiful together.\n\n— SelassieFest Organizing Team\n📞 (414) 909-3279  |  ✉️ selassiefest@gmail.com\nselassiefest.com/raffle`;
+    return `Subject: SelassieFest raffle — could you donate a dinner for two?\n\n${body}`;
+  }
+
+  function updateEmailPreview(partner) {
+    const emailText = generateRaffleEmail(partner);
+    const draftDiv = document.getElementById('draftMessage');
+    draftDiv.classList.remove('draft-placeholder');
+    draftDiv.innerHTML = `<strong style="display:block; margin-bottom:0.5rem;">📧 To: ${partner.name} · ${emailText.split('\n')[0]}</strong><br>${emailText.replace(/\n/g, '<br>')}`;
+  }
+
+  function setActivePartnerByIndex(index) {
+    if (index < 0) index = partnersData.length - 1;
+    if (index >= partnersData.length) index = 0;
+    currentIndex = index;
+    const partner = partnersData[currentIndex];
+    updateCardDisplay(currentIndex);
+    updateEmailPreview(partner);
+    document.querySelectorAll('.partner-card').forEach((card, idx) => {
+      if (idx === currentIndex) {
+        card.style.border = `1.5px solid var(--color-accent)`;
+        card.style.backgroundColor = `#fefcf7`;
+      } else {
+        card.style.border = `1px solid var(--color-border-light)`;
+        card.style.backgroundColor = ``;
+      }
+    });
+  }
+
+  function buildPartnerGrid() {
+    const grid = document.getElementById('partnerGrid');
+    grid.innerHTML = '';
+    partnersData.forEach((partner, idx) => {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = `partner-card ${partner.intensity}`;
+      let statusLabel = '';
+      if (partner.scans === 0) statusLabel = '📬 Card sent';
+      else if (partner.scans === 1) statusLabel = `🔍 Scanned · ${partner.lastActive}`;
+      else statusLabel = `🔥 Scanned ${partner.scans}x · ${partner.lastActive}`;
+      cardDiv.innerHTML = `
+        <div class="partner-name">${partner.name}</div>
+        <div class="partner-mirror">“${partner.mirror.substring(0, 70)}${partner.mirror.length > 70 ? '…' : ''}”</div>
+        <span class="partner-status ${partner.scans === 0 ? 'status-cold' : (partner.scans === 1 ? 'status-warm' : 'status-hot')}">${statusLabel}</span>
+      `;
+      cardDiv.addEventListener('click', () => setActivePartnerByIndex(idx));
+      grid.appendChild(cardDiv);
+    });
+    document.getElementById('totalPartners').innerText = partnersData.length;
+    const totalScans = partnersData.reduce((acc, p) => acc + p.scans, 0);
+    const hotCount = partnersData.filter(p => p.scans >= 2).length;
+    document.getElementById('totalScans').innerText = totalScans;
+    document.getElementById('hotCount').innerText = hotCount;
+  }
+
+  document.getElementById('prevPartnerBtn').addEventListener('click', () => setActivePartnerByIndex(currentIndex - 1));
+  document.getElementById('nextPartnerBtn').addEventListener('click', () => setActivePartnerByIndex(currentIndex + 1));
+
+  // Add URL box for demonstration
+  const urlDiv = document.createElement('div');
+  urlDiv.className = 'url-box';
+  urlDiv.innerHTML = `<span class="url-base">https://selassiefest.com/raffle/</span><span class="url-param">jerk-villa</span><span class="url-base">?ref=card&src=caribbean</span>`;
+  document.querySelector('.intel-grid').after(urlDiv);
+
+  buildPartnerGrid();
+  setActivePartnerByIndex(0);
+</script>
+</body>
+</html>

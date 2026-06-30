@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ital Marketplace · Interactive Recipe Lab | SelassieFest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg-deep: #050805;
+      --surface-dark: #0e110e;
+      --text-cream: #F5F2E8;
+      --green-roots: #2C8C5A;
+      --gold-livity: #E5A93C;
+      --red-power: #C83737;
+      --card-bg: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.1);
+    }
+    body {
+      background: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    /* header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-dim);
+      padding-bottom: 1.5rem;
+    }
+    .header h1 {
+      font-weight: 300;
+      font-size: 2.5rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #f5e6c4, var(--gold-livity));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .header p {
+      color: #bcb6a5;
+      font-weight: 300;
+    }
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    /* recipe selector panel */
+    .selector-card, .ingredient-card, .impact-card {
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dim);
+      border-radius: 2rem;
+      padding: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+    .selector-card h3, .ingredient-card h3, .impact-card h3 {
+      font-weight: 400;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-left: 3px solid var(--gold-livity);
+      padding-left: 0.8rem;
+    }
+    .dish-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1rem 0;
+    }
+    .dish-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-dim);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 400;
+      transition: 0.2s;
+      color: var(--text-cream);
+    }
+    .dish-btn.active {
+      background: var(--green-roots);
+      border-color: var(--gold-livity);
+      color: white;
+      box-shadow: 0 0 8px rgba(229,169,60,0.3);
+    }
+    .dish-btn:hover {
+      border-color: var(--gold-livity);
+    }
+    /* ingredient list */
+    .ingredient-group {
+      margin: 1.2rem 0;
+    }
+    .ingredient-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      background: rgba(0,0,0,0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .ingredient-item:hover {
+      background: rgba(44,140,90,0.2);
+    }
+    .ingredient-item input {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: var(--green-roots);
+      cursor: pointer;
+    }
+    .ingredient-name {
+      flex: 1;
+      font-weight: 300;
+    }
+    .ingredient-note {
+      font-size: 0.7rem;
+      color: var(--gold-livity);
+      background: rgba(0,0,0,0.5);
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+    }
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--red-power);
+      color: var(--red-power);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      margin-top: 0.8rem;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .reset-btn:hover {
+      background: var(--red-power);
+      color: white;
+    }
+    .impact-card {
+      background: rgba(0,0,0,0.5);
+      border-left: 4px solid var(--gold-livity);
+    }
+    .impact-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: 300;
+      margin: 0.8rem 0;
+      background: rgba(255,255,255,0.02);
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+    .warning {
+      color: var(--red-power);
+      font-size: 0.85rem;
+      margin-top: 0.6rem;
+      border-top: 1px dashed var(--border-dim);
+      padding-top: 0.6rem;
+    }
+    .recipe-preview {
+      background: #0b0e0b;
+      border-radius: 1.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-dim);
+      padding-top: 1.5rem;
+      color: #7a7a6e;
+    }
+    @media (max-width: 800px) {
+      .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
+      body { padding: 1rem; }
+    }
+    i.fa, i.fas, i.far { margin-right: 0.3rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-leaf"></i> Ital Recipe Lab · Ingredient Alchemy</h1>
+    <p>Select a dish · toggle ingredients · see how each change transforms flavor, texture & Ital authenticity</p>
+    <div style="margin-top: 0.5rem;"><i class="fas fa-hand-peace"></i> “Every ingredient carries vibration — explore substitutions and learn the roots of Ital cooking”</div>
+  </div>
+
+  <div class="grid-2col">
+    <!-- LEFT COLUMN: selector + ingredient toggles -->
+    <div>
+      <div class="selector-card">
+        <h3><i class="fas fa-utensil-spoon"></i> 1. Choose a dish</h3>
+        <div class="dish-buttons" id="dishSelector">
+          <!-- dynamic but static for demo, will be populated by JS -->
+        </div>
+        <p style="font-size:0.8rem; margin-top:0.5rem;"><i class="fas fa-drumstick-bite"></i> All dishes are 100% plant-based, no salt, no synthetic additives.</p>
+      </div>
+
+      <div class="ingredient-card" id="ingredientPanel">
+        <h3><i class="fas fa-check-square"></i> 2. Modify ingredients</h3>
+        <div id="ingredientList"></div>
+        <button id="resetIngredientsBtn" class="reset-btn"><i class="fas fa-undo-alt"></i> Reset to original recipe</button>
+        <div class="recipe-preview" id="recipeNote">
+          <i class="fas fa-info-circle"></i> <span id="shortRecipeNote">Click a dish to explore ingredients</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: dynamic impact panel -->
+    <div>
+      <div class="impact-card">
+        <h3><i class="fas fa-chart-line"></i> Ingredient impact · How changes affect the dish</h3>
+        <div id="impactText" class="impact-text">
+          ⚡ Select a recipe and start toggling ingredients.<br>
+          Each modification will update flavor, texture, cultural relevance & cooking advice.
+        </div>
+        <div id="warningBox" class="warning"></div>
+      </div>
+      <div style="background: rgba(44,140,90,0.1); border-radius: 1rem; padding: 1rem; margin-top: 1rem;">
+        <i class="fas fa-seedling"></i> <strong>Ital principle:</strong> No salt, no animal products, no artificial chemicals. Our interactive logic respects that — if you attempt to add salt or meat, we'll explain why traditional Ital omits it.
+      </div>
+    </div>
+  </div>
+  <footer>
+    <i class="fas fa-dove"></i> SelassieFest Ital Marketplace — interactive educational tool. Every substitution teaches the wisdom of living foods.<br>
+    📍 Experience these dishes live July 25, 2026 | Chicago, IL
+  </footer>
+</div>
+
+<script>
+  // ---------- RECIPE DATABASE ----------
+  const recipes = {
+    stewPeas: {
+      name: "Ital Stew Peas",
+      description: "Rich red kidney bean stew with pumpkin, coconut milk, and aromatic herbs.",
+      ingredients: [
+        { id: "beans", name: "Red kidney beans (soaked)", default: true, impact: "Beans are the protein base. Removing them → stew becomes thin vegetable broth; add extra pumpkin or callaloo for body." },
+        { id: "coconutMilk", name: "Coconut milk (full fat)", default: true, impact: "Coconut milk adds creaminess & sweetness. Omit → broth becomes lighter, more savory, less traditional. Add blended cashews for richness." },
+        { id: "pumpkin", name: "Pumpkin / butternut squash", default: true, impact: "Pumpkin gives natural sweetness & thickness. Without it, stew is less hearty, more bean-forward." },
+        { id: "scotchBonnet", name: "Scotch bonnet (whole)", default: true, impact: "Whole pepper adds gentle heat & fruity aroma. Remove → no heat, but still flavorful. Crush it for more fire." },
+        { id: "thyme", name: "Fresh thyme & pimento", default: true, impact: "Thyme & allspice are signature Ital notes. Without them, the stew loses depth and earthy complexity." },
+        { id: "carrot", name: "Carrot chunks", default: true, impact: "Carrots add subtle sweetness & color. Omit → still good but less rounded flavor." },
+        { id: "garlicGinger", name: "Garlic & fresh ginger", default: true, impact: "Removing garlic/ginger reduces vibrancy and digestive warmth. Add more scallion as alternative." }
+      ],
+      baseImpact: "Traditional Ital Stew Peas: creamy, earthy, mildly spicy. Served with rice & peas or fried plantains."
+    },
+    callaloo: {
+      name: "Callaloo & Okra",
+      description: "Creamed amaranth leaves, okra, coconut, and aromatics.",
+      ingredients: [
+        { id: "callalooLeaf", name: "Fresh callaloo (amaranth)", default: true, impact: "Callaloo is the heart of the dish. Without it, you get okra soup; substitute spinach but flavour changes." },
+        { id: "okra", name: "Okra slices", default: true, impact: "Okra provides thickening and distinct texture. Without okra, the dish becomes thinner and less ‘slippery’ — still delicious." },
+        { id: "coconutMilk", name: "Coconut milk", default: true, impact: "Coconut milk makes it creamy and rich. Omit → lighter, more broth-like, traditionalists sometimes use water only." },
+        { id: "onionScallion", name: "Onion & scallion", default: true, impact: "Base aromatics. Remove → flat, missing foundational savoriness." },
+        { id: "scotchBonnet", name: "Scotch bonnet (optional heat)", default: true, impact: "No pepper → zero kick. Keep whole for subtle warmth." }
+      ],
+      baseImpact: "Velvety, green, and slightly spicy — perfect with steamed provisions (yam, dasheen)."
+    },
+    jerkTofu: {
+      name: "Jerk Tofu (Plant-based)",
+      description: "Firm tofu marinated in authentic jerk paste (allspice, scotch bonnet, thyme), grilled.",
+      ingredients: [
+        { id: "tofu", name: "Firm tofu", default: true, impact: "Tofu is the protein canvas. Removing leaves no main element; substitute tempeh or jackfruit for different texture." },
+        { id: "jerkPaste", name: "Jerk marinade (allspice, thyme, ginger, pepper)", default: true, impact: "Jerk paste defines the dish. Removing → plain grilled tofu, loses all Caribbean fire." },
+        { id: "scotchBonnet", name: "Scotch bonnet (in marinade)", default: true, impact: "The heat source! Reduce or remove → mild version, less authentic but accessible." },
+        { id: "limeJuice", name: "Fresh lime juice", default: true, impact: "Lime adds acidity and brightness. Without it, marinade tastes heavier and less balanced." },
+        { id: "coconutOil", name: "Coconut oil for grilling", default: true, impact: "Coconut oil adds subtle richness & helps char. Swap with avocado oil – still Ital friendly." }
+      ],
+      baseImpact: "Smoky, spicy, with crisp edges and a juicy center. Served with mango slaw."
+    },
+    sweetPotatoPudding: {
+      name: "Sweet Potato Pudding",
+      description: "Grated sweet potato, coconut cream, cinnamon, nutmeg, baked in banana leaf.",
+      ingredients: [
+        { id: "sweetPotato", name: "Grated sweet potato", default: true, impact: "The structural base. Removing makes pudding impossible; replace with cassava for different texture." },
+        { id: "coconutCream", name: "Coconut cream", default: true, impact: "Provides richness and binding. Less cream → drier, more crumbly. Extra → fudge-like." },
+        { id: "cinnamonNutmeg", name: "Cinnamon & nutmeg", default: true, impact: "Spices give warmth and depth. Without them → bland, flat sweetness." },
+        { id: "raisins", name: "Raisins (optional)", default: true, impact: "Raisins add pops of sweetness and chew. Omit → smoother texture, less complexity." },
+        { id: "bananaLeaf", name: "Wrapped in banana leaf", default: true, impact: "Banana leaf imparts subtle grassy aroma. Omit → parchment paper works but less traditional essence." }
+      ],
+      baseImpact: "Dense, moist, spiced — dessert that honors earth. Naturally sweetened."
+    }
+  };
+
+  let currentRecipeId = "stewPeas";
+  let currentIngredientState = {};  // { id: boolean }
+
+  function initState(recipeId) {
+    const recipe = recipes[recipeId];
+    const state = {};
+    recipe.ingredients.forEach(ing => {
+      state[ing.id] = ing.default;   // start with default (true)
+    });
+    return state;
+  }
+
+  function renderDishSelector() {
+    const container = document.getElementById("dishSelector");
+    container.innerHTML = "";
+    for (const [key, recipe] of Object.entries(recipes)) {
+      const btn = document.createElement("button");
+      btn.className = "dish-btn" + (currentRecipeId === key ? " active" : "");
+      btn.innerText = recipe.name;
+      btn.addEventListener("click", () => {
+        currentRecipeId = key;
+        currentIngredientState = initState(key);
+        renderIngredientList();
+        updateImpactAndWarnings();
+        renderDishSelector();  // refresh active style
+        document.getElementById("shortRecipeNote").innerHTML = `<i class="fas fa-heart"></i> ${recipes[key].description}`;
+      });
+      container.appendChild(btn);
+    }
+  }
+
+  function renderIngredientList() {
+    const recipe = recipes[currentRecipeId];
+    if (!recipe) return;
+    const container = document.getElementById("ingredientList");
+    container.innerHTML = "";
+    recipe.ingredients.forEach(ing => {
+      const isChecked = currentIngredientState[ing.id] !== undefined ? currentIngredientState[ing.id] : ing.default;
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "ingredient-item";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = isChecked;
+      cb.addEventListener("change", (e) => {
+        currentIngredientState[ing.id] = e.target.checked;
+        updateImpactAndWarnings();
+        // also show short note change
+      });
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "ingredient-name";
+      nameSpan.innerText = ing.name;
+      const noteSpan = document.createElement("span");
+      noteSpan.className = "ingredient-note";
+      noteSpan.innerHTML = `<i class="fas fa-info-circle"></i> effect`;
+      noteSpan.style.cursor = "pointer";
+      noteSpan.addEventListener("click", () => {
+        // show specific impact on click
+        const impactMsg = ing.impact;
+        document.getElementById("impactText").innerHTML = `<i class="fas fa-leaf"></i> <strong>${ing.name}:</strong> ${impactMsg}<br><small style="opacity:0.8;">🔁 toggle the checkbox to apply this change globally.</small>`;
+      });
+      itemDiv.appendChild(cb);
+      itemDiv.appendChild(nameSpan);
+      itemDiv.appendChild(noteSpan);
+      container.appendChild(itemDiv);
+    });
+    // add short note
+    document.getElementById("shortRecipeNote").innerHTML = `<i class="fas fa-utensils"></i> ${recipe.description.substring(0, 100)}`;
+  }
+
+  function updateImpactAndWarnings() {
+    const recipe = recipes[currentRecipeId];
+    if (!recipe) return;
+    const activeIngredients = recipe.ingredients.filter(ing => currentIngredientState[ing.id] === true);
+    const removedIngredients = recipe.ingredients.filter(ing => currentIngredientState[ing.id] === false);
+    
+    let impactHtml = `<i class="fas fa-flask"></i> <strong>${recipe.name} · current ingredient profile</strong><br>`;
+    impactHtml += `<div style="margin-top: 0.5rem;">✔️ <strong>Included:</strong> ${activeIngredients.map(i => i.name).join(", ") || "none (empty pot!)"}</div>`;
+    impactHtml += `<div>❌ <strong>Removed / omitted:</strong> ${removedIngredients.map(i => i.name).join(", ") || "none — full traditional recipe"}</div>`;
+    impactHtml += `<hr style="border-color:#2c2c2c; margin: 0.8rem 0;">`;
+    
+    // detailed flavor & texture impact summary
+    let flavorNotes = [];
+    let textureNotes = [];
+    let culturalNotes = [];
+    
+    removedIngredients.forEach(ing => {
+      const impactLower = ing.impact.toLowerCase();
+      if (impactLower.includes("cream") || impactLower.includes("rich") || impactLower.includes("coconut")) textureNotes.push(ing.name);
+      if (impactLower.includes("spice") || impactLower.includes("heat") || impactLower.includes("sweet")) flavorNotes.push(ing.name);
+      if (impactLower.includes("traditional") || impactLower.includes("authentic")) culturalNotes.push(ing.name);
+      // general
+      flavorNotes.push(`${ing.name} (${ing.impact.substring(0, 60)})`);
+    });
+    
+    if (removedIngredients.length > 0) {
+      impactHtml += `<div><i class="fas fa-tachometer-alt"></i> <strong>Flavor impact:</strong> ${flavorNotes.slice(0,3).join("; ") || "subtle changes"}</div>`;
+      impactHtml += `<div><i class="fas fa-hand-peace"></i> <strong>Texture / body:</strong> ${textureNotes.slice(0,2).join(", ") || "may affect mouthfeel"}</div>`;
+    } else {
+      impactHtml += `<div><i class="fas fa-check-circle" style="color: var(--green-roots);"></i> <strong>Full traditional recipe</strong> — perfect Ital balance, as prepared at SelassieFest.</div>`;
+    }
+    
+    // Special warnings / Ital law
+    let warningMsg = "";
+    // check for “salt” or non-ital additions (we have no salt in ingredients, but user can't add salt — just educational)
+    const anyMissingKeyHerb = removedIngredients.some(i => i.id === "thyme" && currentRecipeId === "stewPeas");
+    if (anyMissingKeyHerb) warningMsg += "⚠️ Without thyme & pimento, the stew loses its signature Rastafari earthiness. Consider adding fresh rosemary as alternative. ";
+    
+    if (currentRecipeId === "jerkTofu" && currentIngredientState["jerkPaste"] === false) {
+      warningMsg += "🔥 Jerk paste missing — the dish becomes plain tofu. Brush with a mix of allspice, lime, and smoked paprika to restore some fire. ";
+    }
+    if (currentRecipeId === "sweetPotatoPudding" && currentIngredientState["coconutCream"] === false) {
+      warningMsg += "🥥 No coconut cream means dry, crumbly pudding. Add blended cashews + water to keep moisture. ";
+    }
+    if (removedIngredients.length === recipe.ingredients.length) {
+      warningMsg = "❌ All ingredients removed! That's just an empty plate — Ital cooking celebrates abundance. Re-add at least the base elements.";
+    }
+    
+    impactHtml += `<div class="warning" style="margin-top: 0.8rem;"><i class="fas fa-lightbulb"></i> ${warningMsg || "✓ Ital principles respected — no salt, no animal products. Keep experimenting!"}</div>`;
+    
+    // Also generate custom advice based on substitutions & ingredient removals
+    if (removedIngredients.some(i => i.id === "coconutMilk") && (currentRecipeId === "stewPeas" || currentRecipeId === "callaloo")) {
+      impactHtml += `<div style="background: #2c2c1c; border-radius: 1rem; margin-top: 0.6rem; padding: 0.4rem;"><i class="fas fa-seedling"></i> <strong>Substitution tip:</strong> Replace coconut milk with blended pumpkin seeds + water for creamy texture without coconut.</div>`;
+    }
+    if (currentRecipeId === "jerkTofu" && currentIngredientState["scotchBonnet"] === false && currentIngredientState["jerkPaste"] === true) {
+      impactHtml += `<div style="background: #1f2a1b; border-radius: 0.8rem; margin-top:0.5rem;padding:0.4rem;"><i class="fas fa-pepper-hot"></i> Mild jerk style — suitable for sensitive palates, yet still aromatic.</div>`;
+    }
+    
+    document.getElementById("impactText").innerHTML = impactHtml;
+    document.getElementById("warningBox").innerHTML = "";
+  }
+
+  // reset to original defaults for current recipe
+  function resetToOriginal() {
+    const recipe = recipes[currentRecipeId];
+    if (!recipe) return;
+    const defaultState = {};
+    recipe.ingredients.forEach(ing => {
+      defaultState[ing.id] = ing.default;
+    });
+    currentIngredientState = defaultState;
+    renderIngredientList();
+    updateImpactAndWarnings();
+  }
+
+  // event listener for reset button
+  document.addEventListener("DOMContentLoaded", () => {
+    // initial load: set default recipe (stewPeas)
+    currentRecipeId = "stewPeas";
+    currentIngredientState = initState("stewPeas");
+    renderDishSelector();
+    renderIngredientList();
+    updateImpactAndWarnings();
+    const resetBtn = document.getElementById("resetIngredientsBtn");
+    if (resetBtn) resetBtn.addEventListener("click", resetToOriginal);
+    // set short desc
+    document.getElementById("shortRecipeNote").innerHTML = `<i class="fas fa-heart"></i> ${recipes.stewPeas.description}`;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Sound Clash at SelassieFest – two clashes, 30 minutes apart. Fatta Fyah vs Innovations & Prestige vs Money Movements. Experience raw energy, exclusive dubplates, and crowd‑decided battles.">
+  <title>SelassieFest | Sound Clash – War in the Dance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border-dim: rgba(255, 255, 255, 0.12);
+      --focus-ring: 0 0 0 3px #E5A93C;
+      --transition: all 0.2s ease;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== SKIP LINK ===== */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--gold-accent);
+      color: #1a1a1a;
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      z-index: 1000;
+      text-decoration: none;
+    }
+    .skip-link:focus {
+      top: 1rem;
+      outline: 3px solid #fff;
+      outline-offset: 2px;
+    }
+
+    /* ===== HEADER ===== */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+    /* ===== NAVIGATION ===== */
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem 1.4rem;
+      list-style: none;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      border-bottom: 2px solid transparent;
+      padding: 0.2rem 0.1rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .nav-links li a:hover,
+    .nav-links li a:focus-visible {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+      outline: none;
+    }
+    .nav-links li a.active {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+
+    /* ===== HERO ===== */
+    .hero-clash {
+      text-align: center;
+      padding: 60px 24px 70px;
+      background: radial-gradient(circle at 50% 30%, rgba(200,55,55,0.25), #0a0a0a);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .hero-clash h1 {
+      font-weight: 300;
+      font-size: 3.2rem;
+      letter-spacing: 0.1em;
+    }
+    .hero-clash .gold {
+      color: var(--gold-accent);
+    }
+    .hero-clash p {
+      max-width: 700px;
+      margin: 20px auto 0;
+      font-weight: 300;
+      font-size: 1.1rem;
+    }
+    .hero-badges {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    .hero-badge {
+      background: rgba(229, 169, 60, 0.15);
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(229, 169, 60, 0.2);
+    }
+    .hero-badge i {
+      margin-right: 6px;
+      color: var(--gold-accent);
+    }
+
+    /* ===== FREE ADMISSION & VOLUNTEER BANNER ===== */
+    .info-banner {
+      background: #1a1a1a;
+      border-bottom: 2px solid var(--gold-accent);
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem 2rem;
+      font-size: 1rem;
+    }
+    .info-banner strong {
+      color: var(--gold-accent);
+    }
+    .volunteer-link {
+      background: var(--gold-accent);
+      color: #1a1a1a;
+      padding: 0.4rem 1.6rem;
+      border-radius: 60px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .volunteer-link:hover,
+    .volunteer-link:focus-visible {
+      background: #d69a2a;
+      outline: 3px solid var(--gold-accent);
+      outline-offset: 2px;
+    }
+
+    /* ===== CONTAINER & SECTIONS ===== */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      letter-spacing: 0.06em;
+      border-left: 4px solid var(--gold-accent);
+      padding-left: 24px;
+      margin-bottom: 40px;
+    }
+    .section-title i {
+      margin-right: 12px;
+      color: var(--gold-accent);
+    }
+
+    /* ===== CLASH BRACKET (two clashes) ===== */
+    .bracket {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 48px;
+      padding: 32px 24px;
+      text-align: center;
+      margin: 32px 0 56px;
+      border: 1px solid var(--border-dim);
+    }
+    .bracket h2 {
+      font-weight: 300;
+      margin-bottom: 24px;
+      font-size: 1.8rem;
+    }
+    .clash-item {
+      margin: 24px 0;
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .clash-item:last-child {
+      border-bottom: none;
+    }
+    .clash-item .time {
+      color: var(--gold-accent);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .matchup {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px 40px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .team {
+      background: #111;
+      border-radius: 60px;
+      padding: 10px 28px;
+      font-weight: 500;
+      border: 1px solid var(--gold-accent);
+      font-size: 1.1rem;
+    }
+    .vs {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--gold-accent);
+    }
+
+    .countdown {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--gold-accent);
+      margin: 16px 0 8px;
+    }
+
+    /* ===== CARDS GRID ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .clash-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 32px;
+      padding: 28px 20px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .clash-card:hover {
+      border-color: var(--gold-accent);
+      transform: translateY(-4px);
+    }
+    .clash-card .card-icon {
+      font-size: 2.2rem;
+      color: var(--gold-accent);
+      margin-bottom: 16px;
+    }
+    .clash-card h3 {
+      font-weight: 500;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+    .clash-card p,
+    .clash-card li {
+      font-weight: 300;
+      font-size: 0.95rem;
+    }
+    .rule-list {
+      list-style: none;
+    }
+    .rule-list li {
+      margin: 8px 0;
+      padding-left: 16px;
+      border-left: 2px solid var(--roots-green);
+    }
+
+    /* ===== POLL ===== */
+    .poll-box {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 32px;
+      padding: 32px 24px;
+      margin: 48px 0;
+      text-align: center;
+      border: 1px solid var(--border-dim);
+    }
+    .poll-box i {
+      font-size: 2rem;
+      color: var(--gold-accent);
+    }
+    .poll-box h3 {
+      font-weight: 300;
+      margin: 16px 0;
+    }
+    .poll-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem 1.2rem;
+    }
+    .poll-btn {
+      background: transparent;
+      border: 1px solid var(--gold-accent);
+      color: var(--gold-accent);
+      padding: 0.6rem 1.6rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .poll-btn:hover,
+    .poll-btn:focus-visible {
+      background: var(--gold-accent);
+      color: #1a1a1a;
+      outline: 3px solid var(--gold-accent);
+      outline-offset: 2px;
+    }
+    #voteResult {
+      margin-top: 20px;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    /* ===== BACK LINK ===== */
+    .back-link {
+      display: inline-block;
+      margin-top: 32px;
+      font-size: 1rem;
+      color: var(--gold-accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: var(--transition);
+    }
+    .back-link:hover,
+    .back-link:focus-visible {
+      border-bottom-color: var(--gold-accent);
+      outline: none;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 40px 24px 24px;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem 2rem;
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-weight: 400;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--gold-accent);
+      outline: none;
+    }
+    .social-icons {
+      margin: 16px 0;
+    }
+    .social-icons a {
+      color: #ccc;
+      font-size: 1.4rem;
+      margin: 0 10px;
+      transition: var(--transition);
+    }
+    .social-icons a:hover,
+    .social-icons a:focus-visible {
+      color: var(--gold-accent);
+      outline: none;
+    }
+    .copyright {
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 12px;
+    }
+    .copyright i {
+      color: var(--gold-accent);
+      margin-right: 6px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 760px) {
+      .hero-clash h1 { font-size: 2rem; }
+      .section-title { font-size: 1.5rem; padding-left: 16px; }
+      .matchup { gap: 12px; }
+      .team { font-size: 0.95rem; padding: 6px 18px; }
+      .vs { font-size: 1.2rem; }
+      .bracket { padding: 20px 16px; }
+      .info-banner { flex-direction: column; gap: 0.6rem; text-align: center; }
+    }
+
+    /* ===== FOCUS VISIBLE ===== */
+    :focus-visible {
+      outline: 3px solid var(--gold-accent);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip link for keyboard users -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- HEADER -->
+  <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="/" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+  <!-- NAVIGATION -->
+  <nav class="main-nav" role="navigation" aria-label="Main navigation">
+    <ul class="nav-links">
+      <li><a href="/about/">About</a></li>
+      <li><a href="/festival/">Festival</a></li>
+      <li><a href="/sound-system-yard/" class="active" aria-current="page">Sound Yard</a></li>
+      <li><a href="/main-stage/">Main Stage</a></li>
+      <li><a href="/higher-learning-roots/">Higher Learning</a></li>
+      <li><a href="/tickets/">Tickets</a></li>
+    </ul>
+  </nav>
+
+  <!-- FREE ADMISSION & VOLUNTEER BANNER -->
+  <div class="info-banner" role="note">
+    <span><strong>🎟️ General admission: FREE</strong> · noon – midnight</span>
+    <span>🤝 <a href="https://selassiefest.com/tickets/volunteer.html" class="volunteer-link" target="_blank" rel="noopener">Volunteer with us</a></span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero-clash" aria-labelledby="hero-heading">
+    <h1 id="hero-heading">SOUND <span class="gold">CLASH</span></h1>
+    <p>Two clashes, 30 minutes apart. Exclusive dubplates, strategic rewinds, and the crowd’s roar decides the winner. This is war in the dance.</p>
+    <div class="hero-badges">
+      <span class="hero-badge"><i class="fas fa-trophy" aria-hidden="true"></i> World Clash rules</span>
+      <span class="hero-badge"><i class="fas fa-dubplate" aria-hidden="true"></i> Exclusive dubplates</span>
+      <span class="hero-badge"><i class="fas fa-microphone-alt" aria-hidden="true"></i> Selector face‑off</span>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content" class="container">
+
+    <!-- ===== CLASH BRACKET ===== -->
+    <div class="section-title" id="clash-section"><i class="fas fa-bolt" aria-hidden="true"></i> THE CLASHES</div>
+    <div class="bracket" aria-labelledby="clash-section">
+      <h2>🏆 SELASSIEFEST CLASH LINE‑UP</h2>
+
+      <!-- Clash 1 -->
+      <div class="clash-item">
+        <div class="time"><i class="far fa-clock" aria-hidden="true"></i> 6:00 PM – 6:30 PM</div>
+        <div class="matchup">
+          <span class="team">Fatta Fyah</span>
+          <span class="vs">VS</span>
+          <span class="team">Innovations</span>
+        </div>
+        <div class="countdown" id="clash1Countdown">Loading countdown…</div>
+      </div>
+
+      <!-- Clash 2 -->
+      <div class="clash-item">
+        <div class="time"><i class="far fa-clock" aria-hidden="true"></i> 7:00 PM – 7:30 PM</div>
+        <div class="matchup">
+          <span class="team">Prestige</span>
+          <span class="vs">VS</span>
+          <span class="team">Money Movements</span>
+        </div>
+        <div class="countdown" id="clash2Countdown">Loading countdown…</div>
+      </div>
+
+      <p style="margin-top: 24px;"><i class="fas fa-map-pin" aria-hidden="true"></i> Main Sound Yard · Gates open 5:30 PM</p>
+      <a href="/tickets/" class="volunteer-link" style="display: inline-block; margin-top: 20px; background: var(--red-accent); color: #fff; border-color: var(--red-accent);">Reserve your spot</a>
+    </div>
+
+    <!-- ===== RULES ===== -->
+    <div class="section-title" id="rules-section"><i class="fas fa-gavel" aria-hidden="true"></i> RULES OF THE CLASH</div>
+    <div class="cards-grid">
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-gavel" aria-hidden="true"></i></div>
+        <h3>Round Structure</h3>
+        <ul class="rule-list">
+          <li>3 rounds + final dubplate round</li>
+          <li>Each selector plays 3 tunes per round</li>
+          <li>Rewinds allowed, but excessive rewinds can count against you</li>
+        </ul>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+        <h3>Crowd Decides</h3>
+        <ul class="rule-list">
+          <li>Applause meter + sound meter</li>
+          <li>Judges panel (veteran selectors)</li>
+          <li>Instant crowd reaction decides tie‑breakers</li>
+        </ul>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-dubplate" aria-hidden="true"></i></div>
+        <h3>Dubplate Specials</h3>
+        <ul class="rule-list">
+          <li>Exclusive, unreleased vocals</li>
+          <li>Custom disses allowed (but respectful)</li>
+          <li>No more than 3 dubplates per selector per round</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== HISTORIC CLASHES ===== -->
+    <div class="section-title"><i class="fas fa-history" aria-hidden="true"></i> LEGENDARY CLASHES</div>
+    <div class="cards-grid">
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-crown" aria-hidden="true"></i></div>
+        <h3>Stone Love vs. Killamanjaro (1990s)</h3>
+        <p>The rivalry that defined modern clash. Endless dubplates, iconic rewinds, and a split crowd. Still debated today.</p>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-globe" aria-hidden="true"></i></div>
+        <h3>World Clash Finals (2004)</h3>
+        <p>First international clash streamed online. Mighty Crown (Japan) defeated Sentinel (UK) in a 4‑hour battle.</p>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-hand-peace" aria-hidden="true"></i></div>
+        <h3>SelassieFest 2024</h3>
+        <p>Chicago Rebel Sound upset defending champion Kingston Thunder with a surprise Bob Marley dubplate in the final round.</p>
+      </div>
+    </div>
+
+    <!-- ===== ETIQUETTE ===== -->
+    <div class="section-title"><i class="fas fa-hands" aria-hidden="true"></i> CLASH ETIQUETTE</div>
+    <div class="cards-grid">
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-hands" aria-hidden="true"></i></div>
+        <h3>Make Noise</h3>
+        <p>Cheer, whistle, wave your hands. The selector feeds off your energy. If you love a tune, demand a rewind!</p>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-comment-dots" aria-hidden="true"></i></div>
+        <h3>No Disrespect</h3>
+        <p>Healthy rivalry is encouraged, but booing and throwing objects is not allowed. One love, one clash.</p>
+      </div>
+      <div class="clash-card">
+        <div class="card-icon"><i class="fas fa-flag-checkered" aria-hidden="true"></i></div>
+        <h3>Stay to the End</h3>
+        <p>The final dubplate round often decides the winner. Don't leave early — you might miss history.</p>
+      </div>
+    </div>
+
+    <!-- ===== POLL ===== -->
+    <div class="poll-box" role="form" aria-label="Who will take the trophy?">
+      <i class="fas fa-chart-simple" aria-hidden="true"></i>
+      <h3>Who will take the trophy?</h3>
+      <div class="poll-options">
+        <button class="poll-btn" id="votePrestige">Prestige</button>
+        <button class="poll-btn" id="voteFatta">Fatta Fyah</button>
+        <button class="poll-btn" id="voteInnovation">Innovations</button>
+        <button class="poll-btn" id="voteMoney">Money Movements</button>
+      </div>
+      <p id="voteResult" aria-live="polite">Click to cast your prediction</p>
+    </div>
+
+    <!-- BACK LINK -->
+    <a href="/sound-system-yard/" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Sound System Yard</a>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-links">
+      <a href="/sound-system-yard/">Sound Yard</a>
+      <a href="/festival/schedule/">Schedule</a>
+      <a href="/tickets/">Tickets</a>
+      <a href="/contact/">Contact</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+      <i class="fas fa-dove" aria-hidden="true"></i> SelassieFest — May the best sound win. Respect to all selectors.
+    </div>
+  </footer>
+
+  <script>
+    // ===== COUNTDOWN TO CLASHES (July 25, 2026) =====
+    function updateCountdowns() {
+      const now = new Date();
+      const baseDate = new Date(2026, 6, 25, 18, 0, 0); // 6:00 PM
+      const clash1Start = new Date(baseDate);
+      const clash2Start = new Date(baseDate);
+      clash2Start.setMinutes(clash2Start.getMinutes() + 60); // 7:00 PM (30 min clash + 30 min break)
+
+      const elements = [
+        { id: 'clash1Countdown', target: clash1Start },
+        { id: 'clash2Countdown', target: clash2Start }
+      ];
+
+      elements.forEach(({ id, target }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const diff = target - now;
+        if (diff <= 0) {
+          el.innerHTML = '🔥 CLASH IN PROGRESS!';
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (86400000)) / (3600000));
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        el.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s until first drop`;
+      });
+    }
+
+    updateCountdowns();
+    setInterval(updateCountdowns, 1000);
+
+    // ===== POLL (client-side only) =====
+    const votes = { Prestige: 0, Fatta: 0, Innovation: 0, Money: 0 };
+    const btnMap = {
+      votePrestige: 'Prestige',
+      voteFatta: 'Fatta Fyah',
+      voteInnovation: 'Innovations',
+      voteMoney: 'Money Movements'
+    };
+    const resultEl = document.getElementById('voteResult');
+
+    function updatePollDisplay() {
+      const total = Object.values(votes).reduce((a, b) => a + b, 0);
+      if (total === 0) {
+        resultEl.textContent = 'Click to cast your prediction';
+        return;
+      }
+      const parts = Object.entries(votes).map(([name, count]) => `${name} ${count}`);
+      resultEl.textContent = `👥 Crowd prediction: ${parts.join(' | ')}`;
+    }
+
+    Object.entries(btnMap).forEach(([btnId, name]) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          votes[name] += 1;
+          updatePollDisplay();
+        });
+      }
+    });
+    updatePollDisplay();
+  </script>
+</body>
+</html>

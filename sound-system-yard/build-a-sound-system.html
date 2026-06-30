@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Build your own sound system – learn the parts, assemble the stack, and understand the engineering behind Jamaican bass culture. Interactive workshop for all ages.">
+  <title>SelassieFest | Build a Sound System – Workshop & Interactive Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      list-style: none;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links li a:hover, .nav-links li a.active {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+    .hero-build {
+      text-align: center;
+      padding: 70px 24px 80px;
+      background: radial-gradient(circle at 30% 40%, rgba(14,94,54,0.3), #0a0a0a);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .hero-build h1 {
+      font-weight: 200;
+      font-size: 3rem;
+      letter-spacing: 0.1em;
+    }
+    .hero-build .gold {
+      color: var(--gold-accent);
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      border-left: 4px solid var(--gold-accent);
+      padding-left: 24px;
+      margin-bottom: 48px;
+    }
+    .build-workspace {
+      background: rgba(0,0,0,0.5);
+      border-radius: 48px;
+      padding: 40px;
+      margin-bottom: 56px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+    .components {
+      flex: 1;
+      min-width: 200px;
+      background: #111;
+      border-radius: 32px;
+      padding: 20px;
+    }
+    .component-item {
+      background: rgba(229,169,60,0.15);
+      margin: 12px 0;
+      padding: 12px 16px;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border-dim);
+    }
+    .component-item:hover {
+      background: var(--gold-accent);
+      color: #0D0D0D;
+      transform: scale(1.02);
+    }
+    .stack-area {
+      flex: 1;
+      min-width: 240px;
+      background: #0a0a0a;
+      border-radius: 32px;
+      padding: 20px;
+      border: 2px dashed var(--gold-accent);
+    }
+    .stack-slot {
+      background: rgba(255,255,255,0.03);
+      margin: 8px 0;
+      padding: 14px;
+      border-radius: 24px;
+      text-align: center;
+      border: 1px solid var(--border-dim);
+      min-height: 70px;
+    }
+    .reset-btn {
+      background: var(--red-accent);
+      border: none;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 60px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 32px;
+      margin: 48px 0;
+    }
+    .info-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 24px;
+      border: 1px solid var(--border-dim);
+    }
+    .footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .hero-build h1 { font-size: 2rem; }
+      .build-workspace { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="/" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/" class="active">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+  </ul>
+</nav>
+
+<section class="hero-build">
+  <h1>BUILD A <span class="gold">SOUND SYSTEM</span></h1>
+  <p style="max-width: 700px; margin: 20px auto 0; font-weight: 300;">Learn the anatomy of a Jamaican sound system. Drag the components into the stack, then test your knowledge. Perfect for future engineers and young bass heads.</p>
+  <div class="hero-badges" style="margin-top: 24px;">
+    <span class="hero-badge" style="background:rgba(229,169,60,0.2); padding:6px 16px; border-radius:40px;"><i class="fas fa-microchip"></i> Amplifiers</span>
+    <span class="hero-badge" style="background:rgba(229,169,60,0.2); padding:6px 16px; border-radius:40px;"><i class="fas fa-volume-down"></i> Crossovers</span>
+    <span class="hero-badge" style="background:rgba(229,169,60,0.2); padding:6px 16px; border-radius:40px;"><i class="fas fa-chess-board"></i> Scoop bins</span>
+  </div>
+</section>
+
+<div class="container">
+  <div class="section-title"><span>🔧</span> INTERACTIVE WORKSHOP: ASSEMBLE YOUR RIG</div>
+  <div class="build-workspace">
+    <div class="components">
+      <h3><i class="fas fa-puzzle-piece"></i> Components (click to add to stack)</h3>
+      <div id="componentList">
+        <div class="component-item" data-part="turntables"><i class="fas fa-record-vinyl"></i> Turntables & mixer</div>
+        <div class="component-item" data-part="preamp"><i class="fas fa-microchip"></i> Pre‑amplifier</div>
+        <div class="component-item" data-part="crossover"><i class="fas fa-chart-line"></i> Electronic crossover</div>
+        <div class="component-item" data-part="amp-mid"><i class="fas fa-bolt"></i> Mid‑range amplifier</div>
+        <div class="component-item" data-part="amp-bass"><i class="fas fa-waveform"></i> Bass amplifier (sub)</div>
+        <div class="component-item" data-part="scoop-bin"><i class="fas fa-chess-board"></i> Scoop bass bin</div>
+        <div class="component-item" data-part="horn"><i class="fas fa-bullhorn"></i> Mid‑high horn</div>
+      </div>
+      <button id="resetStackBtn" class="reset-btn"><i class="fas fa-trash-alt"></i> Reset Stack</button>
+    </div>
+    <div class="stack-area">
+      <h3><i class="fas fa-layer-group"></i> Your Sound System Stack</h3>
+      <div id="stackContainer"></div>
+      <p style="margin-top: 12px; font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Order matters: signal chain from source to speakers.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>📖</span> SOUND SYSTEM ANATOMY</div>
+  <div class="grid-cards">
+    <div class="info-card"><i class="fas fa-database"></i> <h3>Source</h3><p>Turntables, CDJs, or laptop. The selector’s weapon of choice. Original sound systems used strictly vinyl.</p></div>
+    <div class="info-card"><i class="fas fa-microphone-alt"></i> <h3>Mixer</h3><p>Controls volume, EQ, and crossfader. Where the selector blends tracks and adds effects.</p></div>
+    <div class="info-card"><i class="fas fa-tachometer-alt"></i> <h3>Crossover</h3><p>Splits the audio signal into frequency bands: lows to sub amp, mids to mid amp, highs to horns.</p></div>
+    <div class="info-card"><i class="fas fa-volume-up"></i> <h3>Amplifiers</h3><p>Boost the signal to drive speakers. Vintage systems used valve (tube) amps for warm distortion.</p></div>
+    <div class="info-card"><i class="fas fa-chess-board"></i> <h3>Scoop Bin</h3><p>A folded horn enclosure that projects bass forward with incredible efficiency. The heart of the dance.</p></div>
+    <div class="info-card"><i class="fas fa-bullhorn"></i> <h3>Horn / Tweeter</h3><p>Delivers crisp highs and mids. Often compression drivers on wooden horns for clarity.</p></div>
+  </div>
+
+  <div class="section-title"><span>🧪</span> QUIZ: TEST YOUR ENGINEERING KNOWLEDGE</div>
+  <div id="buildQuiz" style="background: rgba(0,0,0,0.4); border-radius: 32px; padding: 32px; margin-bottom: 48px;"></div>
+  <div id="quizFeedbackBuild" style="margin-top: 16px; text-align: center; color: var(--gold-accent);"></div>
+
+  <div style="text-align: center; margin-top: 48px;">
+    <a href="index.html" class="card-link" style="font-size: 1rem;"><i class="fas fa-arrow-left"></i> BACK TO SOUND SYSTEM YARD</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/sound-system-yard/">SOUND YARD</a>
+    <a href="/festival/workshops/">WORKSHOPS</a>
+    <a href="/contact/">CONTACT</a>
+  </div>
+  <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+  <div class="copyright"><i class="fas fa-dove"></i> SelassieFest — Building the next generation of sound engineers.</div>
+</footer>
+
+<script>
+  // Stack building simulation
+  let currentStack = [];
+  const stackContainer = document.getElementById('stackContainer');
+  const componentItems = document.querySelectorAll('.component-item');
+  const resetBtn = document.getElementById('resetStackBtn');
+
+  function updateStackDisplay() {
+    stackContainer.innerHTML = '';
+    if (currentStack.length === 0) {
+      stackContainer.innerHTML = '<div class="stack-slot">✨ Empty — click components above to build</div>';
+      return;
+    }
+    currentStack.forEach((part, idx) => {
+      const slot = document.createElement('div');
+      slot.className = 'stack-slot';
+      let icon = '';
+      if (part.includes('turntable')) icon = '<i class="fas fa-record-vinyl"></i> ';
+      else if (part.includes('preamp')) icon = '<i class="fas fa-microchip"></i> ';
+      else if (part.includes('crossover')) icon = '<i class="fas fa-chart-line"></i> ';
+      else if (part.includes('amp-mid')) icon = '<i class="fas fa-bolt"></i> ';
+      else if (part.includes('amp-bass')) icon = '<i class="fas fa-waveform"></i> ';
+      else if (part.includes('scoop')) icon = '<i class="fas fa-chess-board"></i> ';
+      else if (part.includes('horn')) icon = '<i class="fas fa-bullhorn"></i> ';
+      slot.innerHTML = `${icon} ${part.replace(/-/g,' ').toUpperCase()}`;
+      stackContainer.appendChild(slot);
+    });
+  }
+
+  function addComponent(partName) {
+    currentStack.push(partName);
+    updateStackDisplay();
+  }
+
+  componentItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const part = item.dataset.part;
+      addComponent(part);
+    });
+  });
+
+  resetBtn.addEventListener('click', () => {
+    currentStack = [];
+    updateStackDisplay();
+  });
+
+  // Quiz
+  const quizQuestions = [
+    { q: "What is the main function of an electronic crossover in a sound system?", options: ["To make the music louder", "To split frequencies to the correct amplifiers", "To add echo", "To power the turntables"], correct: 1 },
+    { q: "Which speaker cabinet is designed specifically for deep bass projection?", options: ["Horn tweeter", "Mid-range box", "Scoop bin", "DJ mixer"], correct: 2 },
+    { q: "What type of amplifiers were used in vintage Jamaican sound systems?", options: ["Digital class D", "Valve (tube) amplifiers", "Bluetooth amps", "Car amplifiers"], correct: 1 },
+    { q: "What does a selector use to blend between two records?", options: ["Crossfader", "Equalizer", "Volume knob", "Power switch"], correct: 0 }
+  ];
+
+  function renderBuildQuiz() {
+    const quizDiv = document.getElementById('buildQuiz');
+    quizDiv.innerHTML = '';
+    quizQuestions.forEach((q, idx) => {
+      const qDiv = document.createElement('div');
+      qDiv.style.marginBottom = '28px';
+      qDiv.innerHTML = `<p><strong>${idx+1}. ${q.q}</strong></p>`;
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.style.background = 'rgba(255,255,255,0.05)';
+        btn.style.border = `1px solid var(--gold-accent)`;
+        btn.style.color = 'white';
+        btn.style.padding = '6px 16px';
+        btn.style.borderRadius = '40px';
+        btn.style.margin = '4px 8px 4px 0';
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', () => {
+          const feedbackSpan = qDiv.querySelector('.quiz-fb');
+          if (optIdx === q.correct) {
+            feedbackSpan.innerHTML = '✅ Correct!';
+            feedbackSpan.style.color = 'var(--roots-green)';
+          } else {
+            feedbackSpan.innerHTML = `❌ Not quite. The answer is: ${q.options[q.correct]}`;
+            feedbackSpan.style.color = 'var(--gold-accent)';
+          }
+          // disable further clicks
+          const allBtns = qDiv.querySelectorAll('button');
+          allBtns.forEach(b => b.style.pointerEvents = 'none');
+        });
+        qDiv.appendChild(btn);
+      });
+      const fbSpan = document.createElement('div');
+      fbSpan.className = 'quiz-fb';
+      fbSpan.style.marginTop = '8px';
+      qDiv.appendChild(fbSpan);
+      quizDiv.appendChild(qDiv);
+    });
+  }
+  renderBuildQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="RAS TAFARI INC. — Organization accomplishments timeline, June 2026. SelassieFest 2026 formation milestones." />
+  <title>Our Journey | SelassieFest 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --card-bg: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --border-gold: rgba(229,169,60,0.3);
+      --transition-default: all 0.25s ease;
+    }
+    * { box-sizing: border-box; }
+    body { background: var(--bg-black); color: var(--text-white); font-family: 'Jost', sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; transition: var(--transition-default); }
+
+    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); backdrop-filter: blur(2px); }
+    .header-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .brand-link { display: inline-block; text-align: center; }
+    .brand-link:hover { opacity: 0.85; }
+    .site-title { font-weight: 200; font-size: 2.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-white); line-height: 1.2; }
+    .tagline { font-weight: 300; font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-accent); }
+    .powered-by-wrapper { display: flex; align-items: center; gap: 12px; }
+    .powered-by-text { font-weight: 300; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(245,245,245,0.5); }
+    .powered-by-logo img { height: 36px; width: auto; display: block; }
+
+    .main-nav { background: #0a0a0a; padding: 12px 24px; border-bottom: 1px solid var(--border-dim); position: sticky; top: 0; z-index: 100; }
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; list-style: none; }
+    .nav-links li a { font-weight: 400; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #ddd; border-bottom: 1px solid transparent; padding-bottom: 2px; }
+    .nav-links li a:hover { color: var(--gold-accent); border-bottom-color: var(--gold-accent); }
+
+    .page-hero { padding: 72px 32px 56px; text-align: center; border-bottom: 1px solid var(--border-dim); position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(14,94,54,0.18) 0%, transparent 70%), radial-gradient(ellipse 40% 30% at 80% 100%, rgba(229,169,60,0.08) 0%, transparent 70%); pointer-events: none; }
+    .eyebrow { font-weight: 300; font-size: 0.78rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold-accent); margin-bottom: 18px; }
+    .page-hero h1 { font-weight: 200; font-size: clamp(2.2rem, 5vw, 3.8rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-white); line-height: 1.15; margin-bottom: 20px; }
+    .page-hero h1 span { color: var(--gold-accent); }
+    .page-hero p { font-weight: 300; font-size: 1rem; color: rgba(245,245,245,0.65); max-width: 560px; margin: 0 auto 32px; }
+    .hero-meta { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .hero-stat .num { display: block; font-weight: 200; font-size: 2rem; letter-spacing: 0.05em; color: var(--gold-accent); }
+    .hero-stat .lbl { font-weight: 300; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,245,245,0.5); }
+
+    .timeline-section { max-width: 880px; margin: 0 auto; padding: 64px 24px 96px; }
+
+    .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 52px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,245,245,0.55); }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .dot-legal   { background: #0E5E36; box-shadow: 0 0 5px rgba(14,94,54,0.7); }
+    .dot-event   { background: #E5A93C; box-shadow: 0 0 5px rgba(229,169,60,0.6); }
+    .dot-govern  { background: #7B4FC2; box-shadow: 0 0 5px rgba(123,79,194,0.6); }
+    .dot-web     { background: #2A7DBF; box-shadow: 0 0 5px rgba(42,125,191,0.5); }
+    .dot-people  { background: #C83737; box-shadow: 0 0 5px rgba(200,55,55,0.6); }
+    .dot-pending { background: #555; }
+
+    .timeline { position: relative; padding-left: 48px; }
+    .timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--border-dim) 5%, var(--border-dim) 95%, transparent); }
+
+    .date-group { margin-bottom: 40px; position: relative; }
+    .date-label { position: absolute; left: -48px; top: 4px; width: 36px; text-align: right; }
+    .date-label .month { display: block; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,245,245,0.32); line-height: 1; }
+    .date-label .day { display: block; font-weight: 200; font-size: 1.45rem; color: rgba(245,245,245,0.42); letter-spacing: -0.02em; line-height: 1.1; }
+    .date-label.today .day { color: var(--gold-accent); }
+    .date-label.today .month { color: var(--gold-accent); opacity: 0.7; }
+
+    .node-dot { position: absolute; left: -44px; top: 16px; width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--bg-black); }
+    .node-dot.legal   { background: #0E5E36; box-shadow: 0 0 7px rgba(14,94,54,0.8); }
+    .node-dot.event   { background: #E5A93C; box-shadow: 0 0 7px rgba(229,169,60,0.7); }
+    .node-dot.govern  { background: #7B4FC2; box-shadow: 0 0 7px rgba(123,79,194,0.8); }
+    .node-dot.web     { background: #2A7DBF; box-shadow: 0 0 7px rgba(42,125,191,0.7); }
+    .node-dot.people  { background: #C83737; box-shadow: 0 0 7px rgba(200,55,55,0.7); }
+    .node-dot.pending { background: #444; border-color: #555; }
+    .node-dot.sub { width: 8px; height: 8px; left: -41px; top: 18px; }
+
+    .milestone { position: relative; margin-bottom: 10px; }
+    .milestone-card { background: var(--card-bg); border: 1px solid var(--border-dim); border-radius: 6px; padding: 14px 18px; transition: background 0.2s, border-color 0.2s; }
+    .milestone-card:hover { background: rgba(255,255,255,0.07); }
+    .milestone-card.legal   { border-left: 2px solid rgba(14,94,54,0.7); }
+    .milestone-card.event   { border-left: 2px solid rgba(229,169,60,0.6); }
+    .milestone-card.govern  { border-left: 2px solid rgba(123,79,194,0.6); }
+    .milestone-card.web     { border-left: 2px solid rgba(42,125,191,0.5); }
+    .milestone-card.people  { border-left: 2px solid rgba(200,55,55,0.55); }
+    .milestone-card.pending { border-left: 2px solid rgba(255,255,255,0.14); opacity: 0.72; }
+    .milestone-card:hover.legal  { border-left-color: #0E5E36; border-color: rgba(14,94,54,0.4); }
+    .milestone-card:hover.event  { border-left-color: #E5A93C; border-color: rgba(229,169,60,0.3); }
+    .milestone-card:hover.govern { border-left-color: #7B4FC2; border-color: rgba(123,79,194,0.3); }
+    .milestone-card:hover.web    { border-left-color: #2A7DBF; border-color: rgba(42,125,191,0.3); }
+    .milestone-card:hover.people { border-left-color: #C83737; border-color: rgba(200,55,55,0.3); }
+
+    .milestone-title { font-weight: 400; font-size: 0.95rem; letter-spacing: 0.02em; color: var(--text-white); margin-bottom: 4px; }
+    .milestone-meta  { font-weight: 300; font-size: 0.77rem; letter-spacing: 0.03em; color: rgba(245,245,245,0.44); line-height: 1.55; }
+    .milestone-meta .amount { color: var(--gold-accent); opacity: 0.9; }
+    .milestone-meta .quote  { font-style: italic; color: rgba(245,245,245,0.6); }
+
+    .badge { display: inline-block; font-size: 0.62rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-left: 9px; vertical-align: middle; position: relative; top: -1px; white-space: nowrap; }
+    .badge-legal   { background: rgba(14,94,54,0.2);   color: #5CC98A; border: 1px solid rgba(14,94,54,0.4); }
+    .badge-event   { background: rgba(229,169,60,0.15); color: #E5A93C; border: 1px solid rgba(229,169,60,0.3); }
+    .badge-govern  { background: rgba(123,79,194,0.15); color: #B08AE0; border: 1px solid rgba(123,79,194,0.3); }
+    .badge-web     { background: rgba(42,125,191,0.12);  color: #6EADDF; border: 1px solid rgba(42,125,191,0.3); }
+    .badge-people  { background: rgba(200,55,55,0.12);   color: #E07070; border: 1px solid rgba(200,55,55,0.3); }
+    .badge-pending { background: rgba(255,255,255,0.05); color: #777;    border: 1px solid rgba(255,255,255,0.12); }
+
+    .today-marker { display: flex; align-items: center; gap: 12px; margin: 4px 0 28px -48px; }
+    .today-marker .tline { flex: 1; height: 1px; opacity: 0.4; }
+    .today-marker .tline.l { background: linear-gradient(to right, var(--gold-accent), transparent); }
+    .today-marker .tline.r { background: linear-gradient(to left, transparent, rgba(229,169,60,0.4)); }
+    .today-marker .label { font-size: 0.67rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-accent); white-space: nowrap; }
+
+    .totals-bar { margin-top: 16px; padding: 24px; border: 1px solid var(--border-dim); border-radius: 6px; background: var(--card-bg); display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 18px; text-align: center; }
+    .total-item .val { display: block; font-weight: 200; font-size: 1.65rem; letter-spacing: 0.04em; color: var(--gold-accent); margin-bottom: 3px; }
+    .total-item .lbl { font-weight: 300; font-size: 0.67rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,245,245,0.42); }
+
+    .countdown-strip { margin: 36px 0 0; padding: 26px 32px; border: 1px solid var(--border-gold); border-radius: 6px; background: rgba(229,169,60,0.04); text-align: center; }
+    .countdown-strip .eyebrow { margin-bottom: 14px; }
+    .countdown-nums { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .countdown-unit .n { display: block; font-weight: 200; font-size: 2.3rem; letter-spacing: 0.06em; color: var(--text-white); line-height: 1; }
+    .countdown-unit .u { display: block; font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,245,245,0.38); margin-top: 4px; }
+    .countdown-sep { font-weight: 200; font-size: 1.9rem; color: rgba(229,169,60,0.38); align-self: flex-start; padding-top: 3px; }
+
+    .footer { border-top: 1px solid var(--border-dim); padding: 40px 24px 32px; text-align: center; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-bottom: 24px; }
+    .footer-links a { font-size: 0.77rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,245,245,0.42); }
+    .footer-links a:hover { color: var(--gold-accent); }
+    .social-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+    .social-icons a { font-size: 1.1rem; color: rgba(245,245,245,0.38); }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright { font-size: 0.74rem; font-weight: 300; letter-spacing: 0.05em; color: rgba(245,245,245,0.28); line-height: 1.7; }
+
+    @media (max-width: 600px) {
+      .site-header { padding: 20px 16px 14px; }
+      .site-title { font-size: 1.85rem; }
+      .page-hero { padding: 48px 16px 40px; }
+      .timeline-section { padding: 44px 14px 72px; }
+      .timeline { padding-left: 38px; }
+      .timeline::before { left: 9px; }
+      .date-label { left: -36px; width: 26px; }
+      .date-label .day { font-size: 1.15rem; }
+      .node-dot { left: -34px; }
+      .node-dot.sub { left: -31px; }
+      .today-marker { margin-left: -38px; }
+      .hero-meta { gap: 22px; }
+      .totals-bar { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+      <div class="powered-by-wrapper">
+        <span class="powered-by-text">Powered By</span>
+        <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+          <img src="../assets/images/ss_tiny.png" alt="Spliff Society">
+        </a>
+      </div>
+      <div style="display:flex; gap:14px; align-items:center;">
+        <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-pinterest"></i></a>
+        <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fab fa-linkedin"></i></a>
+        <a href="mailto:selassiefest@gmail.com" aria-label="Email" style="color:rgba(245,245,245,0.45); font-size:1rem; transition:color 0.2s;" onmouseover="this.style.color='#E5A93C'" onmouseout="this.style.color='rgba(245,245,245,0.45)'"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+    <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+    <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+    <li><a href="/healing-grove/">HEALING GROVE</a></li>
+    <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+    <li><a href="/marketplace/">MARKETPLACE</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+    <li><a href="/contact/">CONTACT</a></li>
+  </ul>
+</nav>
+
+<section class="page-hero">
+  <div class="eyebrow">RAS TAFARI INC. &nbsp;·&nbsp; Established June 2026</div>
+  <h1>Our <span>Journey</span></h1>
+  <p>From vision to a federally recognized 501(c)(3) — every milestone on the road to SelassieFest 2026.</p>
+  <div class="hero-meta">
+    <div class="hero-stat"><span class="num">4 yrs</span><span class="lbl">In the making</span></div>
+    <div class="hero-stat"><span class="num">44</span><span class="lbl">Milestones</span></div>
+    <div class="hero-stat"><span class="num" id="hero-days-out">—</span><span class="lbl">Days to July 25</span></div>
+    <div class="hero-stat"><span class="num">$2,323</span><span class="lbl">Invested to date</span></div>
+  </div>
+</section>
+
+<main class="timeline-section">
+
+  <!-- ORIGINS -->
+  <div style="margin-bottom: 64px;">
+    <div style="text-align:center; margin-bottom: 28px;">
+      <div style="font-weight:300; font-size:0.72rem; letter-spacing:0.35em; text-transform:uppercase; color: var(--gold-accent); margin-bottom:10px;">Where It All Began</div>
+      <div style="font-weight:200; font-size:1.7rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--text-white);">The Origins</div>
+    </div>
+    <div style="position:relative; padding-left:48px;">
+      <div style="position:absolute; left:14px; top:0; bottom:0; width:1px; background: linear-gradient(to bottom, transparent, rgba(229,169,60,0.2) 20%, rgba(229,169,60,0.2) 80%, transparent);"></div>
+
+      <!-- Aug 2022 first contact -->
+      <div style="margin-bottom:28px; position:relative;">
+        <div style="position:absolute; left:-44px; top:14px; width:13px; height:13px; border-radius:50%; background: var(--gold-accent); border:2px solid var(--bg-black); box-shadow:0 0 8px rgba(229,169,60,0.6);"></div>
+        <div style="position:absolute; left:-48px; top:2px; width:36px; text-align:right;">
+          <span style="display:block; font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(245,245,245,0.3);">Jul–Aug</span>
+          <span style="display:block; font-weight:200; font-size:1.1rem; color:rgba(245,245,245,0.38); letter-spacing:-0.02em; line-height:1.1;">2022</span>
+        </div>
+        <div style="background:rgba(229,169,60,0.04); border:1px solid rgba(229,169,60,0.15); border-left:2px solid rgba(229,169,60,0.5); border-radius:6px; padding:14px 18px;">
+          <div style="font-weight:400; font-size:0.95rem; color:var(--text-white); margin-bottom:4px;">
+            Prestige Sound begins SelassieFest conversations with Albert Harris
+            <span style="display:inline-block; font-size:0.62rem; letter-spacing:0.13em; text-transform:uppercase; padding:2px 7px; border-radius:2px; margin-left:9px; vertical-align:middle; position:relative; top:-1px; background:rgba(229,169,60,0.12); color:#E5A93C; border:1px solid rgba(229,169,60,0.3);">Origins</span>
+          </div>
+          <div style="font-weight:300; font-size:0.77rem; color:rgba(245,245,245,0.44); line-height:1.55;">Late July / Early August 2022 · The seed of SelassieFest 2026 is planted</div>
+        </div>
+      </div>
+
+      <!-- Aug 20 2022 Basu Farm -->
+      <div style="margin-bottom:28px; position:relative;">
+        <div style="position:absolute; left:-41px; top:16px; width:8px; height:8px; border-radius:50%; background: var(--gold-accent); border:2px solid var(--bg-black); box-shadow:0 0 6px rgba(229,169,60,0.5);"></div>
+        <div style="background:rgba(229,169,60,0.04); border:1px solid rgba(229,169,60,0.15); border-left:2px solid rgba(229,169,60,0.5); border-radius:6px; padding:14px 18px; margin-top:10px;">
+          <div style="font-weight:400; font-size:0.95rem; color:var(--text-white); margin-bottom:4px;">
+            First organizing meeting — Basu Farm, Kankakee, Illinois
+            <span style="display:inline-block; font-size:0.62rem; letter-spacing:0.13em; text-transform:uppercase; padding:2px 7px; border-radius:2px; margin-left:9px; vertical-align:middle; position:relative; top:-1px; background:rgba(229,169,60,0.12); color:#E5A93C; border:1px solid rgba(229,169,60,0.3);">Origins</span>
+          </div>
+          <div style="font-weight:300; font-size:0.77rem; color:rgba(245,245,245,0.44); line-height:1.55;">Saturday, August 20, 2022 · Kirk, Jah-Syl, and Pam Basu gather at the Basu Farm · The vision for SelassieFest is born in community, on the land</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding: 12px 0 0;">
+        <div style="display:inline-block; width:1px; height:32px; background: linear-gradient(to bottom, rgba(229,169,60,0.3), transparent);"></div>
+        <div style="font-size:0.68rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(245,245,245,0.3); margin-top:8px;">· · · nearly 4 years later · · ·</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot dot-legal"></span>Legal &amp; Government</div>
+    <div class="legend-item"><span class="legend-dot dot-event"></span>Event Production</div>
+    <div class="legend-item"><span class="legend-dot dot-govern"></span>Governance</div>
+    <div class="legend-item"><span class="legend-dot dot-web"></span>Web &amp; Technology</div>
+    <div class="legend-item"><span class="legend-dot dot-people"></span>People &amp; Community</div>
+    <div class="legend-item"><span class="legend-dot dot-pending"></span>In Progress</div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- JUN 5 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">05</span></div>
+      <div class="milestone">
+        <div class="node-dot web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">selassiefest.com went live <span class="badge badge-web">Web</span></div>
+          <div class="milestone-meta">Official festival website launched · Public-facing presence established</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Prestige Sound — first contact with Albert Harris <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Prestige Sound called Albert · Sound system partnership conversation initiated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 6 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">06</span></div>
+      <div class="milestone">
+        <div class="node-dot web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">Domain secured — selassiefest.com (6-year renewal) <span class="badge badge-web">Web</span></div>
+          <div class="milestone-meta">GoDaddy · 6-year term locked in · <span class="amount">$141.23</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 7 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">07</span></div>
+      <div class="milestone">
+        <div class="node-dot govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Organizational Meeting of the Board of Directors <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">2:00 PM · 765 E 154th St, South Holland · Quorum present · Original Bylaws adopted</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Board Resolution No. 2026-17 adopted <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">Authorized IRS Form 1023-EZ filing · Three-Year Business Plan approved</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Foundational corporate policies adopted <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">Conflict of Interest · Gift Acceptance · Document Destruction · Records Retention &amp; Destruction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 8 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">08</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">EIN assigned — IRS Notice CP575A <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">EIN 42-3036705 · Name control: RAST · Issued by IRS Philadelphia</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Incorporated in Illinois as not-for-profit corporation <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">IL Secretary of State · Form NFP 102.10 · File No. 75598726 · <span class="amount">$76.69</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 9 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">09</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">IRS Form 1023-EZ submitted <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">Pay.gov Tracking ID: 2833G86T · Agency ID: 77413835507 · <span class="amount">$275.00</span></div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">Venue deposit paid — 6227 S Prairie Ave, Chicago <span class="badge badge-event">Production</span></div>
+          <div class="milestone-meta">Venue owner: Cleadis Fields · Deposit <span class="amount">$850.00</span> of $1,650 total · via Zelle</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 12 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">12</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">IRS 501(c)(3) determination letter received <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">Letter 947 · Public charity 509(a)(2) · Effective June 9, 2026 · Donations tax-deductible</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Chucky — promotional photo shoot <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Festival promotional imagery captured · Building visual identity</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 13 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">13</span></div>
+      <div class="milestone">
+        <div class="node-dot people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Matches sets the standard — "We have to run it like a business" <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta"><span class="quote">"We have to run it like a business."</span> — Matches · A defining moment of operational clarity for the organizing committee</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Microphone Bill confirmed as event host <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Microphone Bill added to the hosting team · Stage presence and crowd energy secured for July 25</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Dwight takes charge of venue decoration <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Dwight assumes lead role in designing and decorating the festival venue · Creative vision locked in</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 14 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">14</span></div>
+      <div class="milestone">
+        <div class="node-dot event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">Event backdrops &amp; Rastafari banners ordered <span class="badge badge-event">Production</span></div>
+          <div class="milestone-meta">Temu · 17 items — Lion of Judah tapestries, Haile Selassie prints, Rasta Lion banners · <span class="amount">$277.91</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 15 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">15</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Illinois Certificate of Good Standing obtained <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">IL Secretary of State · Auth. #2616601867 · Valid through 06/15/2027 · <span class="amount">$11.00</span></div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Amended &amp; Restated Bylaws adopted + Banking Resolution <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">Chase Bank authorized · Albert Harris — Primary Signatory · Dual-control tiered framework · Signed by all 3 directors (6/16/2026)</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">Festival site visit — 6227 S Prairie Ave <span class="badge badge-event">Production</span></div>
+          <div class="milestone-meta">Organizing committee walks the venue · Layout, flow, and stage placement scoped in person</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">Event flyers &amp; print materials produced <span class="badge badge-event">Production</span></div>
+          <div class="milestone-meta">M13 Graphics, Schaumburg IL · <span class="amount">$300.66</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 18 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">18</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Chase Bank business account opened <span class="badge badge-legal">Banking</span></div>
+          <div class="milestone-meta">Primary commercial checking account · RAS TAFARI INC. · Albert Harris — Primary Signatory</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub pending"></div>
+        <div class="milestone-card pending">
+          <div class="milestone-title">Chicago park event permit filed <span class="badge badge-pending">In Progress</span></div>
+          <div class="milestone-meta">City of Chicago · CPG SVC FEE · Filing submitted · Approval pending · <span class="amount">$11.00</span></div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub pending"></div>
+        <div class="milestone-card pending">
+          <div class="milestone-title">Park inspection &amp; event license — processing <span class="badge badge-pending">In Progress</span></div>
+          <div class="milestone-meta">City of Chicago · CTYCHGO PRT INSP LIC · Application under review · <span class="amount">$500.00</span></div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">Cheryl the Rocker — first ticket inquiry via selassiefest.com <span class="badge badge-event">Tickets</span></div>
+          <div class="milestone-meta">Inquired about free admission · Ticket code 760793 issued · Community excitement building</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 20 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">20</span></div>
+      <div class="milestone">
+        <div class="node-dot people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Fishman — promotional photo shoot <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Festival promotional imagery captured · Expanding visual presence for SelassieFest 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 21 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">21</span></div>
+      <div class="milestone">
+        <div class="node-dot people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Indika Reggae Band committed to perform <span class="badge badge-people">Artist</span></div>
+          <div class="milestone-meta">Artist booking confirmed · SelassieFest 2026 live reggae lineup solidified</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 23 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">23</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Chase business debit card arrived <span class="badge badge-legal">Banking</span></div>
+          <div class="milestone-meta">RAS TAFARI INC. · Account fully operational for in-person and online purchases</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Special event liability insurance secured <span class="badge badge-legal">Insurance</span></div>
+          <div class="milestone-meta">EventSured · 1-day coverage · July 25, 2026 · 6227 S Prairie Ave, Chicago · <span class="amount">$362.39</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 24 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">24</span></div>
+      <div class="milestone">
+        <div class="node-dot people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Field Marshall — host commitment solidified <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta">Field Marshall confirmed as event host · Stage presence and community leadership locked in for July 25</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 25 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">25</span></div>
+      <div class="milestone">
+        <div class="node-dot legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Chase Ink business credit card arrived <span class="badge badge-legal">Banking</span></div>
+          <div class="milestone-meta">RAS TAFARI INC. · Full banking infrastructure now in place — checking, debit, and credit</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">5 event canopy tents ordered (10×30 ft each) <span class="badge badge-event">Production</span></div>
+          <div class="milestone-meta">Temu · Pergola-style white canopies · Qty 5 · <span class="amount">$367.48</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 26 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">26</span></div>
+      <div class="milestone">
+        <div class="node-dot people"></div>
+        <div class="milestone-card people">
+          <div class="milestone-title">Selecta Matches — a defining statement of purpose <span class="badge badge-people">Community</span></div>
+          <div class="milestone-meta"><span class="quote">"I lost money because the Selectas did not know how to spin for my crowd."</span> — Selecta Matches · A profound reminder of why curation, cultural knowledge, and crowd connection are at the heart of SelassieFest · This moment sharpens the standard for every selector on the lineup</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY MARKER -->
+    <div class="today-marker">
+      <div class="tline l"></div>
+      <div class="label"><i class="fas fa-circle" style="font-size:0.42rem;margin-right:6px;"></i>Today &nbsp;·&nbsp; June 28, 2026</div>
+      <div class="tline r"></div>
+    </div>
+
+    <!-- JUN 27 -->
+    <div class="date-group">
+      <div class="date-label"><span class="month">Jun</span><span class="day">27</span></div>
+      <div class="milestone">
+        <div class="node-dot govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Organizational Constitution adopted <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">Signed by Stephen Henry (President) · Paul Kelly (VP/Treasurer) · Albert Harris (Secretary) · Motto: "Inity in Spirit. Precision in Execution."</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub govern"></div>
+        <div class="milestone-card govern">
+          <div class="milestone-title">Projected budget &amp; financial plan prepared <span class="badge badge-govern">Governance</span></div>
+          <div class="milestone-meta">FY 2026 budget: $13,813 · Supporting Illinois STAX-1 state sales tax exemption application</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub legal"></div>
+        <div class="milestone-card legal">
+          <div class="milestone-title">Applied for Illinois Sales Tax Exemption (STAX-1) <span class="badge badge-legal">Legal</span></div>
+          <div class="milestone-meta">Illinois Department of Revenue · MyTax Illinois portal · Application submitted alongside projected budget &amp; supporting documents</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub event"></div>
+        <div class="milestone-card event">
+          <div class="milestone-title">First SelassieFest 2026 ticket purchased — Asha Jackson <span class="badge badge-event">Tickets</span></div>
+          <div class="milestone-meta">Ticket Tailor · Order ID: 78727039 · Free admission ticket · A historic first for RAS TAFARI INC.</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">Accomplishment timeline published to selassiefest.com <span class="badge badge-web">Web</span></div>
+          <div class="milestone-meta">github.com/trcevents · selassiefest.com/about/journey/</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 28 -->
+    <div class="date-group">
+      <div class="date-label today"><span class="month">Jun</span><span class="day">28</span></div>
+      <div class="milestone">
+        <div class="node-dot web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">Adobe nonprofit discount approved <span class="badge badge-web">Tech</span></div>
+          <div class="milestone-meta">Adobe for Nonprofits · Acrobat &amp; Creative tools at nonprofit pricing · adobe.com/nonprofits/acrobat.html</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">LinkedIn Premium nonprofit discount approved <span class="badge badge-web">Tech</span></div>
+          <div class="milestone-meta">LinkedIn for Nonprofits · Premium access at discounted rate · Expanding organizational reach &amp; partnerships</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">ChatGPT nonprofit discount approved <span class="badge badge-web">Tech</span></div>
+          <div class="milestone-meta">OpenAI for Nonprofits · AI-powered tools secured at nonprofit pricing · Supporting operations &amp; content creation</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">Microsoft nonprofit grants &amp; discounts approved <span class="badge badge-web">Tech</span></div>
+          <div class="milestone-meta">Microsoft for Nonprofits · Full suite of grants and discounted licenses · Office 365, Azure &amp; more</div>
+        </div>
+      </div>
+      <div class="milestone" style="margin-top:10px;">
+        <div class="node-dot sub web"></div>
+        <div class="milestone-card web">
+          <div class="milestone-title">Canva for Nonprofits approved <span class="badge badge-web">Tech</span></div>
+          <div class="milestone-meta">Canva nonprofit plan · Premium design tools for event graphics, social media &amp; marketing materials</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- TOTALS -->
+  <div class="totals-bar">
+    <div class="total-item"><span class="val">$2,323</span><span class="lbl">Invested to date</span></div>
+    <div class="total-item"><span class="val">501(c)(3)</span><span class="lbl">Federal status</span></div>
+    <div class="total-item"><span class="val">3</span><span class="lbl">Chase accounts</span></div>
+    <div class="total-item"><span class="val">8</span><span class="lbl">Policy docs</span></div>
+    <div class="total-item"><span class="val">3</span><span class="lbl">Artists booked</span></div>
+    <div class="total-item"><span class="val">Jul 25</span><span class="lbl">SelassieFest 2026</span></div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-strip">
+    <div class="eyebrow">Gates open 6:00 AM &nbsp;·&nbsp; 6227 S Prairie Ave, Chicago, IL 60637 &nbsp;·&nbsp; Free Admission</div>
+    <div class="countdown-nums">
+      <div class="countdown-unit"><span class="n" id="cd-days">—</span><span class="u">Days</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="n" id="cd-hours">—</span><span class="u">Hours</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="n" id="cd-mins">—</span><span class="u">Minutes</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="n" id="cd-secs">—</span><span class="u">Seconds</span></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/about/mission.html">MISSION</a>
+    <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+    <a href="/media/press-kit.html">PRESS KIT</a>
+    <a href="/scholarship/">SCHOLARSHIP</a>
+    <a href="/community-projects/">COMMUNITY PROJECTS</a>
+    <a href="/contact/">CONTACT</a>
+  </div>
+  <div class="social-icons">
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="mailto:selassiefest@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    <a href="tel:+14149093279" aria-label="Phone"><i class="fas fa-phone"></i></a>
+  </div>
+  <div class="contact-bar" style="margin-bottom:20px; display:flex; justify-content:center; gap:32px; flex-wrap:wrap;">
+    <a href="mailto:selassiefest@gmail.com" style="font-size:0.78rem; letter-spacing:0.1em; color:rgba(245,245,245,0.38); display:flex; align-items:center; gap:7px;">
+      <i class="fas fa-envelope" style="color:var(--gold-accent); font-size:0.85rem;"></i>selassiefest@gmail.com
+    </a>
+    <a href="tel:+14149093279" style="font-size:0.78rem; letter-spacing:0.1em; color:rgba(245,245,245,0.38); display:flex; align-items:center; gap:7px;">
+      <i class="fas fa-phone" style="color:var(--gold-accent); font-size:0.85rem;"></i>(414) 909-3279
+    </a>
+  </div>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage. All respect to H.I.M. Haile Selassie I.
+    <br>© 2026 SelassieFest Collective | Designed as living roots experience
+  </div>
+</footer>
+
+<script>
+(function() {
+  var fest = new Date('2026-07-25T06:00:00-05:00').getTime();
+  function pad(n) { return String(n).padStart(2,'0'); }
+  function tick() {
+    var diff = fest - Date.now();
+    if (diff <= 0) { ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(function(id){ document.getElementById(id).textContent='00'; }); return; }
+    document.getElementById('cd-days').textContent  = pad(Math.floor(diff/86400000));
+    document.getElementById('cd-hours').textContent = pad(Math.floor((diff%86400000)/3600000));
+    document.getElementById('cd-mins').textContent  = pad(Math.floor((diff%3600000)/60000));
+    document.getElementById('cd-secs').textContent  = pad(Math.floor((diff%60000)/1000));
+    var h = document.getElementById('hero-days-out');
+    if (h) h.textContent = Math.floor(diff/86400000);
+  }
+  tick(); setInterval(tick, 1000);
+  console.log('🌿 SelassieFest 2026 – One Day. One Love. One Society.');
+})();
+</script>
+</body>
+</html>

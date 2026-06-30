@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SelassieFest · Member Outreach System – Official Gift Policy Integrated</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-page: #fefaf2;
+      --surface: #ffffff;
+      --surface-muted: #faf7f0;
+      --border-light: #e9e2d4;
+      --border-med: #d6cdbc;
+      --text-primary: #2c2418;
+      --text-secondary: #6b5f4e;
+      --text-tertiary: #9b8f7a;
+      --accent: #c48a2b;
+      --accent-dark: #9e6e1f;
+      --accent-light: #e8cfa0;
+      --success: #2b7a4b;
+      --success-bg: #e6f2ec;
+      --info: #2c6e9e;
+      --info-bg: #e6f0f7;
+      --warning: #c47b2b;
+      --warning-bg: #fff0e2;
+      --danger: #b33c2e;
+      --danger-bg: #fbeae7;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 14px rgba(0,0,0,0.05);
+      --font-sans: system-ui, -apple-system, 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    body {
+      background: var(--bg-page);
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .outreach-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .sys-header {
+      margin-bottom: 2rem;
+    }
+    .sys-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4a3520 0%, #c48a2b 80%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.25rem;
+    }
+    .sys-sub {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--accent);
+      padding-left: 0.8rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 1.8rem;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--surface-muted);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .panel {
+      display: none;
+      animation: fade 0.2s ease;
+    }
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(4px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* guide phase navigation */
+    .phase-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.75rem;
+    }
+    .phase-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .phase-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .phase-block {
+      display: none;
+    }
+    .phase-block.active {
+      display: block;
+    }
+
+    .script-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .script-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .script-tag {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.15rem 0.6rem;
+      border-radius: 100px;
+    }
+    .tag-open { background: var(--info-bg); color: var(--info); }
+    .tag-cash { background: #1e2a1c; color: var(--accent); }
+    .tag-inkind { background: var(--success-bg); color: var(--success); }
+    .tag-sponsor { background: var(--warning-bg); color: var(--warning); }
+
+    .tip-box {
+      border-left: 3px solid var(--accent);
+      background: var(--surface-muted);
+      padding: 0.7rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .legal-pill {
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .objection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .objection {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .obj-q {
+      padding: 0.7rem 1rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: var(--surface-muted);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .obj-a {
+      padding: 0.8rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      display: none;
+      background: var(--surface);
+      border-top: 1px solid var(--border-light);
+    }
+    .obj-a.open {
+      display: block;
+    }
+
+    /* tracker */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid var(--border-light);
+    }
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .search-filter {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .search-filter input, .search-filter select {
+      padding: 0.5rem 0.8rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      font-size: 0.8rem;
+    }
+    button, .btn {
+      background: var(--surface);
+      border: 1px solid var(--border-med);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    button.primary:hover {
+      background: var(--accent-dark);
+    }
+    .add-form {
+      background: var(--surface-muted);
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-light);
+      display: none;
+    }
+    .add-form.open {
+      display: block;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .field label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+    .field input, .field select, .field textarea {
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      background: var(--surface);
+    }
+    .contacts-table-wrapper {
+      overflow-x: auto;
+    }
+    .contacts-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .contacts-table th {
+      text-align: left;
+      padding: 0.7rem 0.5rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .contacts-table td {
+      padding: 0.8rem 0.5rem;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .badge-new { background: var(--surface-muted); color: var(--text-secondary); }
+    .badge-approached { background: var(--info-bg); color: var(--info); }
+    .badge-interested { background: var(--warning-bg); color: var(--warning); }
+    .badge-followup { background: var(--info-bg); color: var(--info); }
+    .badge-committed { background: var(--success-bg); color: var(--success); }
+    .badge-passed { background: var(--danger-bg); color: var(--danger); }
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.2rem;
+      opacity: 0.6;
+    }
+    .icon-btn:hover { opacity: 1; }
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem;
+      color: var(--text-tertiary);
+    }
+    hr {
+      margin: 1rem 0;
+      border: none;
+      border-top: 1px solid var(--border-light);
+    }
+    @media (max-width: 680px) {
+      body { padding: 1rem; }
+      .stat-number { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="outreach-container">
+  <div class="sys-header">
+    <div class="sys-title">Ras Tafari Inc. · SelassieFest Member Outreach</div>
+    <div class="sys-sub">Official Gift Acceptance Policy integrated – conversation scripts, tracker & legal compliance</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="guide">📖 Conversation Guide</button>
+    <button class="tab-btn" data-tab="tracker">📋 Contact Tracker</button>
+    <button class="tab-btn" data-tab="legal">⚖️ Gift Policy & Legal</button>
+  </div>
+
+  <!-- GUIDE PANEL -->
+  <div id="panel-guide" class="panel active">
+    <div class="phase-nav">
+      <button class="phase-btn active" data-phase="open">Opening</button>
+      <button class="phase-btn" data-phase="pitch">The Ask</button>
+      <button class="phase-btn" data-phase="inkind">In-Kind</button>
+      <button class="phase-btn" data-phase="sponsor">Sponsorship</button>
+      <button class="phase-btn" data-phase="objections">Objections</button>
+      <button class="phase-btn" data-phase="followup">Follow-up</button>
+    </div>
+
+    <div id="phase-open" class="phase-block active">
+      <div class="tip-box"><strong>✨ Golden rule:</strong> Open with culture and invitation – not money. You are a peer, not a solicitor.</div>
+      <div class="script-card"><div class="script-label"><span>Casual opener</span><span class="script-tag tag-open">Natural</span></div><div class="script-text">“Hey [Name], have you heard of SelassieFest? Chicago's first major Rastafari & African heritage festival – July 25th on the South Side. I'm helping build the founding partner group and thought of you.”</div></div>
+      <div class="script-card"><div class="script-label"><span>Warm segue</span><span class="script-tag tag-open">Warm</span></div><div class="script-text">“I've been meaning to tell you about something I'm personally involved in – a cultural festival called SelassieFest. Incredible music, Ital food, Ethiopian heritage. We're inviting a small circle before we go public. I immediately thought of you.”</div></div>
+    </div>
+
+    <div id="phase-pitch" class="phase-block">
+      <div class="legal-pill">⚠️ Tax status pending – say “community investment” not “tax-deductible donation”</div>
+      <div class="script-card"><div class="script-label"><span>Financial ask</span><span class="script-tag tag-cash">Cash</span></div><div class="script-text">“We have founding partner levels from $250 up to $5,000+. Ras Tafari Inc. has applied for 501(c)(3) – it's pending. So this is a community investment, not a tax deduction at this point. But for those who believe in what this represents, it's a way to be part of Chicago history.”</div></div>
+      <div class="script-card"><div class="script-label"><span>Soft version</span><span class="script-tag tag-cash">Low pressure</span></div><div class="script-text">“Not asking for a check today – just putting it on your radar. If you feel called to be part of it after reading the one-pager, I'd love that. If not, no awkwardness at all.”</div></div>
+    </div>
+
+    <div id="phase-inkind" class="phase-block">
+      <div class="tip-box"><strong>🎁 In‑kind gifts accepted per policy:</strong> Books, educational materials, archival items, artworks, audio equipment, computers, cultural artifacts – anything advancing our mission. Also dinner certificates, club passes, wine, services.</div>
+      <div class="script-card"><div class="script-label"><span>Raffle / auction ask</span><span class="script-tag tag-inkind">In-Kind</span></div><div class="script-text">“We're building a raffle and live auction. If you have something to contribute – a gift certificate, a club experience, a bottle of something special – that's just as meaningful as cash. Your name or business will be featured in the program and on stage.”</div></div>
+    </div>
+
+    <div id="phase-sponsor" class="phase-block">
+      <div class="script-card"><div class="script-label"><span>Business sponsorship</span><span class="script-tag tag-sponsor">Sponsorship</span></div><div class="script-text">“With your business, SelassieFest could be a powerful cultural marketing moment. Presenting tiers include logo placement, vendor space, and direct access to 5,000+ South Side attendees. I can send our formal sponsorship deck – it's cultural alignment, not traditional advertising.”</div></div>
+    </div>
+
+    <div id="phase-objections" class="phase-block">
+      <div class="objection-list">
+        <div class="objection"><div class="obj-q">“Is this tax-deductible?” <span>+</span></div><div class="obj-a">“Great question – Ras Tafari Inc. has applied for 501(c)(3) status; it's pending. So contributions are not currently deductible. If status is granted, early donors may be able to retroactively characterize gifts – please consult your tax advisor. I'd rather be upfront than oversell it.”</div></div>
+        <div class="objection"><div class="obj-q">“I don't know Rastafari culture.” <span>+</span></div><div class="obj-a">“That's exactly why this festival matters – it's rooted in Ethiopian heritage, liberation philosophy, amazing music and food. You don't need to know it to appreciate it. What we're investing in is a community that's been underrepresented.”</div></div>
+        <div class="objection"><div class="obj-q">“How do I know this is legitimate?” <span>+</span></div><div class="obj-a">“Ras Tafari Inc. is a registered Illinois nonprofit – you can verify with the Secretary of State. We've filed our 1023 with the IRS. I'm personally involved and can connect you with the executive director if you'd like.”</div></div>
+      </div>
+    </div>
+
+    <div id="phase-followup" class="phase-block">
+      <div class="tip-box"><strong>⏱️ Follow-up timing:</strong> 3–5 days after “I'll think about it.” 1 week after leaving materials. Maximum two follow-ups without a signal.</div>
+      <div class="script-card"><div class="script-label"><span>Text follow-up</span><span class="script-tag tag-open">Casual</span></div><div class="script-text">“Hey [Name] – just following up on SelassieFest. No pressure, just wanted to make sure you got the info. Happy to answer any questions.”</div></div>
+      <div class="script-card"><div class="script-label"><span>Final close</span><span class="script-tag tag-cash">Decision</span></div><div class="script-text">“Before we finalize the partner list – is this something you want to be part of? Even at the Friend of the Fest level, having your name attached means a lot. If timing's not right, I totally understand.”</div></div>
+    </div>
+  </div>
+
+  <!-- TRACKER PANEL -->
+  <div id="panel-tracker" class="panel">
+    <div class="stats-grid" id="stats-container">
+      <div class="stat-card"><div class="stat-number" id="total-contacts">0</div><div class="stat-label">Total contacts</div></div>
+      <div class="stat-card"><div class="stat-number" id="interested-committed">0</div><div class="stat-label">Interested / Committed</div></div>
+      <div class="stat-card"><div class="stat-number" id="committed-count">0</div><div class="stat-label">Committed</div></div>
+      <div class="stat-card"><div class="stat-number" id="total-value">$0</div><div class="stat-label">Est. value (committed)</div></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="search-filter">
+        <input type="text" id="search-input" placeholder="🔍 Filter by name...">
+        <select id="status-filter"><option value="">All statuses</option><option value="new">Not approached</option><option value="approached">Approached</option><option value="interested">Interested</option><option value="followup">Follow-up needed</option><option value="committed">Committed</option><option value="passed">Passed</option></select>
+      </div>
+      <div>
+        <button id="export-csv-btn" class="btn">📎 Export CSV</button>
+        <button id="toggle-form-btn" class="btn primary">+ Add Contact</button>
+      </div>
+    </div>
+
+    <div id="add-form" class="add-form">
+      <div class="form-row">
+        <div class="field"><label>Member Name *</label><input type="text" id="contact-name" placeholder="Jane Smith"></div>
+        <div class="field"><label>Context / Connection</label><input type="text" id="contact-context" placeholder="Golf buddy, dinner, referral"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Status</label><select id="contact-status"><option value="new">Not yet approached</option><option value="approached">Approached</option><option value="interested">Interested</option><option value="followup">Follow-up needed</option><option value="committed">Committed</option><option value="passed">Passed</option></select></div>
+        <div class="field"><label>Ask Type</label><select id="contact-type"><option value="">—</option><option value="Cash">Cash / Financial</option><option value="In-Kind">In-Kind / Raffle</option><option value="Sponsorship">Business Sponsorship</option></select></div>
+        <div class="field"><label>Est. Value ($)</label><input type="number" id="contact-value" placeholder="250"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Date contacted</label><input type="date" id="contact-date"></div>
+        <div class="field"><label>Follow-up date</label><input type="date" id="contact-followup"></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="contact-notes" placeholder="What was discussed, next steps..."></textarea></div>
+      <div style="display: flex; gap: 0.6rem; margin-top: 0.8rem;">
+        <button id="save-contact-btn" class="primary">Save Contact</button>
+        <button id="cancel-form-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="contacts-table-wrapper" id="contacts-list-container"></div>
+  </div>
+
+  <!-- LEGAL PANEL – fully updated with Gift Acceptance Policy (Article IX, etc.) -->
+  <div id="panel-legal" class="panel">
+    <div style="max-width: 780px;">
+      <div class="tip-box" style="margin-bottom: 1rem;">
+        <strong>🏢 RAS TAFARI INC. – Official Gift Acceptance Policy (Adopted June 7, 2026)</strong><br>
+        765 E 154th St. South Holland, IL 60473 | (414) 909-3279 | selassiefest@gmail.com
+      </div>
+      
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">📜 ARTICLE IX – DONOR ACKNOWLEDGMENT (Required for every gift)</h3>
+      <div class="script-card">
+        <div class="script-label"><span>Written acknowledgment must include:</span></div>
+        <div class="script-text">
+          • Name of the Corporation: <strong>RAS TAFARI INC.</strong><br>
+          • Date the contribution was received.<br>
+          • Description of donated property (for in‑kind gifts).<br>
+          • A statement regarding goods or services provided in exchange (or “no goods or services were provided”).<br><br>
+          <em>For contributions over $250, a contemporaneous written acknowledgment is required by IRS rules – even while tax-exempt status is pending. This protects both the donor and the Corporation.</em>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">📋 Gifts That May Be Accepted (Article IV)</h3>
+      <div class="tip-box">
+        Cash, checks, electronic transfers, grants, sponsorships, tangible personal property (books, educational materials, artworks, audio equipment, computers, cultural artifacts), real property (Board approval required), and securities.
+      </div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">🎯 Restricted Gifts (Article V)</h3>
+      <div class="tip-box">
+        Donors may designate gifts for specific programs: <strong>SelassieFest, Sound Champs, CHROMA, Youth Education, Scholarships, Historical Preservation, Educational Publications</strong>. Restrictions must align with our mission – Board may decline overly restrictive gifts.
+      </div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">🏷️ Naming Opportunities (Article XI)</h3>
+      <div class="tip-box">
+        The Board may establish naming opportunities for educational programs, exhibits, scholarships, archives, facilities, or events – consistent with our mission.
+      </div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">🔒 Gifts That Will Not Be Accepted (Article VII)</h3>
+      <div class="tip-box">
+        Generally, we do not accept gifts that: jeopardize tax‑exempt status, create excessive financial burden, expose us to unreasonable liability, require illegal or discriminatory conduct, or are conditioned upon political endorsements.
+      </div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">✍️ What You Can Say (compliance with pending 501(c)(3))</h3>
+      <div class="tip-box">
+        ✅ “Ras Tafari Inc. has applied for 501(c)(3) status – it is pending.”<br>
+        ✅ “This is a community investment in a cultural festival.”<br>
+        ✅ “We offer sponsorship packages with brand recognition.”<br>
+        ✅ “Once tax‑exempt status is granted, early gifts may be eligible for retroactive deductibility – please consult your tax advisor.”<br>
+        ❌ Never say: “Your donation is tax‑deductible” or “We are a 501(c)(3) organization.”
+      </div>
+
+      <div class="script-card">
+        <div class="script-label"><span>Sample Acknowledgment Letter (per Article IX)</span></div>
+        <div class="script-text">
+          <em>Date: [Date of acknowledgment]</em><br><br>
+          <strong>RAS TAFARI INC.</strong><br>
+          765 E 154th St. South Holland, IL 60473<br><br>
+          To [Donor Name]:<br><br>
+          Thank you for your generous contribution received on [date]. This letter serves as the written acknowledgment required by IRS regulations.<br><br>
+          Description of contribution: [cash / check / in‑kind item description].<br><br>
+          No goods or services were provided in exchange for this contribution. [If goods/services provided: “In exchange, you received [description of goods or services with good faith estimate of value].”]<br><br>
+          Ras Tafari Inc. has applied for recognition of exemption under Section 501(c)(3) of the Internal Revenue Code; that application is pending. Please consult your tax advisor regarding any potential deductibility.<br><br>
+          Sincerely,<br>
+          Secretary, RAS TAFARI INC.
+        </div>
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem;">This policy was adopted by the Board on June 7, 2026, and supersedes all prior oral or written statements.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'selassiefest_contacts_v2_policy';
+  let editingId = null;
+
+  function loadContacts() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  function saveContacts(contacts) { localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts)); renderContacts(); updateStats(); }
+
+  function updateStats() {
+    const contacts = loadContacts();
+    const total = contacts.length;
+    const interestedCommitted = contacts.filter(c => c.status === 'interested' || c.status === 'committed').length;
+    const committed = contacts.filter(c => c.status === 'committed').length;
+    const totalValue = contacts.filter(c => c.status === 'committed').reduce((s,c) => s + (Number(c.value)||0), 0);
+    document.getElementById('total-contacts').innerText = total;
+    document.getElementById('interested-committed').innerText = interestedCommitted;
+    document.getElementById('committed-count').innerText = committed;
+    document.getElementById('total-value').innerText = `$${totalValue.toLocaleString()}`;
+  }
+
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  function renderContacts() {
+    let contacts = loadContacts();
+    const search = document.getElementById('search-input')?.value.toLowerCase() || '';
+    const statusFilter = document.getElementById('status-filter')?.value || '';
+    if (search) contacts = contacts.filter(c => c.name.toLowerCase().includes(search));
+    if (statusFilter) contacts = contacts.filter(c => c.status === statusFilter);
+    const container = document.getElementById('contacts-list-container');
+    if (!contacts.length) { container.innerHTML = '<div class="empty-state">No contacts found. Add your first prospect above.</div>'; return; }
+    const statusMap = { new: ['Not approached','badge-new'], approached: ['Approached','badge-approached'], interested: ['Interested','badge-interested'], followup: ['Follow-up','badge-followup'], committed: ['Committed','badge-committed'], passed: ['Passed','badge-passed'] };
+    const html = `<table class="contacts-table"><thead><tr><th>Name</th><th>Context</th><th>Status</th><th>Type</th><th>Value</th><th>Follow-up</th><th style="width:60px"></th></tr></thead><tbody>${contacts.map(c => {
+      const [statusLabel, badgeClass] = statusMap[c.status] || ['Unknown','badge-new'];
+      return `<tr>
+        <td><strong>${escapeHtml(c.name)}</strong>${c.notes ? `<br><span style="font-size:0.7rem;color:var(--text-tertiary)">${escapeHtml(c.notes.substring(0,60))}${c.notes.length>60?'…':''}</span>` : ''}</td>
+        <td style="color:var(--text-secondary)">${escapeHtml(c.context || '—')}</td>
+        <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
+        <td>${c.type || '—'}</td>
+        <td>${c.value ? `$${Number(c.value).toLocaleString()}` : '—'}</td>
+        <td>${c.followup || '—'}</td>
+        <td class="action-icons"><button class="icon-btn" onclick="editContact(${c.id})" title="Edit">✏️</button><button class="icon-btn" onclick="deleteContact(${c.id})" title="Delete">🗑️</button></td>
+      </tr>`}).join('')}</tbody></table>`;
+    container.innerHTML = html;
+  }
+
+  function deleteContact(id) { if(confirm('Remove this contact permanently?')) { saveContacts(loadContacts().filter(c => c.id !== id)); if(editingId===id) resetForm(); } }
+  function editContact(id) { const contact = loadContacts().find(c => c.id === id); if(!contact) return; editingId = contact.id; document.getElementById('contact-name').value = contact.name; document.getElementById('contact-context').value = contact.context || ''; document.getElementById('contact-status').value = contact.status; document.getElementById('contact-type').value = contact.type || ''; document.getElementById('contact-value').value = contact.value || ''; document.getElementById('contact-date').value = contact.date || ''; document.getElementById('contact-followup').value = contact.followup || ''; document.getElementById('contact-notes').value = contact.notes || ''; document.getElementById('add-form').classList.add('open'); }
+  function resetForm() { editingId = null; document.getElementById('contact-name').value = ''; document.getElementById('contact-context').value = ''; document.getElementById('contact-status').value = 'new'; document.getElementById('contact-type').value = ''; document.getElementById('contact-value').value = ''; document.getElementById('contact-date').value = new Date().toISOString().split('T')[0]; document.getElementById('contact-followup').value = ''; document.getElementById('contact-notes').value = ''; }
+
+  function saveContactHandler() {
+    const name = document.getElementById('contact-name').value.trim();
+    if(!name) { alert('Please enter a name'); return; }
+    const contacts = loadContacts();
+    const newContact = {
+      id: editingId || Date.now(),
+      name: name,
+      context: document.getElementById('contact-context').value,
+      status: document.getElementById('contact-status').value,
+      type: document.getElementById('contact-type').value,
+      value: parseInt(document.getElementById('contact-value').value) || 0,
+      date: document.getElementById('contact-date').value,
+      followup: document.getElementById('contact-followup').value,
+      notes: document.getElementById('contact-notes').value,
+    };
+    if(editingId) { const index = contacts.findIndex(c => c.id === editingId); if(index!==-1) contacts[index] = newContact; }
+    else { contacts.push(newContact); }
+    saveContacts(contacts);
+    resetForm();
+    document.getElementById('add-form').classList.remove('open');
+    renderContacts(); updateStats();
+  }
+
+  function exportToCSV() {
+    const contacts = loadContacts();
+    if(!contacts.length) { alert('No contacts to export'); return; }
+    const headers = ['Name','Context','Status','Ask Type','Est Value','Date Contacted','Follow-up Date','Notes'];
+    const rows = contacts.map(c => [c.name, c.context, c.status, c.type, c.value, c.date, c.followup, c.notes]);
+    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ras_tafari_contacts_${new Date().toISOString().slice(0,19)}.csv`; a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  // Tab and phase logic
+  document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { const tab = btn.dataset.tab; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.getElementById(`panel-${tab}`).classList.add('active'); }); });
+  document.querySelectorAll('.phase-btn').forEach(btn => { btn.addEventListener('click', (e) => { const phase = btn.dataset.phase; document.querySelectorAll('.phase-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.phase-block').forEach(b=>b.classList.remove('active')); document.getElementById(`phase-${phase}`).classList.add('active'); }); });
+  document.querySelectorAll('.obj-q').forEach(q => { q.addEventListener('click', () => { const ans = q.nextElementSibling; const isOpen = ans.classList.contains('open'); document.querySelectorAll('.obj-a').forEach(a=>a.classList.remove('open')); if(!isOpen) ans.classList.add('open'); }); });
+
+  document.getElementById('toggle-form-btn').addEventListener('click', () => { resetForm(); document.getElementById('add-form').classList.toggle('open'); });
+  document.getElementById('cancel-form-btn').addEventListener('click', () => { resetForm(); document.getElementById('add-form').classList.remove('open'); });
+  document.getElementById('save-contact-btn').addEventListener('click', saveContactHandler);
+  document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
+  document.getElementById('search-input').addEventListener('input', () => renderContacts());
+  document.getElementById('status-filter').addEventListener('change', () => renderContacts());
+
+  resetForm();
+  renderContacts();
+  updateStats();
+</script>
+</body>
+</html>

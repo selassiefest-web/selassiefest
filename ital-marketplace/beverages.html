@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ital Libations | SelassieFest — Vital Roots, Living Waters</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #050805;
+      --bg-surface: #0e110e;
+      --text-cream: #F5F2E8;
+      --green-roots: #2C8C5A;
+      --gold-livity: #E5A93C;
+      --red-power: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-soft: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* ----- SACROSANCT NAVBAR (inspired by festival.html & elevated) ----- */
+    .fest-nav {
+      background: rgba(5, 8, 5, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-soft);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 400;
+      font-size: 1.4rem;
+      letter-spacing: -0.3px;
+    }
+    .logo-area i {
+      color: var(--gold-livity);
+      font-size: 1.6rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #e2ddcf;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 1rem;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--gold-livity);
+      border-bottom-color: var(--gold-livity);
+    }
+    .btn-nav {
+      background: transparent;
+      border: 1px solid var(--gold-livity);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+    .btn-nav:hover {
+      background: var(--gold-livity);
+      color: #0a0c0a;
+    }
+
+    /* container & global */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.8rem;
+    }
+
+    .hero-beverage {
+      text-align: center;
+      padding: 2rem 1rem 2rem;
+      background: radial-gradient(ellipse at 50% 0%, rgba(44,140,90,0.2), transparent 70%);
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .hero-beverage h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      background: linear-gradient(135deg, #f5e6c4, var(--gold-livity));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .hero-beverage p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0.8rem auto 0;
+      font-weight: 300;
+      color: #cfcfc0;
+    }
+
+    .section-badge {
+      display: inline-block;
+      background: rgba(229, 169, 60, 0.12);
+      border-left: 3px solid var(--gold-livity);
+      padding: 0.3rem 1rem;
+      font-weight: 400;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      margin: 2rem 0 1.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border-left: 4px solid var(--gold-livity);
+      padding-left: 1rem;
+    }
+    .section-title i {
+      color: var(--gold-livity);
+    }
+
+    /* beverage grid */
+    .beverage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+    .drink-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(2px);
+      border: 1px solid var(--border-soft);
+      border-radius: 2rem;
+      padding: 1.6rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .drink-card:hover {
+      border-color: var(--green-roots);
+      transform: translateY(-6px);
+      background: rgba(44, 140, 90, 0.08);
+      box-shadow: 0 15px 25px -12px rgba(0,0,0,0.5);
+    }
+    .drink-icon {
+      font-size: 2.4rem;
+      color: var(--gold-livity);
+      margin-bottom: 1rem;
+    }
+    .drink-card h3 {
+      font-weight: 500;
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .vibe-tag {
+      display: inline-block;
+      background: rgba(200,55,55,0.2);
+      border-radius: 30px;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.7rem;
+      margin: 0.5rem 0;
+      letter-spacing: 0.3px;
+    }
+    .desc-sm {
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: #cfcfc0;
+      margin-bottom: 1rem;
+    }
+    .btn-sip {
+      background: transparent;
+      border: 1px solid var(--gold-livity);
+      color: var(--gold-livity);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      transition: 0.2s;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+    .btn-sip:hover {
+      background: var(--gold-livity);
+      color: #050805;
+    }
+
+    /* interactive quiz widget */
+    .vibe-finder {
+      background: linear-gradient(135deg, #0f1a13, #030503);
+      border-radius: 2rem;
+      border: 1px solid var(--gold-livity);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .quiz-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      justify-content: space-between;
+    }
+    .quiz-group {
+      flex: 1;
+      min-width: 160px;
+    }
+    .quiz-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--gold-livity);
+    }
+    select, .quiz-group input {
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--border-soft);
+      padding: 0.6rem;
+      border-radius: 2rem;
+      color: white;
+      font-family: 'Jost', sans-serif;
+    }
+    .recommend-output {
+      background: rgba(0,0,0,0.5);
+      border-radius: 1.8rem;
+      padding: 1rem 1.8rem;
+      margin-top: 1rem;
+      border-left: 5px solid var(--gold-livity);
+    }
+    .btn-recommend {
+      background: var(--green-roots);
+      border: none;
+      padding: 0.6rem 1.8rem;
+      border-radius: 2rem;
+      color: white;
+      font-weight: 500;
+      margin-top: 0.8rem;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .btn-recommend:hover {
+      background: var(--gold-livity);
+      color: #0a0a0a;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #0e110ef0;
+      max-width: 550px;
+      width: 90%;
+      border-radius: 2rem;
+      border: 1px solid var(--gold-livity);
+      padding: 2rem;
+      position: relative;
+      color: #f5f2e8;
+    }
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--gold-livity);
+    }
+    .modal-ingredients {
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 750px) {
+      .nav-container { flex-direction: column; align-items: flex-start; }
+      .hero-beverage h1 { font-size: 2.2rem; }
+      .section-title { font-size: 1.6rem; }
+    }
+    button {
+      background: none;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SACROSANCT NAVBAR (identical styling lineage from festival.html) -->
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area">
+      <i class="fas fa-leaf"></i>
+      <span>SelassieFest <span style="font-weight:200;">| Ital Grounds</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Roots</a>
+      <a href="#">Ital Food</a>
+      <a href="#" class="active">Beverages</a>
+      <a href="#">Higher Learning</a>
+      <a href="#">Festival Info</a>
+      <a href="#" class="btn-nav"><i class="fas fa-ticket-alt"></i> Tix</a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero-beverage">
+  <h1><i class="fas fa-wine-bottle"></i> Ital Libations · Living Waters & Root Tonics</h1>
+  <p>From sun-ripened fruits to ancestral herbs — each sip carries the vibration of Earth, no synthetics, no refined sugar. Blessed by elders, prepared with <strong>Ital intention</strong>.</p>
+  <p style="font-size:0.9rem; margin-top:0.6rem;"><i class="fas fa-hand-peace"></i> “Drink with purpose, hydrate with livity.”</p>
+</div>
+
+<div class="container">
+
+  <!-- intro + interactive badge -->
+  <div class="section-badge"><i class="fas fa-tint"></i> VITALITY ELIXIRS & PRIVATE RESERVES</div>
+  <div class="section-title"><i class="fas fa-mortar-pestle"></i> Sacred Sips · The Ital Beverage Lineup</div>
+  <p style="font-weight:300; margin-bottom:1rem;">At SelassieFest, our Ital Bar features handcrafted beverages made with fresh-pressed juices, adaptogenic herbs, and sweetened only with dates, coconut nectar, or agave. Below, discover our signature offerings — each one a healing ritual. <strong>Click any card</strong> to reveal full ingredients & ancestral wisdom.</p>
+
+  <!-- DYNAMIC BEVERAGE GRID (interactive modal) -->
+  <div class="beverage-grid" id="beverageGrid"></div>
+
+  <!-- INTERACTIVE QUIZ: DISCOVER YOUR VIBE DRINK -->
+  <div class="vibe-finder">
+    <h3 style="font-weight:400; display:flex; gap:0.8rem;"><i class="fas fa-magic" style="color:var(--gold-livity);"></i> Find Your Ital Vibe · Spirit Recommender</h3>
+    <p style="font-weight:300; margin-bottom:0.5rem;">Answer three questions — the ancestors of flavor will guide you to your perfect festival beverage.</p>
+    <div class="quiz-row">
+      <div class="quiz-group">
+        <label><i class="fas fa-fire"></i> Energy level needed</label>
+        <select id="energyLevel">
+          <option value="calm">Grounding / Calm</option>
+          <option value="lift" selected>Uplifting / Vibrant</option>
+          <option value="focus">Clarity & Focus</option>
+        </select>
+      </div>
+      <div class="quiz-group">
+        <label><i class="fas fa-apple-alt"></i> Flavor direction</label>
+        <select id="flavorPref">
+          <option value="citrus">Citrus & Bright</option>
+          <option value="earthy">Earthy & Spiced</option>
+          <option value="floral">Floral / Herbal</option>
+        </select>
+      </div>
+      <div class="quiz-group">
+        <label><i class="fas fa-sun"></i> Desired effect</label>
+        <select id="effect">
+          <option value="cool">Cooling hydration</option>
+          <option value="warm">Warming invigoration</option>
+          <option value="digest">Digestive harmony</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-recommend" id="getRecommendBtn"><i class="fas fa-drumstick-bite"></i> Reveal my Ital Drink</button>
+    <div class="recommend-output" id="recommendationArea">
+      <i class="fas fa-hand-sparkles"></i> <span id="recText">Click above — let the livity guide you.</span>
+    </div>
+  </div>
+
+  <!-- Private Reserve / Exclusive section -->
+  <div class="section-title" style="margin-top: 2.5rem;"><i class="fas fa-crown"></i> Private Select · Elder’s Reserve</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 1.8rem; padding: 1.5rem; margin-bottom: 1rem;">
+    <div style="flex:1; min-width:180px;">
+      <i class="fas fa-seedling" style="color: var(--gold-livity); font-size:1.8rem;"></i>
+      <h3 style="margin: 0.4rem 0;">Imperial Moringa Tonic</h3>
+      <p style="font-weight:300;">Fresh moringa, coconut water, lime, and raw honey (bee-friendly) — crafted by Nyabinghi healers. Only 50 bottles per day.</p>
+    </div>
+    <div style="flex:1; min-width:180px;">
+      <i class="fas fa-dragon" style="color: var(--gold-livity); font-size:1.8rem;"></i>
+      <h3 style="margin: 0.4rem 0;">Rasta Roots “Ganja Leaf” Iced Tea</h3>
+      <p style="font-weight:300;">Hemp leaf infusion, lemongrass, allspice & agave — non-psychoactive, deeply calming. A tribute to ancestral herbals.</p>
+    </div>
+    <div style="flex:1; min-width:180px;">
+      <i class="fas fa-heart" style="color: var(--red-power); font-size:1.8rem;"></i>
+      <h3 style="margin: 0.4rem 0;">Elderberry + Soursop Immunity Elixir</h3>
+      <p style="font-weight:300;">Cold-pressed soursop, elderberry, ginger, and orange. Powerful antioxidants, served at the Ital Healing Grove.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <i class="fas fa-peace"></i> “Water is the first medicine, but herbs are the elders’ song.” <br>
+  All Ital beverages are prepared without salt, animal products, or synthetic preservatives. Supporting local BIPOC farmers and herbalists.<br>
+  © 2026 SelassieFest | Experience the Vibration at Ital Marketplace — July 25, Chicago.
+</footer>
+
+<!-- MODAL STRUCTURE -->
+<div id="drinkModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2 id="modalTitle" style="color: var(--gold-livity);"><i class="fas fa-cup"></i> </h2>
+    <div id="modalDesc" style="margin-top: 0.5rem;"></div>
+    <div class="modal-ingredients" id="modalIngredients"></div>
+    <div id="modalTradition" style="margin-top: 1rem; font-style: italic; border-left: 2px solid #E5A93C; padding-left: 1rem;"></div>
+    <button class="btn-sip" style="margin-top:1rem; background:var(--green-roots); color:white; border:none;" id="closeModalBtn">Irie, close & sip later</button>
+  </div>
+</div>
+
+<script>
+  // BEVERAGE DATABASE (Interactives + private blends)
+  const beverages = [
+    {
+      id: 1,
+      name: "Ginger Turmeric Fire",
+      icon: "fas fa-fire",
+      shortDesc: "Fresh-pressed ginger, turmeric, lime, black pepper & raw agave. Fiery, anti-inflammatory.",
+      vibe: "Uplifting",
+      fullDesc: "A traditional Jamaican elixir used by Rastafari elders to purify the blood and increase energy. Made with organic turmeric root and hand-grated ginger.",
+      ingredients: "Fresh ginger root, turmeric root, lime juice, black pepper (activates curcumin), raw agave nectar, filtered water.",
+      tradition: "Often consumed at sunrise before Nyabinghi drumming to awaken the 'inner fire'. Served without salt, embodies pure earth healing."
+    },
+    {
+      id: 2,
+      name: "Sorrel ’66 Refresher",
+      icon: "fas fa-flower",
+      shortDesc: "Hibiscus flowers steeped with orange peel, clove & star anise, date syrup. Deep crimson.",
+      vibe: "Floral & Tart",
+      fullDesc: "Classic Caribbean sorrel (roselle) — caffeine-free, loaded with vitamin C. Our Ital version uses date syrup, never refined sugar.",
+      ingredients: "Dried sorrel calyces, fresh ginger, orange peel, cloves, star anise, date syrup, spring water.",
+      tradition: "Traditionally served at festive gatherings, but at SelassieFest it symbolizes the sweetness of community. Served chilled for grounding."
+    },
+    {
+      id: 3,
+      name: "Sea Moss Vitality Gel",
+      icon: "fas fa-water",
+      shortDesc: "Wildcrafted Irish moss blended with coconut milk, cinnamon & nutmeg. Creamy mineral boost.",
+      vibe: "Nourishing",
+      fullDesc: "A superfood staple in Ital kitchens — packed with 92 minerals. Prepared with love and sun-infused alkaline water.",
+      ingredients: "Irish sea moss (soaked & blended), coconut milk, cinnamon, nutmeg, vanilla bean, date paste.",
+      tradition: "Used by Rastafari to strengthen the immune system and support joint health. At the marketplace, served as a creamy 'gel shot' or smoothie bowl."
+    },
+    {
+      id: 4,
+      name: "Mango Ginger Fizz",
+      icon: "fas fa-mango",
+      shortDesc: "Sparkling coconut water, ripe mango, fresh mint, and lime. Naturally effervescent.",
+      vibe: "Joyful & Bright",
+      fullDesc: "Made with sun-kissed mangoes and raw coconut water. No artificial carbonation — fermented slight bubbles from coconut kefir.",
+      ingredients: "Mango puree, young coconut water, lime, fresh mint, sparkling spring water (natural).",
+      tradition: "Served during the Reasoning Circle pavilion to lighten the spirit. ‘Sweet like festival morning’."
+    },
+    {
+      id: 5,
+      name: "Nyabinghi Roots Tonic (Private)",
+      icon: "fas fa-drum",
+      shortDesc: "Secret root blend: sarsaparilla, burdock, dandelion & wild honey. Grounding deep earth.",
+      vibe: "Ancestral & Deep",
+      fullDesc: "An exclusive brew developed with Ital elder Ras Iriel. Helps ground festival energy and supports kidney & liver cleansing.",
+      ingredients: "Sarsaparilla root, burdock root, dandelion root, ginger, allspice, raw honey (or agave), coconut milk.",
+      tradition: "Made only for SelassieFest’s private vendors. Served after sunset to align with the Nyabinghi Order’s evening meditation."
+    },
+    {
+      id: 6,
+      name: "Lime Mint Agua Fresca",
+      icon: "fas fa-leaf",
+      shortDesc: "Crisp cucumber, lime, fresh spearmint, chia seeds — ultra-hydrating.",
+      vibe: "Cool & Renewing",
+      fullDesc: "Perfect for hot festival afternoons, electrolytes from cucumber + chia. Zero waste, garnished with local mint.",
+      ingredients: "Cucumber, lime, fresh mint, chia seeds, coconut water, touch of coconut sugar.",
+      tradition: "Often used in Ital hydration stations, drinking this is considered a small blessing to the ancestors."
+    },
+    {
+      id: 7,
+      name: "Soursop Nectar Calm",
+      icon: "fas fa-moon",
+      shortDesc: "Creamy soursop fruit, nutmeg, oat milk, and vanilla. Sleep-support elixir.",
+      vibe: "Soothing",
+      fullDesc: "Soursop (graviola) leaves and fruit are known for calming properties. This rich nectar is a nighttime Ital special.",
+      ingredients: "Soursop pulp, oat milk (gluten-free), nutmeg, cinnamon, date syrup, vanilla bean.",
+      tradition: "Offered at the Healing & Wellness Grove for deep relaxation after music sessions."
+    },
+    {
+      id: 8,
+      name: "Jamaican Peppermint & Lemongrass",
+      icon: "fas fa-mug-hot",
+      shortDesc: "Herbal infusion with fresh lemongrass, peppermint, lime & a touch of coconut sugar.",
+      vibe: "Cleansing",
+      fullDesc: "Light digestive tea served warm or iced, picked from the Ital kitchen’s container garden.",
+      ingredients: "Lemongrass stalks, peppermint leaves, lime zest, coconut sugar, hot filtered water.",
+      tradition: "Morning grounding tea to open the Reasoning Circles. Drink to clear the mental path."
+    }
+  ];
+
+  // render cards
+  const gridContainer = document.getElementById('beverageGrid');
+  function renderCards() {
+    gridContainer.innerHTML = '';
+    beverages.forEach(b => {
+      const card = document.createElement('div');
+      card.className = 'drink-card';
+      card.dataset.id = b.id;
+      card.innerHTML = `
+        <div class="drink-icon"><i class="${b.icon}"></i></div>
+        <h3>${b.name}</h3>
+        <div class="vibe-tag"><i class="fas fa-heartbeat"></i> ${b.vibe}</div>
+        <div class="desc-sm">${b.shortDesc}</div>
+        <button class="btn-sip" data-id="${b.id}"><i class="fas fa-info-circle"></i> Feel the Vibration</button>
+      `;
+      gridContainer.appendChild(card);
+    });
+    // attach event listeners to buttons
+    document.querySelectorAll('.btn-sip').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.dataset.id);
+        const bev = beverages.find(b => b.id === id);
+        if(bev) showModal(bev);
+      });
+    });
+  }
+
+  const modal = document.getElementById('drinkModal');
+  function showModal(bev) {
+    document.getElementById('modalTitle').innerHTML = `<i class="${bev.icon}"></i> ${bev.name}`;
+    document.getElementById('modalDesc').innerHTML = `<strong>${bev.shortDesc}</strong><br>${bev.fullDesc}`;
+    document.getElementById('modalIngredients').innerHTML = `<strong><i class="fas fa-seedling"></i> Ital ingredients:</strong><br>${bev.ingredients}`;
+    document.getElementById('modalTradition').innerHTML = `<i class="fas fa-pray"></i> Traditional wisdom: ${bev.tradition}`;
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() { modal.style.display = 'none'; }
+  document.querySelector('.close-modal').addEventListener('click', closeModal);
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+  window.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+  // INTERACTIVE QUIZ (VIBE RECOMMENDATION)
+  const getRecBtn = document.getElementById('getRecommendBtn');
+  const recSpan = document.getElementById('recText');
+
+  function getRecommendation() {
+    const energy = document.getElementById('energyLevel').value;
+    const flavor = document.getElementById('flavorPref').value;
+    const effect = document.getElementById('effect').value;
+    let recDrink = "";
+    let reason = "";
+
+    // rules based on ital wisdom
+    if (energy === 'lift' && flavor === 'citrus') {
+      recDrink = "Ginger Turmeric Fire";
+      reason = "Zesty, fiery lift to ignite your morning — perfect for high energy & immune boost.";
+    } 
+    else if (energy === 'lift' && flavor === 'floral') {
+      recDrink = "Sorrel ’66 Refresher";
+      reason = "Floral and vibrant, awakens the spirit with hibiscus magic and gentle spark.";
+    }
+    else if (energy === 'calm' && flavor === 'earthy') {
+      recDrink = "Nyabinghi Roots Tonic (Private)";
+      reason = "Deep grounding roots, perfect for meditation and reflective moments at the Reasoning Circle.";
+    }
+    else if (energy === 'calm' && effect === 'cool') {
+      recDrink = "Lime Mint Agua Fresca";
+      reason = "Hydrating & cool, lowers body heat and keeps you centered during the day.";
+    }
+    else if (energy === 'focus' && flavor === 'earthy') {
+      recDrink = "Sea Moss Vitality Gel";
+      reason = "Mineral-dense, sharpens mental clarity — elders suggest this before educational panels.";
+    }
+    else if (flavor === 'floral' && effect === 'digest') {
+      recDrink = "Jamaican Peppermint & Lemongrass";
+      reason = "Settles the stomach after Ital feast, calming and floral-forward.";
+    }
+    else if (effect === 'warm' && (flavor === 'earthy' || energy === 'focus')) {
+      recDrink = "Soursop Nectar Calm";
+      reason = "Warming, creamy and calming — brings deep restorative energy.";
+    }
+    else if (flavor === 'citrus' && effect === 'cool') {
+      recDrink = "Mango Ginger Fizz";
+      reason = "Bubbly, bright mango-citrus fizz, lifts mood and refreshes the soul.";
+    }
+    else {
+      recDrink = "Ginger Turmeric Fire + Sea Moss blend";
+      reason = "The elders suggest the dynamic duo: fiery turmeric for energy, sea moss for endurance — a SelassieFest signature combo.";
+    }
+
+    recSpan.innerHTML = `<strong><i class="fas fa-hand-sparkles"></i> ${recDrink}</strong> — ${reason} <br> <span style="font-size:0.8rem;">Ask for it at the Ital Beverage Marketplace Pavilion!</span>`;
+  }
+
+  getRecBtn.addEventListener('click', getRecommendation);
+  
+  renderCards();
+
+  // Additional interactive: extra vibe (festival goer engagement)
+  const styleAdd = document.createElement('style');
+  styleAdd.textContent = `.drink-card .btn-sip { cursor: pointer; } .drink-card:hover .btn-sip { background: rgba(229,169,60,0.2); }`;
+  document.head.appendChild(styleAdd);
+</script>
+</body>
+</html>

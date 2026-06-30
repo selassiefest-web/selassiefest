@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SelassieFest · Farm To Dispensary | Higher Learning Roots</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+    
+    :root {
+        --bg-black: #0D0D0D;
+        --text-white: #F5F5F5;
+        --roots-green: #0E5E36;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(255,255,255,0.04);
+        --border-dim: rgba(255,255,255,0.08);
+        --forest-shadow: rgba(14,94,54,0.25);
+        --amber-glow: rgba(229,169,60,0.2);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+        scroll-behavior: smooth;
+    }
+    
+    /* sitewide identical header / nav / footer styles */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    
+    .main-nav {
+        background: #0a0a0a;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+    }
+    
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    
+    .nav-links li a:hover {
+        color: var(--gold-accent);
+        border-bottom-color: var(--gold-accent);
+    }
+    
+    .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 60px 24px;
+    }
+    
+    .festival-badge {
+        background: rgba(229,169,60,0.15);
+        border-left: 4px solid var(--gold-accent);
+        padding: 16px 24px;
+        margin-bottom: 40px;
+        border-radius: 12px;
+        font-weight: 300;
+    }
+    
+    .one-love-callout {
+        background: rgba(200,55,55,0.2);
+        border: 1px solid var(--red-accent);
+        border-radius: 60px;
+        padding: 12px 24px;
+        text-align: center;
+        margin: 30px 0;
+    }
+    
+    /* curriculum specific */
+    .curriculum-hero {
+        background: radial-gradient(circle at 10% 20%, rgba(14,94,54,0.25), transparent);
+        border-radius: 2rem;
+        padding: 2rem 1.5rem;
+        margin-bottom: 3rem;
+        border: 1px solid var(--border-dim);
+    }
+    
+    .event-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 2px dashed var(--gold-accent);
+        padding-bottom: 20px;
+        margin-bottom: 28px;
+    }
+    
+    .day-badge {
+        background: var(--roots-green);
+        padding: 8px 20px;
+        border-radius: 40px;
+        font-weight: 500;
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .hour-block {
+        font-family: monospace;
+        font-size: 1.2rem;
+        background: var(--card-bg);
+        padding: 5px 12px;
+        border-radius: 2rem;
+        color: var(--gold-accent);
+    }
+    
+    .green-gradient-text {
+        background: linear-gradient(135deg, #E5A93C, #C5E0B4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 600;
+    }
+    
+    .schedule-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin: 48px 0;
+    }
+    
+    .session-card {
+        background: var(--card-bg);
+        border-radius: 32px;
+        border: 1px solid var(--border-dim);
+        overflow: hidden;
+        transition: transform 0.2s ease, background 0.2s;
+        backdrop-filter: blur(2px);
+    }
+    
+    .session-card:hover {
+        background: rgba(255,255,255,0.07);
+        transform: translateY(-3px);
+        border-color: var(--gold-accent);
+    }
+    
+    .session-time {
+        background: rgba(0,0,0,0.6);
+        padding: 12px 24px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        background: linear-gradient(90deg, #0E5E3622, transparent);
+        border-left: 4px solid var(--gold-accent);
+    }
+    
+    .session-time i {
+        margin-right: 12px;
+        color: var(--gold-accent);
+    }
+    
+    .session-content {
+        padding: 24px;
+    }
+    
+    .session-title {
+        font-size: 1.7rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+    
+    .session-sub {
+        font-weight: 300;
+        color: #BBBBBB;
+        margin-bottom: 16px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .topic-tag {
+        background: var(--roots-green);
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 400;
+    }
+    
+    .expert-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(229,169,60,0.2);
+        border-radius: 80px;
+        padding: 4px 14px;
+        font-size: 0.8rem;
+    }
+    
+    .desc-text {
+        font-weight: 300;
+        margin: 16px 0;
+        line-height: 1.6;
+    }
+    
+    .key-points {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+    }
+    
+    .key-points span {
+        background: rgba(255,255,255,0.05);
+        border-radius: 40px;
+        padding: 6px 18px;
+        font-size: 0.8rem;
+        font-weight: 300;
+        border: 0.5px solid var(--border-dim);
+    }
+    
+    .insight-quote {
+        background: var(--amber-glow);
+        border-radius: 28px;
+        padding: 24px;
+        margin: 40px 0;
+        text-align: center;
+        font-style: italic;
+        border: 1px solid rgba(229,169,60,0.4);
+    }
+    
+    .market-leader {
+        background: linear-gradient(145deg, #111111, #030303);
+        border-radius: 2rem;
+        padding: 32px;
+        margin-top: 48px;
+        text-align: center;
+        border: 1px solid var(--gold-accent);
+    }
+    
+    .footer {
+        background: #050505;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    
+    .footer-links a:hover { color: var(--gold-accent); }
+    
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    
+    .social-icons a:hover { color: var(--gold-accent); }
+    
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #666;
+    }
+    
+    @media (max-width: 780px) {
+        .site-title { font-size: 1.8rem; }
+        .nav-links { gap: 0.8rem; }
+        .nav-links li a { font-size: 0.7rem; }
+        .session-title { font-size: 1.4rem; }
+        .container { padding: 40px 20px; }
+    }
+    </style>
+</head>
+<body>
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/" class="active-nav">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Farm To Dispensary Header Section -->
+        <div class="curriculum-hero">
+            <div class="event-header">
+                <div>
+                    <h1 style="font-size: 2.8rem; font-weight: 400; letter-spacing: -0.02em;">
+                        🌱 <span class="green-gradient-text">Farm To Dispensary</span>
+                    </h1>
+                    <p style="font-size: 1.1rem; max-width: 700px; margin-top: 12px;">A one-day immersive curriculum — from living soil to retail experience. Led by Chicago’s #1 market share cannabis brand.</p>
+                </div>
+                <div class="day-badge">
+                    <i class="fas fa-calendar-alt"></i> SAT · JULY 25, 2026
+                </div>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+                <div class="hour-block"><i class="far fa-clock"></i> 6:00 AM — 10:00 PM</div>
+                <div class="expert-badge"><i class="fas fa-leaf"></i> Presented by Higher Learning Roots &amp; Blüm™ Chicago</div>
+            </div>
+        </div>
+
+        <!-- Experience Intro: #1 Chicago brand -->
+        <div class="festival-badge">
+            <i class="fas fa-trophy" style="color: var(--gold-accent);"></i> <strong>Market Leader Spotlight</strong> — Featuring the #1 cannabis brand in the Chicago market. Our cultivation experts &amp; retail educators bring you the real seed-to-sale journey.
+        </div>
+
+        <!-- Full-Day Schedule Grid -->
+        <div style="margin-bottom: 1rem;">
+            <h2 style="font-weight: 400; border-left: 4px solid var(--gold-accent); padding-left: 20px;"><i class="fas fa-seedling"></i> THE FULL FARM TO DISPENSARY EXPERIENCE</h2>
+            <p style="margin-top: 8px;">10 dynamic hours of deep dives, interactive labs, terpene tastings, and expert panels. From sunrise reasoning to sunset ceremonies.</p>
+        </div>
+
+        <div class="schedule-grid">
+            <!-- Session 1: 6:00am - 8:30am -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-sun"></i> 6:00 AM – 8:30 AM · DAWN ACTIVATION</div>
+                <div class="session-content">
+                    <div class="session-title">🌄 Roots &amp; Reasoning: Living Soil &amp; Organic Cultivation</div>
+                    <div class="session-sub"><span class="topic-tag"><i class="fas fa-microscope"></i> Living Soil Science</span><span class="topic-tag"><i class="fas fa-hand-peace"></i> Regenerative Ag</span><span>🎤 Lead: Mama Kush, Head Grower (Chicago Cultivator #1)</span></div>
+                    <div class="desc-text">Wake up with the farmers. Explore the microbial life, no-till soil building, and how top-tier craft cannabis starts with the rhizosphere. Interactive soil pit, microscope demo on mycorrhizae, and a cacao + terpene tea ceremony.</div>
+                    <div class="key-points"><span>🔬 Soil Food Web</span><span>🌿 Cover Crops &amp; Compost</span><span>📈 #1 Market Quality Standards</span></div>
+                </div>
+            </div>
+
+            <!-- Session 2: 8:45am - 11:00am -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-tractor"></i> 8:45 AM – 11:00 AM · CULTIVATION DEEP DIVE</div>
+                <div class="session-content">
+                    <div class="session-title">🏞️ Pheno-Hunting &amp; Genetics: The Art of Selection</div>
+                    <div class="session-sub"><span class="topic-tag"><i class="fas fa-dna"></i> Genetic Preservation</span><span class="topic-tag"><i class="fas fa-chart-line"></i> Strain Development</span></div>
+                    <div class="desc-text">Led by the brand’s master geneticist, explore how we hunt for terpene-rich, resilient cultivars. Live sensory evaluation of rare heirloom strains vs. new hybrids. Learn about preservation of legacy genetics inside Chicago’s #1 facility.</div>
+                    <div class="key-points"><span>🧬 Trichome evaluation lab</span><span>🌱 Clone vs. Seed</span><span>📊 Market demand science</span></div>
+                </div>
+            </div>
+
+            <!-- Session 3: 11:15am - 1:30pm -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-flask"></i> 11:15 AM – 1:30 PM · HARVEST &amp; POST-PRODUCTION</div>
+                <div class="session-content">
+                    <div class="session-title">✂️ From Chop to Cure: Drying, Trimming &amp; Terpene Preservation</div>
+                    <div class="session-sub"><span class="topic-tag"><i class="fas fa-temperature-high"></i> Cure Science</span><span class="topic-tag"><i class="fas fa-prescription-bottle"></i> Cold Cure Live Rosin</span></div>
+                    <div class="desc-text">Hands-on demonstration of optimal drying rooms, bucking techniques, and how to preserve volatile monoterpenes. Exclusive tour-style teaching with full-spectrum extraction insights. Smell the difference between rushed vs. precision craft cure.</div>
+                    <div class="key-points"><span>💧 Humidity control mastery</span><span>🌬️ Whole plant hang</span><span>🧪 Cannabinoid retention</span></div>
+                </div>
+            </div>
+
+            <!-- Session 4: 1:45pm - 4:00pm LUNCH + LAB -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-utensils"></i> 1:45 PM – 4:00 PM · ITAL LUNCH &amp; TERPENE IMMERSION LAB</div>
+                <div class="session-content">
+                    <div class="session-title">🍃 The Leaf Library &amp; Terpene Sensory Lab</div>
+                    <div class="session-sub"><span class="topic-tag"><i class="fas fa-brain"></i> Aroma Chemistry</span><span class="topic-tag"><i class="fas fa-glass-cheers"></i> Live Terpene Slushies</span></div>
+                    <div class="desc-text">Step into an immersive sensory journey — infused Ital lunch (vegan + gluten-free) alongside the famous “Terpene Discovery Bar”. Smell raw isolates, identify myrcene, limonene, caryophyllene, and learn how top Chicago dispensaries curate menus based on terpene profiles.</div>
+                    <div class="key-points"><span>👃 Aroma wheel workshop</span><span>📖 Leaf Library rare books</span><span>🍊 Citrus vs. Gas profiles</span></div>
+                </div>
+            </div>
+
+            <!-- Session 5: 4:15pm - 6:30pm -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-store"></i> 4:15 PM – 6:30 PM · DISPENSARY OPERATIONS &amp; COMPLIANCE</div>
+                <div class="session-content">
+                    <div class="session-title">🏬 From Backdoor to Retail Shelf: The Dispensary Ecosystem</div>
+                    <div class="session-sub"><span class="topic-tag">Illinois Regulations</span><span class="topic-tag">Budtender Science</span><span>🎤 VP of Retail, #1 Chicago Brand</span></div>
+                    <div class="desc-text">Ever wonder how flower gets tested, packaged, and sold? Walk through state compliance, packaging innovation, METRC tracking, and how to build an educational retail space. Live Q&A with top dispensary leaders + mock “menu consulting” experience.</div>
+                    <div class="key-points"><span>⚖️ DPI &amp; label literacy</span><span>📦 Child-resistant innovation</span><span>📈 Customer education best practices</span></div>
+                </div>
+            </div>
+
+            <!-- Session 6: 6:45pm - 8:30pm -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-chalkboard-user"></i> 6:45 PM – 8:30 PM · CANNABIS ACADEMY: FUTURE OF THE INDUSTRY</div>
+                <div class="session-content">
+                    <div class="session-title">🎓 Higher Learning Diploma Session: Equity, Sustainability &amp; Innovation</div>
+                    <div class="session-sub"><span class="topic-tag"><i class="fas fa-hand-holding-heart"></i> Social Equity</span><span class="topic-tag"><i class="fas fa-solar-panel"></i> Carbon-Neutral Cultivation</span></div>
+                    <div class="desc-text">Capstone of the day: an inspirational panel featuring Chicago’s legacy operators, the #1 brand’s CEO, and policy advocates. Certificates awarded to attendees who complete the full curriculum. Explore how farm-to-dispensary creates economic empowerment + regenerative future.</div>
+                    <div class="key-points"><span>🏆 Graduation ceremony</span><span>🤝 Networking mixer</span><span>🌍 Climate-smart cannabis</span></div>
+                </div>
+            </div>
+
+            <!-- Session 7: 8:30pm - 10:00pm -->
+            <div class="session-card">
+                <div class="session-time"><i class="fas fa-dove"></i> 8:30 PM – 10:00 PM · REASONING CIRCLE &amp; FIRESIDE CLOSING</div>
+                <div class="session-content">
+                    <div class="session-title">🔥 One Love Reflection: Ancestral Wisdom + Modern Science</div>
+                    <div class="session-sub"><span class="topic-tag">Healing Grove Integration</span><span class="topic-tag">Sound Bath</span></div>
+                    <div class="desc-text">Under the stars, we gather for a closing reasoning circle led by elders and brand founders. Reflect on the journey from farm to dispensary, share intentions, and enjoy a grounding sound bath. Herbal infusions and community connection until 10pm.</div>
+                    <div class="key-points"><span>🎶 Nyabinghi drumming</span><span>🧘🏿 Guided meditation</span><span>✨ Intentional giveaways</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- additional learning hubs + market leader callout -->
+        <div class="insight-quote">
+            <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--gold-accent); opacity: 0.6;"></i>
+            <p style="font-size: 1.25rem; font-weight: 300;">"We don’t just grow cannabis — we cultivate knowledge. As the #1 brand in Chicago, our commitment to education is rooted in transparency, heritage, and the highest quality from soil to sale."</p>
+            <div style="margin-top: 12px;">— Higher Learning Roots x Blüm™ Cultivation Team</div>
+        </div>
+
+        <!-- Interactive education hub -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; margin: 48px 0;">
+            <div style="background: var(--card-bg); border-radius: 28px; padding: 24px; text-align: center; border: 1px solid var(--border-dim);">
+                <i class="fas fa-microscope" style="font-size: 2.5rem; color: var(--gold-accent);"></i>
+                <h3 style="margin: 16px 0 8px;">Smart Buds Biology Lab</h3>
+                <p>Live trichome viewing stations, HD microscopes and resin gland analysis. Observe the difference between milky, clear and amber heads.</p>
+            </div>
+            <div style="background: var(--card-bg); border-radius: 28px; padding: 24px; text-align: center; border: 1px solid var(--border-dim);">
+                <i class="fas fa-book-open" style="font-size: 2.5rem; color: var(--gold-accent);"></i>
+                <h3 style="margin: 16px 0 8px;">The Leaf Library</h3>
+                <p>Rare cannabis literature, historical artifacts, and Illinois legacy archive. Curated by our in-house ethnobotanist.</p>
+            </div>
+            <div style="background: var(--card-bg); border-radius: 28px; padding: 24px; text-align: center; border: 1px solid var(--border-dim);">
+                <i class="fas fa-graduation-cap" style="font-size: 2.5rem; color: var(--gold-accent);"></i>
+                <h3 style="margin: 16px 0 8px;">Certification Track</h3>
+                <p>Attend all key sessions and earn the "Farm To Dispensary Graduate" pin + digital certificate from Higher Learning Roots.</p>
+            </div>
+        </div>
+
+        <!-- final CTA: map & tickets preview -->
+        <div class="market-leader">
+            <i class="fas fa-map-marker-alt" style="color: var(--gold-accent); font-size: 2rem;"></i>
+            <h2 style="font-weight: 400; margin: 16px 0;">🎟️ Reserve Your Spot — SelassieFest 2026</h2>
+            <p style="max-width: 700px; margin: 0 auto 24px;">The Farm To Dispensary curriculum is included with festival admission. Arrive early at the Higher Learning Roots village (near Healing Grove). Limited capacity for hands-on labs.</p>
+            <div style="display: inline-flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                <a href="/tickets/" style="background: var(--gold-accent); color: #0D0D0D; text-decoration: none; font-weight: 600; padding: 12px 34px; border-radius: 60px; letter-spacing: 0.05em;">GET TICKETS →</a>
+                <a href="/higher-learning-roots/farm-to-dispensary-guide.pdf" style="background: transparent; border: 1px solid var(--gold-accent); padding: 12px 28px; border-radius: 60px; text-decoration: none; color: var(--gold-accent);">DOWNLOAD SCHEDULE</a>
+            </div>
+            <p style="margin-top: 28px; font-size: 0.85rem;"><i class="fas fa-tree"></i> Saturday, July 25th, 6:00 AM – 10:00 PM · Dan Ryan Woods, Chicago · All ages welcome, 18+ for consumption area.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST -- One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+            <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM - 10:00 PM | Higher Learning Roots presents Farm To Dispensary
+        </div>
+    </footer>
+</body>
+</html>

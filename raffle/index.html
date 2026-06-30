@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>SelassieFest Charity Raffle | Support 2nd Chance Housing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #0a0c0a;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+      --green-roots: #1a6e41;
+      --gold-sun: #e6b13e;
+      --red-power: #c73d3d;
+      --text-light: #f0f0f0;
+      --text-muted: #b0b0b0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* header & hero */
+    .hero {
+      text-align: center;
+      padding: 2rem 1rem 2rem;
+      border-bottom: 1px solid var(--border-dim);
+      background: radial-gradient(ellipse at 50% 0%, rgba(26,110,65,0.2), transparent);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-weight: 300;
+      font-size: 3rem;
+      letter-spacing: 0.05em;
+      color: var(--gold-sun);
+    }
+
+    .subhead {
+      font-weight: 300;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .charity-badge {
+      background: rgba(0,0,0,0.5);
+      border-radius: 2rem;
+      padding: 0.8rem 1.5rem;
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.5rem auto;
+      border: 1px solid var(--green-roots);
+      font-size: 0.85rem;
+    }
+
+    .charity-badge span {
+      background: var(--green-roots);
+      padding: 0.2rem 0.8rem;
+      border-radius: 2rem;
+      font-weight: 500;
+    }
+
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      border-left: 4px solid var(--gold-sun);
+      padding-left: 1rem;
+      margin: 2.5rem 0 1.5rem 0;
+    }
+
+    .section-title i {
+      color: var(--gold-sun);
+      margin-right: 0.6rem;
+    }
+
+    /* prize grid */
+    .prize-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 1.5rem 0;
+    }
+
+    .prize-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 1.8rem;
+      overflow: hidden;
+      transition: 0.25s ease;
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prize-card:hover {
+      border-color: var(--gold-sun);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    .prize-img {
+      height: 190px;
+      background: #1a1f1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: var(--gold-sun);
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .prize-content {
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .prize-content h3 {
+      font-weight: 500;
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .partner-name {
+      font-size: 0.85rem;
+      color: var(--gold-sun);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+    }
+
+    .prize-desc {
+      font-weight: 300;
+      color: var(--text-muted);
+      margin: 0.75rem 0;
+      font-size: 0.95rem;
+    }
+
+    .value-tag {
+      color: var(--green-roots);
+      font-weight: 500;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 2.5rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.05);
+      color: white;
+      border: 1px solid var(--border-dim);
+    }
+
+    .btn-primary {
+      background: var(--gold-sun);
+      color: #0a0c0a;
+      border: none;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #c9951e;
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      border-color: var(--gold-sun);
+      color: var(--gold-sun);
+    }
+
+    .btn-outline:hover {
+      background: var(--gold-sun);
+      color: #0a0c0a;
+    }
+
+    /* modal style */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-content {
+      background: #111311;
+      max-width: 550px;
+      width: 90%;
+      border-radius: 2rem;
+      border: 1px solid var(--gold-sun);
+      padding: 2rem;
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 1.2rem;
+      top: 1rem;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .payment-method-icons {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .method-badge {
+      background: #1e221e;
+      padding: 0.3rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      background: #1e221e;
+      border: 1px solid var(--border-dim);
+      border-radius: 1.2rem;
+      color: white;
+      font-family: inherit;
+    }
+
+    label {
+      font-weight: 400;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    .admin-panel {
+      margin-top: 3rem;
+      background: rgba(0,0,0,0.4);
+      border-radius: 1.5rem;
+      padding: 1rem;
+      border: 1px dashed var(--border-dim);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border-dim);
+      text-align: left;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border-dim);
+      margin-top: 3rem;
+      color: #777;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 700px) {
+      .container { padding: 1rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🎟️ SELASSIE FEST <span style="color: var(--red-power);">RAFFLE</span></h1>
+  <div class="subhead">One Day. One Love. One Community. — Win incredible prizes while uplifting housing solutions.</div>
+  <div class="charity-badge">
+    <span><i class="fas fa-hand-holding-heart"></i> Beneficiary: 2nd Chance Housing Inc.</span>
+    <span><i class="fas fa-check-circle"></i> 501(c)(3) | EIN: 47-5387503</span>
+    <span><i class="fas fa-file-alt"></i> IRS Publication 78 Eligible</span>
+  </div>
+  <p style="max-width: 700px; margin: 0 auto; font-weight: 300;">✅ Tax-deductible donation • All raffle proceeds go directly to housing, reentry programs & community support. <strong>Every ticket = second chances!</strong></p>
+</div>
+
+<div class="container">
+  <!-- Charity transparency block -->
+  <div style="background: rgba(199,61,61,0.1); border-left: 4px solid var(--red-power); padding: 1rem; border-radius: 1rem; margin-bottom: 1.5rem;">
+    <i class="fas fa-gavel"></i> <strong>Official IRS Determination Letter received</strong> — 2nd Chance Housing Inc. is a tax-exempt public charity. Donations are deductible as allowed by law.
+  </div>
+
+  <!-- RAFFLE PRIZES (DONATED PRODUCTS) -->
+  <div class="section-title"><i class="fas fa-gift"></i> Donated Products — Raffle Prizes</div>
+  <div class="prize-grid" id="prizeGrid"></div>
+
+  <!-- PARTNER GLORY SECTION: FULL SPOTLIGHT FOR EACH DONOR COMPANY -->
+  <div class="section-title"><i class="fas fa-handshake"></i> Partners Who Make It Possible</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;" id="partnerSpotlight"></div>
+
+  <!-- ADMIN & ENTRIES (transparent for organizer) -->
+  <div class="admin-panel">
+    <details>
+      <summary style="cursor: pointer; font-weight: 500;"><i class="fas fa-lock"></i> 🛠️ Raffle Organizer Panel (view entries / export)</summary>
+      <div style="margin-top: 1rem;">
+        <button id="exportCsvBtn" class="btn btn-outline" style="margin-bottom: 1rem;"><i class="fas fa-download"></i> Export Entries CSV</button>
+        <button id="clearEntriesBtn" class="btn" style="background: #3a2a2a; border-color: var(--red-power);"><i class="fas fa-trash-alt"></i> Clear All Demo Entries</button>
+        <div style="overflow-x: auto; margin-top: 1rem;">
+          <table id="entriesTable">
+            <thead>
+              <tr><th>Prize</th><th>Name</th><th>Email</th><th>Tickets</th><th>Payment Method</th><th>Tx ID</th><th>Date</th></tr>
+            </thead>
+            <tbody id="entriesTbody"></tbody>
+          </table>
+        </div>
+        <p class="text-muted" style="font-size:0.7rem; margin-top:0.5rem;"><i class="fas fa-info-circle"></i> Entries stored locally in browser (demo). In real event, organization verifies payment & sends ticket numbers. All submissions require manual payment confirmation.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- HOW TO PARTICIPATE INFO -->
+  <div style="margin-top: 2rem; background: rgba(230,177,62,0.05); border-radius: 1.5rem; padding: 1.5rem; text-align: center;">
+    <i class="fas fa-ticket-alt" style="font-size: 2rem; color: var(--gold-sun);"></i>
+    <h3 style="font-weight: 400;">Simple 3 Steps to Win</h3>
+    <p>1️⃣ Choose a prize & click <strong>"Buy Tickets"</strong> → 2️⃣ Send payment via <strong>Zelle, CashApp or PayPal</strong> (use memo: "SELASSIERAFFLE") → 3️⃣ Fill transaction ID & details. Our team verifies & sends ticket numbers via email. Winners announced July 25th at SelassieFest main stage!</p>
+    <div class="payment-method-icons" style="justify-content: center;">
+      <span class="method-badge"><i class="fab fa-paypal"></i> PayPal: paypal.me/2ndChanceHousing</span>
+      <span class="method-badge"><i class="fas fa-mobile-alt"></i> CashApp: $2ndChanceHousing</span>
+      <span class="method-badge"><i class="fas fa-envelope"></i> Zelle: donate@2ndchancehousing.org</span>
+    </div>
+    <p style="font-size:0.8rem;">💡 <strong>Ticket price: $1 each</strong> (no minimum, but each $1 = 1 entry). Multiple tickets = more chances!</p>
+  </div>
+</div>
+
+<footer>
+  <i class="fas fa-dove"></i> SelassieFest · Roots Reggae & Cultural Celebration · July 25, 2026 · Chicago, IL<br>
+  Raffle benefits 2nd Chance Housing Inc. (EIN 47-5387503) · Winners need not be present. Valid ID required. <br>
+  © 2026 | Love, Unity & Community Empowerment
+</footer>
+
+<!-- MODAL for ticket purchase -->
+<div id="raffleModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <h3 id="modalPrizeTitle" style="color: var(--gold-sun);">Prize Name</h3>
+    <p id="modalPartnerRef" style="font-size: 0.8rem;">Donated by: <strong></strong></p>
+    <p><i class="fas fa-tag"></i> Ticket price: <strong>$1 per ticket</strong></p>
+    <form id="ticketForm">
+      <input type="hidden" id="prizeIdField" />
+      <input type="hidden" id="prizeNameField" />
+      <label>Full Name *</label>
+      <input type="text" id="buyerName" required placeholder="Jah Love">
+      <label>Email Address *</label>
+      <input type="email" id="buyerEmail" required placeholder="you@example.com">
+      <label>Number of Tickets ($1 each) *</label>
+      <input type="number" id="ticketQty" min="1" max="50" value="1" required>
+      <label>Payment Method *</label>
+      <select id="paymentMethod" required>
+        <option value="PayPal">PayPal</option>
+        <option value="CashApp">CashApp</option>
+        <option value="Zelle">Zelle</option>
+      </select>
+      <label>Transaction ID / Reference Number *</label>
+      <input type="text" id="transactionId" required placeholder="PayPal/CashApp/Zelle confirmation #">
+      <div style="font-size:0.75rem; background:#1e221e; border-radius: 1rem; padding: 0.5rem; margin: 0.8rem 0;">
+        <i class="fas fa-info-circle"></i> After submitting, our team will verify payment within 48h and send your official ticket numbers to your email.
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-ticket-alt"></i> Purchase Raffle Tickets</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ---------- Prize data (donated products + full partner glory) ----------
+  const prizes = [
+    {
+      id: "prize1",
+      name: "🌿 Roots Traveler Backpack + Eco Gear Bundle",
+      partner: "Green Lion Gear",
+      partnerFullDesc: "Green Lion Gear crafts sustainable outdoor equipment inspired by Rastafari Livity. They donated this premium backpack set (value $380) to support housing & community. At SelassieFest they will have a dedicated booth, logo on main stage LED, and special shout-out during Nyabinghi hour. Their ethical mission aligns with Ital living.",
+      value: "$380 value",
+      description: "Waterproof backpack, bamboo utensil set, solar charger, and organic cotton blanket — perfect for festival journeys.",
+      imgIcon: "🎒",
+      promo: "Green Lion Gear receives: prime logo on digital banners, social media series, on-site banner & live announcer gratitude."
+    },
+    {
+      id: "prize2",
+      name: "🥁 Handcrafted Nyabinghi Drum",
+      partner: "JahMuzik Crafts",
+      partnerFullDesc: "JahMuzik Crafts, a family-owned workshop from Kingston, builds authentic nyabinghi drums using traditional goat skin and Jamaican cedar. Their donation (value $650) honors Selassie I. JahMuzik will co-host a drum circle and have their logo screened on the main stage poster. Plus feature in festival newsletter reaching 20k+.",
+      value: "$650 value",
+      description: "Professional Nyabinghi drum with hand-painted Ethiopian flag motifs. Tuned by master craftsmen.",
+      imgIcon: "🥁",
+      promo: "Logo on all festival emails, dedicated social media reel, and banner in the 'Sound System Yard'."
+    },
+    {
+      id: "prize3",
+      name: "☕ Ethiopian Jebena Coffee Ceremony Set",
+      partner: "Addis Ababa Coffee Co.",
+      partnerFullDesc: "Addis Ababa Coffee Co. preserves ancient coffee traditions, donating a complete Jebena set + organic Ethiopian Yirgacheffe beans (value $210). As partner, they receive prime vending location, 'Official Coffee of SelassieFest' status, and full-page feature in the printed festival program.",
+      value: "$210 value",
+      description: "Handmade clay Jebena, 3 ceramic cups, frankincense burner, and 2 lbs of single-origin roast.",
+      imgIcon: "☕",
+      promo: "Exclusive pop-up activation, logo on hydration station signage, shoutout from main stage."
+    },
+    {
+      id: "prize4",
+      name: "🎨 Haile Selassie Art Collection & Gift Basket",
+      partner: "EthioArt Collective",
+      partnerFullDesc: "EthioArt Collective is a Black-led arts organization celebrating Ethiopian heritage. Their donated deluxe art set (value $275) includes limited edition prints, a handwoven shawl, and incense. They receive VIP artist passes, stage dedication during intermission, and curated art gallery mention in all press releases.",
+      value: "$275 value",
+      description: "Signed lithograph of H.I.M. Haile Selassie I, shea butter set, traditional scarf, and handmade journal.",
+      imgIcon: "🎨",
+      promo: "Logo on website footer, 4 social media features, on-screen rotating ad at the main stage."
+    }
+  ];
+
+  // STORAGE for entries (localStorage)
+  let raffleEntries = [];
+
+  function loadEntriesFromStorage() {
+    const stored = localStorage.getItem("selassieRaffleEntries");
+    if(stored) {
+      try {
+        raffleEntries = JSON.parse(stored);
+      } catch(e) { raffleEntries = []; }
+    } else {
+      raffleEntries = [];
+    }
+    renderEntriesTable();
+  }
+
+  function saveEntriesToStorage() {
+    localStorage.setItem("selassieRaffleEntries", JSON.stringify(raffleEntries));
+    renderEntriesTable();
+  }
+
+  function addEntry(entry) {
+    entry.id = Date.now() + "-" + Math.random().toString(36);
+    entry.date = new Date().toLocaleString();
+    raffleEntries.push(entry);
+    saveEntriesToStorage();
+    return true;
+  }
+
+  function renderEntriesTable() {
+    const tbody = document.getElementById("entriesTbody");
+    if(!tbody) return;
+    tbody.innerHTML = "";
+    raffleEntries.slice().reverse().forEach(entry => {
+      const row = tbody.insertRow();
+      row.insertCell(0).innerText = entry.prizeName || entry.prize;
+      row.insertCell(1).innerText = entry.name;
+      row.insertCell(2).innerText = entry.email;
+      row.insertCell(3).innerText = entry.tickets;
+      row.insertCell(4).innerText = entry.paymentMethod;
+      row.insertCell(5).innerText = entry.transactionId;
+      row.insertCell(6).innerText = entry.date;
+    });
+  }
+
+  function exportToCSV() {
+    if(raffleEntries.length === 0) { alert("No entries yet."); return; }
+    let csv = "Prize,Name,Email,Tickets,Payment Method,Transaction ID,Date\n";
+    raffleEntries.forEach(e => {
+      csv += `"${e.prizeName}","${e.name}","${e.email}","${e.tickets}","${e.paymentMethod}","${e.transactionId}","${e.date}"\n`;
+    });
+    const blob = new Blob([csv], {type: "text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "selassie_raffle_entries.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function clearEntries() {
+    if(confirm("⚠️ Clear ALL entries? This action is irreversible (demo only).")) {
+      raffleEntries = [];
+      saveEntriesToStorage();
+      alert("All entries cleared.");
+    }
+  }
+
+  // Render prize grid and partner spotlight (full html for each company)
+  function buildPrizeGrid() {
+    const grid = document.getElementById("prizeGrid");
+    const partnerSpotDiv = document.getElementById("partnerSpotlight");
+    grid.innerHTML = "";
+    partnerSpotDiv.innerHTML = "";
+    prizes.forEach(prize => {
+      // prize card
+      const card = document.createElement("div");
+      card.className = "prize-card";
+      card.innerHTML = `
+        <div class="prize-img">${prize.imgIcon}</div>
+        <div class="prize-content">
+          <span class="partner-name"><i class="fas fa-building"></i> ${prize.partner}</span>
+          <h3>${prize.name}</h3>
+          <div class="value-tag"><i class="fas fa-dollar-sign"></i> ${prize.value}</div>
+          <p class="prize-desc">${prize.description}</p>
+          <div class="btn-group">
+            <button class="btn btn-primary buy-ticket-btn" data-id="${prize.id}" data-name="${prize.name.replace(/"/g, '&quot;')}" data-partner="${prize.partner}"><i class="fas fa-ticket-alt"></i> Buy Tickets</button>
+            <button class="btn btn-outline partner-story-btn" data-partner-name="${prize.partner}" data-desc="${prize.partnerFullDesc.replace(/"/g, '&quot;')}" data-promo="${prize.promo.replace(/"/g, '&quot;')}"><i class="fas fa-star"></i> Partner Glory</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+      
+      // PARTNER SPOTLIGHT: full glorified section (each company gets extended bio, promotion commitment)
+      const partnerDiv = document.createElement("div");
+      partnerDiv.style.background = "rgba(26,110,65,0.1)";
+      partnerDiv.style.borderRadius = "1.2rem";
+      partnerDiv.style.padding = "1.2rem";
+      partnerDiv.style.border = "1px solid var(--green-roots)";
+      partnerDiv.style.flex = "1 1 280px";
+      partnerDiv.innerHTML = `
+        <i class="fas fa-crown" style="color: var(--gold-sun); font-size: 1.8rem;"></i>
+        <h3 style="margin: 0.5rem 0 0.2rem;">${prize.partner}</h3>
+        <p style="font-size:0.8rem; margin-bottom:0.5rem;"><strong>Donated:</strong> ${prize.name} (${prize.value})</p>
+        <p style="font-size:0.85rem;">${prize.partnerFullDesc.substring(0, 120)}...</p>
+        <button class="btn btn-outline partner-glory-detail" style="margin-top:0.8rem; font-size:0.75rem;" data-fullstory='${JSON.stringify({name: prize.partner, story: prize.partnerFullDesc, promo: prize.promo, product: prize.name})}'>Read Full Partnership & Promotion Plan →</button>
+      `;
+      partnerSpotDiv.appendChild(partnerDiv);
+    });
+    
+    // attach events for buy buttons
+    document.querySelectorAll(".buy-ticket-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const partner = btn.dataset.partner;
+        openModal(id, name, partner);
+      });
+    });
+    // attach partner-story-btn (quick modal)
+    document.querySelectorAll(".partner-story-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const fullDesc = btn.dataset.desc;
+        const promoInfo = btn.dataset.promo;
+        const partnerName = btn.dataset.partnerName;
+        alert(`🌟 ${partnerName} 🌟\n\n🤝 Partnership Impact:\n${fullDesc}\n\n🎉 FESTIVAL PROMOTIONS:\n${promoInfo}\n\nWe honor their support with stage shoutouts, social features, and permanent partner wall.`);
+      });
+    });
+    // detailed glory dialog for partner spotlight cards
+    document.querySelectorAll(".partner-glory-detail").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const data = JSON.parse(btn.dataset.fullstory);
+        alert(`✨ ${data.name} ✨\n\n📦 DONATED PRODUCT: ${data.product}\n\n📖 STORY: ${data.story}\n\n📢 PROMOTION COMMITMENT DURING SELASSIEFEST:\n${data.promo}\n\nWe also place sponsor logo on all flyers, social media tags, and announce from main stage."`);
+      });
+    });
+  }
+
+  // Modal logic
+  let currentPrizeId = null;
+  let currentPrizeName = null;
+  const modal = document.getElementById("raffleModal");
+  const modalPrizeTitle = document.getElementById("modalPrizeTitle");
+  const modalPartnerRef = document.getElementById("modalPartnerRef");
+  const prizeIdField = document.getElementById("prizeIdField");
+  const prizeNameField = document.getElementById("prizeNameField");
+  const ticketForm = document.getElementById("ticketForm");
+
+  function openModal(prizeId, prizeName, partnerName) {
+    currentPrizeId = prizeId;
+    currentPrizeName = prizeName;
+    modalPrizeTitle.innerText = prizeName;
+    modalPartnerRef.innerHTML = `Donated by: <strong>${partnerName}</strong> — 100% proceeds to 2nd Chance Housing Inc.`;
+    prizeIdField.value = prizeId;
+    prizeNameField.value = prizeName;
+    document.getElementById("buyerName").value = "";
+    document.getElementById("buyerEmail").value = "";
+    document.getElementById("ticketQty").value = 1;
+    document.getElementById("transactionId").value = "";
+    modal.style.display = "flex";
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  ticketForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("buyerName").value.trim();
+    const email = document.getElementById("buyerEmail").value.trim();
+    const qty = parseInt(document.getElementById("ticketQty").value);
+    const paymentMethod = document.getElementById("paymentMethod").value;
+    const transactionId = document.getElementById("transactionId").value.trim();
+    const prizeName = prizeNameField.value;
+    
+    if(!name || !email || !transactionId || qty < 1) {
+      alert("Please fill all required fields correctly.");
+      return;
+    }
+    if(!email.includes("@")) {
+      alert("Valid email required");
+      return;
+    }
+    const total = qty * 10;
+    // Save entry
+    const entry = {
+      prize: currentPrizeId,
+      prizeName: prizeName,
+      name: name,
+      email: email,
+      tickets: qty,
+      totalAmount: total,
+      paymentMethod: paymentMethod,
+      transactionId: transactionId,
+      status: "pending_verification"
+    };
+    addEntry(entry);
+    alert(`✅ Thank you ${name}! Your entry for ${qty} ticket(s) ($${total}) to win "${prizeName}" has been recorded. Our team will verify payment (${paymentMethod} TX: ${transactionId}) and email your official ticket numbers within 48h. Good luck! 🎫`);
+    closeModal();
+    ticketForm.reset();
+  });
+
+  document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+  window.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+  document.getElementById("exportCsvBtn").addEventListener("click", exportToCSV);
+  document.getElementById("clearEntriesBtn").addEventListener("click", clearEntries);
+
+  // Initialize
+  loadEntriesFromStorage();
+  buildPrizeGrid();
+  
+  // additionally we add a guarantee dynamic to also embed IRS verification from given info
+  const irsNote = document.createElement("div");
+  irsNote.style.textAlign = "center";
+  irsNote.style.marginTop = "1rem";
+  irsNote.style.fontSize = "0.7rem";
+  irsNote.innerHTML = `<i class="fas fa-file-certificate"></i> IRS Determination Letter: 2nd Chance Housing Inc. (EIN 47-5387503) is a 501(c)(3) public charity. Donations tax-deductible to the fullest extent. Publication 78 Data: Yes (PC).`;
+  document.querySelector(".container").appendChild(irsNote);
+</script>
+</body>
+</html>

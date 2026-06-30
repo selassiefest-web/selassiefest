@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SelassieFest · Smart Buds | Trichome Intelligence Lab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800&display=swap');
+    
+    :root {
+        --bg-black: #050B08;
+        --text-white: #F0F3EA;
+        --smart-teal: #2EC4B6;
+        --neon-green: #80ED99;
+        --deep-purple: #6A4E9B;
+        --gold-accent: #E5A93C;
+        --card-bg: rgba(30, 40, 35, 0.6);
+        --border-dim: rgba(46, 196, 182, 0.3);
+        --glow-cyan: rgba(46, 196, 182, 0.4);
+    }
+    
+    * { margin:0; padding:0; box-sizing:border-box; }
+    
+    body {
+        background: radial-gradient(circle at 20% 30%, #0C1A12, #020604);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+    }
+    
+    /* header/nav consistent */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+        background: #030A06;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    .nav-links li a:hover, .nav-links li a.active {
+        color: var(--smart-teal);
+        border-bottom-color: var(--smart-teal);
+    }
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 60px 28px;
+    }
+    
+    /* SMART BUDS HERO */
+    .smart-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .glow-icon {
+        font-size: 4.5rem;
+        color: var(--smart-teal);
+        filter: drop-shadow(0 0 15px var(--glow-cyan));
+        animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+        0% { text-shadow: 0 0 0px var(--smart-teal); }
+        50% { text-shadow: 0 0 20px var(--smart-teal); }
+        100% { text-shadow: 0 0 0px var(--smart-teal); }
+    }
+    .smart-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #80ED99, #2EC4B6, #C77DFF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: -0.02em;
+    }
+    
+    /* Main interactive lab */
+    .lab-dashboard {
+        background: rgba(10, 20, 15, 0.7);
+        backdrop-filter: blur(12px);
+        border-radius: 56px;
+        border: 1px solid var(--smart-teal);
+        padding: 32px;
+        margin: 32px 0;
+        box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6);
+    }
+    .trichome-viewer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        align-items: center;
+        justify-content: center;
+    }
+    .microscope-card {
+        flex: 1;
+        min-width: 260px;
+        text-align: center;
+        background: #0A130F;
+        border-radius: 40px;
+        padding: 24px;
+        border: 1px solid var(--border-dim);
+    }
+    .trichome-canvas {
+        background: #000000;
+        border-radius: 28px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+        background: radial-gradient(circle at 30% 40%, #1a2f1f, #020804);
+    }
+    .trichome-img-placeholder {
+        font-size: 6rem;
+        filter: drop-shadow(0 0 10px var(--neon-green));
+        animation: floatBud 3s infinite alternate;
+    }
+    @keyframes floatBud {
+        0% { transform: translateY(0px); }
+        100% { transform: translateY(-8px); }
+    }
+    .ai-analysis {
+        background: #07120C;
+        border-radius: 36px;
+        padding: 24px;
+        margin-top: 36px;
+        border-left: 6px solid var(--smart-teal);
+    }
+    .ripeness-meter {
+        background: #1E2A24;
+        border-radius: 60px;
+        height: 16px;
+        width: 100%;
+        margin: 15px 0;
+        overflow: hidden;
+    }
+    .meter-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #80ED99, #2EC4B6);
+        border-radius: 60px;
+        transition: width 0.5s ease;
+    }
+    .scan-btn {
+        background: var(--smart-teal);
+        border: none;
+        padding: 12px 28px;
+        border-radius: 60px;
+        font-weight: bold;
+        color: #07120C;
+        cursor: pointer;
+        transition: 0.2s;
+        font-family: monospace;
+    }
+    .smart-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+        margin: 48px 0;
+    }
+    .smart-card {
+        background: var(--card-bg);
+        border-radius: 40px;
+        padding: 28px;
+        backdrop-filter: blur(4px);
+        transition: 0.25s;
+        border: 1px solid rgba(46,196,182,0.3);
+    }
+    .smart-card:hover { border-color: var(--smart-teal); transform: translateY(-6px); }
+    .button-micro {
+        background: rgba(46,196,182,0.2);
+        border: 1px solid var(--smart-teal);
+        border-radius: 40px;
+        padding: 8px 16px;
+        display: inline-block;
+        margin-top: 16px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+    
+    .footer {
+        background: #020704;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--smart-teal); }
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #6A7C5E;
+    }
+    @media (max-width: 780px) {
+        .smart-title { font-size: 2.2rem; }
+        .site-title { font-size:1.8rem; }
+        .container { padding: 32px 20px; }
+    }
+    </style>
+</head>
+<body>
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/smart-buds/" class="active">🧠 SMART BUDS LAB</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="smart-hero">
+            <div class="glow-icon"><i class="fas fa-microchip"></i> <i class="fas fa-seedling"></i></div>
+            <h1 class="smart-title">SMART BUDS</h1>
+            <p style="max-width: 800px; margin: 20px auto; font-size: 1.2rem;">The world’s first <strong>AI-powered trichome intelligence lab</strong> at a music festival. Scan, learn, and unlock the secret language of resin.</p>
+            <div style="width: 80px; height: 3px; background: var(--smart-teal); margin: 20px auto;"></div>
+        </div>
+
+        <!-- Interactive Smart Buds Microscope Simulator -->
+        <div class="lab-dashboard">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <h2><i class="fas fa-microscope"></i> LIVE TRICHOME SCANNER</h2>
+                <span class="button-micro" id="randomBudBtn"><i class="fas fa-dice-d6"></i> SCAN NEW BUD</span>
+            </div>
+            <div class="trichome-viewer">
+                <div class="microscope-card">
+                    <div class="trichome-canvas" id="trichomeCanvas">
+                        <div class="trichome-img-placeholder" id="trichomeIcon">🍃🔬✨</div>
+                    </div>
+                    <div><strong>Current Sample:</strong> <span id="budStrainName">Glueberry OG</span></div>
+                    <div><i class="fas fa-search"></i> 1200x magnification</div>
+                </div>
+                <div class="microscope-card">
+                    <div><i class="fas fa-brain"></i> <strong>AI TRICHOME ANALYSIS</strong></div>
+                    <div id="aiReportText" style="margin: 15px 0;">Analyzing resin heads...</div>
+                    <div class="ripeness-meter"><div class="meter-fill" id="ripenessFill" style="width: 0%;"></div></div>
+                    <div>Harvest Readiness: <span id="ripenessPercent">0</span>%</div>
+                    <button class="scan-btn" id="scanTrichomeBtn"><i class="fas fa-camera"></i> DEEP SCAN</button>
+                </div>
+            </div>
+            <div class="ai-analysis" id="aiInsightBox">
+                <i class="fas fa-robot"></i> <strong>Smart Buds AI Insight</strong><br>
+                <span id="insightText">Click "Deep Scan" to analyze trichome maturity, terpene correlation and harvest prediction.</span>
+            </div>
+        </div>
+
+        <!-- Smart Buds concepts : the actual festival experience -->
+        <div class="smart-grid">
+            <div class="smart-card">
+                <i class="fas fa-microscope" style="font-size: 2.2rem; color: var(--smart-teal);"></i>
+                <h3>🔬 Real-Time Trichome Lab</h3>
+                <p>At SelassieFest, Smart Buds features 10 digital microscopes connected to large 4K screens. Watch resin glands turn from clear → cloudy → amber. Our budtender-scientists guide you through the ripeness window.</p>
+                <div class="button-micro">📍 Tent Location: Higher Learning Roots</div>
+            </div>
+            <div class="smart-card">
+                <i class="fas fa-chart-line" style="font-size: 2.2rem; color: var(--neon-green);"></i>
+                <h3>📊 Cannabinoid Prediction Engine</h3>
+                <p>Using machine vision, Smart Buds predicts THC/CBD potential based on trichome density and morphology. Festival-goers can upload their own bud pics (via kiosk) for an instant "bud score".</p>
+                <div class="button-micro">🏆 Leaderboard: highest resin density</div>
+            </div>
+            <div class="smart-card">
+                <i class="fas fa-gamepad" style="font-size: 2.2rem; color: var(--gold-accent);"></i>
+                <h3>🎮 Trichome Tycoon Game</h3>
+                <p>Interactive touch game: match trichome stages to the perfect harvest window, gain points and win Smart Buds merch (sticker packs, loupes).</p>
+                <div class="button-micro">🎁 Prizes every hour</div>
+            </div>
+            <div class="smart-card">
+                <i class="fas fa-dna" style="font-size: 2.2rem; color: #C77DFF;"></i>
+                <h3>🧬 Genetic Barcode Reader</h3>
+                <p>Scan a live leaf sample and receive a digital “chemotype profile.” Learn about the relationship between gland size and cannabinoid expression.</p>
+                <div class="button-micro">📱 QR code to save results</div>
+            </div>
+        </div>
+
+        <!-- Smart Buds Workshop Schedule (Festival event) -->
+        <div style="background: rgba(46,196,182,0.1); border-radius: 48px; padding: 32px; margin: 40px 0; border: 1px solid var(--smart-teal);">
+            <h3><i class="fas fa-calendar-week"></i> SMART BUDS EXPERIENTIAL SCHEDULE (July 25)</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 28px; margin-top: 24px;">
+                <div><i class="fas fa-clock"></i> 11:00 AM — Trichome 101: Clear to Cloudy</div>
+                <div><i class="fas fa-clock"></i> 1:30 PM — Resin Evolution & Harvest Timing</div>
+                <div><i class="fas fa-clock"></i> 3:45 PM — AI Bud Sorting Demo</div>
+                <div><i class="fas fa-clock"></i> 6:00 PM — Smart Buds Championship: fastest trichome ID</div>
+            </div>
+        </div>
+
+        <!-- Bud Gallery: famous trichome phenotypes -->
+        <div style="margin: 48px 0;">
+            <h2><i class="fas fa-images"></i> RESIN DREAMS GALLERY</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 18px; margin-top: 24px;">
+                <div style="background: #0F1912; border-radius: 28px; padding: 16px; text-align: center;"><i class="fas fa-circle" style="color: #c0e0c0;"></i> Milky Trichomes<br><small>Peak THC</small></div>
+                <div style="background: #0F1912; border-radius: 28px; padding: 16px; text-align: center;"><i class="fas fa-circle" style="color: #D4AF37;"></i> Amber Heads<br><small>Sedative effect</small></div>
+                <div style="background: #0F1912; border-radius: 28px; padding: 16px; text-align: center;"><i class="fas fa-circle" style="color: #B0E0E6;"></i> Clear Globules<br><small>Early harvest</small></div>
+                <div style="background: #0F1912; border-radius: 28px; padding: 16px; text-align: center;"><i class="fas fa-chart-simple"></i> AI maturity map<br><small>Interactive kiosk</small></div>
+            </div>
+        </div>
+
+        <!-- Smart Buds Quote / Idea -->
+        <div style="text-align: center; padding: 20px; border-radius: 60px; background: radial-gradient(circle, #07140E, transparent);">
+            <i class="fas fa-quote-left" style="color: var(--smart-teal); font-size: 2rem;"></i>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">"Smart Buds redefines plant observation — using technology to honor the ancient conversation between cultivator and gland. Every trichome tells a story."</p>
+            <p>— Higher Learning Roots × Biotrack Labs</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-microchip"></i> Smart Buds — Where cannabis meets cognitive science. SelassieFest 2026 · July 25th
+        </div>
+    </footer>
+
+    <script>
+        // Smart Buds Interactive Simulator
+        const budLibrary = [
+            { name: "Glueberry OG", trichomeStage: "Mixed cloud/amber", readiness: 72, insight: "Trichome heads mostly swollen, some amber showing. Peak window approaching. Ideal for balanced effect." },
+            { name: "Electric Lemon Haze", trichomeStage: "Mostly clear / slightly cloudy", readiness: 45, insight: "Heads still translucent. Early harvest would yield energetic high. Wait 10-14 days for full potency." },
+            { name: "Midnight Runtz", trichomeStage: "Milky white majority", readiness: 88, insight: "Optimized ripeness! High cannabinoid density. Perfect for extraction or full-spectrum effect." },
+            { name: "Durban Sunrise", trichomeStage: "Clear + some cloudy", readiness: 38, insight: "Premature trichomes. Low amber. Let resin glands mature for heavier effects." },
+            { name: "Grandaddy Purp", trichomeStage: "Amber dominant", readiness: 94, insight: "High CBN conversion. Sedative profile. Best for evening medicinals." },
+            { name: "Sour Space Candy (CBD)", trichomeStage: "Cloudy with rare amber", readiness: 79, insight: "Excellent cannabinoid balance. Great for daytime therapeutic use." }
+        ];
+        
+        let currentBudIndex = 0;
+        
+        function updateBudUI(index) {
+            const bud = budLibrary[index];
+            document.getElementById("budStrainName").innerText = bud.name;
+            document.getElementById("ripenessFill").style.width = bud.readiness + "%";
+            document.getElementById("ripenessPercent").innerText = bud.readiness;
+            document.getElementById("aiReportText").innerHTML = `<i class="fas fa-chart-simple"></i> Stage: ${bud.trichomeStage}`;
+            document.getElementById("insightText").innerHTML = bud.insight;
+            // change icon
+            const iconDiv = document.getElementById("trichomeIcon");
+            if (bud.readiness > 80) iconDiv.innerHTML = "🔬🍂💎";
+            else if (bud.readiness > 50) iconDiv.innerHTML = "🔬🍃✨";
+            else iconDiv.innerHTML = "🔬🌱🔍";
+        }
+        
+        function randomBud() {
+            currentBudIndex = Math.floor(Math.random() * budLibrary.length);
+            updateBudUI(currentBudIndex);
+        }
+        
+        function deepScan() {
+            const bud = budLibrary[currentBudIndex];
+            let newInsight = `🧠 SMART SCAN: ${bud.name} — ${bud.trichomeStage}. `;
+            if (bud.readiness > 85) newInsight += "Harvest ready! Maximum resin production. Recommend immediate or next 3 days.";
+            else if (bud.readiness > 60) newInsight += "Ideal potency window opening. Monitor trichome color shift daily.";
+            else newInsight += "Still developing. Increase light exposure or extend flush period. Clear heads indicate immaturity.";
+            document.getElementById("insightText").innerHTML = newInsight + " AI confidence: 94%";
+            // flash meter effect
+            const meter = document.getElementById("ripenessFill");
+            meter.style.transition = "0.2s";
+            meter.style.boxShadow = "0 0 12px #80ED99";
+            setTimeout(() => { meter.style.boxShadow = "none"; }, 500);
+        }
+        
+        document.getElementById("randomBudBtn").addEventListener("click", randomBud);
+        document.getElementById("scanTrichomeBtn").addEventListener("click", deepScan);
+        // initial load
+        currentBudIndex = 2;
+        updateBudUI(2);
+        
+        // bonus interactive gamification
+        console.log("Smart Buds active — festival goers can scan physical buds via microscope station. Live demo using AI image recognition.");
+    </script>
+</body>
+</html>

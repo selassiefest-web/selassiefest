@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelassieFest - Higher Learning Roots &rsaquo; Terpene Discovery Bar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap');
+        
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --text-dim: #A0A0A0;
+            --roots-green: #0E5E36;
+            --roots-green-glow: rgba(14, 94, 54, 0.3);
+            --gold-accent: #E5A93C;
+            --gold-glow: rgba(229, 169, 60, 0.15);
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header & Navigation styling */
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+        .main-nav {
+            background: #050505;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #bbb;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links li a:hover, .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Hero / Introduction */
+        .village-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+        }
+
+        .village-intro h1 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+            color: var(--text-white);
+            text-transform: uppercase;
+        }
+
+        .village-intro p {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        .festival-badge {
+            background: var(--gold-glow);
+            border-left: 4px solid var(--gold-accent);
+            padding: 20px 24px;
+            margin-bottom: 48px;
+            border-radius: 0 12px 12px 0;
+            font-weight: 300;
+            font-size: 1rem;
+        }
+
+        .festival-badge i { 
+            color: var(--gold-accent); 
+            margin-right: 12px; 
+        }
+
+        /* Feature Grid: Pillars of Higher Learning */
+        .village-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .village-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 12px;
+            padding: 30px;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .village-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--roots-green);
+            box-shadow: 0 10px 30px var(--roots-green-glow);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+        }
+
+        .village-card h3 {
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        .village-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        /* Interactive Showcase: Terpene Discovery Bar Dashboard */
+        .discovery-dashboard {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .dashboard-header {
+            border-bottom: 1px solid var(--border-dim);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h2 {
+            font-weight: 400;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            color: var(--gold-accent);
+        }
+
+        .terpene-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .terpene-node {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .terpene-node:hover {
+            border-color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.03);
+        }
+
+        .terpene-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .terpene-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .terpene-aroma {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gold-accent);
+            background: var(--gold-glow);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .terpene-desc {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* One Love Callout */
+        .one-love-callout {
+            background: rgba(200, 55, 55, 0.08);
+            border: 1px solid var(--red-accent);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .one-love-callout h3 {
+            color: var(--red-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .one-love-callout p {
+            font-weight: 300;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        /* Footer System */
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 60px 24px 40px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links a:hover { 
+            color: var(--gold-accent); 
+        }
+
+        .social-icons {
+            margin-bottom: 40px;
+        }
+
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.4rem;
+            margin: 0 16px;
+            transition: var(--transition-smooth);
+            display: inline-block;
+        }
+
+        .social-icons a:hover { 
+            color: var(--gold-accent);
+            transform: scale(1.1);
+        }
+
+        .copyright {
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .copyright i {
+            color: var(--red-accent);
+            margin-right: 4px;
+        }
+
+        /* Responsive Design Rules */
+        @media (max-width: 900px) {
+            .site-title { font-size: 2.2rem; }
+            .discovery-dashboard { padding: 24px; }
+        }
+
+        @media (max-width: 780px) {
+            .site-title { font-size: 1.8rem; }
+            .tagline { letter-spacing: 0.2em; font-size: 0.8rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links li a { font-size: 0.75rem; }
+            .container { padding: 40px 16px; }
+            .village-intro h1 { font-size: 2rem; }
+            .footer-links { gap: 20px; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Branding Header -->
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+    <!-- Global Responsive Navigation Bar -->
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/" class="active">HIGHER LEARNING</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+            <li><a href="/reasoning-circle/">REASONING</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE</a></li>
+            <li><a href="/youth-village/">YOUTH</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Layout Content -->
+    <div class="container">
+        
+        <!-- Welcome Banner Context Box -->
+        <div class="festival-badge">
+            <i class="fas fa-university"></i> 
+            <strong>Welcome to Higher Learning Roots:</strong> SelassieFest’s intentional, safe space dedicated entirely to natural plant sciences, botanical education, and deep ancestral research.
+        </div>
+
+        <!-- Village Philosophy and Header -->
+        <section class="village-intro">
+            <h1>Higher Learning Roots</h1>
+            <p>Bridging pure organic science with ancient landrace heritage. Explore our interactive modules designed to educate the community on responsible botanical relationships, structural chemistry, and sustainable seed-to-shelf journeys.</p>
+        </section>
+
+        <!-- The 4 Pillars Grid (Fleshed out from raw list text) -->
+        <div class="village-grid">
+            <div class="village-card">
+                <i class="fas fa-seedling card-icon"></i>
+                <h3>Terpene Discovery Bar</h3>
+                <p>An immersive organoleptic environment. Train your senses to isolate and discover the structural aromatic compounds shaping plant biology.</p>
+            </div>
+            
+            <div class="village-card">
+                <i class="fas fa-book-open card-icon"></i>
+                <h3>The Leaf Library</h3>
+                <p>Browse peer-reviewed manuscripts, historical text, and ancestral research materials highlighting indigenous agricultural preservation.</p>
+            </div>
+            
+            <div class="village-card">
+                <i class="fas fa-microscope card-icon"></i>
+                <h3>Smart Buds Biology</h3>
+                <p>Step up to real-time high-definition digital microscope feeds. Inspect glandular trichome development and cellular plant defense mechanisms.</p>
+            </div>
+            
+            <div class="village-card">
+                <i class="fas fa-graduation-cap card-icon"></i>
+                <h3>Cannabis Academy</h3>
+                <p>Engage with certified master growers, agronomists, and laboratory directors in deep-dive masterclasses covering regenerative living soil loops.</p>
+            </div>
+        </div>
+
+        <!-- Interactive Showcase Block: Terpene Discovery Guide -->
+        <section class="discovery-dashboard">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-flask"></i> Interactive Terpene Profile Matrix</h2>
+                <p style="color: var(--text-dim); font-weight: 300; font-size: 0.9rem; margin-top: 5px;">Click or explore properties of primary essential compounds found at the bar.</p>
+            </div>
+            
+            <div class="terpene-grid">
+                <div class="terpene-node">
+                    <div class="terpene-meta">
+                        <span class="terpene-name">Myrcene</span>
+                        <span class="terpene-aroma">Earthy</span>
+                    </div>
+                    <p class="terpene-desc">The most abundant terpene in the plant world. Notes of clove and dark soil. Known synergy properties for cellular receptor optimization.</p>
+                </div>
+
+                <div class="terpene-node">
+                    <div class="terpene-meta">
+                        <span class="terpene-name">Limonene</span>
+                        <span class="terpene-aroma">Citrus</span>
+                    </div>
+                    <p class="terpene-desc">Bright, highly uplifting rind extracts. Acts as a natural adaptogen, encouraging stress relief and mental mental clarity during deep reasoning circles.</p>
+                </div>
+
+                <div class="terpene-node">
+                    <div class="terpene-meta">
+                        <span class="terpene-name">Caryophyllene</span>
+                        <span class="terpene-aroma">Spicy</span>
+                    </div>
+                    <p class="terpene-desc">Distinct notes of cracked black pepper and wood. Uniquely binds directly to regulatory pathways, operating effectively as a protective dietary cannabinoid.</p>
+                </div>
+
+                <div class="terpene-node">
+                    <div class="terpene-meta">
+                        <span class="terpene-name">Pinene</span>
+                        <span class="terpene-aroma">Pine</span>
+                    </div>
+                    <p class="terpene-desc">Fresh forest atmosphere compounds. Scientifically recognized for promoting bronchodilation and supporting alert memory retention.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- One Love Structural Callout -->
+        <div class="one-love-callout">
+            <h3>Unified Community Health</h3>
+            <p>Higher Learning Roots functions under strict principles of safety, intentional education, and historical validation. Please consume knowledge responsibly.</p>
+        </div>
+
+    </div>
+
+    <!-- Heritage Global Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST &mdash; One Love, One Destiny. Rooted in Ethiopian & Jamaican Heritage.
+            <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM - 10:00 PM
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelassieFest - main-stage › performers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap');
+
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --card-hover-bg: rgba(255, 255, 255, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* ---- HEADER ---- */
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+        /* ---- NAV ---- */
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* ---- CONTAINER ---- */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* ---- BADGE / CALLOUT ---- */
+        .festival-badge {
+            background: rgba(229, 169, 60, 0.15);
+            border-left: 4px solid var(--gold-accent);
+            padding: 16px 24px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            font-weight: 300;
+        }
+        .festival-badge i {
+            color: var(--gold-accent);
+            margin-right: 12px;
+        }
+        .one-love-callout {
+            background: rgba(200, 55, 55, 0.2);
+            border: 1px solid var(--red-accent);
+            border-radius: 60px;
+            padding: 12px 24px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .one-love-callout i {
+            color: var(--red-accent);
+            margin-right: 8px;
+        }
+
+        /* ---- PAGE HEADER ---- */
+        .page-header {
+            margin-bottom: 48px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-weight: 300;
+            font-size: 3rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+        }
+        .page-header h1 span {
+            color: var(--gold-accent);
+        }
+        .page-header p {
+            font-weight: 300;
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 640px;
+            margin: 12px auto 0;
+        }
+        .page-header .divider {
+            width: 80px;
+            height: 2px;
+            background: var(--gold-accent);
+            margin: 16px auto 0;
+        }
+
+        /* ---- PERFORMER GRID ---- */
+        .performer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 32px;
+            margin-top: 16px;
+        }
+
+        /* ---- PERFORMER CARD ---- */
+        .performer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-white);
+            display: block;
+            backdrop-filter: blur(2px);
+        }
+        .performer-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border-color: var(--gold-accent);
+            background: var(--card-hover-bg);
+        }
+
+        .performer-card .card-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.6rem;
+            font-weight: 200;
+            color: var(--gold-accent);
+            position: relative;
+            overflow: hidden;
+        }
+        .performer-card .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .performer-card:hover .card-image img {
+            transform: scale(1.04);
+        }
+
+        /* fallback initials when image missing */
+        .performer-card .card-image .initials {
+            font-size: 3.6rem;
+            font-weight: 200;
+            color: var(--gold-accent);
+            letter-spacing: 0.06em;
+            opacity: 0.6;
+            text-shadow: 0 0 30px rgba(229, 169, 60, 0.15);
+        }
+
+        /* image overlay gradient */
+        .performer-card .card-image .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(13, 13, 13, 0.85), transparent);
+            pointer-events: none;
+        }
+
+        .performer-card .card-body {
+            padding: 20px 22px 24px;
+        }
+        .performer-card .card-body .name {
+            font-weight: 500;
+            font-size: 1.25rem;
+            letter-spacing: 0.02em;
+            color: var(--text-white);
+            margin-bottom: 4px;
+        }
+        .performer-card .card-body .role-tag {
+            font-weight: 300;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.12);
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(229, 169, 60, 0.15);
+        }
+        .performer-card .card-body .bio {
+            font-weight: 300;
+            font-size: 0.92rem;
+            color: #ccc;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .performer-card .card-body .detail-link {
+            font-weight: 400;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gold-accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .performer-card .card-body .detail-link i {
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+        .performer-card:hover .card-body .detail-link i {
+            transform: translateX(4px);
+        }
+        .performer-card .card-body .detail-link:hover {
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* ---- FOOTER ---- */
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover {
+            color: var(--gold-accent);
+        }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.5rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover {
+            color: var(--gold-accent);
+        }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 32px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 780px) {
+            .site-title {
+                font-size: 1.8rem;
+            }
+            .nav-links {
+                gap: 0.8rem;
+            }
+            .nav-links li a {
+                font-size: 0.7rem;
+            }
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            .performer-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            .performer-card .card-body {
+                padding: 16px 18px 20px;
+            }
+            .performer-card .card-body .name {
+                font-size: 1.05rem;
+            }
+            .performer-card .card-body .bio {
+                font-size: 0.82rem;
+            }
+            .footer-links {
+                gap: 16px;
+            }
+            .footer-links a {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .performer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+            .container {
+                padding: 30px 14px;
+            }
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+            .performer-card .card-body .bio {
+                font-size: 0.75rem;
+            }
+            .performer-card .card-body .name {
+                font-size: 0.95rem;
+            }
+            .performer-card .card-body .role-tag {
+                font-size: 0.6rem;
+            }
+            .performer-card .card-body .detail-link {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+    <!-- ===== NAV ===== -->
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Main Stage <span>·</span> Performers</h1>
+            <p>Roots reggae live bands, conscious dancehall, dub performances &amp; a sunset headliner.</p>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Callout -->
+        <div class="festival-badge">
+            <i class="fas fa-music"></i>
+            <strong>2026 Lineup</strong> — meet the artists bringing the vibration to the Main Stage.
+            Stay tuned for more announcements.
+        </div>
+
+        <!-- ===== PERFORMER GRID ===== -->
+        <div class="performer-grid">
+
+            <!-- 1. Rasta Kelly -->
+            <a href="/performers/rasta-kelly.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/rastakelly/400/400" alt="Rasta Kelly" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Rasta Kelly</div>
+                    <div class="role-tag"><i class="fas fa-microphone"></i> Lead Vocalist</div>
+                    <div class="bio">With a voice that carries the fire of Ethiopian jazz and the soul of Kingston, Rasta Kelly leads the congregation in conscious praise.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 2. Carl Brown -->
+            <a href="/performers/carl-brown.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/carlbrown/400/400" alt="Carl Brown" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Carl Brown</div>
+                    <div class="role-tag"><i class="fas fa-guitar"></i> Guitarist · Vocalist</div>
+                    <div class="bio">A master of the rhythmic pulse, Carl weaves roots-rock grooves with soaring melodies that echo through the hills of St. Ann.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 3. One Strand -->
+            <a href="/performers/one-strand.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/onestrand/400/400" alt="One Strand" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">One Strand</div>
+                    <div class="role-tag"><i class="fas fa-microphone-alt"></i> Vocalist · Songwriter</div>
+                    <div class="bio">One Strand channels the spirit of unity through her lyricism, bridging generations with a voice that is both ancient and urgent.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 4. Indika Reggae Band -->
+            <a href="/performers/indika-reggae-band.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/indikaband/400/400" alt="Indika Reggae Band" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Indika Reggae Band</div>
+                    <div class="role-tag"><i class="fas fa-users"></i> Full Band</div>
+                    <div class="bio">A powerhouse collective from the Pacific Northwest, fusing traditional roots reggae with dub, funk, and a touch of Ethiopian rhythm.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 5. Bass Player -->
+            <a href="/performers/bass-player.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/bassplayer/400/400" alt="Bass Player" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Bass Player</div>
+                    <div class="role-tag"><i class="fas fa-guitar"></i> Bassist</div>
+                    <div class="bio">The low-end foundation — deep, warm, and unstoppable. His bass lines are the heartbeat that keeps the crowd moving as one.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 6. Drummer -->
+            <a href="./bandmembers/champagne.html" class="performer-card">
+                <div class="card-image">
+                    <img src="../assets/images/champagne.png" alt="Drummer" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Drummer - Champagne</div>
+                    <div class="bio">From Nyabinghi to rocksteady, his hands speak a language of rhythm that transcends genre, grounding every performance in earth-shaking groove.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 7. Keyboard -->
+            <a href="/performers/keyboard.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/keyboard/400/400" alt="Keyboard" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Keyboard</div>
+                    <div class="role-tag"><i class="fas fa-keyboard"></i> Keys · Synth</div>
+                    <div class="bio">With fingers that dance across ivories and synthesizers, he conjures the celestial harmonies that lift roots reggae into the stratosphere.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <!-- 8. Guitar -->
+            <a href="/performers/guitar.html" class="performer-card">
+                <div class="card-image">
+                    <img src="https://picsum.photos/seed/guitar/400/400" alt="Guitar" loading="lazy">
+                    <div class="overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="name">Guitar</div>
+                    <div class="role-tag"><i class="fas fa-guitar"></i> Lead Guitar</div>
+                    <div class="bio">From skank to solo, his six-string storytelling weaves through every track with precision, soul, and the unmistakable fire of roots reggae.</div>
+                    <span class="detail-link">Full bio <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+        </div>
+        <!-- end performer-grid -->
+
+        <!-- One Love Callout -->
+        <div class="one-love-callout" style="margin-top:48px;">
+            <i class="fas fa-heart"></i>
+            Sunset concert ends at 9:30 PM, then we gather for the Bob Marley's <strong>'One Love'</strong> singalong at 9:45 PM.
+        </div>
+
+    </div>
+    <!-- end container -->
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+            <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM - 10:00 PM
+        </div>
+    </footer>
+
+</body>
+</html>

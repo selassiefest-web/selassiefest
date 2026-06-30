@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelassieFest — Caribbean American Bakery Sponsorship</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+    :root {
+        --bg-black: #0D0D0D;
+        --text-white: #F5F5F5;
+        --roots-green: #0E5E36;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(255,255,255,0.04);
+        --border-dim: rgba(255,255,255,0.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+    }
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+        background: #0a0a0a;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    .nav-links li a:hover {
+        color: var(--gold-accent);
+        border-bottom-color: var(--gold-accent);
+    }
+    .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 60px 24px;
+    }
+    .festival-badge {
+        background: rgba(229,169,60,0.15);
+        border-left: 4px solid var(--gold-accent);
+        padding: 16px 24px;
+        margin-bottom: 40px;
+        border-radius: 12px;
+        font-weight: 300;
+    }
+    .footer {
+        background: #050505;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--gold-accent); }
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #666;
+    }
+    /* Sponsor specific */
+    .letter-card {
+        max-width: 980px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 32px;
+        padding: 48px 40px;
+        border: 1px solid var(--border-dim);
+    }
+    .greeting {
+        font-size: 1.5rem;
+        font-weight: 400;
+        margin-bottom: 24px;
+        color: var(--gold-accent);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .logo-sponsor {
+        max-height: 80px;
+        width: auto;
+    }
+    .letter-intro {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 32px;
+    }
+    .highlight-package {
+        background: rgba(229,169,60,0.08);
+        border-radius: 24px;
+        padding: 28px;
+        margin: 32px 0;
+        border-left: 4px solid var(--gold-accent);
+    }
+    .package-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+        margin: 28px 0;
+    }
+    .package-item {
+        background: rgba(0,0,0,0.3);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+    .package-item i {
+        font-size: 2rem;
+        color: var(--gold-accent);
+        margin-bottom: 12px;
+    }
+    .btn-sponsor {
+        display: inline-block;
+        background: var(--gold-accent);
+        color: var(--bg-black);
+        text-decoration: none;
+        padding: 12px 32px;
+        border-radius: 40px;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: 0.2s;
+    }
+    .btn-sponsor:hover {
+        background: #c48a2c;
+        transform: translateY(-2px);
+    }
+    .store-highlight {
+        background: rgba(200,55,55,0.1);
+        padding: 20px;
+        border-radius: 20px;
+        margin: 24px 0;
+        text-align: center;
+    }
+    .small-note {
+        font-size: 0.85rem;
+        color: #bbb;
+        margin-top: 24px;
+        font-style: italic;
+    }
+    .artist-count {
+        background: var(--roots-green);
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 60px;
+        font-size: 0.85rem;
+        margin-right: 12px;
+    }
+    @media (max-width: 780px) {
+        .site-title { font-size:1.8rem; }
+        .nav-links { gap:0.8rem; }
+        .letter-card { padding: 28px 20px; }
+    }
+    </style>
+</head>
+<body>
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="/" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+    <div class='container'>
+        <div class='festival-badge'>
+            <i class="fas fa-calendar-alt"></i> Saturday, July 25th, 2026 | 6:00 AM – 10:00 PM | 6227 S Prairie Ave, Chicago, IL
+        </div>
+
+        <div class="letter-card">
+            <div class="greeting">
+                <img src="../assets/images/caribbean-bakery-logo.png" alt="Caribbean American Bakery Logo" class="logo-sponsor" onerror="this.style.display='none'">
+                <span><i class="fas fa-leaf"></i>  To the Caribbean American Bakery Team</span>
+            </div>
+            
+            <p class="letter-intro">
+                Blessings and one love. As a host and performer at <strong>SelassieFest 2026</strong> — Chicago’s premiere Ethiopian & Jamaican roots culture festival — I’m reaching out to invite you to be part of something special.
+            </p>
+            
+            <p>
+                On <strong>July 25th</strong>, <span class="artist-count"><i class="fas fa-microphone-alt"></i> 12 performing artists</span> plus selectors, elders and community members will gather on the South Side for a full day of Nyabinghi drumming, conscious dancehall, sound clashes, Ital food and deep Pan-African celebration. 
+                Backstage, we’re building a dedicated <strong>Artist Green Room Tent</strong> — a space where performers can chill, commune and recharge between sets. And we want to fill it with the authentic flavors of home.
+            </p>
+            
+            <div class="store-highlight">
+                <i class="fas fa-store"></i>  <strong>Caribbean American Bakery – 1539 W Howard St, Chicago · (773) 761-0700</strong><br>
+                <span style="font-size:0.9rem;">Jamaican style baked goods · Jerk cuisine · D&G & Jamaican sodas · Wholesale available</span>
+            </div>
+
+            <div class="highlight-package">
+                <h3><i class="fas fa-hand-holding-heart"></i>  What We’re Asking</h3>
+                <p>We would love your help stocking the <strong>Artist Green Room Tent</strong> with fresh, authentic Jamaican fuel. A sponsorship of <strong>patties, jerk cuisine, beverages and baked goods</strong> keeps our artists energized and rooted.</p>
+                
+                <div class="package-grid">
+                    <div class="package-item">
+                        <i class="fas fa-hotdog"></i>
+                        <h4>Fresh Patties</h4>
+                        <p>Beef, cheese & beef, curry chicken, jerk chicken, mixed vegetable, spinach — baked or frozen, large or cocktail size</p>
+                    </div>
+                    <div class="package-item">
+                        <i class="fas fa-utensils"></i>
+                        <h4>Jerk Cuisine</h4>
+                        <p>Jerk chicken or pork — with bread, or as a dinner with rice & peas and plantain. Catering pans also available (5lb or 10lb).</p>
+                    </div>
+                    <div class="package-item">
+                        <i class="fas fa-wine-bottle"></i>
+                        <h4>Jamaican Drinks</h4>
+                        <p>Ting, Ginger Beer, Kola Champagne, Pineapple Soda, Tropical Rhythms juices, coconut water, Milo, Nutriment, malt beverage</p>
+                    </div>
+                    <div class="package-item">
+                        <i class="fas fa-bread-slice"></i>
+                        <h4>Baked Goods</h4>
+                        <p>Hardough bread, bulla, totoes (cakes), assorted pastries, coco bread, ginger bread, bread pudding</p>
+                    </div>
+                </div>
+                <p><em>Even a dozen patties or a case of sodas would be a massive help. Every bit counts.</em></p>
+            </div>
+
+            <h3><i class="fas fa-chart-line"></i>  What Caribbean American Bakery Gains</h3>
+            <div class="package-grid">
+                <div class="package-item">
+                    <i class="fas fa-microphone-alt"></i>
+                    <h4>Stage Shout‑Outs</h4>
+                    <p>Live recognition from the Main Stage + Sound System Yard</p>
+                </div>
+                <div class="package-item">
+                    <i class="fas fa-laptop"></i>
+                    <h4>Digital Presence</h4>
+                    <p>Logo on selassiefest.com/sponsors + across all festival social media</p>
+                </div>
+                <div class="package-item">
+                    <i class="fas fa-users"></i>
+                    <h4>Community Love</h4>
+                    <p>Direct gratitude from the artists and thousands of attendees</p>
+                </div>
+                <div class="package-item">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Wholesale Showcase</h4>
+                    <p>Opportunity to display your wholesale capabilities to other vendors and attendees</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 32px 0;">
+                <a href="mailto:selassiefest@gmail.com?subject=Sponsorship%20Inquiry%20-%20Caribbean%20American%20Bakery" class="btn-sponsor"><i class="fas fa-envelope"></i>  Yes — Let’s Talk Sponsorship</a>
+            </div>
+
+            <p style="margin-top: 20px;">
+                Caribbean American Bakery has been a pillar of the Chicago Caribbean community for years. Partnering with SelassieFest is a chance to show that same love to the artists who carry our culture forward — and to put your name in front of thousands of conscious festival‑goers.
+            </p>
+            <p>
+                We’d love to jump on a quick call or meet you at the bakery. Feel free to reply directly to this email or reach out to:
+            </p>
+            <p>
+                <strong>Albert</strong><br>
+                📧 <a href="mailto:selassiefest@gmail.com" style="color: var(--gold-accent);">selassiefest@gmail.com</a><br>
+                📞 414 909 3279
+            </p>
+            <p>
+                One love, forward ever.<br>
+                <strong>ALBERT</strong><br>
+                SelassieFest Host & Performer Liaison
+            </p>
+            
+            <div class="small-note">
+                <i class="fas fa-dove"></i>  SelassieFest is a 501(c)(3) nonprofit — your in‑kind donation is fully tax‑deductible.
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 48px auto; max-width: 600px;">
+            <i class="fas fa-drumstick-bite" style="font-size: 2rem; color: var(--gold-accent);"></i>
+            <p style="margin-top: 12px;"><strong>Roots, patties & one love.</strong>  Let’s make July 25th unforgettable — together.</p>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian & Jamaican Heritage.
+            <br>© 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+        </div>
+    </footer>
+</body>
+</html>

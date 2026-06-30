@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ital Cooking & Coffee Ceremony – Heritage Village | SelassieFest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255,255,255,0.04);
+            --border-dim: rgba(255,255,255,0.08);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+        }
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(6px);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+        .breadcrumb {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: rgba(245,245,245,0.35);
+            padding: 14px 32px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .breadcrumb a {
+            color: rgba(245,245,245,0.4);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { color: var(--gold-accent); }
+        .breadcrumb span { color: var(--gold-accent); }
+        .hero-banner {
+            background: linear-gradient(135deg, #2a1a0a 0%, #1f2c0e 40%, #0e2a1a 100%);
+            padding: 56px 32px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 80%, rgba(229,169,60,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            font-weight: 300;
+            font-size: 0.78rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--roots-green);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-weight: 200;
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.1;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title span {
+            color: var(--gold-accent);
+        }
+        .hero-subtitle {
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: rgba(245,245,245,0.7);
+            max-width: 720px;
+            margin: 0 auto 28px;
+            letter-spacing: 0.03em;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+        .section-label {
+            font-weight: 300;
+            font-size: 0.72rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-weight: 200;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: rgba(245,245,245,0.6);
+            max-width: 700px;
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+        .two-col {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .two-col > div {
+            flex: 1;
+            min-width: 250px;
+        }
+        .ingredient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 30px 0;
+        }
+        .ingredient-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .session-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 18px;
+            padding: 22px;
+            border-left: 3px solid var(--gold-accent);
+        }
+        .session-time {
+            font-weight: 500;
+            color: var(--gold-accent);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: var(--gold-accent);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-outline:hover {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+        }
+        .smell-quote {
+            background: rgba(229,169,60,0.08);
+            border-radius: 28px;
+            padding: 32px;
+            margin: 48px 0;
+            text-align: center;
+        }
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover { color: var(--gold-accent); }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.5rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover { color: var(--gold-accent); }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 32px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+        @media (max-width:780px) {
+            .site-title { font-size:1.8rem; }
+            .nav-links { gap:0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/" class="active">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> &rsaquo;
+    <a href="/heritage-village/">Heritage Village</a> &rsaquo;
+    <span>Ital Cooking & Coffee Ceremony</span>
+</div>
+
+<div class="hero-banner">
+    <div class="hero-eyebrow"><i class="fas fa-mug-hot"></i> + <i class="fas fa-carrot"></i>  Two ancient rituals, one tent</div>
+    <h1 class="hero-title">Ital Cooking &<br> <span>Coffee Ceremony</span></h1>
+    <p class="hero-subtitle">
+        Watch green coffee beans roast over an open flame. Smell frankincense drift through the air. Taste a three‑round jebena coffee – <strong>then stay for a live Ital cooking demo</strong> using fresh ingredients from the Ital Marketplace. Your mouth will thank you.
+    </p>
+</div>
+
+<div class="container">
+
+    <!-- sensory hook -->
+    <div class="smell-quote">
+        <i class="fas fa-fire" style="font-size: 2rem; color: var(--gold-accent);"></i>
+        <p style="font-size: 1.1rem; max-width: 700px; margin: 16px auto 0; font-style: italic;">
+        “First you smell the roasting beans. Then the incense. Then the simmering coconut curry. By the time the first cup is poured, you’re already home.”
+        </p>
+        <p style="margin-top: 12px;">— Chef Ila, Heritage Village cooking host</p>
+    </div>
+
+    <div class="section-label">Two experiences, one tent</div>
+    <h2 class="section-title">The Ceremony & The Feast</h2>
+    <div class="two-col">
+        <div>
+            <h3 style="font-weight: 500; margin-bottom: 12px;"><i class="fas fa-mug-hot" style="color: var(--gold-accent);"></i> Ethiopian Coffee Ceremony (Jebena Buna)</h3>
+            <p>For over a thousand years, the coffee ceremony has been the heartbeat of Ethiopian social life. It’s not just about drinking coffee – it’s about <strong>community, patience, and blessing</strong>. At our tent, you’ll witness:</p>
+            <ul style="margin-top: 12px; margin-left: 20px;">
+                <li>Washing and roasting green coffee beans in a flat pan until they crackle and darken</li>
+                <li>The aroma of cardamom and clove added to the grind</li>
+                <li>Brewing in a clay <em>jebena</em> with a neck that pours thin, fragrant coffee</li>
+                <li>Three rounds: <strong>Abol</strong> (strong), <strong>Tona</strong> (milder), <strong>Baraka</strong> (blessing)</li>
+                <li>Served with roasted barley or popcorn – the traditional snack</li>
+            </ul>
+            <p style="margin-top: 16px;">Ceremonies run every hour on the half‑hour. You’re invited to sit, sip, and ask questions.</p>
+        </div>
+        <div>
+            <h3 style="font-weight: 500; margin-bottom: 12px;"><i class="fas fa-carrot" style="color: var(--gold-accent);"></i> Ital Cooking Demo – Plant‑Based Livity</h3>
+            <p>Ital food is Rastafari soul food – natural, vegan, and made with love. Our chef will prepare two dishes live, using ingredients sourced from the Ital Marketplace (and you can buy the same ingredients afterward).</p>
+            <ul style="margin-top: 12px; margin-left: 20px;">
+                <li><strong>Chickpea Curry with Coconut Milk</strong> – creamy, spiced with turmeric and ginger</li>
+                <li><strong>Steamed Callaloo & Provision</strong> – leafy greens with cassava and yam</li>
+                <li>Plus a bonus: <strong>house‑made tamarind drink</strong> (non‑alcoholic, naturally sweet)</li>
+            </ul>
+            <p style="margin-top: 16px;">Recipes will be available as printed handouts. Gluten‑free and oil‑free options demonstrated.</p>
+        </div>
+    </div>
+
+    <!-- schedule for the day -->
+    <div class="section-label">Come hungry, come curious</div>
+    <h2 class="section-title">Full Schedule – Saturday, July 25th</h2>
+    <div class="schedule-grid">
+        <div class="session-card">
+            <div class="session-time">9:00 AM – 9:45 AM</div>
+            <h3>Morning Coffee Ceremony</h3>
+            <p>Start your festival day with the first Abol – strong, rich, and grounding. Popcorn served.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">10:00 AM – 10:45 AM</div>
+            <h3>Ital Breakfast Demo: Plantain Porridge</h3>
+            <p>Warm, sweet, and creamy – green plantain blended with coconut milk and cinnamon. Taste a cup.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">11:00 AM – 11:45 AM</div>
+            <h3>Coffee Ceremony (Second Round: Tona)</h3>
+            <p>Milder, smoother. Learn about the spiritual meaning of each round.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">12:00 PM – 12:45 PM</div>
+            <h3>Ital Lunch Demo: Chickpea Curry & Callaloo</h3>
+            <p><strong>Main event.</strong> Watch the chef build layers of flavor. Samples for the first 50 attendees.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">1:00 PM – 1:45 PM</div>
+            <h3>Coffee Ceremony (Final Round: Baraka – Blessing)</h3>
+            <p>The sweetest, most delicate cup. A blessing is spoken over each guest.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">2:00 PM – 3:00 PM</div>
+            <h3>Hands‑On Ital Workshop</h3>
+            <p>Learn to fold a <em>jebena</em> filter, or help grind coffee beans. Limited to 15 people per half‑hour.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">3:30 PM – 4:15 PM</div>
+            <h3>Afternoon Coffee & Storytelling</h3>
+            <p>Combine the ceremony with a short story about coffee’s Ethiopian origins – from Kaldi the goat herder to today.</p>
+        </div>
+        <div class="session-card">
+            <div class="session-time">5:00 PM – 6:00 PM</div>
+            <h3>Closing Ital Feast & Final Baraka</h3>
+            <p>Full meal served (while supplies last). Last chance for coffee and community before the evening reasoning circle.</p>
+        </div>
+    </div>
+
+    <!-- ingredients & shopping -->
+    <div class="section-label">Grow, cook, eat</div>
+    <h2 class="section-title">Ingredients you’ll see (and taste)</h2>
+    <div class="ingredient-grid">
+        <div class="ingredient-card"><i class="fas fa-seedling"></i> Green coffee beans (Ethiopian Yirgacheffe)</div>
+        <div class="ingredient-card"><i class="fas fa-apple-alt"></i> Plantains & cassava</div>
+        <div class="ingredient-card"><i class="fas fa-leaf"></i> Callaloo (amaranth greens)</div>
+        <div class="ingredient-card"><i class="fas fa-mortar-pestle"></i> Turmeric, ginger, cardamom</div>
+        <div class="ingredient-card"><i class="fas fa-water"></i> Coconut milk (freshly pressed)</div>
+        <div class="ingredient-card"><i class="fas fa-burn"></i> Frankincense resin (for the incense)</div>
+    </div>
+    <p style="text-align: center; margin-top: 16px; font-weight: 300;">All ingredients are vegan, gluten‑free, and sourced from local Black farmers. The Ital Marketplace is right next door – buy what you taste.</p>
+
+    <!-- publisher's note -->
+    <div style="background: rgba(14,94,54,0.2); border-radius: 24px; padding: 28px; margin: 48px 0;">
+        <i class="fas fa-book" style="color: var(--gold-accent); font-size: 1.8rem;"></i>
+        <h3 style="margin: 12px 0;">Want to cook Ital at home?</h3>
+        <p>Frontline Book Publishing carries <em>The Ital Cookbook: Plant‑Based Rastafari Recipes</em> and <em>The Coffee Ceremony Guide</em>. Both available at our pop‑up bookstore tent – plus a special bundle price for festival attendees.</p>
+        <a href="frontline-bookstore.html" class="btn-outline" style="margin-top: 16px;">Browse cookbooks →</a>
+    </div>
+
+    <!-- call to action -->
+    <div style="text-align: center; margin: 40px 0 20px;">
+        <i class="fas fa-hand-peace" style="font-size: 2.5rem; color: var(--gold-accent);"></i>
+        <h2 style="font-weight: 200; margin: 16px 0;">Come with an empty stomach. Leave with a full heart.</h2>
+        <a href="/tickets/" class="btn-outline" style="background: var(--gold-accent); color: #0D0D0D; padding: 12px 32px;"><i class="fas fa-ticket-alt"></i> Get Your Festival Pass</a>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> Heritage Village presented by Frontline Book Publishing — Rooted in Ethiopian & Jamaican Heritage.<br>
+        &copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+    </div>
+</footer>
+
+</body>
+</html>

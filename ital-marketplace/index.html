@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SelassieFest · Ital Food Experience | Vital, Pure, Natural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #050805;
+      --bg-surface: #0e110e;
+      --text-cream: #F5F2E8;
+      --green-roots: #2C8C5A;
+      --gold-livity: #E5A93C;
+      --red-power: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --border-soft: rgba(255, 255, 255, 0.08);
+      --gradient-ital: linear-gradient(145deg, #0b1e12 0%, #030704 100%);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* ----- SACROSANCT NAVBAR (identical to festival.html spirit) ----- */
+    .fest-nav {
+      background: rgba(5, 8, 5, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-soft);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 400;
+      font-size: 1.3rem;
+      letter-spacing: -0.3px;
+    }
+    .logo-area i {
+      color: var(--gold-livity);
+      font-size: 1.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #e2ddcf;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 1rem;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--gold-livity);
+      border-bottom-color: var(--gold-livity);
+    }
+    .btn-nav {
+      background: transparent;
+      border: 1px solid var(--gold-livity);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+    .btn-nav:hover {
+      background: var(--gold-livity);
+      color: #0a0c0a;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.8rem;
+    }
+
+    /* header + hero */
+    .ital-hero {
+      text-align: center;
+      padding: 3rem 1rem 2.5rem;
+      background: radial-gradient(ellipse at 50% 0%, rgba(44,140,90,0.2), transparent 70%);
+      border-bottom: 1px solid var(--border-soft);
+      margin-bottom: 1rem;
+    }
+
+    .ital-hero h1 {
+      font-size: 3.2rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #f5e6c4, var(--gold-livity));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .ital-hero h1 i {
+      background: none;
+      -webkit-background-clip: unset;
+      color: var(--gold-livity);
+      margin-right: 0.3rem;
+    }
+
+    .subhead {
+      font-weight: 300;
+      font-size: 1.2rem;
+      letter-spacing: 0.02em;
+      color: #cfcfc0;
+      margin-top: 0.75rem;
+      border-top: 1px dashed var(--border-soft);
+      display: inline-block;
+      padding-top: 0.7rem;
+    }
+
+    .section-badge {
+      display: inline-block;
+      background: rgba(229, 169, 60, 0.12);
+      border-left: 3px solid var(--gold-livity);
+      padding: 0.3rem 1rem;
+      font-weight: 400;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-weight: 300;
+      font-size: 2rem;
+      letter-spacing: -0.2px;
+      margin: 2.2rem 0 1.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      border-left: 4px solid var(--gold-livity);
+      padding-left: 1rem;
+    }
+
+    .section-title i {
+      color: var(--gold-livity);
+      font-size: 1.8rem;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 1.8rem 0;
+    }
+
+    .principle-card, .menu-card, .subpage-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(2px);
+      border: 1px solid var(--border-soft);
+      border-radius: 1.8rem;
+      padding: 1.8rem;
+      transition: all 0.25s ease;
+    }
+
+    .principle-card:hover, .menu-card:hover, .subpage-card:hover {
+      border-color: var(--green-roots);
+      transform: translateY(-5px);
+      background: rgba(44, 140, 90, 0.05);
+    }
+
+    .principle-card i, .subpage-card i {
+      font-size: 2.2rem;
+      color: var(--gold-livity);
+      margin-bottom: 1rem;
+    }
+
+    .principle-card h3, .subpage-card h3 {
+      font-weight: 500;
+      margin-bottom: 0.65rem;
+      font-size: 1.4rem;
+    }
+
+    .principle-card p, .subpage-card p {
+      font-weight: 300;
+      color: #ddd6c8;
+    }
+
+    /* full menu grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .menu-item {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(229, 169, 60, 0.2);
+      transition: 0.2s;
+    }
+    .menu-item h4 {
+      font-weight: 500;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .menu-item p {
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: #bfb9aa;
+      margin-bottom: 0.4rem;
+    }
+    .price-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      background: rgba(44,140,90,0.3);
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+      margin-top: 0.5rem;
+    }
+
+    /* featured recipe section */
+    .recipe-showcase {
+      background: var(--gradient-ital);
+      border-radius: 2rem;
+      border: 1px solid rgba(229, 169, 60, 0.3);
+      padding: 2rem;
+      margin: 2rem 0 2.5rem;
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+    }
+
+    .recipe-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2rem;
+    }
+
+    .recipe-ingredients ul {
+      list-style: none;
+      margin-top: 0.8rem;
+    }
+    .recipe-ingredients li {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-weight: 300;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+      padding-bottom: 0.4rem;
+    }
+    .recipe-ingredients li i {
+      color: var(--gold-livity);
+      width: 1.4rem;
+      font-size: 0.9rem;
+    }
+    .recipe-steps {
+      background: rgba(0,0,0,0.3);
+      border-radius: 1.2rem;
+      padding: 0.2rem 0.8rem 0.8rem 0.8rem;
+    }
+    .recipe-steps h3 i {
+      margin-right: 0.4rem;
+    }
+    .step-list {
+      list-style: none;
+      counter-reset: step-counter;
+    }
+    .step-list li {
+      counter-increment: step-counter;
+      margin-bottom: 1rem;
+      padding-left: 2rem;
+      position: relative;
+      font-weight: 300;
+    }
+    .step-list li::before {
+      content: counter(step-counter);
+      background: var(--gold-livity);
+      color: black;
+      font-weight: bold;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .highlight-quote {
+      margin-top: 1rem;
+      background: rgba(200,55,55,0.1);
+      border-left: 4px solid var(--red-power);
+      padding: 0.8rem 1.2rem;
+      font-style: italic;
+      border-radius: 1rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 2rem 1rem 1.5rem;
+      border-top: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .btn-fest {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--gold-livity);
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      color: var(--gold-livity);
+      font-weight: 400;
+      margin-top: 1rem;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+    .btn-fest:hover {
+      background: var(--gold-livity);
+      color: #0a0c0a;
+      text-decoration: none;
+    }
+    .explore-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .subpage-card {
+      text-align: center;
+      cursor: pointer;
+    }
+    .subpage-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .subpage-card i {
+      font-size: 2.8rem;
+    }
+    .btn-subpage {
+      margin-top: 1rem;
+      display: inline-block;
+      background: rgba(229, 169, 60, 0.2);
+      border-radius: 30px;
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--gold-livity);
+      transition: 0.2s;
+    }
+    .subpage-card:hover .btn-subpage {
+      background: var(--gold-livity);
+      color: #050805;
+    }
+    @media (max-width: 800px) {
+      .recipe-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .ital-hero h1 { font-size: 2.3rem; }
+      .section-title { font-size: 1.6rem; }
+      .container { padding: 1.2rem; }
+      .nav-container { flex-direction: column; align-items: flex-start; }
+      .nav-links { margin-top: 0.3rem; }
+    }
+    a { color: var(--gold-livity); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .ital-intro-text {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 1rem auto;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================= SACROSANCT NAVBAR (inspired by festival.html) ================= -->
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area">
+      <i class="fas fa-leaf"></i>
+      <span>SelassieFest <span style="font-weight:200;">| Ital Grounds</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="beverages.html">Beverages</a>
+      <a href="cooking-demos.html">Cooking Demos</a>
+      <a href="recipes.html">Recipes</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="#" class="btn-nav"><i class="fas fa-ticket-alt"></i> Festival Pass</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero section remains untouched -->
+<div class="ital-hero">
+  <h1><i class="fas fa-leaf"></i> Ital Food · Vital · Pure · Natural</h1>
+  <div class="subhead">🌱 The Rastafari Culinary Tradition | Nourishing Body, Mind & Spirit</div>
+  <div class="ital-intro-text">
+    “Ital is living in alignment with the earth — no salt, no synthetic additives, no flesh. Only the purest vibrations of fruits, vegetables, herbs, and grains.”
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ========== NEW: CARDS / LINKS TO 4 CRITICAL SUBPAGES ========== -->
+  <div class="section-badge"><i class="fas fa-compass"></i> EXPLORE THE MARKETPLACE</div>
+  <div class="section-title"><i class="fas fa-door-open"></i> Ital Pavilion · Four Sacred Paths</div>
+  <p style="font-weight: 300; margin-bottom: 1.5rem;">Dive deeper into the living essence of Ital. From healing beverages to hands-on cooking demonstrations, ancestral recipes, and the artisans who uphold the tradition — each portal leads you deeper into livity.</p>
+
+  <div class="explore-grid">
+    <div class="subpage-card">
+      <a href="beverages.html">
+        <i class="fas fa-wine-bottle"></i>
+        <h3>Ital Beverages</h3>
+        <p>Sacred tonics, sea moss elixirs, ginger fire, sorrel refreshers & private roots blends. Hydrate with vibration.</p>
+        <span class="btn-subpage"><i class="fas fa-mug-hot"></i> Discover libations →</span>
+      </a>
+    </div>
+    <div class="subpage-card">
+      <a href="cooking-demos.html">
+        <i class="fas fa-chalkboard-user"></i>
+        <h3>Cooking Demos</h3>
+        <p>Live fire cooking, herbal seasoning workshops, and Nyabinghi kitchen wisdom. Watch elders craft Ital magic.</p>
+        <span class="btn-subpage"><i class="fas fa-fire"></i> Watch & learn →</span>
+      </a>
+    </div>
+    <div class="subpage-card">
+      <a href="recipes.html">
+        <i class="fas fa-book-open"></i>
+        <h3>Recipes</h3>
+        <p>Authentic Ital stew peas, jerk tofu, plantain mofongo, and sweet potato pudding. Cook with intention.</p>
+        <span class="btn-subpage"><i class="fas fa-utensils"></i> Get the recipes →</span>
+      </a>
+    </div>
+    <div class="subpage-card">
+      <a href="vendors.html">
+        <i class="fas fa-store"></i>
+        <h3>Vendors</h3>
+        <p>Meet the farmers, herbalists, and artisans behind the Ital Marketplace. Support ethical roots economy.</p>
+        <span class="btn-subpage"><i class="fas fa-hand-holding-heart"></i> Meet vendors →</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- CONCEPT SECTION (original) -->
+  <div class="section-badge"><i class="fas fa-seedling"></i> KNOWLEDGE OF ITAL</div>
+  <div class="section-title"><i class="fas fa-dove"></i> What is Ital Food?</div>
+  <p style="font-weight: 300; margin-bottom: 1rem; font-size: 1.05rem; max-width: 90%;">
+    <strong>Ital</strong> (derived from “vital”) is the dietary philosophy rooted in Rastafari livity. It emphasizes <strong>living foods</strong> — unprocessed, plant-based, and grown without chemicals. Ital cooking avoids salt, preservatives, meat, and artificial seasonings, relying instead on fresh herbs (thyme, scallion, rosemary), coconut milk, allspice, garlic, ginger, and Scotch bonnet for depth. The goal is to honor the body as a temple and maintain a high vibration, connecting to Earth’s natural rhythms.
+  </p>
+  <div class="grid-two">
+    <div class="principle-card">
+      <i class="fas fa-apple-alt"></i>
+      <h3>Whole · Living foods</h3>
+      <p>Fresh fruits, vegetables, legumes, grains, and herbs from the earth. No cans, no artificial additives — food that still carries the sun’s energy.</p>
+    </div>
+    <div class="principle-card">
+      <i class="fas fa-ban"></i>
+      <h3>No Salt, No Flesh</h3>
+      <p>Traditional Ital excludes salt entirely — using coconut aminos, sea vegetables, herbs & spices. No animal products, fish, or eggs. 100% vegan + organic where possible.</p>
+    </div>
+    <div class="principle-card">
+      <i class="fas fa-mortar-pestle"></i>
+      <h3>Natural Seasoning</h3>
+      <p>Pimento (allspice), escallion, thyme, Scotch bonnet, fresh ginger, and coconut oil bring flavor — food is prepared with love, meditation, and intention.</p>
+    </div>
+    <div class="principle-card">
+      <i class="fas fa-hand-sparkles"></i>
+      <h3>Livity & Healing</h3>
+      <p>Ital isn't just a diet — it’s a spiritual practice. Meals are shared in community, often accompanied by Nyabinghi drumming, reasoning, and gratitude.</p>
+    </div>
+  </div>
+
+  <!-- FULL MENU for SelassieFest -->
+  <div class="section-title"><i class="fas fa-utensils"></i> The Ital Feast · SelassieFest 2026</div>
+  <p style="margin-bottom: 1rem; font-weight: 300;">Experience authentic Ital dishes at our <strong>Ital Marketplace</strong> — every meal prepared fresh, chemical-free, and blessed with Rastafari traditions. Below is the complete menu curated for patrons:</p>
+
+  <div class="menu-grid">
+    <div class="menu-item"><h4><i class="fas fa-carrot"></i> Ital Stew Peas</h4><p>Red kidney beans, pumpkin, carrots, thyme & rich coconut broth – slow cooked with pimento seeds.</p><span class="price-tag"><i class="fas fa-drumstick-bite"></i> Main / gluten-free</span></div>
+    <div class="menu-item"><h4><i class="fas fa-seedling"></i> Callaloo & Okra</h4><p>Fresh amaranth leaves, okra, onions, garlic, simmered in coconut cream & smoked paprika.</p><span class="price-tag">Vibrant side</span></div>
+    <div class="menu-item"><h4><i class="fas fa-rice"></i> Ital Rice & Peas</h4><p>Basmati rice, gungo peas (pigeon peas), coconut milk, lemongrass, scallion, and thyme.</p><span class="price-tag">Aromatic base</span></div>
+    <div class="menu-item"><h4><i class="fas fa-fish"></i> (Plant-based) Jerk ‘Tofu’</h4><p>Firm tofu marinated 24h in jerk paste (allspice, ginger, scotch bonnet, thyme), grilled over pimento wood.</p><span class="price-tag">Protein rich</span></div>
+    <div class="menu-item"><h4><i class="fas fa-leaf"></i> Mango & Avocado Slaw</h4><p>Shredded cabbage, green mango, ripe avocado, lime & fresh cilantro – no oil dressing.</p><span class="price-tag">Refreshing</span></div>
+    <div class="menu-item"><h4><i class="fas fa-egg"></i> Plantain ‘Mofongo’</h4><p>Twice-fried green plantains mashed with garlic, coconut oil, and crispy kale.</p><span class="price-tag">Hearty side</span></div>
+    <div class="menu-item"><h4><i class="fas fa-mug-hot"></i> Ginger Turmeric Fire</h4><p>Fresh pressed ginger, turmeric, lime, black pepper (to activate curcumin) & raw agave.</p><span class="price-tag">Elixir / juice</span></div>
+    <div class="menu-item"><h4><i class="fas fa-cup"></i> Sorrel ’66 Refresher</h4><p>Hibiscus flowers steeped with orange peel, clove & star anise, sweetened with date syrup.</p><span class="price-tag">Iced beverage</span></div>
+    <div class="menu-item"><h4><i class="fas fa-cake"></i> Sweet Potato Pudding</h4><p>Grated sweet potato, coconut cream, cinnamon, nutmeg & raisins — baked in banana leaf.</p><span class="price-tag">Dessert / Ital</span></div>
+    <div class="menu-item"><h4><i class="fas fa-apple-alt"></i> Banana ‘Ganja’ Fritters</h4><p>Ripe mashed banana, cassava flour, hemp seeds, coconut sugar & a touch of cinnamon.</p><span class="price-tag">Sweet treat</span></div>
+  </div>
+
+  <!-- HIGHLIGHT: FESTIVAL SIGNATURE RECIPE (DETAILED) -->
+  <div class="section-title"><i class="fas fa-book-open"></i> Signature Festival Recipe · Ital Stew Peas</div>
+  <p style="margin-bottom: 1.2rem;">At SelassieFest, the Ital Stew Peas is our grounding meal — prepared before sunrise by the Ital kitchen collective. This one-pot celebration of earth and spice embodies the livity of Rastafari cuisine.</p>
+
+  <div class="recipe-showcase">
+    <div class="recipe-inner">
+      <div class="recipe-ingredients">
+        <h3 style="font-weight: 500;"><i class="fas fa-mortar-board"></i> Ingredients (serves 6-8)</h3>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> 2 cups dried red kidney beans (soaked overnight)</li>
+          <li><i class="fas fa-check-circle"></i> 1/2 small pumpkin or butternut squash, diced</li>
+          <li><i class="fas fa-check-circle"></i> 1 can coconut milk (full fat, additive-free)</li>
+          <li><i class="fas fa-check-circle"></i> 4 cups filtered water or vegetable stock (no salt)</li>
+          <li><i class="fas fa-check-circle"></i> 3 stalks fresh thyme & 2 sprigs rosemary</li>
+          <li><i class="fas fa-check-circle"></i> 6 cloves garlic, crushed</li>
+          <li><i class="fas fa-check-circle"></i> 1 inch fresh ginger, grated</li>
+          <li><i class="fas fa-check-circle"></i> 1 scotch bonnet pepper (whole, for gentle heat)</li>
+          <li><i class="fas fa-check-circle"></i> 2 scallions, chopped</li>
+          <li><i class="fas fa-check-circle"></i> 1 tsp allspice (pimento) powder + 4 whole allspice berries</li>
+          <li><i class="fas fa-check-circle"></i> 2 tbsp coconut oil</li>
+          <li><i class="fas fa-check-circle"></i> 1 large carrot, cubed</li>
+          <li><i class="fas fa-check-circle"></i> Freshly ground black pepper & optional coconut aminos for umami</li>
+        </ul>
+        <div class="highlight-quote">
+          <i class="fas fa-drum"></i> “Ital cooking is intentional — every stir, every herb whispered with prayer. The stew peas connects us to ancestral grounds.”
+        </div>
+      </div>
+      <div class="recipe-steps">
+        <h3><i class="fas fa-hands-helping"></i> Traditional Preparation</h3>
+        <ul class="step-list">
+          <li>Rinse soaked kidney beans thoroughly. In a large heavy pot, heat coconut oil and gently sauté garlic, ginger, scallions, and allspice for 1 minute.</li>
+          <li>Add beans, water (or veg stock), thyme, rosemary, whole scotch bonnet, and allspice berries. Bring to a boil, then reduce heat to low and simmer for 1 hour — until beans begin to soften.</li>
+          <li>Add diced pumpkin, carrot, and continue to simmer for another 40-50 minutes, stirring occasionally, until beans are creamy and vegetables tender.</li>
+          <li>Pour in coconut milk, stir gently, and let it meld for another 15-20 minutes over low flame. Remove scotch bonnet (for heat adjust) and herb stems.</li>
+          <li>Adjust with black pepper and a splash of coconut aminos if desired (no salt!). The natural sweetness of pumpkin and coconut brings deep flavor.</li>
+          <li>Serve over Ital Rice & Peas or enjoy as a hearty stew with fried plantains on side. Garnish with fresh cilantro or parsley.</li>
+        </ul>
+        <p style="margin-top: 1rem; font-weight: 300; background: rgba(0,0,0,0.3); border-radius: 1rem; padding: 0.4rem 0.8rem;"><i class="fas fa-heart" style="color: var(--red-power);"></i> Chef’s note: For deeper flavour, use a traditional clay pot and let the stew rest for 30 minutes before serving — the beans absorb all the aroma.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- additional menu item reference + beverage pairing -->
+  <div class="grid-two" style="margin-top: 0.5rem;">
+    <div class="principle-card" style="background: rgba(0,0,0,0.3);">
+      <i class="fas fa-wine-bottle"></i>
+      <h3>Ital Beverage Pairing</h3>
+      <p>Enjoy the Stew Peas with a tall glass of <strong>Ginger Turmeric Fire</strong> or cool <strong>Spring Water with Mint & Lime</strong>. Also available: fresh coconut water straight from the husk.</p>
+    </div>
+    <div class="principle-card" style="background: rgba(0,0,0,0.3);">
+      <i class="fas fa-people-arrows"></i>
+      <h3>At the Marketplace</h3>
+      <p>All dishes are prepared in a dedicated Ital kitchen & blessed by elders. Every meal respects the earth — biodegradable bowls, no single-use plastics, and leftover produce given to community compost.</p>
+    </div>
+  </div>
+
+  <!-- Educational spotlight: Ital vs modern diets -->
+  <div class="section-title"><i class="fas fa-graduation-cap"></i> The Wisdom of Ital</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: rgba(44,140,90,0.08); border-radius: 1.8rem; padding: 1.8rem; margin: 1rem 0;">
+    <div style="flex: 1; min-width: 200px;">
+      <i class="fas fa-charging-station" style="font-size: 1.8rem; color: var(--gold-livity);"></i>
+      <h3 style="margin: 0.5rem 0 0.2rem;">Alkaline & Vitality</h3>
+      <p>Ital meals are naturally alkaline, anti-inflammatory, and rich in living enzymes — promoting mental clarity and physical endurance during long festival days.</p>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <i class="fas fa-hand-holding-heart" style="font-size: 1.8rem; color: var(--gold-livity);"></i>
+      <h3 style="margin: 0.5rem 0 0.2rem;">Environmental Stewardship</h3>
+      <p>No factory farming, no preservatives — Ital honors sustainable agriculture. At SelassieFest we source from BIPOC farmers and urban gardens.</p>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <i class="fas fa-brain" style="font-size: 1.8rem; color: var(--gold-livity);"></i>
+      <h3 style="margin: 0.5rem 0 0.2rem;">Medicinal Herbalism</h3>
+      <p>Fresh ginger, turmeric, soursop leaves, and moringa are often infused into Ital cooking, turning every meal into a healing ritual.</p>
+    </div>
+  </div>
+
+  <!-- Call to join SelassieFest -->
+  <div style="text-align: center; margin: 2.5rem 0 1rem;">
+    <i class="fas fa-ticket-alt" style="font-size: 2.5rem; color: var(--gold-livity);"></i>
+    <h2 style="font-weight: 300; margin: 0.5rem 0;">Join us at the Ital Fire Kitchen</h2>
+    <p style="max-width: 650px; margin: 0 auto 1rem;">At <strong>SelassieFest · July 25, 2026</strong> — Chicago’s Ethiopian Heritage Grounds, you’ll taste these dishes fresh from the flame, meet Ital chefs, and attend cooking demos at the Ital Marketplace Pavilion.</p>
+    <a href="#" class="btn-fest"><i class="fas fa-leaf"></i> Learn about SelassieFest</a>
+    <p style="margin-top: 1rem; font-size: 0.85rem;">📍 Ital Village open 9AM – 8PM | Free workshops: "Herbs & Spices of the Caribbean" & "Ital Fermentation 101"</p>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <i class="fas fa-peace"></i> “Food is the foundation of livity. Eat Ital, live Ital, be Ital.” <br>
+    SelassieFest — One Love, One Drum, One Community. All Ital recipes are traditional, vegan, and offered to uplift every soul.<br>
+    © 2026 SelassieFest Education | <a href="#" style="color:#E5A93C;">selassiefest.com/ital-experience</a>
+  </footer>
+</div>
+</body>
+</html>

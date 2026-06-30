@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="SelassieFest 2026 Marketplace – Ital food, artisan crafts, cannabis education, wellness, and community vendors. Join the roots economy.">
+    <title>SelassieFest – Marketplace | Vendors & Artisans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .nav-links li a:hover {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 48px 24px 60px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .page-header h1 {
+            font-weight: 200;
+            font-size: 3.5rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+        }
+        .page-header p {
+            max-width: 700px;
+            margin: 16px auto 0;
+            font-weight: 300;
+            color: #ccc;
+        }
+
+        .section-title {
+            font-weight: 300;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-left: 4px solid var(--gold-accent);
+            padding-left: 20px;
+            margin: 56px 0 28px 0;
+        }
+
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 40px;
+        }
+
+        .vendor-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.25s;
+            backdrop-filter: blur(4px);
+        }
+        .vendor-card:hover {
+            border-color: var(--gold-accent);
+            transform: translateY(-5px);
+        }
+        .vendor-icon {
+            font-size: 2rem;
+            color: var(--roots-green);
+            margin-bottom: 16px;
+        }
+        .vendor-card h3 {
+            font-weight: 400;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .vendor-category {
+            display: inline-block;
+            background: rgba(229,169,60,0.2);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            color: var(--gold-accent);
+        }
+        .vendor-card p {
+            font-weight: 300;
+            color: #ddd;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .expand-message {
+            text-align: center;
+            background: rgba(14,94,54,0.2);
+            border-radius: 48px;
+            padding: 32px;
+            margin: 40px 0;
+            border: 1px dashed var(--gold-accent);
+        }
+
+        .callout {
+            background: linear-gradient(145deg, #111, #070707);
+            border-radius: 32px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 48px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            padding: 12px 28px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+        .btn-outline:hover {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+        }
+
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover { color: var(--gold-accent); }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.5rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover { color: var(--gold-accent); }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 32px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+
+        @media (max-width: 780px) {
+            .site-title { font-size: 1.8rem; }
+            .nav-links { gap: 0.8rem; }
+            .nav-links li a { font-size: 0.7rem; }
+            .page-header h1 { font-size: 2rem; }
+            .section-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/" class="active-nav">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1>MARKETPLACE OF NATIONS</h1>
+            <p><i class="fas fa-store"></i> A vibrant gathering of conscious vendors, Ital food artisans, heritage crafts, cannabis educators, and wellness practitioners. Support the roots economy.</p>
+        </div>
+
+        <!-- FOOD & DRINK (Ital / Plant-Based) -->
+        <div class="section-title"><i class="fas fa-utensils"></i> Ital Food & Drink</div>
+        <div class="vendor-grid">
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-ethiopia"></i></div>
+                <h3>Ethiopian Diamond</h3>
+                <div class="vendor-category">Catering · Ethiopian</div>
+                <p>Authentic Ethiopian catering since 1996. Owner Almaz Yigizaw – a true cultural ambassador serving traditional vegan & meat dishes.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-ethiopia"></i></div>
+                <h3>Demera Ethiopian</h3>
+                <div class="vendor-category">Restaurant · Catering</div>
+                <p>Chicago staple for over 17 years, specializing in traditional cuisine and vibrant catering for festivals.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-ethiopia"></i></div>
+                <h3>Awash Ethiopian</h3>
+                <div class="vendor-category">Catering · Vegan-friendly</div>
+                <p>Known for delicious, authentic Ethiopian catering with extensive plant-based options.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-ethiopia"></i></div>
+                <h3>Queen Sheba Ethiopian Cafe</h3>
+                <div class="vendor-category">Cafe · Vegan</div>
+                <p>Cozy, authentic Ethiopian cafe with cozy atmosphere and excellent vegan platters.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-seedling"></i></div>
+                <h3>Original Soul Vegetarian</h3>
+                <div class="vendor-category">Soul Food · Plant-Based</div>
+                <p>Iconic South Side spot with 30+ years of history serving plant-based soul food classics.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-seedling"></i></div>
+                <h3>Majani Soulful Vegan</h3>
+                <div class="vendor-category">Sustainable · Vegan</div>
+                <p>Sustainable restaurant and catering specializing in plant-based Southern cuisine.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-hamburger"></i></div>
+                <h3>Can't Believe It's Not Meat</h3>
+                <div class="vendor-category">Vegan Comfort Food</div>
+                <p>Chicago-based vegan/vegetarian joint providing plant-based burgers, tacos, and more.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-apple-alt"></i></div>
+                <h3>B'Gabs Goodies</h3>
+                <div class="vendor-category">Raw Food · Juices</div>
+                <p>Vegan restaurant and source for raw food, juices, smoothies, and healthy snacks.</p>
+            </div>
+        </div>
+
+        <!-- ARTISANS, CRAFTS & APPAREL -->
+        <div class="section-title"><i class="fas fa-palette"></i> Artisans & Apparel</div>
+        <div class="vendor-grid">
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-pie"></i></div>
+                <h3>Justice of the Pies</h3>
+                <div class="vendor-category">Bakery · Social Mission</div>
+                <p>Handcrafted sweet & savory pies, quiches, tarts. Offers cooking classes to children from lower‑income families.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-cake"></i></div>
+                <h3>Brown Sugar Bakery</h3>
+                <div class="vendor-category">Southern Bake Shop</div>
+                <p>Traditional sweet treats, custom cakes, and southern-style desserts.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-cupcake"></i></div>
+                <h3>Sweet Justice Cupcakes</h3>
+                <div class="vendor-category">Handmade Desserts</div>
+                <p>All‑natural, handmade cupcakes and wholesale desserts from the Justice of the Pies family.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-leaf"></i></div>
+                <h3>Native Foods Cafe</h3>
+                <div class="vendor-category">100% Plant-Based</div>
+                <p>Down‑to‑earth, all‑vegan restaurant offering catering for festival crowds.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-drumstick-bite"></i></div>
+                <h3>The Chicago Diner</h3>
+                <div class="vendor-category">Vegetarian Icon</div>
+                <p>A vegetarian community staple for decades, offering catering pickup.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-user-chef"></i></div>
+                <h3>Maya-Camille Broussard</h3>
+                <div class="vendor-category">Chef & Educator</div>
+                <p>Owner of Justice of the Pies, creative entrepreneur, culinary teacher committed to inclusivity and community.</p>
+            </div>
+        </div>
+
+        <!-- CANNABIS & EDUCATION (Higher Learning Roots partners) -->
+        <div class="section-title"><i class="fas fa-cannabis"></i> Cannabis & Education Pavilion</div>
+        <div class="vendor-grid">
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-industry"></i></div>
+                <h3>Cresco Labs</h3>
+                <div class="vendor-category">#1 Chicago Cannabis Supplier</div>
+                <p>Top Chicago‑based, vertically integrated cannabis company. Anchor partner for the Higher Learning Roots village – educational sessions, responsible use advocacy.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-leaf"></i></div>
+                <h3>Green Thumb Industries</h3>
+                <div class="vendor-category">Manufacturing & Distribution</div>
+                <p>Major Chicago‑based operator, leading manufacturer of premium cannabis products. Interactive product education.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-flask"></i></div>
+                <h3>Verano</h3>
+                <div class="vendor-category">Comprehensive Product Line</div>
+                <p>Chicago‑headquartered company offering vapes, concentrates, edibles, topicals. Terpene discovery demos.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <h3>Higher Learning Roots Team</h3>
+                <div class="vendor-category">Cannabis Academy</div>
+                <p>On‑site workshops: “From Farm to Dispensary”, COA reading, cannabinoid science, and safe consumption.</p>
+            </div>
+        </div>
+
+        <!-- WELLNESS & COMMUNITY -->
+        <div class="section-title"><i class="fas fa-spa"></i> Wellness & Community Partners</div>
+        <div class="vendor-grid">
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-mug-hot"></i></div>
+                <h3>Royal Coffee Corporation</h3>
+                <div class="vendor-category">Ethiopian Coffee Ceremony</div>
+                <p>Authentic Ethiopian coffeehouse. Live coffee ceremony in the Heritage Village – a cultural immersion.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-utensil-spoon"></i></div>
+                <h3>Eden Restaurant</h3>
+                <div class="vendor-category">VIP Catering</div>
+                <p>Chef‑driven, seasonal catering for the VIP lounge. Clean, elevated Ital flavors.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                <h3>Spirit of Elijah Apothecary</h3>
+                <div class="vendor-category">Herbal Apothecary</div>
+                <p>Natural remedies, herbal teas, and holistic wellness products.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-seedling"></i></div>
+                <h3>Goddess of Agriculture</h3>
+                <div class="vendor-category">Herbal & Skincare</div>
+                <p>Organic shea butters, soaps, and botanical body care.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-glass-whiskey"></i></div>
+                <h3>Local Glassblowers Collective</h3>
+                <div class="vendor-category">Cannabis Accessories</div>
+                <p>Hand‑blown pipes, rolling trays, and functional art from Chicago artisans.</p>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-icon"><i class="fas fa-fist-raised"></i></div>
+                <h3>Rastafari & Diaspora Groups</h3>
+                <div class="vendor-category">Community Organizations</div>
+                <p>Local Rastafari elders, African Diaspora associations, cannabis decriminalization advocates.</p>
+            </div>
+        </div>
+
+        <!-- Expansion / more vendors coming -->
+        <div class="expand-message">
+            <i class="fas fa-plus-circle" style="font-size: 2.5rem; color: var(--gold-accent);"></i>
+            <h3 style="font-weight: 300; margin: 16px 0;">More Vendors Being Added Weekly</h3>
+            <p>We are curating additional artisans, food trucks, and wellness practitioners. Check back often or <strong>join our vendor list</strong> below.</p>
+        </div>
+
+        <!-- Call for vendors / become a vendor form -->
+        <div class="callout">
+            <i class="fas fa-store-alt" style="font-size: 2.8rem; color: var(--roots-green);"></i>
+            <h2 style="font-weight: 300; margin: 16px 0;">Become a Marketplace Vendor</h2>
+            <p style="max-width: 550px; margin: 0 auto 20px;">SelassieFest welcomes artisans, food vendors, herbalists, and conscious brands. Spaces are limited – apply now for the 2026 festival.</p>
+            <a href="/contact/?vendor=apply" class="btn-outline"><i class="fas fa-envelope"></i> REQUEST VENDOR APPLICATION</a>
+            <p style="margin-top: 24px; font-size: 0.8rem;">Email <strong>vendors@selassiefest.com</strong> directly for a quick response.</p>
+        </div>
+
+        <!-- Additional info: map location, marketplace hours -->
+        <div style="background: rgba(0,0,0,0.4); border-radius: 28px; padding: 28px; margin-top: 40px; text-align: center;">
+            <i class="fas fa-map-marker-alt" style="color: var(--gold-accent);"></i>
+            <p><strong>Marketplace of Nations</strong> is located in the central festival grounds, between the Main Stage and Ital Food Marketplace.<br>
+            Open <strong>8:00 AM – 9:30 PM</strong> on July 25th, 2026. Cash and cards accepted. ATM on site.</p>
+            <p style="margin-top: 12px; font-size: 0.85rem;">All vendors adhere to SelassieFest’s cultural respect, sustainability, and Ital-friendly guidelines.</p>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian & Jamaican Heritage.
+        <br>© 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM | Vendors subject to change, more added daily.
+    </div>
+</footer>
+
+<!-- console greeting -->
+<script>
+    (function() {
+        console.log("🌿 SelassieFest Marketplace – supporting roots economy, Ital food, and conscious cannabis education. One Love.");
+    })();
+</script>
+</body>
+</html>

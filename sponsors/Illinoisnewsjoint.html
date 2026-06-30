@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="SelassieFest 2026 — A Media Partnership Proposal for Illinois News Joint" />
+  <title>A Proposal for Illinois News Joint | SelassieFest 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:          #0a0a0a;
+      --surface:        #111111;
+      --surface-2:      #161616;
+      --border:         rgba(255,255,255,0.07);
+      --border-mid:     rgba(255,255,255,0.12);
+      --text:           #f0f0f0;
+      --text-dim:       #999;
+      --text-dimmer:    #555;
+      --gold:           #E5A93C;
+      --green:          #1a7a47;
+      --green-dim:      rgba(26,122,71,0.25);
+      --red:            #C0392B;
+      /* ILNJ accent — warm amber/yellow, journalistic authority */
+      --accent:         #D4A017;
+      --accent-dim:     rgba(212,160,23,0.15);
+      --accent-glow:    rgba(212,160,23,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── RIBBON ── */
+    .ribbon {
+      background: var(--accent-dim);
+      border-bottom: 1px solid rgba(212,160,23,0.2);
+      text-align: center;
+      padding: 7px 20px;
+      font-size: 0.65rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 32px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-name {
+      font-size: 2.2rem;
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .site-tagline {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 7px;
+      padding-top: 8px;
+      border-top: 1px solid var(--green);
+      display: inline-block;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(10,10,10,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+    }
+    .nav-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.2rem 1.6rem;
+      list-style: none;
+    }
+    .nav-inner a {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #bbb;
+      padding: 5px 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-inner a:hover,
+    .nav-inner a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 88px;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(212,160,23,0.13) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(26,122,71,0.07) 0%, transparent 50%),
+        var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center top, rgba(212,160,23,0.05), transparent 60%);
+      pointer-events: none;
+    }
+
+    .addressed-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(212,160,23,0.3);
+      background: rgba(212,160,23,0.07);
+      border-radius: 40px;
+      padding: 7px 20px;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .addressed-pill span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      line-height: 1.08;
+      margin-bottom: 22px;
+    }
+    h1 .gold   { color: var(--gold);   font-weight: 300; }
+    h1 .accent { color: var(--accent); font-weight: 300; }
+
+    .hero-datebar {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(229,169,60,0.2);
+      border-radius: 40px;
+      padding: 9px 24px;
+      font-size: 0.88rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 30px;
+    }
+    .hero-datebar .sep { color: var(--green); }
+
+    .hero-lead {
+      max-width: 680px;
+      margin: 0 auto 36px;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: #ccc;
+      line-height: 1.85;
+    }
+    .hero-lead strong { color: var(--gold); font-weight: 400; }
+    .hero-lead .ilnj  { color: var(--accent); font-weight: 400; }
+
+    .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .btn {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 12px 30px;
+      border: 1px solid;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.28s ease;
+      display: inline-block;
+    }
+    .btn-gold   { color: var(--gold);   border-color: var(--gold); }
+    .btn-gold:hover   { background: var(--gold); color: #000; box-shadow: 0 0 16px rgba(229,169,60,0.3); }
+    .btn-accent { color: var(--accent); border-color: var(--accent); }
+    .btn-accent:hover { background: var(--accent); color: #000; box-shadow: 0 0 14px var(--accent-glow); }
+
+    /* ── LAYOUT ── */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 64px 24px; }
+
+    .sec-label {
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-left: 4px solid var(--gold);
+      padding-left: 18px;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    h2 .gold   { color: var(--gold);   font-weight: 300; }
+    h2 .accent { color: var(--accent); font-weight: 300; }
+    .sub {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      padding-left: 22px;
+      margin-bottom: 44px;
+      max-width: 760px;
+    }
+
+    /* ── WHY THIS MATTERS — two-col bridge ── */
+    .bridge {
+      display: grid;
+      grid-template-columns: 1fr 64px 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 72px;
+    }
+    .bridge-col {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px 30px;
+    }
+    .bridge-col.selassie { border-color: rgba(26,122,71,0.35); }
+    .bridge-col.ilnj-col { border-color: rgba(212,160,23,0.3); }
+    .bridge-col-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .bridge-col.selassie .bridge-col-label { color: var(--green); }
+    .bridge-col.ilnj-col .bridge-col-label { color: var(--accent); }
+    .bridge-col-head {
+      font-size: 1.15rem;
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .bridge-items { display: flex; flex-direction: column; gap: 11px; }
+    .bridge-item {
+      display: flex;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #ccc;
+      line-height: 1.5;
+    }
+    .bridge-item::before {
+      content: '→';
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .bridge-col.selassie .bridge-item::before { color: var(--green); }
+    .bridge-col.ilnj-col .bridge-item::before { color: var(--accent); }
+
+    .bridge-mid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 0 6px;
+    }
+    .bridge-line {
+      width: 1px;
+      flex: 1;
+      min-height: 50px;
+      background: linear-gradient(to bottom, transparent, rgba(229,169,60,0.45), transparent);
+    }
+    .bridge-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(229,169,60,0.3);
+      background: rgba(229,169,60,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--gold);
+    }
+
+    /* ── DATA CALLOUT ── unique to ILNJ ── */
+    .data-callout {
+      background: rgba(212,160,23,0.06);
+      border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 22px;
+      padding: 44px 44px 40px;
+      margin-bottom: 72px;
+    }
+    .data-callout-head {
+      font-size: 0.62rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .data-callout h3 {
+      font-size: 1.5rem;
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .data-callout h3 .gold { color: var(--gold); font-weight: 300; }
+    .data-stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .data-stat {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 18px;
+      text-align: center;
+    }
+    .data-stat-num {
+      font-size: 1.6rem;
+      font-weight: 200;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .data-stat-label {
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+    .data-callout p {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: #ccc;
+      line-height: 1.8;
+      max-width: 820px;
+    }
+    .data-callout p strong { color: var(--gold); font-weight: 400; }
+    .data-callout p .ilnj  { color: var(--accent); font-weight: 400; }
+
+    /* ── MANIFESTO ── */
+    .manifesto {
+      background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(0,0,0,0.5));
+      border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 24px;
+      padding: 50px 48px;
+      margin-bottom: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .manifesto::before {
+      content: 'ILNJ';
+      position: absolute;
+      bottom: -20px; right: 10px;
+      font-size: 9rem;
+      font-weight: 200;
+      letter-spacing: 0.14em;
+      color: rgba(212,160,23,0.04);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .manifesto-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .manifesto h3 {
+      font-size: 1.8rem;
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      line-height: 1.15;
+      margin-bottom: 26px;
+    }
+    .manifesto h3 .gold { color: var(--gold); font-weight: 300; }
+    .manifesto p {
+      font-size: 1.02rem;
+      font-weight: 300;
+      color: #d5d5d5;
+      line-height: 1.9;
+      max-width: 820px;
+    }
+    .manifesto p + p { margin-top: 16px; }
+    .manifesto p strong { color: var(--gold); font-weight: 400; }
+    .manifesto p .ilnj  { color: var(--accent); font-weight: 400; }
+    .manifesto p em     { color: #999; font-style: italic; }
+
+    /* ── ANCHOR CARD ── */
+    .anchor-card {
+      border: 1px solid rgba(212,160,23,0.35);
+      border-radius: 24px;
+      background: linear-gradient(160deg, rgba(212,160,23,0.06), rgba(0,0,0,0.5));
+      overflow: hidden;
+      margin-bottom: 72px;
+      box-shadow: 0 0 50px rgba(212,160,23,0.05);
+    }
+    .anchor-banner {
+      padding: 38px 44px 30px;
+      border-bottom: 2px solid var(--accent);
+      background: rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .anchor-banner::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 92% 18%, rgba(212,160,23,0.16), transparent 55%);
+      pointer-events: none;
+    }
+    .anchor-tier {
+      font-size: 0.62rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .anchor-name {
+      font-size: 2.2rem;
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .anchor-name .accent { color: var(--accent); font-weight: 300; }
+    .anchor-sub {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text-dim);
+    }
+    .anchor-body { padding: 38px 44px; }
+
+    .anchor-statement {
+      background: rgba(212,160,23,0.06);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      font-size: 0.97rem;
+      font-weight: 300;
+      color: #ddd;
+      line-height: 1.8;
+    }
+    .anchor-statement strong { color: var(--accent); font-weight: 400; }
+    .anchor-statement .gold  { color: var(--gold); }
+
+    .deliverables-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .deliverable {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.84rem;
+      font-weight: 300;
+      color: #ccc;
+      line-height: 1.5;
+    }
+    .deliverable::before {
+      content: '✦';
+      color: var(--accent);
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      margin-top: 3px;
+    }
+
+    .chips-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-bottom: 14px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 9px; }
+    .chip {
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      padding: 6px 15px;
+      border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 40px;
+      color: #bbb;
+      transition: all 0.2s;
+    }
+    .chip:hover { border-color: var(--accent); color: #fff; }
+
+    /* ── WHAT GETS BUILT ── */
+    .builds-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 72px;
+    }
+    .build-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px 22px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .build-card:hover {
+      border-color: rgba(212,160,23,0.35);
+      box-shadow: 0 0 20px rgba(212,160,23,0.07);
+    }
+    .build-num {
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .build-title {
+      font-size: 0.95rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .build-desc {
+      font-size: 0.84rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    /* ── TIMELINE STRIP ── */
+    .timeline {
+      background: rgba(212,160,23,0.04);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 22px;
+      padding: 44px 44px;
+      margin-bottom: 72px;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 32px;
+    }
+    .tl-item { display: flex; gap: 18px; }
+    .tl-num {
+      font-size: 2.6rem;
+      font-weight: 200;
+      color: rgba(212,160,23,0.25);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 46px;
+    }
+    .tl-text h4 {
+      font-size: 0.88rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .tl-text p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    /* ── INQUIRY ── */
+    .inquiry {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 50px 48px;
+      margin-bottom: 16px;
+    }
+    .inquiry h2 { margin-bottom: 12px; }
+    .inquiry p  { font-size: 0.92rem; color: var(--text-dim); max-width: 560px; margin-bottom: 32px; line-height: 1.7; padding-left: 0; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-grid input,
+    .form-grid textarea {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.88rem;
+      padding: 11px 15px;
+      border-radius: 7px;
+      outline: none;
+      transition: border-color 0.22s;
+      width: 100%;
+    }
+    .form-grid input:focus,
+    .form-grid textarea:focus { border-color: var(--accent); }
+    .form-grid input::placeholder,
+    .form-grid textarea::placeholder { color: #444; }
+    .full { grid-column: 1 / -1; }
+    .form-grid textarea { min-height: 100px; resize: vertical; }
+    .form-submit {
+      grid-column: 1 / -1;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 13px 36px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.28s ease;
+      width: 100%;
+    }
+    .form-submit:hover { background: var(--accent); color: #000; box-shadow: 0 0 16px var(--accent-glow); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #060606;
+      border-top: 1px solid var(--border);
+      padding: 36px 24px 24px;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #666;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-size: 0.65rem;
+      font-weight: 300;
+      color: #3a3a3a;
+      letter-spacing: 0.08em;
+      line-height: 1.8;
+    }
+    .footer-conf {
+      font-size: 0.6rem;
+      color: rgba(212,160,23,0.35);
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .bridge { grid-template-columns: 1fr; }
+      .bridge-mid { display: none; }
+      .data-stat-row { grid-template-columns: 1fr 1fr; }
+      .builds-grid { grid-template-columns: 1fr 1fr; }
+      .deliverables-grid { grid-template-columns: 1fr; }
+      .timeline-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 52px 16px 60px; }
+      .wrap { padding: 44px 16px; }
+      h1 { font-size: 2rem; }
+      .builds-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: 1; }
+      .data-stat-row { grid-template-columns: 1fr 1fr; }
+      .manifesto { padding: 30px 22px; }
+      .anchor-body, .anchor-banner { padding: 26px 22px; }
+      .site-name { font-size: 1.7rem; }
+      .inquiry { padding: 32px 22px; }
+      .timeline { padding: 32px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- RIBBON -->
+<div class="ribbon">Prepared exclusively for Illinois News Joint &nbsp;·&nbsp; SelassieFest 2026 &nbsp;·&nbsp; Chicago, Illinois</div>
+
+<!-- HEADER -->
+<header>
+  <a href="https://selassiefest.com">
+    <div class="site-name">SELASSIEFEST</div>
+    <div class="site-tagline">One Day. One Love. One Community.</div>
+  </a>
+</header>
+
+<!-- NAV -->
+<nav>
+  <ul class="nav-inner">
+    <li><a href="https://selassiefest.com/about/">About</a></li>
+    <li><a href="https://selassiefest.com/festival/">Festival</a></li>
+    <li><a href="https://selassiefest.com/sound-system-yard/">Sound Yard</a></li>
+    <li><a href="https://selassiefest.com/main-stage/">Main Stage</a></li>
+    <li><a href="https://selassiefest.com/higher-learning-roots/">Higher Learning</a></li>
+    <li><a href="https://selassiefest.com/ital-marketplace/">Ital Market</a></li>
+    <li><a href="https://selassiefest.com/healing-grove/">Healing Grove</a></li>
+    <li><a href="https://selassiefest.com/heritage-village/">Heritage Village</a></li>
+    <li><a href="https://selassiefest.com/founding-partners/" class="active">Founding Partners</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="addressed-pill">
+    <span></span>
+    A Media Partnership Proposal — Illinois News Joint
+    <span></span>
+  </div>
+  <div class="hero-eyebrow">Chicago · July 25, 2026 · Official Media Partner</div>
+  <h1>
+    The <span class="accent">Industry's Paper</span><br>
+    Meets <span class="gold">The Movement</span>
+  </h1>
+  <div class="hero-datebar">
+    <span>📰 Premier Illinois Cannabis Press</span>
+    <span class="sep">·</span>
+    <span>50,000+ Patients Monthly</span>
+    <span class="sep">·</span>
+    <span>Industry Trusted</span>
+  </div>
+  <p class="hero-lead">
+    <span class="ilnj">Illinois News Joint</span> is the only outlet that treats Illinois cannabis as a beat worth covering seriously — not as a curiosity, not as a scandal, but as a community with a story. SelassieFest 2026 is the largest cultural expression of that community Chicago has ever produced. <strong>These two things belong together in print, in pixels, and on the ground.</strong>
+  </p>
+  <div class="btn-row">
+    <a href="#anchor" class="btn btn-gold">See the Media Anchor</a>
+    <a href="#inquiry" class="btn btn-accent">Begin the Conversation</a>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="wrap">
+
+  <!-- BRIDGE -->
+  <div class="sec-label">✦ Why This Partnership Exists</div>
+  <h2>Same <span class="gold">Community.</span> Different <span class="accent">Frequency.</span></h2>
+  <p class="sub">ILNJ covers the industry. SelassieFest is the culture underneath it. Neither can fully tell the story of Illinois cannabis without the other in the room.</p>
+
+  <div class="bridge">
+    <div class="bridge-col selassie">
+      <div class="bridge-col-label">✦ SelassieFest — Built From</div>
+      <div class="bridge-col-head">The Roots</div>
+      <div class="bridge-items">
+        <div class="bridge-item">Chicago's first Rastafari-rooted cultural festival — July 25, 2026</div>
+        <div class="bridge-item">Cannabis consciousness, plant literacy, and community education as a structural core</div>
+        <div class="bridge-item">Higher Learning Roots — COA workshops, terpene bars, farm-to-dispensary programming</div>
+        <div class="bridge-item">Social equity, expungement advocacy, and restorative justice dialogue</div>
+        <div class="bridge-item">A community that reads ILNJ, shops at dispensaries, and cares deeply about the industry story</div>
+      </div>
+    </div>
+    <div class="bridge-mid">
+      <div class="bridge-line"></div>
+      <div class="bridge-icon">∞</div>
+      <div class="bridge-line"></div>
+    </div>
+    <div class="bridge-col ilnj-col">
+      <div class="bridge-col-label">✦ Illinois News Joint — Built From</div>
+      <div class="bridge-col-head">The Record</div>
+      <div class="bridge-items">
+        <div class="bridge-item">Premier resource for Illinois cannabis — news, data, operator profiles, product reviews</div>
+        <div class="bridge-item">Monthly medical sales reporting — the numbers Illinois operators actually use</div>
+        <div class="bridge-item">Dispensary directory covering the entire Illinois retail landscape</div>
+        <div class="bridge-item">Industry credibility built over years of serious, independent cannabis journalism</div>
+        <div class="bridge-item">A readership of patients, operators, cultivators, and dispensary professionals</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA CALLOUT -->
+  <div class="data-callout">
+    <div class="data-callout-head">✦ The Market Context — Published June 9, 2026</div>
+    <h3>Illinois Medical Cannabis Is <span class="gold">Stable &amp; Growing</span> — The Story Isn't Told Yet</h3>
+    <div class="data-stat-row">
+      <div class="data-stat">
+        <div class="data-stat-num">$13.6M</div>
+        <div class="data-stat-label">May 2026 Medical Sales</div>
+      </div>
+      <div class="data-stat">
+        <div class="data-stat-num">49,853</div>
+        <div class="data-stat-label">Unique Patients (May)</div>
+      </div>
+      <div class="data-stat">
+        <div class="data-stat-num">$172M</div>
+        <div class="data-stat-label">2025 Annual Medical Total</div>
+      </div>
+      <div class="data-stat">
+        <div class="data-stat-num">1.49M g</div>
+        <div class="data-stat-label">Dry Cannabis Purchased (May)</div>
+      </div>
+    </div>
+    <p>
+      <span class="ilnj">Illinois News Joint</span> reported today that Illinois medical cannabis has stabilized at roughly <strong>$13.4–13.6M per month</strong> in 2026 — a consistent, mature market serving nearly 50,000 patients monthly. These are the operators SelassieFest is inviting as founding partners. These are the patients SelassieFest is building community with. <strong>ILNJ's readership and SelassieFest's audience are, in meaningful part, the same people.</strong> A media partnership here isn't a transaction — it's a recognition of that shared truth.
+    </p>
+  </div>
+
+  <!-- MANIFESTO -->
+  <div class="manifesto">
+    <div class="manifesto-eyebrow">✦ Partnership Philosophy</div>
+    <h3>
+      <span class="gold">ILNJ Doesn't Just Cover The Illinois Cannabis Industry.</span><br>
+      It Holds The Industry Accountable To Its Own Community.
+    </h3>
+    <p>
+      There are outlets that cover cannabis as a business story. <span class="ilnj">Illinois News Joint</span> covers it as a community story — the patients, the operators, the dispensary workers, the social equity applicants, the growers, the advocates. That is not a style choice. It is a values choice. And it is exactly the same choice SelassieFest made when we built this festival.
+    </p>
+    <p>
+      SelassieFest's Higher Learning Roots district — COA reading workshops, terpene education, farm-to-dispensary panels — exists because this community deserves to be literate about what they consume and who grows it. <strong>ILNJ has been publishing that literacy for years.</strong> On July 25th, 2026, that conversation moves from a screen to a field in Chicago, in front of thousands of people who already live it.
+    </p>
+    <p>
+      What we're proposing is not a banner placement and a press credential. We're proposing that <span class="ilnj">Illinois News Joint</span> becomes the <em>documented media voice</em> of SelassieFest 2026 — before, during, and after. The outlet whose coverage makes this festival part of the Illinois cannabis record permanently.
+    </p>
+  </div>
+
+  <!-- ANCHOR -->
+  <div id="anchor">
+    <div class="sec-label">✦ Proposed Media Anchor</div>
+    <h2><span class="accent">ILNJ's</span> Proposed <span class="gold">Partnership</span></h2>
+    <p class="sub">One media position. Built around ILNJ's editorial authority, industry readership, and Chicago presence.</p>
+  </div>
+
+  <div class="anchor-card">
+    <div class="anchor-banner">
+      <div class="anchor-tier">✦ Illinois News Joint — Official Media Partner &amp; Press Anchor</div>
+      <div class="anchor-name">Official <span class="accent">Media Partner</span> of SelassieFest 2026</div>
+      <div class="anchor-sub">The publication that puts SelassieFest into the Illinois cannabis record</div>
+    </div>
+    <div class="anchor-body">
+
+      <div class="anchor-statement">
+        <strong>Illinois News Joint is the only Illinois cannabis outlet with the editorial credibility, industry readership, and operator network to make SelassieFest's story land with the people who need to hear it.</strong> This partnership means the festival gets covered by the publication that Illinois dispensary professionals, operators, cultivators, and patients actually read — and <span class="gold">ILNJ gets exclusive media access to the most culturally significant cannabis event Chicago has produced.</span>
+      </div>
+
+      <div class="chips-label" style="margin-bottom:16px; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:#555;">What This Anchor Delivers</div>
+      <div class="deliverables-grid">
+        <div class="deliverable">Exclusive "Official Media Partner" designation — ILNJ logo and link in all SelassieFest materials, digital and print</div>
+        <div class="deliverable">Pre-festival feature coverage — operator partner spotlights, festival preview, and Higher Learning programming preview published on illinoisnewsjoint.com</div>
+        <div class="deliverable">Dedicated press access on July 25th — ILNJ team on-site with full media credentials, backstage access, and priority interview access to all participants</div>
+        <div class="deliverable">Post-festival recap article — the definitive written record of SelassieFest 2026 on the outlet Illinois operators trust</div>
+        <div class="deliverable">SelassieFest listing in ILNJ's Cannabis Events Calendar — reaching the outlet's full subscriber and readership base pre-event</div>
+        <div class="deliverable">Co-branded social amplification — SelassieFest promotional content distributed across ILNJ's Instagram, Facebook, and Twitter channels</div>
+        <div class="deliverable">ILNJ editorial presence at Higher Learning Roots — co-facilitation opportunity for a COA Reading or Cannabis Industry Literacy session</div>
+        <div class="deliverable">Founding Partner attribution on selassiefest.com — ILNJ logo, link, and "Official Media Partner" designation permanent in the festival record</div>
+        <div class="deliverable">SelassieFest promotional content in ILNJ newsletter — reaching subscribers ahead of July 25th</div>
+        <div class="deliverable">10 press and community passes for ILNJ team, contributors, and community members</div>
+      </div>
+
+      <div class="chips-label">Content ILNJ Can Own Around SelassieFest</div>
+      <div class="chips">
+        <span class="chip">Festival Preview Feature</span>
+        <span class="chip">Founding Operator Profiles</span>
+        <span class="chip">Higher Learning Roots Coverage</span>
+        <span class="chip">Day-Of Live Reporting</span>
+        <span class="chip">Post-Festival Recap</span>
+        <span class="chip">Operator Roundtable</span>
+        <span class="chip">Social Equity Dialogue Coverage</span>
+        <span class="chip">Sound System Culture Feature</span>
+        <span class="chip">Know Your Brand: SelassieFest Edition</span>
+        <span class="chip">ILNJ Events Calendar Placement</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT GETS BUILT -->
+  <div class="sec-label">✦ What Gets Created</div>
+  <h2>The <span class="gold">Coverage</span> That <span class="accent">Lasts</span></h2>
+  <p class="sub">ILNJ doesn't just cover the event — they put it into the Illinois cannabis record. Here's what that looks like in practice.</p>
+
+  <div class="builds-grid">
+    <div class="build-card">
+      <div class="build-num">01</div>
+      <div class="build-title">The Preview Series</div>
+      <div class="build-desc">Multi-piece pre-festival coverage: founding operator profiles, Higher Learning programming preview, and a festival feature that runs in the weeks before July 25th. The coverage that builds anticipation and brings ILNJ's readership to SelassieFest.</div>
+    </div>
+    <div class="build-card">
+      <div class="build-num">02</div>
+      <div class="build-title">Day-Of Reporting</div>
+      <div class="build-desc">ILNJ team on-site with press access — covering the Higher Learning Roots programming, operator activations, social equity dialogue, and the cultural experience from the inside. The only outlet with full media access and industry context to tell this story right.</div>
+    </div>
+    <div class="build-card">
+      <div class="build-num">03</div>
+      <div class="build-title">The Definitive Recap</div>
+      <div class="build-desc">Post-festival recap article on illinoisnewsjoint.com — the written record that lives in the Illinois cannabis archive permanently. Every future operator, patient, or press contact who searches for SelassieFest 2026 finds ILNJ's story first.</div>
+    </div>
+    <div class="build-card">
+      <div class="build-num">04</div>
+      <div class="build-title">Events Calendar Placement</div>
+      <div class="build-desc">SelassieFest listed and featured in ILNJ's Cannabis Events Calendar, reaching the outlet's subscriber base of Illinois cannabis professionals and patients ahead of July 25th.</div>
+    </div>
+    <div class="build-card">
+      <div class="build-num">05</div>
+      <div class="build-title">Higher Learning Presence</div>
+      <div class="build-desc">ILNJ brings its editorial expertise directly into SelassieFest's cannabis education programming — COA literacy, industry transparency, and the kind of informed journalism that makes the Higher Learning Roots district credible to a professional audience.</div>
+    </div>
+    <div class="build-card">
+      <div class="build-num">06</div>
+      <div class="build-title">Founding Media Record</div>
+      <div class="build-desc">ILNJ's "Official Media Partner" designation lives permanently on selassiefest.com. As SelassieFest grows in subsequent years, Illinois News Joint's founding media credit is embedded in the festival's origin story — visible to every operator, partner, and community member who discovers it.</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+    <div class="sec-label">✦ How SelassieFest Shows Up For ILNJ</div>
+    <h2 style="border-left-color: var(--accent);">What <span class="gold">SelassieFest</span> Delivers <span class="accent">To ILNJ</span></h2>
+    <div class="timeline-grid">
+      <div class="tl-item">
+        <div class="tl-num">01</div>
+        <div class="tl-text">
+          <h4>Before The Festival</h4>
+          <p>SelassieFest promotes ILNJ as Official Media Partner across all social channels and email communications. ILNJ's branding appears in all digital materials as the festival's designated press partner. Founding operator stories are routed through ILNJ first.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">02</div>
+        <div class="tl-text">
+          <h4>Day Of — Press Access</h4>
+          <p>Full media credentials for ILNJ team on July 25th. Backstage access, priority interview access to all participants and operators, presence at Higher Learning Roots programming, and the on-site story that only ILNJ can tell with industry context.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">03</div>
+        <div class="tl-text">
+          <h4>After The Festival</h4>
+          <p>SelassieFest amplifies ILNJ's recap coverage across all channels. The post-event story becomes the shared record of what July 25th was — co-promoted to both organizations' audiences, extending reach and shelf life for ILNJ's journalism.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-num">04</div>
+        <div class="tl-text">
+          <h4>In The Permanent Record</h4>
+          <p>ILNJ holds founding media partner status on selassiefest.com permanently. As SelassieFest grows into an annual institution, Illinois News Joint's role in its origin chapter becomes part of both organizations' stories.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INQUIRY -->
+  <div class="inquiry" id="inquiry">
+    <h2>Let's Build This <span class="gold">Together</span></h2>
+    <p>This proposal was prepared specifically for Illinois News Joint. We respond to every inquiry personally within 48 hours — and this conversation starts between two Illinois cannabis institutions, not two marketing departments.</p>
+    <form class="form-grid" onsubmit="handleSubmit(event)">
+      <input type="text" placeholder="Your Name & Title" required />
+      <input type="text" placeholder="Role at ILNJ" />
+      <input type="email" class="full" placeholder="Email Address" required />
+      <textarea class="full" placeholder="Tell us what resonates — or ask anything about SelassieFest and what ILNJ's media partnership could look like…"></textarea>
+      <button type="submit" class="form-submit">Send Media Partnership Inquiry — ILNJ →</button>
+    </form>
+  </div>
+
+</div><!-- end wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://selassiefest.com">SelassieFest Home</a>
+    <a href="https://selassiefest.com/founding-partners/">Founding Partners</a>
+    <a href="https://selassiefest.com/higher-learning-roots/">Higher Learning</a>
+    <a href="https://selassiefest.com/healing-grove/">Healing Grove</a>
+    <a href="https://selassiefest.com/heritage-village/">Heritage Village</a>
+    <a href="https://illinoisnewsjoint.com" target="_blank" rel="noopener">Illinois News Joint</a>
+  </div>
+  <div class="footer-copy">
+    © 2026 SelassieFest · Chicago, Illinois · selassiefest.com<br>
+    One Day. One Love. One Community.
+  </div>
+  <div class="footer-conf">This page was prepared exclusively for Illinois News Joint · Not for public distribution</div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Inquiry Sent — We\'ll Be In Touch Within 48 Hours ✓';
+    btn.style.borderColor = '#1a7a47';
+    btn.style.color = '#1a7a47';
+    btn.disabled = true;
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.build-card, .anchor-card, .manifesto, .bridge, .data-callout').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(18px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>

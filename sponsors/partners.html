@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SelassieFest · SmartCard Partner System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-bg-page: #fefaf5;
+      --color-surface: #ffffff;
+      --color-surface-muted: #f8f5f0;
+      --color-border-light: #e8e0d5;
+      --color-text-primary: #2a2418;
+      --color-text-secondary: #5c5546;
+      --color-text-tertiary: #8c826f;
+      --color-accent-gold: #c6892c;
+      --color-accent-deep: #a06e24;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+      --radius-card: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 14px rgba(0,0,0,0.05);
+    }
+
+    body {
+      background: var(--color-bg-page);
+      font-family: var(--font-sans);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .fest-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-size: 1.9rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #2c2418 0%, #624d2c 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subhead {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      border-left: 3px solid var(--color-accent-gold);
+      padding-left: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-accent-gold);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border-light);
+    }
+
+    /* Card scene */
+    .card-scene {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 1rem 0 1.5rem 0;
+    }
+
+    .card-side {
+      flex: 0 0 auto;
+      text-align: center;
+    }
+
+    .caption {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.6rem;
+    }
+
+    .smartcard {
+      width: 300px;
+      min-height: 180px;
+      border-radius: var(--radius-card);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.15s ease;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .smartcard:hover {
+      transform: translateY(-3px);
+    }
+
+    /* FRONT SIDE */
+    .card-front {
+      background: #1c1a16;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      flex: 1;
+    }
+
+    .front-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,215,140,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .front-icon span {
+      color: var(--color-accent-gold);
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .card-front-logo {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f8ede0;
+    }
+
+    .event-details {
+      text-align: center;
+      margin-top: 0.2rem;
+    }
+
+    .event-date {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #e6b85c;
+      letter-spacing: 0.5px;
+    }
+
+    .event-time {
+      font-size: 0.7rem;
+      color: rgba(255,245,225,0.7);
+    }
+
+    .brand-belief {
+      font-size: 0.7rem;
+      color: #cbbd9a;
+      text-align: center;
+      font-style: italic;
+      margin-top: 0.6rem;
+      padding: 0 0.5rem;
+      line-height: 1.4;
+      border-top: 0.5px solid rgba(255,215,140,0.3);
+      padding-top: 0.5rem;
+    }
+
+    .gold-stripe {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #c6892c, #e6b85c, #c6892c);
+    }
+
+    /* BACK SIDE */
+    .card-back {
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border: 1px solid var(--color-border-light);
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .card-back-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-back-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    .mirror-quote {
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--color-text-secondary);
+      font-style: italic;
+      border-left: 2px solid var(--color-accent-gold);
+      padding-left: 0.6rem;
+      margin: 0.5rem 0;
+    }
+
+    .qr-caption {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--color-accent-deep);
+      margin-top: 0.4rem;
+    }
+
+    .qr-block {
+      width: 48px;
+      height: 48px;
+      background: #fef7e8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0.5px solid var(--color-border-light);
+      margin-top: 0.5rem;
+      align-self: flex-end;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 0.5rem 0 1.5rem 0;
+    }
+
+    .nav-btn {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-light);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--color-text-secondary);
+    }
+
+    .nav-btn:hover {
+      background: var(--color-accent-gold);
+      border-color: var(--color-accent-gold);
+      color: white;
+    }
+
+    /* Partner grid (table style) */
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0 1.5rem 0;
+      max-height: 520px;
+      overflow-y: auto;
+      padding: 0.2rem;
+    }
+
+    .partner-card {
+      background: var(--color-surface);
+      border-radius: 1rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--color-border-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .partner-card:hover {
+      border-color: var(--color-accent-gold);
+      background: #fffbf5;
+      transform: translateY(-1px);
+    }
+
+    .partner-card.hot {
+      border-left: 3px solid var(--color-accent-gold);
+    }
+
+    .partner-card.warm {
+      border-left: 3px solid #7ba5c0;
+    }
+
+    .partner-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .partner-mirror {
+      font-size: 0.7rem;
+      color: var(--color-text-tertiary);
+      margin-top: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .partner-status {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2rem;
+    }
+
+    .status-hot {
+      background: #fff1e0;
+      color: #a4621a;
+    }
+
+    .status-warm {
+      background: #f0f4fa;
+      color: #1a5f7a;
+    }
+
+    .status-cold {
+      background: #f0ede8;
+      color: #6a6254;
+    }
+
+    /* Email draft area */
+    .draft-preview-area {
+      background: var(--color-surface-muted);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+      border: 1px solid var(--color-border-light);
+    }
+
+    .draft-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--color-accent-gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .draft-content {
+      font-size: 0.9rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 0.8rem;
+      border-left: 2px solid var(--color-accent-gold);
+      white-space: pre-wrap;
+      line-height: 1.55;
+    }
+
+    .draft-placeholder {
+      color: var(--color-text-tertiary);
+      font-style: italic;
+    }
+
+    hr {
+      margin: 1.5rem 0;
+      border: 0;
+      height: 1px;
+      background: var(--color-border-light);
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 1rem; }
+      .smartcard { width: 280px; min-height: 190px; }
+    }
+  </style>
+</head>
+<body>
+<div class="fest-container">
+  <div class="page-title">SelassieFest · SmartCard Partner System</div>
+  <div class="page-subhead">Physical card intelligence — front shows their brand belief, back shows their mirror statement.</div>
+
+  <!-- PHYSICAL CARD DISPLAY (Side A + Side B) -->
+  <div class="section-label">The card — front & back</div>
+  <div class="card-scene">
+    <div class="card-side">
+      <div class="caption">SIDE A · festival identity + partner belief</div>
+      <div class="smartcard card-front">
+        <div class="front-icon"><span>S</span></div>
+        <div class="card-front-logo">SelassieFest</div>
+        <div class="event-details">
+          <div class="event-date" id="eventDate">JULY 25 · CHICAGO</div>
+          <div class="event-time" id="eventTime">Noon 'Till Midnight</div>
+        </div>
+        <div class="brand-belief" id="brandBelief">"Selling weed was Vic Mensa's first hustle. Now it's his platform."</div>
+        <div class="gold-stripe"></div>
+      </div>
+    </div>
+    <div class="card-side">
+      <div class="caption">SIDE B · their personalized mirror</div>
+      <div class="smartcard card-back" id="cardBackPanel">
+        <div class="card-back-header">
+          <span class="card-back-name" id="cardPartnerName">93 Boyz</span>
+          <!-- Official sponsor badge removed entirely -->
+        </div>
+        <div class="mirror-quote" id="mirrorStatement">"The block that raised you deserves the first $10,000."</div>
+        <div class="qr-caption" id="qrCaption">⚡ What does ownership change in your neighborhood?</div>
+        <div class="qr-block">
+          <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
+            <rect x="2" y="2" width="16" height="16" rx="2" fill="none" stroke="#c6892c" stroke-width="1.5"/>
+            <rect x="5" y="5" width="10" height="10" rx="1" fill="#c6892c"/>
+            <rect x="26" y="2" width="16" height="16" rx="2" fill="none" stroke="#c6892c" stroke-width="1.5"/>
+            <rect x="29" y="5" width="10" height="10" rx="1" fill="#c6892c"/>
+            <rect x="2" y="26" width="16" height="16" rx="2" fill="none" stroke="#c6892c" stroke-width="1.5"/>
+            <rect x="5" y="29" width="10" height="10" rx="1" fill="#c6892c"/>
+            <rect x="26" y="26" width="4" height="4" fill="#c6892c"/>
+            <rect x="32" y="26" width="4" height="4" fill="#c6892c"/>
+            <rect x="38" y="26" width="4" height="4" fill="#c6892c"/>
+            <rect x="26" y="32" width="4" height="4" fill="#c6892c"/>
+            <rect x="32" y="38" width="4" height="4" fill="#c6892c"/>
+            <rect x="38" y="32" width="4" height="4" fill="#c6892c"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION ARROWS (NEXT / PREV) -->
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevPartnerBtn">← Previous partner</button>
+    <button class="nav-btn" id="nextPartnerBtn">Next partner →</button>
+  </div>
+
+  <!-- FULL PARTNER DIRECTORY (click to update card + email) -->
+  <div class="section-label">📇 All partners — click any to preview their card & draft email</div>
+  <div class="partner-grid" id="partnerGrid"></div>
+
+  <!-- EMAIL DRAFT AREA (dynamic follow-up) -->
+  <div class="draft-preview-area">
+    <div class="draft-title">✍️ Smart follow-up email (ready to send)</div>
+    <div class="draft-content draft-placeholder" id="draftMessage">
+      Click any partner above → generates a warm, belief-driven email based on their brand belief, mirror statement & scan activity.
+    </div>
+  </div>
+  <p style="font-size: 0.7rem; text-align: center; margin-top: 0.5rem; color: var(--color-text-tertiary);">
+    🔄 Navigation arrows cycle through all 44+ partners. Click any partner card to instantly update both sides of the card.
+  </p>
+</div>
+
+<script>
+  // --------------------------------------------------------------
+  // FULL PARTNER DATA (including Cannabis_Company_Brand_Belief, Mirror_Statement, QR_Caption)
+  // Event_Date is fixed: "JULY 25 · CHICAGO" (Racine removed)
+  // Event_Time: "Noon 'Till Midnight"
+  // --------------------------------------------------------------
+  const partnersData = [
+    { name: "93 Boyz", brandBelief: "Selling weed was Vic Mensa's first hustle. Now it's his platform.", mirror: "The block that raised you deserves the first $10,000.", qr: "What does ownership change in your neighborhood?", scans: 2, lastActive: "4h ago", intensity: "hot" },
+    { name: "Illinois News Joint", brandBelief: "Jason Brown covers Illinois cannabis. Solo. From Champaign.", mirror: "One journalist. One beat. Every dispensary, cultivator, and law in Illinois.", qr: "Who's writing this history if not you?", scans: 1, lastActive: "1d ago", intensity: "warm" },
+    { name: "GTI", brandBelief: "Kovler voted for Prop 215 in California. Came home. Founded GTI.", mirror: "He taught math for three years. Then solved the cannabis problem instead.", qr: "What do you build when you see the ending first?", scans: 3, lastActive: "1d ago", intensity: "hot" },
+    { name: "The 1937 Group", brandBelief: "Named for the act that outlawed it. Built to outlast that legacy.", mirror: "Arrested for cannabis as a teen. Now he owns the company.", qr: "What gets built when the charge becomes the charter?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "Chicann", brandBelief: "Cannabis should strengthen communities.", mirror: "Communities grow where opportunity takes root.", qr: "The future is built locally.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Cresco Labs", brandBelief: "Charlie Bachtell read the mortgage crisis as a map for cannabis.", mirror: "When cannabis crossed his desk in 2013, he said: I have read this book before.", qr: "What looks familiar when you already know the playbook?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "NuEra", brandBelief: "Every community deserves opportunity.", mirror: "Opportunity belongs everywhere.", qr: "Where could opportunity grow next?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Oregonix", brandBelief: "Innovation drives progress.", mirror: "Innovation leaves footprints.", qr: "The next one could be yours.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "PharmaCann", brandBelief: "Access improves lives.", mirror: "Access changes outcomes.", qr: "Imagine the impact at scale.", scans: 1, lastActive: "3d ago", intensity: "warm" },
+    { name: "Revolution", brandBelief: "Innovation should challenge convention.", mirror: "Every revolution begins with a belief.", qr: "Build the next piece.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Verano Holdings", brandBelief: "George Archos: first medical grow license in Illinois. 2014.", mirror: "He ran restaurants. Then he got the first cannabis license in Illinois.", qr: "What does it mean to be first in a brand new industry?", scans: 2, lastActive: "1d ago", intensity: "hot" },
+    { name: "Ivy Hall", brandBelief: "1st social equity dispensary in IL. Nigel built it.", mirror: "We didn't see anyone in our community participating. So we became the proof.", qr: "What does the first one owe the next?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "Sunnyside River North", brandBelief: "Wellness begins with accessibility.", mirror: "Access should feel welcoming.", qr: "The next connection is waiting.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Dispensary 33 Andersonville", brandBelief: "Named for Prohibition's end. Illinois' first medical dispensary.", mirror: "Nobody likes a doctor's office. We never wanted this to feel like one.", qr: "What does independence still make possible?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Dispensary 33 West Loop", brandBelief: "Bryan Zises turned affordable housing work into cannabis equity.", mirror: "Chicago's last indie. Now Illinois' first employee-owned.", qr: "What changes when the staff owns the building?", scans: 1, lastActive: "5d ago", intensity: "warm" },
+    { name: "ÜMI Dispensary", brandBelief: "Experience matters.", mirror: "Memorable experiences create advocates.", qr: "What experience comes next?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Karma Club", brandBelief: "Culture and community belong together.", mirror: "Culture thrives where people gather.", qr: "Imagine the possibilities.", scans: 1, lastActive: "3d ago", intensity: "warm" },
+    { name: "Bud & Rita's", brandBelief: "Named for Patrick's grandparents. 5 generations of farming.", mirror: "Five generations farmed this land before cannabis was on the menu.", qr: "What does a family name on the door change?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Zen Leaf Pilsen", brandBelief: "Growth follows vision.", mirror: "Vision sees opportunities others miss.", qr: "Take a closer look.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Zen Leaf Rogers Park", brandBelief: "Every neighborhood matters.", mirror: "Impact starts one neighborhood at a time.", qr: "Where will you make yours?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Curaleaf Weed Street", brandBelief: "Leadership creates momentum.", mirror: "Momentum changes markets.", qr: "What will you move next?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Curaleaf Justice", brandBelief: "Access and trust drive growth.", mirror: "Trust opens doors.", qr: "Which door comes next?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Green Rose Dispensary", brandBelief: "Community investment creates value.", mirror: "Communities reward commitment.", qr: "See the opportunity.", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Ascend Midway", brandBelief: "K Capital managed billions. Abner Kurtin left to build Ascend.", mirror: "Ascend didn't exist 18 months before it was among the country's largest.", qr: "What opens when capital meets the right moment?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "Ascend Logan Square", brandBelief: "K Capital managed billions. Abner Kurtin left to build Ascend.", mirror: "Ascend didn't exist 18 months before it was among the country's largest.", qr: "What opens when capital meets the right moment?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Tical", brandBelief: "TICAL: Taking Into Consideration All Lives. Method Man, 1993.", mirror: "He launched at Black-owned dispensaries on purpose. That's the whole philosophy.", qr: "What gets built when culture owns the brand?", scans: 2, lastActive: "3d ago", intensity: "hot" },
+    { name: "Columbia Care / Cannabist", brandBelief: "Nicholas Vita: first employee, longest-serving CEO. 12 years.", mirror: "First in New York. First in Massachusetts. Cannabist — because they know.", qr: "What does it cost to be first — and stay first?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Aeriz", brandBelief: "No soil. Roots suspended in air. Illinois' only aeroponic cultivator.", mirror: "The hardest way to grow cannabis is the cleanest way to deliver it.", qr: "What standard are you willing to hold yourself to?", scans: 1, lastActive: "1d ago", intensity: "warm" },
+    { name: "Innocent", brandBelief: "Authenticity resonates longer than advertising.", mirror: "The brands that endure know exactly who they are.", qr: "What becomes possible when people believe?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Nature's Grace and Wellness", brandBelief: "The O'Herns have farmed this land for five generations.", mirror: "Farming is our heritage. Cannabis is our craft. The soil doesn't care what you grow — it rewards care.", qr: "What does a fifth-generation promise feel like?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Bedford Grow", brandBelief: "Built for Beverly and Lou. Open for everyone else.", mirror: "Some companies are built for profit. This one was built as a promise.", qr: "Who are you growing this for?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Kaviar", brandBelief: "In 2016 they asked: what if cannabis had a luxury brand?", mirror: "It either has to be the first or the best. Kaviar is both.", qr: "What happens when the standard gets raised?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "PTS Corp", brandBelief: "Research transforms potential into results.", mirror: "Precision turns ideas into outcomes.", qr: "Which outcome matters most right now?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Justice Cannabis Co.", brandBelief: "Civil rights attorneys. Cannabis as their next case.", mirror: "The founders spent their careers defending the wrongly convicted. Then they built a cannabis company on the same principles.", qr: "What gets built when justice isn't just a name?", scans: 1, lastActive: "2d ago", intensity: "warm" },
+    { name: "Alchemy", brandBelief: "Transformation begins before anyone can see it.", mirror: "Vision has a way of becoming reality.", qr: "What are you shaping behind the scenes?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Grasshopper Club", brandBelief: "Chuck was arrested. Now he co-owns the dispensary.", mirror: "The same plant that put your family at risk can be the one that sets them free.", qr: "What does full circle look like for you?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Spark'd", brandBelief: "The Foster sisters didn't wait — they built the door.", mirror: "Some people knock. The Foster sisters built the door.", qr: "What becomes possible when you own what you built?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Verilife", brandBelief: "Veri — Latin for truth. The name is the whole philosophy.", mirror: "Teddy Scott said stigma keeps people out. So he built walls of glass.", qr: "What changes when a dispensary has nothing to hide?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Cookies Chicago", brandBelief: "Berner trademarked the hoodie before he could trademark the weed.", mirror: "The wealthiest rapper you've never heard on the radio built this brand.", qr: "What gets built when the culture owns the brand?", scans: 1, lastActive: "4d ago", intensity: "warm" },
+    { name: "Cannabist", brandBelief: "People first. Always.", mirror: "Understanding people changes everything else.", qr: "What could grow from deeper understanding?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "EarthMed", brandBelief: "Service is measured by relationships, not transactions.", mirror: "The strongest connections are built over time.", qr: "What could a stronger connection create?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "RISE Dispensaries", brandBelief: "Ben Kovler's co-investor said burn the check. They opened anyway.", mirror: "Well-being through cannabis. 100 stores. The mission hasn't changed.", qr: "What does it look like when the mission scales?", scans: 1, lastActive: "1d ago", intensity: "warm" },
+    { name: "MOCA Modern Cannabis", brandBelief: "Danny Marks + his pharmacist landlord. MOCA. Logan Square, 2016.", mirror: "A bar owner and a pharmacist opened one of Chicago's first dispensaries.", qr: "What opens when art, culture, and cannabis meet?", scans: 0, lastActive: "sent", intensity: "cold" },
+    { name: "Maribis", brandBelief: "Lou's licenses were approved. He died before the doors opened.", mirror: "Beverly never got it legally. Lou lobbied for the law. Laurel opened the store.", qr: "What do you build for someone who didn't make it?", scans: 0, lastActive: "sent", intensity: "cold" }
+  ];
+
+  let currentIndex = 0;
+
+  // Update BOTH sides of the card based on partner
+  function updateCardDisplay(index) {
+    const partner = partnersData[index];
+    if (!partner) return;
+    // Side A updates
+    document.getElementById('brandBelief').innerHTML = `“${partner.brandBelief}”`;
+    // Event date is fixed (Chicago, not Racine) and time is fixed
+    document.getElementById('eventDate').innerHTML = `JULY 25 · CHICAGO`;
+    document.getElementById('eventTime').innerHTML = `Noon 'Till Midnight`;
+    // Side B updates
+    document.getElementById('cardPartnerName').innerText = partner.name;
+    document.getElementById('mirrorStatement').innerHTML = `“${partner.mirror}”`;
+    document.getElementById('qrCaption').innerHTML = `⚡ ${partner.qr}`;
+  }
+
+  // Generate personalized email (uses brand belief and mirror statement)
+  function generateEmailForPartner(partner) {
+    const scans = partner.scans;
+    let opening = `Hi ${partner.name} team,\n\n“${partner.brandBelief}” — that belief is printed on the front of your SelassieFest SmartCard. We built this event to honor legacies like yours.`;
+    let body = '';
+    if (scans === 0) {
+      body = `Your card was recently delivered — we’d love to show you how SelassieFest (July 25, Chicago) turns that belief into an unforgettable activation. Over 15,000 engaged consumers, equity-focused programming, and a stage for authentic voices.`;
+    } else if (scans === 1) {
+      body = `We noticed you scanned the card (${partner.lastActive}) — the mirror statement on the back, “${partner.mirror}”, is exactly the kind of energy we want to amplify. Let’s schedule a 15-min call to explore sponsorship tiers: branded lounge, product sampling, and post-event impact report.`;
+    } else {
+      body = `Multiple scans — you’re clearly feeling the alignment. ${partner.name} belongs at the forefront of this movement. I’ve reserved a priority activation package for you (includes main stage integration, digital pre-roll, and a community fund donation). Reply and I’ll send the deck.`;
+    }
+    const closing = `\n\nThe block that raised you — or the community you serve — deserves this stage. Let’s build something historic.\n\n— SelassieFest Partnerships\nselassiefest.com/partners`;
+    return `${opening}\n\n${body}\n${closing}`;
+  }
+
+  function updateEmailPreview(partner) {
+    const emailText = generateEmailForPartner(partner);
+    const draftDiv = document.getElementById('draftMessage');
+    draftDiv.classList.remove('draft-placeholder');
+    draftDiv.innerHTML = `<strong style="display:block; margin-bottom:0.5rem;">📧 To: ${partner.name} · Subject: SelassieFest × ${partner.name} – Your belief, our stage</strong><br>${emailText.replace(/\n/g, '<br>')}`;
+  }
+
+  function setActivePartnerByIndex(index) {
+    if (index < 0) index = 0;
+    if (index >= partnersData.length) index = partnersData.length - 1;
+    currentIndex = index;
+    const partner = partnersData[currentIndex];
+    updateCardDisplay(currentIndex);
+    updateEmailPreview(partner);
+    // highlight active partner in grid
+    document.querySelectorAll('.partner-card').forEach((card, idx) => {
+      if (idx === currentIndex) {
+        card.style.border = `1.5px solid var(--color-accent-gold)`;
+        card.style.backgroundColor = `#fffbf0`;
+      } else {
+        card.style.border = `1px solid var(--color-border-light)`;
+        card.style.backgroundColor = ``;
+      }
+    });
+  }
+
+  function nextPartner() { setActivePartnerByIndex(currentIndex + 1); }
+  function prevPartner() { setActivePartnerByIndex(currentIndex - 1); }
+
+  // Build clickable partner grid
+  function buildPartnerGrid() {
+    const grid = document.getElementById('partnerGrid');
+    grid.innerHTML = '';
+    partnersData.forEach((partner, idx) => {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = `partner-card ${partner.intensity}`;
+      let statusLabel = '';
+      if (partner.scans === 0) statusLabel = '📬 Card sent';
+      else if (partner.scans === 1) statusLabel = `🔍 Scanned · ${partner.lastActive}`;
+      else statusLabel = `🔥 Scanned ${partner.scans}x · ${partner.lastActive}`;
+      cardDiv.innerHTML = `
+        <div class="partner-name">${partner.name}</div>
+        <div class="partner-mirror">“${partner.mirror.substring(0, 70)}${partner.mirror.length > 70 ? '…' : ''}”</div>
+        <span class="partner-status ${partner.scans === 0 ? 'status-cold' : (partner.scans === 1 ? 'status-warm' : 'status-hot')}">${statusLabel}</span>
+      `;
+      cardDiv.addEventListener('click', () => setActivePartnerByIndex(idx));
+      grid.appendChild(cardDiv);
+    });
+  }
+
+  document.getElementById('prevPartnerBtn').addEventListener('click', prevPartner);
+  document.getElementById('nextPartnerBtn').addEventListener('click', nextPartner);
+  buildPartnerGrid();
+  setActivePartnerByIndex(0);
+</script>
+</body>
+</html>

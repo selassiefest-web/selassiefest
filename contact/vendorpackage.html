@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Vendor Package – Selassiefest 2026 | Heritage Village</title>
+    <!-- Font Awesome 6 (same as bluntly-speaking) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts Jost, modern & sleek -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ---------- VARIABLES (exactly from bluntly-speaking.html) ---------- */
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* ---------- HEADER & NAVIGATION (identical to bluntly-speaking) ---------- */
+        .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+
+        .main-nav {
+            background: #0a0a0a;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.25rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* breadcrumb */
+        .breadcrumb {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: rgba(245, 245, 245, 0.35);
+            padding: 14px 32px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .breadcrumb a {
+            color: rgba(245, 245, 245, 0.4);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--gold-accent);
+        }
+        .breadcrumb span {
+            color: var(--gold-accent);
+        }
+
+        /* main container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* hero banner (vendor specific) */
+        .vendor-hero {
+            background: linear-gradient(135deg, #07120b 0%, #0c2619 40%, #0e3020 70%, #061007 100%);
+            border-bottom: 2px solid var(--roots-green);
+            padding: 56px 32px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 24px 24px;
+            margin-bottom: 32px;
+        }
+        .vendor-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 40% at 20% 60%, rgba(14, 94, 54, 0.18) 0%, transparent 70%),
+                        radial-gradient(ellipse 50% 50% at 80% 30%, rgba(229, 169, 60, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            font-weight: 300;
+            font-size: 0.78rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--roots-green);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-weight: 200;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.2;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title span {
+            color: var(--gold-accent);
+        }
+        .hero-subtitle {
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: rgba(245, 245, 245, 0.65);
+            max-width: 680px;
+            margin: 0 auto 28px;
+            letter-spacing: 0.03em;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #ccc;
+        }
+        .hero-meta-item i {
+            color: var(--gold-accent);
+        }
+
+        /* section styling */
+        .section-label {
+            font-weight: 300;
+            font-size: 0.72rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-weight: 200;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 8px;
+        }
+        .section-desc {
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: rgba(245, 245, 245, 0.6);
+            max-width: 700px;
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-dim);
+            margin: 60px 0;
+        }
+
+        /* cards & highlights (matching bluntly-speaking's session-card style) */
+        .vendor-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 24px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        .vendor-section {
+            padding: 1.8rem 2rem;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .vendor-section:last-child {
+            border-bottom: none;
+        }
+        .vendor-section h2 {
+            font-weight: 500;
+            font-size: 1.6rem;
+            letter-spacing: 0.02em;
+            color: var(--gold-accent);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .highlight {
+            background: rgba(229, 169, 60, 0.12);
+            border-left: 4px solid var(--gold-accent);
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            font-weight: 300;
+        }
+        .fee-box {
+            background: rgba(14, 94, 54, 0.2);
+            border: 1px solid var(--roots-green);
+            color: #f9eed7;
+            padding: 1.2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gold-accent);
+            color: #0D0D0D;
+            text-decoration: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            transition: all 0.25s;
+            margin-top: 0.5rem;
+        }
+        .btn:hover {
+            background: #d4942c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+        }
+        .btn-outline:hover {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+        }
+        .list-styled {
+            margin-left: 1.5rem;
+            list-style: none;
+        }
+        .list-styled li {
+            margin-bottom: 0.6rem;
+            position: relative;
+            padding-left: 1.4rem;
+        }
+        .list-styled li::before {
+            content: "🌿";
+            position: absolute;
+            left: 0;
+            color: var(--roots-green);
+        }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .info-pill {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-dim);
+            border-radius: 20px;
+            padding: 1.2rem;
+            transition: 0.2s;
+        }
+        .info-pill i {
+            font-size: 1.6rem;
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .phase-header-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 32px 0 20px;
+        }
+        .phase-pill {
+            background: rgba(229,169,60,0.15);
+            padding: 5px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+        }
+
+        /* FOOTER - elegant & sleek, with all social media links */
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 40px;
+            margin-top: 60px;
+        }
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .footer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer-tagline {
+            font-weight: 300;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            color: rgba(245,245,245,0.6);
+        }
+        .footer-follow {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--gold-accent);
+        }
+        .footer-email {
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        .footer-email a {
+            color: var(--gold-accent);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-email a:hover {
+            text-decoration: underline;
+            opacity: 0.9;
+        }
+        .social-icons-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        .social-icon-link {
+            background: rgba(255,255,255,0.05);
+            border-radius: 60px;
+            padding: 8px 16px;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-white);
+            font-weight: 400;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-dim);
+        }
+        .social-icon-link i {
+            font-size: 1.2rem;
+            color: var(--gold-accent);
+        }
+        .social-icon-link span {
+            letter-spacing: 0.04em;
+        }
+        .social-icon-link:hover {
+            background: var(--gold-accent);
+            border-color: var(--gold-accent);
+            color: #0D0D0D;
+            transform: translateY(-2px);
+        }
+        .social-icon-link:hover i {
+            color: #0D0D0D;
+        }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: #666;
+            text-align: center;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 28px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* responsive */
+        @media (max-width: 780px) {
+            .site-title { font-size: 1.8rem; }
+            .nav-links { gap: 0.8rem; }
+            .footer-container { flex-direction: column; text-align: center; }
+            .social-icons-row { justify-content: center; }
+            .vendor-section { padding: 1.2rem; }
+        }
+        @media (max-width: 520px) {
+            .hero-meta { flex-direction: column; gap: 8px; align-items: center; }
+            .social-icon-link { padding: 6px 12px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== HEADER (consistent with SelassieFest brand) ========== -->
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/" class="active">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> ›
+    <a href="/heritage-village/">Heritage Village</a> ›
+    <span>Vendor Package — Cultural Items</span>
+</div>
+
+<!-- VENDOR HERO SECTION -->
+<div class="vendor-hero">
+    <div class="hero-eyebrow">⭐ FIRST ANNUAL CELEBRATION ⭐</div>
+    <h1 class="hero-title">Vendor Package <span>✦ Heritage Village</span></h1>
+    <p class="hero-subtitle">Artisans, craft makers, herbalists & cultural vendors — join the roots revival. No booth fees, only commitment to community promotion.</p>
+    <div class="hero-meta">
+        <div class="hero-meta-item"><i class="fas fa-calendar-alt"></i> July 25th, 2026</div>
+        <div class="hero-meta-item"><i class="fas fa-map-marker-alt"></i> 6227 S Prairie Ave, Chicago IL</div>
+        <div class="hero-meta-item"><i class="fas fa-hand-sparkles"></i> Heritage Village Grounds</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- main vendor card (inspired by bluntly-speaking layout) -->
+    <div class="vendor-card">
+        <!-- invitation section -->
+        <div class="vendor-section">
+            <h2><i class="fas fa-leaf" style="font-size: 1.8rem;"></i> Cultural Market — One Love Economy</h2>
+            <p style="margin-bottom: 1rem; font-size: 1rem;">We invite artisans, craft makers, book sellers, herbalists, clothing designers, and cultural vendors to be part of the <strong>first annual Selassiefest</strong>. This is a celebration of Rastafari heritage, Ethiopian culture, reggae music, and community wellness. Our vendor village is built on reciprocity — not extraction.</p>
+            <div class="highlight">
+                <i class="fas fa-bullhorn" style="margin-right: 12px; color: var(--gold-accent);"></i> 
+                <strong>Most important requirement:</strong> Your commitment to <strong>market and promote the event</strong> before festival day. Vendors who actively distribute flyers, post on social media, or use their community networks will be given priority – even over those who offer to pay us a booth fee.
+            </div>
+        </div>
+
+        <!-- what you provide / what we provide -->
+        <div class="vendor-section">
+            <div class="grid-2col">
+                <div class="info-pill">
+                    <i class="fas fa-hand-peace"></i>
+                    <h3 style="font-size: 1.2rem; margin: 8px 0; color: var(--gold-accent);">📦 What You Provide</h3>
+                    <ul class="list-styled">
+                        <li>✅ 6' x 3' table (or 10'x10' ground space – Heritage Village)</li>
+                        <li>✅ One chair</li>
+                        <li>✅ Marketing on your social media & networks</li>
+                    </ul>
+                </div>
+                <div class="info-pill">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3 style="font-size: 1.2rem; margin: 8px 0; color: var(--gold-accent);">🌿 What We Provide</h3>
+                    <ul class="list-styled">
+                        <li>✅ Location in the <strong>Heritage Village</strong> (prime visibility)</li>
+                        <li>✅ One vendor wristband</li>
+                        <li>✅ Dedicated webpage on selassiefest.com spotlighting your brand</li>
+                        <li>✅ Social media shoutouts pre-festival</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- fees & payment -->
+        <div class="vendor-section">
+            <h2><i class="fas fa-coins"></i> Fair Exchange • No Hidden Fees</h2>
+            <p>Because this is our first year, there are no booth fees. The base “fee” is <strong>your commitment to promote Selassiefest</strong>.</p>
+            <div class="fee-box">
+                🎟️ <strong>Standard vendor contribution: 7% of net proceeds up to $250</strong><br>
+                💚 <strong>Marketing‑driven vendors: fee reduced or waived</strong> (based on promotion plan & reach)
+            </div>
+            <p>All payments processed via Zelle, PayPal or CashApp after approval. Transparent, community-first model.</p>
+        </div>
+
+        <!-- MARKETING REQUIREMENT (MOST IMPORTANT) -->
+        <div class="vendor-section">
+            <div class="phase-header-mini">
+                <div class="phase-pill"><i class="fas fa-chart-line"></i> KEY TO ACCEPTANCE</div>
+            </div>
+            <h2><i class="fas fa-bullhorn"></i> Marketing & Outreach Commitment</h2>
+            <p>We are a new festival and need every vendor to help spread the word. Your marketing contribution will be evaluated before acceptance. Here’s what counts:</p>
+            <ul class="list-styled" style="margin: 1rem 0 1.2rem;">
+                <li>📄 <strong>Flyer distribution</strong> – Post official flyers at local shops, cafes, community centers, colleges, cultural venues. Send photos as proof.</li>
+                <li>📱 <strong>Social media promotion</strong> – Share Selassiefest posts on Instagram, Facebook, TikTok, Twitter, Discord, Reddit, Nextdoor, Threads, Bluesky, Lemon8, Hive, MeWe, Minds, Friendica, Mastodon, Pixelfed, PeerTube, Substack, BeReal, and more. Tag us and use #Selassiefest. Screencaps required.</li>
+                <li>📧 <strong>Email list / newsletter</strong> – If you have a customer list, send one dedicated email about the festival (cc us).</li>
+                <li>🗣️ <strong>Word-of-mouth & community groups</strong> – Announce at local meetups, gatherings (brief description).</li>
+            </ul>
+            <div class="highlight">
+                ⭐ <strong>Priority selection goes to vendors who:</strong><br>
+                – Commit to distributing at least <strong>50 physical flyers</strong> in your local area.<br>
+                – OR have combined social reach of 500+ and agree to 2 dedicated posts.<br>
+                – OR bring a unique promotional idea (podcast feature, event collaboration).
+            </div>
+        </div>
+
+        <!-- application steps -->
+        <div class="vendor-section">
+            <h2><i class="fas fa-pen-alt"></i> How to Apply</h2>
+            <ol style="margin-left: 1.2rem; margin-bottom: 1.2rem; font-weight: 300;">
+                <li>Email us at <strong>selassiefest@gmail.com</strong> with subject: <em>"Vendor Application – [Your Business Name]"</em></li>
+                <li>Include:
+                    <ul style="margin-top: 8px; margin-left: 1.2rem;">
+                        <li>Business name and description of cultural items you sell.</li>
+                        <li>Business logo (if you have).</li>
+                        <li>Photos of your products (3–5 images).</li>
+                        <li>What your webpage on selassiefest should highlight.</li>
+                        <li><strong>Your marketing plan:</strong> be specific: e.g. "I will post 3 times on Instagram, distribute 50 flyers on the Southside, and feature the event in my newsletter."</li>
+                        <li>Preferred table or ground space.</li>
+                    </ul>
+                </li>
+                <li>We respond within 24–48 hours. If accepted, we provide a digital flyer pack (printable PDF, social graphics).</li>
+                <li>Once marketing actions are confirmed (proof of flyer distribution / social shares), your booth spot is guaranteed.</li>
+            </ol>
+            <p><strong>Deadline for priority consideration:</strong> July 15, 2025. Rolling acceptance thereafter if space remains.</p>
+            <a href="mailto:selassiefest@gmail.com?subject=Vendor%20Application%20-%20Cultural%20Items" class="btn"><i class="fas fa-envelope"></i> Apply Now</a>
+        </div>
+
+        <!-- rules & policies -->
+        <div class="vendor-section">
+            <h2><i class="fas fa-gavel"></i> Vendor Guidelines</h2>
+            <div class="grid-2col">
+                <ul class="list-styled">
+                    <li>✔️ All items culturally appropriate – no mass‑produced non‑authentic goods.</li>
+                    <li>✔️ No alcohol, tobacco, or cannabis for sale (herbal vendors by approval).</li>
+                    <li>✔️ Vendors provide own tablecloth & display (electricity limited – request in advance).</li>
+                </ul>
+                <ul class="list-styled">
+                    <li>✔️ Setup: 10:00 AM – 11:00 AM · Breakdown: 9:00–10:00 PM.</li>
+                    <li>✔️ Selassiefest reserves right to refuse items violating community standards.</li>
+                    <li>✔️ All vendors must respect the sanctity of the Heritage Village.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- questions section -->
+        <div class="vendor-section">
+            <h2><i class="fas fa-question-circle"></i> Questions & Support</h2>
+            <p>Email <strong>selassiefest@gmail.com</strong> for any inquiry. We're a small team but reply within 24h.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px;">
+                <a href="mailto:selassiefest@gmail.com?subject=Vendor%20Package%20Question" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Ask a Question</a>
+                <a href="/tickets/" class="btn btn-outline"><i class="fas fa-ticket-alt"></i> Festival Tickets</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- small extra note about community -->
+    <div style="text-align: center; margin-top: 32px; font-size: 0.85rem; color: rgba(245,245,245,0.5);">
+        <i class="fas fa-dove"></i> Together we build the first annual — rooted in reciprocity, uplift, and selassie's love.
+    </div>
+</div>
+
+<!-- ========== UPDATED FOOTER: includes all social links + "Follow us: @selassiefest (Instagram)" ========== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-info">
+            <div class="footer-tagline">
+                🌿 Selassiefest – One Day. One Love. One Community. | First Annual Celebration | Vendor spots limited
+            </div>
+            <div class="footer-follow">
+                📱 Follow us: <a href="https://www.instagram.com/selassiefest/?hl=en" target="_blank" rel="noopener noreferrer" style="color: var(--gold-accent); text-decoration: none;">@selassiefest (Instagram)</a>
+            </div>
+            <div class="footer-email">
+                📧 <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a>
+            </div>
+        </div>
+        <div class="social-icons-row">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/selassiefest/?hl=en" target="_blank" rel="noopener noreferrer" class="social-icon-link">
+                <i class="fab fa-instagram"></i> <span>Instagram</span>
+            </a>
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" class="social-icon-link">
+                <i class="fab fa-youtube"></i> <span>YouTube</span>
+            </a>
+            <!-- X (Twitter) -->
+            <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" class="social-icon-link">
+                <i class="fab fa-twitter"></i> <span>X (Twitter)</span>
+            </a>
+            <!-- Pinterest -->
+            <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" class="social-icon-link">
+                <i class="fab fa-pinterest"></i> <span>Pinterest</span>
+            </a>
+        </div>
+    </div>
+    <div class="copyright">
+        <i class="fas fa-dove" style="margin-right: 6px;"></i> SelassieFest Collective · Saturday, July 25th, 2026 · 6227 S Prairie Ave, Chicago · Ital is Vital
+    </div>
+</footer>
+</body>
+</html>

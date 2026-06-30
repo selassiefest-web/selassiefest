@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SelassieFest · Leaf Library | The Soul of the Leaf</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+    
+    :root {
+        --bg-black: #0A0F0A;
+        --text-white: #F0F2E9;
+        --leaf-vein: #2A5C38;
+        --leaf-mid: #3B7848;
+        --leaf-edge: #8CB26C;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(45, 65, 40, 0.4);
+        --border-dim: rgba(140, 178, 108, 0.25);
+        --light-filter: rgba(255,248,225,0.05);
+    }
+    
+    * { margin:0; padding:0; box-sizing:border-box; }
+    
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+        background-image: radial-gradient(circle at 10% 20%, rgba(59,120,72,0.15) 2%, transparent 2.5%);
+        background-size: 40px 40px;
+    }
+    
+    /* header / nav identical to design system */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    .main-nav {
+        background: #0A100A;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    .nav-links li a:hover, .nav-links li a.active {
+        color: var(--gold-accent);
+        border-bottom-color: var(--leaf-edge);
+    }
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 60px 28px;
+    }
+    
+    /* leaf library hero — leaf-centric */
+    .leaf-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    .leaf-icon-spin {
+        font-size: 5rem;
+        color: var(--leaf-edge);
+        filter: drop-shadow(0 0 12px rgba(140,178,108,0.5));
+        animation: gentleLeafFloat 6s infinite ease-in-out;
+        display: inline-block;
+    }
+    @keyframes gentleLeafFloat {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-8px) rotate(2deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
+    }
+    .hero-title {
+        font-size: 3.7rem;
+        font-weight: 300;
+        letter-spacing: -0.01em;
+        background: linear-gradient(135deg, #D4E6B0, #F4E3A7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .leaf-motto {
+        font-size: 1.2rem;
+        font-style: italic;
+        border-top: 1px solid var(--leaf-vein);
+        display: inline-block;
+        padding-top: 12px;
+        margin-top: 10px;
+    }
+    
+    /* anatomy of a leaf - main interactive grid */
+    .leaf-anatomy-section {
+        background: var(--card-bg);
+        backdrop-filter: blur(4px);
+        border-radius: 64px;
+        padding: 40px 32px;
+        margin: 48px 0;
+        border: 1px solid var(--border-dim);
+        box-shadow: 0 25px 40px -20px rgba(0,0,0,0.7);
+    }
+    .section-badge {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        background: var(--leaf-vein);
+        display: inline-block;
+        padding: 6px 18px;
+        border-radius: 40px;
+        margin-bottom: 20px;
+    }
+    .grid-leaf-parts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px;
+        margin-top: 30px;
+    }
+    .leaf-card {
+        background: rgba(20,28,18,0.7);
+        border-radius: 32px;
+        padding: 24px;
+        transition: all 0.25s;
+        border-left: 6px solid var(--leaf-edge);
+        backdrop-filter: blur(2px);
+    }
+    .leaf-card i {
+        font-size: 2.2rem;
+        color: var(--gold-accent);
+        margin-bottom: 15px;
+    }
+    .leaf-card h3 {
+        font-weight: 500;
+        font-size: 1.7rem;
+        margin-bottom: 12px;
+    }
+    .micro-fact {
+        font-size: 0.8rem;
+        color: #BBD9A6;
+        margin-top: 16px;
+        border-top: 1px dashed var(--border-dim);
+        padding-top: 12px;
+    }
+    
+    /* interactive Leaf morphology explorer */
+    .leaf-explorer {
+        background: #101A10;
+        border-radius: 48px;
+        padding: 32px;
+        margin: 48px 0;
+        text-align: center;
+        border: 1px solid var(--leaf-edge);
+    }
+    .leaf-diagram {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px;
+        align-items: center;
+        margin: 30px 0;
+    }
+    .svg-leaf-placeholder {
+        background: radial-gradient(circle, #2A5C38, #0F1A0F);
+        width: 220px;
+        height: 240px;
+        border-radius: 60% 40% 50% 50% / 40% 30% 70% 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 25px rgba(100,150,70,0.4);
+    }
+    .leaf-svg-icon {
+        font-size: 6rem;
+        color: var(--leaf-edge);
+        filter: drop-shadow(0 0 6px #91c46b);
+    }
+    .hotspot-list {
+        text-align: left;
+        flex: 1;
+        min-width: 200px;
+    }
+    .hotspot-item {
+        cursor: pointer;
+        padding: 12px;
+        margin: 8px 0;
+        background: rgba(255,255,200,0.05);
+        border-radius: 60px;
+        transition: 0.2s;
+        border: 1px solid transparent;
+    }
+    .hotspot-item:hover {
+        background: rgba(140,178,108,0.2);
+        border-color: var(--leaf-edge);
+        transform: translateX(8px);
+    }
+    .leaf-description {
+        background: #0B130B;
+        border-radius: 36px;
+        padding: 20px;
+        margin-top: 28px;
+    }
+    
+    /* leaf library collection — real pressed leaf gallery */
+    .pressed-leaf-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        justify-content: center;
+        margin: 40px 0;
+    }
+    .leaf-artifact {
+        background: #1E2618;
+        border-radius: 32px;
+        padding: 18px;
+        width: 200px;
+        text-align: center;
+        border: 1px solid var(--border-dim);
+        transition: transform 0.2s;
+    }
+    .leaf-artifact:hover { transform: scale(1.02); background: #2a3a24; }
+    .leaf-mini-icon {
+        font-size: 3.5rem;
+        color: var(--leaf-edge);
+    }
+    .leaf-name {
+        font-weight: 500;
+        margin: 12px 0 4px;
+    }
+    
+    /* vein poetry / sensory */
+    .vein-poetry {
+        background: linear-gradient(145deg, #141F14, #051005);
+        border-radius: 48px;
+        padding: 32px;
+        text-align: center;
+        margin: 56px 0;
+        border-right: 3px solid var(--gold-accent);
+    }
+    
+    .footer {
+        background: #030803;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--leaf-edge); }
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #6A7C5E;
+    }
+    @media (max-width: 780px) {
+        .hero-title { font-size: 2.2rem; }
+        .site-title { font-size:1.8rem; }
+        .leaf-diagram { flex-direction: column; }
+        .container { padding: 32px 20px; }
+    }
+    </style>
+</head>
+<body>
+    <header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/leaf-library/" class="active">📖 LEAF LIBRARY</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <!-- 100% LEAF FOCUS: The soul of the plant -->
+        <div class="leaf-hero">
+            <div class="leaf-icon-spin"><i class="fas fa-leaf"></i></div>
+            <h1 class="hero-title">THE LEAF LIBRARY</h1>
+            <p class="leaf-motto">“Every vein holds a story. Every serration whispers ancient photosynthesis.”</p>
+            <div style="width: 100px; height: 2px; background: var(--leaf-edge); margin: 20px auto;"></div>
+            <p style="max-width: 700px; margin: 20px auto;">A sanctuary dedicated entirely to the cannabis leaf — its morphology, spirit, chemistry, and legacy. No flowers, no extracts. <strong>Only the leaf in its full glory.</strong></p>
+        </div>
+
+        <!-- ANATOMY OF THE LEAF: 6 core sections (pure leaf science) -->
+        <div class="leaf-anatomy-section">
+            <div class="section-badge"><i class="fas fa-microscope"></i> FOLIAR ATLAS</div>
+            <h2 style="font-weight: 400; font-size: 2rem;">The Leaf Decoded</h2>
+            <div class="grid-leaf-parts">
+                <div class="leaf-card"><i class="fas fa-palette"></i><h3>Leaflets</h3><p>The iconic 5–7 pointed segments. Each leaflet contains its own vascular network. In sativa-dominant varieties, leaflets are slender; in indica, broad like a spade.</p><div class="micro-fact">🌿 Did you know? Cannabis leaves can have up to 13 leaflets in some equatorial landraces.</div></div>
+                <div class="leaf-card"><i class="fas fa-charging-station"></i><h3>Veins</h3><p>Midrib and lateral veins transport water, sugars, and nutrients. Vein density predicts photosynthetic efficiency.</p><div class="micro-fact">🔬 Vein patterns are unique — like fingerprints for each leaf.</div></div>
+                <div class="leaf-card"><i class="fas fa-border-all"></i><h3>Serrated Margin</h3><p>The saw-tooth edge of the leaf deters pests and maximizes light capture. The serration depth varies by chemotype.</p><div class="micro-fact">⚡ Each serration houses specialized cells for gas exchange.</div></div>
+                <div class="leaf-card"><i class="fas fa-sun"></i><h3>Trichomes on Leaf Surface</h3><p>Even fan leaves produce resin — stalked & sessile trichomes. They defend against UV and herbivores.</p><div class="micro-fact">💎 Leaf trichomes contain minor cannabinoids like CBGa.</div></div>
+                <div class="leaf-card"><i class="fas fa-water"></i><h3>Stomata</h3><p>Microscopic pores underneath the leaf that breathe CO₂ and release oxygen. The leaf breathes life into the world.</p><div class="micro-fact">🌬️ A single cannabis leaf contains over 1 million stomata.</div></div>
+                <div class="leaf-card"><i class="fas fa-chlorophyll"></i><h3>Chloroplasts</h3><p>Green gold — where sunlight becomes energy. Chlorophyll concentration gives the leaf its healing hue.</p><div class="micro-fact">🍃 The leaf’s emerald color is a testament to life force.</div></div>
+            </div>
+        </div>
+
+        <!-- Interactive Leaf Morphology Lab (clickable hotspots) -->
+        <div class="leaf-explorer">
+            <i class="fas fa-hand-pointer" style="color: var(--gold-accent); font-size: 1.8rem;"></i>
+            <h3>🌱 INTERACTIVE LEAF ATLAS: touch any part</h3>
+            <div class="leaf-diagram">
+                <div class="svg-leaf-placeholder">
+                    <i class="fas fa-leaf leaf-svg-icon"></i>
+                </div>
+                <div class="hotspot-list" id="hotspotContainer">
+                    <div class="hotspot-item" data-leafpart="Midrib"><i class="fas fa-arrow-right"></i> <strong>Midrib</strong> — The central vein that channels life.</div>
+                    <div class="hotspot-item" data-leafpart="Leaflet Tip"><i class="fas fa-arrow-right"></i> <strong>Leaflet Tip</strong> — Where transpiration peaks.</div>
+                    <div class="hotspot-item" data-leafpart="Lower Epidermis"><i class="fas fa-arrow-right"></i> <strong>Lower Epidermis</strong> — Home to stomatal guard cells.</div>
+                    <div class="hotspot-item" data-leafpart="Petiole"><i class="fas fa-arrow-right"></i> <strong>Petiole</strong> — The leaf's stem, connecting to the main stalk.</div>
+                    <div class="hotspot-item" data-leafpart="Glandular Trichome"><i class="fas fa-arrow-right"></i> <strong>Glandular Trichome</strong> — Crystal-like resin head on leaf surface.</div>
+                </div>
+            </div>
+            <div class="leaf-description" id="leafDetailBox">
+                <i class="fas fa-info-circle"></i> Click any hotspot to explore the hidden world of the cannabis leaf.
+            </div>
+        </div>
+
+        <!-- The Morphology Archive: Pressed Leaf Gallery (varieties) -->
+        <div style="margin: 48px 0;">
+            <div class="section-badge"><i class="fas fa-leaf"></i> HERBARIUM COLLECTION</div>
+            <h2>Pressed Leaves of the World</h2>
+            <p>Each leaf tells a story of climate, lineage, and adaptation. Below are digital specimens from our physical Leaf Library tent.</p>
+            <div class="pressed-leaf-gallery">
+                <div class="leaf-artifact"><i class="fas fa-seedling leaf-mini-icon"></i><div class="leaf-name">Afghanica Leaf</div><small>Broad, dark green — high resin on veins</small></div>
+                <div class="leaf-artifact"><i class="fas fa-fan leaf-mini-icon"></i><div class="leaf-name">Thai Sativa</div><small>Narrow, lime-green leaflets, wild serration</small></div>
+                <div class="leaf-artifact"><i class="fas fa-pagelines leaf-mini-icon"></i><div class="leaf-name">Ruderalis Leaf</div><small>Small, few leaflets, adapted to harsh north</small></div>
+                <div class="leaf-artifact"><i class="fas fa-tree leaf-mini-icon"></i><div class="leaf-name">Jamaican Lamb's Bread</div><small>Golden-green, distinct vein angle</small></div>
+            </div>
+        </div>
+
+        <!-- Photosynthesis & Magic: deep leaf science -->
+        <div class="vein-poetry">
+            <i class="fas fa-chlorophyll" style="font-size: 2.5rem; opacity: 0.9; color: var(--leaf-edge);"></i>
+            <h3>The Leaf Alchemy: Photosynthesis & Terpene Genesis</h3>
+            <p style="max-width: 800px; margin: 20px auto;">Inside each leaf, chloroplasts convert photons into chemical energy — fueling the entire plant. But the leaf also produces volatile organic compounds (terpenes) as a defense mechanism. <strong>Limonene, pinene, and linalool</strong> are synthesized in the leaf's glandular cells before migrating to the flower. Without the leaf, there is no aroma, no essence.</p>
+            <div style="background: rgba(140,178,108,0.1); border-radius: 48px; padding: 16px; margin-top: 20px;">
+                📖 <em>"The leaf is not just a solar panel; it is an aromatic shield, a genetic library, and a sacred text written in green ink."</em>
+            </div>
+        </div>
+
+        <!-- leaf library collection: Microscopic views and vein maps -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 28px; margin: 48px 0;">
+            <div style="background: #101D10; border-radius: 32px; padding: 24px;">
+                <i class="fas fa-microscope" style="font-size: 2rem; color: var(--gold-accent);"></i>
+                <h3>🔬 Trichome Census</h3>
+                <p>Under magnification, leaf trichomes appear as translucent or amber orbs. Using a 60x loupe, you can observe capitate-stalked trichomes — the same resin glands found on buds. At SelassieFest's Leaf Library, we have live microscopes for leaf peeping.</p>
+            </div>
+            <div style="background: #101D10; border-radius: 32px; padding: 24px;">
+                <i class="fas fa-draw-polygon" style="font-size: 2rem; color: var(--leaf-edge);"></i>
+                <h3>🍃 Venation Mapping</h3>
+                <p>Each leaf's veination pattern is unique. We collect leaf skeletons (by maceration) and display them as botanical art. Learn how to clear leaf tissue to reveal the intricate lacework of xylem and phloem.</p>
+            </div>
+            <div style="background: #101D10; border-radius: 32px; padding: 24px;">
+                <i class="fas fa-cannabis" style="font-size: 2rem; color: #bde07a;"></i>
+                <h3>📜 Folklore of the Leaf</h3>
+                <p>In Rastafari tradition, the leaf represents the 'herb of wisdom' — used in meditation and as a symbol of the ever-living green. In Ayurveda, the leaf was ground for poultices. Explore our oral archives.</p>
+            </div>
+        </div>
+
+        <!-- daily activity: Leaf pressing station notice -->
+        <div class="festival-badge" style="background: rgba(59,120,72,0.3); border-left-color: var(--leaf-edge);">
+            <i class="fas fa-press"></i> <strong>LIVE LEAF PRESSING STATION (In-Person)</strong> — Inside the Leaf Library tent, preserve your own cannabis leaf (industrial hemp leaves provided) and take home a pressed leaf bookmark. Daily workshops at 1pm, 4pm, 6pm.
+        </div>
+
+        <!-- Leaf quote collection -->
+        <div style="text-align: center; margin-top: 56px; font-weight: 300; border-top: 1px solid var(--border-dim); padding-top: 32px;">
+            <i class="fas fa-quote-right"></i> “The leaf is the beginning and end of botanical reverence — from a tiny cotyledon to a seven-fingered masterpiece. Walk with the leaf, and the leaf will teach you.”
+            <div style="margin-top: 8px;">— Higher Learning Roots, Leaf Library Curator</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST -- One Love, One Destiny. Leaf Library: Honoring the sacred cannabis leaf.
+            <br>July 25th, 2026 | Higher Learning Roots — 100% Leaf Devotion
+        </div>
+    </footer>
+
+    <script>
+        // interactive leaf hotspot logic
+        const detailBox = document.getElementById('leafDetailBox');
+        const hotspots = document.querySelectorAll('.hotspot-item');
+        
+        const leafDescriptions = {
+            'Midrib': "🌿 <strong>Midrib (Primary Vein)</strong> — The central support structure that delivers water and minerals from the roots to the leaf margins. In cannabis, the midrib often contains anthocyanins, giving purple/red hues in cold weather.",
+            'Leaflet Tip': "🍃 <strong>Leaflet Tip</strong> — The apex of each leaflet. Guttation (droplet secretion) often occurs here at dawn. The tip shape helps with water runoff & light capture.",
+            'Lower Epidermis': "🔬 <strong>Lower Epidermis</strong> — Packed with microscopic stomata (breathing pores). A single cannabis leaf has ~1.3 million stomata that regulate CO₂ intake and water vapor release.",
+            'Petiole': "🌱 <strong>Petiole</strong> — The stalk that attaches the leaf to the node. It acts as a hydraulic lifeline and can bend to orient the leaf toward sunlight.",
+            'Glandular Trichome': "✨ <strong>Glandular Trichome</strong> — Though famous on buds, leaves also produce resin heads! These tiny mushroom-shaped glands secrete cannabinoids and terpenes as a protective shield against insects and UV."
+        };
+        
+        hotspots.forEach(hotspot => {
+            hotspot.addEventListener('click', function() {
+                const part = this.getAttribute('data-leafpart');
+                if (leafDescriptions[part]) {
+                    detailBox.innerHTML = `<i class="fas fa-leaf"></i> ${leafDescriptions[part]} <span style="display: block; margin-top: 12px; font-size:0.85rem;"><i class="fas fa-hand-peace"></i> Explore this leaf structure at our Library tent with real specimens.</span>`;
+                    detailBox.style.background = "#1F2A1A";
+                } else {
+                    detailBox.innerHTML = `<i class="fas fa-info-circle"></i> Tap any hotspot above to learn about each part of the cannabis leaf. Pure botany, pure leaf.`;
+                }
+            });
+        });
+        
+        // optional extra leaf trivia in console, but keeps engagement
+        console.log("🍃 LEAF LIBRARY — every vein holds a story. Come press a leaf at SelassieFest!");
+    </script>
+</body>
+</html>

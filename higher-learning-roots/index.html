@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SelassieFest – Higher Learning Roots | Cannabis Education Village</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+    
+    :root {
+        --bg-black: #0D0D0D;
+        --text-white: #F5F5F5;
+        --roots-green: #0E5E36;
+        --gold-accent: #E5A93C;
+        --red-accent: #C83737;
+        --card-bg: rgba(255,255,255,0.04);
+        --border-dim: rgba(255,255,255,0.08);
+        --transition-default: all 0.25s ease;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background-color: var(--bg-black);
+        color: var(--text-white);
+        font-family: 'Jost', sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    /* HEADER & NAVIGATION (consistent with existing pages) */
+    .site-header {
+  padding: 28px 32px 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(13,13,13,0.96);
+  backdrop-filter: blur(2px);
+}
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+.brand-link:hover { opacity: 0.85; }
+.site-title {
+  font-weight: 200;
+  font-size: 2.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+.tagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-top: 6px;
+  border-top: 1px solid var(--roots-green);
+  display: inline-block;
+  padding-top: 8px;
+}
+.powered-by-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  padding: 8px 16px 8px 20px;
+  border-radius: 60px;
+  border: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+.powered-by-text {
+  font-weight: 300;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #aaa;
+}
+.powered-by-logo { display: flex; align-items: center; line-height: 0; }
+.powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+.powered-by-logo:hover img { opacity: 0.8; }
+@media (max-width: 700px) {
+  .header-flex { flex-direction: column; align-items: center; }
+  .site-title { font-size: 1.8rem; }
+  .powered-by-wrapper { padding: 6px 14px 6px 18px; }
+  .powered-by-wrapper img { height: 30px; }
+}
+    
+    .main-nav {
+        background: #0a0a0a;
+        padding: 12px 24px;
+        border-bottom: 1px solid var(--border-dim);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(6px);
+    }
+    
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        list-style: none;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .nav-links li a {
+        font-weight: 400;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #ddd;
+        text-decoration: none;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    
+    .nav-links li a:hover,
+    .nav-links li a.active {
+        color: var(--gold-accent);
+        border-bottom-color: var(--gold-accent);
+    }
+    
+    /* BREADCRUMB */
+    .breadcrumb {
+        font-size: 0.75rem;
+        font-weight: 300;
+        letter-spacing: 0.08em;
+        color: rgba(245,245,245,0.4);
+        padding: 18px 32px;
+        border-bottom: 1px solid var(--border-dim);
+        background: rgba(0,0,0,0.3);
+    }
+    
+    .breadcrumb a {
+        color: rgba(245,245,245,0.5);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .breadcrumb a:hover {
+        color: var(--gold-accent);
+    }
+    
+    .breadcrumb span {
+        color: var(--gold-accent);
+    }
+    
+    /* VILLAGE HERO */
+    .village-hero {
+        background: linear-gradient(125deg, #07120a 0%, #0c1f12 45%, #102c19 100%);
+        padding: 64px 32px 56px;
+        text-align: center;
+        border-bottom: 1px solid rgba(14,94,54,0.5);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .village-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 75% 35% at 30% 70%, rgba(14,94,54,0.2) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    
+    .hero-eyebrow {
+        font-weight: 300;
+        font-size: 0.8rem;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: var(--roots-green);
+        margin-bottom: 16px;
+        position: relative;
+    }
+    
+    .village-hero h1 {
+        font-weight: 200;
+        font-size: clamp(2.5rem, 7vw, 4.2rem);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-white);
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+    
+    .village-hero h1 span {
+        color: var(--gold-accent);
+    }
+    
+    .hero-description {
+        max-width: 780px;
+        margin: 0 auto;
+        font-weight: 300;
+        font-size: 1.05rem;
+        color: rgba(245,245,245,0.7);
+        letter-spacing: 0.02em;
+        line-height: 1.65;
+    }
+    
+    .festival-meta {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 28px;
+        margin-top: 36px;
+        font-size: 0.8rem;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #ccc;
+    }
+    
+    .festival-meta i {
+        color: var(--gold-accent);
+        margin-right: 8px;
+    }
+    
+    /* MAIN CONTAINER */
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 60px 28px;
+    }
+    
+    /* SECTION HEADINGS */
+    .section-label {
+        font-weight: 300;
+        font-size: 0.72rem;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--gold-accent);
+        margin-bottom: 12px;
+    }
+    
+    .section-title {
+        font-weight: 200;
+        font-size: clamp(1.9rem, 4vw, 2.8rem);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-white);
+        margin-bottom: 16px;
+    }
+    
+    .section-sub {
+        font-weight: 300;
+        font-size: 0.95rem;
+        color: rgba(245,245,245,0.55);
+        max-width: 720px;
+        margin-bottom: 48px;
+        line-height: 1.6;
+    }
+    
+    /* CARD GRID SYSTEM */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 32px;
+        margin-top: 24px;
+    }
+    
+    .roots-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-dim);
+        border-radius: 28px;
+        transition: var(--transition-default);
+        display: flex;
+        flex-direction: column;
+        backdrop-filter: blur(2px);
+        overflow: hidden;
+    }
+    
+    .roots-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(229,169,60,0.4);
+        background: rgba(255,255,255,0.07);
+        box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+    }
+    
+    .card-icon {
+        padding: 28px 28px 12px 28px;
+        font-size: 2.6rem;
+        color: var(--gold-accent);
+    }
+    
+    .card-icon img {
+        width: 5.2rem;  /* doubled from 2.6rem */
+        height: auto;
+        display: block;
+    }
+    
+    .card-content {
+        padding: 0 28px 22px 28px;
+        flex: 1;
+    }
+    
+    .card-title {
+        font-weight: 500;
+        font-size: 1.4rem;
+        letter-spacing: 0.02em;
+        margin-bottom: 12px;
+        color: var(--text-white);
+    }
+    
+    .card-desc {
+        font-weight: 300;
+        font-size: 0.9rem;
+        color: rgba(245,245,245,0.7);
+        line-height: 1.55;
+        margin-bottom: 24px;
+    }
+    
+    .card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 400;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--gold-accent);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(229,169,60,0.3);
+        padding-bottom: 4px;
+        transition: 0.2s;
+    }
+    
+    .card-link i {
+        font-size: 0.7rem;
+        transition: transform 0.2s;
+    }
+    
+    .card-link:hover {
+        color: var(--text-white);
+        border-bottom-color: var(--gold-accent);
+    }
+    
+    .card-link:hover i {
+        transform: translateX(5px);
+    }
+    
+    /* INFO BADGE */
+    .village-note {
+        background: rgba(14,94,54,0.2);
+        border-left: 4px solid var(--roots-green);
+        padding: 20px 28px;
+        margin: 48px 0 24px;
+        border-radius: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    
+    .village-note p {
+        font-weight: 300;
+        font-size: 0.9rem;
+        color: rgba(245,245,245,0.8);
+    }
+    
+    .village-note i {
+        color: var(--gold-accent);
+        font-size: 1.4rem;
+        margin-right: 12px;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 1px solid var(--gold-accent);
+        padding: 10px 24px;
+        border-radius: 40px;
+        color: var(--gold-accent);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    
+    .btn-outline:hover {
+        background: var(--gold-accent);
+        color: #0D0D0D;
+    }
+    
+    /* FOOTER (matching existing style) */
+    .footer {
+        background: #050505;
+        border-top: 1px solid var(--border-dim);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+    
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-weight: 300;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: color 0.2s;
+    }
+    
+    .footer-links a:hover {
+        color: var(--gold-accent);
+    }
+    
+    .social-icons a {
+        color: #ddd;
+        font-size: 1.5rem;
+        margin: 0 12px;
+        transition: 0.2s;
+        display: inline-block;
+    }
+    
+    .social-icons a:hover {
+        color: var(--gold-accent);
+        transform: translateY(-2px);
+    }
+    
+    .copyright {
+        font-weight: 300;
+        font-size: 0.7rem;
+        margin-top: 32px;
+        letter-spacing: 0.1em;
+        color: #666;
+    }
+    
+    /* RESPONSIVE */
+    @media (max-width: 780px) {
+        .site-title {
+            font-size: 1.8rem;
+        }
+        .nav-links {
+            gap: 0.8rem;
+        }
+        .nav-links li a {
+            font-size: 0.7rem;
+        }
+        .village-hero {
+            padding: 48px 20px;
+        }
+        .container {
+            padding: 40px 20px;
+        }
+        .cards-grid {
+            gap: 24px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .festival-meta {
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        .village-note {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav">
+    <ul class="nav-links">
+        <li><a href="/about/">ABOUT</a></li>
+        <li><a href="/festival/">FESTIVAL</a></li>
+        <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+        <li><a href="/main-stage/">MAIN STAGE</a></li>
+        <li><a href="/higher-learning-roots/" class="active">HIGHER LEARNING ROOTS</a></li>
+        <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+        <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+        <li><a href="/healing-grove/">HEALING GROVE</a></li>
+        <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+        <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+        <li><a href="/marketplace/">MARKETPLACE</a></li>
+        <li><a href="/tickets/">TICKETS</a></li>
+        <li><a href="/contact/">CONTACT</a></li>
+    </ul>
+</nav>
+
+<div class="breadcrumb">
+    <a href="/">SelassieFest</a> &rsaquo;
+    <span>Higher Learning Roots</span>
+</div>
+
+<!-- VILLAGE HERO -->
+<div class="village-hero">
+    <div class="hero-eyebrow"><i class="fas fa-seedling" style="margin-right: 6px;"></i>  knowledge • craft • tradition</div>
+    <h1>Higher Learning <span>Roots</span></h1>
+    <p class="hero-description">
+        The living classroom of SelassieFest — where plant science, consumption craftsmanship, history, and community converge.  
+        From terpene exploration to the sacred chalice, immerse yourself in hands-on education rooted in respect and curiosity.
+    </p>
+    <div class="festival-meta">
+        <span><i class="fas fa-calendar-alt"></i> Saturday, July 25th, 2026</span>
+        <span><i class="fas fa-clock"></i> 10:00 AM – 9:00 PM</span>
+        <span><i class="fas fa-map-pin"></i> Higher Learning Roots Village</span>
+        <span><i class="fas fa-id-card"></i> 21+ for consumption areas</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="section-label">EXPLORE THE VILLAGE</div>
+    <h2 class="section-title">Eight immersive experiences</h2>
+    <p class="section-sub">
+        From rolling workshops to genetics labs, each space is designed to deepen your relationship with the plant — honoring both science and spirit.
+    </p>
+    
+    <!-- CARD GRID WITH LINKS TO EACH DETAIL PAGE -->
+    <div class="cards-grid">
+        
+        <!-- 1. Bluntly Speaking -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-fire-alt"></i></div>
+            <div class="card-content">
+                <div class="card-title">Bluntly Speaking</div>
+                <div class="card-desc">Full-day craft workshop dedicated to the art of rolling: joints, blunts, fronto leaf, chalice ceremony, bong science, and circle etiquette. Roll with intention.</div>
+                <a href="bluntly-speaking.html" class="card-link">Explore craft <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 2. Budding Minds -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-brain"></i></div>
+            <div class="card-content">
+                <div class="card-title">Budding Minds</div>
+                <div class="card-desc">Youth & family cannabis science education — plant biology, responsible use dialogues, and the foundation of the modern plant movement.</div>
+                <a href="budding-minds.html" class="card-link">Discover learning <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 3. Cannabis Academy -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="card-content">
+                <div class="card-title">Cannabis Academy</div>
+                <div class="card-desc">Seed-to-shelf professional track: cultivation science, compliance, business leadership, and hemp horticulture. Certificates available.</div>
+                <a href="cannabis-academy.html" class="card-link">Enroll now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 4. Farm to Dispensary -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-tractor"></i></div>
+            <div class="card-content">
+                <div class="card-title">Farm to Dispensary</div>
+                <div class="card-desc">Supply chain transparency: harvest, processing, packaging, ethics, and sustainability. Meet growers and follow the plant’s journey.</div>
+                <a href="farm-to-dispensary.html" class="card-link">Trace the journey <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 5. High Q Lounge with logo (doubled size) -->
+        <div class="roots-card">
+            <div class="card-icon">
+                <img src="../assets/images/ss_tiny.png" alt="High Q Lounge logo">
+            </div>
+            <div class="card-content">
+                <div class="card-title">High Q Lounge</div>
+                <div class="card-desc">Elevated consumption lounge + curated vibes — relax, reason, and network. Premium airflow, music, and elevated social atmosphere.</div>
+                <a href="high-q-lounge.html" class="card-link">Step inside <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 6. Leaf Library -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-book-open"></i></div>
+            <div class="card-content">
+                <div class="card-title">Leaf Library</div>
+                <div class="card-desc">Curated collection of cannabis literature, historical texts, scientific papers, rare magazines, and interactive knowledge stations.</div>
+                <a href="leaf-library.html" class="card-link">Browse collection <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 7. Smart Buds -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-microscope"></i></div>
+            <div class="card-content">
+                <div class="card-title">Smart Buds</div>
+                <div class="card-desc">Biology lab with microscopes — observe trichomes, study cannabinoid biosynthesis, and understand cannabis genetics up close.</div>
+                <a href="smart-buds.html" class="card-link">Go to lab <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <!-- 8. Terpene Discovery Bar -->
+        <div class="roots-card">
+            <div class="card-icon"><i class="fas fa-flask"></i></div>
+            <div class="card-content">
+                <div class="card-title">Terpene Discovery Bar</div>
+                <div class="card-desc">Smell & flavor education — explore isolated terpenes, understand the entourage effect, and train your palate for full-spectrum appreciation.</div>
+                <a href="terpene-discovery-bar.html" class="card-link">Discover aromas <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- COMMUNITY NOTE + TICKETS CTA -->
+    <div class="village-note">
+        <div>
+            <i class="fas fa-hand-peace"></i> 
+            <strong>One Love, One Curriculum</strong> — All workshops, labs, and discovery bars are included with your SelassieFest admission. 
+            Some advanced sessions require sign-up at the village entrance. 21+ ID required for consumption areas.
+        </div>
+        <a href="/tickets/" class="btn-outline"><i class="fas fa-ticket-alt"></i> Secure your pass</a>
+    </div>
+    
+    <!-- subtle schedule mention -->
+    <div style="text-align: center; margin-top: 20px;">
+        <p style="font-weight: 300; font-size: 0.8rem; color: rgba(245,245,245,0.4); letter-spacing: 0.08em;">
+            <i class="fas fa-clock"></i> Full village schedule available at each experience hub & mobile app
+        </p>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="/about/mission.html">MISSION</a>
+        <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+        <a href="/media/press-kit.html">PRESS KIT</a>
+        <a href="/scholarship/">SCHOLARSHIP</a>
+        <a href="/community-projects/">COMMUNITY PROJECTS</a>
+        <a href="/contact/">CONTACT</a>
+    </div>
+    <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+    <div class="copyright">
+        <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+        <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM – 10:00 PM
+    </div>
+</footer>
+
+</body>
+</html>
