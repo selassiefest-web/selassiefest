@@ -1,18 +1,18 @@
 @echo off
 REM ============================================================
-REM add-calendar-files.bat
+REM add-pickney-games.bat
 REM
-REM Double-click this file to add the SelassieFest 2027 Calendar
-REM (festivals, special-events, weekly folders) into this repo.
+REM Double-click this file to add the Pickney Time Games Archive
+REM (/pickney-time/games/ — 33 game pages + hub) into this repo.
 REM
 REM IMPORTANT: This .bat file must sit in the SAME FOLDER as
-REM add-calendar-files.ps1, and both should be placed directly
+REM add-pickney-games.ps1, and both should be placed directly
 REM inside your repo folder, e.g.:
 REM   C:\Users\mkepr\Documents\GitHub\selassiefest\
 REM ============================================================
 
 cd /d "%~dp0"
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0add-calendar-files.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0add-pickney-games.ps1"
 
 echo.
 echo Press any key to close this window...
