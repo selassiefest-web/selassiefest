@@ -20,23 +20,111 @@
       --green-roots: #2C8C5A;
       --gold-livity: #E5A93C;
       --red-power: #C83737;
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --border-soft: rgba(255, 255, 255, 0.08);
-    }
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --transition-default: all 0.25s ease;
 
-    body {
-      background-color: var(--bg-deep);
-      color: var(--text-cream);
+    /* ===== SELASSIEFEST SITE HEADER (back to home) ===== */
+    .site-header {
+      padding: 28px 32px 16px 32px;
+      border-bottom: 1px solid var(--border-soft, var(--card-border, var(--border-dim, rgba(255,255,255,0.08))));
+      background: rgba(13, 13, 13, 0.96);
+      backdrop-filter: blur(2px);
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand-link {
+      display: inline-block;
+      text-align: center;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+    .brand-link:hover {
+      opacity: 0.85;
+    }
+    .site-title {
       font-family: 'Jost', sans-serif;
-      line-height: 1.5;
-      scroll-behavior: smooth;
+      font-weight: 200;
+      font-size: 2.4rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+    .powered-by-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 16px 8px 20px;
+      border-radius: 60px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .powered-by-text {
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+    .powered-by-logo {
+      display: flex;
+      align-items: center;
+      line-height: 0;
+      text-decoration: none;
+    }
+    .powered-by-logo img {
+      height: 36px;
+      width: auto;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .powered-by-logo:hover img {
+      opacity: 0.8;
+    }
+    .jvgh-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,94,54,0.15);
+      padding: 6px 14px;
+      border-radius: 60px;
+      border: 1px solid rgba(14,94,54,0.4);
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .jvgh-badge-wrapper:hover { opacity: 0.85; }
+    .jvgh-badge-text {
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #6dbe8f;
     }
 
-    /* ----- SACROSANCT NAVBAR (inspired by festival.html & elevated) ----- */
+    /* ===== ITAL MARKETPLACE LOCAL NAV (links within this folder only) ===== */
     .fest-nav {
       background: rgba(5, 8, 5, 0.96);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-soft);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -56,12 +144,12 @@
       align-items: center;
       gap: 0.7rem;
       font-weight: 400;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       letter-spacing: -0.3px;
     }
     .logo-area i {
       color: var(--gold-livity);
-      font-size: 1.6rem;
+      font-size: 1.4rem;
     }
     .nav-links {
       display: flex;
@@ -81,17 +169,23 @@
       color: var(--gold-livity);
       border-bottom-color: var(--gold-livity);
     }
-    .btn-nav {
-      background: transparent;
-      border: 1px solid var(--gold-livity);
-      padding: 0.3rem 1rem;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      transition: 0.2s;
+    @media (max-width: 700px) {
+      .header-flex { flex-direction: column; align-items: center; }
+      .site-title { font-size: 1.6rem; }
+      .nav-container { flex-direction: column; align-items: flex-start; }
     }
-    .btn-nav:hover {
-      background: var(--gold-livity);
-      color: #0a0c0a;
+
+    a { text-decoration: none; }
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-soft: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-cream);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      scroll-behavior: smooth;
     }
 
     /* container & global */
@@ -330,23 +424,43 @@
 </head>
 <body>
 
-<!-- SACROSANCT NAVBAR (identical styling lineage from festival.html) -->
+<!-- SELASSIEFEST SITE HEADER (back to home) -->
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+  </div>
+</header>
+
+<!-- ITAL MARKETPLACE LOCAL NAV (links within this folder only) -->
 <div class="fest-nav">
   <div class="nav-container">
     <div class="logo-area">
       <i class="fas fa-leaf"></i>
-      <span>SelassieFest <span style="font-weight:200;">| Ital Grounds</span></span>
+      <span>Ital Marketplace</span>
     </div>
     <div class="nav-links">
-      <a href="#">Roots</a>
-      <a href="#">Ital Food</a>
-      <a href="#" class="active">Beverages</a>
-      <a href="#">Higher Learning</a>
-      <a href="#">Festival Info</a>
-      <a href="#" class="btn-nav"><i class="fas fa-ticket-alt"></i> Tix</a>
+      <a href="index.html" >Home</a>
+      <a href="beverages.html" class="active">Beverages</a>
+      <a href="cooking-demos.html" >Cooking Demos</a>
+      <a href="recipes.html" >Recipes</a>
+      <a href="vendors.html" >Vendors</a>
     </div>
   </div>
 </div>
+
 
 <!-- HERO -->
 <div class="hero-beverage">

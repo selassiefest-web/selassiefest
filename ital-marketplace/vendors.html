@@ -20,6 +20,162 @@
       --green-roots: #2C8C5A;
       --gold-livity: #E5A93C;
       --red-power: #C83737;
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --transition-default: all 0.25s ease;
+
+    /* ===== SELASSIEFEST SITE HEADER (back to home) ===== */
+    .site-header {
+      padding: 28px 32px 16px 32px;
+      border-bottom: 1px solid var(--border-soft, var(--card-border, var(--border-dim, rgba(255,255,255,0.08))));
+      background: rgba(13, 13, 13, 0.96);
+      backdrop-filter: blur(2px);
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand-link {
+      display: inline-block;
+      text-align: center;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+    .brand-link:hover {
+      opacity: 0.85;
+    }
+    .site-title {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 2.4rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+    .powered-by-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 16px 8px 20px;
+      border-radius: 60px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .powered-by-text {
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+    .powered-by-logo {
+      display: flex;
+      align-items: center;
+      line-height: 0;
+      text-decoration: none;
+    }
+    .powered-by-logo img {
+      height: 36px;
+      width: auto;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .powered-by-logo:hover img {
+      opacity: 0.8;
+    }
+    .jvgh-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,94,54,0.15);
+      padding: 6px 14px;
+      border-radius: 60px;
+      border: 1px solid rgba(14,94,54,0.4);
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .jvgh-badge-wrapper:hover { opacity: 0.85; }
+    .jvgh-badge-text {
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #6dbe8f;
+    }
+
+    /* ===== ITAL MARKETPLACE LOCAL NAV (links within this folder only) ===== */
+    .fest-nav {
+      background: rgba(5, 8, 5, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 400;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+    }
+    .logo-area i {
+      color: var(--gold-livity);
+      font-size: 1.4rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #e2ddcf;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 1rem;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--gold-livity);
+      border-bottom-color: var(--gold-livity);
+    }
+    @media (max-width: 700px) {
+      .header-flex { flex-direction: column; align-items: center; }
+      .site-title { font-size: 1.6rem; }
+      .nav-container { flex-direction: column; align-items: flex-start; }
+    }
+
+    a { text-decoration: none; }
       --card-border: rgba(255,255,255,0.08);
       --glow-gold: rgba(229,169,60,0.15);
     }
@@ -201,6 +357,85 @@
       color: #0a0c0a;
     }
 
+    /* Featured Vendor Spotlight (confirmed vendor, distinct from prospect grid) */
+    .featured-vendor {
+      background: linear-gradient(135deg, rgba(44,140,90,0.12), rgba(0,0,0,0.3));
+      border: 1px solid var(--gold-livity);
+      border-radius: 2rem;
+      padding: 2rem;
+      margin: 2rem 0 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      align-items: flex-start;
+      box-shadow: 0 15px 30px -15px rgba(0,0,0,0.5);
+    }
+    .featured-vendor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-livity);
+      color: #0a0c0a;
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+      margin-bottom: 0.8rem;
+    }
+    .featured-vendor-icon {
+      flex-shrink: 0;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: rgba(229,169,60,0.12);
+      border: 2px solid var(--gold-livity);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--gold-livity);
+    }
+    .featured-vendor-body {
+      flex: 1;
+      min-width: 260px;
+    }
+    .featured-vendor-body h2 {
+      font-weight: 500;
+      font-size: 1.7rem;
+      margin-bottom: 0.2rem;
+    }
+    .featured-vendor-origin {
+      font-size: 0.85rem;
+      color: var(--gold-livity);
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .featured-vendor-body p {
+      font-weight: 300;
+      color: #ddd6c8;
+      margin-bottom: 0.8rem;
+      line-height: 1.65;
+    }
+    .featured-vendor-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .featured-vendor-tags span {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(229,169,60,0.3);
+      padding: 0.25rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      color: var(--gold-livity);
+    }
+
     .stats-row {
       display: flex;
       justify-content: space-between;
@@ -240,11 +475,74 @@
   </style>
 </head>
 <body>
+
+<!-- SELASSIEFEST SITE HEADER (back to home) -->
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+  </div>
+</header>
+
+<!-- ITAL MARKETPLACE LOCAL NAV (links within this folder only) -->
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area">
+      <i class="fas fa-leaf"></i>
+      <span>Ital Marketplace</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" >Home</a>
+      <a href="beverages.html" >Beverages</a>
+      <a href="cooking-demos.html" >Cooking Demos</a>
+      <a href="recipes.html" >Recipes</a>
+      <a href="vendors.html" class="active">Vendors</a>
+    </div>
+  </div>
+</div>
+
+
 <div class="container">
   <div class="vendor-hero">
     <h1><i class="fas fa-store"></i> Ital Marketplace · Vendor Village</h1>
     <p>We are inviting the finest Jamaican and Caribbean restaurants from across Chicago to share their authentic flavors at SelassieFest. Below is a curated list of community gems, from family-owned takeout spots to award-winning Afro-Caribbean kitchens.</p>
   </div>
+
+  <!-- FEATURED VENDOR SPOTLIGHT: Otto (confirmed) -->
+  <div class="featured-vendor">
+    <div>
+      <span class="featured-vendor-badge"><i class="fas fa-check-circle"></i> Confirmed Vendor</span>
+      <div class="featured-vendor-icon"><i class="fas fa-mortar-pestle"></i></div>
+    </div>
+    <div class="featured-vendor-body">
+      <h2>Otto</h2>
+      <div class="featured-vendor-origin"><i class="fas fa-map-marker-alt"></i> Bobo Hill, Bull Bay, Jamaica — just east of Kingston</div>
+      <p>Otto has been preparing Ital food since he was a boy, learning at the side of the elders in his community on Bobo Hill, a Rastafari settlement in the hills above Bull Bay. Bobo Hill is home to the Bobo Ashanti, one of the oldest and most disciplined orders within the Rastafari movement — a self-governing community known for communal living, strict adherence to Old Testament law, distinctive wrapped turbans and robes, and a way of life built around prayer, labor, and natural living.</p>
+      <p>It is within that discipline that Otto's approach to Ital cooking was formed. Every dish he prepares follows the same principles his community has practiced for generations: no salt, no preservatives, no shortcuts — only fresh vegetables, ground provisions, coconut, and the herbs and seasonings that grow around him. For Otto, cooking Ital is not a job — it's an extension of livity, a way of honoring the body and giving thanks with every pot.</p>
+      <p>At SelassieFest, Otto brings that same discipline and care to the Ital Marketplace, sharing dishes rooted in a tradition that stretches back to the earliest days of the Rastafari movement in Jamaica.</p>
+      <div class="featured-vendor-tags">
+        <span><i class="fas fa-leaf"></i> 100% Ital</span>
+        <span><i class="fas fa-ban"></i> No Salt</span>
+        <span><i class="fas fa-seedling"></i> Plant-Based</span>
+        <span><i class="fas fa-hands-praying"></i> Bobo Ashanti Tradition</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- prospect vendor list heading -->
+  <div class="section-badge" style="margin-top:0.5rem; font-size:0.85rem; color: var(--gold-livity); letter-spacing:1px; text-transform:uppercase;"><i class="fas fa-compass"></i> Invited Chicago Vendors</div>
 
   <!-- filter row -->
   <div class="filter-bar" id="filterBar">

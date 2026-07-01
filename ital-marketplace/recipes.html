@@ -19,6 +19,162 @@
       --green-roots: #2C8C5A;
       --gold-livity: #E5A93C;
       --red-power: #C83737;
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --transition-default: all 0.25s ease;
+
+    /* ===== SELASSIEFEST SITE HEADER (back to home) ===== */
+    .site-header {
+      padding: 28px 32px 16px 32px;
+      border-bottom: 1px solid var(--border-soft, var(--card-border, var(--border-dim, rgba(255,255,255,0.08))));
+      background: rgba(13, 13, 13, 0.96);
+      backdrop-filter: blur(2px);
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand-link {
+      display: inline-block;
+      text-align: center;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+    .brand-link:hover {
+      opacity: 0.85;
+    }
+    .site-title {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 2.4rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+    .powered-by-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 16px 8px 20px;
+      border-radius: 60px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .powered-by-text {
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+    .powered-by-logo {
+      display: flex;
+      align-items: center;
+      line-height: 0;
+      text-decoration: none;
+    }
+    .powered-by-logo img {
+      height: 36px;
+      width: auto;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .powered-by-logo:hover img {
+      opacity: 0.8;
+    }
+    .jvgh-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,94,54,0.15);
+      padding: 6px 14px;
+      border-radius: 60px;
+      border: 1px solid rgba(14,94,54,0.4);
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .jvgh-badge-wrapper:hover { opacity: 0.85; }
+    .jvgh-badge-text {
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #6dbe8f;
+    }
+
+    /* ===== ITAL MARKETPLACE LOCAL NAV (links within this folder only) ===== */
+    .fest-nav {
+      background: rgba(5, 8, 5, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.9rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 400;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+    }
+    .logo-area i {
+      color: var(--gold-livity);
+      font-size: 1.4rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #e2ddcf;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 1rem;
+      transition: 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--gold-livity);
+      border-bottom-color: var(--gold-livity);
+    }
+    @media (max-width: 700px) {
+      .header-flex { flex-direction: column; align-items: center; }
+      .site-title { font-size: 1.6rem; }
+      .nav-container { flex-direction: column; align-items: flex-start; }
+    }
+
+    a { text-decoration: none; }
       --card-bg: rgba(255,255,255,0.04);
       --border-dim: rgba(255,255,255,0.1);
     }
@@ -193,6 +349,45 @@
   </style>
 </head>
 <body>
+
+<!-- SELASSIEFEST SITE HEADER (back to home) -->
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+  </div>
+</header>
+
+<!-- ITAL MARKETPLACE LOCAL NAV (links within this folder only) -->
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area">
+      <i class="fas fa-leaf"></i>
+      <span>Ital Marketplace</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" >Home</a>
+      <a href="beverages.html" >Beverages</a>
+      <a href="cooking-demos.html" >Cooking Demos</a>
+      <a href="recipes.html" class="active">Recipes</a>
+      <a href="vendors.html" >Vendors</a>
+    </div>
+  </div>
+</div>
+
+
 <div class="container">
   <div class="header">
     <h1><i class="fas fa-leaf"></i> Ital Recipe Lab · Ingredient Alchemy</h1>
