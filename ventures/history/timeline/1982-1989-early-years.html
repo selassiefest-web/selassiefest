@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Documentation of the early growth years of Selassiefest, 1982 through 1989." />
+  <title>1982?1989  -  The Early Years | SelassieFest History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ??? RESET ??? */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ??? SITE TOKENS ??? */
+    :root {
+      --gold-accent:   #E5A93C;
+      --roots-green:   #0E5E36;
+      --text-white:    #F5F5F5;
+      --bg-black:      #0D0D0D;
+      --border-dim:    rgba(255,255,255,0.08);
+
+      /* ??? PARCHMENT ??? */
+      --parch-bg:      #FAF7F2;
+      --parch-surface: #F2EBD9;
+      --parch-border:  #D9CEBC;
+      --parch-text:    #111111;
+      --parch-muted:   #4A4A4A;
+      --parch-heading: #000000;
+      --parch-gold:    #9A6B10;
+      --parch-tag-bg:  #EDE0C8;
+      --parch-tag-txt: #1A0A00;
+      --parch-pull:    #EDE3CE;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; transition: color 0.2s; }
+
+    /* ??? SITE HEADER ??? */
+    .site-header {
+      padding: 24px 32px 14px;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(13,13,13,0.97);
+      text-align: center;
+    }
+    .brand-link { display: inline-block; }
+    .brand-link:hover { opacity: 0.8; }
+    .site-title {
+      font-weight: 200;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+
+    /* ??? HISTORY SUB-NAV ??? */
+    .history-nav {
+      background: var(--parch-surface);
+      border-bottom: 2px solid var(--parch-border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .history-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .history-nav-inner::-webkit-scrollbar { display: none; }
+    .history-home-link {
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--parch-gold);
+      padding: 14px 16px 14px 0;
+      white-space: nowrap;
+      border-right: 1px solid var(--parch-border);
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .history-home-link:hover { color: var(--parch-heading); }
+    .subnav-list {
+      list-style: none;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .subnav-list li { position: relative; }
+    .subnav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--parch-text);
+      padding: 14px 14px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .subnav-btn i { font-size: 0.6rem; transition: transform 0.2s; }
+    .subnav-btn:hover,
+    .subnav-list li.has-active .subnav-btn {
+      color: var(--parch-gold);
+      border-bottom-color: var(--parch-gold);
+    }
+    .subnav-list li.has-active .subnav-btn { font-weight: 500; }
+
+    /* Dropdown */
+    .subnav-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--parch-surface);
+      border: 1px solid var(--parch-border);
+      border-top: 2px solid var(--parch-gold);
+      min-width: 240px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      list-style: none;
+      z-index: 300;
+    }
+    .subnav-list li:hover .subnav-dropdown,
+    .subnav-list li.open .subnav-dropdown { display: block; }
+    .subnav-dropdown li a {
+      display: block;
+      padding: 9px 16px;
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--parch-text);
+      border-bottom: 1px solid rgba(217,206,188,0.4);
+      transition: background 0.15s, color 0.15s;
+    }
+    .subnav-dropdown li:last-child a { border-bottom: none; }
+    .subnav-dropdown li a:hover { background: var(--parch-pull); color: var(--parch-heading); }
+    .subnav-dropdown li a.active { color: var(--parch-gold); font-weight: 500; }
+
+    /* ??? BREADCRUMB ??? */
+    .breadcrumb-bar {
+      background: var(--parch-bg);
+      border-bottom: 1px solid var(--parch-border);
+      padding: 9px 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.73rem;
+      letter-spacing: 0.07em;
+      font-weight: 300;
+      color: var(--parch-text);
+      flex-wrap: wrap;
+    }
+    .breadcrumb-bar a { color: var(--parch-text); }
+    .breadcrumb-bar a:hover { color: var(--parch-gold); }
+    .bc-sep { opacity: 0.4; }
+    .bc-current { color: var(--parch-heading); font-weight: 500; }
+    .bc-badge {
+      margin-left: auto;
+      background: var(--parch-tag-bg);
+      color: var(--parch-tag-txt);
+      font-size: 0.64rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+
+    /* ??? PARCHMENT BODY ??? */
+    .parch-wrap {
+      background: var(--parch-bg);
+      min-height: calc(100vh - 180px);
+      padding: 52px 32px 100px;
+    }
+    .parch-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--parch-text);
+      margin-bottom: 36px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid transparent;
+    }
+    .back-link:hover { color: var(--parch-gold); border-bottom-color: var(--parch-gold); }
+
+    /* Section label */
+    .page-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--parch-text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-eyebrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--parch-border);
+      max-width: 120px;
+    }
+
+    /* Headings */
+    .parch-inner h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 400;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      color: var(--parch-heading);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .page-deck {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--parch-text);
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 620px;
+    }
+    .parch-divider {
+      border: none;
+      border-top: 1px solid var(--parch-border);
+      margin: 36px 0;
+    }
+    .parch-inner h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 400;
+      font-size: 1.35rem;
+      color: var(--parch-heading);
+      margin: 36px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--parch-border);
+    }
+    .parch-inner h3 {
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--parch-gold);
+      margin: 28px 0 8px;
+    }
+    .parch-inner p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--parch-text);
+      margin-bottom: 18px;
+      max-width: 680px;
+    }
+    .parch-inner ul, .parch-inner ol {
+      padding-left: 24px;
+      margin-bottom: 18px;
+      max-width: 660px;
+    }
+    .parch-inner li {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--parch-text);
+      margin-bottom: 4px;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--parch-gold);
+      background: var(--parch-pull);
+      border-radius: 0 6px 6px 0;
+      padding: 18px 22px;
+      margin: 28px 0;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--parch-heading);
+      line-height: 1.75;
+      max-width: 680px;
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.73rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--parch-text);
+    }
+
+    /* Tags */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+    .tag {
+      font-size: 0.68rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--parch-tag-bg);
+      color: var(--parch-tag-txt);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Stub notice */
+    .stub-notice {
+      border: 1.5px dashed var(--parch-border);
+      border-radius: 8px;
+      padding: 36px 28px;
+      text-align: center;
+      margin: 40px 0;
+      color: var(--parch-text);
+    }
+    .stub-notice i { font-size: 2rem; opacity: 0.35; margin-bottom: 14px; display: block; }
+    .stub-notice p { font-size: 0.85rem; margin: 0; }
+    .stub-notice strong { display: block; margin-bottom: 6px; font-size: 0.92rem; color: var(--parch-heading); }
+
+    /* Index card grid */
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .index-card {
+      background: var(--parch-surface);
+      border: 1px solid var(--parch-border);
+      border-radius: 8px;
+      padding: 20px 22px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .index-card:hover { border-color: var(--parch-gold); box-shadow: 0 2px 12px rgba(196,146,42,0.12); }
+    .index-card a {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      color: var(--parch-heading);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .index-card a:hover { color: var(--parch-gold); }
+    .index-card p { font-size: 0.84rem; color: var(--parch-text); margin: 0; line-height: 1.55; }
+
+    /* ??? FOOTER ??? */
+    .site-footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 28px;
+    }
+    .footer-links a {
+      color: #aaa;
+      font-weight: 300;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--gold-accent); }
+    .social-icons a { color: #ddd; font-size: 1.4rem; margin: 0 10px; transition: color 0.2s; }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+      font-weight: 300;
+      font-size: 0.68rem;
+      margin-top: 28px;
+      letter-spacing: 0.1em;
+      color: #555;
+    }
+
+    /* ??? RESPONSIVE ??? */
+    @media (max-width: 780px) {
+      .parch-wrap { padding: 36px 20px 72px; }
+      .breadcrumb-bar { padding: 9px 20px; }
+      .bc-badge { margin-left: 0; }
+      .history-nav-inner { padding: 0 16px; }
+    }
+    @media (max-width: 520px) {
+      .index-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+
+<!-- SITE HEADER -->
+<header class="site-header">
+  <a href="https://selassiefest.com/" class="brand-link">
+    <div class="site-title">SELASSIEFEST</div>
+    <div class="tagline">One Day. One Love. One Community.</div>
+  </a>
+</header>
+
+<!-- HISTORY SUB-NAV -->
+<nav class="history-nav" aria-label="History project navigation">
+  <div class="history-nav-inner">
+    <a href="/_history/" class="history-home-link">
+      <i class="fas fa-archive"></i> History Project
+    </a>
+    <ul class="subnav-list">
+      
+        <li class="has-active">
+          <button class="subnav-btn" aria-expanded="false">Timeline <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/timeline/index.html">Overview</a></li>
+            <li><a href="/_history/timeline/master-timeline.html">Master Timeline 1981?Present</a></li>
+            <li><a href="/_history/timeline/1981-first-festival.html">1981  -  First Festival</a></li>
+            <li><a href="/_history/timeline/1982-1989-early-years.html" class="active">1982?1989 Early Years</a></li>
+            <li><a href="/_history/timeline/1990-1996-growth-years.html">1990?1996 Growth Years</a></li>
+            <li><a href="/_history/timeline/gaps-and-unknowns.html">Gaps & Unknowns</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Oral History <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/oral-history/index.html">Overview</a></li>
+            <li><a href="/_history/oral-history/interview-guide.html">Interview Guide</a></li>
+            <li><a href="/_history/oral-history/consent-form-template.html">Consent Form</a></li>
+            <li><a href="/_history/oral-history/interviews/index.html">Raw Interviews</a></li>
+            <li><a href="/_history/oral-history/interviews/chucky-founder-raw.html">Chucky  -  Founder (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/musicians-raw.html">Musicians (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/vendors-raw.html">Vendors (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/volunteers-raw.html">Volunteers (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/security-staff-raw.html">Security Staff (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/politicians-raw.html">Politicians (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/rastafari-elders-raw.html">Rastafari Elders (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/caribbean-orgs-raw.html">Caribbean Orgs (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/radio-personalities-raw.html">Radio Personalities (Raw)</a></li>
+            <li><a href="/_history/oral-history/interviews/attendees-raw.html">Attendees (Raw)</a></li>
+            <li><a href="/_history/oral-history/transcripts/index.html">Final Transcripts</a></li>
+            <li><a href="/_history/oral-history/transcripts/chucky-founder-final.html">Chucky  -  Founder (Final)</a></li>
+            <li><a href="/_history/oral-history/transcripts/musicians-final.html">Musicians (Final)</a></li>
+            <li><a href="/_history/oral-history/transcripts/vendors-final.html">Vendors (Final)</a></li>
+            <li><a href="/_history/oral-history/transcripts/volunteers-final.html">Volunteers (Final)</a></li>
+            <li><a href="/_history/oral-history/transcripts/rastafari-elders-final.html">Rastafari Elders (Final)</a></li>
+            <li><a href="/_history/oral-history/transcripts/attendees-final.html">Attendees (Final)</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Artifacts <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/artifacts/index.html">Overview</a></li>
+            <li><a href="/_history/artifacts/catalog.html">Artifact Catalog</a></li>
+            <li><a href="/_history/artifacts/flyers/index.html">Flyers</a></li>
+            <li><a href="/_history/artifacts/photos/index.html">Photos</a></li>
+            <li><a href="/_history/artifacts/posters/index.html">Posters</a></li>
+            <li><a href="/_history/artifacts/programs/index.html">Programs</a></li>
+            <li><a href="/_history/artifacts/tickets-buttons/index.html">Tickets & Buttons</a></li>
+            <li><a href="/_history/artifacts/tshirts/index.html">T-Shirts</a></li>
+            <li><a href="/_history/artifacts/vhs-audio/index.html">VHS & Audio</a></li>
+            <li><a href="/_history/artifacts/vhs-audio/digitization-log.html">Digitization Log</a></li>
+            <li><a href="/_history/artifacts/correspondence/index.html">Correspondence</a></li>
+            <li><a href="/_history/artifacts/correspondence/sponsorship-letters/index.html">Sponsorship Letters</a></li>
+            <li><a href="/_history/artifacts/correspondence/vendor-applications/index.html">Vendor Applications</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Archives <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/archives/index.html">Overview</a></li>
+            <li><a href="/_history/archives/source-log.html">Source Log</a></li>
+            <li><a href="/_history/archives/chicago-tribune/index.html">Chicago Tribune</a></li>
+            <li><a href="/_history/archives/chicago-defender/index.html">Chicago Defender</a></li>
+            <li><a href="/_history/archives/caribbean-newspapers/index.html">Caribbean Newspapers</a></li>
+            <li><a href="/_history/archives/jamaican-newspapers/index.html">Jamaican Newspapers</a></li>
+            <li><a href="/_history/archives/radio-station-archives/index.html">Radio Archives</a></li>
+            <li><a href="/_history/archives/library-university/index.html">Library & University</a></li>
+            <li><a href="/_history/archives/permits/index.html">Permits</a></li>
+            <li><a href="/_history/archives/permits/chicago-park-district/index.html">Park District Permits</a></li>
+            <li><a href="/_history/archives/permits/city-of-chicago/index.html">City Permits</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Research <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/research/index.html">Overview</a></li>
+            <li><a href="/_history/research/rastafari-chicago.html">Rastafari in Chicago</a></li>
+            <li><a href="/_history/research/jamaican-immigration-chicago.html">Jamaican Immigration</a></li>
+            <li><a href="/_history/research/caribbean-immigration-chicago.html">Caribbean Immigration</a></li>
+            <li><a href="/_history/research/reggae-growth-in-america.html">Reggae in America</a></li>
+            <li><a href="/_history/research/marcus-garvey-influence.html">Marcus Garvey</a></li>
+            <li><a href="/_history/research/haile-selassie-legacy.html">Haile Selassie I</a></li>
+            <li><a href="/_history/research/african-liberation-movements.html">African Liberation</a></li>
+            <li><a href="/_history/research/community-festivals-cultural-preservation.html">Community Festivals</a></li>
+            <li><a href="/_history/research/sources-bibliography.html">Sources & Bibliography</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Genealogy & Network <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/genealogy-network/index.html">Overview</a></li>
+            <li><a href="/_history/genealogy-network/founder-network-map.html">Founder Network Map</a></li>
+            <li><a href="/_history/genealogy-network/organizational-partners.html">Organizational Partners</a></li>
+            <li><a href="/_history/genealogy-network/community-connections.html">Community Connections</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <button class="subnav-btn" aria-expanded="false">Outputs <i class="fas fa-chevron-down"></i></button>
+          <ul class="subnav-dropdown">
+            <li><a href="/_history/outputs/index.html">Overview</a></li>
+            <li><a href="/_history/outputs/book-draft/index.html">Book Draft Index</a></li>
+            <li><a href="/_history/outputs/book-draft/00-introduction.html">Introduction</a></li>
+            <li><a href="/_history/outputs/book-draft/01-chicago-1981.html">Ch 1  -  Chicago 1981</a></li>
+            <li><a href="/_history/outputs/book-draft/02-vision-of-chucky.html">Ch 2  -  Vision of Chucky</a></li>
+            <li><a href="/_history/outputs/book-draft/03-first-selassiefest.html">Ch 3  -  First Festival</a></li>
+            <li><a href="/_history/outputs/book-draft/04-growth-years.html">Ch 4  -  Growth Years</a></li>
+            <li><a href="/_history/outputs/book-draft/05-music-culture-community.html">Ch 5  -  Music & Culture</a></li>
+            <li><a href="/_history/outputs/book-draft/06-stories-from-the-people.html">Ch 6  -  Stories</a></li>
+            <li><a href="/_history/outputs/book-draft/07-final-years.html">Ch 7  -  Final Years</a></li>
+            <li><a href="/_history/outputs/book-draft/08-reviving-the-legacy.html">Ch 8  -  Revival</a></li>
+            <li><a href="/_history/outputs/book-draft/09-timeline-and-documents.html">Ch 9  -  Timeline & Docs</a></li>
+            <li><a href="/_history/outputs/documentary-notes/index.html">Documentary Notes</a></li>
+            <li><a href="/_history/outputs/documentary-notes/script-outline.html">Script Outline</a></li>
+            <li><a href="/_history/outputs/documentary-notes/shot-list.html">Shot List</a></li>
+            <li><a href="/_history/outputs/documentary-notes/interview-subjects.html">Interview Subjects</a></li>
+            <li><a href="/_history/outputs/documentary-notes/b-roll-needs.html">B-Roll Needs</a></li>
+            <li><a href="/_history/outputs/podcast-series/index.html">Podcast Series</a></li>
+            <li><a href="/_history/outputs/podcast-series/episode-guide.html">Episode Guide</a></li>
+            <li><a href="/_history/outputs/podcast-series/episode-01-origins.html">Ep 1  -  Origins</a></li>
+            <li><a href="/_history/outputs/museum-exhibit/index.html">Museum Exhibit</a></li>
+            <li><a href="/_history/outputs/museum-exhibit/exhibit-concept.html">Exhibit Concept</a></li>
+            <li><a href="/_history/outputs/museum-exhibit/panel-text-drafts.html">Panel Text Drafts</a></li>
+            <li><a href="/_history/outputs/museum-exhibit/artifact-selection.html">Artifact Selection</a></li>
+            <li><a href="/_history/outputs/website-archive/about-history-page.html">About  -  History</a></li>
+            <li><a href="/_history/outputs/website-archive/timeline-page.html">Timeline Page</a></li>
+            <li><a href="/_history/outputs/website-archive/oral-history-page.html">Oral History Page</a></li>
+          </ul>
+        </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+
+<nav class="breadcrumb-bar" aria-label="Breadcrumb">
+  <a href="/_history/">History Project</a>
+  <span class="bc-sep">?</span>
+  <a href="/_history/timeline/">Timeline</a>
+  <span class="bc-sep">?</span>
+  <span class="bc-current">1982?1989</span>
+  <span class="bc-badge"><i class="fas fa-archive" style="font-size:0.6rem;margin-right:4px;"></i>Archive</span>
+</nav>
+
+<!-- PARCHMENT CONTENT -->
+<div class="parch-wrap">
+  <div class="parch-inner">
+    <a href="/_history/timeline/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Timeline</a>
+    <div class="page-eyebrow">Timeline</div>
+    <h1>1982?1989  -  The Early Years</h1>
+    <p class="page-deck">Records, photographs, and oral accounts covering the formative early years of the festival.</p><hr class="parch-divider">
+<div class="stub-notice">
+  <i class="fas fa-feather-alt"></i>
+  <strong>Content Pending</strong>
+  <p>This page is part of the SelassieFest Historical Reconstruction Project.<br>Add content here as research progresses.</p>
+</div>
+<div class="tag-row">
+  <span class="tag"><i class="fas fa-archive" style="font-size:0.6rem;margin-right:4px;"></i> Internal</span>
+  <span class="tag">Timeline</span><span class="tag">1980s</span>
+</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="/about/">About</a>
+    <a href="/festival/">Festival</a>
+    <a href="/higher-learning-roots/">Higher Learning</a>
+    <a href="/tickets/">Tickets</a>
+    <a href="/contact/">Contact</a>
+    <a href="/_history/">History Project</a>
+  </div>
+  <div class="social-icons">
+    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="#" aria-label="SoundCloud"><i class="fab fa-soundcloud"></i></a>
+    <a href="#" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
+  </div>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SELASSIEFEST  -  One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.<br>
+    ? 2026 SelassieFest Collective &nbsp;|&nbsp; History Project  -  Internal Archive
+  </div>
+</footer>
+
+
+  <script>
+    // Dropdown toggle for touch / click
+    document.querySelectorAll('.subnav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const li = btn.closest('li');
+        const open = li.classList.contains('open');
+        document.querySelectorAll('.subnav-list li.open').forEach(el => el.classList.remove('open'));
+        if (!open) li.classList.add('open');
+        btn.setAttribute('aria-expanded', !open);
+      });
+    });
+    // Close on outside click
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.subnav-list')) {
+        document.querySelectorAll('.subnav-list li.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+  </script>
+
+</body>
+</html>

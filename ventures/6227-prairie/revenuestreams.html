@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>6227 S Prairie Ave — 28 Revenue Streams</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --transition-default: all 0.25s ease;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition-default);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 24px 20px;
+        }
+
+        .section-title {
+            font-weight: 300;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-left: 4px solid var(--gold-accent);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+        .section-title span {
+            color: var(--gold-accent);
+        }
+
+        /* TABLE */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 24px;
+            border: 1px solid var(--border-dim);
+            margin-bottom: 48px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead tr {
+            background: rgba(229, 169, 60, 0.08);
+            border-bottom: 1px solid rgba(229, 169, 60, 0.25);
+        }
+
+        thead th {
+            font-weight: 500;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--gold-accent);
+            padding: 16px 20px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        thead th:nth-child(2) {
+            text-align: center;
+        }
+        thead th:nth-child(3) {
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-dim);
+            transition: background 0.15s;
+        }
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        td {
+            padding: 16px 20px;
+            vertical-align: top;
+            color: #ccc;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        td:first-child {
+            color: var(--text-white);
+            font-weight: 400;
+            min-width: 260px;
+        }
+
+        td:nth-child(2) {
+            text-align: center;
+            white-space: nowrap;
+            min-width: 150px;
+        }
+
+        td:nth-child(3) {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        td:nth-child(4) {
+            min-width: 340px;
+            font-size: 0.83rem;
+            color: #aaa;
+        }
+
+        .row-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(229, 169, 60, 0.12);
+            border: 1px solid rgba(229, 169, 60, 0.3);
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--gold-accent);
+            margin-right: 10px;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+
+        .stream-name-cell {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .amt {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+        }
+
+        .amt-gold {
+            background: rgba(229, 169, 60, 0.12);
+            border: 1px solid rgba(229, 169, 60, 0.35);
+            color: var(--gold-accent);
+        }
+
+        .amt-zero {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+        }
+
+        .amt-green {
+            background: rgba(14, 94, 54, 0.2);
+            border: 1px solid rgba(14, 94, 54, 0.5);
+            color: #6dbf94;
+        }
+
+        .timing {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 40px;
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .t-now {
+            background: rgba(14, 94, 54, 0.2);
+            border: 1px solid var(--roots-green);
+            color: #6dbf94;
+        }
+        .t-q1 {
+            background: rgba(229, 169, 60, 0.1);
+            border: 1px solid rgba(229, 169, 60, 0.4);
+            color: var(--gold-accent);
+        }
+        .t-q2 {
+            background: rgba(229, 169, 60, 0.08);
+            border: 1px solid rgba(229, 169, 60, 0.25);
+            color: #c8962a;
+        }
+        .t-yr2 {
+            background: rgba(200, 55, 55, 0.1);
+            border: 1px solid rgba(200, 55, 55, 0.35);
+            color: #e08080;
+        }
+        .t-close {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #bbb;
+        }
+
+        .cat-row td {
+            background: rgba(14, 94, 54, 0.08);
+            color: var(--roots-green);
+            font-weight: 500;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 10px 20px;
+        }
+
+        .totals-row td {
+            background: rgba(229, 169, 60, 0.06);
+            border-top: 1px solid rgba(229, 169, 60, 0.3) !important;
+            font-weight: 500;
+            color: var(--text-white);
+            font-size: 0.95rem;
+            padding: 20px 20px;
+        }
+
+        /* CLOSING CALLOUT */
+        .callout {
+            text-align: center;
+            background: linear-gradient(145deg, #111111, #070707);
+            border-radius: 48px;
+            padding: 48px 24px;
+            margin: 48px 0;
+        }
+
+        .callout-icon {
+            font-size: 2.8rem;
+            color: var(--roots-green);
+            opacity: 0.8;
+        }
+
+        .callout h2 {
+            font-weight: 300;
+            font-size: 2rem;
+            margin: 16px 0;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 900px;
+            margin: 28px auto;
+            text-align: left;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 16px 18px;
+        }
+
+        .action-card .label {
+            color: var(--gold-accent);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .action-card .text {
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        .callout-footer {
+            margin-top: 16px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+
+        .footer-social {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-dim);
+            color: #ddd;
+            font-size: 1.4rem;
+            transition: 0.25s;
+        }
+
+        .footer-social a:hover {
+            background: rgba(229, 169, 60, 0.15);
+            border-color: var(--gold-accent);
+            color: var(--gold-accent);
+            transform: translateY(-3px);
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 28px 40px;
+            margin-bottom: 28px;
+            font-weight: 300;
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        .footer-contact a {
+            color: #bbb;
+            transition: 0.2s;
+        }
+
+        .footer-contact a:hover {
+            color: var(--gold-accent);
+        }
+
+        .footer-contact i {
+            color: var(--gold-accent);
+            margin-right: 8px;
+            width: 18px;
+        }
+
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            letter-spacing: 0.1em;
+            color: #666;
+        }
+
+        @media (max-width: 780px) {
+            .section-title {
+                font-size: 1.4rem;
+                padding-left: 14px;
+            }
+            td:first-child {
+                min-width: 180px;
+            }
+            td:nth-child(4) {
+                min-width: 220px;
+            }
+            .callout h2 {
+                font-size: 1.4rem;
+            }
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-social a {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+            .footer-contact {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="container">
+
+            <!-- TITLE -->
+            <div class="section-title" id="grants"><span>✦</span> Revenue Streams — All 28 Sources</div>
+
+            <!-- TABLE -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Revenue Stream</th>
+                            <th>Conservative Yr 1 Est.</th>
+                            <th>Availability</th>
+                            <th>Notes — If These Actions Are Taken</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- CATEGORY: OPERATIONS -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-calendar-check" style="margin-right:8px;"></i>Operations &amp; Programming</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">1</span>Community events (365/year)</td>
+                            <td><span class="amt amt-gold">$7,500</span></td>
+                            <td><span class="timing t-now">Month 1+</span></td>
+                            <td>Ramp to 150 events in Year 1 at avg. $50 net per event after permits, supplies, and setup. Scale to 250 in Year 2, full 365 in Year 3. Secure Chicago Park District event permits early. Partner with local vendors who pay a small booth fee.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">2</span>Private charitable donations to nonprofits</td>
+                            <td><span class="amt amt-gold">$12,000</span></td>
+                            <td><span class="timing t-now">Month 1+</span></td>
+                            <td>General fundraising through events, online campaigns (GoFundMe, Donorbox), and faith community outreach. Conservative at $1,000/month. Establish a donor management platform in Month 1. Separate from Illinois Community Development Tax Credit (CDTC)-eligible donations.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">3</span>Sweat equity and property appreciation</td>
+                            <td><span class="amt amt-zero">$0 liquid</span></td>
+                            <td><span class="timing t-close">Ongoing</span></td>
+                            <td>Not a liquid revenue stream. Documents value preservation for refinance eligibility. Monthly photo logs, site improvements, and landscaping records submitted to investors quarterly. Strengthens Year 3 refinance underwriting.</td>
+                        </tr>
+
+                        <!-- CATEGORY: GRANTS -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-certificate" style="margin-right:8px;"></i>Grant Funding Pipeline</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">4</span>Ras Tafari Inc. grants</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q1">Q1–Q2</span></td>
+                            <td>Apply to at least 5 small foundation grants ($2,000–$5,000 each) in Year 1. Prioritize Illinois Arts Council Agency and Chicago Community Trust small grants. A track record of events strengthens future applications significantly.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">5</span>2nd Chance Housing Inc. grants</td>
+                            <td><span class="amt amt-gold">$15,000</span></td>
+                            <td><span class="timing t-q1">Q1–Q2</span></td>
+                            <td>Apply to capacity-building grants from Local Initiatives Support Corporation (LISC) Chicago and the Woods Fund. File within first 60 days of nonprofit activation. Board composition and a clear mission statement are required before filing.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">6</span>Department of Housing and Urban Development Community Development Block Grant (HUD CDBG)</td>
+                            <td><span class="amt amt-gold">$20,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Apply through the City of Chicago CDBG sub-recipient process. Requires an established nonprofit with at least 1 year of documented programming. Year 1 application positions for Year 2 award. Engage the 20th Ward alderman for a letter of support before filing.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">7</span>Illinois Housing Development Authority Affordable Housing Program (IHDA AHP)</td>
+                            <td><span class="amt amt-gold">$15,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>2nd Chance Housing must be registered and actively pursuing housing-related programming. File application in Q1. Illinois Housing Development Authority (IHDA) prioritizes organizations with documented community need and board credibility.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">8</span>Illinois Department of Commerce and Economic Opportunity Community Services Block Grant (DCEO CSBG)</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Apply through the Community Action network. Requires documentation of serving low-income households. Washington Park census data supports eligibility. File early — Community Services Block Grant (CSBG) allocations distributed to approved agencies on a rolling basis.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">9</span>Chicago Invest in Neighborhoods, Empower, Support, and Transform South/West (INVEST South/West)</td>
+                            <td><span class="amt amt-gold">$15,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Washington Park corridor is eligible. Apply for programming and activation grants. A formal site plan or community activation proposal strengthens the application. Aldermanic support is effectively required — secure 20th Ward letter first.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">10</span>Neighborhood Opportunity Fund (NOF)</td>
+                            <td><span class="amt amt-gold">$25,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q4</span></td>
+                            <td>Washington Park is an active Tax Increment Financing (TIF) district. Neighborhood Opportunity Fund (NOF) awards up to $250,000 for community projects. Year 1 estimate reflects a small activation award. A complete site plan, two years of financials, and community letters are required. Schedule a Department of Planning and Development (DPD) pre-application meeting first — this is the single most impactful grant available to this project.</td>
+                        </tr>
+
+                        <!-- CATEGORY: TAX CREDITS -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-receipt" style="margin-right:8px;"></i>Tax Credit Leverage</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">11</span>Illinois Community Development Tax Credit (CDTC) donations</td>
+                            <td><span class="amt amt-green">$30,000</span></td>
+                            <td><span class="timing t-now">Month 1–3</span></td>
+                            <td>Solicit $30,000 in charitable donations to 2nd Chance Housing. Donors receive a 50% Illinois state tax credit — making a $1,000 donation effectively cost the donor $500. This is the fastest-activatable stream. Begin donor outreach in Month 1. Target faith communities, small businesses, and civic organizations. This is the highest-priority Month 1 action.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">12</span>Illinois Affordable Housing Tax Credit (IAHTC)</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>2nd Chance Housing applies as a housing-focused nonprofit. Requires documented affordable housing activity. Conservative Year 1 estimate assumes a small credit allocation. Engage Illinois Housing Development Authority (IHDA) directly for pre-application guidance.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">13</span>New Markets Tax Credits (NMTC) proceeds</td>
+                            <td><span class="amt amt-zero">$0 — Yr 1</span></td>
+                            <td><span class="timing t-yr2">Year 2–3</span></td>
+                            <td>Structuring takes 12–18 months and requires a Certified Development Entity (CDE) partner and a Certified Public Accountant (CPA). Begin conversations with Illinois Facilities Fund (IFF) or Local Initiatives Support Corporation (LISC) in Year 1. Potential value: $100,000–$180,000 when fully structured in Year 2–3.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">14</span>Low-Income Housing Tax Credit (LIHTC)</td>
+                            <td><span class="amt amt-zero">$0 — Yr 1</span></td>
+                            <td><span class="timing t-yr2">Year 2–3</span></td>
+                            <td>Low-Income Housing Tax Credit (LIHTC) requires a structured housing development project with permanent financing. Not applicable until a structure is planned for the site. Flag for Year 2–3 if development is pursued on the lot.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">15</span>Historic Tax Credits (HTC)</td>
+                            <td><span class="amt amt-zero">$0 — Yr 1</span></td>
+                            <td><span class="timing t-yr2">Year 2–3</span></td>
+                            <td>No existing structure on the lot. Applicable only if a qualifying historic structure is acquired or built. Flag for future 2nd Chance Housing acquisitions where a qualifying structure is involved.</td>
+                        </tr>
+
+                        <!-- CATEGORY: CITY CONTRACTS -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-building" style="margin-right:8px;"></i>City Vendor Registration &amp; Contracts</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">16</span>Department of Family and Support Services (DFSS) contracts</td>
+                            <td><span class="amt amt-gold">$25,000</span></td>
+                            <td><span class="timing t-q1">Q1–Q2</span></td>
+                            <td>Register with Chicago e-Procurement System (CAPS) immediately. Pursue subcontracting under an existing Department of Family and Support Services (DFSS) prime contractor in Year 1 — faster than a prime award. File a prime contract Request for Proposal (RFP) application simultaneously. Requires a service delivery plan and staffing documentation.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">17</span>Chicago Park District (CPD) programming contracts</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q1">Q1–Q2</span></td>
+                            <td>Apply to Chicago Park District (CPD) partner programming model. Ras Tafari Inc. cultural and wellness programming maps to CPD community health priorities. Requires proof of insurance and a program curriculum. Apply in Q1 for summer programming cycle.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">18</span>Chicago Department of Transportation (CDOT) community engagement contracts</td>
+                            <td><span class="amt amt-gold">$5,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Small community engagement subcontracting opportunities exist under active Chicago Department of Transportation (CDOT) projects in Washington Park. Register as a vendor and monitor the Chicago eProcurement portal for relevant solicitations. Year 1 estimate reflects one small subcontract engagement.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">19</span>Department of Housing and Economic Development (DHED) Chicago Recovery Plan contracts</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Chicago Recovery Plan allocations for housing navigation and community stabilization services. 2nd Chance Housing's mission aligns directly. File a vendor qualification with the Department of Housing and Economic Development (DHED) in Q1. Requires nonprofit status, financials, and a service area description.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">20</span>Small Business Enterprise (SBE) subcontracting</td>
+                            <td><span class="amt amt-gold">$8,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Obtain Small Business Enterprise (SBE) certification through the City of Chicago. Once certified, both nonprofits are eligible for subcontracting mandates on City-funded projects. Monitor bid boards actively. Year 1 estimate reflects one or two small engagements.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">21</span>Minority Business Enterprise / Women's Business Enterprise (MBE/WBE) set-aside contracts</td>
+                            <td><span class="amt amt-gold">$8,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Apply for Minority Business Enterprise (MBE) certification through the City of Chicago if Albert or any principal qualifies. MBE/Women's Business Enterprise (WBE) status unlocks set-aside percentages on virtually every City contract. Processing takes 60–90 days — file immediately in Month 1.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">22</span>Workforce development and case management service contracts</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q3</span></td>
+                            <td>Apply to Chicago Cook Workforce Partnership (CCWP) for workforce development service contracts. 2nd Chance Housing's re-entry and housing mission aligns with Chicago Cook Workforce Partnership (CCWP) priorities. Requires a staffing plan and program curriculum. Conservative estimate reflects one small contract or subcontract.</td>
+                        </tr>
+
+                        <!-- CATEGORY: PROPERTY -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-home" style="margin-right:8px;"></i>Property Acquisitions &amp; Flips — 2nd Chance Housing Inc.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">23</span>City foreclosed property flips — 2nd Chance Housing Inc.</td>
+                            <td><span class="amt amt-gold">$15,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q4</span></td>
+                            <td>Acquire one City-owned vacant property through the Large Lots Program or Citywide Land Acquisition Program in Year 1. Conservatively estimate $15,000 net after acquisition cost, light rehab, and resale. A defined percentage flows to the investor note. Requires active engagement with the Department of Planning and Development (DPD).</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">24</span>Cook County tax sale property acquisitions and resale</td>
+                            <td><span class="amt amt-gold">$10,000</span></td>
+                            <td><span class="timing t-q2">Q2–Q4</span></td>
+                            <td>Attend Cook County annual tax sale. Identify one low-cost delinquent property for acquisition. Conservative net assumes minimal rehab and quick resale. Requires $5,000–$15,000 in acquisition capital and a working knowledge of the redemption period rules under Illinois law.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">25</span>Investor right-of-first-refusal deal flow on additional properties</td>
+                            <td><span class="amt amt-zero">$0 direct</span></td>
+                            <td><span class="timing t-now">Ongoing</span></td>
+                            <td>Not a direct revenue stream for Albert — this is an investor benefit that strengthens the deal's attractiveness and may reduce the interest rate negotiated. Document every 2nd Chance Housing acquisition opportunity and present to investors per the agreed formula in the note.</td>
+                        </tr>
+
+                        <!-- CATEGORY: CAPITAL SOURCES -->
+                        <tr class="cat-row">
+                            <td colspan="4"><i class="fas fa-landmark" style="margin-right:8px;"></i>Capital Sources (Principal Reduction / Bridge)</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">26</span>Community Development Financial Institution (CDFI) subordinate loan capital</td>
+                            <td><span class="amt amt-zero">$0 revenue</span></td>
+                            <td><span class="timing t-q1">Q1–Q2</span></td>
+                            <td>A Community Development Financial Institution (CDFI) loan of $50,000–$75,000 from Illinois Facilities Fund (IFF), Local Initiatives Support Corporation (LISC) Chicago, or Chicago Community Loan Fund reduces the primary note burden. Initiate conversations in Month 1. Requires organizational track record — even 6 months of documented activity helps significantly.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">27</span>Community Land Trust (CLT) capital contribution</td>
+                            <td><span class="amt amt-zero">$0 recurring</span></td>
+                            <td><span class="timing t-close">At close</span></td>
+                            <td>One-time capital contribution of $50,000–$75,000 at or before close reduces investor note principal. If secured, monthly payment drops from $21,682 to approximately $18,972 — saving $2,710/month over 36 months. Initiate Chicago Community Land Trust (CCLT) conversations immediately. Requires a community benefit agreement and ground lease negotiation.</td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="row-num">28</span>Conventional refinance at note maturity</td>
+                            <td><span class="amt amt-zero">$0 — Yr 1</span></td>
+                            <td><span class="timing t-yr2">Year 3</span></td>
+                            <td>Year 3 exit strategy — not a Year 1 revenue stream. Albert refinances at note maturity using seasoned occupancy, nonprofit track record, and improved property value. Begin building personal credit and entity financial statements from Day 1 to support refinance underwriting in Month 36.</td>
+                        </tr>
+
+                        <!-- TOTALS -->
+                        <tr class="totals-row">
+                            <td><i class="fas fa-calculator" style="color:var(--gold-accent);margin-right:10px;"></i><strong>Total Conservative Year 1 Liquid Revenue</strong></td>
+                            <td style="text-align:center;"><span class="amt amt-green" style="font-size:1rem;">$260,500</span></td>
+                            <td></td>
+                            <td style="color:#aaa; font-size:0.82rem;">Excludes New Markets Tax Credits (NMTC), Low-Income Housing Tax Credit (LIHTC), Historic Tax Credits (HTC), Community Land Trust (CLT) capital, and Community Development Financial Institution (CDFI) loan. Including a conservative Community Land Trust (CLT) contribution of $50,000 at close reduces the investor note to $550,000 and monthly payment to approximately $19,850.</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CLOSING CALLOUT: 5 CRITICAL ACTIONS -->
+            <div class="callout">
+                <i class="fas fa-shield-alt callout-icon"></i>
+                <h2>5 Critical Month 1 Actions</h2>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <div class="label">Action 1</div>
+                        <div class="text">Begin Illinois Community Development Tax Credit (CDTC) donor outreach campaign</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="label">Action 2</div>
+                        <div class="text">Register on Chicago e-Procurement System (CAPS) as vendor</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="label">Action 3</div>
+                        <div class="text">Schedule Neighborhood Opportunity Fund (NOF) pre-application meeting with Department of Planning and Development (DPD)</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="label">Action 4</div>
+                        <div class="text">Retain commission-based grant writer — funded from first Illinois Community Development Tax Credit (CDTC) receipts</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="label">Action 5</div>
+                        <div class="text">Secure 20th Ward aldermanic letter of support before any grant applications are filed</div>
+                    </div>
+                </div>
+                <div class="callout-footer">
+                    <i class="fas fa-map-marker-alt"></i>&nbsp; 6227 S Prairie Ave · Washington Park · Chicago, IL 60637
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER with contact info -->
+    <footer class="footer">
+
+        <div class="footer-social">
+            <a href="https://www.tiktok.com/@selassiefest" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://x.com/selassiefest/" target="_blank" aria-label="X"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/selassiefest" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.youtube.com/@selassie7291" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.pinterest.com/himselassie/" target="_blank" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+            <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        </div>
+
+        <div class="footer-contact">
+            <span><i class="fas fa-envelope"></i><a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a></span>
+            <span><i class="fas fa-phone"></i><a href="tel:14149093279">(414) 909-3279</a></span>
+        </div>
+
+        <div class="copyright">
+            <i class="fas fa-dove"></i> 6227 S Prairie Ave Acquisition Proposal · Albert Harris · Ras Tafari Inc. · 2nd Chance Housing Inc.
+            <br>For discussion purposes only. Not a securities offering.
+        </div>
+
+    </footer>
+
+</body>
+</html>
