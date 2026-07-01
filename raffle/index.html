@@ -22,6 +22,147 @@
       --red-power: #c73d3d;
       --text-light: #f0f0f0;
       --text-muted: #b0b0b0;
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --transition-default: all 0.25s ease;
+    }
+
+    a {
+      text-decoration: none;
+      transition: var(--transition-default);
+    }
+
+    /* ===== SITE HEADER (matches index.html sitewide) ===== */
+    .site-header {
+      padding: 28px 32px 16px 32px;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(13, 13, 13, 0.96);
+      backdrop-filter: blur(2px);
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand-link {
+      display: inline-block;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .brand-link:hover {
+      opacity: 0.85;
+    }
+    .site-title {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 2.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+    .powered-by-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 16px 8px 20px;
+      border-radius: 60px;
+      border: 1px solid var(--border-dim);
+      flex-shrink: 0;
+    }
+    .powered-by-text {
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+    .powered-by-logo {
+      display: flex;
+      align-items: center;
+      line-height: 0;
+    }
+    .powered-by-logo img {
+      height: 40px;
+      width: auto;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .powered-by-logo:hover img {
+      opacity: 0.8;
+    }
+    .jvgh-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,94,54,0.15);
+      padding: 6px 14px;
+      border-radius: 60px;
+      border: 1px solid rgba(14,94,54,0.4);
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .jvgh-badge-wrapper:hover { opacity: 0.85; }
+    .jvgh-badge-text {
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #6dbe8f;
+    }
+
+    /* ===== MAIN NAVIGATION ===== */
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+      background-color: rgba(10, 10, 10, 0.95);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.25rem;
+      list-style: none;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      transition: 0.2s;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links li a:hover {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+    @media (max-width: 700px) {
+      .header-flex { flex-direction: column; align-items: center; }
+      .site-title { font-size: 1.8rem; }
     }
 
     body {
@@ -315,6 +456,44 @@
 </head>
 <body>
 
+<!-- HEADER with home link (brand) + Powered By Spliff Society -->
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+  </div>
+</header>
+
+<!-- NAVIGATION (no "Home" link) -->
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+    <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+    <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+    <li><a href="/healing-grove/">HEALING GROVE</a></li>
+    <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+    <li><a href="/marketplace/">MARKETPLACE</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+    <li><a href="/contact/">CONTACT</a></li>
+  </ul>
+</nav>
+
 <div class="hero">
   <h1>🎟️ SELASSIE FEST <span style="color: var(--red-power);">RAFFLE</span></h1>
   <div class="subhead">One Day. One Love. One Community. — Win incredible prizes while uplifting housing solutions.</div>
@@ -416,44 +595,324 @@
   // ---------- Prize data (donated products + full partner glory) ----------
   const prizes = [
     {
-      id: "prize1",
-      name: "🌿 Roots Traveler Backpack + Eco Gear Bundle",
-      partner: "Green Lion Gear",
-      partnerFullDesc: "Green Lion Gear crafts sustainable outdoor equipment inspired by Rastafari Livity. They donated this premium backpack set (value $380) to support housing & community. At SelassieFest they will have a dedicated booth, logo on main stage LED, and special shout-out during Nyabinghi hour. Their ethical mission aligns with Ital living.",
-      value: "$380 value",
-      description: "Waterproof backpack, bamboo utensil set, solar charger, and organic cotton blanket — perfect for festival journeys.",
-      imgIcon: "🎒",
-      promo: "Green Lion Gear receives: prime logo on digital banners, social media series, on-site banner & live announcer gratitude."
+      id: "rest1_14parishrestaurantrhumbar",
+      name: "🍽️ Dinner for One — 14 Parish Restaurant & Rhum Bar",
+      partner: "14 Parish Restaurant & Rhum Bar",
+      partnerFullDesc: "14 Parish Restaurant & Rhum Bar is a Caribbean restaurant located at 1644 E 53rd St, Chicago, IL 60615. Visit them online at https://www.14parish.com. They are donating a Dinner for One certificate (value $40) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$40 value",
+      description: "One certificate for a Caribbean dinner for one at 14 Parish Restaurant & Rhum Bar, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
     },
     {
-      id: "prize2",
-      name: "🥁 Handcrafted Nyabinghi Drum",
-      partner: "JahMuzik Crafts",
-      partnerFullDesc: "JahMuzik Crafts, a family-owned workshop from Kingston, builds authentic nyabinghi drums using traditional goat skin and Jamaican cedar. Their donation (value $650) honors Selassie I. JahMuzik will co-host a drum circle and have their logo screened on the main stage poster. Plus feature in festival newsletter reaching 20k+.",
-      value: "$650 value",
-      description: "Professional Nyabinghi drum with hand-painted Ethiopian flag motifs. Tuned by master craftsmen.",
-      imgIcon: "🥁",
-      promo: "Logo on all festival emails, dedicated social media reel, and banner in the 'Sound System Yard'."
+      id: "rest2_caribbeanamericanbakingco",
+      name: "🍽️ Dinner for One — Caribbean American Baking Co",
+      partner: "Caribbean American Baking Co",
+      partnerFullDesc: "Caribbean American Baking Co is a Caribbean restaurant located at 1539 W Howard St, Chicago, IL 60626. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Caribbean American Baking Co, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
     },
     {
-      id: "prize3",
-      name: "☕ Ethiopian Jebena Coffee Ceremony Set",
-      partner: "Addis Ababa Coffee Co.",
-      partnerFullDesc: "Addis Ababa Coffee Co. preserves ancient coffee traditions, donating a complete Jebena set + organic Ethiopian Yirgacheffe beans (value $210). As partner, they receive prime vending location, 'Official Coffee of SelassieFest' status, and full-page feature in the printed festival program.",
-      value: "$210 value",
-      description: "Handmade clay Jebena, 3 ceramic cups, frankincense burner, and 2 lbs of single-origin roast.",
-      imgIcon: "☕",
-      promo: "Exclusive pop-up activation, logo on hydration station signage, shoutout from main stage."
+      id: "rest3_fhjerkgod",
+      name: "🍽️ Dinner for One — FH JerkGOD",
+      partner: "FH JerkGOD",
+      partnerFullDesc: "FH JerkGOD is a Caribbean restaurant located at 111 E 51st St, Chicago, IL 60615. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at FH JerkGOD, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
     },
     {
-      id: "prize4",
-      name: "🎨 Haile Selassie Art Collection & Gift Basket",
-      partner: "EthioArt Collective",
-      partnerFullDesc: "EthioArt Collective is a Black-led arts organization celebrating Ethiopian heritage. Their donated deluxe art set (value $275) includes limited edition prints, a handwoven shawl, and incense. They receive VIP artist passes, stage dedication during intermission, and curated art gallery mention in all press releases.",
-      value: "$275 value",
-      description: "Signed lithograph of H.I.M. Haile Selassie I, shea butter set, traditional scarf, and handmade journal.",
-      imgIcon: "🎨",
-      promo: "Logo on website footer, 4 social media features, on-screen rotating ad at the main stage."
+      id: "rest4_garifunaflava",
+      name: "🍽️ Dinner for One — Garifuna Flava",
+      partner: "Garifuna Flava",
+      partnerFullDesc: "Garifuna Flava is a Caribbean restaurant located at 2518 W 63rd St, Chicago, IL 60629. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Garifuna Flava, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest5_iriejerk",
+      name: "🍽️ Dinner for One — Irie Jerk",
+      partner: "Irie Jerk",
+      partnerFullDesc: "Irie Jerk is a Caribbean restaurant located at 3404 N Clark St, Chicago, IL 60657. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Irie Jerk, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest6_iriejerkhut1",
+      name: "🍽️ Dinner for One — Irie Jerk Hut #1",
+      partner: "Irie Jerk Hut #1",
+      partnerFullDesc: "Irie Jerk Hut #1 is a Caribbean restaurant located at 311 W 79th St, Chicago, IL 60620. Visit them online at https://iriejerkhut123.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Irie Jerk Hut #1, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest7_iriejerkhut2",
+      name: "🍽️ Dinner for One — Irie Jerk Hut #2",
+      partner: "Irie Jerk Hut #2",
+      partnerFullDesc: "Irie Jerk Hut #2 is a Caribbean restaurant located at 2304 State St, Calumet City, IL 60409. Visit them online at https://iriejerkhut123.com. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Irie Jerk Hut #2, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest8_iriejerkhut3",
+      name: "🍽️ Dinner for One — Irie Jerk Hut #3",
+      partner: "Irie Jerk Hut #3",
+      partnerFullDesc: "Irie Jerk Hut #3 is a Caribbean restaurant located at 3633 Sauk Trail, Richton Park, IL 60471. Visit them online at https://iriejerkhut123.com. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Irie Jerk Hut #3, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest9_iriejerkhut4",
+      name: "🍽️ Dinner for One — Irie Jerk Hut #4",
+      partner: "Irie Jerk Hut #4",
+      partnerFullDesc: "Irie Jerk Hut #4 is a Caribbean restaurant located at 18304 S Cicero Ave, Country Club Hills, IL 60478. Visit them online at https://iriejerkhut123.com. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Irie Jerk Hut #4, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest10_jagrillhydepark",
+      name: "🍽️ Dinner for One — Ja' Grill Hyde Park",
+      partner: "Ja' Grill Hyde Park",
+      partnerFullDesc: "Ja' Grill Hyde Park is a Caribbean restaurant located at 1510 E Harper Ct, Chicago, IL 60615. Visit them online at https://jagrill.com. They are donating a Dinner for One certificate (value $40) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$40 value",
+      description: "One certificate for a Caribbean dinner for one at Ja' Grill Hyde Park, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest11_jamaicajerkking",
+      name: "🍽️ Dinner for One — Jamaica Jerk King",
+      partner: "Jamaica Jerk King",
+      partnerFullDesc: "Jamaica Jerk King is a Caribbean restaurant located at 206 E 35th St, Chicago, IL 60616. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Jamaica Jerk King, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest12_jamgrill",
+      name: "🍽️ Dinner for One — JamGrill",
+      partner: "JamGrill",
+      partnerFullDesc: "JamGrill is a Caribbean restaurant located at 5241 W Chicago Ave, Chicago, IL 60644. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at JamGrill, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest13_jerk48",
+      name: "🍽️ Dinner for One — Jerk 48",
+      partner: "Jerk 48",
+      partnerFullDesc: "Jerk 48 is a Caribbean restaurant located at 548 E 67th St, Chicago, IL 60637. Visit them online at https://jerk48.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk 48, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest14_jerkchoice",
+      name: "🍽️ Dinner for One — Jerk Choice",
+      partner: "Jerk Choice",
+      partnerFullDesc: "Jerk Choice is a Caribbean restaurant located at 1934 E 95th St, Chicago, IL 60617. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk Choice, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest15_jerkvillabargrill",
+      name: "🍽️ Dinner for One — Jerk Villa Bar & Grill",
+      partner: "Jerk Villa Bar & Grill",
+      partnerFullDesc: "Jerk Villa Bar & Grill is a Caribbean restaurant located at 2216 S Michigan Ave, Chicago, IL 60616. Visit them online at https://jerkvillabarandgrill.com. They are donating a Dinner for One certificate (value $40) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$40 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk Villa Bar & Grill, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest16_jerkyard",
+      name: "🍽️ Dinner for One — Jerk Yard",
+      partner: "Jerk Yard",
+      partnerFullDesc: "Jerk Yard is a Caribbean restaurant located at 1310 E 53rd St, Chicago, IL 60615. Visit them online at https://jerkyardchicago.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk Yard, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest17_jerkjamaicanbarbecue",
+      name: "🍽️ Dinner for One — Jerk. Jamaican Barbecue",
+      partner: "Jerk. Jamaican Barbecue",
+      partnerFullDesc: "Jerk. Jamaican Barbecue is a Caribbean restaurant located at 811 W Chicago Ave, Chicago, IL 60642. Visit them online at https://jerkbbq.com. They are donating a Dinner for One certificate (value $40) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$40 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk. Jamaican Barbecue, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest18_jerkyjerk",
+      name: "🍽️ Dinner for One — Jerky Jerk",
+      partner: "Jerky Jerk",
+      partnerFullDesc: "Jerky Jerk is a Caribbean restaurant located at 2253 W Taylor St, Chicago, IL 60612. Visit them online at https://jerkyjerk.net. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Jerky Jerk, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest19_jerkyjerkrollingmeadows",
+      name: "🍽️ Dinner for One — Jerky Jerk (Rolling Meadows)",
+      partner: "Jerky Jerk (Rolling Meadows)",
+      partnerFullDesc: "Jerky Jerk (Rolling Meadows) is a Caribbean restaurant located at 3991 W Algonquin Rd, Rolling Meadows, IL 60008. Visit them online at https://jerkyjerk.net. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Jerky Jerk (Rolling Meadows), featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest20_littlejamaicajerkcuisinellc",
+      name: "🍽️ Dinner for One — Little Jamaica Jerk Cuisine, LLC",
+      partner: "Little Jamaica Jerk Cuisine, LLC",
+      partnerFullDesc: "Little Jamaica Jerk Cuisine, LLC is a Caribbean restaurant located at 6319 S King Dr, Chicago, IL 60637. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Little Jamaica Jerk Cuisine, LLC, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest21_mrbscaribbeangrill",
+      name: "🍽️ Dinner for One — Mr. B's Caribbean Grill",
+      partner: "Mr. B's Caribbean Grill",
+      partnerFullDesc: "Mr. B's Caribbean Grill is a Caribbean restaurant located at 4801 N Milwaukee Ave, Chicago, IL 60630. Visit them online at https://mrbscaribbean.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Mr. B's Caribbean Grill, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest22_onestopjamaicajerk",
+      name: "🍽️ Dinner for One — One Stop Jamaica Jerk",
+      partner: "One Stop Jamaica Jerk",
+      partnerFullDesc: "One Stop Jamaica Jerk is a Caribbean restaurant located at 1849 E 79th St, Chicago, IL 60649. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at One Stop Jamaica Jerk, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest23_shattazjerkbargrill",
+      name: "🍽️ Dinner for One — SHATTAZ Jerk Bar & Grill",
+      partner: "SHATTAZ Jerk Bar & Grill",
+      partnerFullDesc: "SHATTAZ Jerk Bar & Grill is a Caribbean restaurant located at 3109 W Irving Park Rd, Chicago, IL 60618. Visit them online at https://shattazjerkbargrill.com. They are donating a Dinner for One certificate (value $40) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$40 value",
+      description: "One certificate for a Caribbean dinner for one at SHATTAZ Jerk Bar & Grill, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest24_theperfectjerk",
+      name: "🍽️ Dinner for One — The Perfect Jerk",
+      partner: "The Perfect Jerk",
+      partnerFullDesc: "The Perfect Jerk is a Caribbean restaurant located at 6954-56 W North Ave, Chicago, IL 60707. Visit them online at https://theperfectjerkchicken.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at The Perfect Jerk, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest25_tropicislandjerkchicken",
+      name: "🍽️ Dinner for One — Tropic Island Jerk Chicken",
+      partner: "Tropic Island Jerk Chicken",
+      partnerFullDesc: "Tropic Island Jerk Chicken is a Caribbean restaurant located at 553 E 79th St, Chicago, IL 60619. Visit them online at https://tropicislandjerkchicken.com. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Tropic Island Jerk Chicken, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest26_tropicislandjerkchickencalumetcit",
+      name: "🍽️ Dinner for One — Tropic Island Jerk Chicken (Calumet City)",
+      partner: "Tropic Island Jerk Chicken (Calumet City)",
+      partnerFullDesc: "Tropic Island Jerk Chicken (Calumet City) is a Caribbean restaurant located at 570 Torrence Ave, Calumet City, IL 60409. Visit them online at https://tropicislandjerkchicken.com. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Tropic Island Jerk Chicken (Calumet City), featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest27_unclejoesjerkchicken",
+      name: "🍽️ Dinner for One — Uncle Joe's Jerk Chicken",
+      partner: "Uncle Joe's Jerk Chicken",
+      partnerFullDesc: "Uncle Joe's Jerk Chicken is a Caribbean restaurant located at 1461 E Hyde Park Blvd, Chicago, IL 60615. Visit them online at https://unclejoesjerk.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Uncle Joe's Jerk Chicken, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest28_westindiesbakery",
+      name: "🍽️ Dinner for One — West Indies Bakery",
+      partner: "West Indies Bakery",
+      partnerFullDesc: "West Indies Bakery is a Caribbean restaurant located at 841 E 79th St, Chicago, IL 60619. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at West Indies Bakery, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest29_wijammin",
+      name: "🍽️ Dinner for One — Wi Jammin",
+      partner: "Wi Jammin",
+      partnerFullDesc: "Wi Jammin is a Caribbean restaurant located at 316 E 95th St, Chicago, IL 60619. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Wi Jammin, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest30_jerkfactory",
+      name: "🍽️ Dinner for One — Jerk Factory",
+      partner: "Jerk Factory",
+      partnerFullDesc: "Jerk Factory is a Caribbean restaurant located at 225 E 47th St, Chicago, IL 60653. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Jerk Factory, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest31_saintbess",
+      name: "🍽️ Dinner for One — Saint Bess",
+      partner: "Saint Bess",
+      partnerFullDesc: "Saint Bess is a Caribbean restaurant located at 5729 N Northwest Hwy, Chicago, IL 60646. Visit them online at https://stbessjerk.com. They are donating a Dinner for One certificate (value $35) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$35 value",
+      description: "One certificate for a Caribbean dinner for one at Saint Bess, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
+    },
+    {
+      id: "rest32_reggaeboys",
+      name: "🍽️ Dinner for One — Reggae Boys",
+      partner: "Reggae Boys",
+      partnerFullDesc: "Reggae Boys is a Caribbean restaurant located at 412 E 87th St, Chicago, IL 60619. They are donating a Dinner for One certificate (value $25) to support SelassieFest's charitable raffle benefiting 2nd Chance Housing Inc.",
+      value: "$25 value",
+      description: "One certificate for a Caribbean dinner for one at Reggae Boys, featuring authentic jerk and island specialties.",
+      imgIcon: "🍽️",
+      promo: "Logo featured on the raffle page, mention in the festival program, and a social media shoutout to our community."
     }
   ];
 
