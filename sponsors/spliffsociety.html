@@ -1,398 +1,1033 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Canafarm - Chicago-based craft cannabis partner of SelassieFest, founded by Talvin White." />
-  <title>Canafarm | SelassieFest Partner Spotlight</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelassieFest × Spliff Society — Partnership</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap');
 
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        :root {
+            /* Dark Theme Palette */
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.8);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    :root {
-      --bg-black: #0D0D0D;
-      --text-white: #F5F5F5;
-      --roots-green: #0E5E36;
-      --gold-accent: #E5A93C;
-      --red-accent: #C83737;
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --border-dim: rgba(255, 255, 255, 0.08);
-      --transition-default: all 0.25s ease;
-    }
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    body {
-      background-color: var(--bg-black);
-      color: var(--text-white);
-      font-family: 'Jost', sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+        /* ===== HEADER (Dark) ===== */
+        .site-header {
+            padding: 24px 32px 14px 32px;
+            border-bottom: 1px solid var(--border-dim);
+            background: rgba(13, 13, 13, 0.96);
+            backdrop-filter: blur(6px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .brand-link {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .brand-link:hover {
+            opacity: 0.8;
+        }
+        .site-title {
+            font-weight: 200;
+            font-size: 2.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.2;
+        }
+        .site-title span {
+            color: var(--roots-green);
+            font-weight: 300;
+        }
+        .tagline {
+            font-weight: 300;
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            border-top: 1px solid var(--roots-green);
+            display: inline-block;
+            padding-top: 6px;
+            margin-top: 4px;
+        }
 
-    a { text-decoration: none; transition: var(--transition-default); color: inherit; }
+        .powered-by-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px 8px 20px;
+            border-radius: 60px;
+            border: 1px solid var(--border-dim);
+            flex-shrink: 0;
+        }
+        .powered-by-text {
+            font-weight: 300;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #aaa;
+        }
+        .powered-by-logo {
+            display: flex;
+            align-items: center;
+            line-height: 0;
+        }
+        .powered-by-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 4px;
+            transition: opacity 0.2s;
+        }
+        .powered-by-logo:hover img {
+            opacity: 0.8;
+        }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        /* ===== NAV (Dark) ===== */
+        .main-nav {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            backdrop-filter: blur(4px);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ddd;
+            text-decoration: none;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
 
-    /* HEADER */
-    .site-header {
-      padding: 28px 32px 16px 32px;
-      border-bottom: 1px solid var(--border-dim);
-      background: rgba(13, 13, 13, 0.96);
-    }
-    .header-flex { display: flex; justify-content: center; align-items: center; }
-    .brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
-    .brand-link:hover { opacity: 0.85; }
-    .site-title {
-      font-weight: 200;
-      font-size: 2.4rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-white);
-    }
-    .tagline {
-      font-weight: 300;
-      font-size: 0.85rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-top: 6px;
-      border-top: 1px solid var(--roots-green);
-      display: inline-block;
-      padding-top: 8px;
-    }
+        /* ===== BREADCRUMB (Dark) ===== */
+        .breadcrumb {
+            font-size: 0.7rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: var(--text-white);
+            padding: 12px 32px;
+            border-bottom: 1px solid var(--border-dim);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .breadcrumb a {
+            color: #aaa;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--gold-accent);
+        }
+        .breadcrumb span {
+            color: var(--gold-accent);
+        }
 
-    .main-nav {
-      background: #0a0a0a;
-      padding: 12px 24px;
-      border-bottom: 1px solid var(--border-dim);
-    }
-    .nav-links {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem;
-      list-style: none; max-width: 1400px; margin: 0 auto;
-    }
-    .nav-links li a {
-      font-weight: 400; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;
-      color: #ddd; padding: 6px 0; border-bottom: 2px solid transparent;
-    }
-    .nav-links li a:hover { color: var(--gold-accent); border-bottom-color: var(--gold-accent); }
+        /* ===== HERO (Dark) ===== */
+        .hero-banner {
+            background: radial-gradient(circle at 30% 10%, rgba(14, 94, 54, 0.35), #0a0a0a);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 64px 32px 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 60%, rgba(14, 94, 54, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 80% 30%, rgba(229, 169, 60, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--roots-green);
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-weight: 200;
+            font-size: clamp(2.6rem, 6vw, 4.6rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.1;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title .gold {
+            color: var(--gold-accent);
+            font-weight: 300;
+        }
+        .hero-title .green {
+            color: var(--roots-green);
+            font-weight: 300;
+        }
+        .hero-subtitle {
+            font-weight: 300;
+            font-size: 1.1rem;
+            color: #cccccc;
+            max-width: 680px;
+            margin: 8px auto 24px;
+            letter-spacing: 0.03em;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 28px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #dddddd;
+        }
+        .hero-meta-item i {
+            color: var(--gold-accent);
+            font-size: 0.95rem;
+        }
 
-    /* BREADCRUMB */
-    .breadcrumb {
-      max-width: 1100px; margin: 24px auto 0; padding: 0 24px;
-      font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #888;
-    }
-    .breadcrumb a { color: #999; }
-    .breadcrumb a:hover { color: var(--gold-accent); }
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 56px 24px 40px;
+        }
 
-    /* HERO */
-    .hero {
-      text-align: center;
-      padding: 50px 24px 60px;
-      background: radial-gradient(circle at 30% 10%, rgba(14,94,54,0.2), #0a0a0a);
-      border-bottom: 1px solid var(--border-dim);
-      margin-top: 20px;
-    }
-    .partner-badge {
-      display: inline-block;
-      background: var(--roots-green);
-      padding: 5px 16px;
-      border-radius: 40px;
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-    .hero h1 {
-      font-weight: 200;
-      font-size: 3.2rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-white);
-    }
-    .hero .subhead {
-      margin-top: 14px;
-      font-weight: 300;
-      letter-spacing: 0.1em;
-      color: var(--gold-accent);
-      text-transform: uppercase;
-      font-size: 0.95rem;
-    }
-    .hero .location {
-      margin-top: 6px;
-      color: #999;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-    }
+        /* ===== PARTNERSHIP BADGE (Dark) ===== */
+        .partnership-badge {
+            background: var(--card-bg);
+            border-left: 5px solid var(--gold-accent);
+            padding: 20px 28px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 40px;
+            font-weight: 300;
+            color: var(--text-white);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-dim);
+            border-left-width: 5px;
+        }
+        .partnership-badge i {
+            color: var(--gold-accent);
+            margin-right: 14px;
+            font-size: 1.2rem;
+        }
+        .partnership-badge strong {
+            color: var(--gold-accent);
+            font-weight: 500;
+        }
 
-    /* SECTIONS */
-    main { padding: 60px 0 20px; }
-    .section-title {
-      font-weight: 300;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-size: 1rem;
-      color: var(--gold-accent);
-      margin-bottom: 20px;
-    }
-    .section-block { margin-bottom: 56px; }
-    .section-block p {
-      font-weight: 300;
-      color: #ddd;
-      max-width: 820px;
-      margin-bottom: 16px;
-    }
+        /* ===== SECTION TYPOGRAPHY ===== */
+        .section-label {
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 6px;
+        }
+        .section-title {
+            font-weight: 200;
+            font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 6px;
+        }
+        .section-desc {
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: #aaaaaa;
+            max-width: 700px;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-dim);
+            margin: 48px 0;
+        }
 
-    .pull-quote {
-      background: var(--card-bg);
-      border-left: 3px solid var(--gold-accent);
-      border-radius: 4px;
-      padding: 24px 28px;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--text-white);
-      max-width: 780px;
-      margin: 24px 0;
-    }
+        /* ===== LOGO SHOWCASE (Dark) ===== */
+        .logo-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px 60px;
+            padding: 32px 20px 28px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-dim);
+            margin-bottom: 48px;
+            box-shadow: var(--shadow-soft);
+        }
+        .logo-showcase .divider-symbol {
+            font-size: 2.4rem;
+            font-weight: 200;
+            color: var(--gold-accent);
+            letter-spacing: 0.2em;
+        }
+        .logo-showcase .selassie-logo {
+            font-size: 1.6rem;
+            font-weight: 200;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-white);
+        }
+        .logo-showcase .selassie-logo span {
+            color: var(--roots-green);
+            font-weight: 300;
+        }
+        .logo-showcase .spliff-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .logo-showcase .spliff-logo img {
+            max-height: 70px;
+            width: auto;
+            display: block;
+        }
+        .logo-showcase .spliff-logo .spliff-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: 300;
+        }
 
-    /* GRID CARDS - locations / community */
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-    .info-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-dim);
-      border-radius: 16px;
-      padding: 22px;
-    }
-    .info-card i { font-size: 1.4rem; color: var(--gold-accent); margin-bottom: 10px; display: block; }
-    .info-card h4 { font-weight: 400; font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
-    .info-card p { font-size: 0.88rem; color: #bbb; margin: 0; }
+        /* ===== PARTNERSHIP CARD (Dark) ===== */
+        .partnership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0 40px;
+        }
+        .partnership-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.25s ease;
+        }
+        .partnership-card:hover {
+            border-color: var(--gold-accent);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+        }
+        .partnership-card .icon-wrap {
+            font-size: 2rem;
+            color: var(--roots-green);
+            margin-bottom: 14px;
+        }
+        .partnership-card h3 {
+            font-weight: 500;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+            color: var(--text-white);
+        }
+        .partnership-card p {
+            font-weight: 300;
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.7;
+        }
 
-    /* TEAM */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-    .team-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-dim);
-      border-radius: 14px;
-      padding: 18px 20px;
-    }
-    .team-card .name { font-weight: 500; color: var(--text-white); font-size: 0.95rem; }
-    .team-card .role { font-size: 0.78rem; color: var(--gold-accent); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+        /* ===== OFFER GRID (Dark) ===== */
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .offer-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 300;
+            font-size: 0.88rem;
+            color: #dddddd;
+            box-shadow: var(--shadow-soft);
+            transition: 0.2s;
+        }
+        .offer-item:hover {
+            border-color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.08);
+        }
+        .offer-item i {
+            color: var(--roots-green);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
 
-    /* AFFILIATIONS */
-    .tag-row { display: flex; flex-wrap: wrap; gap: 10px; }
-    .tag {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border-dim);
-      border-radius: 30px;
-      padding: 6px 16px;
-      font-size: 0.78rem;
-      letter-spacing: 0.03em;
-      color: #ccc;
-    }
+        /* ===== CREATIVE FREEDOM CALLOUT (Dark) ===== */
+        .freedom-callout {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            margin: 48px 0 24px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+        .freedom-callout h2 {
+            font-weight: 200;
+            font-size: 2rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 10px;
+        }
+        .freedom-callout h2 i {
+            color: var(--gold-accent);
+            margin-right: 12px;
+        }
+        .freedom-callout p {
+            font-weight: 300;
+            font-size: 1rem;
+            color: #cccccc;
+            max-width: 640px;
+            margin: 0 auto 20px;
+            line-height: 1.8;
+        }
+        .freedom-callout .big-heart {
+            font-size: 2.8rem;
+            color: var(--red-accent);
+            display: block;
+            margin-bottom: 8px;
+        }
 
-    /* CONNECT / SOCIAL BUTTONS */
-    .connect-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; }
-    .connect-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      border-radius: 40px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-dim);
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-white);
-    }
-    .connect-btn:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
-    .connect-btn i { font-size: 1rem; }
+        /* ===== SPLIFF SOCIETY SPOTLIGHT (Dark) ===== */
+        .spotlight-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin: 32px 0 16px;
+        }
+        .spotlight-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius);
+            padding: 28px 30px;
+            box-shadow: var(--shadow-soft);
+            transition: 0.25s;
+        }
+        .spotlight-card:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--roots-green);
+        }
+        .spotlight-card h4 {
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--roots-green);
+            margin-bottom: 6px;
+        }
+        .spotlight-card h4 i {
+            margin-right: 10px;
+            color: var(--gold-accent);
+        }
+        .spotlight-card p {
+            font-weight: 300;
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.7;
+        }
 
-    /* FOOTER */
-    .footer {
-      text-align: center;
-      padding: 48px 24px;
-      border-top: 1px solid var(--border-dim);
-      margin-top: 40px;
-    }
-    .footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
-    .footer-links a { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; }
-    .footer-links a:hover { color: var(--gold-accent); }
-    .social-icons { display: flex; justify-content: center; gap: 18px; margin-bottom: 16px; flex-wrap: wrap; }
-    .social-icons a { color: #aaa; font-size: 1.1rem; }
-    .social-icons a:hover { color: var(--gold-accent); }
-    .contact-line { font-size: 0.8rem; color: #999; margin-bottom: 16px; }
-    .contact-line a { color: #999; }
-    .contact-line a:hover { color: var(--gold-accent); }
-    .copyright { font-size: 0.78rem; color: #888; margin-top: 16px; line-height: 1.6; }
+        /* ===== MESSAGE FROM SELASSIEFEST (Dark) ===== */
+        .message-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius);
+            padding: 40px 40px;
+            margin: 40px 0;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+        .message-block::before {
+            content: '\201C';
+            font-size: 4.4rem;
+            font-weight: 200;
+            color: var(--gold-accent);
+            position: absolute;
+            top: 8px;
+            left: 24px;
+            opacity: 0.15;
+            line-height: 1;
+        }
+        .message-block p {
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: #dddddd;
+            line-height: 1.8;
+            padding-left: 16px;
+        }
+        .message-block p strong {
+            color: var(--text-white);
+        }
+        .message-block .attribution {
+            margin-top: 16px;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            padding-left: 16px;
+        }
+
+        /* ===== CLOSING CTA (Dark) ===== */
+        .closing-callout {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            text-align: center;
+            margin-top: 48px;
+            box-shadow: var(--shadow-soft);
+        }
+        .closing-callout h2 {
+            font-weight: 200;
+            font-size: 2rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            margin-bottom: 10px;
+        }
+        .closing-callout h2 i {
+            color: var(--gold-accent);
+            margin-right: 10px;
+        }
+        .closing-callout p {
+            font-weight: 300;
+            font-size: 0.95rem;
+            color: #cccccc;
+            max-width: 580px;
+            margin: 0 auto 28px;
+            line-height: 1.7;
+        }
+        .closing-callout .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+        .closing-callout .btn {
+            display: inline-block;
+            font-weight: 500;
+            font-size: 0.8rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 14px 34px;
+            border-radius: 40px;
+            text-decoration: none;
+            transition: 0.25s;
+        }
+        .closing-callout .btn-primary {
+            background: var(--roots-green);
+            color: #fff;
+            border: 1px solid var(--roots-green);
+        }
+        .closing-callout .btn-primary:hover {
+            background: #0A4A2A;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(14, 94, 54, 0.4);
+        }
+        .closing-callout .btn-outline {
+            background: transparent;
+            color: var(--text-white);
+            border: 1px solid var(--border-dim);
+        }
+        .closing-callout .btn-outline:hover {
+            border-color: var(--gold-accent);
+            color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.06);
+        }
+
+        /* ===== FOOTER (Dark) ===== */
+        .footer {
+            background: #050505;
+            border-top: 1px solid var(--border-dim);
+            padding: 44px 24px 28px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 28px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .footer-links a:hover {
+            color: var(--gold-accent);
+        }
+        .social-icons a {
+            color: #ddd;
+            font-size: 1.4rem;
+            margin: 0 12px;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .social-icons a:hover {
+            color: var(--gold-accent);
+        }
+        .copyright {
+            font-weight: 300;
+            font-size: 0.7rem;
+            margin-top: 28px;
+            letter-spacing: 0.08em;
+            color: #666;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 820px) {
+            .site-title {
+                font-size: 1.8rem;
+            }
+            .header-flex {
+                flex-direction: column;
+                align-items: center;
+            }
+            .powered-by-wrapper {
+                padding: 6px 14px 6px 18px;
+            }
+            .powered-by-wrapper img {
+                height: 30px;
+            }
+            .nav-links {
+                gap: 0.7rem;
+            }
+            .nav-links li a {
+                font-size: 0.65rem;
+            }
+            .spotlight-grid {
+                grid-template-columns: 1fr;
+            }
+            .logo-showcase {
+                gap: 24px;
+            }
+            .logo-showcase .divider-symbol {
+                font-size: 1.6rem;
+            }
+            .freedom-callout,
+            .closing-callout,
+            .message-block {
+                padding: 32px 20px;
+            }
+            .hero-banner {
+                padding: 40px 20px 36px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .logo-showcase {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .logo-showcase .divider-symbol {
+                transform: rotate(90deg);
+            }
+            .partnership-grid {
+                grid-template-columns: 1fr;
+            }
+            .offer-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 32px 16px;
+            }
+            .site-header {
+                padding: 16px 16px 10px;
+            }
+            .main-nav {
+                padding: 8px 12px;
+            }
+            .breadcrumb {
+                padding: 10px 16px;
+                font-size: 0.6rem;
+            }
+        }
+    .jvgh-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14,94,54,0.15);
+  padding: 6px 14px;
+  border-radius: 60px;
+  border: 1px solid rgba(14,94,54,0.4);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.jvgh-badge-wrapper:hover { opacity: 0.85; }
+.jvgh-badge-text {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6dbe8f;
+}
   </style>
 </head>
+
 <body>
 
-<header class="site-header">
-  <div class="header-flex">
-    <a href="/" class="brand-link">
-      <div class="site-title">SELASSIEFEST</div>
-      <div class="tagline">One Day. One Love. One Society.</div>
+    <!-- ===== HEADER (Dark) ===== -->
+    <header class="site-header">
+        <div class="header-flex">
+            <a href="https://selassiefest.com" class="brand-link">
+                <div class="site-title">SELASSIE<span>FEST</span></div>
+                <div class="tagline">One Day. One Love. One Society.</div>
+            </a>
+            <div class="powered-by-wrapper">
+                <span class="powered-by-text">Powered By</span>
+                <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+                    <img src="../assets/images/ss_tiny.png" alt="Spliff Society">
+                </a>
+            </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
     </a>
-  </div>
-</header>
+        </div>
+    </header>
 
-<nav class="main-nav">
-  <ul class="nav-links">
-    <li><a href="/about/">ABOUT</a></li>
-    <li><a href="/festival/">FESTIVAL</a></li>
-    <li><a href="/sound-system-yard/">SOUND YARD</a></li>
-    <li><a href="/main-stage/">MAIN STAGE</a></li>
-    <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
-    <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
-    <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
-    <li><a href="/healing-grove/">HEALING GROVE</a></li>
-    <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
-    <li><a href="/marketplace/">MARKETPLACE</a></li>
-    <li><a href="/tickets/">TICKETS</a></li>
-    <li><a href="/contact/">CONTACT</a></li>
-  </ul>
-</nav>
+    <!-- ===== NAV (Dark) ===== -->
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="/about/">ABOUT</a></li>
+            <li><a href="/festival/">FESTIVAL</a></li>
+            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
+            <li><a href="/main-stage/">MAIN STAGE</a></li>
+            <li><a href="/higher-learning-roots/" class="active">HIGHER LEARNING ROOTS</a></li>
+            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
+            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+            <li><a href="/healing-grove/">HEALING GROVE</a></li>
+            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
+            <li><a href="/marketplace/">MARKETPLACE</a></li>
+            <li><a href="/tickets/">TICKETS</a></li>
+            <li><a href="/contact/">CONTACT</a></li>
+        </ul>
+    </nav>
 
-<div class="breadcrumb">
-  <a href="/">Home</a> / <a href="/sponsors/">Sponsors</a> / Canafarm
-</div>
-
-<section class="hero">
-  <span class="partner-badge">Chicago Partner</span>
-  <h1>Canafarm</h1>
-  <div class="subhead">Craft Cannabis. Community Roots.</div>
-  <div class="location"><i class="fas fa-map-marker-alt"></i> Retail: North Chicago &amp; Elburn, Illinois</div>
-</section>
-
-<main>
-  <div class="container">
-
-    <div class="section-block">
-      <div class="section-title"><span>&#10022;</span> Meet the Founder</div>
-      <p>
-        Canafarm is led by <strong>Talvin White</strong>, a lifelong Illinois cannabis advocate who grew up in
-        North Chicago after moving from Gary, Indiana as a child. Talvin earned his Associate's degree in Art
-        from the College of Lake County, where his mother served as regional coordinator for over three decades.
-      </p>
-      <p>
-        He comes from a long line of farmers and gardeners, and still keeps a full home garden across three
-        family properties &mdash; lettuce, cucumbers, tomatoes, onions, garlic, sage, nettle, yarrow, pears,
-        cherry trees, blueberries, sweet potatoes, and cannabis. He has been a registered medical cannabis
-        patient in Illinois since 2016.
-      </p>
-      <p>
-        In 2023, Talvin won a social equity dispensary license in Illinois' final licensing lottery round &mdash;
-        filing the application himself, without an attorney, for a $250 entry fee. Canafarm now holds retail
-        permits in North Chicago and Elburn, Illinois, and is fundraising to open both locations.
-      </p>
-      <div class="pull-quote">
-        "I'm about natural products with no sprayed-on terpenes, no pesticides, actual old-school strains with
-        real terpene profiles &mdash; and being able to sell ounces in the dispensary instead of making people
-        buy eighths all the time."
-      </div>
+    <!-- ===== BREADCRUMB ===== -->
+    <div class="breadcrumb">
+        <a href="/">SelassieFest</a> &rsaquo;
+        <a href="/higher-learning-roots/">Higher Learning Roots</a> &rsaquo;
+        <span>Partnership × Spliff Society</span>
     </div>
 
-    <div class="section-block">
-      <div class="section-title"><span>&#10022;</span> Where Canafarm Is Growing</div>
-      <div class="grid-cards">
-        <div class="info-card">
-          <i class="fas fa-home"></i>
-          <h4>North Chicago</h4>
-          <p>Talvin's hometown, and a confirmed retail dispensary permit location.</p>
+    <!-- ===== HERO ===== -->
+    <div class="hero-banner">
+        <div class="hero-eyebrow">A Sacred Alliance — Craft &amp; Culture</div>
+        <h1 class="hero-title">
+            SelassieFest <span class="gold">×</span> <span class="green">Spliff</span><span class="gold">Society</span>
+        </h1>
+        <p class="hero-subtitle">
+            Two communities, one mission: honoring the plant, preserving the traditions,<br />
+            and building a future rooted in respect, craft, and collective vision.
+        </p>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><i class="fas fa-handshake"></i> Partnership Since 2026</div>
+            <div class="hero-meta-item"><i class="fas fa-leaf"></i> Higher Learning Roots</div>
+            <div class="hero-meta-item"><i class="fas fa-heart" style="color:var(--red-accent);"></i> Built on Trust</div>
         </div>
-        <div class="info-card">
-          <i class="fas fa-store"></i>
-          <h4>Elburn</h4>
-          <p>A confirmed retail dispensary permit location in Illinois.</p>
-        </div>
-        <div class="info-card">
-          <i class="fas fa-seedling"></i>
-          <h4>Harvard (possible)</h4>
-          <p>Under consideration for a future cultivation site only. Canafarm opted not to pursue the Harvard retail special use permit, since the municipality is allowing two dispensaries there.</p>
-        </div>
-      </div>
     </div>
 
-    <div class="section-block">
-      <div class="section-title"><span>&#10022;</span> Community &amp; Education</div>
-      <p>
-        Canafarm is working with the <strong>College of DuPage</strong>'s agricultural and culinary programs to
-        build out cannabis curriculum, with the goal of getting other colleges to accept transfer credit toward
-        those courses. Talvin is also laying the groundwork for a cannabis industry incubator, aimed at bringing
-        in support and funding for the next generation of cannabis professionals.
-      </p>
-      <div class="tag-row">
-        <span class="tag">Illinois Black Chamber of Commerce</span>
-        <span class="tag">The Scene Organization</span>
-        <span class="tag">NAACP - Lake County Chapter</span>
-        <span class="tag">College of DuPage Cannabis Curriculum</span>
-      </div>
-    </div>
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
 
-    <div class="section-block">
-      <div class="section-title"><span>&#10022;</span> The Team</div>
-      <div class="team-grid">
-        <div class="team-card">
-          <div class="name">Talvin White</div>
-          <div class="role">Founder &amp; CEO</div>
+        <!-- LOGO SHOWCASE -->
+        <div class="logo-showcase">
+            <div class="selassie-logo">SELASSIE<span>FEST</span></div>
+            <div class="divider-symbol">✦</div>
+            <div class="spliff-logo">
+                <img src="../assets/images/spliff.png" alt="Spliff Society Logo" />
+                <span class="spliff-label">Spliff Society</span>
+            </div>
         </div>
-        <div class="team-card">
-          <div class="name">Maja Sagi</div>
-          <div class="role">Mentor, formerly High Haven Cannabis</div>
-        </div>
-        <div class="team-card">
-          <div class="name">Sandy Cerna</div>
-          <div class="role">The Grow Side</div>
-        </div>
-        <div class="team-card">
-          <div class="name">Dan Ferrell</div>
-          <div class="role">Silver Star Security, formerly Revolution Cannabis</div>
-        </div>
-        <div class="team-card">
-          <div class="name">Chris Atkinson &amp; Donna Bracy</div>
-          <div class="role">Bud, Weed and Flow</div>
-        </div>
-        <div class="team-card">
-          <div class="name">Brad Zerman</div>
-          <div class="role">Sevenpoint Cannabis</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="section-block">
-      <div class="section-title"><span>&#10022;</span> Connect with Canafarm</div>
-      <div class="connect-buttons">
-        <a href="https://www.instagram.com/milkyc5/" target="_blank" rel="noopener noreferrer" class="connect-btn">
-          <i class="fab fa-instagram"></i> Instagram
-        </a>
-        <a href="https://www.linkedin.com/in/talvin-white-28432428a/" target="_blank" rel="noopener noreferrer" class="connect-btn">
-          <i class="fab fa-linkedin"></i> LinkedIn
-        </a>
-      </div>
-    </div>
+        <!-- PARTNERSHIP BADGE -->
+        <div class="partnership-badge">
+            <i class="fas fa-handshake"></i>
+            <strong>SelassieFest &amp; Spliff Society</strong> — united by a shared reverence for the
+            craft of consumption, the rituals of community, and the deep cultural roots of the plant
+            we celebrate. This partnership is built on mutual respect, creative freedom, and a
+            commitment to education.
+        </div>
 
-  </div>
-</main>
+        <!-- ===== WHAT THIS PARTNERSHIP MEANS ===== -->
+        <hr class="section-divider" />
+        <div class="section-label">The Bond</div>
+        <h2 class="section-title">What This Partnership Means</h2>
+        <p class="section-desc">
+            More than a collaboration — a shared commitment to elevating the culture,
+            educating the community, and honouring every tradition that brought us here.
+        </p>
 
-<footer class="footer">
-  <div class="footer-links">
-    <a href="/about/mission.html">MISSION</a>
-    <a href="/sponsors/">SPONSORS</a>
-    <a href="/contact/">CONTACT</a>
-  </div>
-  <div class="social-icons">
-    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <div class="partnership-grid">
+            <div class="partnership-card">
+                <div class="icon-wrap"><i class="fas fa-graduation-cap"></i></div>
+                <h3>Education &amp; Craft</h3>
+                <p>
+                    Spliff Society brings world-class rolling expertise, historical knowledge,
+                    and hands-on pedagogy to SelassieFest's Higher Learning Roots village.
+                    Together we teach the next generation of practitioners.
+                </p>
+            </div>
+            <div class="partnership-card">
+                <div class="icon-wrap"><i class="fas fa-people-group"></i></div>
+                <h3>Community &amp; Belonging</h3>
+                <p>
+                    We share a belief that the smoke circle is a sacred space — one of
+                    listening, sharing, and mutual respect. This partnership deepens the
+                    sense of belonging for everyone who steps into our village.
+                </p>
+            </div>
+            <div class="partnership-card">
+                <div class="icon-wrap"><i class="fas fa-tree"></i></div>
+                <h3>Heritage &amp; Roots</h3>
+                <p>
+                    From the Rastafari chalice to the global diaspora of smoking traditions,
+                    we honour the ancestors who passed down these practices. Spliff Society
+                    amplifies that lineage with integrity and heart.
+                </p>
+            </div>
+            <div class="partnership-card">
+                <div class="icon-wrap"><i class="fas fa-hand-holding-heart"></i></div>
+                <h3>Trust &amp; Creative Freedom</h3>
+                <p>
+                    We invite Spliff Society to design their partnership package exactly as
+                    they envision — their voice, their style, their imprint on the festival.
+                    This is your space to create.
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== WHAT SPLIFF SOCIETY BRINGS ===== -->
+        <hr class="section-divider" />
+        <div class="section-label">Spliff Society</div>
+        <h2 class="section-title">What They Bring to the Circle</h2>
+        <p class="section-desc">
+            Spliff Society isn't just a collective of expert rollers — they are
+            cultural bearers, educators, and community builders. Here's what they
+            contribute to SelassieFest.
+        </p>
+
+        <div class="spotlight-grid">
+            <div class="spotlight-card">
+                <h4><i class="fas fa-hand-sparkles"></i> Master Craft</h4>
+                <p>
+                    From the classic blunt to the sacred chalice, from the perfect cone to
+                    the intricate cannagar — Spliff Society's mastery is unparalleled.
+                    Their workshops are pilgrimages for anyone serious about the craft.
+                </p>
+            </div>
+            <div class="spotlight-card">
+                <h4><i class="fas fa-book-open"></i> Living History</h4>
+                <p>
+                    Every session with Spliff Society is a journey through time —
+                    tracing the global roots of smoking culture, from Ethiopian clay pipes
+                    to Jamaican reasoning circles, from South Asian chillums to the
+                    modern American glass movement.
+                </p>
+            </div>
+            <div class="spotlight-card">
+                <h4><i class="fas fa-chalkboard-user"></i> Pedagogy with Patience</h4>
+                <p>
+                    Spliff Society teaches with generosity. Their instructors meet every
+                    student where they are — from the absolute beginner to the seasoned
+                    roller looking to refine their technique. No question is too small,
+                    no skill too basic.
+                </p>
+            </div>
+            <div class="spotlight-card">
+                <h4><i class="fas fa-fire"></i> Ceremony &amp; Reverence</h4>
+                <p>
+                    The chalice ceremony, the reasoning circle, the communal fire —
+                    Spliff Society understands that smoking is never just about consumption.
+                    It's about connection, reflection, and presence. They hold that space
+                    with dignity.
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== WHAT SELASSIEFEST OFFERS ===== -->
+        <hr class="section-divider" />
+        <div class="section-label">Our Commitment</div>
+        <h2 class="section-title">What SelassieFest Offers</h2>
+        <p class="section-desc">
+            We don't just host partners — we celebrate them. Here's what we bring
+            to the table for Spliff Society.
+        </p>
+
+        <div class="offer-grid">
+            <div class="offer-item"><i class="fas fa-location-dot"></i> Dedicated village space in Higher Learning Roots</div>
+            <div class="offer-item"><i class="fas fa-bullhorn"></i> Full festival promotion across all channels</div>
+            <div class="offer-item"><i class="fas fa-palette"></i> Creative freedom to design your own package</div>
+            <div class="offer-item"><i class="fas fa-photo-film"></i> Professional documentation of your sessions</div>
+            <div class="offer-item"><i class="fas fa-people-arrows"></i> Direct access to our community of 500+ attendees</div>
+            <div class="offer-item"><i class="fas fa-handshake"></i> Long-term collaborative partnership</div>
+        </div>
+
+        <!-- ===== CREATIVE FREEDOM CALLOUT ===== -->
+        <div class="freedom-callout">
+            <span class="big-heart">♥</span>
+            <h2><i class="fas fa-feather-pointed"></i> Your Vision, Your Package</h2>
+            <p>
+                <strong>Spliff Society, this is your invitation to dream.</strong><br />
+                Design the partnership package that reflects your values, your aesthetic,
+                and your vision for the future of this craft. Whether it's a dedicated
+                rolling academy, a curated museum of smoking artifacts, a series of
+                intimate reasoning circles, or something entirely new — we are here to
+                support it. Tell us what you need. We'll make it happen.
+            </p>
+            <p style="font-style:italic; color:#aaaaaa; font-size:0.9rem;">
+                <i class="fas fa-quote-left" style="color:var(--gold-accent);margin-right:6px;"></i>
+                This is your canvas. Paint it boldly.
+            </p>
+        </div>
+
+        <!-- ===== MESSAGE FROM SELASSIEFEST ===== -->
+        <div class="message-block">
+            <p>
+                <strong>To the entire Spliff Society family,</strong><br /><br />
+                When we first imagined the Higher Learning Roots village, we dreamed of
+                partners who shared our reverence for the plant, our respect for its
+                traditions, and our hunger to teach with humility and joy. You are that
+                partner. Your presence at SelassieFest elevates everything we do —
+                it grounds us in the real history of these practices and lifts us toward
+                a future where craft and community are inseparable.
+                <br /><br />
+                We don't take this partnership lightly. We see it as a sacred trust.
+                And we want you to know: <strong>this is your space</strong>.
+                Design it. Shape it. Fill it with your voice. We are here to clear
+                the path, provide the resources, and step back so you can shine.
+                <br /><br />
+                <span style="color:var(--roots-green);">One love. One mission. One community.</span>
+            </p>
+            <div class="attribution">
+                — The SelassieFest Collective
+            </div>
+        </div>
+
+        <!-- ===== CLOSING ===== -->
+        <div class="closing-callout">
+            <h2><i class="fas fa-hand-holding-heart"></i> Let's Build Together</h2>
+            <p>
+                Spliff Society, we are ready when you are. Let's talk, dream, and
+                design a partnership that honours the past, celebrates the present,
+                and builds a lasting legacy for the future.
+            </p>
+            <div class="cta-group">
+                <a href="mailto:partnerships@selassiefest.com" class="btn btn-primary">
+                    <i class="fas fa-envelope" style="margin-right:8px;"></i>Start the Conversation
+                </a>
+                <a href="/higher-learning-roots/" class="btn btn-outline">
+                    <i class="fas fa-arrow-left" style="margin-right:8px;"></i>Back to Higher Learning Roots
+                </a>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about/mission.html">MISSION</a>
+            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+            <a href="/media/press-kit.html">PRESS KIT</a>
+            <a href="/scholarship/">SCHOLARSHIP</a>
+            <a href="/community-projects/">COMMUNITY PROJECTS</a>
+            <a href="/contact/">CONTACT</a>
+        </div>
+        <div class="social-icons">
+<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
     <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
     <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
     <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -400,14 +1035,12 @@
     <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
     <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
   </div>
-  <p class="contact-line">
-    <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279">(414) 909-3279</a>
-  </p>
-  <div class="copyright">
-    <i class="fas fa-dove"></i> SELASSIEFEST &mdash; One Love, One Destiny. All respect to H.I.M. Haile Selassie I.
-    <br>&copy; 2026 SelassieFest Collective
-  </div>
-</footer>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+        <div class="copyright">
+            <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+            <br />&copy; 2026 SelassieFest Collective &bull; In partnership with Spliff Society
+        </div>
+    </footer>
 
 </body>
 </html>

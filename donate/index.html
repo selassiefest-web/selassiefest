@@ -1,13 +1,506 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Selassie Fest - index.html</title>
-  <link rel="stylesheet" href="/pos/assets/css/pos-base.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Support SelassieFest and Ras Tafari Inc 501(c)(3). Your tax-deductible donation helps us celebrate Rastafari heritage and build community in Chicago." />
+  <title>Donate | SelassieFest — Ras Tafari Inc</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black:    #0D0D0D;
+      --text-white:  #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent:  #C83737;
+      --card-bg:     rgba(255,255,255,0.04);
+      --border-dim:  rgba(255,255,255,0.08);
+      --border-gold: rgba(229,169,60,0.22);
+      --transition:  all 0.22s ease;
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; transition: var(--transition); }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--gold-accent); color: #1a1a1a;
+      padding: .6rem 1.5rem; border-radius: 40px;
+      font-weight: 600; z-index: 1000;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .site-header {
+      padding: 28px 32px 16px 32px;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(13,13,13,0.96);
+      backdrop-filter: blur(2px);
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand-link { display: inline-block; text-align: center; transition: opacity 0.2s; }
+    .brand-link:hover { opacity: 0.85; }
+    .site-title {
+      font-weight: 200;
+      font-size: 2.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      margin-top: 6px;
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+    }
+    .powered-by-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.05);
+      padding: 8px 16px 8px 20px;
+      border-radius: 60px;
+      border: 1px solid var(--border-dim);
+      flex-shrink: 0;
+    }
+    .powered-by-text {
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+    }
+    .powered-by-logo { display: flex; align-items: center; line-height: 0; }
+    .powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
+    .powered-by-logo:hover img { opacity: 0.8; }
+    .jvgh-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(14,94,54,0.15);
+      padding: 6px 14px;
+      border-radius: 60px;
+      border: 1px solid rgba(14,94,54,0.4);
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .jvgh-badge-wrapper:hover { opacity: 0.85; }
+    .jvgh-badge-text { font-weight: 500; font-size: 0.75rem; color: #6dbe8f; }
+
+    .main-nav {
+      background: #0a0a0a;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem 1.4rem;
+      list-style: none;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .nav-links li a {
+      font-weight: 400;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ddd;
+      border-bottom: 2px solid transparent;
+      padding: 0.2rem 0.1rem;
+      transition: var(--transition);
+    }
+    .nav-links li a:hover,
+    .nav-links li a.active { color: var(--gold-accent); border-bottom-color: var(--gold-accent); }
+
+    .page-hero {
+      text-align: center; padding: 56px 24px 44px;
+      border-bottom: 1px solid var(--border-dim);
+      background: radial-gradient(ellipse at 50% 0%, rgba(14,94,54,0.15) 0%, transparent 68%);
+    }
+    .page-hero h1 {
+      font-weight: 200; font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .page-hero h1 span { color: var(--gold-accent); }
+    .page-hero p {
+      font-weight: 300; font-size: 1rem;
+      color: rgba(245,245,245,0.6); max-width: 600px; margin: 0 auto 16px;
+    }
+    .breadcrumb { font-size: 0.78rem; color: rgba(245,245,245,0.4); }
+    .breadcrumb a { color: rgba(245,245,245,0.45); }
+    .breadcrumb a:hover { color: var(--gold-accent); }
+
+    .coming-soon-banner {
+      background: rgba(229,169,60,0.08);
+      border-bottom: 1px solid var(--border-gold);
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--gold-accent);
+      font-weight: 500;
+    }
+    .coming-soon-banner i { margin-right: 8px; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 56px 24px 80px; }
+
+    .tax-deductible-banner {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(14,94,54,0.1);
+      border: 1px solid rgba(14,94,54,0.35);
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 48px;
+    }
+    .tax-deductible-banner i { font-size: 1.6rem; color: #6dbe8f; flex-shrink: 0; }
+    .tax-deductible-banner p { font-size: 0.92rem; color: rgba(245,245,245,0.8); margin: 0; }
+    .tax-deductible-banner strong { color: var(--text-white); }
+    .tax-deductible-banner a { color: var(--gold-accent); }
+    .tax-deductible-banner a:hover { text-decoration: underline; }
+
+    .section-label {
+      font-weight: 300; font-size: 1.3rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-left: 3px solid var(--gold-accent);
+      padding-left: 16px; margin: 0 0 28px;
+    }
+
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; margin-bottom: 56px;
+    }
+    .payment-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 20px; padding: 28px 26px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: var(--transition);
+      position: relative;
+    }
+    .payment-card:hover { border-color: var(--border-gold); transform: translateY(-3px); }
+    .payment-card.featured { border-color: rgba(229,169,60,0.4); }
+    .payment-icon-row { display: flex; align-items: center; gap: 14px; }
+    .payment-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .payment-name { font-size: 1.15rem; font-weight: 500; color: var(--text-white); }
+    .payment-badge {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; padding: 3px 10px; border-radius: 40px;
+      display: inline-block; margin-top: 4px;
+    }
+    .badge-zero-fee { background: rgba(14,94,54,0.18); color: #6dbe8f; }
+    .badge-popular { background: rgba(229,169,60,0.15); color: var(--gold-accent); }
+    .payment-desc { font-size: 0.88rem; color: rgba(245,245,245,0.65); line-height: 1.55; }
+    .payment-detail { font-size: 0.8rem; color: rgba(245,245,245,0.5); }
+    .payment-detail strong { color: rgba(245,245,245,0.75); font-weight: 500; }
+    .btn-donate {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'Jost', sans-serif; font-weight: 600;
+      font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.65rem 1.4rem; border-radius: 60px;
+      margin-top: 6px; transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .btn-gold { background: var(--gold-accent); color: #1a1a1a; }
+    .btn-gold:hover { background: #d69a2a; transform: scale(1.02); }
+    .btn-outline { background: transparent; border-color: var(--border-dim); color: rgba(245,245,245,0.8); }
+    .btn-outline:hover { border-color: var(--border-gold); color: var(--text-white); }
+
+    .pending-notice {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.75rem; color: rgba(245,245,245,0.45);
+      margin-top: 4px; font-style: italic;
+    }
+    .pending-notice i { color: var(--gold-accent); }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px; margin-bottom: 56px;
+    }
+    .impact-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px; padding: 22px 20px;
+      text-align: center;
+    }
+    .impact-card i { font-size: 1.8rem; color: var(--gold-accent); margin-bottom: 12px; display: block; }
+    .impact-card h3 { font-weight: 400; font-size: 1rem; margin-bottom: 8px; color: var(--text-white); }
+    .impact-card p { font-size: 0.85rem; color: rgba(245,245,245,0.6); line-height: 1.5; }
+
+    .receipt-note {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px; padding: 24px 28px; margin-bottom: 20px;
+    }
+    .receipt-note h3 {
+      font-weight: 400; font-size: 1.05rem; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .receipt-note h3 i { color: var(--gold-accent); }
+    .receipt-note p { font-size: 0.88rem; color: rgba(245,245,245,0.65); line-height: 1.6; }
+    .receipt-note a { color: var(--gold-accent); }
+    .receipt-note a:hover { text-decoration: underline; }
+
+    footer { background: #050505; border-top: 1px solid var(--border-dim); padding: 28px 16px; text-align: center; font-weight: 300; font-size: 0.8rem; color: #888; }
+    footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 14px; }
+    footer .footer-links a { color: #aaa; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    footer .footer-links a:hover { color: var(--gold-accent); }
+    footer .social-icons { margin-bottom: 10px; }
+    footer .social-icons a { color: #ddd; font-size: 1.1rem; margin: 0 8px; transition: 0.2s; }
+    footer .social-icons a:hover { color: var(--gold-accent); }
+    footer .copyright { font-weight: 300; font-size: 0.74rem; margin-top: 14px; color: #555; }
+
+    @media (max-width: 600px) {
+      .site-title { font-size: 1.8rem; }
+      .header-flex { flex-direction: column; align-items: center; }
+      .container { padding: 40px 16px 60px; }
+      .tax-deductible-banner { flex-direction: column; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-  <h1>index.html</h1>
-  <p>Selassie Fest | Ras Tafari Inc 501c3</p>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header" role="banner">
+  <div class="header-flex">
+    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Community.</div>
+    </a>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div class="powered-by-wrapper">
+        <span class="powered-by-text">Powered By</span>
+        <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+          <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+        </a>
+      </div>
+      <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+        <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+        <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="main-nav" role="navigation" aria-label="Main navigation">
+  <ul class="nav-links">
+    <li><a href="/about/">About</a></li>
+    <li><a href="/festival/">Festival</a></li>
+    <li><a href="/sound-system-yard/">Sound System Yard</a></li>
+    <li><a href="/main-stage/">Main Stage</a></li>
+    <li><a href="/higher-learning-roots/">Higher Learning Roots</a></li>
+    <li><a href="/ital-marketplace/">Ital Marketplace</a></li>
+    <li><a href="/reasoning-circle/">Reasoning Circle</a></li>
+    <li><a href="/healing-grove/">Healing Grove</a></li>
+    <li><a href="/heritage-village/">Heritage Village</a></li>
+    <li><a href="/youth-village/">Youth Village</a></li>
+    <li><a href="/marketplace/">Marketplace</a></li>
+    <li><a href="/tickets/">Tickets</a></li>
+    <li><a href="/donate/" class="active">Donate</a></li>
+    <li><a href="/contact/">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="coming-soon-banner" role="note">
+  <i class="fas fa-tools" aria-hidden="true"></i>
+  Donation accounts are being finalized — live links going active soon. Thank you for your patience.
+</div>
+
+<section class="page-hero" aria-labelledby="donate-heading">
+  <h1 id="donate-heading">Support <span>SelassieFest</span></h1>
+  <p>Your donation helps Ras Tafari Inc preserve Rastafari heritage and build community in Chicago — one love, one festival at a time.</p>
+  <div class="breadcrumb"><a href="/">Home</a> &nbsp;/&nbsp; Donate</div>
+</section>
+
+<main class="container" id="main-content">
+
+  <div class="tax-deductible-banner" role="note">
+    <i class="fas fa-certificate" aria-hidden="true"></i>
+    <p><strong>Your donation is tax-deductible.</strong> Ras Tafari Inc is a federally recognized 501(c)(3) public charity — EIN 42-3036705. Learn more on our <a href="/legal/nonprofit-disclosure.html">Nonprofit Disclosure page</a>.</p>
+  </div>
+
+  <h2 class="section-label"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i> &nbsp;Ways to Give</h2>
+  <div class="payment-grid">
+
+    <div class="payment-card featured">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(56,138,221,0.12); color:#7ab4e8;"><i class="fab fa-paypal" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">PayPal Giving Fund</div>
+          <span class="payment-badge badge-zero-fee">0% Fees</span>
+        </div>
+      </div>
+      <p class="payment-desc">Donate through PayPal's charity program — 100% of your gift reaches us, with zero processing fees and an instant tax receipt.</p>
+      <p class="payment-detail"><strong>Status:</strong> Application pending verification</p>
+      <a href="https://www.paypal.com/us/fundraiser" target="_blank" rel="noopener noreferrer" class="btn-donate btn-gold">
+        <i class="fab fa-paypal" aria-hidden="true"></i> Visit PayPal
+      </a>
+      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Direct donation link coming soon</span>
+    </div>
+
+    <div class="payment-card featured">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(14,94,54,0.15); color:#6dbe8f;"><i class="fas fa-dollar-sign" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">Cash App</div>
+          <span class="payment-badge badge-popular">Popular</span>
+        </div>
+      </div>
+      <p class="payment-desc">Send a donation directly via Cash App — fast, simple, and familiar to our community.</p>
+      <p class="payment-detail"><strong>Cashtag:</strong> Coming soon</p>
+      <a href="https://cash.app/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-gold">
+        <i class="fas fa-dollar-sign" aria-hidden="true"></i> Visit Cash App
+      </a>
+      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> $Cashtag activating soon</span>
+    </div>
+
+    <div class="payment-card">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(108,46,177,0.15); color:#b794e8;"><i class="fas fa-university" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">Zelle</div>
+          <span class="payment-badge badge-zero-fee">0% Fees</span>
+        </div>
+      </div>
+      <p class="payment-desc">Send directly from your bank via Zelle — instant transfer, no fees, no middleman.</p>
+      <p class="payment-detail"><strong>Send to:</strong> selassiefest@gmail.com</p>
+      <a href="https://www.zellepay.com/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
+        <i class="fas fa-university" aria-hidden="true"></i> Learn About Zelle
+      </a>
+      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Available now via your banking app</span>
+    </div>
+
+    <div class="payment-card">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(61,154,255,0.15); color:#7cb8ff;"><i class="fas fa-mobile-alt" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">Venmo</div>
+        </div>
+      </div>
+      <p class="payment-desc">Donate via Venmo Charity — reach a wider circle of givers with a familiar, social-first payment app.</p>
+      <p class="payment-detail"><strong>Status:</strong> Account setup in progress</p>
+      <a href="https://venmo.com/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
+        <i class="fas fa-mobile-alt" aria-hidden="true"></i> Visit Venmo
+      </a>
+      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Direct donation link coming soon</span>
+    </div>
+
+    <div class="payment-card">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(99,91,255,0.15); color:#a59dff;"><i class="fas fa-credit-card" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">Credit / Debit Card</div>
+        </div>
+      </div>
+      <p class="payment-desc">Securely donate by card via Stripe — supports recurring monthly giving to sustain SelassieFest year-round.</p>
+      <p class="payment-detail"><strong>Status:</strong> Nonprofit account in setup</p>
+      <a href="https://stripe.com/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
+        <i class="fas fa-credit-card" aria-hidden="true"></i> Learn More
+      </a>
+      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Direct checkout coming soon</span>
+    </div>
+
+    <div class="payment-card">
+      <div class="payment-icon-row">
+        <div class="payment-icon" style="background:rgba(229,169,60,0.15); color:var(--gold-accent);"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+        <div>
+          <div class="payment-name">Check by Mail</div>
+        </div>
+      </div>
+      <p class="payment-desc">Prefer to mail a check? Make it payable to Ras Tafari Inc and send to our registered address.</p>
+      <p class="payment-detail"><strong>Mail to:</strong> 765 E 154th St, South Holland, IL 60473</p>
+      <a href="mailto:selassiefest@gmail.com?subject=Check%20Donation%20Inquiry" class="btn-donate btn-outline">
+        <i class="fas fa-envelope" aria-hidden="true"></i> Email Us First
+      </a>
+    </div>
+
+  </div>
+
+  <h2 class="section-label"><i class="fas fa-seedling" aria-hidden="true"></i> &nbsp;Where Your Donation Goes</h2>
+  <div class="impact-grid">
+    <div class="impact-card">
+      <i class="fas fa-music" aria-hidden="true"></i>
+      <h3>Festival Production</h3>
+      <p>Sound systems, stages, and the roots reggae artists who bring SelassieFest to life.</p>
+    </div>
+    <div class="impact-card">
+      <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+      <h3>Education &amp; Heritage</h3>
+      <p>Workshops, the Reasoning Circle, and preserving Rastafari and Caribbean history.</p>
+    </div>
+    <div class="impact-card">
+      <i class="fas fa-child" aria-hidden="true"></i>
+      <h3>Youth Programs</h3>
+      <p>Family-friendly activities, drumming circles, and the Youth Village experience.</p>
+    </div>
+    <div class="impact-card">
+      <i class="fas fa-hands-helping" aria-hidden="true"></i>
+      <h3>Community Outreach</h3>
+      <p>Supporting volunteers, vendors, and the broader Caribbean diaspora community in Chicago.</p>
+    </div>
+  </div>
+
+  <div class="receipt-note">
+    <h3><i class="fas fa-file-invoice-dollar" aria-hidden="true"></i> Tax receipts</h3>
+    <p>Ras Tafari Inc will provide a written acknowledgment for any donation of $250 or more, as required by IRS regulations. For smaller gifts, a receipt is available upon request — just email <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a> with your donation details.</p>
+  </div>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links">
+    <a href="/about/mission.html">Mission</a>
+    <a href="/legal/nonprofit-disclosure.html">Nonprofit Disclosure</a>
+    <a href="/legal/privacy.html">Privacy</a>
+    <a href="/media/press-kit.html">Press Kit</a>
+    <a href="/contact/">Contact</a>
+  </div>
+  <div class="social-icons">
+    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  </div>
+  <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
+    <br>&copy; 2026 Ras Tafari Inc 501(c)(3) &nbsp;|&nbsp; EIN 42-3036705 &nbsp;|&nbsp; Saturday, July 25th, 2026
+  </div>
+</footer>
+
 </body>
 </html>

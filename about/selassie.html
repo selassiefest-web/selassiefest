@@ -15,6 +15,7 @@
         --red-accent: #C83737;
         --card-bg: rgba(255,255,255,0.04);
         --border-dim: rgba(255,255,255,0.08);
+        --transition-default: all 0.25s ease;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -22,6 +23,11 @@
         color: var(--text-white);
         font-family: 'Jost', sans-serif;
         line-height: 1.6;
+    }
+
+    a {
+        text-decoration: none;
+        transition: var(--transition-default);
     }
     .site-header {
   padding: 28px 32px 16px 32px;
@@ -77,6 +83,24 @@
 .powered-by-logo { display: flex; align-items: center; line-height: 0; }
 .powered-by-logo img { height: 40px; width: auto; border-radius: 4px; transition: opacity 0.2s; }
 .powered-by-logo:hover img { opacity: 0.8; }
+.jvgh-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14,94,54,0.15);
+  padding: 6px 14px;
+  border-radius: 60px;
+  border: 1px solid rgba(14,94,54,0.4);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.jvgh-badge-wrapper:hover { opacity: 0.85; }
+.jvgh-badge-text {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6dbe8f;
+}
 @media (max-width: 700px) {
   .header-flex { flex-direction: column; align-items: center; }
   .site-title { font-size: 1.8rem; }
@@ -120,14 +144,6 @@
         max-width: 1280px;
         margin: 0 auto;
         padding: 60px 24px;
-    }
-    .festival-badge {
-        background: rgba(229,169,60,0.15);
-        border-left: 4px solid var(--gold-accent);
-        padding: 16px 24px;
-        margin-bottom: 40px;
-        border-radius: 12px;
-        font-weight: 300;
     }
     .footer {
         background: #050505;
@@ -306,11 +322,12 @@
     </style>
 </head>
 <body>
-    <header class="site-header" role="banner">
+<!-- HEADER with home link (brand) + Powered By Spliff Society -->
+<header class="site-header">
   <div class="header-flex">
-    <a href="https://selassiefest.com" class="brand-link" aria-label="SelassieFest homepage">
+    <a href="/" class="brand-link">
       <div class="site-title">SELASSIEFEST</div>
-      <div class="tagline">One Day. One Love. One Community.</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
     </a>
     <div class="powered-by-wrapper">
       <span class="powered-by-text">Powered By</span>
@@ -318,29 +335,31 @@
         <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
       </a>
     </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
   </div>
 </header>
-    <nav class="main-nav">
-        <ul class="nav-links">
-            <li><a href="/about/">ABOUT</a></li>
-            <li><a href="/festival/">FESTIVAL</a></li>
-            <li><a href="/sound-system-yard/">SOUND SYSTEM YARD</a></li>
-            <li><a href="/main-stage/">MAIN STAGE</a></li>
-            <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
-            <li><a href="/ital-marketplace/">ITAL MARKETPLACE</a></li>
-            <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
-            <li><a href="/healing-grove/">HEALING GROVE</a></li>
-            <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
-            <li><a href="/youth-village/">YOUTH VILLAGE</a></li>
-            <li><a href="/marketplace/">MARKETPLACE</a></li>
-            <li><a href="/tickets/">TICKETS</a></li>
-            <li><a href="/contact/">CONTACT</a></li>
-        </ul>
-    </nav>
+
+<!-- NAVIGATION (no "Home" link) -->
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="/about/">ABOUT</a></li>
+    <li><a href="/festival/">FESTIVAL</a></li>
+    <li><a href="/sound-system-yard/">SOUND YARD</a></li>
+    <li><a href="/main-stage/">MAIN STAGE</a></li>
+    <li><a href="/higher-learning-roots/">HIGHER LEARNING ROOTS</a></li>
+    <li><a href="/ital-marketplace/">ITAL MARKET</a></li>
+    <li><a href="/reasoning-circle/">REASONING CIRCLE</a></li>
+    <li><a href="/healing-grove/">HEALING GROVE</a></li>
+    <li><a href="/heritage-village/">HERITAGE VILLAGE</a></li>
+    <li><a href="/marketplace/">MARKETPLACE</a></li>
+    <li><a href="/tickets/">TICKETS</a></li>
+    <li><a href="/contact/">CONTACT</a></li>
+  </ul>
+</nav>
     <div class='container'>
-        <div class='festival-badge'>
-            <i class="fas fa-calendar-alt"></i> Saturday, July 25th, 2026 | 6:00 AM – 10:00 PM
-        </div>
 
         <div class="speech-header">
             <h1>The Voice of Humanity</h1>
@@ -409,16 +428,16 @@
         </div>
     </div>
     <footer class="footer">
-        <div class="footer-links">
-            <a href="/about/mission.html">MISSION</a>
-            <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
-            <a href="/media/press-kit.html">PRESS KIT</a>
-            <a href="/scholarship/">SCHOLARSHIP</a>
-            <a href="/community-projects/">COMMUNITY PROJECTS</a>
-            <a href="/contact/">CONTACT</a>
-        </div>
-        <div class="social-icons">
-<a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+  <div class="footer-links">
+    <a href="/about/mission.html">MISSION</a>
+    <a href="/festival/code-of-conduct/">CODE OF CONDUCT</a>
+    <a href="/media/press-kit.html">PRESS KIT</a>
+    <a href="/scholarship/">SCHOLARSHIP</a>
+    <a href="/community-projects/">COMMUNITY PROJECTS</a>
+    <a href="/contact/">CONTACT</a>
+  </div>
+  <div class="social-icons">
+    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
     <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
     <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
     <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -427,10 +446,10 @@
     <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
   </div>
   <p style="margin-top:10px;font-size:0.78rem;color:#888;"><a href="mailto:selassiefest@gmail.com" style="color:#888;">selassiefest@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+14149093279" style="color:#888;">(414) 909-3279</a></p>
-        <div class="copyright">
-            <i class="fas fa-dove"></i> SELASSIEFEST -- One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage.
-            <br>&copy; 2026 SelassieFest Collective | Saturday, July 25th, 6:00 AM - 10:00 PM
-        </div>
-    </footer>
+  <div class="copyright">
+    <i class="fas fa-dove"></i> SELASSIEFEST — One Love, One Destiny. Rooted in Ethiopian &amp; Jamaican Heritage. All respect to H.I.M. Haile Selassie I.
+    <br>&copy; 2026 SelassieFest Collective | Designed as living roots experience
+  </div>
+</footer>
 </body>
 </html>
