@@ -164,7 +164,7 @@
     }
     .festival-hero-title {
       font-weight: 200;
-      font-size: 4.5rem;
+      font-size: 2.25rem;
       text-transform: uppercase;
       letter-spacing: 0.25em;
       line-height: 1.1;
@@ -177,7 +177,7 @@
     }
     .festival-date {
       font-weight: 300;
-      font-size: 1.5rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.4em;
       color: var(--roots-green);
@@ -185,6 +185,45 @@
       display: inline-block;
       padding-bottom: 10px;
       margin-bottom: 20px;
+    }
+    /* ===== HERO COUNTDOWN (50% scale) ===== */
+    .hero-countdown-strip {
+      margin: 4px auto 24px;
+      padding: 13px 16px;
+      border: 1px solid rgba(229, 169, 60, 0.22);
+      border-radius: 6px;
+      background: rgba(229, 169, 60, 0.04);
+      text-align: center;
+      max-width: 420px;
+    }
+    .hero-countdown-nums {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-countdown-unit .n {
+      display: block;
+      font-weight: 200;
+      font-size: 1.15rem;
+      letter-spacing: 0.06em;
+      color: var(--text-white);
+      line-height: 1;
+    }
+    .hero-countdown-unit .u {
+      display: block;
+      font-size: 0.32rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.4);
+      margin-top: 4px;
+    }
+    .hero-countdown-sep {
+      font-weight: 200;
+      font-size: 0.95rem;
+      color: rgba(229, 169, 60, 0.4);
+      align-self: flex-start;
+      padding-top: 2px;
     }
     /* New venue & gate info block */
     .venue-gate-info {
@@ -450,11 +489,11 @@
     }
     @media (max-width: 780px) {
       .festival-hero-title {
-        font-size: 2.2rem;
+        font-size: 1.1rem;
         letter-spacing: 0.12em;
       }
       .festival-date {
-        font-size: 1rem;
+        font-size: 0.5rem;
         letter-spacing: 0.2em;
       }
       .site-title {
@@ -486,6 +525,24 @@
         height: 30px;
       }
     }
+  .jvgh-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14,94,54,0.15);
+  padding: 6px 14px;
+  border-radius: 60px;
+  border: 1px solid rgba(14,94,54,0.4);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.jvgh-badge-wrapper:hover { opacity: 0.85; }
+.jvgh-badge-text {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #6dbe8f;
+}
   </style>
 </head>
 <body>
@@ -503,6 +560,10 @@
         <img src="../assets/images/ss_tiny.png" alt="Spliff Society">
       </a>
     </div>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
   </div>
 </header>
 
@@ -530,6 +591,18 @@
     ROOTS | <span class="highlight-gold">CULTURE</span> | CANNABIS
   </div>
   <div class="festival-date">JULY 25th 2026 • ONE-DAY IMMERSION</div>
+
+  <div class="hero-countdown-strip">
+    <div class="hero-countdown-nums">
+      <div class="hero-countdown-unit"><span class="n" id="hero-cd-days">—</span><span class="u">Days</span></div>
+      <span class="hero-countdown-sep">:</span>
+      <div class="hero-countdown-unit"><span class="n" id="hero-cd-hours">—</span><span class="u">Hours</span></div>
+      <span class="hero-countdown-sep">:</span>
+      <div class="hero-countdown-unit"><span class="n" id="hero-cd-mins">—</span><span class="u">Minutes</span></div>
+      <span class="hero-countdown-sep">:</span>
+      <div class="hero-countdown-unit"><span class="n" id="hero-cd-secs">—</span><span class="u">Seconds</span></div>
+    </div>
+  </div>
   
   <!-- Venue address + smart directions + gate hours -->
   <div class="venue-gate-info">
@@ -695,6 +768,35 @@
   (function() {
     console.log("🌿 SelassieFest 2026 – One Day. One Love. One Society. | Powered by Spliff Society");
   })();
+</script>
+<script>
+(function() {
+  var fest = new Date('2026-07-25T06:00:00-05:00').getTime();
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var diff = fest - Date.now();
+    var ids = ['hero-cd-days', 'hero-cd-hours', 'hero-cd-mins', 'hero-cd-secs'];
+    if (diff <= 0) {
+      ids.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = '00';
+      });
+      return;
+    }
+    var vals = {
+      'hero-cd-days':  Math.floor(diff / 86400000),
+      'hero-cd-hours': Math.floor((diff % 86400000) / 3600000),
+      'hero-cd-mins':  Math.floor((diff % 3600000) / 60000),
+      'hero-cd-secs':  Math.floor((diff % 60000) / 1000)
+    };
+    ids.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = pad(vals[id]);
+    });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
 </script>
 </body>
 </html>
