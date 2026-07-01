@@ -1,0 +1,835 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Pickney Time Cultural Mission – Preserving Jamaican childhood traditions. Games, toys, storytelling, and dancehall. Hosted by Ras Tafari Inc." />
+  <title>Pickney Time Cultural Mission · Ras Tafari Inc.</title>
+  
+  <!-- Google Fonts: Jost -->
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  
+  <style>
+    /* ===== RESET & ROOT ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+      --transition: all 0.25s ease;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .section-title {
+      font-weight: 300;
+      font-size: 2.2rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-left: 5px solid var(--gold-accent);
+      padding-left: 20px;
+      margin-bottom: 40px;
+    }
+    .section-title span {
+      color: var(--gold-accent);
+      font-weight: 400;
+    }
+    .btn {
+      display: inline-block;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      padding: 14px 36px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.85rem;
+      border: 1px solid var(--gold-accent);
+      color: var(--gold-accent);
+      background: transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      border-radius: 40px;
+    }
+    .btn:hover {
+      background: var(--gold-accent);
+      color: var(--bg-black);
+      box-shadow: 0 0 20px rgba(229, 169, 60, 0.25);
+    }
+    .btn-primary {
+      background: var(--red-accent);
+      border-color: var(--red-accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #a02e2e;
+      border-color: #a02e2e;
+      color: #fff;
+    }
+
+    /* ===== HEADER ===== */
+    .site-header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(13, 13, 13, 0.97);
+      backdrop-filter: blur(4px);
+      text-align: center;
+    }
+    .brand-link {
+      display: inline-block;
+    }
+    .site-title {
+      font-weight: 200;
+      font-size: 2.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .site-title .highlight-red { color: var(--red-accent); }
+    .site-title .highlight-gold { color: var(--gold-accent); }
+    .site-title .highlight-green { color: var(--roots-green); }
+    .tagline {
+      font-weight: 300;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+      border-top: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-top: 8px;
+      margin-top: 6px;
+    }
+    .tagline i {
+      color: var(--red-accent);
+      margin: 0 6px;
+    }
+
+    /* ===== NAV ===== */
+    .main-nav {
+      background: #0a0a0a;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+      background: rgba(10, 10, 10, 0.92);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem 2rem;
+      list-style: none;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .nav-links a {
+      font-weight: 400;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #ccc;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+    }
+    .nav-links a:hover {
+      color: var(--gold-accent);
+      border-bottom-color: var(--gold-accent);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 90px;
+      background: radial-gradient(circle at 20% 20%, rgba(200,55,55,0.15), #080808);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .hero-title {
+      font-weight: 200;
+      font-size: 4.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      line-height: 1.2;
+    }
+    .hero-title .red { color: var(--red-accent); }
+    .hero-title .gold { color: var(--gold-accent); }
+    .hero-title .green { color: var(--roots-green); }
+    .hero-sub {
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      margin: 16px 0 8px;
+      color: var(--gold-accent);
+    }
+    .hero-date {
+      font-weight: 300;
+      font-size: 1.2rem;
+      color: #aaa;
+      border-bottom: 1px solid var(--roots-green);
+      display: inline-block;
+      padding-bottom: 10px;
+      margin-bottom: 24px;
+    }
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 20px 0 32px;
+    }
+    .hero-badge {
+      background: rgba(229,169,60,0.08);
+      border: 1px solid var(--gold-accent);
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 300;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .hero-badge i { margin-right: 6px; color: var(--red-accent); }
+
+    /* ===== GRID CARDS ===== */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    .fest-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 24px;
+      padding: 28px 24px;
+      transition: var(--transition);
+      backdrop-filter: blur(2px);
+    }
+    .fest-card:hover {
+      border-color: var(--gold-accent);
+      transform: translateY(-4px);
+    }
+    .fest-card .icon {
+      font-size: 2.2rem;
+      color: var(--gold-accent);
+      margin-bottom: 16px;
+    }
+    .fest-card h3 {
+      font-weight: 400;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    .fest-card p, .fest-card li {
+      font-weight: 300;
+      color: #d0d0d0;
+      font-size: 0.95rem;
+    }
+    .fest-card ul {
+      list-style: none;
+      margin-top: 8px;
+    }
+    .fest-card ul li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fest-card ul li i {
+      color: var(--roots-green);
+      width: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* ===== SPECIAL HIGHLIGHT ===== */
+    .highlight-block {
+      background: rgba(200,55,55,0.08);
+      border: 1px solid var(--red-accent);
+      border-radius: 32px;
+      padding: 40px 32px;
+      margin: 40px 0;
+      text-align: center;
+    }
+    .highlight-block h2 {
+      font-weight: 300;
+      font-size: 2rem;
+      color: var(--gold-accent);
+      margin-bottom: 16px;
+    }
+    .highlight-block .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px 30px;
+      margin: 16px 0;
+    }
+    .badge-grid span {
+      background: rgba(0,0,0,0.5);
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 300;
+      border-left: 2px solid var(--gold-accent);
+    }
+
+    /* ===== REGISTRATION ===== */
+    .reg-section {
+      background: rgba(14,94,54,0.08);
+      border-radius: 32px;
+      padding: 40px 32px;
+      border: 1px solid var(--roots-green);
+      margin: 40px 0;
+    }
+    .reg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 780px) {
+      .reg-grid { grid-template-columns: 1fr; }
+    }
+    .reg-form input, .reg-form select, .reg-form textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    .reg-form input:focus, .reg-form select:focus {
+      border-color: var(--gold-accent);
+      outline: none;
+      background: rgba(255,255,255,0.1);
+    }
+    .reg-form select option { background: #222; }
+    .reg-form .btn { width: 100%; text-align: center; margin-top: 8px; }
+
+    /* ===== GALLERY ===== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 30px 0;
+    }
+    .gallery-grid .placeholder {
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+      border-radius: 16px;
+      border: 1px solid var(--border-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 300;
+      color: #555;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+    .gallery-grid .placeholder:hover {
+      border-color: var(--gold-accent);
+      color: var(--gold-accent);
+    }
+    .gallery-grid .placeholder i { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+    /* ===== FAQ ===== */
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .faq-item:hover { border-color: var(--gold-accent); }
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 400;
+      font-size: 1.1rem;
+    }
+    .faq-question i { color: var(--gold-accent); transition: 0.3s; }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      font-weight: 300;
+      color: #bbb;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+      padding-top: 16px;
+    }
+    .faq-item.active .faq-question i { transform: rotate(180deg); }
+
+    /* ===== MAP ===== */
+    .map-wrapper {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border-dim);
+      margin: 30px 0;
+    }
+    .map-wrapper iframe {
+      width: 100%;
+      height: 350px;
+      border: 0;
+      display: block;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #050505;
+      border-top: 1px solid var(--border-dim);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    .footer-links a {
+      color: #aaa;
+      font-weight: 300;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .footer-links a:hover { color: var(--gold-accent); }
+    .social-icons a {
+      color: #ccc;
+      font-size: 1.6rem;
+      margin: 0 14px;
+      transition: var(--transition);
+    }
+    .social-icons a:hover { color: var(--gold-accent); }
+    .copyright {
+      font-weight: 300;
+      font-size: 0.75rem;
+      margin-top: 32px;
+      color: #666;
+      letter-spacing: 0.05em;
+    }
+    .copyright .raster { color: var(--red-accent); font-weight: 400; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 780px) {
+      .hero-title { font-size: 2.4rem; }
+      .site-title { font-size: 1.8rem; }
+      .section-title { font-size: 1.6rem; }
+      .container { padding: 24px 16px; }
+      .hero { padding: 50px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <a href="#" class="brand-link">
+    <div class="site-title">
+      <span class="highlight-red">PICKNEY</span>
+      <span class="highlight-gold">TIME</span>
+      <span class="highlight-green">CULTURAL</span>
+      <span style="color:#fff;">MISSION</span>
+    </div>
+    <div class="tagline">
+      <i class="fas fa-circle"></i> HOSTED BY RAS TAFARI INC. <i class="fas fa-circle"></i>
+    </div>
+  </a>
+</header>
+
+<!-- NAV -->
+<nav class="main-nav">
+  <ul class="nav-links">
+    <li><a href="#games">GAMES</a></li>
+    <li><a href="#toys">TOYS</a></li>
+    <li><a href="#heritage">HERITAGE</a></li>
+    <li><a href="#dancehall">DANCEHALL</a></li>
+    <li><a href="#workshop">WORKSHOP</a></li>
+    <li><a href="#register">REGISTER</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-title">
+    <span class="red">BEFORE</span> <span class="gold">SMARTPHONES</span><br>
+    <span class="green">WE BUILT</span> <span style="color:#fff;">OUR OWN FUN</span>
+  </div>
+  <div class="hero-sub">Preserving Jamaican Childhood Traditions</div>
+  <div class="hero-date"><i class="fas fa-calendar-alt"></i> SATURDAY · AUGUST 16, 2026 · 10:00 AM – 6:00 PM</div>
+  <div class="hero-badges">
+    <span class="hero-badge"><i class="fas fa-gamepad"></i> Yard Games</span>
+    <span class="hero-badge"><i class="fas fa-toy"></i> Toy Village</span>
+    <span class="hero-badge"><i class="fas fa-book-open"></i> Anansi Stories</span>
+    <span class="hero-badge"><i class="fas fa-music"></i> 70's Dancehall</span>
+    <span class="hero-badge"><i class="fas fa-trophy"></i> Badges & Trophies</span>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+    <a href="#register" class="btn btn-primary"><i class="fas fa-clipboard-list"></i> REGISTER NOW</a>
+    <a href="#games" class="btn"><i class="fas fa-chevron-circle-down"></i> EXPLORE</a>
+  </div>
+  <div style="margin-top: 24px; font-weight: 300; font-size: 0.95rem; background: rgba(0,0,0,0.4); padding: 8px 24px; border-radius: 60px; display: inline-block; border: 1px dashed var(--gold-accent);">
+    <i class="fas fa-walking" style="color: var(--roots-green);"></i> Registration Required · Walk‑ins Welcome <i class="fas fa-walking" style="color: var(--roots-green);"></i>
+  </div>
+</section>
+
+<main>
+  <div class="container">
+
+    <!-- COUNTDOWN TIMER -->
+    <div style="text-align: center; background: rgba(229,169,60,0.05); border-radius: 60px; padding: 20px 16px; border: 1px solid var(--border-dim); margin-bottom: 50px;">
+      <h3 style="font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-accent);"><i class="fas fa-clock"></i> Countdown to Pickney Time</h3>
+      <div id="countdown" style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 12px; font-weight: 300;">
+        <div><span id="days" style="font-size: 2.4rem; font-weight: 400; color: var(--red-accent);">00</span> <span style="font-size: 0.9rem;">Days</span></div>
+        <div><span id="hours" style="font-size: 2.4rem; font-weight: 400; color: var(--gold-accent);">00</span> <span style="font-size: 0.9rem;">Hours</span></div>
+        <div><span id="minutes" style="font-size: 2.4rem; font-weight: 400; color: var(--roots-green);">00</span> <span style="font-size: 0.9rem;">Minutes</span></div>
+        <div><span id="seconds" style="font-size: 2.4rem; font-weight: 400; color: #fff;">00</span> <span style="font-size: 0.9rem;">Seconds</span></div>
+      </div>
+    </div>
+
+    <!-- SECTION: GAMES ARENA -->
+    <div id="games" class="section-title"><span>🎲</span> Traditional Games Arena</div>
+    <div class="grid-3">
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-chess"></i></div>
+        <h3>Board & Strategy</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> Ludi (Ludo)</li>
+          <li><i class="fas fa-circle"></i> Dominoes</li>
+          <li><i class="fas fa-circle"></i> Checkers / Draft</li>
+          <li><i class="fas fa-circle"></i> Marbles</li>
+          <li><i class="fas fa-circle"></i> Jacks (Stings)</li>
+        </ul>
+      </div>
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-running"></i></div>
+        <h3>High‑Energy Yard Games</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> Dandy Shandy</li>
+          <li><i class="fas fa-circle"></i> Bull in the Pen</li>
+          <li><i class="fas fa-circle"></i> Catch‑a‑Base</li>
+          <li><i class="fas fa-circle"></i> Stucky Freezy</li>
+          <li><i class="fas fa-circle"></i> Mother May I</li>
+          <li><i class="fas fa-circle"></i> Red Light Green Light</li>
+        </ul>
+      </div>
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-frog"></i></div>
+        <h3>Jump & Skip</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> Chinese Skip</li>
+          <li><i class="fas fa-circle"></i> Skip Rope</li>
+          <li><i class="fas fa-circle"></i> Hopscotch (Strepa)</li>
+          <li><i class="fas fa-circle"></i> Leapfrog</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RING GAMES -->
+    <div style="margin-bottom: 50px;">
+      <h3 style="font-weight: 300; font-size: 1.8rem; color: var(--gold-accent); margin-bottom: 20px;"><i class="fas fa-circle" style="color: var(--red-accent);"></i> Ring Games Circle</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; background: var(--card-bg); padding: 20px 24px; border-radius: 40px; border: 1px solid var(--border-dim);">
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Brown Girl in the Ring</span>
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Little Miss Nancy</span>
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Eeh Yow</span>
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Puncienella Likkle Fella</span>
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Jane & Louisa</span>
+        <span><i class="fas fa-music" style="color: var(--gold-accent);"></i> Emmanuel Road</span>
+      </div>
+    </div>
+
+    <!-- SECTION: TOY VILLAGE -->
+    <div id="toys" class="section-title"><span>🛠️</span> Traditional Toy Village</div>
+    <div class="grid-3">
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-car"></i></div>
+        <h3>Wheels & Speed</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> Drink Box Truck</li>
+          <li><i class="fas fa-circle"></i> <strong>Wire Car</strong> <span style="color: var(--gold-accent);">(NEW)</span></li>
+          <li><i class="fas fa-circle"></i> <strong>Push Cart</strong> <span style="color: var(--gold-accent);">(NEW)</span></li>
+          <li><i class="fas fa-circle"></i> <strong>Bearing Skate</strong> <span style="color: var(--gold-accent);">(NEW)</span></li>
+          <li><i class="fas fa-circle"></i> Hose Hoop Wheel</li>
+          <li><i class="fas fa-circle"></i> Coconut Stalk Truck</li>
+        </ul>
+      </div>
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-crosshairs"></i></div>
+        <h3>Projectiles & Pop</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> <strong>Pear Gun</strong> <span style="color: var(--gold-accent);">(NEW)</span></li>
+          <li><i class="fas fa-circle"></i> Pop‑Shot (Bamboo)</li>
+          <li><i class="fas fa-circle"></i> Sling Shot (Bingy)</li>
+          <li><i class="fas fa-circle"></i> Paper Planes</li>
+          <li><i class="fas fa-circle"></i> Matchbox Gun</li>
+        </ul>
+      </div>
+      <div class="fest-card">
+        <div class="icon"><i class="fas fa-wind"></i></div>
+        <h3>Kites & Spinners</h3>
+        <ul>
+          <li><i class="fas fa-circle"></i> Bamboo‑Spine Kite</li>
+          <li><i class="fas fa-circle"></i> The Gig (Top) & Racing</li>
+          <li><i class="fas fa-circle"></i> Bottle Stopper Zinger</li>
+          <li><i class="fas fa-circle"></i> Stilts</li>
+          <li><i class="fas fa-circle"></i> Paper Pinwheel</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FORGOTTEN TOYS WORKSHOP (Highlight) -->
+    <div id="workshop" class="highlight-block">
+      <h2><i class="fas fa-hand-holding-heart" style="color: var(--red-accent);"></i> Forgotten Jamaican Toys Workshop</h2>
+      <p style="max-width: 700px; margin: 0 auto 20px; font-weight: 300;">Children don’t just watch — they build, create, and take home a piece of heritage. Make your very own:</p>
+      <div class="badge-grid">
+        <span>Drink Box Truck</span>
+        <span>Kite</span>
+        <span>Gig (Spinning Top)</span>
+        <span>Paper Plane</span>
+        <span>Pop‑Shot</span>
+        <span>Mini Hose Hoop Wheel</span>
+      </div>
+      <p style="margin-top: 20px; font-size: 0.9rem; color: var(--gold-accent);"><i class="fas fa-star"></i> Materials provided. All skill levels welcome.</p>
+    </div>
+
+    <!-- BEARING SKATE HILL CHALLENGE -->
+    <div style="background: rgba(0,0,0,0.5); border-radius: 32px; padding: 30px 24px; margin: 40px 0; border-left: 6px solid var(--red-accent);">
+      <h3 style="font-weight: 400; font-size: 1.8rem; color: var(--gold-accent);"><i class="fas fa-mountain"></i> Bearing Skate Hill Challenge</h3>
+      <p style="font-weight: 300; max-width: 700px;">Supervised demonstration track where elders show children how legendary wooden bearing skates and push carts roared down Jamaican hills. <span style="color: var(--gold-accent);">Incredible photo & social media moments!</span></p>
+    </div>
+
+    <!-- HERITAGE CORNER -->
+    <div id="heritage" class="section-title"><span>👵</span> Heritage Corner</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; background: var(--card-bg); border-radius: 28px; padding: 28px 24px; border: 1px solid var(--border-dim); margin-bottom: 40px;">
+      <div style="flex:1; min-width: 150px;"><i class="fas fa-book" style="color: var(--gold-accent);"></i> Anansi Stories</div>
+      <div style="flex:1; min-width: 150px;"><i class="fas fa-puzzle-piece" style="color: var(--gold-accent);"></i> Riddles</div>
+      <div style="flex:1; min-width: 150px;"><i class="fas fa-quote-right" style="color: var(--gold-accent);"></i> Proverbs</div>
+      <div style="flex:1; min-width: 150px;"><i class="fas fa-comment" style="color: var(--gold-accent);"></i> Jamaican Sayings</div>
+      <div style="flex:1; min-width: 150px;"><i class="fas fa-user-tie" style="color: var(--gold-accent);"></i> Elder Storytelling</div>
+    </div>
+
+    <!-- DANCEHALL COURTYARD -->
+    <div id="dancehall" class="section-title"><span>🎶</span> 70's Dancehall Courtyard</div>
+    <div style="background: rgba(200,55,55,0.06); border-radius: 28px; padding: 24px; border: 1px solid var(--red-accent); margin-bottom: 40px;">
+      <p style="font-weight: 300; font-size: 1.1rem;"><i class="fas fa-headphones" style="color: var(--gold-accent);"></i> Vintage Jamaican selections, family dancing, and cultural demonstrations. Let the rhythm move you!</p>
+    </div>
+
+    <!-- REGISTRATION -->
+    <div id="register" class="reg-section">
+      <h2 style="font-weight: 300; font-size: 2rem; text-align: center; color: var(--gold-accent);"><i class="fas fa-clipboard-check"></i> Secure Your Spot</h2>
+      <p style="text-align: center; font-weight: 300; margin-bottom: 24px;">Registration is required to help us manage capacity. <span style="color: var(--gold-accent);">Walk‑ins are warmly welcomed</span> — simply fill out a form on arrival.</p>
+      <div class="reg-grid">
+        <div>
+          <h4 style="font-weight: 400; margin-bottom: 16px;">🏆 Prizes & Trophies</h4>
+          <p style="font-weight: 300;">Competition winners receive <strong style="color: var(--gold-accent);">special badges</strong> and <strong style="color: var(--gold-accent);">standard trophies</strong> for overall champions in Gig Racing, Dandy Shandy, Marbles, and more.</p>
+          <ul style="list-style: none; margin-top: 16px; font-weight: 300;">
+            <li><i class="fas fa-medal" style="color: var(--gold-accent);"></i> Badges for 1st, 2nd, 3rd place</li>
+            <li><i class="fas fa-trophy" style="color: var(--gold-accent);"></i> Trophies for overall event winners</li>
+            <li><i class="fas fa-certificate" style="color: var(--gold-accent);"></i> Participation certificates for all children</li>
+          </ul>
+        </div>
+        <div>
+          <form class="reg-form" id="registrationForm" onsubmit="event.preventDefault(); alert('✅ Registration submitted! We look forward to seeing you at Pickney Time. Walk‑ins are always welcome too.');">
+            <input type="text" placeholder="Full Name *" required />
+            <input type="email" placeholder="Email Address *" required />
+            <input type="tel" placeholder="Phone Number" />
+            <input type="number" placeholder="Number of Guests (including children)" min="1" required />
+            <select>
+              <option value="">How did you hear about us?</option>
+              <option>Social Media</option>
+              <option>Flyer</option>
+              <option>Friend / Family</option>
+              <option>Community Centre</option>
+              <option>Other</option>
+            </select>
+            <div style="display: flex; gap: 12px; align-items: center; margin: 12px 0;">
+              <label style="font-weight: 300; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" checked /> I understand registration is required (walk‑ins accepted)
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> REGISTER NOW</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTO GALLERY (Placeholders) -->
+    <div style="margin: 50px 0;">
+      <h3 class="section-title" style="border-left-color: var(--roots-green);"><span>📸</span> Memory Gallery</h3>
+      <div class="gallery-grid">
+        <div class="placeholder"><i class="fas fa-image"></i> Yard Games</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Toy Village</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Kite Flying</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Bearing Skate</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Ring Games</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Dancehall</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Workshop</div>
+        <div class="placeholder"><i class="fas fa-image"></i> Storytelling</div>
+      </div>
+      <p style="text-align: center; font-weight: 300; font-size: 0.85rem; color: #666;"><i class="fas fa-camera"></i> Photos from past events – submit yours at the registration desk!</p>
+    </div>
+
+    <!-- SPONSORS -->
+    <div style="margin: 40px 0;">
+      <h3 class="section-title" style="border-left-color: var(--red-accent);"><span>🤝</span> Our Sponsors</h3>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; background: var(--card-bg); border-radius: 28px; padding: 28px 24px; border: 1px solid var(--border-dim);">
+        <div style="text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.4); border-radius: 16px; min-width: 140px;"><i class="fas fa-hands-helping" style="font-size: 2rem; color: var(--gold-accent);"></i><br><span style="font-weight: 300;">Ras Tafari Inc.</span></div>
+        <div style="text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.4); border-radius: 16px; min-width: 140px;"><i class="fas fa-book" style="font-size: 2rem; color: var(--gold-accent);"></i><br><span style="font-weight: 300;">Heritage Council</span></div>
+        <div style="text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.4); border-radius: 16px; min-width: 140px;"><i class="fas fa-utensils" style="font-size: 2rem; color: var(--gold-accent);"></i><br><span style="font-weight: 300;">Island Flavours</span></div>
+        <div style="text-align: center; padding: 12px 24px; background: rgba(0,0,0,0.4); border-radius: 16px; min-width: 140px;"><i class="fas fa-child" style="font-size: 2rem; color: var(--gold-accent);"></i><br><span style="font-weight: 300;">Youth Uplift</span></div>
+      </div>
+      <p style="text-align: center; margin-top: 16px; font-weight: 300; font-size: 0.9rem;">Become a sponsor – <a href="mailto:info@rastafari.org" style="color: var(--gold-accent); border-bottom: 1px solid;">info@rastafari.org</a></p>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faq" style="margin: 50px 0;">
+      <h3 class="section-title"><span>❓</span> Frequently Asked Questions</h3>
+      <div class="faq-item active">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+          <span>Is registration really required?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">Yes, to help us plan capacity and materials. However, <strong>walk‑ins are absolutely welcome</strong> – you can register on the day at the welcome desk.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+          <span>What prizes are awarded?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">Winners receive <strong>special badges</strong> for their achievements, and overall event champions are awarded <strong>standard trophies</strong>. Every child gets a participation certificate.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+          <span>Will there be food vendors?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">Yes! Traditional Jamaican food and refreshments will be available for purchase on‑site.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+          <span>What age group is this for?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">All ages are welcome! Games and workshops are designed for children (5–15) but adults will love the nostalgia, music, and storytelling.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
+          <span>Is the event indoor or outdoor?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">Mostly outdoor on our beautiful grounds. We have covered areas for workshops and storytelling. Bring a chair if you like!</div>
+      </div>
+    </div>
+
+    <!-- GOOGLE MAPS -->
+    <div style="margin: 40px 0;">
+      <h3 class="section-title" style="border-left-color: var(--roots-green);"><span>📍</span> Venue & Directions</h3>
+      <div class="map-wrapper">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2973.728615154429!2d-87.56754308457112!3d41.77210787922875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e208adc1abaa9%3A0x8f3c99a8a24fcfe6!2s2423%20E%2075th%20St%2C%20Chicago%2C%20IL%2060649!5e0!3m2!1sen!2sus!4v1712345678901!5m2!1sen!2sus" 
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <p style="text-align: center; font-weight: 300;"><i class="fas fa-map-pin" style="color: var(--red-accent);"></i> 2423 E. 75th Street, Chicago, IL 60649 · Free parking available</p>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="#games">Games</a>
+    <a href="#toys">Toys</a>
+    <a href="#heritage">Heritage</a>
+    <a href="#register">Register</a>
+    <a href="#faq">FAQ</a>
+    <a href="#">Code of Conduct</a>
+  </div>
+  <div class="social-icons">
+    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="mailto:info@rastafari.org" aria-label="Email"><i class="fas fa-envelope"></i></a>
+  </div>
+  <div class="copyright">
+    <span class="raster">RAS TAFARI INC.</span> · PICKNEY TIME CULTURAL MISSION · ONE LOVE · ONE PEOPLE · ONE DESTINY<br>
+    © 2026 Ras Tafari Inc. | Preserving Heritage, Building Community | <i class="fas fa-heart" style="color: var(--red-accent);"></i>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+  // ===== COUNTDOWN TIMER (August 16, 2026 10:00 AM) =====
+  (function() {
+    const target = new Date('August 16, 2026 10:00:00 CDT').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = target - now;
+      if (diff <= 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ===== FAQ TOGGLE (support click on whole item) =====
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        // avoid toggling if clicking a link inside
+        if (e.target.tagName === 'A') return;
+        this.classList.toggle('active');
+      });
+    });
+
+    // ===== CONSOLE WELCOME =====
+    console.log('✅ Pickney Time Cultural Mission · Ras Tafari Inc. · August 16, 2026');
+    console.log('🏆 Prizes: Badges & Trophies | Registration required, walk-ins welcome.');
+  })();
+</script>
+
+</body>
+</html>
