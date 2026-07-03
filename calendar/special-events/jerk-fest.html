@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jerk Fest | SelassieFest Calendar</title>
+<meta name="description" content="A massive summer outdoor family festival celebrating jerk seasoning, featuring a Best Jerk Chicken/Pork cook-off, live reggae and dancehall, and a dedicated family zone.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+      --bg-black: #0D0D0D;
+      --card-bg: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --text-white: #F5F5F5;
+      --text-muted: #b0b0b0;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --transition-default: all 0.25s ease;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration:none; transition: var(--transition-default); }
+
+    /* Header */
+    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
+    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
+    .brand-link:hover { opacity:.85; }
+    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
+    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
+    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
+    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
+    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
+    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
+    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
+.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
+.global-badge-wrapper:hover { opacity:.85; }
+.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
+
+    /* Local sub-nav */
+    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
+    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
+    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
+    .logo-area i { color:var(--gold-accent); }
+    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
+    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
+
+    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
+
+    /* Hub hero */
+    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
+    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
+    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
+    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
+    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
+    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
+    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
+    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
+    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
+    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
+
+    /* Event list grid (category hub pages) */
+    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
+    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
+    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
+    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
+    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
+    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
+    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+
+    /* Single event page */
+    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
+    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
+    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
+    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
+    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
+    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
+    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
+
+    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
+
+    @media (max-width:700px) {
+      .header-flex { flex-direction:column; align-items:center; }
+      .site-title { font-size:1.7rem; }
+      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
+    }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
+      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Events</span>
+    </a>
+    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
+      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Pickney</span>
+    </a>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
+      <span class="global-badge-text">GLOBAL</span>
+    </a>
+  </div>
+</header>
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
+    <div class="nav-links">
+      <a href="/calendar/">Calendar Home</a>
+      <a href="/calendar/festivals/">Festivals</a>
+      <a href="/calendar/special-events/" class="active">Special Events</a>
+      <a href="/calendar/weekly/">Weekly Events</a>
+    </div>
+  </div>
+</div>
+
+<div class="event-hero">
+  <span class="badge"><i class="fas fa-fire"></i> Special Event</span>
+  <h1>Jerk Fest</h1>
+  <div class="date-line">Saturday, July 17, 2027</div>
+</div>
+<div class="event-body">
+  <p>A massive summer outdoor family-friendly food and music festival celebrating the art of jerk seasoning, anchored by a food village where local vendors compete in a Best Jerk Chicken and Best Jerk Pork cook-off, complete with interactive tasting passes for attendees.</p>
+  <p>A tiered stage brings together roots reggae bands and current dancehall artists, while a dedicated family zone offers cultural drum circles and craft vendors for the youngest members of the community.</p>
+  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
+</div>
+
+<footer class="site-footer">
+  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
+</footer>
+</body>
+</html>
