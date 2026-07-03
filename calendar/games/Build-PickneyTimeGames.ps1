@@ -23,13 +23,17 @@ $ErrorActionPreference = "Stop"
 $SubmitEmail    = "selassiefest@gmail.com"
 $InstagramTag   = "#PickneyTimeStories"
 
-# Social links shown in every page footer — swap these for your real handles.
+# Social links shown in every page footer.
 $SocialLinks = @(
-    @{ Icon='fa-instagram'; Brand=$true;  Url='https://instagram.com/selassiefest' },
-    @{ Icon='fa-facebook';  Brand=$true;  Url='https://facebook.com/selassiefest' },
-    @{ Icon='fa-tiktok';    Brand=$true;  Url='https://tiktok.com/@selassiefest' },
-    @{ Icon='fa-youtube';   Brand=$true;  Url='https://youtube.com/@selassiefest' }
+    @{ Icon='fa-instagram'; Brand=$true;  Url='https://www.instagram.com/selassiefest' },
+    @{ Icon='fa-facebook';  Brand=$true;  Url='https://www.facebook.com/profile.php?id=100084954017587' },
+    @{ Icon='fa-tiktok';    Brand=$true;  Url='https://www.tiktok.com/@selassiefest' },
+    @{ Icon='fa-x-twitter'; Brand=$true;  Url='https://x.com/selassiefest/' },
+    @{ Icon='fa-youtube';   Brand=$true;  Url='https://www.youtube.com/@selassie7291' },
+    @{ Icon='fa-pinterest'; Brand=$true;  Url='https://www.pinterest.com/himselassie/' },
+    @{ Icon='fa-linkedin';  Brand=$true;  Url='https://www.linkedin.com/in/selassiefest/' }
 )
+$ContactPhone = "414-909-3279"
 $footerSocialHtml = ""
 foreach ($s in $SocialLinks) {
     $iconClass = if ($s.Brand) { "fab $($s.Icon)" } else { "fas $($s.Icon)" }
@@ -314,6 +318,10 @@ $sharedStyle = @'
     .footer-social { display:flex; justify-content:center; gap:18px; margin-bottom:1.2rem; }
     .footer-social a { width:40px; height:40px; border-radius:50%; border:1px solid var(--border-dim); display:flex; align-items:center; justify-content:center; color:#ccc; font-size:1.1rem; background:rgba(255,255,255,0.03); }
     .footer-social a:hover { border-color:var(--gold); color:var(--gold); background:rgba(243,193,58,0.08); }
+    .footer-contact { margin-bottom:0.8rem; font-size:0.8rem; color:#999; }
+    .footer-contact a { color:#999; }
+    .footer-contact a:hover { color:var(--gold); }
+    .footer-contact .sep { margin:0 8px; color:#555; }
     .submit-banner { background:linear-gradient(135deg, rgba(15,106,58,0.16), rgba(201,40,40,0.12)); border:1px solid rgba(243,193,58,0.3); border-radius:24px; padding:2.4rem 2rem; margin:2.5rem 0; text-align:center; }
     .submit-banner h2 { font-family:var(--font-heading); font-size:1.9rem; margin-bottom:0.7rem; }
     .submit-banner p { color:#ddd; font-weight:300; max-width:680px; margin:0 auto 1.4rem; }
@@ -417,6 +425,9 @@ $detailTemplate = @'
   <div class="footer-social">
     {{FOOTERSOCIAL}}
   </div>
+  <div class="footer-contact">
+    <a href="mailto:{{CONTACTEMAIL}}">{{CONTACTEMAIL}}</a><span class="sep">&middot;</span><a href="tel:{{CONTACTPHONE}}">{{CONTACTPHONEDISPLAY}}</a>
+  </div>
   &copy; 2026 Ras Tafari Inc. &middot; Pickney Time &middot; <a href="/pickney-time/" style="color:var(--gold);">Back to Event Page</a>
 </footer>
 </body>
@@ -441,8 +452,10 @@ foreach ($g in $games) {
         -replace '\{\{MATERIALS\}\}', $g.Materials `
         -replace '\{\{CULTURAL\}\}', $g.Cultural `
         -replace '\{\{SUBMITBLOCK\}\}', $submitBlock `
-        -replace '\{\{FOOTERSOCIAL\}\}', $footerSocialHtml
-
+        -replace '\{\{FOOTERSOCIAL\}\}', $footerSocialHtml `
+        -replace '\{\{CONTACTEMAIL\}\}', $SubmitEmail `
+        -replace '\{\{CONTACTPHONE\}\}', $ContactPhone `
+        -replace '\{\{CONTACTPHONEDISPLAY\}\}', $ContactPhone
     $outPath = Join-Path $gamesDir "$($g.Slug).html"
     Set-Content -Path $outPath -Value $page -Encoding UTF8
 }
@@ -541,6 +554,9 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   <div class="footer-social">
     {{FOOTERSOCIAL}}
   </div>
+  <div class="footer-contact">
+    <a href="mailto:{{CONTACTEMAIL}}">{{CONTACTEMAIL}}</a><span class="sep">&middot;</span><a href="tel:{{CONTACTPHONE}}">{{CONTACTPHONEDISPLAY}}</a>
+  </div>
   &copy; 2026 Ras Tafari Inc. &middot; Pickney Time &middot; <a href="/pickney-time/" style="color:var(--gold);">Back to Event Page</a>
 </footer>
 </body>
@@ -555,10 +571,12 @@ $indexHtml = $indexTemplate `
     -replace '\{\{CARDS\}\}', $cardsHtml `
     -replace '\{\{MAILTO\}\}', $indexMailto `
     -replace '\{\{INSTATAG\}\}', $InstagramTag `
-    -replace '\{\{FOOTERSOCIAL\}\}', $footerSocialHtml
-
+    -replace '\{\{FOOTERSOCIAL\}\}', $footerSocialHtml `
+    -replace '\{\{CONTACTEMAIL\}\}', $SubmitEmail `
+    -replace '\{\{CONTACTPHONE\}\}', $ContactPhone `
+    -replace '\{\{CONTACTPHONEDISPLAY\}\}', $ContactPhone
 Set-Content -Path (Join-Path $gamesDir "index.html") -Value $indexHtml -Encoding UTF8
 Write-Host "Wrote index.html with $($games.Count) games." -ForegroundColor Green
 Write-Host ""
 Write-Host "DONE. Site rebuilt at: $gamesDir" -ForegroundColor Cyan
-Write-Host "Remember to edit the SubmitEmail / InstagramTag at the top of this script with your real contact info." -ForegroundColor Yellow
+Write-Host "Contact info is set: $SubmitEmail / $ContactPhone / 7 social links." -ForegroundColor Green
