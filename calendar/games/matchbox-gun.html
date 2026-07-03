@@ -32,6 +32,8 @@
     .pt-nav-links { display:flex; gap:1.4rem; flex-wrap:wrap; }
     .pt-nav-links a { font-size:0.85rem; text-transform:uppercase; letter-spacing:0.04em; color:#ddd; border-bottom:2px solid transparent; padding-bottom:3px; }
     .pt-nav-links a:hover, .pt-nav-links a.active { color:var(--gold); border-bottom-color:var(--gold); }
+    .pt-main-site-link { opacity:0.65; padding-right:14px; border-right:1px solid var(--border-dim); }
+    .pt-main-site-link:hover { opacity:1; }
     .game-hero { text-align:center; padding:3.5rem 1.5rem 2.5rem; border-bottom:1px solid var(--border-dim);
       background: radial-gradient(ellipse at 30% 20%, rgba(15,106,58,0.18), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(201,40,40,0.12), transparent 55%); }
     .game-hero .cat-badge { display:inline-block; background:rgba(243,193,58,0.12); border:1px solid rgba(243,193,58,0.4); color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; padding:0.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
@@ -57,14 +59,27 @@
     .filter-btn { background:var(--card-bg); border:1px solid var(--border-dim); color:#ccc; padding:8px 18px; border-radius:30px; font-size:0.82rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.04em; }
     .filter-btn.active, .filter-btn:hover { background:var(--gold); color:#0a0a0a; border-color:var(--gold); }
     .game-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.3rem; padding-bottom:3rem; }
-    .game-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.1rem; padding:1.5rem; transition:var(--transition-default); display:flex; flex-direction:column; }
+    .game-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.1rem; padding:0; overflow:hidden; transition:var(--transition-default); display:flex; flex-direction:column; }
     .game-card:hover { border-color:var(--gold); transform:translateY(-3px); }
-    .game-card .icon { font-size:1.6rem; color:var(--gold); margin-bottom:0.8rem; }
+    .card-img-wrap { position:relative; width:100%; aspect-ratio:4/3; background:rgba(255,255,255,0.03); overflow:hidden; }
+    .card-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+    .card-img-placeholder { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.02); color:rgba(245,245,245,0.35); text-align:center; padding:10px; }
+    .card-img-placeholder i { font-size:1.4rem; color:rgba(243,193,58,0.4); }
+    .card-img-placeholder span { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
+    .card-body { padding:1.3rem 1.5rem 1.5rem; display:flex; flex-direction:column; flex:1; }
+    .game-card .icon { font-size:1.3rem; color:var(--gold); margin-bottom:0.6rem; }
     .game-card h3 { font-family:var(--font-heading); font-weight:500; font-size:1.15rem; margin-bottom:0.5rem; }
     .game-card p { color:#aaa; font-size:0.88rem; flex:1; margin-bottom:1rem; font-weight:300; }
     .game-card .cat-tag { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--roots-green); margin-bottom:0.6rem; }
     .game-card a.btn-sm { color:var(--gold); font-size:0.82rem; font-weight:600; text-transform:uppercase; }
     footer.site-footer { text-align:center; padding:2.5rem 1.5rem; border-top:1px solid var(--border-dim); color:#777; font-size:0.85rem; }
+    .footer-social { display:flex; justify-content:center; gap:18px; margin-bottom:1.2rem; }
+    .footer-social a { width:40px; height:40px; border-radius:50%; border:1px solid var(--border-dim); display:flex; align-items:center; justify-content:center; color:#ccc; font-size:1.1rem; background:rgba(255,255,255,0.03); }
+    .footer-social a:hover { border-color:var(--gold); color:var(--gold); background:rgba(243,193,58,0.08); }
+    .footer-contact { margin-bottom:0.8rem; font-size:0.8rem; color:#999; }
+    .footer-contact a { color:#999; }
+    .footer-contact a:hover { color:var(--gold); }
+    .footer-contact .sep { margin:0 8px; color:#555; }
     .submit-banner { background:linear-gradient(135deg, rgba(15,106,58,0.16), rgba(201,40,40,0.12)); border:1px solid rgba(243,193,58,0.3); border-radius:24px; padding:2.4rem 2rem; margin:2.5rem 0; text-align:center; }
     .submit-banner h2 { font-family:var(--font-heading); font-size:1.9rem; margin-bottom:0.7rem; }
     .submit-banner p { color:#ddd; font-weight:300; max-width:680px; margin:0 auto 1.4rem; }
@@ -97,8 +112,9 @@
   <div class="pt-nav-container">
     <div class="pt-logo"><i class="fas fa-child"></i><span>Pickney Time</span></div>
     <div class="pt-nav-links">
+      <a href="/" class="pt-main-site-link"><i class="fas fa-arrow-left"></i> Main Site</a>
       <a href="/pickney-time/">Event Home</a>
-      <a href="/pickney-time/games/" class="active">Games Archive</a>
+      <a href="/calendar/games/" class="active">Games Archive</a>
       <a href="/pickney-time/#register">Register</a>
     </div>
   </div>
@@ -137,23 +153,36 @@
   <section class="submit-cta">
   <div class="submit-cta-inner">
     <div class="submit-cta-icon"><i class="fas fa-heart"></i></div>
-    <h2>Did You Play </h2>
+    <h2>Did You Play Matchbox Gun?</h2>
     <p>Wherever you grew up — Kingston, Montego Bay, Brooklyn, Toronto, London, Miami —
        if you remember playing this, we want to hear from you. Send us your story,
        your photos, or an old video. Every submission helps preserve this game for
        the next generation.</p>
     <div class="submit-cta-actions">
-      <a href="mailto:=My%20Matchbox%20Gun%20story" class="btn-submit primary"><i class="fas fa-envelope"></i> Email Your Story</a>
+      <a href="mailto:selassiefest@gmail.com?subject=My%20Matchbox%20Gun%20story" class="btn-submit primary"><i class="fas fa-envelope"></i> Email Your Story</a>
       <a href="https://instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" class="btn-submit"><i class="fab fa-instagram"></i> Tag Us: #PickneyTimeStories</a>
     </div>
     <p class="submit-cta-note">Photos and stories may be featured on this page and across our social channels (with credit to you).</p>
   </div>
 </section>
 
-  <a href="/pickney-time/games/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Games Archive</a>
+  <a href="/calendar/games/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Games Archive</a>
 </div>
 
 <footer class="site-footer">
+  <div class="footer-social">
+    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
+    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
+    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer"><i class="fab fa-pinterest"></i></a>
+    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+    
+  </div>
+  <div class="footer-contact">
+    <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a><span class="sep">&middot;</span><a href="tel:414-909-3279">414-909-3279</a>
+  </div>
   &copy; 2026 Ras Tafari Inc. &middot; Pickney Time &middot; <a href="/pickney-time/" style="color:var(--gold);">Back to Event Page</a>
 </footer>
 </body>
