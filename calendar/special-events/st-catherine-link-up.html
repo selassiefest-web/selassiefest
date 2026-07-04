@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>St. Catherine Link-Up | SelassieFest Calendar</title>
+<meta name="description" content="Whe' Yuh From in St. Catherine, JA? The St. Catherine Link-Up unites Spanish Town, Portmore, Linstead, Old Harbour, and every corner of the parish for one massive Chicago reunion — presented by TRC Events.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+      --bg-black: #0D0D0D;
+      --card-bg: rgba(255,255,255,0.04);
+      --border-dim: rgba(255,255,255,0.08);
+      --text-white: #F5F5F5;
+      --text-muted: #b0b0b0;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --transition-default: all 0.25s ease;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration:none; transition: var(--transition-default); }
+
+    /* Header */
+    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
+    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
+    .brand-link:hover { opacity:.85; }
+    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
+    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
+    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
+    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
+    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
+    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
+    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
+    .global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
+    .global-badge-wrapper:hover { opacity:.85; }
+    .global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
+
+    /* Local sub-nav */
+    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
+    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
+    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
+    .logo-area i { color:var(--gold-accent); }
+    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
+    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
+
+    /* Single event page */
+    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
+    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
+    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
+    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
+    .presented-by { color:var(--text-muted); font-size:.85rem; text-transform:uppercase; letter-spacing:.1em; margin-top:.6rem; }
+    .event-body { max-width:840px; margin:0 auto; padding:3rem 2rem; }
+    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
+    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
+
+    .event-hero-images { display:flex; flex-wrap:wrap; gap:1rem; margin:0 0 2rem; justify-content:center; }
+    .event-hero-images .hero-img-wrap { flex:1; min-width:280px; max-width:490px; border-radius:18px; overflow:hidden; border:1px solid var(--border-dim); }
+    .event-hero-images img { width:100%; display:block; }
+
+    .event-info-strip { display:flex; flex-wrap:wrap; gap:14px; margin:0 0 2rem; }
+    .event-info-chip { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:16px; padding:14px 20px; flex:1; min-width:210px; }
+    .event-info-chip .label { font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--gold-accent); margin-bottom:4px; }
+    .event-info-chip .value { font-size:1rem; font-weight:400; color:var(--text-white); }
+
+    .event-body h2.section-heading { font-weight:500; font-size:1.5rem; margin: 2.2rem 0 1rem; display:flex; align-items:center; gap:.6rem; }
+    .event-body h2.section-heading i { color:var(--roots-green); }
+
+    .town-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.9rem; margin: 1rem 0 2rem; }
+    .town-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:14px; padding:1.1rem 1.3rem; }
+    .town-card h3 { font-size:1rem; font-weight:600; color:var(--gold-accent); margin-bottom:.4rem; }
+    .town-card p { font-size:.85rem; color:#ccc; margin:0; }
+
+    .lineup-list { list-style:none; margin:1rem 0 2rem; }
+    .lineup-list li { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:12px; padding:1rem 1.3rem; margin-bottom:.7rem; }
+    .lineup-list li strong { color:var(--text-white); display:block; margin-bottom:.2rem; }
+    .lineup-list li span { color:var(--text-muted); font-size:.88rem; }
+
+    .chat-banner { background:linear-gradient(135deg, rgba(229,169,60,0.14), rgba(14,94,54,0.1)); border:1px solid rgba(229,169,60,0.35); border-radius:18px; padding:1.8rem 2rem; margin:1.5rem 0 2rem; }
+    .chat-banner p { color:#f0e6d2; margin:0; font-size:1.02rem; }
+    .chat-banner .patois-title { font-size:1.4rem; font-weight:600; color:var(--gold-accent); margin-bottom:.6rem; display:block; }
+
+    .topic-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; margin: 1rem 0 2rem; }
+    .topic-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:14px; padding:1.3rem 1.4rem; }
+    .topic-card h3 { font-size:1.05rem; font-weight:500; color:var(--gold-accent); margin-bottom:.7rem; display:flex; align-items:center; gap:.5rem; }
+    .topic-card ul { margin:0; padding-left:1.1rem; color:#ccc; font-size:.9rem; }
+    .topic-card ul li { margin-bottom:.55rem; }
+
+    .sponsor-strip { display:flex; flex-wrap:wrap; gap:.8rem; margin: 1rem 0 2rem; }
+    .sponsor-strip span { background:rgba(255,255,255,0.06); border:1px solid var(--border-dim); border-radius:30px; padding:.4rem 1.1rem; font-size:.85rem; color:#ddd; }
+
+    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
+
+    @media (max-width:700px) {
+      .header-flex { flex-direction:column; align-items:center; }
+      .site-title { font-size:1.7rem; }
+      .event-hero h1 { font-size:1.8rem; }
+    }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-flex">
+    <a href="/" class="brand-link">
+      <div class="site-title">SELASSIEFEST</div>
+      <div class="tagline">One Day. One Love. One Society.</div>
+    </a>
+    <div class="powered-by-wrapper">
+      <span class="powered-by-text">Powered By</span>
+      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
+      </a>
+    </div>
+    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
+      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Events</span>
+    </a>
+    <a href="/calendar/games/index.html" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
+      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Pickney</span>
+    </a>
+    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+    </a>
+    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
+      <span class="global-badge-text">GLOBAL</span>
+    </a>
+  </div>
+</header>
+<div class="fest-nav">
+  <div class="nav-container">
+    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
+    <div class="nav-links">
+      <a href="/calendar/">Calendar Home</a>
+      <a href="/calendar/festivals/">Festivals</a>
+      <a href="/calendar/special-events/" class="active">Special Events</a>
+      <a href="/calendar/weekly/">Weekly Events</a>
+    </div>
+  </div>
+</div>
+
+<div class="event-hero">
+  <span class="badge"><i class="fas fa-people-group"></i> Special Event</span>
+  <h1>St. Catherine Link-Up</h1>
+  <div class="date-line">Saturday, August 22, 2026 &middot; ILU Club of Chicago</div>
+  <div class="presented-by">Presented by TRC Events</div>
+</div>
+<div class="event-body">
+
+  <div class="event-hero-images">
+    <div class="hero-img-wrap">
+      <img src="/calendar/special-events/images/St.CatherineLink-Up2.png" alt="Whe' Yuh From in St. Catherine, JA? — St. Catherine Link-Up flyer with parish town map">
+    </div>
+    <div class="hero-img-wrap">
+      <img src="/calendar/special-events/images/StCatherine%20Linkup1.png" alt="St. Catherine Link-Up flyer — Linstead, Spanish Town, and Portmore, presented by TRC Events">
+    </div>
+  </div>
+
+  <div class="event-info-strip">
+    <div class="event-info-chip">
+      <div class="label">Date &amp; Time</div>
+      <div class="value">Saturday, August 22, 2026 — Free noon to midnight, $20 after midnight</div>
+    </div>
+    <div class="event-info-chip">
+      <div class="label">Venue</div>
+      <div class="value">ILU Club of Chicago, 14421 Greenwood Rd, Dolton, IL</div>
+    </div>
+    <div class="event-info-chip">
+      <div class="label">The Vibe</div>
+      <div class="value">Three Areas. One Link. One Vibe.</div>
+    </div>
+  </div>
+
+  <p><strong>Whe' Yuh From in St. Catherine, JA?</strong> The St. Catherine Link-Up, presented by TRC Events, is the biggest link-up party of the year — a massive Chicago reunion for everyone repping St. Catherine Parish. One Parish, Many Roots, One Strong Legacy: this is a night built for Spanish Town, Portmore, Linstead, and every town in between to rep yuh town and link up under one roof.</p>
+  <p>The night is built around one guiding spirit: <strong>"One Parish: St. Catherine | One Link: Unity is Power | One Community: Stronger Together."</strong> Daytime hospitality includes a domino tournament kicking off the community vibes in the afternoon, open lawn and table Ludo throughout the day, and pre-ordered food available for sale on-site. The night also features a special birthday celebration for <strong>Prestige Finest (Suge – Don Dadda)</strong>.</p>
+
+  <h2 class="section-heading"><i class="fas fa-map-location-dot"></i> Rep Yuh Town</h2>
+  <p>St. Catherine is one parish with many roots. Wherever you're from within it, this is your link-up too:</p>
+  <div class="town-grid">
+    <div class="town-card"><h3>Spanish Town</h3><p>The historic capital — rich heritage &amp; iconic landmarks.</p></div>
+    <div class="town-card"><h3>Portmore</h3><p>The growing city — modern, vibrant, unstoppable.</p></div>
+    <div class="town-card"><h3>Linstead</h3><p>The market town — bustling, historic, unforgettable.</p></div>
+    <div class="town-card"><h3>Old Harbour Bay</h3><p>Jamaica's largest fishing village — coastal tradition.</p></div>
+    <div class="town-card"><h3>Old Harbour</h3><p>Coastal pride — history, culture, community.</p></div>
+    <div class="town-card"><h3>Bog Walk</h3><p>Gorgeous by nature — river, gorge, pure beauty.</p></div>
+    <div class="town-card"><h3>Ewarton</h3><p>The bauxite town — heritage, nature, resilience.</p></div>
+    <div class="town-card"><h3>Lluidas Vale (Worthy Park)</h3><p>Agricultural heart — strong roots, strong people.</p></div>
+    <div class="town-card"><h3>Riversdale</h3><p>Hillside community — connected, empowered.</p></div>
+    <div class="town-card"><h3>Troja</h3><p>Historic district — railway heritage, timeless pride.</p></div>
+  </div>
+
+  <h2 class="section-heading"><i class="fas fa-music"></i> Musical Lineup &amp; Sound Origins</h2>
+  <ul class="lineup-list">
+    <li><strong>City Rock Movements</strong><span>From Spanish Town, making their first-ever Chicago performance.</span></li>
+    <li><strong>Mighty Prestige Sound</strong><span>From Chicago &amp; Spanish Town, established in 1992 and branded "The Big Bad."</span></li>
+    <li><strong>Styles International Sound</strong><span>From Chicago &amp; Linstead, Featured Sound System.</span></li>
+    <li><strong>Stone Jam</strong><span>From Belize, Featured Guest Sound.</span></li>
+    <li><strong>DJ Poyo</strong><span>Regional Selector, Featured Lineup Artist.</span></li>
+  </ul>
+
+  <h2 class="section-heading"><i class="fas fa-comments"></i> Wah' Yuh A Chat Seh'?</h2>
+  <div class="chat-banner">
+    <span class="patois-title">Wah' Yuh A Chat Seh'?</span>
+    <p>Every link-up needs good chat. Whether you're catching up with someone from yuh old street or meeting a fellow St. Catherine native for the first time, here's where the real conversation starts — from the games you played in the yard to the sound system you swore was the best, no stone unturned. Come ready to reminisce.</p>
+  </div>
+
+  <div class="topic-grid">
+    <div class="topic-card">
+      <h3><i class="fas fa-school"></i> School Days</h3>
+      <ul>
+        <li>Which basic or kindergarten school did you start out at?</li>
+        <li>What primary school did you attend — and who was your favorite teacher?</li>
+        <li>Did you go to an all-age school, or move on to high school after prep?</li>
+        <li>Which high school did you graduate from, and what year?</li>
+        <li>Do you remember your school uniform colors? Anybody still have theirs?</li>
+        <li>What was recess or lunchtime like at your school?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-shapes"></i> Games We Played</h3>
+      <ul>
+        <li>What games ruled your yard or street — marbles, hopscotch, Dandy Shandy, Bat Up and Catch?</li>
+        <li>Did you ever build your own toy — a wire car, a kite, a bearing skate?</li>
+        <li>Any ring game or clapping song the girls always had going?</li>
+        <li>What was your go-to game when the lights went out?</li>
+        <li>Who was the undefeated marbles or Ludo champion on your street?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-bus"></i> Getting Around</h3>
+      <ul>
+        <li>Did you take the bus into Spanish Town or all the way to Kingston?</li>
+        <li>Which route taxi or robot taxi did you ride growing up?</li>
+        <li>Where was your regular taxi stand or bus stop?</li>
+        <li>Any memorable bus conductor or driver everybody knew by name?</li>
+        <li>Did you walk to school, or was it always a taxi/bus situation?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-house"></i> Neighborhood &amp; Street Life</h3>
+      <ul>
+        <li>What street or district did you grow up on?</li>
+        <li>What did the older heads call your neighborhood — did it have a nickname?</li>
+        <li>Who was the neighborhood character everybody knew?</li>
+        <li>Where did the kids gather to play after school — a lane, a field, a corner shop?</li>
+        <li>Which shop or corner store do you still think about?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-people-roof"></i> Parents, Curfews &amp; Growing Up</h3>
+      <ul>
+        <li>What time did you have to be home before dark — and what happened if you weren't?</li>
+        <li>Did your parents know your friends' parents, so word always got back to them?</li>
+        <li>What was the worst punishment you ever got, and what did you do to earn it?</li>
+        <li>Could you actually get away with anything, or did it feel like eyes were everywhere?</li>
+        <li>What chores had to be finished before you were allowed to go outside?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-church"></i> Church &amp; Community</h3>
+      <ul>
+        <li>What church did your family attend, and is it still standing?</li>
+        <li>Did you go to Sunday school? Who ran it?</li>
+        <li>Was there a big harvest, revival, or church anniversary everyone looked forward to?</li>
+        <li>Any community organization, youth club, or sports league you were part of?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-map-pin"></i> Landmarks &amp; Hangouts</h3>
+      <ul>
+        <li>Did you spend time by the Rio Cobre or around Bog Walk Gorge?</li>
+        <li>Any memories of the fishing village at Old Harbour Bay?</li>
+        <li>Ever visit Worthy Park in Lluidas Vale — for work, a tour, or just to look?</li>
+        <li>What was the go-to river, beach, or hillside spot for a day trip?</li>
+        <li>Which market day did your family shop — Linstead Market, Spanish Town Market?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-futbol"></i> Football &amp; World Cup Fever</h3>
+      <ul>
+        <li>Which team did you support growing up — Brazil, England, Jamaica, or somebody else entirely?</li>
+        <li>Did your whole area shut down to watch a match on one TV at a shop or bar?</li>
+        <li>Ever play street football, beach football, or ball in a cleared-out cane piece?</li>
+        <li>Which school or local football team did you play for or support?</li>
+        <li>Now that the World Cup's on again — who are you backing this time?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-star"></i> Famous Faces From Yuh Area</h3>
+      <ul>
+        <li>Any well-known musician, athlete, or public figure from your town?</li>
+        <li>Did you ever cross paths with someone before they made it big?</li>
+        <li>Any local legend everybody in the district talked about, famous or not?</li>
+        <li>Whose success made your whole area proud?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-utensils"></i> Food &amp; Vendors</h3>
+      <ul>
+        <li>Who had the best patty, bulla, or fry dumpling in your area?</li>
+        <li>Did you have a favorite jerk stand or Friday-night food spot?</li>
+        <li>Any vendor who set up in the same spot every single day, without fail?</li>
+        <li>What was the dish your grandmother or mother made that nobody else could copy?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-record-vinyl"></i> Sound System Wars</h3>
+      <ul>
+        <li>Which sound system did you follow — Stone Love, Metromedia, Kilimanjaro, or a local one from your own area?</li>
+        <li>Ever witness a sound clash live? Who won?</li>
+        <li>Did your area have its own sound, even if it never went big outside the district?</li>
+        <li>Did you record sessions off the radio onto cassette, or trade CDs after the fact?</li>
+        <li>Did you know any selectors, box boys, or MCs personally?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-users"></i> Family &amp; Legacy</h3>
+      <ul>
+        <li>Is your family still in St. Catherine, or did everyone scatter?</li>
+        <li>What's a saying or phrase your grandparents used that you still say today?</li>
+        <li>Who's the family member that everybody in the district knew?</li>
+        <li>What do you miss most about home that you can't find in Chicago?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-champagne-glasses"></i> Firsts You Never Forget</h3>
+      <ul>
+        <li>What was the first dance or session you ever went to — and who took you?</li>
+        <li>Did your parents actually know where you were that night?</li>
+        <li>What did you wear — was there a whole outfit-planning process beforehand?</li>
+        <li>First time you tried ganja — where were you, and who was there?</li>
+        <li>First time you snuck out without anybody knowing — did you get away with it?</li>
+        <li>Any session everybody from your era still brings up to this day?</li>
+      </ul>
+    </div>
+    <div class="topic-card">
+      <h3><i class="fas fa-leaf"></i> River, Cane Piece &amp; Country Life</h3>
+      <ul>
+        <li>Did you spend afternoons bathing in a river or gully as a kid?</li>
+        <li>Ever cut and chew sugar cane straight from a cane piece?</li>
+        <li>What bush medicine or home remedy did your grandmother swear by?</li>
+        <li>Mango season, otaheite apple, guinep — which fruit tree did you raid growing up?</li>
+        <li>Any duppy story or superstition tied to a specific spot in your district?</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="text-align:center; margin-top:-.5rem;"><i class="fas fa-child" style="color:var(--gold-accent);"></i> Want to relive even more of the games from back home? Check out the <a href="/calendar/games/" style="color:var(--gold-accent); font-weight:600;">Pickney Time Games Archive</a> — 100+ traditional games and toys documented by the community.</p>
+
+  <h2 class="section-heading"><i class="fas fa-handshake"></i> Presented With Support From</h2>
+  <div class="sponsor-strip">
+    <span><i class="fas fa-fire"></i> Jerky Jerk</span>
+    <span><i class="fas fa-flag"></i> Jamaica 4 Life</span>
+    <span><i class="fas fa-fire"></i> Tropical Jerk</span>
+  </div>
+
+  <p>Follow along at <strong>#stcatherinelinkup</strong> or call <strong>414-909-3279</strong> for more information.</p>
+
+  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
+</div>
+
+<footer class="site-footer">
+  &copy; 2026 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
+</footer>
+</body>
+</html>
