@@ -1,0 +1,1559 @@
+diff --git a/calendar/special-events/afroween.html b/calendar/special-events/afroween.html
+new file mode 100644
+index 0000000..ed72471
+--- /dev/null
++++ b/calendar/special-events/afroween.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>AfroWeen | SelassieFest Calendar</title>
++<meta name="description" content="A dark, high-energy fusion party blending Halloween aesthetics with Afrobeats, Amapiano, and Dancehall, featuring costume contests with cash prizes for Afro-centric and Caribbean-inspired creativity.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-mask"></i> Special Event</span>
++  <h1>AfroWeen</h1>
++  <div class="date-line">Saturday, October 30, 2027</div>
++</div>
++<div class="event-body">
++  <p>A dark, high-energy fusion party blending the aesthetics of traditional Halloween with the sounds of Afrobeats, Amapiano, and Dancehall.</p>
++  <p>Costume contests offer heavy cash prizes specifically for Afro-centric or Caribbean-inspired creative costumes — think Anansi the Spider, carnival spirits, or legendary artists reimagined for the night.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/caribbean-comedy-night.html b/calendar/special-events/caribbean-comedy-night.html
+new file mode 100644
+index 0000000..fc80785
+--- /dev/null
++++ b/calendar/special-events/caribbean-comedy-night.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Caribbean Comedy Night | SelassieFest Calendar</title>
++<meta name="description" content="A premier stand-up comedy showcase assembling the best of the digital and live Caribbean comedy circuits into one heavy-hitting variety show.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-microphone"></i> Special Event</span>
++  <h1>Caribbean Comedy Night</h1>
++  <div class="date-line">Saturday, August 21, 2027</div>
++</div>
++<div class="event-body">
++  <p>A premier stand-up comedy showcase featuring the absolute best of the digital and live Caribbean comedy circuits, assembled into a heavy-hitting variety show format.</p>
++  <p>Dale Elliott Jr. headlines the night, leveraging his global touring experience and Sprinter film star power to close the show with pull. White Yardie hosts and anchors the evening, using sharp culture-shock commentary and fast crowd work to bridge the gaps between sets. Deno Crazy and Valdomore bring their viral digital chemistry to the physical stage as a mid-show duo performance, built around character-driven live skits and collaborative situational comedy.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/caribbean-gospel-concert.html b/calendar/special-events/caribbean-gospel-concert.html
+new file mode 100644
+index 0000000..9e617ce
+--- /dev/null
++++ b/calendar/special-events/caribbean-gospel-concert.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Caribbean Gospel Concert | SelassieFest Calendar</title>
++<meta name="description" content="An uplifting showcase of Caribbean Gospel, Reggae Gospel, and traditional praise, anchored by a community choir backing local and international soloists.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-hands-praying"></i> Special Event</span>
++  <h1>Caribbean Gospel Concert</h1>
++  <div class="date-line">Sunday, September 19, 2027</div>
++</div>
++<div class="event-body">
++  <p>An uplifting Sunday showcase focusing on Caribbean Gospel, Reggae Gospel, and traditional praise, anchored by a massive community choir backing local and international soloists.</p>
++  <p>The event is built around an uplifting, spiritual atmosphere that appeals heavily to the family demographic and the older generation within the diaspora — a morning and evening of praise rooted in community and faith.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/celebrity-soccer-match.html b/calendar/special-events/celebrity-soccer-match.html
+new file mode 100644
+index 0000000..28508ef
+--- /dev/null
++++ b/calendar/special-events/celebrity-soccer-match.html
+@@ -0,0 +1,157 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Celebrity Soccer Match | SelassieFest Calendar</title>
++<meta name="description" content="A high-energy community soccer exhibition pitting Country vs. Town, pairing Caribbean and Midwest icons with mainstream influencers on the field.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-futbol"></i> Special Event</span>
++  <h1>Celebrity Soccer Match</h1>
++  <div class="date-line">Saturday, June 12, 2027</div>
++</div>
++<div class="event-body">
++  <p>A high-energy, community-driven soccer exhibition pairing local Caribbean and Midwest icons against mainstream influencers, played as Country (representing the international diaspora and islands) versus Town (representing local Chicago and Midwest zip codes).</p>
++  <p>The roster features popular local DJs, reggae and dancehall artists, Caribbean restaurant owners, and former collegiate or semi-pro players. Fan registration doubles as a live draft: a handful of lucky registrants are selected to actually take the field alongside the celebrities.</p>
++  <p>Halftime turns into a mini sound clash or live performance segment, keeping the energy high from kickoff to final whistle.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/chicago-dancehall-awards.html b/calendar/special-events/chicago-dancehall-awards.html
+new file mode 100644
+index 0000000..d2b1405
+--- /dev/null
++++ b/calendar/special-events/chicago-dancehall-awards.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Chicago Dancehall Awards | SelassieFest Calendar</title>
++<meta name="description" content="An elegant gala recognizing the local pioneers pushing dancehall culture forward in the Midwest, featuring award categories and tribute performances of legendary riddims.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-trophy"></i> Special Event</span>
++  <h1>Chicago Dancehall Awards</h1>
++  <div class="date-line">Saturday, September 25, 2027</div>
++</div>
++<div class="event-body">
++  <p>An elegant ceremony recognizing and elevating the local pioneers pushing dancehall culture forward in the Midwest, with categories including Selector of the Year, Best Dancehall Selector/DJ, Cultural Impact Award for Food and Catering, Fashion & Style Icon, and Breakout Artist of the Year.</p>
++  <p>The gala experience blends award presentations with high-production tribute performances, where current artists cover legendary dancehall riddims in celebration of the culture's roots.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/curry-fest.html b/calendar/special-events/curry-fest.html
+new file mode 100644
+index 0000000..9353fa7
+--- /dev/null
++++ b/calendar/special-events/curry-fest.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Curry Fest | SelassieFest Calendar</title>
++<meta name="description" content="A premium indoor food and lifestyle exposition beating the winter chill, featuring regional curry pavilions, celebrity cooking demonstrations, and a rum-tasting lounge.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-pepper-hot"></i> Special Event</span>
++  <h1>Curry Fest</h1>
++  <div class="date-line">Saturday, January 30, 2027</div>
++</div>
++<div class="event-body">
++  <p>A premium indoor food and lifestyle exposition, scaling the festival model up into a major venue to beat the cold season. The floor is divided into regional curry experiences — Caribbean Corner for goat and chicken, South Asian Avenue, and Fusion Eats.</p>
++  <p>The marketplace pairs the food with live cooking demonstrations from celebrity chefs, a premium rum-tasting lounge, and a main stage positioned away from the food stalls to keep the acoustics balanced throughout the pavilion.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/gq-meets-vogue-winter-ball.html b/calendar/special-events/gq-meets-vogue-winter-ball.html
+new file mode 100644
+index 0000000..43c0495
+--- /dev/null
++++ b/calendar/special-events/gq-meets-vogue-winter-ball.html
+@@ -0,0 +1,157 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>GQ Meets VOGUE: Winter Ball | SelassieFest Calendar</title>
++<meta name="description" content="A premium New Year's Eve gala with red carpet entry, a Best Dressed runway competition, and a night that transitions from sophisticated dinner to a full premium party.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-champagne-glasses"></i> Special Event</span>
++  <h1>GQ Meets VOGUE: Winter Ball</h1>
++  <div class="date-line">Friday, December 31, 2027</div>
++</div>
++<div class="event-body">
++  <p>A premium, high-fashion gala designed to close out the year — a red carpet entry with professional step-and-repeat photography, structural ambient lighting, and a strict formal dress code of high-tailored suits and avant-garde gowns.</p>
++  <p>Halfway through the night, a Best Dressed runway competition takes the floor with categories for Most Fashion Forward Male and Most Elegant Female, judged by local designers and fashion influencers.</p>
++  <p>The evening opens with sophisticated string quartet remixes of classic reggae and afrobeats during dinner, then transitions into a full premium party after midnight to ring in the new year.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/index.html b/calendar/special-events/index.html
+index 79b48d2..85b7aa3 100644
+--- a/calendar/special-events/index.html
++++ b/calendar/special-events/index.html
+@@ -162,6 +162,12 @@
+     <p>Celebrated according to the Ethiopian Orthodox calendar, Ganna honors the birth of Christ with a liturgical tradition central to Rastafari spirituality.</p>
+     <a href="/calendar/special-events/ethiopian-christmas.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, January 30, 2027</span>
++    <h3>Curry Fest</h3>
++    <p>A premium indoor food and lifestyle exposition beating the winter chill, featuring regional curry pavilions, celebrity cooking demonstrations, and a rum-tasting lounge.</p>
++    <a href="/calendar/special-events/curry-fest.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   <div class="event-card">
+     <span class="event-date-badge">Saturday, February 6, 2027</span>
+     <h3>Bob Marley's Birthday</h3>
+@@ -192,12 +198,36 @@
+     <p>Commemorating His Imperial Majesty Haile Selassie I's historic 1966 visit to Jamaica â€” one of the most sacred dates on the Rastafari calendar, marked by Nyabinghi gatherings.</p>
+     <a href="/calendar/special-events/groundation-day.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, May 15, 2027</span>
++    <h3>Midwest Sound Clash</h3>
++    <p>A high-stakes sound system competition for the King of the Midwest Trophy, bringing together top sounds from Chicago, Detroit, Cleveland, and Minneapolis.</p>
++    <a href="/calendar/special-events/midwest-sound-clash.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   <div class="event-card">
+     <span class="event-date-badge">Sunday, May 23, 2027</span>
+     <h3>Labour Day</h3>
+     <p>Jamaica's national day of community service and volunteerism, when citizens come together to improve their neighborhoods.</p>
+     <a href="/calendar/special-events/labour-day.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, June 12, 2027</span>
++    <h3>Celebrity Soccer Match</h3>
++    <p>A high-energy community soccer exhibition pitting Country vs. Town, pairing Caribbean and Midwest icons with mainstream influencers on the field.</p>
++    <a href="/calendar/special-events/celebrity-soccer-match.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, July 17, 2027</span>
++    <h3>Jerk Fest</h3>
++    <p>A massive summer outdoor family festival celebrating jerk seasoning, featuring a Best Jerk Chicken/Pork cook-off, live reggae and dancehall, and a dedicated family zone.</p>
++    <a href="/calendar/special-events/jerk-fest.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, August 21, 2027</span>
++    <h3>Caribbean Comedy Night</h3>
++    <p>A premier stand-up comedy showcase assembling the best of the digital and live Caribbean comedy circuits into one heavy-hitting variety show.</p>
++    <a href="/calendar/special-events/caribbean-comedy-night.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   <div class="event-card">
+     <span class="event-date-badge">Tuesday, September 7, 2027</span>
+     <h3>Miss Lou's Birthday</h3>
+@@ -210,12 +240,30 @@
+     <p>Marking the new year according to the Ethiopian calendar â€” a date of spiritual renewal significant to the Rastafari faith.</p>
+     <a href="/calendar/special-events/ethiopian-new-year.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Sunday, September 19, 2027</span>
++    <h3>Caribbean Gospel Concert</h3>
++    <p>An uplifting showcase of Caribbean Gospel, Reggae Gospel, and traditional praise, anchored by a community choir backing local and international soloists.</p>
++    <a href="/calendar/special-events/caribbean-gospel-concert.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, September 25, 2027</span>
++    <h3>Chicago Dancehall Awards</h3>
++    <p>An elegant gala recognizing the local pioneers pushing dancehall culture forward in the Midwest, featuring award categories and tribute performances of legendary riddims.</p>
++    <a href="/calendar/special-events/chicago-dancehall-awards.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   <div class="event-card">
+     <span class="event-date-badge">Monday, October 18, 2027</span>
+     <h3>National Heroes Day</h3>
+     <p>Honoring Jamaica's seven National Heroes, including Marcus Garvey and Nanny of the Maroons, who shaped the nation's fight for freedom and justice.</p>
+     <a href="/calendar/special-events/national-heroes-day.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Saturday, October 30, 2027</span>
++    <h3>AfroWeen</h3>
++    <p>A dark, high-energy fusion party blending Halloween aesthetics with Afrobeats, Amapiano, and Dancehall, featuring costume contests with cash prizes for Afro-centric and Caribbean-inspired creativity.</p>
++    <a href="/calendar/special-events/afroween.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   <div class="event-card">
+     <span class="event-date-badge">Wednesday, November 24, 2027</span>
+     <h3>Irie Disguise: The Blackout Masquerade</h3>
+@@ -246,6 +294,12 @@
+     <p>A centuries-old Jamaican masquerade tradition featuring costumed characters like Pitchy Patchy and Horse Head, marking the start of the Christmas street-festival season on Boxing Day.</p>
+     <a href="/calendar/special-events/jonkonnu.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
+   </div>
++  <div class="event-card">
++    <span class="event-date-badge">Friday, December 31, 2027</span>
++    <h3>GQ Meets VOGUE: Winter Ball</h3>
++    <p>A premium New Year's Eve gala with red carpet entry, a Best Dressed runway competition, and a night that transitions from sophisticated dinner to a full premium party.</p>
++    <a href="/calendar/special-events/gq-meets-vogue-winter-ball.html" class="btn-sm">View Details <i class="fas fa-arrow-right"></i></a>
++  </div>
+   </div>
+ </div>
+ 
+diff --git a/calendar/special-events/jerk-fest.html b/calendar/special-events/jerk-fest.html
+new file mode 100644
+index 0000000..31a98ff
+--- /dev/null
++++ b/calendar/special-events/jerk-fest.html
+@@ -0,0 +1,156 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Jerk Fest | SelassieFest Calendar</title>
++<meta name="description" content="A massive summer outdoor family festival celebrating jerk seasoning, featuring a Best Jerk Chicken/Pork cook-off, live reggae and dancehall, and a dedicated family zone.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-fire"></i> Special Event</span>
++  <h1>Jerk Fest</h1>
++  <div class="date-line">Saturday, July 17, 2027</div>
++</div>
++<div class="event-body">
++  <p>A massive summer outdoor family-friendly food and music festival celebrating the art of jerk seasoning, anchored by a food village where local vendors compete in a Best Jerk Chicken and Best Jerk Pork cook-off, complete with interactive tasting passes for attendees.</p>
++  <p>A tiered stage brings together roots reggae bands and current dancehall artists, while a dedicated family zone offers cultural drum circles and craft vendors for the youngest members of the community.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
+diff --git a/calendar/special-events/midwest-sound-clash.html b/calendar/special-events/midwest-sound-clash.html
+new file mode 100644
+index 0000000..e1e5348
+--- /dev/null
++++ b/calendar/special-events/midwest-sound-clash.html
+@@ -0,0 +1,157 @@
++﻿<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Midwest Sound Clash | SelassieFest Calendar</title>
++<meta name="description" content="A high-stakes sound system competition for the King of the Midwest Trophy, bringing together top sounds from Chicago, Detroit, Cleveland, and Minneapolis.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
++<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
++<style>
++    :root {
++      --bg-black: #0D0D0D;
++      --card-bg: rgba(255,255,255,0.04);
++      --border-dim: rgba(255,255,255,0.08);
++      --text-white: #F5F5F5;
++      --text-muted: #b0b0b0;
++      --roots-green: #0E5E36;
++      --gold-accent: #E5A93C;
++      --red-accent: #C83737;
++      --transition-default: all 0.25s ease;
++    }
++    * { margin:0; padding:0; box-sizing:border-box; }
++    body {
++      background-color: var(--bg-black);
++      color: var(--text-white);
++      font-family: 'Jost', sans-serif;
++      line-height: 1.6;
++      -webkit-font-smoothing: antialiased;
++    }
++    a { text-decoration:none; transition: var(--transition-default); }
++
++    /* Header */
++    .site-header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border-dim); background: rgba(13,13,13,0.96); }
++    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
++    .brand-link { display:inline-block; text-align:center; transition:opacity .2s; }
++    .brand-link:hover { opacity:.85; }
++    .site-title { font-weight:200; font-size:2.4rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-white); line-height:1.2; }
++    .tagline { font-weight:300; font-size:.85rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold-accent); margin-top:6px; border-top:1px solid var(--roots-green); display:inline-block; padding-top:8px; }
++    .powered-by-wrapper { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:8px 16px 8px 20px; border-radius:60px; border:1px solid var(--border-dim); }
++    .powered-by-text { font-weight:300; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa; }
++    .powered-by-logo img { height:36px; width:auto; border-radius:4px; }
++    .jvgh-badge-wrapper { display:flex; align-items:center; gap:8px; background:rgba(14,94,54,0.15); padding:6px 14px; border-radius:60px; border:1px solid rgba(14,94,54,0.4); }
++    .jvgh-badge-text { font-weight:500; font-size:.75rem; color:#6dbe8f; }
++.global-badge-wrapper { display:flex; align-items:center; gap:6px; background:var(--roots-green,#0F6A3A); padding:8px 20px; border-radius:60px; flex-shrink:0; text-decoration:none; transition:opacity .2s; }
++.global-badge-wrapper:hover { opacity:.85; }
++.global-badge-text { font-weight:700; font-size:.8rem; letter-spacing:.05em; color:#fff; }
++
++    /* Local sub-nav */
++    .fest-nav { background:rgba(5,8,5,0.96); border-bottom:1px solid var(--border-dim); position:sticky; top:0; z-index:100; }
++    .nav-container { max-width:1300px; margin:0 auto; padding:.9rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
++    .logo-area { display:flex; align-items:center; gap:.6rem; font-weight:400; font-size:1.1rem; }
++    .logo-area i { color:var(--gold-accent); }
++    .nav-links { display:flex; gap:1.6rem; flex-wrap:wrap; }
++    .nav-links a { color:#ddd; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid transparent; padding-bottom:4px; }
++    .nav-links a:hover, .nav-links a.active { color:var(--gold-accent); border-bottom-color:var(--gold-accent); }
++
++    .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
++
++    /* Hub hero */
++    .hub-hero { text-align:center; padding: 3rem 2rem 2rem; }
++    .hub-hero h1 { font-weight:300; font-size:2.6rem; letter-spacing:.04em; margin-bottom:1rem; }
++    .hub-hero p { color:var(--text-muted); max-width:700px; margin:0 auto; font-size:1.05rem; }
++    .category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2.5rem; }
++    .category-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.2rem; padding:2rem; transition:var(--transition-default); }
++    .category-card:hover { border-color:var(--gold-accent); transform:translateY(-4px); }
++    .category-card i { font-size:2rem; color:var(--gold-accent); margin-bottom:1rem; display:block; }
++    .category-card h2 { font-weight:500; font-size:1.3rem; margin-bottom:.6rem; }
++    .category-card p { color:var(--text-muted); font-size:.92rem; margin-bottom:1.2rem; }
++    .category-card a.btn { display:inline-block; background:var(--gold-accent); color:#0a0a0a; font-weight:600; padding:.5rem 1.2rem; border-radius:30px; font-size:.85rem; }
++
++    /* Event list grid (category hub pages) */
++    .event-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.4rem; margin-top:2rem; }
++    .event-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1rem; padding:1.6rem; transition:var(--transition-default); display:flex; flex-direction:column; }
++    .event-card:hover { border-color:var(--gold-accent); transform:translateY(-3px); }
++    .event-date-badge { display:inline-block; background:rgba(229,169,60,0.12); color:var(--gold-accent); font-size:.75rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.3rem .8rem; border-radius:30px; margin-bottom:.9rem; align-self:flex-start; }
++    .event-card h3 { font-weight:500; font-size:1.2rem; margin-bottom:.6rem; }
++    .event-card p { color:var(--text-muted); font-size:.9rem; flex:1; margin-bottom:1rem; }
++    .event-card a.btn-sm { color:var(--gold-accent); font-size:.85rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
++
++    /* Single event page */
++    .event-hero { text-align:center; padding:3rem 2rem; border-bottom:1px solid var(--border-dim); }
++    .event-hero .badge { display:inline-block; background:rgba(14,94,54,0.15); border:1px solid rgba(14,94,54,0.4); color:#6dbe8f; font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
++    .event-hero h1 { font-weight:300; font-size:2.6rem; margin-bottom:.8rem; }
++    .event-hero .date-line { font-size:1.2rem; color:var(--gold-accent); font-weight:500; letter-spacing:.02em; }
++    .event-body { max-width:760px; margin:0 auto; padding:3rem 2rem; }
++    .event-body p { color:#ddd; font-size:1.05rem; margin-bottom:1.4rem; }
++    .back-link { display:inline-flex; align-items:center; gap:.5rem; color:var(--gold-accent); font-weight:600; margin-top:1rem; }
++
++    footer.site-footer { text-align:center; padding:2.5rem 2rem; border-top:1px solid var(--border-dim); color:#777; font-size:.85rem; }
++
++    @media (max-width:700px) {
++      .header-flex { flex-direction:column; align-items:center; }
++      .site-title { font-size:1.7rem; }
++      .event-hero h1, .hub-hero h1 { font-size:1.8rem; }
++    }
++</style>
++</head>
++<body>
++<header class="site-header">
++  <div class="header-flex">
++    <a href="/" class="brand-link">
++      <div class="site-title">SELASSIEFEST</div>
++      <div class="tagline">One Day. One Love. One Society.</div>
++    </a>
++    <div class="powered-by-wrapper">
++      <span class="powered-by-text">Powered By</span>
++      <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
++        <img src="/assets/images/ss_tiny.png" alt="Spliff Society">
++      </a>
++    </div>
++    <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
++      <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Events</span>
++    </a>
++    <a href="/pickney-time/" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
++      <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Pickney</span>
++    </a>
++    <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
++      <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
++      <span class="jvgh-badge-text">Jamaica Village Ghana</span>
++    </a>
++    <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
++      <span class="global-badge-text">GLOBAL</span>
++    </a>
++  </div>
++</header>
++<div class="fest-nav">
++  <div class="nav-container">
++    <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
++    <div class="nav-links">
++      <a href="/calendar/">Calendar Home</a>
++      <a href="/calendar/festivals/">Festivals</a>
++      <a href="/calendar/special-events/" class="active">Special Events</a>
++      <a href="/calendar/weekly/">Weekly Events</a>
++    </div>
++  </div>
++</div>
++
++<div class="event-hero">
++  <span class="badge"><i class="fas fa-record-vinyl"></i> Special Event</span>
++  <h1>Midwest Sound Clash</h1>
++  <div class="date-line">Saturday, May 15, 2027</div>
++</div>
++<div class="event-body">
++  <p>A high-stakes, authentic sound system competition for the prestigious King of the Midwest Trophy, inviting four prominent sound systems from major Midwest hubs — Chicago, Detroit, Cleveland, and Minneapolis.</p>
++  <p>The night unfolds in three rounds: a warm-up to establish the vibe with no dubplates allowed, a challenge round built around specific genres or eras like 90s Dancehall or Foundation Reggae, and a final dub-for-dub showdown using exclusive custom recordings.</p>
++  <p>Winners are decided by a combination of crowd decibel meters — the classic forward — and a panel of respected culture judges, keeping the competition fair and rooted in the culture.</p>
++  <a href="/calendar/special-events/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Special Event</a>
++</div>
++
++<footer class="site-footer">
++  &copy; 2027 SelassieFest Collective &middot; Ras Tafari Inc. &middot; <a href="/calendar/" style="color:var(--gold-accent);">Full Calendar</a>
++</footer>
++</body>
++</html>
