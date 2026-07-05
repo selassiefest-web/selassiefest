@@ -1,299 +1,1286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<title>Anansi Stories | Pickney Time Games Archive</title>
-<meta name="description" content="Anansi Stories: the origins, meaning, and characters of Jamaica's most iconic folktale tradition, rooted in West African oral history and passed down through generations.">
-<style>
-    .game-body ul.pt-list { margin: 0.6rem 0 0.4rem 1.3rem; color: #ddd; font-weight: 300; }
-    .game-body ul.pt-list li { margin-bottom: 0.7rem; }
-    .game-body ul.pt-list strong { color: var(--cream); font-weight: 600; }
-    .game-body p.pt-body { font-weight: 300; color: #ddd; margin-bottom: 0.9rem; }
-    :root {
-      --black: #090909; --roots-green: #0F6A3A; --gold: #F3C13A; --heritage-red: #C92828;
-      --cream: #F8F4EA; --text-white: #F5F5F5; --card-bg: rgba(255,255,255,0.04);
-      --border-dim: rgba(255,255,255,0.08); --transition-default: all 0.3s ease;
-      --font-heading: 'Fredoka', sans-serif; --font-accent: 'Bebas Neue', sans-serif; --font-body: 'Inter', sans-serif;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
-    body { background-color:var(--black); color:var(--text-white); font-family:var(--font-body); line-height:1.6; }
-    a { text-decoration:none; color:inherit; transition:var(--transition-default); }
-    .container { max-width:1100px; margin:0 auto; padding:0 24px; }
-    .site-header { padding:18px 24px; border-bottom:1px solid var(--border-dim); background:rgba(9,9,9,0.96); position:sticky; top:0; z-index:1000; }
-    .header-flex { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; max-width:1300px; margin:0 auto; }
-    .brand-link { display:flex; flex-direction:column; }
-    .site-title { font-family:var(--font-accent); font-size:1.3rem; letter-spacing:0.08em; color:var(--cream); }
-    .tagline { font-family:var(--font-body); font-weight:300; font-size:0.55rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold); opacity:0.85; }
-    .pt-nav { background:rgba(15,106,58,0.08); border-bottom:1px solid var(--border-dim); position:sticky; top:65px; z-index:999; backdrop-filter: blur(6px); }
-    .pt-nav-container { max-width:1300px; margin:0 auto; padding:0.8rem 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-    .pt-logo { display:flex; align-items:center; gap:8px; font-family:var(--font-heading); font-weight:500; font-size:1.1rem; color:var(--cream); }
-    .pt-logo i { color:var(--gold); }
-    .pt-nav-links { display:flex; gap:1.4rem; flex-wrap:wrap; }
-    .pt-nav-links a { font-size:0.85rem; text-transform:uppercase; letter-spacing:0.04em; color:#ddd; border-bottom:2px solid transparent; padding-bottom:3px; }
-    .pt-nav-links a:hover, .pt-nav-links a.active { color:var(--gold); border-bottom-color:var(--gold); }
-    .pt-main-site-link { opacity:0.65; padding-right:14px; border-right:1px solid var(--border-dim); }
-    .pt-main-site-link:hover { opacity:1; }
-    .game-hero { text-align:center; padding:3.5rem 1.5rem 2.5rem; border-bottom:1px solid var(--border-dim);
-      background: radial-gradient(ellipse at 30% 20%, rgba(15,106,58,0.18), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(201,40,40,0.12), transparent 55%); }
-    .game-hero .cat-badge { display:inline-block; background:rgba(243,193,58,0.12); border:1px solid rgba(243,193,58,0.4); color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; padding:0.4rem 1.1rem; border-radius:30px; margin-bottom:1.2rem; }
-    .game-hero h1 { font-family:var(--font-heading); font-weight:600; font-size:2.8rem; margin-bottom:0.6rem; }
-    .game-hero p.tagline-desc { color:#ccc; font-size:1.1rem; max-width:640px; margin:0 auto; font-weight:300; }
-    .photo-placeholder { width:100%; aspect-ratio:16/9; border:2px dashed rgba(243,193,58,0.35); border-radius:20px; background:rgba(255,255,255,0.02);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:rgba(245,245,245,0.4); font-size:0.8rem; text-align:center; padding:16px; margin: 2rem 0; }
-    .photo-placeholder i { font-size:2rem; color:rgba(243,193,58,0.45); }
-    .photo-placeholder .ph-label { font-weight:600; letter-spacing:0.05em; text-transform:uppercase; font-size:0.72rem; }
-    .game-body { padding:3rem 0; }
-    .info-strip { display:flex; flex-wrap:wrap; gap:14px; margin-bottom:2.2rem; }
-    .info-chip { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:16px; padding:12px 18px; flex:1; min-width:200px; }
-    .info-chip .label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--gold); margin-bottom:4px; }
-    .info-chip .value { font-size:0.95rem; font-weight:300; }
-    .game-section-title { font-family:var(--font-heading); font-weight:500; font-size:1.4rem; color:var(--cream); margin: 2rem 0 1rem; display:flex; align-items:center; gap:10px; }
-    .game-section-title i { color:var(--roots-green); }
-    .cultural-note { background:rgba(201,40,40,0.06); border-left:4px solid var(--heritage-red); border-radius:12px; padding:18px 22px; font-weight:300; font-style:italic; color:#ddd; margin-top:1rem; }
-    .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--gold); font-weight:500; margin-top:2.5rem; }
-    .hub-hero { text-align:center; padding:3.5rem 1.5rem 2rem; }
-    .hub-hero h1 { font-family:var(--font-heading); font-weight:600; font-size:2.6rem; margin-bottom:0.8rem; }
-    .hub-hero p { color:#bbb; max-width:680px; margin:0 auto; font-weight:300; }
-    .archive-controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:center; margin: 2rem 0; }
-    .filter-btn { background:var(--card-bg); border:1px solid var(--border-dim); color:#ccc; padding:8px 18px; border-radius:30px; font-size:0.82rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.04em; }
-    .filter-btn.active, .filter-btn:hover { background:var(--gold); color:#0a0a0a; border-color:var(--gold); }
-    .game-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.3rem; padding-bottom:3rem; }
-    .game-card { background:var(--card-bg); border:1px solid var(--border-dim); border-radius:1.1rem; padding:0; overflow:hidden; transition:var(--transition-default); display:flex; flex-direction:column; }
-    .game-card:hover { border-color:var(--gold); transform:translateY(-3px); }
-    .card-img-wrap { position:relative; width:100%; aspect-ratio:4/3; background:rgba(255,255,255,0.03); overflow:hidden; }
-    .card-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
-    .card-img-placeholder { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.02); color:rgba(245,245,245,0.35); text-align:center; padding:10px; }
-    .card-img-placeholder i { font-size:1.4rem; color:rgba(243,193,58,0.4); }
-    .card-img-placeholder span { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
-    .card-body { padding:1.3rem 1.5rem 1.5rem; display:flex; flex-direction:column; flex:1; }
-    .game-card .icon { font-size:1.3rem; color:var(--gold); margin-bottom:0.6rem; }
-    .game-card h3 { font-family:var(--font-heading); font-weight:500; font-size:1.15rem; margin-bottom:0.5rem; }
-    .game-card p { color:#aaa; font-size:0.88rem; flex:1; margin-bottom:1rem; font-weight:300; }
-    .game-card .cat-tag { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--roots-green); margin-bottom:0.6rem; }
-    .game-card a.btn-sm { color:var(--gold); font-size:0.82rem; font-weight:600; text-transform:uppercase; }
-    footer.site-footer { text-align:center; padding:2.5rem 1.5rem; border-top:1px solid var(--border-dim); color:#777; font-size:0.85rem; }
-    .footer-social { display:flex; justify-content:center; gap:18px; margin-bottom:1.2rem; }
-    .footer-social a { width:40px; height:40px; border-radius:50%; border:1px solid var(--border-dim); display:flex; align-items:center; justify-content:center; color:#ccc; font-size:1.1rem; background:rgba(255,255,255,0.03); }
-    .footer-social a:hover { border-color:var(--gold); color:var(--gold); background:rgba(243,193,58,0.08); }
-    .footer-contact { margin-bottom:0.8rem; font-size:0.8rem; color:#999; }
-    .footer-contact a { color:#999; }
-    .footer-contact a:hover { color:var(--gold); }
-    .footer-contact .sep { margin:0 8px; color:#555; }
-    .submit-banner { background:linear-gradient(135deg, rgba(15,106,58,0.16), rgba(201,40,40,0.12)); border:1px solid rgba(243,193,58,0.3); border-radius:24px; padding:2.4rem 2rem; margin:2.5rem 0; text-align:center; }
-    .submit-banner h2 { font-family:var(--font-heading); font-size:1.9rem; margin-bottom:0.7rem; }
-    .submit-banner p { color:#ddd; font-weight:300; max-width:680px; margin:0 auto 1.4rem; }
-    .submit-banner .submit-cta-actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
-    .submit-cta { background:rgba(255,255,255,0.03); border:1px solid rgba(243,193,58,0.25); border-radius:24px; padding:2.4rem 2rem; margin:3rem 0 1rem; text-align:center; }
-    .submit-cta-icon { font-size:1.8rem; color:var(--heritage-red); margin-bottom:0.8rem; }
-    .submit-cta h2 { font-family:var(--font-heading); font-size:1.6rem; margin-bottom:0.8rem; }
-    .submit-cta p { color:#ccc; font-weight:300; max-width:600px; margin:0 auto 1.2rem; font-size:0.95rem; }
-    .submit-cta-actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:1rem; }
-    .btn-submit { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:40px; font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; border:1px solid var(--gold); color:var(--gold); background:transparent; }
-    .btn-submit.primary { background:var(--gold); color:#0a0a0a; }
-    .btn-submit:hover { opacity:0.85; }
-    .submit-cta-note { font-size:0.75rem; color:#888; font-style:italic; }
-    @media (max-width:700px) {
-      .game-hero h1, .hub-hero h1 { font-size:1.9rem; }
-      .header-flex { justify-content:center; text-align:center; }
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pickney Memory Challenge · St. Catherine Edition | SelassieFest</title>
+    <meta name="description" content="20 scored questions + 5 memory prompts — test your memory of Jamaican childhood games, toys, and St. Catherine heritage." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    /* --- JCGTA Museum Record --- */
-    .museum-record { background:var(--card-bg); border:1px solid rgba(243,193,58,0.35); border-radius:18px; padding:22px 24px; margin-bottom:2.2rem; }
-    .mr-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--border-dim); padding-bottom:12px; margin-bottom:16px; }
-    .mr-title { font-family:var(--font-accent); letter-spacing:0.12em; font-size:1.15rem; color:var(--gold); }
-    .mr-id { background:rgba(15,106,58,0.25); border:1px solid var(--roots-green); color:#7fd6a4; font-size:0.75rem; letter-spacing:0.08em; padding:0.3rem 0.9rem; border-radius:30px; white-space:nowrap; }
-    .mr-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px 24px; }
-    .mr-field .label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--gold); margin-bottom:3px; }
-    .mr-field .value { font-size:0.93rem; font-weight:300; color:var(--text-white); }
-    .mr-badges { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; padding-top:15px; border-top:1px solid var(--border-dim); }
-    .mr-badge { background:rgba(243,193,58,0.07); border:1px solid rgba(243,193,58,0.3); border-radius:14px; padding:11px 15px; flex:1; min-width:230px; }
-    .mr-badge .b-label { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--gold); margin-bottom:3px; }
-    .mr-badge .b-score { font-size:1.05rem; letter-spacing:0.1em; }
-    .mr-badge .b-note { font-size:0.78rem; font-weight:300; color:#bbb; margin-top:3px; }
-    .source-list { list-style:none; padding:0; margin:0.6rem 0 0; }
-    .source-list li { border-left:3px solid var(--roots-green); background:var(--card-bg); border-radius:0 10px 10px 0; padding:10px 16px; margin-bottom:10px; font-weight:300; font-size:0.92rem; color:#ddd; }
-    .source-wanted { border-left-color:var(--gold) !important; font-style:italic; }
+    <style>
+        /* ── root / reset ── */
+        :root {
+            --bg-black: #0D0D0D;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --text-white: #F5F5F5;
+            --text-muted: #b0b0b0;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --transition: all 0.25s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
 
-</style>
+        /* ── header (matches SelassieFest) ── */
+        .site-header {
+            padding: 28px 32px 16px;
+            border-bottom: 1px solid var(--border-dim);
+            background: rgba(13, 13, 13, 0.96);
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .brand-link {
+            display: inline-block;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+        .brand-link:hover {
+            opacity: .85;
+        }
+        .site-title {
+            font-weight: 200;
+            font-size: 2.4rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.2;
+        }
+        .tagline {
+            font-weight: 300;
+            font-size: .85rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-top: 6px;
+            border-top: 1px solid var(--roots-green);
+            display: inline-block;
+            padding-top: 8px;
+        }
+        .powered-by-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px 8px 20px;
+            border-radius: 60px;
+            border: 1px solid var(--border-dim);
+        }
+        .powered-by-text {
+            font-weight: 300;
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #aaa;
+        }
+        .powered-by-logo img {
+            height: 36px;
+            width: auto;
+            border-radius: 4px;
+        }
+        .jvgh-badge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(14, 94, 54, 0.15);
+            padding: 6px 14px;
+            border-radius: 60px;
+            border: 1px solid rgba(14, 94, 54, 0.4);
+        }
+        .jvgh-badge-text {
+            font-weight: 500;
+            font-size: .75rem;
+            color: #6dbe8f;
+        }
+        .global-badge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--roots-green, #0F6A3A);
+            padding: 8px 20px;
+            border-radius: 60px;
+            flex-shrink: 0;
+            transition: opacity .2s;
+        }
+        .global-badge-wrapper:hover {
+            opacity: .85;
+        }
+        .global-badge-text {
+            font-weight: 700;
+            font-size: .8rem;
+            letter-spacing: .05em;
+            color: #fff;
+        }
+        .badge-icon {
+            margin-right: 4px;
+        }
+
+        /* ── sub-nav ── */
+        .fest-nav {
+            background: rgba(5, 8, 5, 0.96);
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: .9rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+        .logo-area i {
+            color: var(--gold-accent);
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.6rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #ddd;
+            font-size: .9rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* ── main layout ── */
+        .challenge-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        /* intro */
+        .challenge-intro {
+            text-align: center;
+            padding: 2rem 0 2.5rem;
+            border-bottom: 1px solid var(--border-dim);
+            margin-bottom: 2.5rem;
+        }
+        .challenge-intro .badge {
+            display: inline-block;
+            background: rgba(14, 94, 54, 0.15);
+            border: 1px solid rgba(14, 94, 54, 0.4);
+            color: #6dbe8f;
+            font-size: .8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            padding: .4rem 1.1rem;
+            border-radius: 30px;
+            margin-bottom: 1.2rem;
+        }
+        .challenge-intro h1 {
+            font-weight: 300;
+            font-size: 2.6rem;
+            margin-bottom: .4rem;
+        }
+        .challenge-intro h1 em {
+            color: var(--gold-accent);
+            font-style: normal;
+            font-weight: 500;
+        }
+        .challenge-intro .subhead {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 640px;
+            margin: 0.4rem auto 0.6rem;
+        }
+        .challenge-intro .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2rem 2.2rem;
+            margin-top: 1.2rem;
+            font-size: .95rem;
+            color: #ccc;
+        }
+        .challenge-intro .meta-info span i {
+            color: var(--gold-accent);
+            margin-right: 6px;
+        }
+        .challenge-intro .meta-info .highlight {
+            color: var(--gold-accent);
+            font-weight: 500;
+        }
+
+        /* ── quiz form ── */
+        .quiz-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 1.4rem 1.8rem;
+            transition: var(--transition);
+        }
+        .question-card.correct {
+            border-color: var(--roots-green);
+            background: rgba(14, 94, 54, 0.08);
+        }
+        .question-card.incorrect {
+            border-color: var(--red-accent);
+            background: rgba(200, 55, 55, 0.08);
+        }
+        .question-card.reveal-correct {
+            border-color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.06);
+        }
+
+        .q-number {
+            display: inline-block;
+            font-size: .75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--gold-accent);
+            background: rgba(229, 169, 60, 0.12);
+            padding: .2rem .8rem;
+            border-radius: 20px;
+            margin-bottom: .6rem;
+        }
+        .q-text {
+            font-size: 1.05rem;
+            font-weight: 400;
+            margin-bottom: .9rem;
+            color: var(--text-white);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .5rem .9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 300;
+            color: #ddd;
+            border: 1px solid transparent;
+        }
+        .option-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-dim);
+        }
+        .option-label input[type="radio"] {
+            accent-color: var(--gold-accent);
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .option-label .letter {
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 20px;
+        }
+        .option-label .answer-text {
+            font-weight: 300;
+        }
+
+        /* feedback icons */
+        .q-feedback {
+            margin-top: .6rem;
+            font-size: .9rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .3rem .8rem;
+            border-radius: 8px;
+        }
+        .q-feedback.correct-fb {
+            color: #6dbe8f;
+        }
+        .q-feedback.incorrect-fb {
+            color: #e07a7a;
+        }
+        .q-feedback .fb-icon {
+            font-size: 1.1rem;
+        }
+
+        /* ── submit / controls ── */
+        .quiz-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2rem;
+            margin: 2rem 0 1.5rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .8rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Jost', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--card-bg);
+            color: var(--text-white);
+            border: 1px solid var(--border-dim);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        .btn-primary {
+            background: var(--gold-accent);
+            color: #0D0D0D;
+            border-color: var(--gold-accent);
+        }
+        .btn-primary:hover {
+            background: #f0b84a;
+            border-color: #f0b84a;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-dim);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .btn-success {
+            background: var(--roots-green);
+            color: #fff;
+            border-color: var(--roots-green);
+        }
+        .btn-success:hover {
+            background: #15804a;
+            border-color: #15804a;
+        }
+        .btn-email {
+            background: #2a6f97;
+            color: #fff;
+            border-color: #2a6f97;
+        }
+        .btn-email:hover {
+            background: #3a8bbf;
+            border-color: #3a8bbf;
+        }
+        .btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none !important;
+            filter: none !important;
+        }
+
+        /* ── score display ── */
+        .score-panel {
+            background: linear-gradient(135deg, rgba(229, 169, 60, 0.10), rgba(14, 94, 54, 0.08));
+            border: 1px solid var(--gold-accent);
+            border-radius: 20px;
+            padding: 1.8rem 2.2rem;
+            text-align: center;
+            margin: 1.5rem 0 2.5rem;
+            display: none;
+        }
+        .score-panel.visible {
+            display: block;
+            animation: fadeUp 0.5s ease;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .score-panel .big-score {
+            font-size: 3.8rem;
+            font-weight: 300;
+            color: var(--gold-accent);
+            line-height: 1;
+        }
+        .score-panel .big-score span {
+            font-weight: 600;
+        }
+        .score-panel .score-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: .2rem;
+        }
+        .score-panel .score-message {
+            font-size: 1.1rem;
+            margin-top: .8rem;
+            color: #ddd;
+        }
+        .score-panel .email-action {
+            margin-top: 1.8rem;
+        }
+
+        /* ── memory prompts ── */
+        .memory-section {
+            margin-top: 3.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--border-dim);
+        }
+        .memory-section h2 {
+            font-weight: 300;
+            font-size: 2rem;
+            margin-bottom: .4rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+        .memory-section h2 i {
+            color: var(--gold-accent);
+        }
+        .memory-section .memory-sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .memory-prompt {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .memory-prompt .mp-label {
+            font-size: .8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--gold-accent);
+            margin-bottom: .3rem;
+        }
+        .memory-prompt .mp-text {
+            font-weight: 400;
+            font-size: 1.05rem;
+            margin-bottom: .7rem;
+            color: #eee;
+        }
+        .memory-prompt .mp-text i {
+            color: var(--gold-accent);
+            margin-right: 6px;
+        }
+
+        .memory-prompt .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem .1rem;
+        }
+        .memory-prompt .checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: .3rem .8rem .3rem .5rem;
+            border-radius: 30px;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .memory-prompt .checkbox-grid label:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-dim);
+        }
+        .memory-prompt .checkbox-grid input[type="checkbox"] {
+            accent-color: var(--gold-accent);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .memory-prompt textarea,
+        .memory-prompt input[type="text"] {
+            width: 100%;
+            padding: .7rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-dim);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            resize: vertical;
+        }
+        .memory-prompt textarea:focus,
+        .memory-prompt input[type="text"]:focus {
+            outline: none;
+            border-color: var(--gold-accent);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .memory-prompt textarea {
+            min-height: 70px;
+        }
+
+        .archive-note {
+            background: rgba(229, 169, 60, 0.06);
+            border: 1px solid rgba(229, 169, 60, 0.2);
+            border-radius: 14px;
+            padding: 1.2rem 1.6rem;
+            margin-top: 1.8rem;
+            color: #ddd;
+            font-size: .95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem;
+        }
+        .archive-note i {
+            color: var(--gold-accent);
+            font-size: 1.3rem;
+            margin-top: 2px;
+        }
+
+        .memory-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.8rem;
+        }
+
+        /* ── footer ── */
+        footer.site-footer {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            border-top: 1px solid var(--border-dim);
+            color: #777;
+            font-size: .85rem;
+        }
+        footer.site-footer a {
+            color: var(--gold-accent);
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 760px) {
+            .site-header .header-flex {
+                flex-direction: column;
+                align-items: center;
+            }
+            .site-title {
+                font-size: 1.7rem;
+            }
+            .challenge-intro h1 {
+                font-size: 1.9rem;
+            }
+            .question-card {
+                padding: 1.2rem 1.2rem;
+            }
+            .score-panel .big-score {
+                font-size: 2.8rem;
+            }
+            .memory-prompt {
+                padding: 1.2rem 1.2rem;
+            }
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: .6rem;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .challenge-wrapper {
+                padding: 1.2rem 1.2rem 3rem;
+            }
+            .memory-prompt .checkbox-grid label {
+                font-size: .8rem;
+                padding: .2rem .6rem .2rem .4rem;
+            }
+            .btn {
+                padding: .6rem 1.4rem;
+                font-size: .9rem;
+            }
+            .quiz-actions {
+                gap: .8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .challenge-intro .meta-info {
+                flex-direction: column;
+                gap: .4rem;
+                align-items: center;
+            }
+            .option-label {
+                padding: .4rem .6rem;
+                font-size: .95rem;
+            }
+            .q-text {
+                font-size: .98rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<header class="site-header">
-  <div class="header-flex">
-    <a href="/" class="brand-link">
-      <div class="site-title">SELASSIEFEST</div>
-      <div class="tagline">One Day. One Love. One Society.</div>
-    </a>
-  </div>
-</header>
-<div class="pt-nav">
-  <div class="pt-nav-container">
-    <div class="pt-logo"><i class="fas fa-child"></i><span>Pickney Time</span></div>
-    <div class="pt-nav-links">
-      <a href="/" class="pt-main-site-link"><i class="fas fa-arrow-left"></i> Main Site</a>
-      <a href="/pickney-time/">Event Home</a>
-      <a href="/calendar/games/" class="active">Games Archive</a>
-      <a href="/calendar/games/registration.html">Register</a>
+
+    <!-- ─── HEADER ─── -->
+    <header class="site-header">
+        <div class="header-flex">
+            <a href="/" class="brand-link">
+                <div class="site-title">SELASSIEFEST</div>
+                <div class="tagline">One Day. One Love. One Society.</div>
+            </a>
+            <div class="powered-by-wrapper">
+                <span class="powered-by-text">Powered By</span>
+                <a href="https://selassiefest.com/sponsors/spliffsociety.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+                    <img src="/assets/images/ss_tiny.png" alt="Spliff Society" />
+                </a>
+            </div>
+            <a href="/calendar/index.html" class="jvgh-badge-wrapper" aria-label="View Calendar of Events">
+                <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+                <span class="jvgh-badge-text">Events</span>
+            </a>
+            <a href="/calendar/games/index.html" class="jvgh-badge-wrapper" aria-label="Visit Pickney Time">
+                <i class="fas fa-child" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+                <span class="jvgh-badge-text">Pickney</span>
+            </a>
+            <a href="/JamaicaVillageGH/" class="jvgh-badge-wrapper" aria-label="Visit Jamaica Village Ghana">
+                <i class="fas fa-map-marker-alt" style="color:#6dbe8f; font-size:0.75rem;" aria-hidden="true"></i>
+                <span class="jvgh-badge-text">Jamaica Village Ghana</span>
+            </a>
+            <a href="/SelassieFest-Global/index.html" class="global-badge-wrapper" aria-label="Switch to Global Site">
+                <span class="global-badge-text">GLOBAL</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ─── SUB-NAV ─── -->
+    <div class="fest-nav">
+        <div class="nav-container">
+            <div class="logo-area"><i class="fas fa-calendar-alt"></i><span>SelassieFest Calendar</span></div>
+            <div class="nav-links">
+                <a href="/calendar/">Calendar Home</a>
+                <a href="/calendar/festivals/">Festivals</a>
+                <a href="/calendar/special-events/" class="active">Special Events</a>
+                <a href="/calendar/weekly/">Weekly Events</a>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<div class="game-hero">
-  <span class="cat-badge">Nature & Story Play</span>
-  <h1>Anansi Stories</h1>
-  <p class="tagline-desc">The cunning, shape-shifting spider who taught generations that wit beats brute strength — a story tradition of survival, resistance, and unforgettable characters.</p>
-</div>
+    <!-- ─── MAIN ─── -->
+    <main class="challenge-wrapper">
 
-<div class="container game-body">
-  <div class="photo-placeholder">
-    <i class="fas fa-camera"></i>
-    <span class="ph-label">Photo Wanted</span>
-    <span>Be the first to send a real photo of Anansi Stories being played.</span>
-  </div>
+        <!-- intro -->
+        <section class="challenge-intro">
+            <span class="badge"><i class="fas fa-brain"></i> Memory Challenge</span>
+            <h1>Pickney Memory Challenge <br /><em>St. Catherine Edition</em></h1>
+            <p class="subhead">20 scored questions + 5 memory prompts.<br />No question gives away the answer. No image or audio required.</p>
+            <div class="meta-info">
+                <span><i class="fas fa-question-circle"></i> 20 scored questions</span>
+                <span><i class="fas fa-pen"></i> 5 memory prompts</span>
+                <span><i class="fas fa-flag"></i> <span class="highlight">St. Catherine</span> heritage</span>
+                <span><i class="fas fa-clock"></i> ~8–10 min</span>
+            </div>
+        </section>
 
-  <div class="museum-record">
-    <div class="mr-header">
-      <span class="mr-title"><i class="fas fa-archive" style="margin-right:8px;"></i>JCGTA MUSEUM RECORD</span>
-      <span class="mr-id">ARCHIVE ID &middot; JCG-0051</span>
-    </div>
-    <div class="mr-grid">
-      <div class="mr-field"><div class="label">Primary Jamaican Name</div><div class="value">Anansi Stories</div></div>
-      <div class="mr-field"><div class="label">Alternate Names</div><div class="value">None recorded yet &mdash; know one? Tell us below.</div></div>
-      <div class="mr-field"><div class="label">Category</div><div class="value">Storytelling</div></div>
-      <div class="mr-field"><div class="label">Tradition Type</div><div class="value">Pending review</div></div>
-      <div class="mr-field"><div class="label">Context of Play</div><div class="value">Evening, veranda</div></div>
-      <div class="mr-field"><div class="label">Typical Ages</div><div class="value">Pending curator documentation</div></div>
-      <div class="mr-field"><div class="label">Era</div><div class="value">Pending curator documentation</div></div>
-      <div class="mr-field"><div class="label">Origin</div><div class="value">Akan people, West Africa (present-day Ghana), carried to Jamaica via the transatlantic slave trade</div></div>
-      <div class="mr-field"><div class="label">Format</div><div class="value">Spoken word — told aloud, often at night, in Jamaican Patois</div></div>
-      <div class="mr-field"><div class="label">Status</div><div class="value">Published (Museum Card)</div></div>
-    </div>
-    <div class="mr-badges">
-      <div class="mr-badge">
-        <div class="b-label">Confidence Rating</div>
-        <div class="b-score">★★★★★</div>
-        <div class="b-note">Verified by multiple published sources. Curator-authoritative rating, Master Catalog, 2026-07-04.</div>
-      </div>
-      <div class="mr-badge">
-        <div class="b-label">Jamaican Childhood Heritage Score</div>
-        <div class="b-score">Pending curator review</div>
-        <div class="b-note">Proposed score submitted for ratification &mdash; see Master Catalog.</div>
-      </div>
-    </div>
-  </div>
+        <!-- ─── QUIZ FORM ─── -->
+        <form id="quizForm" class="quiz-form">
+            <!-- questions injected by JS -->
+        </form>
 
-  <h2 class="game-section-title"><i class="fas fa-globe-africa"></i> Origins &amp; the Transatlantic Slave Trade</h2>
-  <p class="pt-body">Anansi did not originate in Jamaica. The character comes from the folklore of the Akan people of West Africa (modern-day Ghana). During the transatlantic slave trade, enslaved Africans brought these oral traditions with them to the Caribbean. Because the enslaved were stripped of their material possessions, oral storytelling became a vital way to preserve their heritage, history, and community bonds in a new, oppressive world.</p>
+        <!-- actions -->
+        <div class="quiz-actions">
+            <button type="button" id="submitQuizBtn" class="btn btn-primary"><i class="fas fa-check"></i> Submit &amp; Score</button>
+            <button type="button" id="resetQuizBtn" class="btn btn-secondary"><i class="fas fa-undo"></i> Reset</button>
+        </div>
 
-  <h2 class="game-section-title"><i class="fas fa-spider"></i> Who Is Anansi?</h2>
-  <ul class="pt-list">
-    <li><strong>The Trickster Figure:</strong> Anansi is typically depicted as a spider, a man, or a half-man/half-spider entity.</li>
-    <li><strong>Character Flaws and Strengths:</strong> He is not a traditional hero. Anansi is often greedy, lazy, selfish, and mischievous. However, his defining trait is his brilliant intellect. He uses his brain, wit, and linguistic agility to outsmart those who are physically stronger or more powerful than he is.</li>
-    <li><strong>The Underdog:</strong> He is physically small and weak, meaning he cannot rely on brute force to get what he wants (usually food, wealth, or glory).</li>
-  </ul>
+        <!-- score panel -->
+        <div id="scorePanel" class="score-panel">
+            <div class="big-score"><span id="scoreNum">0</span> / 20</div>
+            <div class="score-label">Your Pickney Memory Score</div>
+            <div class="score-message" id="scoreMessage"></div>
+            <div class="email-action" id="emailAction" style="display:none;">
+                <button type="button" id="sendEmailBtn" class="btn btn-email"><i class="fas fa-envelope"></i> 📧 Send Results to SelassieFest</button>
+                <p style="font-size:.8rem; color:#999; margin-top:.6rem;">Opens your email client with a pre‑filled message.</p>
+            </div>
+        </div>
 
-  <h2 class="game-section-title"><i class="fas fa-landmark"></i> Cultural Significance &amp; Allegory</h2>
-  <p class="pt-body">In the context of Jamaican plantation slavery, Anansi took on a deeply subversive meaning.</p>
-  <ul class="pt-list">
-    <li><strong>Symbol of Resistance:</strong> Anansi became an allegory for the enslaved person, while his larger, stronger adversaries represented the enslavers or the oppressive colonial system.</li>
-    <li><strong>Survival by Wit:</strong> The stories taught that one could survive brutal conditions and defeat a powerful oppressor not through physical combat, but through psychological manipulation, deception, and extreme resourcefulness.</li>
-    <li><strong>Social Commentary:</strong> The tales often mocked authority figures and upended traditional power structures, providing psychological relief and empowerment to the enslaved listeners.</li>
-  </ul>
+        <!-- ─── MEMORY PROMPTS ─── -->
+        <section class="memory-section" id="memorySection">
+            <h2><i class="fas fa-archive"></i> Memory Prompts</h2>
+            <p class="memory-sub">These are <strong>not scored</strong> — they help us build the archive. Share your memories.</p>
 
-  <h2 class="game-section-title"><i class="fas fa-paw"></i> Common Themes &amp; Characters</h2>
-  <p class="pt-body">In the Jamaican adaptations of the African tales, the cast of characters shifted slightly to reflect the new environment:</p>
-  <ul class="pt-list">
-    <li><strong>Bra Tiger (Brother Tiger):</strong> The most common antagonist in Jamaican Anansi stories. Tiger is strong, proud, and dangerous, but ultimately not very bright. Anansi constantly tricks Tiger to steal his food, embarrass him, or escape being eaten.</li>
-    <li><strong>Other Characters:</strong> Anansi frequently interacts with other animal figures like Bra Dog, Bra Snake, and Bra Monkey. He also has a long-suffering wife, often named Crooky.</li>
-    <li><strong>The Moral Ambiguity:</strong> The stories do not always end with Anansi doing the "right" thing. Sometimes his greed gets the better of him, and his plans backfire, teaching listeners a lesson about the limits of trickery and the dangers of selfishness.</li>
-  </ul>
+            <div id="memoryPromptsContainer">
+                <!-- injected by JS -->
+            </div>
 
-  <h2 class="game-section-title"><i class="fas fa-fire"></i> The Oral Tradition</h2>
-  <p class="pt-body">Traditionally, Anansi stories were told at night, after a day of hard labor, often around a fire. The storytelling was highly interactive:</p>
-  <ul class="pt-list">
-    <li><strong>Performance:</strong> The storyteller would use different voices, physical gestures, and songs.</li>
-    <li><strong>Language:</strong> The stories are deeply intertwined with Jamaican Patois (Creole), utilizing its unique rhythms, proverbs, and expressions.</li>
-    <li><strong>Music:</strong> Many stories feature a specific song that Anansi sings to hypnotize or trick his victims, and the audience would often join in.</li>
-  </ul>
-  <p class="pt-body">Today, Anansi remains a beloved cultural icon in Jamaica, featured in books, plays, and national festivals, ensuring that this clever spider continues to weave his web for new generations.</p>
+            <div class="archive-note">
+                <i class="fas fa-info-circle"></i>
+                <div><strong>Archive data:</strong> Your responses to the memory prompts help document Jamaican childhood traditions. No personal data is stored on this page — everything stays in your browser unless you choose to share.</div>
+            </div>
 
-    <h2 class="game-section-title"><i class="fas fa-map-location-dot"></i> Regional &amp; Community Variations</h2>
-  <ul class="source-list">
-    <li class="source-wanted"><strong>Not yet documented.</strong> Did your parish, school, or district play Anansi Stories differently &mdash; other names, other rules, other verses? Your version belongs on this record. Use the submission links below.</li>
-  </ul>
+            <div class="memory-actions">
+                <button type="button" id="saveMemoryBtn" class="btn btn-success"><i class="fas fa-save"></i> Save My Archive (local)</button>
+                <button type="button" id="clearMemoryBtn" class="btn btn-secondary"><i class="fas fa-trash-alt"></i> Clear</button>
+            </div>
+            <div id="memorySaveStatus" style="margin-top:.6rem; color:var(--text-muted); font-size:.9rem;"></div>
+        </section>
 
-  <h2 class="game-section-title"><i class="fas fa-book-open"></i> Sources &amp; Oral Histories</h2>
-  <ul class="source-list">
-    <li><strong>Curator reference:</strong> JCGTA Master Catalog (curator-authoritative fields: category, context of play, typical ages, era, confidence), 2026-07-04.</li>
-    <li><strong>Article text:</strong> JCGTA research profile; full bibliography in progress per archive standards.</li>
-    <li class="source-wanted"><strong>Oral histories:</strong> None collected yet &mdash; be the first. Memories are recorded with name, parish, and approximate years played.</li>
-  </ul>
+        <!-- back link -->
+        <p style="margin-top:3rem; text-align:center;">
+            <a href="/calendar/special-events/" class="back-link" style="color:var(--gold-accent); font-weight:600; display:inline-flex; align-items:center; gap:.5rem;">
+                <i class="fas fa-arrow-left"></i> Back to Special Events
+            </a>
+        </p>
 
-  <h2 class="game-section-title"><i class="fas fa-microphone-lines"></i> Voices of Jamaica</h2>
-  <ul class="source-list">
-    <li class="source-wanted"><strong>This record is waiting for its first voice.</strong> Collected memories will appear here, credited with name, parish, and year recorded.</li>
-  </ul>
+    </main>
 
-  <h2 class="game-section-title"><i class="fas fa-timeline"></i> Timeline</h2>
-  <ul class="pt-list">
-    <li><strong>Era of active play:</strong> pending curator documentation.</li>
-    <li><strong>2026:</strong> Documented as JCGTA record JCG-0051.</li>
-  </ul>
+    <!-- ─── FOOTER ─── -->
+    <footer class="site-footer">
+        &copy; 2026 SelassieFest Collective &middot; Ras Tafari Inc. &middot;
+        <a href="/calendar/">Full Calendar</a> &middot;
+        <a href="#" style="color:var(--text-muted);">Pickney Memory Challenge v1.0</a>
+    </footer>
 
-  <h2 class="game-section-title"><i class="fas fa-flask"></i> Research Notes</h2>
-  <ul class="pt-list">
-    <li><strong>Open question:</strong> Earliest printed or archival reference &mdash; newspaper, songbook, and school-reader search pending.</li>
-    <li><strong>Open question:</strong> Parish-level naming and rule variations.</li>
-    <li><strong>Open question:</strong> Heritage Score ratification by curator.</li>
-  </ul>
+    <script>
+        (function() {
+            'use strict';
 
-  <h2 class="game-section-title"><i class="fas fa-clock-rotate-left"></i> Revision History</h2>
-  <ul class="source-list">
-    <li><strong>2026-07-04</strong> &mdash; Retrofitted to JCGTA Museum Card standard (batch 1, catalog-driven generator). Museum Record fields populated from the Master Catalog; Archive ID JCG-0051. Research sections initialized with collection prompts.</li>
-  </ul>
+            // ─── DATA ──────────────────────────────────────────────────────────
 
-<h2 class="game-section-title"><i class="fas fa-quote-left"></i> Cultural Roots</h2>
-  <div class="cultural-note">Anansi Stories reflects a childhood lived close to the land — where the bush, the yard, and the elders were the classroom, and a story told by firelight could carry centuries of survival, wit, and resistance in a single spider's web.</div>
+            // 20 scored questions
+            const questions = [{
+                id: 1,
+                text: 'A group of children forms two sides while one child tries to dodge a thrown ball. What game is this?',
+                options: ['Chainy', 'Dandy Shandy', 'Tee Taw Toe', "Cat's Cradle"],
+                correct: 1 // 0-based index → B
+            }, {
+                id: 2,
+                text: 'Which game uses small glass balls and careful aim?',
+                options: ['Ring Game', 'Bull Inna Pen', 'Peter and Paul', 'Sally Water'],
+                correct: 0
+            }, {
+                id: 3,
+                text: 'Which homemade toy was often shaped and steered using wire?',
+                options: ['Wire Car', 'Leaf Whistle', 'Paper Boat', 'Newspaper Hat'],
+                correct: 0
+            }, {
+                id: 4,
+                text: 'Which handmade toy was often flown during Easter season?',
+                options: ['John Crow Kite', 'Bottle Stopper Buzzer', 'Coconut Cart', 'Tin Can Telephone'],
+                correct: 0
+            }, {
+                id: 5,
+                text: 'Children join hands, move together, sing, and take turns in the middle. Which type of game is this?',
+                options: ['Ring Game', 'Marble Game', 'Pencil Game', 'String Game'],
+                correct: 0
+            }, {
+                id: 6,
+                text: 'Which toy spins quickly on string and makes a buzzing or humming sound?',
+                options: ['Bottle Stopper Buzzer', 'Coconut Cart', 'Bamboo Stilts', 'Paper Boat'],
+                correct: 0
+            }, {
+                id: 7,
+                text: 'Which toy can be made from a fresh leaf and used to make sound?',
+                options: ['Leaf Whistle', 'Wire Car', 'Bamboo Gun', 'Tin Telephone'],
+                correct: 0
+            }, {
+                id: 8,
+                text: 'In which game do children chase while becoming connected into a growing line?',
+                options: ['Chainy', 'Stuckie', 'Dandy Shandy', 'Tee Taw Toe'],
+                correct: 0
+            }, {
+                id: 9,
+                text: 'Which game uses a ground pattern, hopping, and a tossed marker?',
+                options: ['Strepa', 'Ring Game', "Cat's Cradle", 'Sally Water'],
+                correct: 0
+            }, {
+                id: 10,
+                text: 'Which item is made by folding a sheet of newspaper?',
+                options: ['Newspaper Hat', 'Bottle Stopper Buzzer', 'Wire Car', 'Bamboo Gun'],
+                correct: 0
+            }, {
+                id: 11,
+                text: 'Which folded paper toy is often floated in water after rain?',
+                options: ['Paper Boat', 'Coconut Cart', 'Bamboo Stilts', 'John Crow Kite'],
+                correct: 0
+            }, {
+                id: 12,
+                text: 'Which pencil-and-paper game uses Xs and Os in a three-by-three grid?',
+                options: ['Tee Taw Toe', 'Dandy Shandy', 'Ring Game', "Cat's Cradle"],
+                correct: 0
+            }, {
+                id: 13,
+                text: 'Which game involves running across an open space while trying not to be caught?',
+                options: ['Stuckie', 'Peter and Paul', 'Leaf Whistle', 'Newspaper Hat'],
+                correct: 0
+            }, {
+                id: 14,
+                text: 'Which activity uses a loop of string to make patterns between the hands?',
+                options: ["Cat's Cradle", 'Dandy Shandy', 'Ring Game', 'Bamboo Gun'],
+                correct: 0
+            }, {
+                id: 15,
+                text: 'Which childhood rhyme uses fingers to represent two characters that "fly away" and return?',
+                options: ['Peter and Paul', 'Sally Water', 'Bull Inna Pen', 'Chainy'],
+                correct: 0
+            }, {
+                id: 16,
+                text: 'Which toy was made so two children could speak through connected tins?',
+                options: ['Tin Can Telephone', 'Bottle Stopper Buzzer', 'Leaf Whistle', 'Paper Boat'],
+                correct: 0
+            }, {
+                id: 17,
+                text: 'Which homemade toy was pushed or pulled along the ground like a vehicle?',
+                options: ['Coconut Cart', 'Peter and Paul', 'Strepa', 'Sally Water'],
+                correct: 0
+            }, {
+                id: 18,
+                text: 'Which game uses an elastic rope or band stretched around players\' legs?',
+                options: ['Chinese Skipping', "Cat's Cradle", 'Ring Game', 'Tee Taw Toe'],
+                correct: 0
+            }, {
+                id: 19,
+                text: 'Which item was often made from bamboo and used in rough outdoor play?',
+                options: ['Bamboo Gun', 'Newspaper Hat', 'Paper Boat', 'Peter and Paul'],
+                correct: 0
+            }, {
+                id: 20,
+                text: 'Which game places one child inside a space while others try to avoid being caught or trapped?',
+                options: ['Bull Inna Pen', 'Tee Taw Toe', 'Leaf Whistle', 'Paper Boat'],
+                correct: 0
+            }];
 
-  <section class="submit-cta">
-  <div class="submit-cta-inner">
-    <div class="submit-cta-icon"><i class="fas fa-heart"></i></div>
-    <h2>Did You Play Anansi Stories?</h2>
-    <p>Wherever you grew up — Kingston, Montego Bay, Brooklyn, Toronto, London, Miami —
-       if you remember playing this, we want to hear from you. Send us your story,
-       your photos, or an old video. Every submission helps preserve this game for
-       the next generation.</p>
-    <div class="submit-cta-actions">
-      <a href="mailto:selassiefest@gmail.com?subject=My%20Anansi%20Stories%20story" class="btn-submit primary"><i class="fas fa-envelope"></i> Email Your Story</a>
-      <a href="https://instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" class="btn-submit"><i class="fab fa-instagram"></i> Tag Us: #PickneyTimeStories</a>
-    </div>
-    <p class="submit-cta-note">Photos and stories may be featured on this page and across our social channels (with credit to you).</p>
-  </div>
-</section>
+            // letter labels
+            const LETTERS = ['A', 'B', 'C', 'D'];
 
-  <a href="/calendar/games/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Games Archive</a>
-</div>
+            // memory prompts config
+            const memoryPrompts = [{
+                id: 21,
+                type: 'checkbox',
+                label: '21.',
+                text: 'Which of these did you actually play growing up?',
+                items: ['Dandy Shandy', 'Stuckie', 'Chainy', 'Bull Inna Pen', 'Strepa', 'Ring Game', 'Tee Taw Toe',
+                    'Chinese Skipping', "Cat's Cradle"
+                ]
+            }, {
+                id: 22,
+                type: 'checkbox',
+                label: '22.',
+                text: 'Which homemade toys did you make or see made?',
+                items: ['Wire Car', 'Coconut Cart', 'John Crow Kite', 'Bottle Stopper Buzzer', 'Leaf Whistle',
+                    'Bamboo Gun', 'Paper Boat', 'Newspaper Hat', 'Tin Can Telephone'
+                ]
+            }, {
+                id: 23,
+                type: 'text',
+                label: '23.',
+                text: 'What did your district call <strong>Strepa / Hopscotch</strong>?',
+                placeholder: 'e.g. "Strepa", "Hopscotch", "Potsy", "Peever" …'
+            }, {
+                id: 24,
+                type: 'text',
+                label: '24.',
+                text: 'What game or toy from your childhood is missing from this list?',
+                placeholder: 'Tell us what else you remember …'
+            }, {
+                id: 25,
+                type: 'text',
+                label: '25.',
+                text: 'Finish this sentence: <strong>Growing up in St. Catherine meant playing ____________________.</strong>',
+                placeholder: 'Share your memory …'
+            }];
 
-<footer class="site-footer">
-  <div class="footer-social">
-    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
-    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
-    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
-    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer"><i class="fab fa-pinterest"></i></a>
-    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-    
-  </div>
-  <div class="footer-contact">
-    <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a><span class="sep">&middot;</span><a href="tel:414-909-3279">414-909-3279</a>
-  </div>
-  &copy; 2026 Ras Tafari Inc. &middot; Pickney Time &middot; <a href="/pickney-time/" style="color:var(--gold);">Back to Event Page</a>
-</footer>
-  <script src="/assets/js/site.js"></script>
+            // ─── STATE ─────────────────────────────────────────────────────────
+
+            let submitted = false;
+
+            // ─── DOM refs ──────────────────────────────────────────────────────
+
+            const formEl = document.getElementById('quizForm');
+            const submitBtn = document.getElementById('submitQuizBtn');
+            const resetBtn = document.getElementById('resetQuizBtn');
+            const scorePanel = document.getElementById('scorePanel');
+            const scoreNum = document.getElementById('scoreNum');
+            const scoreMessage = document.getElementById('scoreMessage');
+            const emailAction = document.getElementById('emailAction');
+            const sendEmailBtn = document.getElementById('sendEmailBtn');
+            const memoryContainer = document.getElementById('memoryPromptsContainer');
+            const saveMemoryBtn = document.getElementById('saveMemoryBtn');
+            const clearMemoryBtn = document.getElementById('clearMemoryBtn');
+            const memorySaveStatus = document.getElementById('memorySaveStatus');
+
+            // ─── RENDER QUESTIONS ─────────────────────────────────────────────
+
+            function renderQuestions() {
+                let html = '';
+                questions.forEach((q, idx) => {
+                    const qId = `q_${q.id}`;
+                    html += `<div class="question-card" id="card_${q.id}" data-qid="${q.id}">`;
+                    html += `<div class="q-number">Question ${q.id}</div>`;
+                    html += `<div class="q-text">${q.text}</div>`;
+                    html += `<div class="options">`;
+                    q.options.forEach((opt, oi) => {
+                        const val = `${q.id}_${oi}`;
+                        html += `<label class="option-label">`;
+                        html += `<input type="radio" name="${qId}" value="${oi}" data-qid="${q.id}" data-opt="${oi}" />`;
+                        html += `<span class="letter">${LETTERS[oi]}.</span>`;
+                        html += `<span class="answer-text">${opt}</span>`;
+                        html += `</label>`;
+                    });
+                    html += `</div>`;
+                    html += `<div class="q-feedback" id="fb_${q.id}" style="display:none;"></div>`;
+                    html += `</div>`;
+                });
+                formEl.innerHTML = html;
+            }
+
+            // ─── RENDER MEMORY PROMPTS ────────────────────────────────────────
+
+            function renderMemoryPrompts() {
+                let html = '';
+                memoryPrompts.forEach((mp) => {
+                    html += `<div class="memory-prompt" id="mp_${mp.id}">`;
+                    html += `<div class="mp-label">${mp.label}</div>`;
+                    html += `<div class="mp-text">${mp.text}</div>`;
+
+                    if (mp.type === 'checkbox') {
+                        html += `<div class="checkbox-grid">`;
+                        mp.items.forEach((item) => {
+                            const id = `mem_${mp.id}_${item.replace(/\s/g, '_')}`;
+                            html += `<label>`;
+                            html += `<input type="checkbox" name="mem_${mp.id}" value="${item}" id="${id}" />`;
+                            html += `<span>${item}</span>`;
+                            html += `</label>`;
+                        });
+                        html += `</div>`;
+                    } else if (mp.type === 'text') {
+                        const placeholder = mp.placeholder || 'Type your memory …';
+                        html += `<input type="text" name="mem_text_${mp.id}" placeholder="${placeholder}" />`;
+                    }
+                    html += `</div>`;
+                });
+                memoryContainer.innerHTML = html;
+            }
+
+            // ─── SCORE / SUBMIT ────────────────────────────────────────────────
+
+            function getSelectedAnswers() {
+                const result = {};
+                const radios = formEl.querySelectorAll('input[type="radio"]:checked');
+                radios.forEach((r) => {
+                    const qid = parseInt(r.dataset.qid, 10);
+                    result[qid] = parseInt(r.value, 10);
+                });
+                return result;
+            }
+
+            function scoreQuiz() {
+                const selected = getSelectedAnswers();
+                let correctCount = 0;
+                let answeredCount = 0;
+
+                questions.forEach((q) => {
+                    const card = document.getElementById(`card_${q.id}`);
+                    const fb = document.getElementById(`fb_${q.id}`);
+                    const chosen = selected[q.id];
+                    const isCorrect = (chosen === q.correct);
+
+                    // clear previous state
+                    card.classList.remove('correct', 'incorrect', 'reveal-correct');
+                    fb.style.display = 'none';
+                    fb.className = 'q-feedback';
+
+                    if (chosen !== undefined) {
+                        answeredCount++;
+                        if (isCorrect) {
+                            correctCount++;
+                            card.classList.add('correct');
+                            fb.className = 'q-feedback correct-fb';
+                            fb.innerHTML = `<span class="fb-icon">✅</span> Correct!`;
+                        } else {
+                            card.classList.add('incorrect');
+                            fb.className = 'q-feedback incorrect-fb';
+                            const correctAns = q.options[q.correct];
+                            fb.innerHTML = `<span class="fb-icon">❌</span> The answer was <strong>${LETTERS[q.correct]}. ${correctAns}</strong>`;
+                        }
+                        fb.style.display = 'flex';
+                    } else {
+                        // unanswered — show correct answer
+                        card.classList.add('reveal-correct');
+                        fb.className = 'q-feedback incorrect-fb';
+                        const correctAns = q.options[q.correct];
+                        fb.innerHTML =
+                            `<span class="fb-icon">ℹ️</span> Not answered — correct: <strong>${LETTERS[q.correct]}. ${correctAns}</strong>`;
+                        fb.style.display = 'flex';
+                    }
+                });
+
+                return { correctCount, answeredCount, total: questions.length };
+            }
+
+            function handleSubmit() {
+                if (submitted) return;
+                submitted = true;
+
+                const result = scoreQuiz();
+
+                // score panel
+                scoreNum.textContent = result.correctCount;
+                let msg = '';
+                const pct = result.correctCount / result.total;
+                if (pct === 1) msg = '🌟 Perfect! Yuh memory sharp like a machete!';
+                else if (pct >= 0.8) msg = '🔥 Strong memory! Yuh know yuh pickney time!';
+                else if (pct >= 0.6) msg = '👍 Good! Yuh remember plenty.';
+                else if (pct >= 0.4) msg = '🧐 Not bad — time to call up some old friends and reminisce.';
+                else msg = '📖 Every memory counts. Share what you remember in the prompts below!';
+                if (result.answeredCount < result.total) {
+                    msg += ` (${result.answeredCount}/${result.total} answered)`;
+                }
+                scoreMessage.textContent = msg;
+                scorePanel.classList.add('visible');
+                emailAction.style.display = 'block';
+
+                // disable radios
+                formEl.querySelectorAll('input[type="radio"]').forEach((r) => {
+                    r.disabled = true;
+                });
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Scored';
+            }
+
+            function resetQuiz() {
+                submitted = false;
+                scorePanel.classList.remove('visible');
+                emailAction.style.display = 'none';
+
+                formEl.querySelectorAll('input[type="radio"]').forEach((r) => {
+                    r.checked = false;
+                    r.disabled = false;
+                });
+
+                formEl.querySelectorAll('.question-card').forEach((card) => {
+                    card.classList.remove('correct', 'incorrect', 'reveal-correct');
+                });
+
+                formEl.querySelectorAll('.q-feedback').forEach((fb) => {
+                    fb.style.display = 'none';
+                    fb.className = 'q-feedback';
+                });
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit &amp; Score';
+            }
+
+            // ─── EMAIL RESULTS ────────────────────────────────────────────────
+
+            function getMemoryResponses() {
+                const data = {};
+                memoryPrompts.forEach((mp) => {
+                    if (mp.type === 'checkbox') {
+                        const checks = document.querySelectorAll(`input[name="mem_${mp.id}"]:checked`);
+                        data[`mem_${mp.id}`] = Array.from(checks).map((c) => c.value);
+                    } else if (mp.type === 'text') {
+                        const el = document.querySelector(`input[name="mem_text_${mp.id}"]`);
+                        data[`mem_text_${mp.id}`] = el ? el.value : '';
+                    }
+                });
+                return data;
+            }
+
+            function buildEmailBody() {
+                // Get score
+                const score = parseInt(scoreNum.textContent, 10) || 0;
+                const total = questions.length;
+
+                // Build question results
+                let qResults = '';
+                questions.forEach((q) => {
+                    const chosen = formEl.querySelector(`input[name="q_${q.id}"]:checked`);
+                    const chosenIdx = chosen ? parseInt(chosen.value, 10) : null;
+                    const isCorrect = (chosenIdx === q.correct);
+                    const selectedText = (chosenIdx !== null) ? q.options[chosenIdx] : 'Not answered';
+                    const correctText = q.options[q.correct];
+                    const mark = (chosenIdx !== null) ? (isCorrect ? '✅' : '❌') : '⚠️';
+                    qResults += `${q.id}. ${q.text}\n`;
+                    qResults += `   Your answer: ${selectedText}\n`;
+                    qResults += `   Correct: ${correctText}\n`;
+                    qResults += `   ${mark}\n\n`;
+                });
+
+                // Memory responses
+                const memData = getMemoryResponses();
+                let memText = '';
+                memoryPrompts.forEach((mp) => {
+                    const key = (mp.type === 'checkbox') ? `mem_${mp.id}` : `mem_text_${mp.id}`;
+                    let response = memData[key];
+                    if (mp.type === 'checkbox') {
+                        response = Array.isArray(response) ? response.join(', ') : 'None selected';
+                    } else {
+                        response = response || 'Not answered';
+                    }
+                    memText += `${mp.label} ${mp.text.replace(/<[^>]*>/g, '')}\n`;
+                    memText += `   ${response}\n\n`;
+                });
+
+                // Combine
+                let body = `🏆 Pickney Memory Challenge – St. Catherine Edition\n`;
+                body += `========================================\n\n`;
+                body += `📊 Score: ${score} / ${total}\n\n`;
+                body += `📝 Question Results:\n`;
+                body += `--------------------\n\n`;
+                body += qResults;
+                body += `\n📦 Memory Prompts (Archive Data):\n`;
+                body += `--------------------------------\n\n`;
+                body += memText;
+                body += `\n---\nSent from the SelassieFest Pickney Memory Challenge page.`;
+
+                return body;
+            }
+
+            function sendEmail() {
+                const subject = encodeURIComponent('Pickney Memory Challenge – St. Catherine Edition');
+                const body = encodeURIComponent(buildEmailBody());
+                const mailto = `mailto:selassiefest@gmail.com?subject=${subject}&body=${body}`;
+                window.location.href = mailto;
+            }
+
+            // ─── MEMORY PROMPTS: SAVE / CLEAR (localStorage) ──────────────────
+
+            function getMemoryData() {
+                const data = {};
+                memoryPrompts.forEach((mp) => {
+                    if (mp.type === 'checkbox') {
+                        const checks = document.querySelectorAll(`input[name="mem_${mp.id}"]:checked`);
+                        data[`mem_${mp.id}`] = Array.from(checks).map((c) => c.value);
+                    } else if (mp.type === 'text') {
+                        const el = document.querySelector(`input[name="mem_text_${mp.id}"]`);
+                        data[`mem_text_${mp.id}`] = el ? el.value : '';
+                    }
+                });
+                return data;
+            }
+
+            function loadMemoryData() {
+                try {
+                    const raw = localStorage.getItem('pickneyMemory_StCatherine');
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    memoryPrompts.forEach((mp) => {
+                        if (mp.type === 'checkbox') {
+                            const saved = data[`mem_${mp.id}`] || [];
+                            const checks = document.querySelectorAll(`input[name="mem_${mp.id}"]`);
+                            checks.forEach((c) => {
+                                c.checked = saved.includes(c.value);
+                            });
+                        } else if (mp.type === 'text') {
+                            const el = document.querySelector(`input[name="mem_text_${mp.id}"]`);
+                            if (el && data[`mem_text_${mp.id}`] !== undefined) {
+                                el.value = data[`mem_text_${mp.id}`];
+                            }
+                        }
+                    });
+                    memorySaveStatus.textContent = '✅ Archive loaded from your browser.';
+                } catch (_) { /* ignore */ }
+            }
+
+            function saveMemoryData() {
+                const data = getMemoryData();
+                try {
+                    localStorage.setItem('pickneyMemory_StCatherine', JSON.stringify(data));
+                    memorySaveStatus.textContent = '✅ Archive saved to your browser!';
+                } catch (_) {
+                    memorySaveStatus.textContent = '⚠️ Could not save. Storage may be full.';
+                }
+            }
+
+            function clearMemoryData() {
+                if (!confirm('Clear all your memory-prompt responses from this browser?')) return;
+                try {
+                    localStorage.removeItem('pickneyMemory_StCatherine');
+                    memoryPrompts.forEach((mp) => {
+                        if (mp.type === 'checkbox') {
+                            const checks = document.querySelectorAll(`input[name="mem_${mp.id}"]`);
+                            checks.forEach((c) => { c.checked = false; });
+                        } else if (mp.type === 'text') {
+                            const el = document.querySelector(`input[name="mem_text_${mp.id}"]`);
+                            if (el) el.value = '';
+                        }
+                    });
+                    memorySaveStatus.textContent = '🗑️ Archive cleared.';
+                } catch (_) { /* ignore */ }
+            }
+
+            // ─── INIT ──────────────────────────────────────────────────────────
+
+            renderQuestions();
+            renderMemoryPrompts();
+            loadMemoryData();
+
+            // event listeners
+            submitBtn.addEventListener('click', handleSubmit);
+            resetBtn.addEventListener('click', resetQuiz);
+            sendEmailBtn.addEventListener('click', sendEmail);
+            saveMemoryBtn.addEventListener('click', saveMemoryData);
+            clearMemoryBtn.addEventListener('click', clearMemoryData);
+
+            // auto-save memory prompts on change (debounced)
+            let saveTimer = null;
+            const autoSave = () => {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(() => {
+                    saveMemoryData();
+                    saveTimer = null;
+                }, 600);
+            };
+            memoryContainer.addEventListener('change', autoSave);
+            memoryContainer.addEventListener('input', autoSave);
+
+            console.log('🏆 Pickney Memory Challenge · St. Catherine Edition loaded.');
+        })();
+    </script>
+
 </body>
 </html>
