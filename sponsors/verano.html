@@ -995,10 +995,26 @@
 
   function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.inquiry-submit');
-    btn.textContent = 'Inquiry Sent — We\'ll Be In Touch Within 48 Hours ✓';
-    btn.style.borderColor = 'var(--roots-green)';
-    btn.style.color = 'var(--roots-green)';
+    var form = e.target;
+    var btn = form.querySelector('button[type="submit"]');
+    var lines = [];
+    form.querySelectorAll('input, textarea, select').forEach(function (field) {
+      var label, value;
+      if (field.tagName === 'SELECT') {
+        var placeholderOpt = field.options[0];
+        label = (placeholderOpt && placeholderOpt.disabled) ? placeholderOpt.text : 'Selection';
+        var selected = field.options[field.selectedIndex];
+        value = selected ? selected.text : '(not selected)';
+      } else {
+        label = field.placeholder || 'Field';
+        value = field.value || '(not provided)';
+      }
+      lines.push(label + ': ' + value);
+    });
+    var subject = 'Sponsor Inquiry \u2014 ' + document.title.split('|')[0].trim();
+    var body = lines.join('\n');
+    window.location.href = 'mailto:selassiefest@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    btn.textContent = 'Opening Your Email \u2014 Send to Complete \u2713';
     btn.disabled = true;
   }
 
