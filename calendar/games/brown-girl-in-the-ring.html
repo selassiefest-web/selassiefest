@@ -277,7 +277,7 @@
 
 
   <script src="/assets/js/site.js"></script>
-<!-- ===== SF-CANONICAL-FOOTER v1.0.2 ===== -->
+<!-- ===== SF-CANONICAL-FOOTER v1.1.0 ===== -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 .sf-footer{background:#0a0a0a;border-top:1px solid rgba(229,169,60,.25);padding:3rem 1.5rem 0;font-family:'Jost',sans-serif;line-height:1.6}
@@ -292,6 +292,16 @@
 .sf-news p{color:#b0b0b0;font-size:.85rem;margin:0 0 .9rem}
 .sf-news .sf-soon{border:1px dashed rgba(229,169,60,.4);border-radius:4px;padding:.7rem .9rem;color:#b0b0b0;font-size:.85rem}
 .sf-news .sf-soon a{color:#6dbe8f}
+.sf-nf-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.sf-nf-input{flex:1;min-width:160px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:.55rem .7rem;color:#F5F5F5;font-family:'Jost',sans-serif;font-size:.85rem}
+.sf-nf-input::placeholder{color:#777}
+.sf-nf-input:focus{outline:none;border-color:#E5A93C}
+.sf-nf-btn{background:#E5A93C;color:#0a0a0a;border:none;border-radius:4px;padding:.55rem 1rem;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+.sf-nf-btn:hover{opacity:.85}
+.sf-nf-btn:disabled{opacity:.5;cursor:default}
+.sf-nf-msg{margin-top:.5rem;font-size:.8rem;min-height:1em}
+.sf-nf-msg.is-success{color:#6dbe8f}
+.sf-nf-msg.is-error{color:#C83737}
 .sf-social{display:flex;gap:.9rem;margin-top:1.2rem;flex-wrap:wrap}
 .sf-social a{width:2.2rem;height:2.2rem;border:1px solid #2e2e2e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#b0b0b0;text-decoration:none;transition:all .15s;font-size:.9rem}
 .sf-social a:hover{color:#E5A93C;border-color:#E5A93C}
@@ -343,7 +353,13 @@
     <div class="sf-news">
       <h3>Stay Connected</h3>
       <p>Festival dates, camp registration, and community events.</p>
-      <div class="sf-soon">Newsletter sign-up launching soon. Meanwhile, reach us at <a href="mailto:selassiefest@gmail.com">selassiefest@gmail.com</a>.</div>
+      <form class="sf-newsletter-form" data-sf-newsletter-form novalidate>
+        <div class="sf-nf-row">
+          <input type="email" name="email" class="sf-nf-input" placeholder="you@email.com" required aria-label="Email address">
+          <button type="submit" class="sf-nf-btn">Sign Up</button>
+        </div>
+        <p class="sf-nf-msg" data-sf-nf-msg aria-live="polite"></p>
+      </form>
     </div>
   </div>
   <div class="sf-chapters" aria-label="Global chapters">
@@ -368,6 +384,8 @@
   </div>
 </footer>
 <script>(function(){var y=document.querySelector('#sf-canonical-footer .sf-year');if(y){y.textContent=new Date().getFullYear();}})();</script>
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/newsletter-form.js"></script>
 <!-- ===== /SF-CANONICAL-FOOTER ===== -->
 </body>
 </html>
