@@ -29,3 +29,10 @@ create policy "Allow anon insert" on newsletter_subscribers
 create policy "Allow anon insert" on anansi_story_submissions
   for insert to anon
   with check (true);
+
+-- RLS policies alone are not sufficient — Postgres checks the base table
+-- privilege first. Without these grants, anon gets a generic RLS-violation
+-- error on every insert even though the policy above is satisfied.
+grant usage on schema public to anon;
+grant insert on newsletter_subscribers to anon;
+grant insert on anansi_story_submissions to anon;
