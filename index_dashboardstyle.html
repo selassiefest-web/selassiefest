@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="description" content="SelassieFest Calendar Dashboard — mobile-friendly overview of festivals, special events, weekly gatherings, and heritage games." />
+    <title>Calendar Dashboard · SelassieFest</title>
+
+    <!-- Google Fonts: Jost -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ── Reset & Root ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-black: #0D0D0D;
+            --text-white: #F5F5F5;
+            --roots-green: #0E5E36;
+            --gold-accent: #E5A93C;
+            --red-accent: #C83737;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(229, 169, 60, 0.25);
+            --transition: all 0.25s ease;
+            --font: 'Jost', sans-serif;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: var(--font);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: var(--safe-bottom);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-accent);
+            border-radius: 12px;
+        }
+
+        /* ── Skip Link ── */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 0.5rem;
+            background: var(--gold-accent);
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            z-index: 1000;
+            font-size: 0.8rem;
+        }
+        .skip-link:focus {
+            top: 0.5rem;
+        }
+
+        /* ── Header ── */
+        .site-header {
+            padding: 16px 16px 12px 16px;
+            border-bottom: 1px solid var(--border-dim);
+            background: rgba(13, 13, 13, 0.96);
+            backdrop-filter: blur(2px);
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .brand-link {
+            display: inline-block;
+            text-align: center;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .brand-link:hover {
+            opacity: 0.85;
+        }
+        .site-title {
+            font-weight: 200;
+            font-size: 1.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-white);
+            line-height: 1.2;
+        }
+        .tagline {
+            font-weight: 300;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-top: 2px;
+            border-top: 1px solid var(--roots-green);
+            display: inline-block;
+            padding-top: 4px;
+        }
+        .powered-by-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px 4px 14px;
+            border-radius: 60px;
+            border: 1px solid var(--border-dim);
+            flex-shrink: 0;
+        }
+        .powered-by-text {
+            font-weight: 300;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #aaa;
+        }
+        .powered-by-logo img {
+            height: 28px;
+            width: auto;
+            border-radius: 4px;
+            display: block;
+        }
+        .jvgh-badge-wrapper,
+        .global-badge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(14, 94, 54, 0.15);
+            padding: 4px 10px;
+            border-radius: 60px;
+            border: 1px solid rgba(14, 94, 54, 0.4);
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+        }
+        .jvgh-badge-wrapper:hover,
+        .global-badge-wrapper:hover {
+            opacity: 0.85;
+        }
+        .jvgh-badge-text {
+            font-weight: 500;
+            font-size: 0.6rem;
+            color: #6dbe8f;
+        }
+        .global-badge-wrapper {
+            background: var(--roots-green, #0F6A3A);
+            border-color: var(--roots-green);
+        }
+        .global-badge-text {
+            font-weight: 700;
+            font-size: 0.6rem;
+            color: #fff;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .header-right .jvgh-badge-wrapper i,
+        .header-right .global-badge-wrapper i {
+            font-size: 0.6rem;
+        }
+
+        @media (max-width: 480px) {
+            .site-title {
+                font-size: 1.3rem;
+            }
+            .powered-by-wrapper {
+                padding: 3px 8px 3px 10px;
+            }
+            .powered-by-logo img {
+                height: 22px;
+            }
+            .jvgh-badge-text,
+            .global-badge-text {
+                font-size: 0.5rem;
+            }
+            .jvgh-badge-wrapper,
+            .global-badge-wrapper {
+                padding: 3px 8px;
+            }
+            .header-flex {
+                gap: 6px;
+            }
+            .header-right {
+                gap: 4px;
+            }
+        }
+
+        /* ── Main Nav ── */
+        .main-nav {
+            background: #0a0a0a;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-dim);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+            background-color: rgba(10, 10, 10, 0.95);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 0.8rem;
+            list-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-links li a {
+            font-weight: 400;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #ddd;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--gold-accent);
+            border-bottom-color: var(--gold-accent);
+        }
+
+        /* ── Dashboard Hero ── */
+        .dash-hero {
+            text-align: center;
+            padding: 28px 16px 20px;
+            border-bottom: 1px solid var(--border-dim);
+            background: radial-gradient(ellipse at 50% 0%, rgba(14, 94, 54, 0.12) 0%, transparent 70%);
+        }
+        .dash-hero h1 {
+            font-weight: 200;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .dash-hero h1 span {
+            color: var(--gold-accent);
+            font-weight: 300;
+        }
+        .dash-hero p {
+            font-weight: 300;
+            font-size: 0.85rem;
+            color: rgba(245, 245, 245, 0.5);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .dash-hero .sub-meta {
+            font-size: 0.65rem;
+            color: rgba(245, 245, 245, 0.3);
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+        }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 600px;
+            margin: -16px auto 0;
+            padding: 0 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 12px 6px;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            transition: var(--transition);
+        }
+        .stat-card:active {
+            transform: scale(0.96);
+        }
+        .stat-number {
+            font-weight: 200;
+            font-size: 1.6rem;
+            letter-spacing: 0.02em;
+            color: var(--gold-accent);
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-weight: 300;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(245, 245, 245, 0.4);
+            margin-top: 2px;
+        }
+        .stat-icon {
+            font-size: 0.9rem;
+            color: var(--roots-green);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        @media (max-width: 420px) {
+            .stats-bar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 0 6px;
+            }
+            .stat-card {
+                padding: 10px 4px;
+                border-radius: 12px;
+            }
+            .stat-number {
+                font-size: 1.3rem;
+            }
+            .stat-label {
+                font-size: 0.5rem;
+            }
+        }
+
+        /* ── Dashboard Container ── */
+        .dash-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 12px 32px;
+        }
+
+        /* ── Controls ── */
+        .controls-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-dim);
+        }
+        .controls-row .search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 4px 12px 4px 14px;
+            border: 1px solid var(--border-dim);
+            transition: var(--transition);
+        }
+        .controls-row .search-wrap:focus-within {
+            border-color: var(--gold-accent);
+        }
+        .controls-row .search-wrap i {
+            color: rgba(245, 245, 245, 0.25);
+            font-size: 0.75rem;
+        }
+        .controls-row .search-wrap input {
+            background: transparent;
+            border: none;
+            padding: 8px 0;
+            color: var(--text-white);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+        }
+        .controls-row .search-wrap input::placeholder {
+            color: rgba(245, 245, 245, 0.25);
+            font-size: 0.8rem;
+        }
+
+        .controls-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            flex: 1;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border-dim);
+            color: rgba(245, 245, 245, 0.4);
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-family: var(--font);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .filter-btn:hover {
+            color: var(--text-white);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .filter-btn.active {
+            background: var(--gold-accent);
+            color: #0a0a0a;
+            border-color: var(--gold-accent);
+            font-weight: 600;
+        }
+        .filter-btn .count {
+            opacity: 0.5;
+            font-size: 0.55rem;
+            margin-left: 2px;
+        }
+        .filter-btn.active .count {
+            opacity: 0.8;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 3px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 3px;
+            border: 1px solid var(--border-dim);
+            flex-shrink: 0;
+        }
+        .view-toggle button {
+            background: transparent;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 30px;
+            color: rgba(245, 245, 245, 0.3);
+            font-family: var(--font);
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .view-toggle button.active {
+            background: var(--gold-accent);
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+        .view-toggle button:hover:not(.active) {
+            color: var(--text-white);
+        }
+        .view-toggle button i {
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 420px) {
+            .controls-row {
+                padding: 10px 10px;
+            }
+            .filter-btn {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+            }
+            .view-toggle button {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+            }
+            .view-toggle button i {
+                font-size: 0.6rem;
+            }
+        }
+
+        /* ── Event Grid ── */
+        .event-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .event-grid.list-view .event-card {
+            padding: 14px 16px;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 16px 16px 18px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.35s ease both;
+        }
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gold-accent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .event-card:active {
+            transform: scale(0.98);
+        }
+        .event-card:hover::before {
+            opacity: 1;
+        }
+        .event-card .cat-badge {
+            display: inline-block;
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 2px 10px;
+            border-radius: 40px;
+            background: rgba(229, 169, 60, 0.12);
+            color: var(--gold-accent);
+            border: 1px solid rgba(229, 169, 60, 0.2);
+            align-self: flex-start;
+            margin-bottom: 8px;
+        }
+        .event-card .cat-badge.festival {
+            background: rgba(14, 94, 54, 0.2);
+            color: #6dbe8f;
+            border-color: rgba(14, 94, 54, 0.4);
+        }
+        .event-card .cat-badge.special {
+            background: rgba(200, 55, 55, 0.12);
+            color: #d97373;
+            border-color: rgba(200, 55, 55, 0.25);
+        }
+        .event-card .cat-badge.weekly {
+            background: rgba(42, 125, 191, 0.12);
+            color: #7ab4e8;
+            border-color: rgba(42, 125, 191, 0.25);
+        }
+        .event-card .cat-badge.games {
+            background: rgba(123, 79, 194, 0.12);
+            color: #b08ae0;
+            border-color: rgba(123, 79, 194, 0.25);
+        }
+
+        .event-card .ev-title {
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.01em;
+            margin-bottom: 4px;
+            color: var(--text-white);
+        }
+        .event-card .ev-title a {
+            color: inherit;
+            transition: var(--transition);
+        }
+        .event-card .ev-title a:active {
+            color: var(--gold-accent);
+        }
+        .event-card .ev-date {
+            font-weight: 300;
+            font-size: 0.7rem;
+            color: var(--gold-accent);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .event-card .ev-date i {
+            font-size: 0.6rem;
+            opacity: 0.6;
+        }
+        .event-card .ev-desc {
+            font-weight: 300;
+            font-size: 0.78rem;
+            color: rgba(245, 245, 245, 0.55);
+            line-height: 1.5;
+            flex: 1;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .event-card .ev-link {
+            font-weight: 500;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gold-accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            align-self: flex-start;
+            transition: var(--transition);
+        }
+        .event-card .ev-link:active {
+            gap: 8px;
+        }
+        .event-card .ev-meta {
+            font-size: 0.6rem;
+            color: rgba(245, 245, 245, 0.25);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-dim);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 16px;
+            color: rgba(245, 245, 245, 0.3);
+        }
+        .empty-state i {
+            font-size: 2.4rem;
+            color: var(--gold-accent);
+            opacity: 0.25;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .empty-state p {
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        /* ── Footer ── */
+        .sf-footer {
+            background: #0a0a0a;
+            border-top: 1px solid rgba(229, 169, 60, 0.2);
+            padding: 2rem 1rem 0;
+            font-family: var(--font);
+            line-height: 1.6;
+        }
+        .sf-grid {
+            max-width: 600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .sf-brand h2 {
+            font-weight: 300;
+            letter-spacing: 0.25em;
+            font-size: 1.1rem;
+            color: #F5F5F5;
+            margin: 0;
+        }
+        .sf-brand .sf-tag {
+            margin-top: 0.2rem;
+            letter-spacing: 0.2em;
+            font-size: 0.5rem;
+            color: #6dbe8f;
+            text-transform: uppercase;
+        }
+        .sf-brand p {
+            margin-top: 0.6rem;
+            color: #b0b0b0;
+            font-size: 0.7rem;
+            max-width: 28ch;
+        }
+        .sf-col h3,
+        .sf-news h3 {
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #E5A93C;
+            margin: 0 0 0.6rem;
+            font-weight: 500;
+        }
+        .sf-col a {
+            display: block;
+            color: #b0b0b0;
+            font-size: 0.75rem;
+            padding: 0.2rem 0;
+            transition: color 0.15s;
+        }
+        .sf-col a:hover {
+            color: #6dbe8f;
+        }
+        .sf-social {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .sf-social a {
+            width: 1.8rem;
+            height: 1.8rem;
+            border: 1px solid #2e2e2e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b0b0b0;
+            transition: all 0.15s;
+            font-size: 0.7rem;
+        }
+        .sf-social a:hover {
+            color: #E5A93C;
+            border-color: #E5A93C;
+        }
+        .sf-news p {
+            color: #b0b0b0;
+            font-size: 0.7rem;
+            margin: 0 0 0.4rem;
+        }
+        .sf-bottom {
+            max-width: 600px;
+            margin: 1rem auto 0;
+            border-top: 1px solid #1e1e1e;
+            padding: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sf-legal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .sf-legal a {
+            color: #8a8a8a;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .sf-legal a:hover {
+            color: #6dbe8f;
+        }
+        .sf-copy {
+            color: #6f6f6f;
+            font-size: 0.6rem;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 480px) {
+            .sf-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .sf-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .sf-legal {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#main-dash" class="skip-link">Skip to dashboard</a>
+
+    <!-- ─── HEADER ─── -->
+    <header class="site-header">
+        <div class="header-flex">
+            <a href="/" class="brand-link">
+                <div class="site-title">SELASSIEFEST</div>
+                <div class="tagline">One Day. One Love. One Society.</div>
+            </a>
+            <div class="header-right">
+                <div class="powered-by-wrapper">
+                    <span class="powered-by-text">Powered</span>
+                    <a href="/sponsors/canafarm.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
+                        <img src="/assets/images/ss_tiny.png" alt="canAFarm" />
+                    </a>
+                </div>
+                <a href="/calendar/" class="jvgh-badge-wrapper" aria-label="Calendar">
+                    <i class="fas fa-calendar-alt" style="color:#6dbe8f; font-size:0.6rem;"></i>
+                    <span class="jvgh-badge-text">Events</span>
+                </a>
+                <a href="/calendar/games/" class="jvgh-badge-wrapper" aria-label="Pickney">
+                    <i class="fas fa-child" style="color:#6dbe8f; font-size:0.6rem;"></i>
+                    <span class="jvgh-badge-text">Pickney</span>
+                </a>
+                <a href="/SelassieFest-Global/" class="global-badge-wrapper" aria-label="Global">
+                    <span class="global-badge-text">GLOBAL</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── NAV ─── -->
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <ul class="nav-links">
+            <li><a href="/about/">About</a></li>
+            <li><a href="/festival/">Festival</a></li>
+            <li><a href="/sound-system-yard/">Sound Yard</a></li>
+            <li><a href="/main-stage/">Main Stage</a></li>
+            <li><a href="/higher-learning-roots/">Higher Learning</a></li>
+            <li><a href="/ital-marketplace/">Ital Market</a></li>
+            <li><a href="/reasoning-circle/">Reasoning</a></li>
+            <li><a href="/healing-grove/">Healing Grove</a></li>
+            <li><a href="/heritage-village/">Heritage</a></li>
+            <li><a href="/marketplace/">Marketplace</a></li>
+            <li><a href="/tickets/">Tickets</a></li>
+            <li><a href="/contact/">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- ─── DASHBOARD HERO ─── -->
+    <section class="dash-hero">
+        <h1>Calendar <span>Dashboard</span></h1>
+        <p>Festivals, special events, weekly gatherings &amp; heritage games</p>
+        <div class="sub-meta"><i class="fas fa-calendar-check"></i> Live · <i class="fas fa-sync-alt"></i> Auto-updated</div>
+    </section>
+
+    <!-- ─── STATS BAR ─── -->
+    <div class="stats-bar" id="statsBar" role="status" aria-live="polite">
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-calendar-day"></i></span>
+            <span class="stat-number" id="statTotal">0</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-flag"></i></span>
+            <span class="stat-number" id="statFestivals">0</span>
+            <span class="stat-label">Festivals</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-star"></i></span>
+            <span class="stat-number" id="statSpecial">0</span>
+            <span class="stat-label">Special</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
+            <span class="stat-number" id="statWeekly">0</span>
+            <span class="stat-label">Weekly</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-child"></i></span>
+            <span class="stat-number" id="statGames">0</span>
+            <span class="stat-label">Games</span>
+        </div>
+    </div>
+
+    <!-- ─── MAIN DASHBOARD ─── -->
+    <main class="dash-container" id="main-dash">
+
+        <!-- Controls -->
+        <div class="controls-row">
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search events..." aria-label="Search events" />
+            </div>
+            <div class="controls-bottom">
+                <div class="filter-group" id="filterGroup" role="tablist">
+                    <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All <span class="count" id="countAll">0</span></button>
+                    <button class="filter-btn" data-filter="festival" role="tab" aria-selected="false">Fest <span class="count" id="countFestival">0</span></button>
+                    <button class="filter-btn" data-filter="special" role="tab" aria-selected="false">Special <span class="count" id="countSpecial">0</span></button>
+                    <button class="filter-btn" data-filter="weekly" role="tab" aria-selected="false">Weekly <span class="count" id="countWeekly">0</span></button>
+                    <button class="filter-btn" data-filter="games" role="tab" aria-selected="false">Games <span class="count" id="countGames">0</span></button>
+                </div>
+                <div class="view-toggle" role="group" aria-label="View toggle">
+                    <button class="active" data-view="grid" aria-pressed="true"><i class="fas fa-th"></i></button>
+                    <button data-view="list" aria-pressed="false"><i class="fas fa-list"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Grid -->
+        <div class="event-grid" id="eventGrid" role="list">
+            <!-- Cards injected by JavaScript -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <i class="fas fa-calendar-times"></i>
+            <p>No events match your search or filter.</p>
+        </div>
+
+    </main>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="sf-footer" id="sf-canonical-footer">
+        <div class="sf-grid">
+            <div class="sf-brand">
+                <a href="/" style="text-decoration:none;color:inherit">
+                    <h2>SELASSIEFEST</h2>
+                    <div class="sf-tag">One Day. One Love. One Society.</div>
+                </a>
+                <p>A program of Ras Tafari Inc, a 501(c)(3) nonprofit.</p>
+                <div class="sf-social">
+                    <a href="https://www.instagram.com/selassiefest" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@selassiefest" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@selassie7291" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100084954017587" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://x.com/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.pinterest.com/himselassie/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="https://www.linkedin.com/in/selassiefest/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <nav class="sf-col" aria-label="Get involved">
+                <h3>Get Involved</h3>
+                <a href="/donate/">Donate</a>
+                <a href="/contact/volunteers.html">Volunteer</a>
+                <a href="/founding-partners/">Founding Partners</a>
+                <a href="/pickney-time/">Pickney Time</a>
+                <a href="/scholarship/">Youth Scholarship</a>
+                <a href="/raffle/">Raffle</a>
+            </nav>
+            <nav class="sf-col" aria-label="Explore">
+                <h3>Explore</h3>
+                <a href="/tickets/">Tickets</a>
+                <a href="/calendar/">Calendar</a>
+                <a href="/festival/">Festival &amp; Villages</a>
+                <a href="/calendar/games/">Games &amp; Heritage</a>
+                <a href="/marketplace/">Food &amp; Menu</a>
+                <a href="/media/press-kit.html">Press Kit</a>
+            </nav>
+            <div class="sf-news">
+                <h3>Stay Connected</h3>
+                <p>Festival dates, camp registration, and community events.</p>
+            </div>
+        </div>
+        <div class="sf-bottom">
+            <div class="sf-legal">
+                <a href="/legal/privacy.html">Privacy</a>
+                <a href="/legal/terms.html">Terms</a>
+                <a href="/legal/accessibility.html">Accessibility</a>
+                <a href="/festival/code-of-conduct/">Code of Conduct</a>
+                <a href="/about/mission.html">Mission</a>
+                <a href="/about/team.html">Board &amp; Team</a>
+                <a href="/contact/">Contact</a>
+            </div>
+            <div class="sf-copy">&copy; <span class="sf-year"></span> Ras Tafari Inc · 501(c)(3)</div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // ─── Data ──────────────────────────────────────────────────────────
+            const events = [{
+                id: 1,
+                title: 'International Reggae Day',
+                category: 'festival',
+                date: 'July 1, 2027',
+                url: '/calendar/festivals/international-reggae-day.html',
+                desc: 'A global celebration of reggae music\'s roots, culture, and enduring influence, born in Jamaica in 1994.'
+            }, {
+                id: 2,
+                title: 'Haile Selassie I\'s Birthday',
+                category: 'festival',
+                date: 'July 23, 2027',
+                url: '/calendar/festivals/haile-selassie-birthday.html',
+                desc: 'Honoring the birth of His Imperial Majesty Haile Selassie I with Nyabinghi drumming and reasoning.'
+            }, {
+                id: 3,
+                title: 'Emancipation Day',
+                category: 'festival',
+                date: 'August 1, 2027',
+                url: '/calendar/festivals/emancipation-day.html',
+                desc: 'Commemorating the abolition of slavery throughout the British Empire with remembrance and drumming.'
+            }, {
+                id: 4,
+                title: 'Independence Day',
+                category: 'festival',
+                date: 'August 6, 2027',
+                url: '/calendar/festivals/independence-day.html',
+                desc: 'Celebrating Jamaica\'s independence from British rule in 1962 — flags, music, and community pride.'
+            }, {
+                id: 5,
+                title: 'Marcus Garvey\'s Birthday',
+                category: 'festival',
+                date: 'August 17, 2027',
+                url: '/calendar/festivals/marcus-garvey-birthday.html',
+                desc: 'Honoring Jamaica\'s National Hero and father of Pan-Africanism.'
+            }, {
+                id: 6,
+                title: 'Afroween',
+                category: 'special',
+                date: 'Oct 31, 2026',
+                url: '/calendar/special-events/afroween.html',
+                desc: 'A vibrant Afro-centric Halloween celebration with music, costumes, and community.'
+            }, {
+                id: 7,
+                title: 'Ash Wednesday',
+                category: 'special',
+                date: 'Feb 18, 2027',
+                url: '/calendar/special-events/ash-wednesday.html',
+                desc: 'Observance marking the start of Lent with reflection and community gathering.'
+            }, {
+                id: 8,
+                title: 'Black Friday',
+                category: 'special',
+                date: 'Nov 27, 2026',
+                url: '/calendar/special-events/black-friday.html',
+                desc: 'A community-focused Black Friday event celebrating culture and connection.'
+            }, {
+                id: 9,
+                title: 'Bob Marley Birthday',
+                category: 'special',
+                date: 'Feb 6, 2027',
+                url: '/calendar/special-events/bob-marley-birthday.html',
+                desc: 'Celebrating the life and legacy of the King of Reggae.'
+            }, {
+                id: 10,
+                title: 'Boxing Day Celebration',
+                category: 'special',
+                date: 'Dec 26, 2026',
+                url: '/calendar/special-events/boxing-day-celebration.html',
+                desc: 'A festive Caribbean Boxing Day gathering with music and food.'
+            }, {
+                id: 11,
+                title: 'Caribbean Comedy Night',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/caribbean-comedy-night.html',
+                desc: 'Laughter and storytelling from the Caribbean diaspora.'
+            }, {
+                id: 12,
+                title: 'Caribbean Gospel Concert',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/caribbean-gospel-concert.html',
+                desc: 'Gospel music celebrating Caribbean heritage and faith.'
+            }, {
+                id: 13,
+                title: 'Celebrity Soccer Match',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/celebrity-soccer-match.html',
+                desc: 'A friendly soccer match featuring community celebrities.'
+            }, {
+                id: 14,
+                title: 'Chicago Dancehall Awards',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/chicago-dancehall-awards.html',
+                desc: 'Honoring the best in Chicago\'s dancehall scene.'
+            }, {
+                id: 15,
+                title: 'Christmas Day',
+                category: 'special',
+                date: 'Dec 25, 2026',
+                url: '/calendar/special-events/christmas-day.html',
+                desc: 'A community Christmas celebration with Caribbean flair.'
+            }, {
+                id: 16,
+                title: 'Christmas Eve',
+                category: 'special',
+                date: 'Dec 24, 2026',
+                url: '/calendar/special-events/christmas-eve.html',
+                desc: 'Caribbean Christmas Eve gathering with music and fellowship.'
+            }, {
+                id: 17,
+                title: 'Curry Fest',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/curry-fest.html',
+                desc: 'A celebration of Caribbean curry traditions and flavors.'
+            }, {
+                id: 18,
+                title: 'Easter Bun & Cheese',
+                category: 'special',
+                date: 'Apr 4, 2027',
+                url: '/calendar/special-events/easter-bun-n-cheese.html',
+                desc: 'Traditional Jamaican Easter bun and cheese celebration.'
+            }, {
+                id: 19,
+                title: 'Good Friday',
+                category: 'special',
+                date: 'Apr 2, 2027',
+                url: '/calendar/special-events/good-friday.html',
+                desc: 'A solemn observance of Good Friday within the community.'
+            }, {
+                id: 20,
+                title: 'Gospel',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/gospel.html',
+                desc: 'Gospel music and worship celebrating Caribbean faith traditions.'
+            }, {
+                id: 21,
+                title: 'GQ Meets Vogue Winter Ball',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/gq-meets-vogue-winter-ball.html',
+                desc: 'A glamorous winter ball fusing fashion and Caribbean culture.'
+            }, {
+                id: 22,
+                title: 'Jerk Fest',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/jerk-fest.html',
+                desc: 'A celebration of Jamaican jerk cuisine and culture.'
+            }, {
+                id: 23,
+                title: 'Labour Day',
+                category: 'special',
+                date: 'May 1, 2027',
+                url: '/calendar/special-events/labour-day.html',
+                desc: 'Community service and celebration on Labour Day.'
+            }, {
+                id: 24,
+                title: 'Midwest Sound Clash',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/midwest-sound-clash.html',
+                desc: 'A premier sound system clash in the Midwest.'
+            }, {
+                id: 25,
+                title: 'Miss Lou Birthday',
+                category: 'special',
+                date: 'Sep 7, 2027',
+                url: '/calendar/special-events/miss-lou-birthday.html',
+                desc: 'Honoring the birthday of Jamaica\'s beloved cultural icon, Miss Lou.'
+            }, {
+                id: 26,
+                title: 'National Heroes Day',
+                category: 'special',
+                date: 'Oct 18, 2027',
+                url: '/calendar/special-events/national-heroes-day.html',
+                desc: 'Commemorating Jamaica\'s national heroes and their legacies.'
+            }, {
+                id: 27,
+                title: 'New Year\'s Day',
+                category: 'special',
+                date: 'Jan 1, 2027',
+                url: '/calendar/special-events/new-years-day.html',
+                desc: 'A Caribbean New Year\'s Day celebration with community and joy.'
+            }, {
+                id: 28,
+                title: 'St. Catherine Link Up',
+                category: 'special',
+                date: 'TBD',
+                url: '/calendar/special-events/st-catherine-link-up.html',
+                desc: 'A community gathering celebrating St. Catherine heritage.'
+            }, {
+                id: 29,
+                title: 'AI DJ Night',
+                category: 'weekly',
+                date: 'Every Friday',
+                url: '/calendar/weekly/ai-dj-night.html',
+                desc: 'An AI-powered DJ night blending technology with Caribbean rhythms.'
+            }, {
+                id: 30,
+                title: 'Astrological Birthday Parties',
+                category: 'weekly',
+                date: 'Monthly',
+                url: '/calendar/weekly/astrological-birthday-parties.html',
+                desc: 'Celebrating community birthdays with astrological themes.'
+            }, {
+                id: 31,
+                title: 'Dancehall 101',
+                category: 'weekly',
+                date: 'Every Wednesday',
+                url: '/calendar/weekly/dancehall-101.html',
+                desc: 'Learn the moves and history of dancehall music and culture.'
+            }, {
+                id: 32,
+                title: 'Dub Poetry Open Mic',
+                category: 'weekly',
+                date: 'Every Tuesday',
+                url: '/calendar/weekly/dub-poetry-open-mic.html',
+                desc: 'An open mic for dub poetry, spoken word, and lyrical expression.'
+            }, {
+                id: 33,
+                title: 'Fish Fry Fridays',
+                category: 'weekly',
+                date: 'Every Friday',
+                url: '/calendar/weekly/fish-fry-fridays.html',
+                desc: 'A weekly fish fry gathering with food, music, and community.'
+            }, {
+                id: 34,
+                title: 'New Music Live',
+                category: 'weekly',
+                date: 'Every Thursday',
+                url: '/calendar/weekly/new-music-live.html',
+                desc: 'Showcasing new music from Caribbean and diaspora artists.'
+            }, {
+                id: 35,
+                title: 'Soul Sundays',
+                category: 'weekly',
+                date: 'Every Sunday',
+                url: '/calendar/weekly/soul-sundays.html',
+                desc: 'A soulful Sunday gathering with music, reflection, and community.'
+            }, {
+                id: 36,
+                title: 'Anansi Stories',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/anansi-stories.html',
+                desc: 'Tales of the trickster spider Anansi, passed down through generations.'
+            }, {
+                id: 37,
+                title: 'Bamboo Water Flute',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/bamboo-water-flute.html',
+                desc: 'A sophisticated homemade acoustic instrument from bamboo.'
+            }, {
+                id: 38,
+                title: 'Bat Up and Catch',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/bat-up-and-catch.html',
+                desc: 'An informal, continuous variation of cricket played in the yard.'
+            }, {
+                id: 39,
+                title: 'Brown Girl in the Ring',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/brown-girl-in-the-ring.html',
+                desc: 'A singing game where children dance in a circle.'
+            }, {
+                id: 40,
+                title: 'Chinese Skip',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/chinese-skip.html',
+                desc: 'A stretchy elastic rope game of jumps, tricks, and quick feet.'
+            }, {
+                id: 41,
+                title: 'Dandy Shandy',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/dandy-shandy.html',
+                desc: 'A fast-paced chase game that builds speed and agility.'
+            }, {
+                id: 42,
+                title: 'Dominoes',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/dominoes.html',
+                desc: 'The beloved Caribbean pastime — clash with friends and family.'
+            }, {
+                id: 43,
+                title: 'Emmanuel Road',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/emmanuel-road.html',
+                desc: 'A call-and-response ring game celebrating community and rhythm.'
+            }, {
+                id: 44,
+                title: 'Hopscotch (Strepa)',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/hopscotch-strepa.html',
+                desc: 'Toss a stone and hop through the numbered grid without missing.'
+            }, {
+                id: 45,
+                title: 'Kite Making',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/kite-making.html',
+                desc: 'Build and fly kites from paper, sticks, and string.'
+            }, {
+                id: 46,
+                title: 'Little Sally Water',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/little-sally-water.html',
+                desc: 'Jamaica\'s most famous courtship ring game — rise, choose, and wheel.'
+            }, {
+                id: 47,
+                title: 'Ludi',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/ludi.html',
+                desc: 'A classic Caribbean board game of strategy and luck.'
+            }, {
+                id: 48,
+                title: 'Marbles',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/marbles.html',
+                desc: 'Knuckle down and aim true — marbles is a game of precision.'
+            }, {
+                id: 49,
+                title: 'Miss Mary Mack',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/miss-mary-mack.html',
+                desc: 'A widely adapted hand-clapping game across the African diaspora.'
+            }, {
+                id: 50,
+                title: 'Push Cart',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/push-cart.html',
+                desc: 'A wooden cart built from scraps, perfect for hauling treasures.'
+            }, {
+                id: 51,
+                title: 'Stuckie (Stucky Ketchy)',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/stuckie-stucky-ketchy.html',
+                desc: 'The Jamaican version of traditional tag.'
+            }, {
+                id: 52,
+                title: 'Jane &amp; Louisa',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/jane-and-louisa.html',
+                desc: 'A ring game passed hand to hand with song and gentle movement.'
+            }, {
+                id: 53,
+                title: 'Twi Twi Twi',
+                category: 'games',
+                date: 'Ongoing',
+                url: '/calendar/games/twi-twi-twi.html',
+                desc: 'An advanced coordination game requiring flawless hand-clapping and foot-tapping synchronicity.'
+            }];
+
+            // ─── DOM refs ──────────────────────────────────────────────────────
+            const grid = document.getElementById('eventGrid');
+            const empty = document.getElementById('emptyState');
+            const searchInput = document.getElementById('searchInput');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const viewBtns = document.querySelectorAll('.view-toggle button');
+            const statTotal = document.getElementById('statTotal');
+            const statFestivals = document.getElementById('statFestivals');
+            const statSpecial = document.getElementById('statSpecial');
+            const statWeekly = document.getElementById('statWeekly');
+            const statGames = document.getElementById('statGames');
+            const countAll = document.getElementById('countAll');
+            const countFestival = document.getElementById('countFestival');
+            const countSpecial = document.getElementById('countSpecial');
+            const countWeekly = document.getElementById('countWeekly');
+            const countGames = document.getElementById('countGames');
+
+            let currentFilter = 'all';
+            let currentView = 'grid';
+            let currentSearch = '';
+
+            // ─── Helpers ──────────────────────────────────────────────────────
+            function getCategoryCount(cat) {
+                return cat === 'all' ? events.length : events.filter(e => e.category === cat).length;
+            }
+
+            function getFilteredEvents() {
+                let filtered = events;
+                if (currentFilter !== 'all') {
+                    filtered = filtered.filter(e => e.category === currentFilter);
+                }
+                if (currentSearch.trim()) {
+                    const q = currentSearch.trim().toLowerCase();
+                    filtered = filtered.filter(e =>
+                        e.title.toLowerCase().includes(q) ||
+                        e.desc.toLowerCase().includes(q) ||
+                        e.category.toLowerCase().includes(q)
+                    );
+                }
+                return filtered;
+            }
+
+            function renderStats() {
+                statTotal.textContent = events.length;
+                statFestivals.textContent = getCategoryCount('festival');
+                statSpecial.textContent = getCategoryCount('special');
+                statWeekly.textContent = getCategoryCount('weekly');
+                statGames.textContent = getCategoryCount('games');
+                countAll.textContent = events.length;
+                countFestival.textContent = getCategoryCount('festival');
+                countSpecial.textContent = getCategoryCount('special');
+                countWeekly.textContent = getCategoryCount('weekly');
+                countGames.textContent = getCategoryCount('games');
+            }
+
+            function renderCards() {
+                const filtered = getFilteredEvents();
+                grid.innerHTML = '';
+                if (filtered.length === 0) {
+                    empty.style.display = 'block';
+                    grid.style.display = 'none';
+                    return;
+                }
+                empty.style.display = 'none';
+                grid.style.display = 'grid';
+
+                filtered.forEach((ev, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.style.animationDelay = (idx * 0.04) + 's';
+                    card.setAttribute('role', 'listitem');
+
+                    const catLabel = ev.category.charAt(0).toUpperCase() + ev.category.slice(1);
+                    const catClass = ev.category;
+
+                    card.innerHTML = `
+                        <span class="cat-badge ${catClass}">${catLabel}</span>
+                        <div class="ev-title"><a href="${ev.url}" target="_blank" rel="noopener">${ev.title}</a></div>
+                        <div class="ev-date"><i class="fas fa-calendar-alt"></i> ${ev.date}</div>
+                        <div class="ev-desc">${ev.desc}</div>
+                        <a href="${ev.url}" target="_blank" rel="noopener" class="ev-link">View <i class="fas fa-arrow-right"></i></a>
+                        <div class="ev-meta">
+                            <span><i class="far fa-clock"></i> ${ev.date}</span>
+                            <span><i class="far fa-folder"></i> ${catLabel}</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            function updateView() {
+                if (currentView === 'list') {
+                    grid.classList.add('list-view');
+                } else {
+                    grid.classList.remove('list-view');
+                }
+                viewBtns.forEach(btn => {
+                    const isActive = btn.dataset.view === currentView;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+            }
+
+            function updateFilter(btn) {
+                filterBtns.forEach(b => {
+                    const isActive = b === btn;
+                    b.classList.toggle('active', isActive);
+                    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+                currentFilter = btn.dataset.filter;
+                renderCards();
+            }
+
+            function debounce(fn, ms) {
+                let timer;
+                return function(...args) {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => fn.apply(this, args), ms);
+                };
+            }
+
+            // ─── Event Listeners ──────────────────────────────────────────────
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    updateFilter(this);
+                });
+            });
+
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.dataset.view === currentView) return;
+                    currentView = this.dataset.view;
+                    updateView();
+                });
+            });
+
+            searchInput.addEventListener('input', debounce(function() {
+                currentSearch = this.value;
+                renderCards();
+            }, 200));
+
+            // ─── Init ──────────────────────────────────────────────────────────
+            renderStats();
+            renderCards();
+            updateView();
+
+            const yearEl = document.querySelector('.sf-year');
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+            console.log('🌿 SelassieFest Calendar Dashboard · ' + events.length + ' events loaded (mobile-first).');
+        })();
+    </script>
+
+</body>
+</html>
