@@ -37,6 +37,70 @@ grant usage on schema public to anon;
 grant insert on newsletter_subscribers to anon;
 grant insert on anansi_story_submissions to anon;
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- Calendar (TRC Events dashboard, replacing the static /calendar/ hub)
+-- ─────────────────────────────────────────────────────────────────────────
+
+-- A "series" is the constant identity of a recurring or one-off event —
+-- e.g. "Dancehall 101", "Soul Sundays", or a single-occurrence festival
+-- like "Curry Fest Chicago". category drives which dashboard filter tab
+-- (festival / special / weekly / games) an occurrence shows up under.
+create table if not exists event_series (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  category text not null check (category in ('festival', 'special', 'weekly', 'games')),
+  description text,
+  created_at timestamptz not null default now()
+);
+
+-- An "occurrence" is one dated instance of a series — the actual "lesson"
+-- for weekly series like Dancehall 101, where the DJ/lineup and write-up
+-- change every week even though the series name doesn't. For one-off
+-- festivals or special events, a series simply has a single occurrence.
+create table if not exists event_occurrences (
+  id uuid primary key default gen_random_uuid(),
+  series_id uuid not null references event_series(id) on delete cascade,
+  occurrence_date timestamptz not null,
+  theme_title text not null,      -- e.g. "1960s Ska & Rocksteady", or "Curry Fest Chicago" for a one-off
+  unit_label text,                -- optional curriculum framing, e.g. "Winter Sem: Foundations — Week 3"
+  summary text not null,          -- short blurb shown on the dashboard card
+  body text,                      -- long-form detail content, used only when detail_url is null
+  lineup jsonb not null default '[]'::jsonb,  -- [{ "name": "...", "role": "DJ" | "Host" | "Performer" }]
+  venue text,
+  ticket_url text,
+  hero_image text,
+  -- When set, "View Details" on the dashboard links straight to an existing
+  -- hand-built static page (e.g. /calendar/festivals/curry-fest.html)
+  -- instead of the generic Supabase-rendered template. Curated festival and
+  -- special-event pages keep their own custom content; only the
+  -- high-volume weekly "lesson" pages actually need the generic template.
+  detail_url text,
+  created_at timestamptz not null default now(),
+  unique (series_id, occurrence_date)
+);
+
+create index if not exists event_occurrences_date_idx on event_occurrences (occurrence_date);
+
+alter table event_series enable row level security;
+alter table event_occurrences enable row level security;
+
+-- Calendar data is public information (unlike the newsletter/Anansi forms
+-- above, which are write-only for anon). Anon gets read-only access; there
+-- is no insert/update/delete policy, so events are managed from the
+-- Supabase Table Editor (or a future authenticated admin tool), never from
+-- the public site.
+create policy "Allow anon read" on event_series
+  for select to anon
+  using (true);
+
+create policy "Allow anon read" on event_occurrences
+  for select to anon
+  using (true);
+
+grant select on event_series to anon;
+grant select on event_occurrences to anon;
+
 -- The `stripe` schema below is provisioned and owned by an external Stripe
 -- sync tool (customers/charges/subscriptions/etc. tables), not by this repo,
 -- so it is not represented here in full. These two trigger functions are
