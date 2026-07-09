@@ -453,6 +453,20 @@
         .filter-btn.active .count {
             opacity: 0.8;
         }
+        .day-filter-btn {
+            border-color: rgba(14, 94, 54, 0.3);
+        }
+        .day-filter-btn.active {
+            background: var(--roots-green);
+            border-color: var(--roots-green);
+            color: #eafff2;
+        }
+        .filter-sep {
+            width: 1px;
+            align-self: stretch;
+            background: var(--border-dim);
+            margin: 2px 2px;
+        }
 
         .scope-toggle {
             display: flex;
@@ -958,7 +972,15 @@
                     <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All <span class="count" id="countAll">0</span></button>
                     <button class="filter-btn" data-filter="festival" role="tab" aria-selected="false">Fest <span class="count" id="countFestival">0</span></button>
                     <button class="filter-btn" data-filter="special" role="tab" aria-selected="false">Special <span class="count" id="countSpecial">0</span></button>
-                    <button class="filter-btn" data-filter="weekly" role="tab" aria-selected="false">Weekly <span class="count" id="countWeekly">0</span></button>
+                    <span class="filter-sep" aria-hidden="true"></span>
+                    <button class="filter-btn day-filter-btn" data-filter="day-0" role="tab" aria-selected="false">Sun <span class="count" id="countDay0">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-1" role="tab" aria-selected="false">Mon <span class="count" id="countDay1">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-2" role="tab" aria-selected="false">Tue <span class="count" id="countDay2">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-3" role="tab" aria-selected="false">Wed <span class="count" id="countDay3">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-4" role="tab" aria-selected="false">Thu <span class="count" id="countDay4">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-5" role="tab" aria-selected="false">Fri <span class="count" id="countDay5">0</span></button>
+                    <button class="filter-btn day-filter-btn" data-filter="day-6" role="tab" aria-selected="false">Sat <span class="count" id="countDay6">0</span></button>
+                    <span class="filter-sep" aria-hidden="true"></span>
                     <button class="filter-btn" data-filter="games" role="tab" aria-selected="false">Games <span class="count" id="countGames">0</span></button>
                 </div>
                 <div class="view-toggle" role="group" aria-label="View toggle">
@@ -1042,7 +1064,6 @@
         (async function() {
             // ─── Data (live from Supabase) ───────────────────────────────────
             let events = [];
-            let seriesCounts = {};
 
             async function loadEvents() {
                 const client = await window.sfSupabaseReady;
@@ -1066,11 +1087,6 @@
                         url: row.detail_url || ('/calendar/events/event.html?id=' + row.id)
                     };
                 });
-
-                seriesCounts = {};
-                events.forEach(e => {
-                    seriesCounts[e.seriesName] = (seriesCounts[e.seriesName] || 0) + 1;
-                });
             }
 
             // ─── DOM refs ──────────────────────────────────────────────────────
@@ -1087,9 +1103,10 @@
             const countAll = document.getElementById('countAll');
             const countFestival = document.getElementById('countFestival');
             const countSpecial = document.getElementById('countSpecial');
-            const countWeekly = document.getElementById('countWeekly');
             const countGames = document.getElementById('countGames');
+            const countDayEls = [0, 1, 2, 3, 4, 5, 6].map(d => document.getElementById('countDay' + d));
             const scopeBtns = document.querySelectorAll('.scope-btn');
+            const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
             let currentFilter = 'all';
             let currentView = 'grid';
@@ -1113,10 +1130,22 @@
                 return scoped.filter(e => e.category === cat).length;
             }
 
+            function matchesFilter(e, filterKey) {
+                if (filterKey === 'all') return true;
+                if (filterKey.startsWith('day-')) {
+                    return e.date.getUTCDay() === Number(filterKey.slice(4));
+                }
+                return e.category === filterKey;
+            }
+
+            function getFilterCount(filterKey) {
+                return getScopedEvents().filter(e => matchesFilter(e, filterKey)).length;
+            }
+
             function getFilteredEvents() {
                 let filtered = getScopedEvents();
                 if (currentFilter !== 'all') {
-                    filtered = filtered.filter(e => e.category === currentFilter);
+                    filtered = filtered.filter(e => matchesFilter(e, currentFilter));
                 }
                 if (currentSearch.trim()) {
                     const q = currentSearch.trim().toLowerCase();
@@ -1136,11 +1165,11 @@
                 statSpecial.textContent = getCategoryCount('special');
                 statWeekly.textContent = getCategoryCount('weekly');
                 statGames.textContent = getCategoryCount('games');
-                countAll.textContent = getCategoryCount('all');
-                countFestival.textContent = getCategoryCount('festival');
-                countSpecial.textContent = getCategoryCount('special');
-                countWeekly.textContent = getCategoryCount('weekly');
-                countGames.textContent = getCategoryCount('games');
+                countAll.textContent = getFilterCount('all');
+                countFestival.textContent = getFilterCount('festival');
+                countSpecial.textContent = getFilterCount('special');
+                countGames.textContent = getFilterCount('games');
+                countDayEls.forEach((el, d) => { el.textContent = getFilterCount('day-' + d); });
             }
 
             function formatDate(d) {
@@ -1176,8 +1205,7 @@
                     const catClass = ev.category;
                     const dateStr = formatDate(ev.date);
                     const showSeries = ev.seriesName && ev.seriesName !== ev.title;
-                    const isRecurring = seriesCounts[ev.seriesName] > 1;
-                    const dayBadge = isRecurring ? `<span class="day-badge">${dayAbbrev(ev.date)}</span>` : '';
+                    const dayBadge = `<span class="day-badge">${dayAbbrev(ev.date)}</span>`;
 
                     card.innerHTML = `
                         <span class="cat-badge ${catClass}">${escapeHtml(catLabel)}</span>
@@ -1268,17 +1296,17 @@
             // ─── Init ──────────────────────────────────────────────────────────
             updateView();
 
+            const VALID_FILTERS = ['all', 'festival', 'special', 'weekly', 'games', 'day-0', 'day-1', 'day-2', 'day-3', 'day-4', 'day-5', 'day-6'];
             const requestedFilter = new URLSearchParams(window.location.search).get('filter');
-            if (requestedFilter) {
-                const matchBtn = Array.from(filterBtns).find(b => b.dataset.filter === requestedFilter);
-                if (matchBtn) {
-                    filterBtns.forEach(b => {
-                        const isActive = b === matchBtn;
-                        b.classList.toggle('active', isActive);
-                        b.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                    });
-                    currentFilter = requestedFilter;
-                }
+            if (requestedFilter && VALID_FILTERS.includes(requestedFilter)) {
+                // "weekly" has no dedicated tab anymore (superseded by day filters), so it's
+                // applied without a visible active tab — old /calendar/weekly/ links still work.
+                filterBtns.forEach(b => {
+                    const isActive = b.dataset.filter === requestedFilter;
+                    b.classList.toggle('active', isActive);
+                    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+                currentFilter = requestedFilter;
             }
 
             const yearEl = document.querySelector('.sf-year');
