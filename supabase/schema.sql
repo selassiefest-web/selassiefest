@@ -154,6 +154,21 @@ create policy "Allow anon insert" on marketplace_preorders
 grant insert on raffle_entries to anon;
 grant insert on marketplace_preorders to anon;
 
+-- Email notifications: an AFTER INSERT trigger on each table above calls
+-- the deployed `notify-submission` Edge Function (supabase/functions/
+-- notify-submission/index.ts) via pg_net, which emails the org through
+-- Resend. The trigger function is intentionally NOT reproduced here: it
+-- embeds a shared webhook secret (checked by the Edge Function to reject
+-- unauthenticated calls to its public URL) that must never be committed to
+-- git. It was applied directly against the database instead. If the
+-- function ever needs to be recreated, see the (uncommitted) setup script
+-- referenced in the PR/commit that introduced this feature, or regenerate
+-- it fresh: a plpgsql function, security definer, that does
+-- `perform net.http_post(url := '<function-url>', headers := jsonb_build_object('Content-Type','application/json','x-webhook-secret','<secret>'), body := jsonb_build_object('table', TG_TABLE_NAME, 'record', row_to_json(NEW)))`,
+-- attached as an AFTER INSERT trigger on raffle_entries and
+-- marketplace_preorders. The secret is also stored as the Edge Function's
+-- WEBHOOK_SECRET environment secret (`supabase secrets set`).
+
 -- The `stripe` schema below is provisioned and owned by an external Stripe
 -- sync tool (customers/charges/subscriptions/etc. tables), not by this repo,
 -- so it is not represented here in full. These two trigger functions are
