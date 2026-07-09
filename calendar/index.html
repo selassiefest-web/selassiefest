@@ -298,7 +298,7 @@
         /* ── Stats Bar ── */
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             max-width: 600px;
             margin: -16px auto 0;
@@ -342,7 +342,7 @@
 
         @media (max-width: 420px) {
             .stats-bar {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
                 gap: 6px;
                 padding: 0 6px;
             }
@@ -621,11 +621,6 @@
             background: rgba(42, 125, 191, 0.12);
             color: #7ab4e8;
             border-color: rgba(42, 125, 191, 0.25);
-        }
-        .event-card .cat-badge.games {
-            background: rgba(123, 79, 194, 0.12);
-            color: #b08ae0;
-            border-color: rgba(123, 79, 194, 0.25);
         }
 
         .event-card .ev-series {
@@ -947,11 +942,6 @@
             <span class="stat-number" id="statWeekly">0</span>
             <span class="stat-label">Weekly</span>
         </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-child"></i></span>
-            <span class="stat-number" id="statGames">0</span>
-            <span class="stat-label">Games</span>
-        </div>
     </div>
 
     <!-- ─── MAIN DASHBOARD ─── -->
@@ -980,8 +970,6 @@
                     <button class="filter-btn day-filter-btn" data-filter="day-4" role="tab" aria-selected="false">Thu <span class="count" id="countDay4">0</span></button>
                     <button class="filter-btn day-filter-btn" data-filter="day-5" role="tab" aria-selected="false">Fri <span class="count" id="countDay5">0</span></button>
                     <button class="filter-btn day-filter-btn" data-filter="day-6" role="tab" aria-selected="false">Sat <span class="count" id="countDay6">0</span></button>
-                    <span class="filter-sep" aria-hidden="true"></span>
-                    <button class="filter-btn" data-filter="games" role="tab" aria-selected="false">Games <span class="count" id="countGames">0</span></button>
                 </div>
                 <div class="view-toggle" role="group" aria-label="View toggle">
                     <button class="active" data-view="grid" aria-pressed="true"><i class="fas fa-th"></i></button>
@@ -1099,11 +1087,9 @@
             const statFestivals = document.getElementById('statFestivals');
             const statSpecial = document.getElementById('statSpecial');
             const statWeekly = document.getElementById('statWeekly');
-            const statGames = document.getElementById('statGames');
             const countAll = document.getElementById('countAll');
             const countFestival = document.getElementById('countFestival');
             const countSpecial = document.getElementById('countSpecial');
-            const countGames = document.getElementById('countGames');
             const countDayEls = [0, 1, 2, 3, 4, 5, 6].map(d => document.getElementById('countDay' + d));
             const scopeBtns = document.querySelectorAll('.scope-btn');
             const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -1164,11 +1150,9 @@
                 statFestivals.textContent = getCategoryCount('festival');
                 statSpecial.textContent = getCategoryCount('special');
                 statWeekly.textContent = getCategoryCount('weekly');
-                statGames.textContent = getCategoryCount('games');
                 countAll.textContent = getFilterCount('all');
                 countFestival.textContent = getFilterCount('festival');
                 countSpecial.textContent = getFilterCount('special');
-                countGames.textContent = getFilterCount('games');
                 countDayEls.forEach((el, d) => { el.textContent = getFilterCount('day-' + d); });
             }
 
@@ -1296,7 +1280,7 @@
             // ─── Init ──────────────────────────────────────────────────────────
             updateView();
 
-            const VALID_FILTERS = ['all', 'festival', 'special', 'weekly', 'games', 'day-0', 'day-1', 'day-2', 'day-3', 'day-4', 'day-5', 'day-6'];
+            const VALID_FILTERS = ['all', 'festival', 'special', 'weekly', 'day-0', 'day-1', 'day-2', 'day-3', 'day-4', 'day-5', 'day-6'];
             const requestedFilter = new URLSearchParams(window.location.search).get('filter');
             if (requestedFilter && VALID_FILTERS.includes(requestedFilter)) {
                 // "weekly" has no dedicated tab anymore (superseded by day filters), so it's
