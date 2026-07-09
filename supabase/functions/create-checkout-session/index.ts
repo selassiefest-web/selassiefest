@@ -84,7 +84,13 @@ Deno.serve(async (req: Request) => {
       const amount = Math.round(Number(body.amount) * 100);
       if (!amount || amount < 100) return json({ error: 'Minimum donation is $1' }, 400);
       const recurring = Boolean(body.recurring);
-      const fundProductId = body.fundProductId || 'prod_Uq4ep19taCtHNe'; // Ras Tafari Inc General Fund
+      // General Fund is split into separate one-time and monthly Stripe
+      // products (Youth Scholarship Fund has the same split, see
+      // prod_Ur7mINiSdb8wAB / prod_Uq2xF7nL2NUpHf, for when the donate page
+      // grows a fund selector) — route to whichever matches what was
+      // actually chosen so Stripe's own records stay meaningful.
+      const fundProductId =
+        body.fundProductId || (recurring ? 'prod_Uq4ep19taCtHNe' : 'prod_Uq6JmXb3pIWc9Q');
 
       const metadata = {
         order_type: 'donation',
