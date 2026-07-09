@@ -120,7 +120,7 @@
 <div class="container game-body">
 
   <div class="reg-notice">
-    <strong>Step 1 of registration:</strong> This form sends us your camper's information directly by email so we can confirm a spot and follow up with payment details. Online payment and instant confirmation are coming soon. Questions in the meantime? Email <a href="mailto:selassiefest@gmail.com" style="color:var(--gold); font-weight:600;">selassiefest@gmail.com</a> or call <a href="tel:414-909-3279" style="color:var(--gold); font-weight:600;">414-909-3279</a>.
+    <strong>Step 1 of registration:</strong> This form sends us your camper's information directly so we can confirm a spot and follow up with payment details. Online payment and instant confirmation are coming soon. Questions in the meantime? Email <a href="mailto:selassiefest@gmail.com" style="color:var(--gold); font-weight:600;">selassiefest@gmail.com</a> or call <a href="tel:414-909-3279" style="color:var(--gold); font-weight:600;">414-909-3279</a>.
   </div>
 
   <div class="reg-card">
@@ -353,8 +353,9 @@
       <div class="reg-actions">
         <button type="submit" class="btn-reg-submit"><i class="fas fa-paper-plane"></i> Submit Registration</button>
         <button type="button" id="copyDetailsBtn" class="btn-reg-copy"><i class="fas fa-copy"></i> Copy My Answers</button>
-        <p class="reg-actions-note">"Submit Registration" opens your email app with everything filled in — just hit send. If nothing opens, use "Copy My Answers" and paste them into an email to selassiefest@gmail.com.</p>
+        <p class="reg-actions-note">"Submit Registration" sends your answers directly to our team. If something goes wrong, use "Copy My Answers" and paste them into an email to selassiefest@gmail.com.</p>
       </div>
+      <div id="regFormResponse" style="margin-top:1rem; display:none;"></div>
     </form>
   </div>
 
@@ -397,13 +398,40 @@
     return lines.join("\n");
   }
 
-  form.addEventListener('submit', function (e) {
+  function buildRegistrationData() {
+    var fd = new FormData(form);
+    var data = {};
+    fd.forEach(function (value, key) {
+      if (value) data[key] = value;
+    });
+    return data;
+  }
+
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    var summary = buildSummary();
-    var camperName = form.camper_name.value || "New Camper";
-    var subject = encodeURIComponent("Camp Registration — " + camperName);
-    var body = encodeURIComponent(summary);
-    window.location.href = "mailto:selassiefest@gmail.com?subject=" + subject + "&body=" + body;
+    var responseDiv = document.getElementById('regFormResponse');
+    var submitBtn = form.querySelector('.btn-reg-submit');
+    var originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Submitting…'; }
+
+    try {
+      await window.sfSupabase.submitCampRegistration({
+        camperName: form.camper_name.value || 'New Camper',
+        guardianName: form.guardian1_name.value,
+        guardianEmail: form.guardian1_email.value,
+        guardianPhone: form.guardian1_phone.value,
+        registrationData: buildRegistrationData(),
+      });
+      responseDiv.style.display = 'block';
+      responseDiv.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! Your registration has been received. We\'ll follow up by email with payment details and confirmation.';
+      form.reset();
+    } catch (err) {
+      console.error('Camp registration submission failed:', err);
+      responseDiv.style.display = 'block';
+      responseDiv.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Sorry, something went wrong submitting your registration. Please try "Copy My Answers" below and email them to selassiefest@gmail.com, or try again.';
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+    }
   });
 
   copyBtn.addEventListener('click', function () {

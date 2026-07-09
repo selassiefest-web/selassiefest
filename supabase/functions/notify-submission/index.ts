@@ -47,9 +47,60 @@ function formatMarketplacePreorder(record: Record<string, any>) {
   };
 }
 
+function formatVolunteerSignup(record: Record<string, any>) {
+  return {
+    subject: `New Volunteer Application — ${record.full_name}`,
+    html: `
+      <h2>New Volunteer Application</h2>
+      <p><strong>Name:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)}, ${escapeHtml(record.phone)})</p>
+      <p><strong>Age:</strong> ${escapeHtml(record.age)}</p>
+      <p><strong>Preferred Role:</strong> ${escapeHtml(record.role_choice)}</p>
+      <p><strong>Shift:</strong> ${escapeHtml(record.shift_preference)}</p>
+      <p><strong>T-Shirt:</strong> ${escapeHtml(record.tshirt_size)}</p>
+      <p><strong>Emergency Contact:</strong> ${escapeHtml(record.emergency_contact)}</p>
+      <p><strong>Accommodations:</strong> ${escapeHtml(record.accommodations)}</p>
+      <p><strong>Referral:</strong> ${escapeHtml(record.referral_source)}</p>
+      <p><strong>Waiver Accepted:</strong> ${record.waiver_accepted ? 'Yes' : 'No'}</p>
+    `,
+  };
+}
+
+function formatSponsorInquiry(record: Record<string, any>) {
+  const fields = Array.isArray(record.fields) ? record.fields : [];
+  const fieldsList = fields.map((f: any) => `<p><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(f.value)}</p>`).join('');
+  return {
+    subject: `New Sponsor Inquiry — ${record.source_page || 'sponsors'}`,
+    html: `
+      <h2>New Sponsor Inquiry</h2>
+      <p><strong>From page:</strong> ${escapeHtml(record.source_page)}</p>
+      ${fieldsList}
+    `,
+  };
+}
+
+function formatCampRegistration(record: Record<string, any>) {
+  const data = record.registration_data || {};
+  const weeks = Object.keys(data)
+    .filter((k) => /^week\d+$/.test(k) && data[k])
+    .map((k) => k.replace('week', 'Week '));
+  return {
+    subject: `New Camp Registration — ${record.camper_name}`,
+    html: `
+      <h2>New Camp Registration</h2>
+      <p><strong>Camper:</strong> ${escapeHtml(record.camper_name)}</p>
+      <p><strong>Guardian:</strong> ${escapeHtml(record.guardian_name)} (${escapeHtml(record.guardian_email)}, ${escapeHtml(record.guardian_phone)})</p>
+      <p><strong>Weeks Selected:</strong> ${weeks.length ? escapeHtml(weeks.join(', ')) : 'None selected'}</p>
+      <p><strong>Full details:</strong> see the camp_registrations table in Supabase (registration_data column) for allergies, medical info, consents, and everything else submitted.</p>
+    `,
+  };
+}
+
 const FORMATTERS: Record<string, (record: Record<string, any>) => { subject: string; html: string }> = {
   raffle_entries: formatRaffleEntry,
   marketplace_preorders: formatMarketplacePreorder,
+  volunteer_signups: formatVolunteerSignup,
+  sponsor_inquiries: formatSponsorInquiry,
+  camp_registrations: formatCampRegistration,
 };
 
 Deno.serve(async (req: Request) => {

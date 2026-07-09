@@ -1163,11 +1163,12 @@
   });
 
   // Form submit placeholder
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     var form = e.target;
     var btn = form.querySelector('button[type="submit"]');
-    var lines = [];
+    var fields = [];
+    var email = '';
     form.querySelectorAll('input, textarea, select').forEach(function (field) {
       var label, value;
       if (field.tagName === 'SELECT') {
@@ -1179,13 +1180,25 @@
         label = field.placeholder || 'Field';
         value = field.value || '(not provided)';
       }
-      lines.push(label + ': ' + value);
+      if (field.type === 'email') email = field.value;
+      fields.push({ label: label, value: value });
     });
-    var subject = 'Sponsor Inquiry \u2014 ' + document.title.split('|')[0].trim();
-    var body = lines.join('\n');
-    window.location.href = 'mailto:selassiefest@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    btn.textContent = 'Opening Your Email \u2014 Send to Complete \u2713';
+    var originalBtnText = btn.textContent;
     btn.disabled = true;
+    btn.textContent = 'Submitting\u2026';
+    try {
+      await window.sfSupabase.submitSponsorInquiry({
+        sourcePage: 'sponsors/index.html',
+        email: email,
+        fields: fields,
+      });
+      btn.textContent = "Thank You \u2014 We'll Be In Touch \u2713";
+    } catch (err) {
+      console.error('Sponsor inquiry submission failed:', err);
+      btn.disabled = false;
+      btn.textContent = originalBtnText;
+      alert('Sorry, something went wrong submitting your inquiry. Please try again, or email selassiefest@gmail.com directly.');
+    }
   }
 
   // Intersection Observer for card entrance animation
@@ -1205,5 +1218,6 @@
     observer.observe(card);
   });
 </script>
+<script src="/assets/js/supabase-client.js"></script>
 </body>
 </html>

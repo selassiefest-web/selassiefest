@@ -154,7 +154,84 @@ create policy "Allow anon insert" on marketplace_preorders
 grant insert on raffle_entries to anon;
 grant insert on marketplace_preorders to anon;
 
--- Email notifications: an AFTER INSERT trigger on each table above calls
+-- ─────────────────────────────────────────────────────────────────────────
+-- Volunteer signup, sponsor inquiries, camp registration
+-- ─────────────────────────────────────────────────────────────────────────
+-- All three previously only built a mailto: link and relied on the visitor
+-- having a desktop mail client configured to actually send anything.
+
+create table if not exists volunteer_signups (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text not null,
+  age int,
+  role_choice text,
+  shift_preference text,
+  tshirt_size text,
+  emergency_contact text,
+  accommodations text,
+  referral_source text,
+  waiver_accepted boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+-- The 13 sponsor pages all collect the same way (generic loop over every
+-- input/select/textarea, using each field's placeholder as its label), and
+-- the exact field set varies slightly page to page, so `fields` keeps the
+-- full generic {label, value} list rather than forcing per-page columns.
+-- `source_page` and `email` are pulled out since every page has them.
+create table if not exists sponsor_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  source_page text not null,
+  email text,
+  fields jsonb not null,
+  created_at timestamptz not null default now()
+);
+
+-- Camp registration has ~30 fields (camper info, two guardians, medical/
+-- consent details, week selections). A few common fields are broken out for
+-- quick scanning in the Table Editor; everything else lives in
+-- registration_data so the form can evolve without a migration each time.
+create table if not exists camp_registrations (
+  id uuid primary key default gen_random_uuid(),
+  camper_name text not null,
+  guardian_name text not null,
+  guardian_email text not null,
+  guardian_phone text not null,
+  registration_data jsonb not null,
+  created_at timestamptz not null default now()
+);
+
+alter table volunteer_signups enable row level security;
+alter table sponsor_inquiries enable row level security;
+alter table camp_registrations enable row level security;
+
+create policy "Allow anon insert" on volunteer_signups
+  for insert to anon
+  with check (true);
+
+create policy "Allow anon insert" on sponsor_inquiries
+  for insert to anon
+  with check (true);
+
+create policy "Allow anon insert" on camp_registrations
+  for insert to anon
+  with check (true);
+
+grant insert on volunteer_signups to anon;
+grant insert on sponsor_inquiries to anon;
+grant insert on camp_registrations to anon;
+
+-- The Ital Marketplace email-capture form ("notify me about Ital menu
+-- updates") reuses newsletter_subscribers rather than a dedicated table —
+-- it's the same shape (just an email address) — tagged via `source` so it
+-- can be told apart from the general newsletter signup. Existing rows get
+-- source = null, meaning "general newsletter."
+alter table newsletter_subscribers add column if not exists source text;
+
+-- Email notifications: an AFTER INSERT trigger on each table above (except
+-- newsletter_subscribers, which is high-volume and not urgent per-row) calls
 -- the deployed `notify-submission` Edge Function (supabase/functions/
 -- notify-submission/index.ts) via pg_net, which emails the org through
 -- Resend. The trigger function is intentionally NOT reproduced here: it
@@ -165,8 +242,9 @@ grant insert on marketplace_preorders to anon;
 -- referenced in the PR/commit that introduced this feature, or regenerate
 -- it fresh: a plpgsql function, security definer, that does
 -- `perform net.http_post(url := '<function-url>', headers := jsonb_build_object('Content-Type','application/json','x-webhook-secret','<secret>'), body := jsonb_build_object('table', TG_TABLE_NAME, 'record', row_to_json(NEW)))`,
--- attached as an AFTER INSERT trigger on raffle_entries and
--- marketplace_preorders. The secret is also stored as the Edge Function's
+-- attached as an AFTER INSERT trigger on raffle_entries,
+-- marketplace_preorders, volunteer_signups, sponsor_inquiries, and
+-- camp_registrations. The secret is also stored as the Edge Function's
 -- WEBHOOK_SECRET environment secret (`supabase secrets set`).
 
 -- The `stripe` schema below is provisioned and owned by an external Stripe

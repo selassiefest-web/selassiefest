@@ -586,10 +586,11 @@
             }
         });
     });
-    // Form submission simulation (no backend, but sends email to volunteer team via mailto as demo)
+    // Form submission — saved directly to Supabase (volunteer_signups), which
+    // also triggers an email notification to the volunteer team.
     const form = document.getElementById('volunteerForm');
     const responseDiv = document.getElementById('formResponse');
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('fullname').value;
         const email = document.getElementById('email').value;
@@ -601,13 +602,35 @@
             alert('Please fill all required fields and accept the code of conduct.');
             return;
         }
-        // Build mailto link for volunteer team
-        const subject = `Volunteer Application: ${name}`;
-        const body = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nPreferred Role: ${role}\nShift: ${shift}\nT-Shirt: ${document.getElementById('tshirt').value}\nEmergency Contact: ${document.getElementById('emergency').value}\nAccommodations: ${document.getElementById('accommodations').value}\nReferral: ${document.getElementById('referral').value}\nAge: ${document.getElementById('age').value}\n\nWaiver agreed: Yes`;
-        window.location.href = `mailto:volunteer@selassiefest.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        responseDiv.style.display = 'block';
-        responseDiv.innerHTML = `<i class="fas fa-check-circle"></i> Thank you ${name}! Your application has been sent to our volunteer team. You will receive a follow-up email within 3-5 days. One Love.`;
-        form.reset();
+
+        const submitBtn = form.querySelector('.btn-submit');
+        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Submitting…'; }
+
+        try {
+            await window.sfSupabase.submitVolunteerSignup({
+                fullName: name,
+                email,
+                phone,
+                age: document.getElementById('age').value ? parseInt(document.getElementById('age').value, 10) : null,
+                roleChoice: role,
+                shiftPreference: shift,
+                tshirtSize: document.getElementById('tshirt').value,
+                emergencyContact: document.getElementById('emergency').value,
+                accommodations: document.getElementById('accommodations').value,
+                referralSource: document.getElementById('referral').value,
+                waiverAccepted: waiver,
+            });
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = `<i class="fas fa-check-circle"></i> Thank you ${name}! Your application has been received by our volunteer team. You will receive a follow-up email within 3-5 days. One Love.`;
+            form.reset();
+        } catch (err) {
+            console.error('Volunteer signup submission failed:', err);
+            alert("Sorry, something went wrong submitting your application. Please try again, or email volunteer@selassiefest.com directly.");
+        } finally {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+        }
     });
 </script>
 <!-- ===== SF-CANONICAL-FOOTER v1.1.0 ===== -->

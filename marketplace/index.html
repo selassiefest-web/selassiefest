@@ -1797,8 +1797,8 @@
                 document.getElementById('checkoutModal').classList.remove('open');
             }
 
-            // ===== ITAL SIGNUP - sends email via mailto =====
-            function handleItalSignup(e) {
+            // ===== ITAL SIGNUP - saved to Supabase (newsletter_subscribers, tagged) =====
+            async function handleItalSignup(e) {
                 e.preventDefault();
                 const form = e.target;
                 const input = form.querySelector('input[type="email"]');
@@ -1809,21 +1809,25 @@
                     return;
                 }
 
-                // Build mailto link with subject and body
-                const subject = encodeURIComponent('SelassieFest Ital Menu Interest');
-                const body = encodeURIComponent(
-                    `I'm interested in the Ital menu at SelassieFest!\n\n` +
-                    `Email: ${email}\n` +
-                    `(Sent from the SelassieFest menu page)`
-                );
-                const mailtoLink = `mailto:selassiefest@gmail.com?subject=${subject}&body=${body}`;
+                const btn = form.querySelector('button[type="submit"]');
+                const originalBtnHtml = btn ? btn.innerHTML : '';
+                if (btn) { btn.disabled = true; btn.innerHTML = 'Submitting…'; }
 
-                // Open the user's email client
-                window.location.href = mailtoLink;
-
-                // Show feedback
-                showToast('📩 Opening your email client...');
-                input.value = '';
+                try {
+                    await window.sfSupabase.subscribeNewsletter(email, 'ital-marketplace');
+                    showToast("✅ You're on the list for Ital menu updates!");
+                    input.value = '';
+                } catch (err) {
+                    if (err && err.code === '23505') {
+                        showToast("You're already on the list!");
+                        input.value = '';
+                    } else {
+                        console.error('Ital signup failed:', err);
+                        showToast('Sorry, something went wrong. Please try again.');
+                    }
+                } finally {
+                    if (btn) { btn.disabled = false; btn.innerHTML = originalBtnHtml; }
+                }
             }
 
             // ===== EVENT BINDING =====

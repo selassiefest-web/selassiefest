@@ -14,9 +14,14 @@ window.sfSupabaseReady = (async () => {
 })();
 
 window.sfSupabase = {
-  async subscribeNewsletter(email) {
+  async subscribeNewsletter(email, source = null) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('newsletter_subscribers').insert({ email });
+    // Plain insert, not upsert: upsert asks PostgREST to select the row back
+    // to report whether it inserted or ignored a duplicate, which needs a
+    // SELECT policy we intentionally don't grant (write-only table). A
+    // duplicate email just throws a unique-violation (code 23505), which
+    // callers already treat as a friendly "you're already subscribed".
+    const { error } = await client.from('newsletter_subscribers').insert({ email, source });
     if (error) throw error;
   },
 
@@ -56,6 +61,46 @@ window.sfSupabase = {
       guest_count: guestCount,
       items,
       total_amount: totalAmount,
+    });
+    if (error) throw error;
+  },
+
+  async submitVolunteerSignup({ fullName, email, phone, age, roleChoice, shiftPreference, tshirtSize, emergencyContact, accommodations, referralSource, waiverAccepted }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('volunteer_signups').insert({
+      full_name: fullName,
+      email,
+      phone,
+      age,
+      role_choice: roleChoice,
+      shift_preference: shiftPreference,
+      tshirt_size: tshirtSize,
+      emergency_contact: emergencyContact,
+      accommodations,
+      referral_source: referralSource,
+      waiver_accepted: waiverAccepted,
+    });
+    if (error) throw error;
+  },
+
+  async submitSponsorInquiry({ sourcePage, email, fields }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('sponsor_inquiries').insert({
+      source_page: sourcePage,
+      email,
+      fields,
+    });
+    if (error) throw error;
+  },
+
+  async submitCampRegistration({ camperName, guardianName, guardianEmail, guardianPhone, registrationData }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('camp_registrations').insert({
+      camper_name: camperName,
+      guardian_name: guardianName,
+      guardian_email: guardianEmail,
+      guardian_phone: guardianPhone,
+      registration_data: registrationData,
     });
     if (error) throw error;
   },
