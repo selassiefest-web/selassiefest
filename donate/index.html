@@ -238,6 +238,21 @@
       margin-top: 4px; font-style: italic;
     }
 
+    .donate-fund-toggle {
+      display: flex; gap: 6px; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-dim); border-radius: 40px; padding: 4px;
+    }
+    .fund-btn {
+      flex: 1; background: transparent; border: none; border-radius: 30px;
+      font-family: 'Jost', sans-serif; font-weight: 500; font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.04em; color: rgba(245,245,245,0.5);
+      padding: 8px 4px; cursor: pointer; transition: var(--transition);
+    }
+    .fund-btn.active { background: var(--roots-green); color: #fff; }
+    .fund-desc {
+      font-size: 0.78rem; color: rgba(245,245,245,0.5); font-style: italic;
+      margin-top: -6px;
+    }
     .donate-freq-toggle {
       display: flex; gap: 6px; background: rgba(255,255,255,0.03);
       border: 1px solid var(--border-dim); border-radius: 40px; padding: 4px;
@@ -487,6 +502,12 @@
       </div>
       <p class="payment-desc">Securely donate by card via Stripe — supports recurring monthly giving to sustain SelassieFest year-round.</p>
 
+      <div class="donate-fund-toggle" role="group" aria-label="Choose a fund">
+        <button type="button" class="fund-btn active" data-fund="general">General Fund</button>
+        <button type="button" class="fund-btn" data-fund="scholarship">Youth Scholarship</button>
+      </div>
+      <p class="fund-desc" id="fundDesc">Supports the festival, Pickney Time, and year-round community programs.</p>
+
       <div class="donate-freq-toggle" role="group" aria-label="Donation frequency">
         <button type="button" class="freq-btn active" data-freq="once">One-Time</button>
         <button type="button" class="freq-btn" data-freq="monthly">Monthly</button>
@@ -672,6 +693,8 @@
 
 <script>
 (function () {
+  const fundBtns = document.querySelectorAll('.fund-btn');
+  const fundDescEl = document.getElementById('fundDesc');
   const freqBtns = document.querySelectorAll('.freq-btn');
   const amountBtns = document.querySelectorAll('.amount-btn');
   const customInput = document.getElementById('donateCustomAmount');
@@ -679,12 +702,26 @@
   const submitLabel = document.getElementById('donateSubmitLabel');
   const errorEl = document.getElementById('donateError');
 
+  const FUND_DESCRIPTIONS = {
+    general: 'Supports the festival, Pickney Time, and year-round community programs.',
+    scholarship: 'Supports educational opportunities for youth in the SelassieFest community.',
+  };
+
+  let fund = 'general'; // 'general' | 'scholarship'
   let frequency = 'once'; // 'once' | 'monthly'
   let amount = 25;
 
   function updateLabel() {
     submitLabel.textContent = `Donate $${amount}${frequency === 'monthly' ? '/mo' : ' Now'}`;
   }
+
+  fundBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      fund = btn.dataset.fund;
+      fundBtns.forEach((b) => b.classList.toggle('active', b === btn));
+      fundDescEl.textContent = FUND_DESCRIPTIONS[fund];
+    });
+  });
 
   freqBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -732,6 +769,7 @@
           mode: 'donation',
           amount: amount,
           recurring: frequency === 'monthly',
+          fund: fund,
         },
       });
       if (error || !data?.url) throw error || new Error(data?.error || 'Failed to start checkout');

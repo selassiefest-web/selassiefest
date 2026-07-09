@@ -84,16 +84,20 @@ Deno.serve(async (req: Request) => {
       const amount = Math.round(Number(body.amount) * 100);
       if (!amount || amount < 100) return json({ error: 'Minimum donation is $1' }, 400);
       const recurring = Boolean(body.recurring);
-      // General Fund is split into separate one-time and monthly Stripe
-      // products (Youth Scholarship Fund has the same split, see
-      // prod_Ur7mINiSdb8wAB / prod_Uq2xF7nL2NUpHf, for when the donate page
-      // grows a fund selector) — route to whichever matches what was
-      // actually chosen so Stripe's own records stay meaningful.
-      const fundProductId =
-        body.fundProductId || (recurring ? 'prod_Uq4ep19taCtHNe' : 'prod_Uq6JmXb3pIWc9Q');
+
+      // Each fund has separate one-time and monthly Stripe products, so
+      // Stripe's own reporting stays meaningful. `fund` is the only thing
+      // the client needs to pick — product IDs stay server-side.
+      const FUND_PRODUCTS: Record<string, { once: string; monthly: string }> = {
+        general: { once: 'prod_Uq6JmXb3pIWc9Q', monthly: 'prod_Uq4ep19taCtHNe' },
+        scholarship: { once: 'prod_Ur7mINiSdb8wAB', monthly: 'prod_Uq2xF7nL2NUpHf' },
+      };
+      const fund = FUND_PRODUCTS[body.fund] ? body.fund : 'general';
+      const fundProductId = FUND_PRODUCTS[fund][recurring ? 'monthly' : 'once'];
 
       const metadata = {
         order_type: 'donation',
+        fund,
         fund_product_id: fundProductId,
         recurring: String(recurring),
       };

@@ -96,10 +96,12 @@ function formatCampRegistration(record: Record<string, any>) {
 }
 
 function formatDonation(record: Record<string, any>) {
+  const fundLabel = record.fund === 'scholarship' ? 'Youth Scholarship Fund' : 'General Fund';
   return {
-    subject: `New Donation — $${escapeHtml(record.amount)}${record.recurring === 'true' ? '/mo' : ''}`,
+    subject: `New Donation — $${escapeHtml(record.amount)}${record.recurring === 'true' ? '/mo' : ''} (${fundLabel})`,
     html: `
       <h2>New Donation</h2>
+      <p><strong>Fund:</strong> ${escapeHtml(fundLabel)}</p>
       <p><strong>Amount:</strong> $${escapeHtml(record.amount)} ${escapeHtml((record.currency || 'usd').toUpperCase())}${record.recurring === 'true' ? ' / month (recurring)' : ' (one-time)'}</p>
       <p><strong>Donor Email:</strong> ${escapeHtml(record.email)}</p>
       <p><strong>Stripe Payment Intent:</strong> ${escapeHtml(record.payment_intent_id)}</p>
