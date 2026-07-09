@@ -51,20 +51,6 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
-  async submitMarketplacePreorder({ customerName, customerEmail, customerPhone, pickupTime, guestCount, items, totalAmount }) {
-    const client = await window.sfSupabaseReady;
-    const { error } = await client.from('marketplace_preorders').insert({
-      customer_name: customerName,
-      customer_email: customerEmail,
-      customer_phone: customerPhone,
-      pickup_time: pickupTime,
-      guest_count: guestCount,
-      items,
-      total_amount: totalAmount,
-    });
-    if (error) throw error;
-  },
-
   async submitVolunteerSignup({ fullName, email, phone, age, roleChoice, shiftPreference, tshirtSize, emergencyContact, accommodations, referralSource, waiverAccepted }) {
     const client = await window.sfSupabaseReady;
     const { error } = await client.from('volunteer_signups').insert({

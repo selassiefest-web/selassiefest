@@ -140,19 +140,24 @@ alter table raffle_entries enable row level security;
 alter table marketplace_preorders enable row level security;
 
 -- Same write-only pattern as the newsletter/Anansi forms above: anon can
--- insert (submit an entry/order) but never read back — buyer names, emails,
--- and transaction IDs stay private to the org, viewed via the Supabase
--- Table Editor.
+-- insert (submit an entry) but never read back — buyer names, emails, and
+-- transaction IDs stay private to the org, viewed via the Supabase Table
+-- Editor.
 create policy "Allow anon insert" on raffle_entries
   for insert to anon
   with check (true);
 
-create policy "Allow anon insert" on marketplace_preorders
-  for insert to anon
-  with check (true);
-
 grant insert on raffle_entries to anon;
-grant insert on marketplace_preorders to anon;
+
+-- marketplace_preorders is intentionally NOT anon-insertable. A row here is
+-- only ever supposed to exist because Stripe confirmed a real charge; anon
+-- insert was removed (previously `with check (true)` + `grant insert ...
+-- to anon`, a leftover from before Stripe checkout existed) because it let
+-- anyone holding the public anon key write arbitrary fake "paid" orders
+-- directly, bypassing payment entirely and indistinguishable from a real
+-- one. The only writer now is handle_stripe_payment_succeeded (see below),
+-- a SECURITY DEFINER trigger function owned by the table owner, which
+-- bypasses RLS regardless of anon's grants.
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- Volunteer signup, sponsor inquiries, camp registration
