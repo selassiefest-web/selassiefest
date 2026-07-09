@@ -648,6 +648,16 @@
             font-size: 0.6rem;
             opacity: 0.6;
         }
+        .event-card .day-badge {
+            background: var(--roots-green);
+            color: #eafff2;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.05em;
+            padding: 2px 7px;
+            border-radius: 20px;
+            margin-right: 2px;
+        }
         .event-card .ev-desc {
             font-weight: 300;
             font-size: 0.78rem;
@@ -1032,6 +1042,7 @@
         (async function() {
             // ─── Data (live from Supabase) ───────────────────────────────────
             let events = [];
+            let seriesCounts = {};
 
             async function loadEvents() {
                 const client = await window.sfSupabaseReady;
@@ -1054,6 +1065,11 @@
                         desc: row.summary || '',
                         url: row.detail_url || ('/calendar/events/event.html?id=' + row.id)
                     };
+                });
+
+                seriesCounts = {};
+                events.forEach(e => {
+                    seriesCounts[e.seriesName] = (seriesCounts[e.seriesName] || 0) + 1;
                 });
             }
 
@@ -1128,7 +1144,11 @@
             }
 
             function formatDate(d) {
-                return d.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+            }
+
+            function dayAbbrev(d) {
+                return d.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase();
             }
 
             function escapeHtml(s) {
@@ -1156,12 +1176,14 @@
                     const catClass = ev.category;
                     const dateStr = formatDate(ev.date);
                     const showSeries = ev.seriesName && ev.seriesName !== ev.title;
+                    const isRecurring = seriesCounts[ev.seriesName] > 1;
+                    const dayBadge = isRecurring ? `<span class="day-badge">${dayAbbrev(ev.date)}</span>` : '';
 
                     card.innerHTML = `
                         <span class="cat-badge ${catClass}">${escapeHtml(catLabel)}</span>
                         ${showSeries ? `<div class="ev-series">${escapeHtml(ev.seriesName)}</div>` : ''}
                         <div class="ev-title"><a href="${ev.url}">${escapeHtml(ev.title)}</a></div>
-                        <div class="ev-date"><i class="fas fa-calendar-alt"></i> ${dateStr}</div>
+                        <div class="ev-date">${dayBadge}<i class="fas fa-calendar-alt"></i> ${dateStr}</div>
                         <div class="ev-desc">${escapeHtml(ev.desc)}</div>
                         <a href="${ev.url}" class="ev-link">View <i class="fas fa-arrow-right"></i></a>
                         <div class="ev-meta">
