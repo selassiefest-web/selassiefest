@@ -237,6 +237,40 @@
       font-size: 0.75rem; color: rgba(245,245,245,0.45);
       margin-top: 4px; font-style: italic;
     }
+
+    .donate-freq-toggle {
+      display: flex; gap: 6px; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-dim); border-radius: 40px; padding: 4px;
+    }
+    .freq-btn {
+      flex: 1; background: transparent; border: none; border-radius: 30px;
+      font-family: 'Jost', sans-serif; font-weight: 500; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.05em; color: rgba(245,245,245,0.5);
+      padding: 8px 0; cursor: pointer; transition: var(--transition);
+    }
+    .freq-btn.active { background: var(--gold-accent); color: #1a1a1a; }
+    .donate-amount-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    }
+    .amount-btn {
+      background: transparent; border: 1px solid var(--border-dim); border-radius: 12px;
+      font-family: 'Jost', sans-serif; font-weight: 500; font-size: 0.95rem;
+      color: var(--text-white); padding: 10px 0; cursor: pointer; transition: var(--transition);
+    }
+    .amount-btn:hover { border-color: var(--border-gold); }
+    .amount-btn.active { background: var(--gold-accent); color: #1a1a1a; border-color: var(--gold-accent); font-weight: 600; }
+    .donate-custom-row {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border-dim);
+      border-radius: 12px; padding: 8px 14px;
+    }
+    .donate-custom-row span { color: rgba(245,245,245,0.5); font-weight: 500; }
+    .donate-custom-row input {
+      flex: 1; background: transparent; border: none; color: var(--text-white);
+      font-family: 'Jost', sans-serif; font-size: 0.95rem; outline: none;
+    }
+    .donate-custom-row input::placeholder { color: rgba(245,245,245,0.3); }
+    #donateSubmitBtn:disabled { opacity: 0.6; cursor: default; }
     .pending-notice i { color: var(--gold-accent); }
 
     .impact-grid {
@@ -443,19 +477,36 @@
       <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Direct donation link coming soon</span>
     </div>
 
-    <div class="payment-card">
+    <div class="payment-card featured">
       <div class="payment-icon-row">
         <div class="payment-icon" style="background:rgba(99,91,255,0.15); color:#a59dff;"><i class="fas fa-credit-card" aria-hidden="true"></i></div>
         <div>
           <div class="payment-name">Credit / Debit Card</div>
+          <span class="payment-badge badge-popular">Instant</span>
         </div>
       </div>
       <p class="payment-desc">Securely donate by card via Stripe — supports recurring monthly giving to sustain SelassieFest year-round.</p>
-      <p class="payment-detail"><strong>Status:</strong> Nonprofit account in setup</p>
-      <a href="https://stripe.com/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
-        <i class="fas fa-credit-card" aria-hidden="true"></i> Learn More
-      </a>
-      <span class="pending-notice"><i class="fas fa-clock" aria-hidden="true"></i> Direct checkout coming soon</span>
+
+      <div class="donate-freq-toggle" role="group" aria-label="Donation frequency">
+        <button type="button" class="freq-btn active" data-freq="once">One-Time</button>
+        <button type="button" class="freq-btn" data-freq="monthly">Monthly</button>
+      </div>
+
+      <div class="donate-amount-grid" role="group" aria-label="Donation amount">
+        <button type="button" class="amount-btn" data-amount="10">$10</button>
+        <button type="button" class="amount-btn active" data-amount="25">$25</button>
+        <button type="button" class="amount-btn" data-amount="50">$50</button>
+        <button type="button" class="amount-btn" data-amount="100">$100</button>
+      </div>
+      <div class="donate-custom-row">
+        <span>$</span>
+        <input type="number" id="donateCustomAmount" min="1" step="1" placeholder="Custom amount" aria-label="Custom donation amount">
+      </div>
+
+      <button type="button" id="donateSubmitBtn" class="btn-donate btn-gold" style="width:100%;">
+        <i class="fas fa-lock" aria-hidden="true"></i> <span id="donateSubmitLabel">Donate $25 Now</span>
+      </button>
+      <p id="donateError" style="color:var(--red-accent); font-size:0.8rem; display:none;"></p>
     </div>
 
     <div class="payment-card">
@@ -618,5 +669,82 @@
 <script src="/assets/js/supabase-client.js"></script>
 <script src="/assets/js/newsletter-form.js"></script>
 <!-- ===== /SF-CANONICAL-FOOTER ===== -->
+
+<script>
+(function () {
+  const freqBtns = document.querySelectorAll('.freq-btn');
+  const amountBtns = document.querySelectorAll('.amount-btn');
+  const customInput = document.getElementById('donateCustomAmount');
+  const submitBtn = document.getElementById('donateSubmitBtn');
+  const submitLabel = document.getElementById('donateSubmitLabel');
+  const errorEl = document.getElementById('donateError');
+
+  let frequency = 'once'; // 'once' | 'monthly'
+  let amount = 25;
+
+  function updateLabel() {
+    submitLabel.textContent = `Donate $${amount}${frequency === 'monthly' ? '/mo' : ' Now'}`;
+  }
+
+  freqBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      frequency = btn.dataset.freq;
+      freqBtns.forEach((b) => b.classList.toggle('active', b === btn));
+      updateLabel();
+    });
+  });
+
+  amountBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      amount = Number(btn.dataset.amount);
+      amountBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      customInput.value = '';
+      updateLabel();
+    });
+  });
+
+  customInput.addEventListener('input', () => {
+    const val = parseFloat(customInput.value);
+    if (val > 0) {
+      amount = val;
+      amountBtns.forEach((b) => b.classList.remove('active'));
+      updateLabel();
+    }
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    errorEl.style.display = 'none';
+    if (!amount || amount < 1) {
+      errorEl.textContent = 'Please choose or enter a donation amount of at least $1.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const originalHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Redirecting to secure checkout…';
+
+    try {
+      const client = await window.sfSupabaseReady;
+      const { data, error } = await client.functions.invoke('create-checkout-session', {
+        body: {
+          mode: 'donation',
+          amount: amount,
+          recurring: frequency === 'monthly',
+        },
+      });
+      if (error || !data?.url) throw error || new Error(data?.error || 'Failed to start checkout');
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('Donation checkout session creation failed:', err);
+      errorEl.textContent = 'Sorry, something went wrong starting checkout. Please try again.';
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHtml;
+    }
+  });
+})();
+</script>
 </body>
 </html>

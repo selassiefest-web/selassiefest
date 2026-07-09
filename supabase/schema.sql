@@ -247,6 +247,36 @@ alter table newsletter_subscribers add column if not exists source text;
 -- camp_registrations. The secret is also stored as the Edge Function's
 -- WEBHOOK_SECRET environment secret (`supabase secrets set`).
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- Stripe Checkout (marketplace payment + donations)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Real payment now runs through the org's existing live Stripe account
+-- (see the `stripe` schema below — the Stripe Sync Engine already mirrors
+-- it here). The `create-checkout-session` Edge Function
+-- (supabase/functions/create-checkout-session/index.ts) creates a Stripe
+-- Checkout Session for either mode: 'marketplace' (ad-hoc line items from
+-- the cart, metadata carries customer/pickup info + a compact items_json)
+-- or mode: 'donation' (a dynamic price against one of the existing Stripe
+-- products, one-time or recurring monthly).
+--
+-- Nothing is treated as a real order or donation until Stripe actually
+-- confirms the charge. A trigger (handle_stripe_payment_succeeded,
+-- intentionally NOT reproduced here for the same reason as
+-- notify_submission_webhook above — it embeds the same webhook secret) sits
+-- on stripe.payment_intents, fires only when status transitions to
+-- 'succeeded', and branches on metadata->>'order_type':
+--   - 'marketplace': inserts into marketplace_preorders (which then fires
+--     the existing notify trigger above automatically — no separate
+--     donation-specific insert/table needed).
+--   - 'donation': calls notify-submission directly with a synthetic
+--     table name ('stripe_donations') built from the payment intent's
+--     amount/currency/receipt_email, since Stripe's own synced tables are
+--     already the durable donation record — no app table required.
+--
+-- The trigger function wraps its entire body in an exception handler so a
+-- bug in this app-specific logic can never fail the Stripe Sync Engine's
+-- own insert/update of a table it owns, not this repo.
+
 -- The `stripe` schema below is provisioned and owned by an external Stripe
 -- sync tool (customers/charges/subscriptions/etc. tables), not by this repo,
 -- so it is not represented here in full. These two trigger functions are

@@ -95,12 +95,25 @@ function formatCampRegistration(record: Record<string, any>) {
   };
 }
 
+function formatDonation(record: Record<string, any>) {
+  return {
+    subject: `New Donation — $${escapeHtml(record.amount)}${record.recurring === 'true' ? '/mo' : ''}`,
+    html: `
+      <h2>New Donation</h2>
+      <p><strong>Amount:</strong> $${escapeHtml(record.amount)} ${escapeHtml((record.currency || 'usd').toUpperCase())}${record.recurring === 'true' ? ' / month (recurring)' : ' (one-time)'}</p>
+      <p><strong>Donor Email:</strong> ${escapeHtml(record.email)}</p>
+      <p><strong>Stripe Payment Intent:</strong> ${escapeHtml(record.payment_intent_id)}</p>
+    `,
+  };
+}
+
 const FORMATTERS: Record<string, (record: Record<string, any>) => { subject: string; html: string }> = {
   raffle_entries: formatRaffleEntry,
   marketplace_preorders: formatMarketplacePreorder,
   volunteer_signups: formatVolunteerSignup,
   sponsor_inquiries: formatSponsorInquiry,
   camp_registrations: formatCampRegistration,
+  stripe_donations: formatDonation,
 };
 
 Deno.serve(async (req: Request) => {

@@ -1504,7 +1504,7 @@
     <div class="checkout-modal" id="checkoutModal">
         <div class="checkout-panel">
             <h2><i class="fas fa-credit-card"></i> Checkout</h2>
-            <p class="sub">Complete your pre-order for pickup at SelassieFest.</p>
+            <p class="sub">Pay securely by card and pick up your order at SelassieFest.</p>
 
             <form id="checkoutForm">
                 <div class="form-group">
@@ -1550,7 +1550,7 @@
                     <div class="os-total"><span>Total</span><span id="coTotal">$0.00</span></div>
                 </div>
 
-                <button type="submit" class="btn-submit-order"><i class="fas fa-check"></i> Place Pre-Order</button>
+                <button type="submit" class="btn-submit-order"><i class="fas fa-lock"></i> Proceed to Payment</button>
                 <button type="button" class="btn-close-checkout" id="closeCheckout">Cancel</button>
             </form>
         </div>
@@ -1910,36 +1910,32 @@
                         return;
                     }
 
-                    const total = getCartTotal();
                     const submitBtn = document.querySelector('#checkoutForm .btn-submit-order');
                     const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
-                    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Placing order…'; }
+                    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Redirecting to secure checkout…'; }
 
                     try {
-                        await window.sfSupabase.submitMarketplacePreorder({
-                            customerName: name,
-                            customerEmail: email,
-                            customerPhone: phone,
-                            pickupTime: pickup,
-                            guestCount: guests,
-                            items: cart.map(item => ({ id: item.id, name: item.name, variant: item.variant, price: item.price, qty: item.qty })),
-                            totalAmount: total,
+                        const client = await window.sfSupabaseReady;
+                        const { data, error } = await client.functions.invoke('create-checkout-session', {
+                            body: {
+                                mode: 'marketplace',
+                                customerName: name,
+                                customerEmail: email,
+                                customerPhone: phone,
+                                pickupTime: pickup,
+                                guestCount: guests,
+                                items: cart.map(item => ({ name: item.name, variant: item.variant, price: item.price, qty: item.qty })),
+                            },
                         });
+                        if (error || !data?.url) throw error || new Error(data?.error || 'Failed to start checkout');
 
-                        showToast(`✅ Pre-order placed! Pickup at ${pickup}. We'll confirm by email.`);
-                        closeCheckout();
-
-                        // Clear cart
-                        cart = [];
-                        renderCart();
-                        saveCart();
-
-                        // Reset form
-                        document.getElementById('checkoutForm').reset();
+                        // Cart stays intact until payment actually succeeds — if the
+                        // customer cancels on Stripe's page, they land back here with
+                        // everything still in their cart to try again.
+                        window.location.href = data.url;
                     } catch (err) {
-                        console.error('Marketplace pre-order submission failed:', err);
-                        showToast('Sorry, something went wrong placing your order. Please try again.');
-                    } finally {
+                        console.error('Checkout session creation failed:', err);
+                        showToast('Sorry, something went wrong starting checkout. Please try again.');
                         if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
                     }
                 });
