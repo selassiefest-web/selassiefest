@@ -1887,7 +1887,7 @@
                 });
 
                 // --- Checkout form ---
-                document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+                document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
 
                     const name = document.getElementById('coName').value.trim();
@@ -1906,35 +1906,38 @@
                         return;
                     }
 
-                    // Build order summary
-                    const orderItems = cart.map(item =>
-                        `${item.name} ${item.variant} x${item.qty}`
-                    ).join(', ');
-
                     const total = getCartTotal();
+                    const submitBtn = document.querySelector('#checkoutForm .btn-submit-order');
+                    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+                    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Placing order…'; }
 
-                    // Here you would typically send this to a server
-                    // For now, we'll show a success message and clear the cart
-                    console.log('=== PRE-ORDER ===');
-                    console.log('Name:', name);
-                    console.log('Email:', email);
-                    console.log('Phone:', phone);
-                    console.log('Pickup:', pickup);
-                    console.log('Guests:', guests);
-                    console.log('Items:', orderItems);
-                    console.log('Total:', '$' + total.toFixed(2));
+                    try {
+                        await window.sfSupabase.submitMarketplacePreorder({
+                            customerName: name,
+                            customerEmail: email,
+                            customerPhone: phone,
+                            pickupTime: pickup,
+                            guestCount: guests,
+                            items: cart.map(item => ({ id: item.id, name: item.name, variant: item.variant, price: item.price, qty: item.qty })),
+                            totalAmount: total,
+                        });
 
-                    // Show success
-                    showToast(`✅ Pre-order placed! Pickup at ${pickup}. Check your email.`);
-                    closeCheckout();
+                        showToast(`✅ Pre-order placed! Pickup at ${pickup}. We'll confirm by email.`);
+                        closeCheckout();
 
-                    // Clear cart
-                    cart = [];
-                    renderCart();
-                    saveCart();
+                        // Clear cart
+                        cart = [];
+                        renderCart();
+                        saveCart();
 
-                    // Reset form
-                    document.getElementById('checkoutForm').reset();
+                        // Reset form
+                        document.getElementById('checkoutForm').reset();
+                    } catch (err) {
+                        console.error('Marketplace pre-order submission failed:', err);
+                        showToast('Sorry, something went wrong placing your order. Please try again.');
+                    } finally {
+                        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+                    }
                 });
 
                 // --- Ital signup: now sends email ---

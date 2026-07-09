@@ -101,6 +101,59 @@ create policy "Allow anon read" on event_occurrences
 grant select on event_series to anon;
 grant select on event_occurrences to anon;
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- Raffle entries and marketplace pre-orders
+-- ─────────────────────────────────────────────────────────────────────────
+-- Both forms previously had no real backend: raffle entries were saved to
+-- the *submitting visitor's own* localStorage (never reaching the org, even
+-- though a real payment/transaction ID was involved), and marketplace
+-- pre-orders were only console.log'd behind a fake "check your email"
+-- success message. These tables give both a real, durable destination.
+
+create table if not exists raffle_entries (
+  id uuid primary key default gen_random_uuid(),
+  buyer_name text not null,
+  buyer_email text not null,
+  ticket_qty int not null check (ticket_qty > 0),
+  total_amount numeric(10,2) not null,
+  payment_method text not null,
+  transaction_id text not null,
+  prize_id text,
+  prize_name text,
+  status text not null default 'pending_verification',
+  created_at timestamptz not null default now()
+);
+
+create table if not exists marketplace_preorders (
+  id uuid primary key default gen_random_uuid(),
+  customer_name text not null,
+  customer_email text not null,
+  customer_phone text not null,
+  pickup_time text,
+  guest_count text,
+  items jsonb not null,
+  total_amount numeric(10,2) not null,
+  created_at timestamptz not null default now()
+);
+
+alter table raffle_entries enable row level security;
+alter table marketplace_preorders enable row level security;
+
+-- Same write-only pattern as the newsletter/Anansi forms above: anon can
+-- insert (submit an entry/order) but never read back — buyer names, emails,
+-- and transaction IDs stay private to the org, viewed via the Supabase
+-- Table Editor.
+create policy "Allow anon insert" on raffle_entries
+  for insert to anon
+  with check (true);
+
+create policy "Allow anon insert" on marketplace_preorders
+  for insert to anon
+  with check (true);
+
+grant insert on raffle_entries to anon;
+grant insert on marketplace_preorders to anon;
+
 -- The `stripe` schema below is provisioned and owned by an external Stripe
 -- sync tool (customers/charges/subscriptions/etc. tables), not by this repo,
 -- so it is not represented here in full. These two trigger functions are

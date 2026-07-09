@@ -30,4 +30,33 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  async submitRaffleEntry({ buyerName, buyerEmail, ticketQty, totalAmount, paymentMethod, transactionId, prizeId, prizeName }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('raffle_entries').insert({
+      buyer_name: buyerName,
+      buyer_email: buyerEmail,
+      ticket_qty: ticketQty,
+      total_amount: totalAmount,
+      payment_method: paymentMethod,
+      transaction_id: transactionId,
+      prize_id: prizeId,
+      prize_name: prizeName,
+    });
+    if (error) throw error;
+  },
+
+  async submitMarketplacePreorder({ customerName, customerEmail, customerPhone, pickupTime, guestCount, items, totalAmount }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('marketplace_preorders').insert({
+      customer_name: customerName,
+      customer_email: customerEmail,
+      customer_phone: customerPhone,
+      pickup_time: pickupTime,
+      guest_count: guestCount,
+      items,
+      total_amount: totalAmount,
+    });
+    if (error) throw error;
+  },
 };

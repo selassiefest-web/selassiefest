@@ -428,26 +428,6 @@
       display: block;
     }
 
-    .admin-panel {
-      margin-top: 3rem;
-      background: rgba(0,0,0,0.4);
-      border-radius: 1.5rem;
-      padding: 1rem;
-      border: 1px dashed var(--border-dim);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-
-    th, td {
-      padding: 0.5rem;
-      border-bottom: 1px solid var(--border-dim);
-      text-align: left;
-    }
-
     footer {
       text-align: center;
       padding: 2rem;
@@ -556,26 +536,6 @@
   <!-- PARTNER GLORY SECTION: FULL SPOTLIGHT FOR EACH DONOR COMPANY -->
   <div class="section-title"><i class="fas fa-handshake"></i> Partners Who Make It Possible</div>
   <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;" id="partnerSpotlight"></div>
-
-  <!-- ADMIN & ENTRIES (transparent for organizer) -->
-  <div class="admin-panel">
-    <details>
-      <summary style="cursor: pointer; font-weight: 500;"><i class="fas fa-lock"></i> 🛠️ Raffle Organizer Panel (view entries / export)</summary>
-      <div style="margin-top: 1rem;">
-        <button id="exportCsvBtn" class="btn btn-outline" style="margin-bottom: 1rem;"><i class="fas fa-download"></i> Export Entries CSV</button>
-        <button id="clearEntriesBtn" class="btn" style="background: #3a2a2a; border-color: var(--red-power);"><i class="fas fa-trash-alt"></i> Clear All Demo Entries</button>
-        <div style="overflow-x: auto; margin-top: 1rem;">
-          <table id="entriesTable">
-            <thead>
-              <tr><th>Prize</th><th>Name</th><th>Email</th><th>Tickets</th><th>Payment Method</th><th>Tx ID</th><th>Date</th></tr>
-            </thead>
-            <tbody id="entriesTbody"></tbody>
-          </table>
-        </div>
-        <p class="text-muted" style="font-size:0.7rem; margin-top:0.5rem;"><i class="fas fa-info-circle"></i> Entries stored locally in browser (demo). In real event, organization verifies payment & sends ticket numbers. All submissions require manual payment confirmation.</p>
-      </div>
-    </details>
-  </div>
 
   <!-- HOW TO PARTICIPATE INFO -->
   <div style="margin-top: 2rem; background: rgba(230,177,62,0.05); border-radius: 1.5rem; padding: 1.5rem; text-align: center;">
@@ -950,72 +910,6 @@
     }
   ];
 
-  // STORAGE for entries (localStorage)
-  let raffleEntries = [];
-
-  function loadEntriesFromStorage() {
-    const stored = localStorage.getItem("selassieRaffleEntries");
-    if(stored) {
-      try {
-        raffleEntries = JSON.parse(stored);
-      } catch(e) { raffleEntries = []; }
-    } else {
-      raffleEntries = [];
-    }
-    renderEntriesTable();
-  }
-
-  function saveEntriesToStorage() {
-    localStorage.setItem("selassieRaffleEntries", JSON.stringify(raffleEntries));
-    renderEntriesTable();
-  }
-
-  function addEntry(entry) {
-    entry.id = Date.now() + "-" + Math.random().toString(36);
-    entry.date = new Date().toLocaleString();
-    raffleEntries.push(entry);
-    saveEntriesToStorage();
-    return true;
-  }
-
-  function renderEntriesTable() {
-    const tbody = document.getElementById("entriesTbody");
-    if(!tbody) return;
-    tbody.innerHTML = "";
-    raffleEntries.slice().reverse().forEach(entry => {
-      const row = tbody.insertRow();
-      row.insertCell(0).innerText = entry.prizeName || entry.prize;
-      row.insertCell(1).innerText = entry.name;
-      row.insertCell(2).innerText = entry.email;
-      row.insertCell(3).innerText = entry.tickets;
-      row.insertCell(4).innerText = entry.paymentMethod;
-      row.insertCell(5).innerText = entry.transactionId;
-      row.insertCell(6).innerText = entry.date;
-    });
-  }
-
-  function exportToCSV() {
-    if(raffleEntries.length === 0) { alert("No entries yet."); return; }
-    let csv = "Prize,Name,Email,Tickets,Payment Method,Transaction ID,Date\n";
-    raffleEntries.forEach(e => {
-      csv += `"${e.prizeName}","${e.name}","${e.email}","${e.tickets}","${e.paymentMethod}","${e.transactionId}","${e.date}"\n`;
-    });
-    const blob = new Blob([csv], {type: "text/csv"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "selassie_raffle_entries.csv";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function clearEntries() {
-    if(confirm("⚠️ Clear ALL entries? This action is irreversible (demo only).")) {
-      raffleEntries = [];
-      saveEntriesToStorage();
-      alert("All entries cleared.");
-    }
-  }
-
   // Render prize grid and partner spotlight (full html for each company)
   function buildPrizeGrid() {
     const grid = document.getElementById("prizeGrid");
@@ -1113,7 +1007,7 @@
     modal.style.display = "none";
   }
 
-  ticketForm.addEventListener("submit", (e) => {
+  ticketForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("buyerName").value.trim();
     const email = document.getElementById("buyerEmail").value.trim();
@@ -1121,7 +1015,7 @@
     const paymentMethod = document.getElementById("paymentMethod").value;
     const transactionId = document.getElementById("transactionId").value.trim();
     const prizeName = prizeNameField.value;
-    
+
     if(!name || !email || !transactionId || qty < 1) {
       alert("Please fill all required fields correctly.");
       return;
@@ -1131,31 +1025,36 @@
       return;
     }
     const total = qty * 10;
-    // Save entry
-    const entry = {
-      prize: currentPrizeId,
-      prizeName: prizeName,
-      name: name,
-      email: email,
-      tickets: qty,
-      totalAmount: total,
-      paymentMethod: paymentMethod,
-      transactionId: transactionId,
-      status: "pending_verification"
-    };
-    addEntry(entry);
-    alert(`✅ Thank you ${name}! Your entry for ${qty} ticket(s) ($${total}) to win "${prizeName}" has been recorded. Our team will verify payment (${paymentMethod} TX: ${transactionId}) and email your official ticket numbers within 48h. Good luck! 🎫`);
-    closeModal();
-    ticketForm.reset();
+    const submitBtn = ticketForm.querySelector('button[type="submit"]');
+    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Submitting…'; }
+
+    try {
+      await window.sfSupabase.submitRaffleEntry({
+        buyerName: name,
+        buyerEmail: email,
+        ticketQty: qty,
+        totalAmount: total,
+        paymentMethod: paymentMethod,
+        transactionId: transactionId,
+        prizeId: currentPrizeId,
+        prizeName: prizeName,
+      });
+      alert(`✅ Thank you ${name}! Your entry for ${qty} ticket(s) ($${total}) to win "${prizeName}" has been recorded. Our team will verify payment (${paymentMethod} TX: ${transactionId}) and email your official ticket numbers within 48h. Good luck! 🎫`);
+      closeModal();
+      ticketForm.reset();
+    } catch (err) {
+      console.error('Raffle entry submission failed:', err);
+      alert("Sorry, something went wrong submitting your entry. Please try again, or email selassiefest@gmail.com with your payment confirmation so we don't miss it.");
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+    }
   });
 
   document.getElementById("closeModalBtn").addEventListener("click", closeModal);
   window.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
-  document.getElementById("exportCsvBtn").addEventListener("click", exportToCSV);
-  document.getElementById("clearEntriesBtn").addEventListener("click", clearEntries);
 
   // Initialize
-  loadEntriesFromStorage();
   buildPrizeGrid();
   
   // additionally we add a guarantee dynamic to also embed IRS verification from given info
