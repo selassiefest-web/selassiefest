@@ -8,6 +8,11 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET')!;
 const NOTIFY_TO = 'selassiefest@gmail.com';
 const FROM = 'SelassieFest Notifications <onboarding@resend.dev>';
+// "SelassieFest Newsletter" Resend Audience — lets staff compose and send
+// campaigns to subscribers directly from the Resend dashboard (Broadcasts)
+// without any code here. Every newsletter_subscribers insert gets synced
+// into it below, in addition to the subscriber's own confirmation email.
+const NEWSLETTER_AUDIENCE_ID = '6561e97b-31be-45c8-a069-e8d8ae29711e';
 
 function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -158,6 +163,23 @@ Deno.serve(async (req: Request) => {
     const to = config.to(record);
     if (!to) {
       return new Response(JSON.stringify({ skipped: true, reason: 'no recipient email on record' }), { status: 200 });
+    }
+
+    // Best-effort — a Resend Audience hiccup shouldn't block the
+    // confirmation email itself.
+    if (table === 'newsletter_subscribers') {
+      try {
+        await fetch(`https://api.resend.com/audiences/${NEWSLETTER_AUDIENCE_ID}/contacts`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: record.email, unsubscribed: false }),
+        });
+      } catch (e) {
+        console.error('Resend audience sync failed:', e);
+      }
     }
 
     const { subject, html } = config.format(record);
