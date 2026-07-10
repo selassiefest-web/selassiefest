@@ -55,6 +55,23 @@ const MENU_ITEMS: Record<string, { name: string; variant?: string; price: number
   'rice-jerk': { name: 'Jerk Fried Rice', variant: 'with Peas', price: 10.00 },
   'rice-veg': { name: 'Vegetable Fried Rice', variant: 'with Peas', price: 10.00 },
   'cabbage': { name: 'Cabbage', variant: 'Stewed', price: 6.00 },
+  // Ital Marketplace menu (ital-marketplace/index.html) — all meals $20.
+  'ital-curry': { name: 'Curry Chunks', price: 20.00 },
+  'ital-brownstew': { name: 'Brown Stew Chunks', price: 20.00 },
+  'ital-veganfish': { name: 'Vegan Fish', price: 20.00 },
+  'ital-riceandpeas': { name: 'Rice n Peas', price: 20.00 },
+  'ital-veges': { name: 'Veges', price: 20.00 },
+  'ital-coleslaw': { name: 'Cole Slaw', price: 20.00 },
+  'ital-soupstew': { name: 'Soup Stew', price: 20.00 },
+  'ital-italstew': { name: 'Ital Stew', price: 20.00 },
+};
+
+// Where to send the customer if they cancel out of Stripe Checkout —
+// keyed by an explicit `source` the client sends, not a raw client URL, so
+// this can never become an open redirect.
+const CANCEL_PATHS: Record<string, string> = {
+  marketplace: '/marketplace/',
+  'ital-marketplace': '/ital-marketplace/',
 };
 
 type ResolvedItem = { id: string; name: string; variant?: string; qty: number; price: number };
@@ -102,6 +119,7 @@ Deno.serve(async (req: Request) => {
       if (!items) return json({ error: 'Invalid item in cart' }, 400);
 
       const metadata = buildMarketplaceMetadata(items, body);
+      const cancelPath = CANCEL_PATHS[body.source] ?? CANCEL_PATHS.marketplace;
 
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
@@ -117,7 +135,7 @@ Deno.serve(async (req: Request) => {
         metadata,
         payment_intent_data: { metadata },
         success_url: `${SITE_URL}/marketplace/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${SITE_URL}/marketplace/`,
+        cancel_url: `${SITE_URL}${cancelPath}`,
       });
 
       return json({ url: session.url });
