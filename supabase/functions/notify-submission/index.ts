@@ -7,7 +7,12 @@
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET')!;
 const NOTIFY_TO = 'selassiefest@gmail.com';
-const FROM = 'SelassieFest Notifications <onboarding@resend.dev>';
+// selassiefest.com is verified with Resend, so mail now sends from a real
+// address instead of the onboarding@resend.dev sandbox (which could only
+// ever deliver to the account's own inbox). reply_to keeps replies landing
+// in the org's actual inbox rather than an address nobody checks.
+const FROM = 'SelassieFest <hello@selassiefest.com>';
+const REPLY_TO = 'selassiefest@gmail.com';
 // "SelassieFest Newsletter" Resend Audience — lets staff compose and send
 // campaigns to subscribers directly from the Resend dashboard (Broadcasts)
 // without any code here. Every newsletter_subscribers insert gets synced
@@ -190,7 +195,7 @@ Deno.serve(async (req: Request) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ from: FROM, to, subject, html }),
+      body: JSON.stringify({ from: FROM, to, reply_to: REPLY_TO, subject, html }),
     });
 
     if (!resendRes.ok) {
