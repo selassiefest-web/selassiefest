@@ -235,21 +235,26 @@ grant insert on camp_registrations to anon;
 -- source = null, meaning "general newsletter."
 alter table newsletter_subscribers add column if not exists source text;
 
--- Email notifications: an AFTER INSERT trigger on each table above (except
--- newsletter_subscribers, which is high-volume and not urgent per-row) calls
--- the deployed `notify-submission` Edge Function (supabase/functions/
--- notify-submission/index.ts) via pg_net, which emails the org through
--- Resend. The trigger function is intentionally NOT reproduced here: it
--- embeds a shared webhook secret (checked by the Edge Function to reject
--- unauthenticated calls to its public URL) that must never be committed to
--- git. It was applied directly against the database instead. If the
--- function ever needs to be recreated, see the (uncommitted) setup script
--- referenced in the PR/commit that introduced this feature, or regenerate
--- it fresh: a plpgsql function, security definer, that does
+-- Email notifications: an AFTER INSERT trigger on each table above (plus
+-- newsletter_subscribers — see below) calls the deployed `notify-submission`
+-- Edge Function (supabase/functions/notify-submission/index.ts) via pg_net.
+-- For every table except newsletter_subscribers, this emails the org
+-- through Resend with the submission details. newsletter_subscribers is
+-- the one exception: instead of notifying staff (which would be one email
+-- per signup — too noisy), notify-submission special-cases that table and
+-- sends a "you're on the list" confirmation to the subscriber's own email
+-- instead (see notify-submission's TABLE_CONFIG). The trigger function is
+-- intentionally NOT reproduced here: it embeds a shared webhook secret
+-- (checked by the Edge Function to reject unauthenticated calls to its
+-- public URL) that must never be committed to git. It was applied directly
+-- against the database instead. If the function ever needs to be
+-- recreated, see the (uncommitted) setup script referenced in the PR/
+-- commit that introduced this feature, or regenerate it fresh: a plpgsql
+-- function, security definer, that does
 -- `perform net.http_post(url := '<function-url>', headers := jsonb_build_object('Content-Type','application/json','x-webhook-secret','<secret>'), body := jsonb_build_object('table', TG_TABLE_NAME, 'record', row_to_json(NEW)))`,
 -- attached as an AFTER INSERT trigger on raffle_entries,
--- marketplace_preorders, volunteer_signups, sponsor_inquiries, and
--- camp_registrations. The secret is also stored as the Edge Function's
+-- marketplace_preorders, volunteer_signups, sponsor_inquiries,
+-- camp_registrations, and newsletter_subscribers. The secret is also stored as the Edge Function's
 -- WEBHOOK_SECRET environment secret (`supabase secrets set`).
 
 -- ─────────────────────────────────────────────────────────────────────────

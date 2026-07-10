@@ -109,13 +109,35 @@ function formatDonation(record: Record<string, any>) {
   };
 }
 
-const FORMATTERS: Record<string, (record: Record<string, any>) => { subject: string; html: string }> = {
-  raffle_entries: formatRaffleEntry,
-  marketplace_preorders: formatMarketplacePreorder,
-  volunteer_signups: formatVolunteerSignup,
-  sponsor_inquiries: formatSponsorInquiry,
-  camp_registrations: formatCampRegistration,
-  stripe_donations: formatDonation,
+// The only formatter that emails the SUBMITTER instead of the org — every
+// other table's trigger exists to notify staff of a new submission, but
+// newsletter signups get a subscriber-facing confirmation instead (see
+// TABLE_CONFIG's `to` below).
+function formatNewsletterConfirmation(record: Record<string, any>) {
+  return {
+    subject: `You're on the list — SelassieFest`,
+    html: `
+      <h2>Welcome to SelassieFest!</h2>
+      <p>You're signed up for festival dates, camp registration, and community updates.</p>
+      <p>We'll only email you when there's something worth sharing.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't sign up for this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
+type TableConfig = {
+  to: (record: Record<string, any>) => string;
+  format: (record: Record<string, any>) => { subject: string; html: string };
+};
+
+const TABLE_CONFIG: Record<string, TableConfig> = {
+  raffle_entries: { to: () => NOTIFY_TO, format: formatRaffleEntry },
+  marketplace_preorders: { to: () => NOTIFY_TO, format: formatMarketplacePreorder },
+  volunteer_signups: { to: () => NOTIFY_TO, format: formatVolunteerSignup },
+  sponsor_inquiries: { to: () => NOTIFY_TO, format: formatSponsorInquiry },
+  camp_registrations: { to: () => NOTIFY_TO, format: formatCampRegistration },
+  stripe_donations: { to: () => NOTIFY_TO, format: formatDonation },
+  newsletter_subscribers: { to: (record) => record.email, format: formatNewsletterConfirmation },
 };
 
 Deno.serve(async (req: Request) => {
@@ -128,12 +150,17 @@ Deno.serve(async (req: Request) => {
     const table: string = payload.table;
     const record = payload.record;
 
-    const formatter = FORMATTERS[table];
-    if (!formatter) {
+    const config = TABLE_CONFIG[table];
+    if (!config) {
       return new Response(JSON.stringify({ skipped: true, reason: `no formatter for table ${table}` }), { status: 200 });
     }
 
-    const { subject, html } = formatter(record);
+    const to = config.to(record);
+    if (!to) {
+      return new Response(JSON.stringify({ skipped: true, reason: 'no recipient email on record' }), { status: 200 });
+    }
+
+    const { subject, html } = config.format(record);
 
     const resendRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -141,7 +168,7 @@ Deno.serve(async (req: Request) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ from: FROM, to: NOTIFY_TO, subject, html }),
+      body: JSON.stringify({ from: FROM, to, subject, html }),
     });
 
     if (!resendRes.ok) {
