@@ -525,6 +525,25 @@
             background: #d49a2e;
             transform: scale(1.02);
         }
+        .ital-coming .btn-cta {
+            display: inline-block;
+            margin-top: 28px;
+            font-family: 'Jost', sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: var(--gold-accent);
+            color: var(--bg-black);
+            padding: 14px 36px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .ital-coming .btn-cta:hover {
+            background: #d49a2e;
+            transform: scale(1.02);
+        }
 
         /* ===== CART SIDEBAR ===== */
         .cart-overlay {
@@ -1128,7 +1147,7 @@
     <section class="menu-hero">
         <h1>🌿 <span>ITAL</span> &amp; JAMAICAN <span>MENU</span></h1>
         <p>Pre-order your food now and collect at the festival — no waiting in long lines. All dishes are plant-based or authentically prepared with love.</p>
-        <div class="ital-note"><i class="fas fa-leaf"></i> Ital Menu coming soon — sign up below to be notified</div>
+        <div class="ital-note"><i class="fas fa-leaf"></i> Ital Menu is live! <a href="/ital-marketplace/" style="color:var(--gold-accent);text-decoration:underline;">Order plant-based dishes at the Ital Marketplace →</a></div>
     </section>
 
     <!-- ===== CART BAR ===== -->
@@ -1464,14 +1483,11 @@
             </div>
         </div>
 
-        <!-- ===== ITAL MENU COMING SOON ===== -->
+        <!-- ===== ITAL MARKETPLACE IS LIVE ===== -->
         <div class="ital-coming">
-            <h2><i class="fas fa-seedling"></i> Ital Menu — Coming Soon</h2>
-            <p>We're crafting a special plant-based Ital menu with Rastafarian culinary traditions. Be the first to know when it drops.</p>
-            <form class="signup-form" id="italSignup">
-                <input type="email" placeholder="Enter your email for Ital menu updates" required />
-                <button type="submit"><i class="fas fa-envelope"></i> Notify Me</button>
-            </form>
+            <h2><i class="fas fa-seedling"></i> Ital Menu — Now Live</h2>
+            <p>Our plant-based Ital menu — rooted in Rastafarian culinary tradition — is up and running at the Ital Marketplace. Order Curry Chunks, Vegan Fish, Ital Stew, and more for festival pickup.</p>
+            <a href="/ital-marketplace/" class="btn-cta"><i class="fas fa-leaf"></i> Visit the Ital Marketplace</a>
         </div>
 
     </main>
@@ -1797,39 +1813,6 @@
                 document.getElementById('checkoutModal').classList.remove('open');
             }
 
-            // ===== ITAL SIGNUP - saved to Supabase (newsletter_subscribers, tagged) =====
-            async function handleItalSignup(e) {
-                e.preventDefault();
-                const form = e.target;
-                const input = form.querySelector('input[type="email"]');
-                const email = input.value.trim();
-
-                if (!email) {
-                    showToast('Please enter your email address.');
-                    return;
-                }
-
-                const btn = form.querySelector('button[type="submit"]');
-                const originalBtnHtml = btn ? btn.innerHTML : '';
-                if (btn) { btn.disabled = true; btn.innerHTML = 'Submitting…'; }
-
-                try {
-                    await window.sfSupabase.subscribeNewsletter(email, 'ital-marketplace');
-                    showToast("✅ You're on the list for Ital menu updates!");
-                    input.value = '';
-                } catch (err) {
-                    if (err && err.code === '23505') {
-                        showToast("You're already on the list!");
-                        input.value = '';
-                    } else {
-                        console.error('Ital signup failed:', err);
-                        showToast('Sorry, something went wrong. Please try again.');
-                    }
-                } finally {
-                    if (btn) { btn.disabled = false; btn.innerHTML = originalBtnHtml; }
-                }
-            }
-
             // ===== EVENT BINDING =====
             function init() {
                 // Load cart from storage
@@ -1939,9 +1922,6 @@
                         if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
                     }
                 });
-
-                // --- Ital signup: now sends email ---
-                document.getElementById('italSignup').addEventListener('submit', handleItalSignup);
 
                 // --- Keyboard shortcuts ---
                 document.addEventListener('keydown', (e) => {
