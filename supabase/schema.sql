@@ -475,8 +475,20 @@ create table if not exists dh101_schools (
   -- means the logo is cleared for this use). When null, the client renders
   -- a styled text wordmark (school name/short_code + colors) instead of an
   -- image -- see dancehall101/assets/dancehall101-client.js -- rather than
-  -- a generic placeholder icon.
+  -- a generic placeholder icon. IMPORTANT: a publicly-downloadable file is
+  -- not automatically a clean logo -- always open and visually inspect the
+  -- actual image before using it. DePaul's official brand-page PNG was
+  -- caught (post-upload) to have a large "DO NOT USE" watermark baked into
+  -- the image itself -- a purely text/terms-based check of the brand page
+  -- would never catch that; only looking at the pixels does.
   logo_url text,
+  -- Some official logo files are white-on-transparent, meant for a dark
+  -- header on the school's own site (e.g. Columbia College Chicago's) --
+  -- rendered invisible against this site's default light logo-badge
+  -- background. 'light' (default) or 'dark' -- which backing color the
+  -- client should use so a given school's specific file is actually
+  -- visible. Check each file visually, don't assume 'light'.
+  logo_bg text not null default 'light',
   color_primary text not null default '#0E5E36',
   color_secondary text not null default '#E5A93C',
   -- Only set for schools with a well-established, unambiguous athletics
@@ -716,6 +728,7 @@ returns table (
   school_slug text,
   school_name text,
   school_logo_url text,
+  school_logo_bg text,
   school_mascot text,
   color_primary text,
   color_secondary text,
@@ -740,13 +753,13 @@ begin
 
   if v_id is null then
     return query select 'not_found'::text, null::text, null::text, null::text, null::text,
-      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
     return;
   end if;
 
   if v_verified is null and now() > v_expires then
     return query select 'expired'::text, null::text, null::text, null::text, null::text,
-      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
     return;
   end if;
 
@@ -766,7 +779,7 @@ begin
 
   return query
     select 'ok'::text, s.ticket_id, s.redemption_code, s.full_name, sc.slug, sc.name, sc.logo_url,
-           sc.mascot, sc.color_primary, sc.color_secondary, s.campaign_code, s.student_segment, s.verified_at
+           sc.logo_bg, sc.mascot, sc.color_primary, sc.color_secondary, s.campaign_code, s.student_segment, s.verified_at
     from public.dh101_signups s join public.dh101_schools sc on sc.id = s.school_id
     where s.id = v_id;
 end;

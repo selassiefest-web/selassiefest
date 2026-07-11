@@ -22,7 +22,11 @@ window.DH101 = (function () {
   function wordmarkHtml(school, sizeClass) {
     if (!school) return '';
     if (school.logo_url) {
-      return '<img class="dh-wordmark-img ' + sizeClass + '" src="' + school.logo_url + '" alt="' + escapeHtml(school.name) + ' logo" loading="lazy" />';
+      // Some official logo files are white-on-transparent (meant for a dark
+      // header on the school's own site) -- logo_bg records which backing
+      // color actually makes that specific file visible, per school.
+      var bgClass = school.logo_bg === 'dark' ? 'dh-wordmark-img-dark' : '';
+      return '<img class="dh-wordmark-img ' + bgClass + ' ' + sizeClass + '" src="' + school.logo_url + '" alt="' + escapeHtml(school.name) + ' logo" loading="lazy" />';
     }
     var initials = (school.short_code || school.name.slice(0, 3)).slice(0, 6);
     return '<div class="dh-wordmark-badge ' + sizeClass + '"><span>' + escapeHtml(initials) + '</span></div>';
@@ -32,7 +36,7 @@ window.DH101 = (function () {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('dh101_schools')
-      .select('id, slug, name, short_code, logo_url, mascot, color_primary, color_secondary, default_campaign_code')
+      .select('id, slug, name, short_code, logo_url, logo_bg, mascot, color_primary, color_secondary, default_campaign_code')
       .order('name', { ascending: true });
     if (error) throw error;
     return data || [];
@@ -42,7 +46,7 @@ window.DH101 = (function () {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('dh101_schools')
-      .select('id, slug, name, short_code, logo_url, mascot, color_primary, color_secondary, default_campaign_code')
+      .select('id, slug, name, short_code, logo_url, logo_bg, mascot, color_primary, color_secondary, default_campaign_code')
       .eq('slug', slug)
       .maybeSingle();
     if (error) throw error;
