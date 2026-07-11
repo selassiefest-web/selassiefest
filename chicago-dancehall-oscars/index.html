@@ -150,7 +150,7 @@ html, body {
 
 /* ── Critical path banner ─────────────────────────────────────────── */
 .critical-banner {
-  display: flex; align-items: center; gap: 18px; background: var(--sem-risk-bg);
+  display: flex; align-items: center; gap: 18px; background: var(--sem-risk-bg); flex-wrap: wrap;
   border: 1px solid var(--sem-risk); border-radius: 6px; padding: 18px 22px; margin-bottom: 40px;
 }
 .critical-banner .stripe { width: 4px; align-self: stretch; background: var(--sem-risk); border-radius: 2px; flex-shrink: 0; }
@@ -171,7 +171,10 @@ html, body {
 .section-head .section-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text-faint); }
 
 /* ── Timeline board ───────────────────────────────────────────────── */
-.board { display: grid; grid-template-columns: repeat(5, minmax(180px, 1fr)); gap: 14px; overflow-x: auto; padding-bottom: 4px; min-width: 0; }
+.board { display: grid; grid-template-columns: repeat(5, minmax(180px, 1fr)); gap: 14px; overflow-x: auto; padding-bottom: 4px; width: 100%; min-width: 0; }
+@media (max-width: 700px) {
+  .board { grid-template-columns: repeat(5, 180px); }
+}
 .board-col { min-width: 0; }
 .board-col-head {
   font-size: 0.78rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em;
