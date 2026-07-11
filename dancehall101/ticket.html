@@ -149,7 +149,7 @@
   <script src="/dancehall101/assets/dancehall101-client.js"></script>
   <script>
     (function () {
-      var QR_CDN = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+      var QR_CDN = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js';
       var qrPromise = null;
 
       function loadScript(src) {
@@ -215,11 +215,18 @@
           '</div>' +
           '<p class="dh-reminder">Save this page &mdash; show it at the door. Bring a physical photo ID (21+).</p>';
 
-        await ensureQr();
-        var canvas = document.getElementById('dh-qr-canvas');
-        window.QRCode.toCanvas(canvas, t.ticket_id + ' ' + t.redemption_code, { width: 180, margin: 1 }, function (err) {
-          if (err) console.error('QR render failed:', err);
-        });
+        // A CDN hiccup here should never take down the whole ticket -- the
+        // ticket ID/redemption code are still shown and usable at the door
+        // even without a scannable QR image.
+        try {
+          await ensureQr();
+          var canvas = document.getElementById('dh-qr-canvas');
+          window.QRCode.toCanvas(canvas, t.ticket_id + ' ' + t.redemption_code, { width: 180, margin: 1 }, function (err) {
+            if (err) console.error('QR render failed:', err);
+          });
+        } catch (err) {
+          console.error('QR library failed to load:', err);
+        }
       }
 
       (async function init() {
