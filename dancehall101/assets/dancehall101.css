@@ -89,6 +89,22 @@ a { color: var(--school-secondary); text-decoration: none; }
 .dh-wm-lg.dh-wordmark-img, .dh-wm-lg.dh-wordmark-badge { width: 92px; height: 92px; padding: 12px; margin-bottom: 14px; }
 .dh-wm-lg.dh-wordmark-badge span { font-size: 1.5rem; }
 
+/* ── School mode ─────────────────────────────────────────────────────────
+   Applied to <body> only on a specific school's landing/ticket page (not
+   the neutral multi-school picker) -- a real university site has a bold
+   colored header/hero, not just a small badge and colored text on an
+   otherwise-identical dark page. This is the actual "feels like your
+   school" lever, not the logo/mascot alone. */
+body.dh-school-mode .dh-topbar {
+  border-bottom: 3px solid var(--school-primary);
+}
+body.dh-school-mode .dh-hero {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--school-primary) 32%, transparent) 0%, transparent 75%),
+    linear-gradient(180deg, var(--dh-bg), var(--dh-bg));
+  border-bottom: 1px solid color-mix(in srgb, var(--school-secondary) 35%, transparent);
+}
+
 /* ── Hero ────────────────────────────────────────────────────────────── */
 .dh-hero {
   text-align: center;
