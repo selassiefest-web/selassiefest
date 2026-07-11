@@ -235,9 +235,12 @@ grant insert on camp_registrations to anon;
 -- be TEMPORARY: staff review the submission, manually upload approved
 -- videos to the org's YouTube channel, then update video_path to the
 -- YouTube URL and delete the temp object from Storage (kept deliberately
--- small on the free tier's 1GB/50MB-per-file limits). Approved photos are
--- incorporated into the relevant static game page by hand, same as every
--- other manually-curated piece of content on this site.
+-- small on the free tier's 1GB/50MB-per-file limits). Staff approve a
+-- submission by setting status = 'approved' in the Table Editor (same
+-- manual-review pattern as every other form on this site) -- approved rows
+-- then appear automatically in each game's "Community Photos & Stories"
+-- section via the game_submissions_public view below, no HTML editing
+-- required.
 create table if not exists game_submissions (
   id uuid primary key default gen_random_uuid(),
   game_slug text not null,
@@ -277,6 +280,21 @@ create policy "Allow anon insert to game-submissions" on storage.objects
 create policy "Allow public read of game-submissions" on storage.objects
   for select to anon
   using (bucket_id = 'game-submissions');
+
+-- game_submissions itself has NO anon select policy (write-only, like every
+-- other form table here) -- submitter_email in particular must never be
+-- publicly readable. This view is the one sanctioned way anon can read
+-- anything back: it drops submitter_email entirely and is pre-filtered to
+-- approved rows only. Views run with the privileges of their owner by
+-- default (not the querying role), so this correctly bypasses RLS on the
+-- base table for just this narrow, already-filtered shape -- do not add
+-- `security_invoker` to it, that would break the filtering.
+create or replace view game_submissions_public as
+select id, game_slug, game_name, submitter_name, story_text, photo_path, video_path, created_at
+from game_submissions
+where status = 'approved';
+
+grant select on game_submissions_public to anon;
 
 -- The Ital Marketplace email-capture form ("notify me about Ital menu
 -- updates") reuses newsletter_subscribers rather than a dedicated table —

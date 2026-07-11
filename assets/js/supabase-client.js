@@ -153,4 +153,19 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  // Reads from game_submissions_public (a view, not the base table) --
+  // pre-filtered to status='approved' and missing submitter_email entirely,
+  // so this is safe to call from any page without further filtering.
+  async fetchApprovedGameSubmissions(gameSlug, limit = 12) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client
+      .from('game_submissions_public')
+      .select('id, submitter_name, story_text, photo_path, video_path, created_at')
+      .eq('game_slug', gameSlug)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return data || [];
+  },
 };

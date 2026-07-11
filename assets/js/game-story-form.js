@@ -3,6 +3,7 @@
 // runtime so the CSS doesn't need to be duplicated across 110 pages.
 (function () {
   const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+  const STORAGE_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/game-submissions';
 
   function injectStyles() {
     if (document.getElementById('story-form-styles')) return;
@@ -21,8 +22,61 @@
       '.story-form-msg{margin:10px 0 0;font-size:.85rem;min-height:1.1em;}',
       '.story-form-msg.is-success{color:#6dbe8f;}',
       '.story-form-msg.is-error{color:#e08585;}',
+      '.community-gallery{margin:24px 0;text-align:left;}',
+      '.community-gallery h3{font-size:1.05rem;font-weight:500;color:#E5A93C;margin:0 0 14px;display:flex;align-items:center;gap:8px;}',
+      '.community-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}',
+      '.gallery-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;padding-bottom:12px;}',
+      '.gallery-item img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}',
+      '.gallery-item .gi-video{position:relative;width:100%;aspect-ratio:16/9;background:#000;}',
+      '.gallery-item .gi-video iframe{width:100%;height:100%;border:0;display:block;}',
+      '.gallery-item .gi-video video{width:100%;height:100%;display:block;}',
+      '.gallery-item .gi-video-link{padding:16px;text-align:center;}',
+      '.gallery-item .gi-video-link a{color:#E5A93C;text-decoration:none;font-size:.9rem;}',
+      '.gallery-item .gi-story{font-size:.85rem;color:#ccc;padding:10px 14px 0;margin:0;line-height:1.4;}',
+      '.gallery-item .gi-credit{font-size:.75rem;color:#888;padding:6px 14px 0;margin:0;font-style:italic;}',
     ].join('');
     document.head.appendChild(style);
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function renderMedia(item) {
+    if (item.photo_path) {
+      return '<img src="' + STORAGE_PUBLIC_BASE + '/' + item.photo_path + '" alt="Photo shared by ' + escapeHtml(item.submitter_name) + '" loading="lazy" />';
+    }
+    if (item.video_path) {
+      if (/^https?:\/\//i.test(item.video_path)) {
+        const yt = item.video_path.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{6,})/);
+        if (yt) {
+          return '<div class="gi-video"><iframe src="https://www.youtube.com/embed/' + yt[1] + '" loading="lazy" allowfullscreen title="Community video"></iframe></div>';
+        }
+        return '<p class="gi-video-link"><a href="' + item.video_path + '" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle" aria-hidden="true"></i> Watch video</a></p>';
+      }
+      return '<div class="gi-video"><video controls preload="none" src="' + STORAGE_PUBLIC_BASE + '/' + item.video_path + '"></video></div>';
+    }
+    return '';
+  }
+
+  function loadGallery(container) {
+    const gameSlug = container.dataset.gameSlug;
+    window.sfSupabase.fetchApprovedGameSubmissions(gameSlug).then(function (items) {
+      if (!items.length) return; // stays hidden
+      const grid = container.querySelector('.community-gallery-grid');
+      grid.innerHTML = items.map(function (item) {
+        return '<div class="gallery-item">' +
+          renderMedia(item) +
+          (item.story_text ? '<p class="gi-story">' + escapeHtml(item.story_text) + '</p>' : '') +
+          '<p class="gi-credit">— ' + escapeHtml(item.submitter_name) + '</p>' +
+          '</div>';
+      }).join('');
+      container.style.display = 'block';
+    }).catch(function (err) {
+      console.error('Failed to load community gallery for', gameSlug, err);
+    });
   }
 
   function setMsg(el, text, state) {
@@ -104,8 +158,10 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     const forms = document.querySelectorAll('[data-game-story-form]');
-    if (!forms.length) return;
+    const galleries = document.querySelectorAll('[data-game-gallery]');
+    if (!forms.length && !galleries.length) return;
     injectStyles();
     forms.forEach(wireForm);
+    galleries.forEach(loadGallery);
   });
 })();
