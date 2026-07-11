@@ -63,9 +63,15 @@
 
         function draw(list) {
           grid.innerHTML = list.map(function (s) {
-            return '<a class="dh-school-card" href="/dancehall101/?school=' + encodeURIComponent(s.slug) + '">' +
-              '<img src="' + window.DH101.logoUrl(s) + '" alt="' + escapeHtml(s.name) + ' logo" loading="lazy" />' +
+            // Each card scopes --school-primary/--school-secondary to
+            // itself via inline custom properties -- the page-wide
+            // applyBranding() only applies to a single selected school, but
+            // here every card needs its OWN school's colors simultaneously.
+            var style = '--school-primary:' + (s.color_primary || '#C8102E') + ';--school-secondary:' + (s.color_secondary || '#F2B705') + ';';
+            return '<a class="dh-school-card" style="' + style + '" href="/dancehall101/?school=' + encodeURIComponent(s.slug) + '">' +
+              window.DH101.wordmarkHtml(s, 'dh-wm-sm') +
               '<div class="name">' + escapeHtml(s.name) + '</div>' +
+              (s.mascot ? '<div class="mascot">' + escapeHtml(s.mascot) + '</div>' : '') +
               '</a>';
           }).join('');
           empty.style.display = list.length ? 'none' : 'block';
@@ -80,12 +86,20 @@
 
       function renderSchoolLanding(school) {
         window.DH101.applyBranding(school);
-        document.title = school.name + ' Takes Wednesdays — Dancehall 101';
+        document.title = (school.mascot ? school.mascot : school.name) + ' Take Wednesdays — Dancehall 101';
+
+        // Mascot-led headline when we have one confirmed ("BLUE DEMONS Take
+        // Wednesdays", school name as a smaller line underneath) reads far
+        // more like "this is built for my school" than a generic reskin;
+        // falls back to the plain school name when no mascot is known.
+        var headline = school.mascot
+          ? '<h1><span class="accent">' + escapeHtml(school.mascot) + '</span><br>Take Wednesdays</h1><div class="dh-mascot-tag">' + escapeHtml(school.name) + '</div>'
+          : '<h1>' + escapeHtml(school.name) + '<br><span class="accent">Takes Wednesdays</span></h1>';
 
         main.innerHTML =
           '<div class="dh-hero">' +
-            (school.logo_url ? '<img class="dh-school-logo" src="' + window.DH101.logoUrl(school) + '" alt="' + escapeHtml(school.name) + ' logo" />' : '') +
-            '<h1>' + escapeHtml(school.name) + '<br><span class="accent">Takes Wednesdays</span></h1>' +
+            window.DH101.wordmarkHtml(school, 'dh-wm-lg') +
+            headline +
             '<p class="dh-sub">Dancehall 101 &mdash; Wednesdays at Uptown Lounge. Free for ' + escapeHtml(school.name) + ' students, 21+.</p>' +
             '<span class="dh-badge">Chicago&rsquo;s #1 Dancehall Experience</span>' +
           '</div>' +
@@ -98,10 +112,11 @@
               '<input type="email" id="dh-email" required />' +
               '<label for="dh-dob">Date of Birth</label>' +
               '<input type="date" id="dh-dob" required />' +
-              '<label for="dh-segment">Student Segment</label>' +
+              '<label for="dh-segment">I Am A&hellip;</label>' +
               '<select id="dh-segment">' +
-                '<option value="UNDERGRAD">Undergrad</option>' +
-                '<option value="GRAD">Grad</option>' +
+                '<option value="UNDERGRAD">Undergraduate Student</option>' +
+                '<option value="GRAD">Graduate Student</option>' +
+                '<option value="ALUMNI">Alumni</option>' +
               '</select>' +
               '<input type="text" class="dh-hp" id="dh-hp" tabindex="-1" autocomplete="off" />' +
               '<button type="submit" id="dh-submit-btn">Get My Free Ticket</button>' +

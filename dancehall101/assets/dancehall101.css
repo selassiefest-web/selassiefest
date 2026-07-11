@@ -56,20 +56,38 @@ a { color: var(--school-secondary); text-decoration: none; }
   color: var(--dh-text-dim);
 }
 
+/* ── Wordmark: real cleared logo image, or a styled text badge using the
+   school's own colors/short code when no cleared logo exists yet ──────── */
+.dh-wordmark-img {
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  display: block;
+  margin: 0 auto;
+}
+.dh-wordmark-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(155deg, var(--school-primary), color-mix(in srgb, var(--school-primary) 55%, black));
+  border: 1px solid color-mix(in srgb, var(--school-secondary) 60%, transparent);
+  margin: 0 auto;
+}
+.dh-wordmark-badge span {
+  font-family: 'Anton', 'Inter', sans-serif;
+  color: var(--school-secondary);
+  letter-spacing: 0.03em;
+}
+.dh-wm-sm.dh-wordmark-img, .dh-wm-sm.dh-wordmark-badge { width: 52px; height: 52px; padding: 6px; }
+.dh-wm-sm.dh-wordmark-badge span { font-size: 0.95rem; }
+.dh-wm-lg.dh-wordmark-img, .dh-wm-lg.dh-wordmark-badge { width: 92px; height: 92px; padding: 12px; margin-bottom: 14px; }
+.dh-wm-lg.dh-wordmark-badge span { font-size: 1.5rem; }
+
 /* ── Hero ────────────────────────────────────────────────────────────── */
 .dh-hero {
   text-align: center;
   padding: 48px 24px 32px;
-}
-.dh-hero .dh-school-logo {
-  width: 84px;
-  height: 84px;
-  object-fit: contain;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 10px;
-  margin: 0 auto 18px;
-  display: block;
 }
 .dh-hero h1 {
   font-family: 'Anton', 'Inter', sans-serif;
@@ -77,8 +95,17 @@ a { color: var(--school-secondary); text-decoration: none; }
   text-transform: uppercase;
   letter-spacing: 0.02em;
   line-height: 1.05;
+  margin-top: 18px;
 }
 .dh-hero h1 .accent { color: var(--school-primary); }
+.dh-hero .dh-mascot-tag {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--school-secondary);
+  font-weight: 600;
+}
 .dh-hero .dh-sub {
   margin-top: 14px;
   font-size: 1.05rem;
@@ -134,17 +161,10 @@ a { color: var(--school-secondary); text-decoration: none; }
   transition: border-color 0.15s, transform 0.15s;
 }
 .dh-school-card:hover { border-color: var(--school-secondary); transform: translateY(-2px); }
-.dh-school-card img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  margin: 0 auto 10px;
-  display: block;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 6px;
-}
+.dh-school-card .dh-wordmark-img,
+.dh-school-card .dh-wordmark-badge { margin-bottom: 10px; }
 .dh-school-card .name { font-size: 0.92rem; color: var(--dh-text); }
+.dh-school-card .mascot { font-size: 0.75rem; color: var(--dh-text-dim); margin-top: 2px; }
 .dh-empty { text-align: center; color: var(--dh-text-dim); padding: 40px 0; }
 
 /* ── Signup form ─────────────────────────────────────────────────────── */

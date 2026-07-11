@@ -466,9 +466,25 @@ create table if not exists dh101_schools (
   name text not null,
   short_code text not null unique,      -- ticket prefix, e.g. 'SAIC' -> SAIC-000001
   edu_domains text[] not null,          -- lowercase, e.g. {'saic.edu'}
-  logo_url text,                        -- falls back to /assets/images/placeholder.svg client-side until real logos land in the dh101-branding bucket
+  -- NULL until a real logo file is confirmed cleared for this partner-
+  -- listing use case (school's own official brand/press page, publicly
+  -- downloadable, no login wall) and uploaded to the dh101-branding bucket.
+  -- Most school logos are trademarked and many brand pages gate the actual
+  -- files behind a login or an explicit "licensed vendors only" clause
+  -- (checked individually per school -- do not assume a public brand page
+  -- means the logo is cleared for this use). When null, the client renders
+  -- a styled text wordmark (school name/short_code + colors) instead of an
+  -- image -- see dancehall101/assets/dancehall101-client.js -- rather than
+  -- a generic placeholder icon.
+  logo_url text,
   color_primary text not null default '#0E5E36',
   color_secondary text not null default '#E5A93C',
+  -- Only set for schools with a well-established, unambiguous athletics
+  -- mascot/nickname (checked individually) -- left null rather than
+  -- guessed for schools with no athletics program or an ambiguous/informal
+  -- one. Used in landing-page copy to feel specific to that school instead
+  -- of a generic reskin.
+  mascot text,
   is_active boolean not null default true,
   default_campaign_code text,           -- e.g. 'SAIC-FALL26' -- the landing page reads this and auto-stamps it onto the signup row; update per-semester without touching any page code
   created_at timestamptz not null default now()
@@ -700,6 +716,7 @@ returns table (
   school_slug text,
   school_name text,
   school_logo_url text,
+  school_mascot text,
   color_primary text,
   color_secondary text,
   campaign_code text,
@@ -723,13 +740,13 @@ begin
 
   if v_id is null then
     return query select 'not_found'::text, null::text, null::text, null::text, null::text,
-      null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
     return;
   end if;
 
   if v_verified is null and now() > v_expires then
     return query select 'expired'::text, null::text, null::text, null::text, null::text,
-      null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+      null::text, null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
     return;
   end if;
 
@@ -749,7 +766,7 @@ begin
 
   return query
     select 'ok'::text, s.ticket_id, s.redemption_code, s.full_name, sc.slug, sc.name, sc.logo_url,
-           sc.color_primary, sc.color_secondary, s.campaign_code, s.student_segment, s.verified_at
+           sc.mascot, sc.color_primary, sc.color_secondary, s.campaign_code, s.student_segment, s.verified_at
     from public.dh101_signups s join public.dh101_schools sc on sc.id = s.school_id
     where s.id = v_id;
 end;

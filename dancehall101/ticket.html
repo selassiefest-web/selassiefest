@@ -30,15 +30,12 @@
       letter-spacing: 0.1em;
       opacity: 0.85;
     }
-    .dh-ticket-top img {
-      width: 56px;
-      height: 56px;
-      object-fit: contain;
-      background: rgba(255,255,255,0.9);
-      border-radius: 10px;
-      padding: 6px;
+    .dh-ticket-top .dh-wm-lg.dh-wordmark-img,
+    .dh-ticket-top .dh-wm-lg.dh-wordmark-badge {
+      width: 64px;
+      height: 64px;
+      padding: 8px;
       margin: 14px auto 8px;
-      display: block;
     }
     .dh-ticket-top h1 {
       font-family: 'Anton', 'Inter', sans-serif;
@@ -184,12 +181,15 @@
         window.DH101.applyBranding({ color_primary: t.color_primary, color_secondary: t.color_secondary });
         document.title = 'Your Dancehall 101 Ticket — ' + t.school_name;
 
+        var schoolLike = { logo_url: t.school_logo_url, short_code: (t.ticket_id || '').split('-')[0], name: t.school_name };
+
         stateEl.innerHTML =
           '<div class="dh-ticket">' +
             '<div class="dh-ticket-top">' +
               '<div class="dh-t-wordmark">DANCEHALL 101 &mdash; LESSONS IN DANCEHALL CULTURE</div>' +
-              (t.school_logo_url ? '<img src="' + t.school_logo_url + '" alt="' + escapeHtml(t.school_name) + ' logo" />' : '') +
-              '<h1>' + escapeHtml(t.school_name) + '</h1>' +
+              window.DH101.wordmarkHtml(schoolLike, 'dh-wm-lg') +
+              '<h1>' + escapeHtml(t.school_mascot || t.school_name) + '</h1>' +
+              (t.school_mascot ? '<div class="dh-edition">' + escapeHtml(t.school_name) + '</div>' : '') +
               '<div class="dh-edition">' + escapeHtml(t.school_slug) + ' Edition</div>' +
               '<div class="dh-venue-line">Uptown Lounge &middot; Wednesday Nights &middot; Chicago&rsquo;s #1 Dancehall Experience &middot; 21+ Event</div>' +
               '<div class="dh-ticket-banner">Your Exclusive FREE TICKET &mdash; Presented exclusively to ' + escapeHtml(t.school_name) + ' Students (21+)</div>' +

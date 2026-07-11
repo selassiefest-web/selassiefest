@@ -3,7 +3,11 @@
 // same Supabase project, just talking to the dh101_* tables/RPCs, which
 // carry their own RLS independent of every other table on the site.
 window.DH101 = (function () {
-  const PLACEHOLDER_LOGO = '/assets/images/placeholder.svg';
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
 
   function applyBranding(school) {
     if (!school) return;
@@ -11,15 +15,24 @@ window.DH101 = (function () {
     document.documentElement.style.setProperty('--school-secondary', school.color_secondary || '#F2B705');
   }
 
-  function logoUrl(school) {
-    return (school && school.logo_url) || PLACEHOLDER_LOGO;
+  // Real cleared logo -> an <img>. No cleared logo -> a styled text
+  // wordmark using the school's own short code/initials and colors, NOT a
+  // generic placeholder icon -- see dh101_schools.logo_url comment in
+  // schema.sql for why most schools don't have a cleared image yet.
+  function wordmarkHtml(school, sizeClass) {
+    if (!school) return '';
+    if (school.logo_url) {
+      return '<img class="dh-wordmark-img ' + sizeClass + '" src="' + school.logo_url + '" alt="' + escapeHtml(school.name) + ' logo" loading="lazy" />';
+    }
+    var initials = (school.short_code || school.name.slice(0, 3)).slice(0, 6);
+    return '<div class="dh-wordmark-badge ' + sizeClass + '"><span>' + escapeHtml(initials) + '</span></div>';
   }
 
   async function fetchActiveSchools() {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('dh101_schools')
-      .select('id, slug, name, short_code, logo_url, color_primary, color_secondary, default_campaign_code')
+      .select('id, slug, name, short_code, logo_url, mascot, color_primary, color_secondary, default_campaign_code')
       .order('name', { ascending: true });
     if (error) throw error;
     return data || [];
@@ -29,7 +42,7 @@ window.DH101 = (function () {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('dh101_schools')
-      .select('id, slug, name, short_code, logo_url, color_primary, color_secondary, default_campaign_code')
+      .select('id, slug, name, short_code, logo_url, mascot, color_primary, color_secondary, default_campaign_code')
       .eq('slug', slug)
       .maybeSingle();
     if (error) throw error;
@@ -76,7 +89,7 @@ window.DH101 = (function () {
 
   return {
     applyBranding,
-    logoUrl,
+    wordmarkHtml,
     fetchActiveSchools,
     fetchSchoolBySlug,
     submitSignup,
