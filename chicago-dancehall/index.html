@@ -205,6 +205,32 @@
     .status-Tentative { background: rgba(229, 169, 60, 0.25); color: var(--gold-accent); }
     .status-Cancelled { background: rgba(200, 55, 55, 0.25); color: #e08585; }
 
+    /* Region pie chart */
+    #regionPie { display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+    #pieCircle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid var(--border-dim);
+    }
+    #pieLegend { list-style: none; flex: 1; min-width: 220px; }
+    #pieLegend li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      padding: 6px 0;
+      color: #ddd;
+    }
+    #pieLegend .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    #pieLegend .pie-count { color: #999; margin-left: auto; font-size: 0.82rem; }
+
     #loadError { color: #e08585; text-align: center; padding: 20px; }
     footer.gate-footer { text-align: center; color: #666; font-size: 0.78rem; padding: 30px; }
   </style>
@@ -231,6 +257,14 @@
     <div class="logout-row"><button id="logoutBtn">Log out</button></div>
 
     <div class="stat-row" id="statRow"></div>
+
+    <section class="panel">
+      <h2>Occurrences by Region</h2>
+      <div id="regionPie">
+        <div id="pieCircle"></div>
+        <ul id="pieLegend"></ul>
+      </div>
+    </section>
 
     <section class="panel">
       <h2>Region &times; Day of Week</h2>
@@ -303,9 +337,54 @@
         }
 
         renderStats(data);
+        renderRegionPie(data);
         renderHeatmap(data);
         renderMonthBars(data);
         renderTable(data);
+      }
+
+      var PIE_COLORS = ['#E5A93C', '#0E5E36', '#C83737', '#3C7EE5', '#8B5CE5', '#3CC7B8', '#E56FA0', '#B8C83C'];
+
+      function renderRegionPie(rows) {
+        var counts = {};
+        var total = 0;
+        rows.forEach(function (r) {
+          var region = r.region || 'Unspecified';
+          counts[region] = (counts[region] || 0) + 1;
+          total++;
+        });
+
+        var regions = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+
+        if (!total) {
+          document.getElementById('pieCircle').style.background = 'rgba(255,255,255,0.05)';
+          document.getElementById('pieLegend').innerHTML = '<li style="color:#999;">No region data yet.</li>';
+          return;
+        }
+
+        var gradientParts = [];
+        var legendParts = [];
+        var cursor = 0;
+
+        regions.forEach(function (region, i) {
+          var color = PIE_COLORS[i % PIE_COLORS.length];
+          var count = counts[region];
+          var pct = (count / total) * 100;
+          var start = cursor;
+          var end = cursor + pct;
+          gradientParts.push(color + ' ' + start.toFixed(2) + '% ' + end.toFixed(2) + '%');
+          cursor = end;
+
+          legendParts.push(
+            '<li><span class="swatch" style="background:' + color + ';"></span>' +
+            escapeHtml(region) +
+            '<span class="pie-count">' + count + ' (' + pct.toFixed(0) + '%)</span></li>'
+          );
+        });
+
+        document.getElementById('pieCircle').style.background =
+          'conic-gradient(' + gradientParts.join(', ') + ')';
+        document.getElementById('pieLegend').innerHTML = legendParts.join('');
       }
 
       function renderStats(rows) {
