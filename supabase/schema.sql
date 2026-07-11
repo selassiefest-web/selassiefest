@@ -896,3 +896,128 @@ left join dh101_signups s on s.ambassador_id = a.id
 group by a.id, a.code, a.display_name, a.school_id, sc.slug, sc.name;
 
 grant select on dh101_ambassador_leaderboard to anon;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Chicago Dancehall Oscars -- production dashboard (password-gated mirror)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Read-only mirror of the "Chicago Dancehall Oscars -- Master Production
+-- Bible" Notion workspace (a separate internal planning tool from the
+-- public-facing dh101_*/dancehall_occurrences data above), kept in sync by
+-- a scheduled Edge Function (supabase/functions/sync-notion-oscars/
+-- index.ts). Feeds a password-gated page for the small production team --
+-- NOT public-facing.
+--
+-- Deliberately AUTHENTICATED-ONLY on every table below, no anon policy at
+-- all -- unlike dh101_schools/event_series (public calendar/signup data),
+-- this is internal production-planning content: real team member names,
+-- unconfirmed sponsor/nominee talks, task assignments. This matches the
+-- ORIGINAL dancehall_occurrences pattern from the /chicago-dancehall/
+-- build, not the anon+authenticated pattern used for public tables.
+create table if not exists oscars_timeline (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  task text not null,
+  phase text,
+  owner text,
+  due_date date,
+  status text,
+  notes text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_team (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  name text not null,
+  organization text,
+  role text,
+  email text,
+  phone text,
+  raci_nominations text,
+  raci_production text,
+  raci_marketing text,
+  raci_sponsors text,
+  notes text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_categories (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  category text not null,
+  segment text,
+  description text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_nominees (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  name text not null,
+  category_notion_id text,
+  category_name text,
+  is_finalist boolean,
+  public_votes int,
+  is_winner boolean,
+  notes text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_sponsors (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  sponsor text not null,
+  touchpoint text,
+  status text,
+  contact text,
+  value text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_risks (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  risk text not null,
+  likelihood text,
+  impact text,
+  mitigation text,
+  owner text,
+  synced_at timestamptz not null default now()
+);
+
+create table if not exists oscars_run_of_show (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  segment text not null,
+  time_label text,
+  duration_min int,
+  owner text,
+  notes text,
+  synced_at timestamptz not null default now()
+);
+
+-- Applies RLS uniformly across all 7 tables above via a loop, rather than
+-- repeating the same three statements seven times.
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['oscars_timeline','oscars_team','oscars_categories','oscars_nominees','oscars_sponsors','oscars_risks','oscars_run_of_show']
+  loop
+    execute format('alter table %I enable row level security', t);
+    execute format('create policy "Allow authenticated read" on %I for select to authenticated using (true)', t);
+    execute format('grant select on %I to authenticated', t);
+  end loop;
+end $$;
+
+-- Kept in sync by a pg_cron job ('sync-notion-oscars', every 3 hours) that
+-- calls net.http_post against the deployed sync-notion-oscars Edge
+-- Function. Same not-reproduced-here pattern as sync-notion-dancehall's
+-- job (embeds a shared x-sync-secret header value that must never be
+-- committed to git) -- applied directly against the database instead. If
+-- it ever needs to be recreated: `select cron.schedule('sync-notion-
+-- oscars', '0 */3 * * *', $$ select net.http_post(url := '<function-url>',
+-- headers := jsonb_build_object('Content-Type','application/json',
+-- 'x-sync-secret','<secret>'), body := '{}'::jsonb); $$);`. Reuses the same
+-- SYNC_SECRET and NOTION_TOKEN Edge Function secrets already set for
+-- sync-notion-dancehall (shared across functions in this project).
