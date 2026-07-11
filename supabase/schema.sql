@@ -395,3 +395,57 @@ BEGIN
   RETURN NEW;
 END;
 $function$;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Chicago Dancehall Scene dashboard (password-gated, synced from Notion)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Read-only mirror of the "Chicago Dancehall Scene" Notion database (a
+-- separate community-tracking project from SelassieFest's own calendar
+-- above), kept in sync by a scheduled Edge Function
+-- (supabase/functions/sync-notion-dancehall/index.ts) that reads the Notion
+-- API and upserts here on notion_page_id. Flattened (region/venue/promoter
+-- as plain text, not FKs) since this is a one-way display mirror feeding a
+-- chart, not a system that needs relational integrity of its own.
+--
+-- Restricted to the `authenticated` role only -- there is no anon policy at
+-- all -- because this feeds the password-gated /chicago-dancehall/ page,
+-- guarded by a single shared Supabase Auth login. The Edge Function itself
+-- writes using the service role key (set as a function secret), which
+-- bypasses RLS entirely, so no insert/update policy is needed here.
+create table if not exists dancehall_occurrences (
+  id uuid primary key default gen_random_uuid(),
+  notion_page_id text not null unique,
+  name text not null,
+  occurrence_date date,
+  region text,
+  venue text,
+  promoter text,
+  status text,
+  notes text,
+  synced_at timestamptz not null default now()
+);
+
+create index if not exists dancehall_occurrences_date_idx on dancehall_occurrences (occurrence_date);
+
+alter table dancehall_occurrences enable row level security;
+
+create policy "Allow authenticated read" on dancehall_occurrences
+  for select to authenticated
+  using (true);
+
+grant select on dancehall_occurrences to authenticated;
+
+-- Kept in sync by a pg_cron job ('sync-notion-dancehall', every 3 hours)
+-- that calls net.http_post against the deployed sync-notion-dancehall Edge
+-- Function. The job is intentionally NOT reproduced here: it embeds a
+-- shared x-sync-secret header value (checked by the Edge Function to reject
+-- unauthenticated calls to its public URL) that must never be committed to
+-- git -- same pattern as notify_submission_webhook above. It was applied
+-- directly against the database instead. If it ever needs to be recreated:
+-- `select cron.schedule('sync-notion-dancehall', '0 */3 * * *', $$ select
+-- net.http_post(url := '<function-url>', headers := jsonb_build_object(
+-- 'Content-Type','application/json','x-sync-secret','<secret>'), body :=
+-- '{}'::jsonb); $$);`. The secret is also stored as the Edge Function's
+-- SYNC_SECRET environment secret (`supabase secrets set`), alongside a
+-- NOTION_TOKEN secret for the Notion integration used to read the source
+-- "Chicago Dancehall Scene" database.
