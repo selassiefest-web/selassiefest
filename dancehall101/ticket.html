@@ -80,7 +80,7 @@
     }
     .dh-perks li::before { content: '\2726'; color: var(--school-secondary); }
 
-    #dh-qr-canvas { margin: 0 auto 8px; display: block; border-radius: 10px; }
+    #dh-qr-canvas { width: 180px; height: 180px; margin: 0 auto 8px; border-radius: 10px; overflow: hidden; }
     .dh-scan-label {
       font-size: 0.72rem;
       letter-spacing: 0.15em;
@@ -149,7 +149,7 @@
   <script src="/dancehall101/assets/dancehall101-client.js"></script>
   <script>
     (function () {
-      var QR_CDN = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js';
+      var QR_CDN = 'https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js';
       var qrPromise = null;
 
       function loadScript(src) {
@@ -201,7 +201,7 @@
                 '<li>Drink Specials</li>' +
                 '<li>VIP Giveaways</li>' +
               '</ul>' +
-              '<canvas id="dh-qr-canvas" width="180" height="180"></canvas>' +
+              '<div id="dh-qr-canvas"></div>' +
               '<div class="dh-scan-label">Scan for Access</div>' +
               '<div class="dh-redemption-code">' + escapeHtml(t.redemption_code) + '</div>' +
               '<div class="dh-data-grid">' +
@@ -220,9 +220,10 @@
         // even without a scannable QR image.
         try {
           await ensureQr();
-          var canvas = document.getElementById('dh-qr-canvas');
-          window.QRCode.toCanvas(canvas, t.ticket_id + ' ' + t.redemption_code, { width: 180, margin: 1 }, function (err) {
-            if (err) console.error('QR render failed:', err);
+          new window.QRCode(document.getElementById('dh-qr-canvas'), {
+            text: t.ticket_id + ' ' + t.redemption_code,
+            width: 180,
+            height: 180,
           });
         } catch (err) {
           console.error('QR library failed to load:', err);
