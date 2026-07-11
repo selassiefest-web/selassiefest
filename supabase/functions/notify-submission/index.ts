@@ -152,6 +152,34 @@ function formatGameSubmissionConfirmation(record: Record<string, any>) {
 // Most tables' triggers exist to notify staff of a new submission; a couple
 // (newsletter signups, game story submissions) ALSO/instead send a
 // confirmation back to the person who submitted — see TABLE_CONFIG below.
+function formatDh101Signup(record: Record<string, any>) {
+  return {
+    subject: `New Dancehall 101 signup — ${record.full_name}`,
+    html: `
+      <h2>New Dancehall 101 Free Ticket Signup</h2>
+      <p><strong>Name:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.edu_email)})</p>
+      <p><strong>School ID:</strong> ${escapeHtml(record.school_id)}</p>
+      <p><strong>Segment:</strong> ${escapeHtml(record.student_segment)}</p>
+      ${record.ambassador_id ? `<p><strong>Ambassador ID:</strong> ${escapeHtml(record.ambassador_id)}</p>` : ''}
+      <p>Verification email has been sent to the student.</p>
+    `,
+  };
+}
+
+function formatDh101VerificationEmail(record: Record<string, any>) {
+  const verifyUrl = `https://selassiefest.com/dancehall101/ticket.html?token=${encodeURIComponent(record.verification_token)}`;
+  return {
+    subject: `Confirm your free Dancehall 101 ticket`,
+    html: `
+      <h2>You're almost in — Dancehall 101</h2>
+      <p>Hi ${escapeHtml(record.full_name)}, click below to verify your .edu email and get your free ticket:</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="background:#0E5E36;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;">Verify &amp; view my ticket</a></p>
+      <p>Bring your ticket (this same link) and a physical photo ID (21+) to the door on Wednesday night at Uptown Lounge.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Dancehall 101 — presented by TRC Events. If you didn't sign up for this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
 function formatNewsletterConfirmation(record: Record<string, any>) {
   return {
     subject: `You're on the list — SelassieFest`,
@@ -167,6 +195,12 @@ function formatNewsletterConfirmation(record: Record<string, any>) {
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
+  // Optional per-notification sender override -- defaults to FROM below.
+  // Used by dh101_signups: Dancehall 101 is its own event brand (sibling to
+  // SelassieFest under Ras Tafari Inc / TRC Events, not a sub-feature of
+  // it), so its emails must not carry the "SelassieFest" display name even
+  // though they still send from the same verified selassiefest.com domain.
+  from?: (record: Record<string, any>) => string;
 };
 
 type TableConfig = {
@@ -186,6 +220,16 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       { to: () => NOTIFY_TO, format: formatGameSubmission },
       // Only sent if the submitter gave an email -- it's optional on this form.
       { to: (record) => record.submitter_email, format: formatGameSubmissionConfirmation },
+    ],
+  },
+  dh101_signups: {
+    notifications: [
+      { to: () => NOTIFY_TO, format: formatDh101Signup },
+      {
+        to: (record) => record.edu_email,
+        format: formatDh101VerificationEmail,
+        from: () => 'Dancehall 101 <hello@selassiefest.com>',
+      },
     ],
   },
 };
@@ -231,6 +275,7 @@ Deno.serve(async (req: Request) => {
       }
 
       const { subject, html } = notification.format(record);
+      const from = notification.from ? notification.from(record) : FROM;
 
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -238,7 +283,7 @@ Deno.serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from: FROM, to, reply_to: REPLY_TO, subject, html }),
+        body: JSON.stringify({ from, to, reply_to: REPLY_TO, subject, html }),
       });
 
       if (!resendRes.ok) {

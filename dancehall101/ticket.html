@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Your Dancehall 101 Ticket</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dancehall101/assets/dancehall101.css" />
+
+  <style>
+    #dh-ticket-wrap { max-width: 460px; margin: 0 auto; padding: 32px 20px 60px; }
+    .dh-ticket {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--dh-border);
+      background: var(--dh-bg-alt);
+    }
+    .dh-ticket-top {
+      background: linear-gradient(160deg, var(--school-primary), color-mix(in srgb, var(--school-primary) 60%, black));
+      padding: 26px 24px 22px;
+      text-align: center;
+      color: #fff;
+    }
+    .dh-ticket-top .dh-t-wordmark {
+      font-family: 'Anton', 'Inter', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+    }
+    .dh-ticket-top img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.9);
+      border-radius: 10px;
+      padding: 6px;
+      margin: 14px auto 8px;
+      display: block;
+    }
+    .dh-ticket-top h1 {
+      font-family: 'Anton', 'Inter', sans-serif;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+    .dh-ticket-top .dh-edition { font-size: 0.78rem; opacity: 0.85; margin-top: 2px; }
+    .dh-ticket-top .dh-venue-line {
+      margin-top: 14px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    .dh-ticket-banner {
+      margin-top: 14px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .dh-ticket-bottom { padding: 24px 24px 28px; text-align: center; }
+    .dh-perks {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0 0 22px;
+      text-align: left;
+    }
+    .dh-perks li {
+      font-size: 0.82rem;
+      color: var(--dh-text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dh-perks li::before { content: '\2726'; color: var(--school-secondary); }
+
+    #dh-qr-canvas { margin: 0 auto 8px; display: block; border-radius: 10px; }
+    .dh-scan-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--school-secondary);
+      font-weight: 700;
+    }
+    .dh-redemption-code {
+      font-family: monospace;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      margin: 6px 0 20px;
+    }
+
+    .dh-data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      text-align: left;
+      border-top: 1px solid var(--dh-border);
+      padding-top: 16px;
+    }
+    .dh-data-grid .dh-field-label {
+      font-size: 0.68rem;
+      color: var(--dh-text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .dh-data-grid .dh-field-value { font-size: 0.9rem; font-weight: 600; }
+
+    .dh-ticket-footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--dh-border);
+      font-size: 0.78rem;
+      color: var(--dh-text-dim);
+    }
+    .dh-reminder {
+      max-width: 460px;
+      margin: 18px auto 0;
+      padding: 0 4px;
+      font-size: 0.85rem;
+      color: var(--dh-text-dim);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="dh-topbar">
+    <div class="dh-wordmark">DANCEHALL<span>101</span></div>
+    <div class="dh-tagline">Lessons in Dancehall Culture</div>
+  </header>
+
+  <main>
+    <div id="dh-ticket-wrap">
+      <div id="dh-state">
+        <div class="dh-hero"><h1>Verifying&hellip;</h1></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="dh-footer">Dancehall 101 &mdash; presented by TRC Events, a Ras Tafari Inc production. Uptown Lounge, Chicago.</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/dancehall101/assets/dancehall101-client.js"></script>
+  <script>
+    (function () {
+      var QR_CDN = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+      var qrPromise = null;
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      function ensureQr() {
+        if (qrPromise) return qrPromise;
+        qrPromise = window.QRCode ? Promise.resolve() : loadScript(QR_CDN);
+        return qrPromise;
+      }
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      var stateEl = document.getElementById('dh-state');
+
+      function renderMessage(title, sub) {
+        stateEl.innerHTML = '<div class="dh-hero"><h1>' + escapeHtml(title) + '</h1><p class="dh-sub">' + escapeHtml(sub) + '</p></div>';
+      }
+
+      async function renderTicket(t) {
+        window.DH101.applyBranding({ color_primary: t.color_primary, color_secondary: t.color_secondary });
+        document.title = 'Your Dancehall 101 Ticket — ' + t.school_name;
+
+        stateEl.innerHTML =
+          '<div class="dh-ticket">' +
+            '<div class="dh-ticket-top">' +
+              '<div class="dh-t-wordmark">DANCEHALL 101 &mdash; LESSONS IN DANCEHALL CULTURE</div>' +
+              (t.school_logo_url ? '<img src="' + t.school_logo_url + '" alt="' + escapeHtml(t.school_name) + ' logo" />' : '') +
+              '<h1>' + escapeHtml(t.school_name) + '</h1>' +
+              '<div class="dh-edition">' + escapeHtml(t.school_slug) + ' Edition</div>' +
+              '<div class="dh-venue-line">Uptown Lounge &middot; Wednesday Nights &middot; Chicago&rsquo;s #1 Dancehall Experience &middot; 21+ Event</div>' +
+              '<div class="dh-ticket-banner">Your Exclusive FREE TICKET &mdash; Presented exclusively to ' + escapeHtml(t.school_name) + ' Students (21+)</div>' +
+            '</div>' +
+            '<div class="dh-ticket-bottom">' +
+              '<ul class="dh-perks">' +
+                '<li>Live DJs &amp; MCs</li>' +
+                '<li>Dance Lessons &ldquo;Outta Yawd&rdquo;</li>' +
+                '<li>Drink Specials</li>' +
+                '<li>VIP Giveaways</li>' +
+              '</ul>' +
+              '<canvas id="dh-qr-canvas" width="180" height="180"></canvas>' +
+              '<div class="dh-scan-label">Scan for Access</div>' +
+              '<div class="dh-redemption-code">' + escapeHtml(t.redemption_code) + '</div>' +
+              '<div class="dh-data-grid">' +
+                '<div><div class="dh-field-label">Ticket ID</div><div class="dh-field-value">' + escapeHtml(t.ticket_id) + '</div></div>' +
+                '<div><div class="dh-field-label">Campaign</div><div class="dh-field-value">' + escapeHtml(t.campaign_code || '&mdash;') + '</div></div>' +
+                '<div><div class="dh-field-label">Student Segment</div><div class="dh-field-value">' + escapeHtml(t.student_segment || '&mdash;') + '</div></div>' +
+                '<div><div class="dh-field-label">Name</div><div class="dh-field-value">' + escapeHtml(t.full_name) + '</div></div>' +
+              '</div>' +
+              '<div class="dh-ticket-footer">' + escapeHtml(t.school_name) + ' Takes Wednesdays &middot; Uptown Lounge, Chicago IL</div>' +
+            '</div>' +
+          '</div>' +
+          '<p class="dh-reminder">Save this page &mdash; show it at the door. Bring a physical photo ID (21+).</p>';
+
+        await ensureQr();
+        var canvas = document.getElementById('dh-qr-canvas');
+        window.QRCode.toCanvas(canvas, t.ticket_id + ' ' + t.redemption_code, { width: 180, margin: 1 }, function (err) {
+          if (err) console.error('QR render failed:', err);
+        });
+      }
+
+      (async function init() {
+        var params = new URLSearchParams(window.location.search);
+        var token = params.get('token');
+        if (!token) {
+          renderMessage('Missing Ticket Link', 'This page needs a valid ticket link from your confirmation email.');
+          return;
+        }
+        try {
+          var result = await window.DH101.verifyAndGetTicket(token);
+          if (!result || result.status === 'not_found') {
+            renderMessage('Ticket Not Found', "We couldn't find a signup matching this link.");
+            return;
+          }
+          if (result.status === 'expired') {
+            renderMessage('Link Expired', 'This verification link has expired. Please sign up again at dancehall101.');
+            return;
+          }
+          await renderTicket(result);
+        } catch (err) {
+          console.error('Ticket verification failed:', err);
+          renderMessage('Something Went Wrong', 'Please refresh and try again.');
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

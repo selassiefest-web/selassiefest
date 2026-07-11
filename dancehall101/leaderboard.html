@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Dancehall 101 ambassador leaderboard — see who's bringing the most students out to Uptown Lounge on Wednesdays." />
+  <title>Ambassador Leaderboard | Dancehall 101</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dancehall101/assets/dancehall101.css" />
+
+  <style>
+    #dh-lb-wrap { max-width: 640px; margin: 0 auto; padding: 20px 20px 60px; }
+    .dh-you-card {
+      background: var(--dh-card);
+      border: 1px solid var(--school-secondary);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .dh-you-card .rank { font-size: 2rem; color: var(--school-secondary); font-weight: 700; }
+    .dh-share-link {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      word-break: break-all;
+    }
+    table.dh-lb-table { width: 100%; border-collapse: collapse; }
+    table.dh-lb-table th, table.dh-lb-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--dh-border);
+      font-size: 0.9rem;
+    }
+    table.dh-lb-table th { color: var(--school-secondary); font-weight: 400; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+    .dh-rank-cell { color: var(--dh-text-dim); width: 30px; }
+    .dh-you-row { background: rgba(255,255,255,0.04); }
+  </style>
+</head>
+<body>
+
+  <header class="dh-topbar">
+    <div class="dh-wordmark">DANCEHALL<span>101</span></div>
+    <div class="dh-tagline">Ambassador Leaderboard</div>
+  </header>
+
+  <main>
+    <div class="dh-hero">
+      <h1>Ambassador <span class="accent">Leaderboard</span></h1>
+      <p class="dh-sub">See who's bringing the most students out to Uptown Lounge on Wednesdays.</p>
+    </div>
+    <div id="dh-lb-wrap">
+      <div id="dh-you-wrap"></div>
+      <table class="dh-lb-table">
+        <thead><tr><th>#</th><th>Ambassador</th><th>School</th><th>Signups</th></tr></thead>
+        <tbody id="dh-lb-body"><tr><td colspan="4" style="color:var(--dh-text-dim);">Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="dh-footer">Dancehall 101 &mdash; presented by TRC Events, a Ras Tafari Inc production. Uptown Lounge, Chicago.</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/dancehall101/assets/dancehall101-client.js"></script>
+  <script>
+    (function () {
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      (async function init() {
+        const params = new URLSearchParams(window.location.search);
+        const myCode = params.get('ambassador');
+        const body = document.getElementById('dh-lb-body');
+        const youWrap = document.getElementById('dh-you-wrap');
+
+        try {
+          const rows = await window.DH101.fetchAmbassadorLeaderboard();
+
+          if (!rows.length) {
+            body.innerHTML = '<tr><td colspan="4" style="color:var(--dh-text-dim);">No ambassadors yet.</td></tr>';
+            return;
+          }
+
+          body.innerHTML = rows.map(function (r, i) {
+            const isYou = myCode && r.code === myCode;
+            return '<tr' + (isYou ? ' class="dh-you-row"' : '') + '>' +
+              '<td class="dh-rank-cell">' + (i + 1) + '</td>' +
+              '<td>' + escapeHtml(r.display_name) + (isYou ? ' (You)' : '') + '</td>' +
+              '<td>' + escapeHtml(r.school_name) + '</td>' +
+              '<td>' + r.signup_count + '</td>' +
+              '</tr>';
+          }).join('');
+
+          if (myCode) {
+            const idx = rows.findIndex(function (r) { return r.code === myCode; });
+            if (idx !== -1) {
+              const me = rows[idx];
+              window.DH101.applyBranding({ color_primary: '#0E5E36', color_secondary: '#E5A93C' });
+              const shareUrl = window.location.origin + '/dancehall101/?school=' + encodeURIComponent(me.school_slug) + '&ref=' + encodeURIComponent(me.code);
+              youWrap.innerHTML =
+                '<div class="dh-you-card">' +
+                  '<div class="rank">#' + (idx + 1) + '</div>' +
+                  '<div>' + escapeHtml(me.display_name) + ' &mdash; ' + me.signup_count + ' signup' + (me.signup_count === 1 ? '' : 's') + '</div>' +
+                  '<div class="dh-share-link">' + escapeHtml(shareUrl) + '</div>' +
+                '</div>';
+            }
+          }
+        } catch (err) {
+          console.error('Leaderboard load failed:', err);
+          body.innerHTML = '<tr><td colspan="4" style="color:#e08585;">Could not load leaderboard.</td></tr>';
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

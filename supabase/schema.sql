@@ -449,3 +449,382 @@ grant select on dancehall_occurrences to authenticated;
 -- SYNC_SECRET environment secret (`supabase secrets set`), alongside a
 -- NOTION_TOKEN secret for the Notion integration used to read the source
 -- "Chicago Dancehall Scene" database.
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Dancehall 101 free student ticketing (dh101_*)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Dancehall 101 (weekly, Uptown Lounge) is its own event brand under Ras
+-- Tafari Inc / TRC Events -- a sibling to SelassieFest, not a sub-feature of
+-- it -- hosted at /dancehall101/ on this same domain purely for convenience.
+-- 21+ students at 20 partner schools get free entry by verifying a .edu
+-- email; each gets a branded digital ticket (QR + redemption code) unique to
+-- their school. dh101_ prefix keeps this cluster separate from the site's
+-- own event_series/event_occurrences tables.
+create table if not exists dh101_schools (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  short_code text not null unique,      -- ticket prefix, e.g. 'SAIC' -> SAIC-000001
+  edu_domains text[] not null,          -- lowercase, e.g. {'saic.edu'}
+  logo_url text,                        -- falls back to /assets/images/placeholder.svg client-side until real logos land in the dh101-branding bucket
+  color_primary text not null default '#0E5E36',
+  color_secondary text not null default '#E5A93C',
+  is_active boolean not null default true,
+  default_campaign_code text,           -- e.g. 'SAIC-FALL26' -- the landing page reads this and auto-stamps it onto the signup row; update per-semester without touching any page code
+  created_at timestamptz not null default now()
+);
+
+-- One row per school; advanced by dh101_next_ticket_id (below) via an atomic
+-- UPDATE...RETURNING, never by a read-then-write from the client.
+create table if not exists dh101_school_ticket_counters (
+  school_id uuid primary key references dh101_schools(id) on delete cascade,
+  next_seq int not null default 1
+);
+
+-- No email/contact column by design, so the whole table can be safely
+-- anon-readable (public leaderboard + shareable-link display) with zero PII.
+create table if not exists dh101_ambassadors (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid references dh101_schools(id) on delete cascade,
+  code text not null unique,
+  display_name text not null,
+  created_at timestamptz not null default now()
+);
+
+-- ticket_id/redemption_code/verified_at are NEVER set by the client -- see
+-- dh101_enforce_signup_rules below, which server-overwrites all of them on
+-- every insert regardless of what anon sends. DOB/edu-email checks here are
+-- a speed bump, not proof of age/enrollment; the real gate is door staff
+-- checking physical ID against the name shown by dh101_check_in_ticket.
+create table if not exists dh101_signups (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references dh101_schools(id),
+  full_name text not null,
+  edu_email text not null,
+  dob date not null,
+  referral_code text,
+  ambassador_id uuid references dh101_ambassadors(id),
+  campaign_code text,
+  student_segment text default 'UNDERGRAD',
+  verification_token text unique,
+  verification_token_expires_at timestamptz not null default (now() + interval '7 days'),
+  verified_at timestamptz,
+  ticket_id text unique,
+  redemption_code text unique,
+  checked_in boolean not null default false,
+  checked_in_at timestamptz,
+  created_at timestamptz not null default now(),
+  check (edu_email ~* '@.+\.edu$'),
+  check (dob <= (current_date - interval '21 years'))
+);
+
+create unique index if not exists dh101_signups_edu_email_uidx on dh101_signups (lower(edu_email));
+
+-- Auto-seeds a counter row whenever a school is added.
+create or replace function dh101_seed_counter()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.dh101_school_ticket_counters (school_id) values (new.id)
+  on conflict (school_id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists dh101_schools_after_insert on dh101_schools;
+create trigger dh101_schools_after_insert
+  after insert on dh101_schools
+  for each row execute function dh101_seed_counter();
+
+-- Race-free sequential ticket ID. Never called at signup time -- only from
+-- dh101_verify_and_get_ticket below, at first verification -- so spam/
+-- duplicate/unverified inserts can never burn real sequence numbers. Note:
+-- pgcrypto's functions live in the `extensions` schema on this project, so
+-- with `set search_path = ''` (deliberate, prevents search-path hijacking)
+-- gen_random_bytes must be called as extensions.gen_random_bytes -- an
+-- unqualified call fails with "function gen_random_bytes does not exist"
+-- even though the extension is enabled.
+create or replace function dh101_next_ticket_id(p_school_id uuid)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_seq int;
+  v_code text;
+begin
+  update public.dh101_school_ticket_counters
+    set next_seq = next_seq + 1
+    where school_id = p_school_id
+    returning next_seq - 1 into v_seq;
+
+  if v_seq is null then
+    raise exception 'no ticket counter row for school %', p_school_id;
+  end if;
+
+  select short_code into v_code from public.dh101_schools where id = p_school_id;
+
+  return v_code || '-' || lpad(v_seq::text, 6, '0');
+end;
+$$;
+
+-- IMPORTANT: `revoke ... from public` alone is NOT enough on this project --
+-- Supabase's default-privilege scaffold auto-grants EXECUTE on every new
+-- public-schema function directly to the anon/authenticated roles (a
+-- separate grant from PUBLIC's), so anon could otherwise call this directly
+-- and burn through real ticket sequence numbers. Revoke from anon and
+-- authenticated explicitly, every time a function like this is added.
+revoke execute on function dh101_next_ticket_id(uuid) from public, anon, authenticated;
+
+-- Validates school is active + email domain match, and -- critically --
+-- server-overwrites every verification/ticket/check-in field regardless of
+-- client input, so anon can never forge a pre-verified/pre-checked-in row.
+create or replace function dh101_enforce_signup_rules()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  v_domains text[];
+  v_active boolean;
+  v_email_domain text;
+  v_ok boolean := false;
+  v_d text;
+begin
+  select edu_domains, is_active into v_domains, v_active
+  from public.dh101_schools where id = new.school_id;
+
+  if v_domains is null then
+    raise exception 'unknown school_id';
+  end if;
+  if not v_active then
+    raise exception 'school is not currently accepting signups';
+  end if;
+
+  v_email_domain := lower(split_part(new.edu_email, '@', 2));
+  foreach v_d in array v_domains loop
+    if v_email_domain = v_d or v_email_domain like ('%.' || v_d) then
+      v_ok := true;
+    end if;
+  end loop;
+  if not v_ok then
+    raise exception 'email domain % is not recognized for this school', v_email_domain;
+  end if;
+
+  new.verification_token := encode(extensions.gen_random_bytes(32), 'hex');
+  new.verification_token_expires_at := now() + interval '7 days';
+  new.verified_at := null;
+  new.ticket_id := null;
+  new.redemption_code := null;
+  new.checked_in := false;
+  new.checked_in_at := null;
+
+  -- Silently null on a typo/garbage referral code -- no error, no leak of
+  -- which codes are valid.
+  if new.referral_code is not null then
+    select id into new.ambassador_id from public.dh101_ambassadors where code = new.referral_code;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists dh101_signups_before_insert on dh101_signups;
+create trigger dh101_signups_before_insert
+  before insert on dh101_signups
+  for each row execute function dh101_enforce_signup_rules();
+
+revoke execute on function dh101_enforce_signup_rules() from public, anon, authenticated;
+revoke execute on function dh101_seed_counter() from public, anon, authenticated;
+
+alter table dh101_schools enable row level security;
+alter table dh101_ambassadors enable row level security;
+alter table dh101_signups enable row level security;
+
+create policy "anon read active schools" on dh101_schools
+  for select to anon
+  using (is_active);
+
+create policy "anon read ambassadors" on dh101_ambassadors
+  for select to anon
+  using (true);
+
+-- No select/update policy at all on dh101_signups, for anon OR
+-- authenticated -- every read/write beyond the initial insert goes through
+-- the security-definer functions/view below instead.
+create policy "anon insert signups" on dh101_signups
+  for insert to anon
+  with check (true);
+
+grant select on dh101_schools to anon;
+grant select on dh101_ambassadors to anon;
+grant insert on dh101_signups to anon;
+
+-- Verification RPC: looks up by token, checks expiry (only matters
+-- pre-first-verification -- once verified the token stays valid forever for
+-- re-viewing the ticket, since it's the student's only credential and the
+-- real redemption credential checked at the door is ticket_id/QR, not this
+-- token), atomically flips verified_at exactly once (guards against e.g. an
+-- email client's link-preview prefetch racing the real click), and mints
+-- the ticket_id/redemption_code only on the row that won that race. Returns
+-- only the safe-to-display fields -- never verification_token itself.
+create or replace function dh101_verify_and_get_ticket(p_token text)
+returns table (
+  status text,
+  ticket_id text,
+  redemption_code text,
+  full_name text,
+  school_slug text,
+  school_name text,
+  school_logo_url text,
+  color_primary text,
+  color_secondary text,
+  campaign_code text,
+  student_segment text,
+  verified_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid;
+  v_school_id uuid;
+  v_expires timestamptz;
+  v_verified timestamptz;
+  v_claimed int;
+begin
+  select s.id, s.school_id, s.verification_token_expires_at, s.verified_at
+    into v_id, v_school_id, v_expires, v_verified
+  from public.dh101_signups s where s.verification_token = p_token;
+
+  if v_id is null then
+    return query select 'not_found'::text, null::text, null::text, null::text, null::text,
+      null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+    return;
+  end if;
+
+  if v_verified is null and now() > v_expires then
+    return query select 'expired'::text, null::text, null::text, null::text, null::text,
+      null::text, null::text, null::text, null::text, null::text, null::text, null::timestamptz;
+    return;
+  end if;
+
+  -- Table alias `s` is required in this UPDATE's WHERE clause: a bare
+  -- `verified_at` is ambiguous between the table column and the RETURNS
+  -- TABLE's implicit `verified_at` OUT-parameter variable of the same name.
+  update public.dh101_signups s set verified_at = now()
+    where s.id = v_id and s.verified_at is null;
+  get diagnostics v_claimed = row_count;
+
+  if v_claimed > 0 then
+    update public.dh101_signups s
+      set ticket_id = public.dh101_next_ticket_id(v_school_id),
+          redemption_code = upper(substr(encode(extensions.gen_random_bytes(6), 'hex'), 1, 8))
+      where s.id = v_id;
+  end if;
+
+  return query
+    select 'ok'::text, s.ticket_id, s.redemption_code, s.full_name, sc.slug, sc.name, sc.logo_url,
+           sc.color_primary, sc.color_secondary, s.campaign_code, s.student_segment, s.verified_at
+    from public.dh101_signups s join public.dh101_schools sc on sc.id = s.school_id
+    where s.id = v_id;
+end;
+$$;
+
+revoke execute on function dh101_verify_and_get_ticket(text) from public;
+grant execute on function dh101_verify_and_get_ticket(text) to anon;
+
+-- Door check-in: deliberately NOT a broad `authenticated` grant on the base
+-- table -- dh101_signups holds edu_email/dob/verification_token, more
+-- sensitive than the read-only dancehall_occurrences table guarded the same
+-- way for /chicago-dancehall/. A shared door-staff password is the kind of
+-- credential that ends up screenshotted/texted around; if it leaks, a broad
+-- grant would hand over every student's PII and let someone rewrite
+-- ticket_id/verified_at arbitrarily. This RPC also solves the "two staff
+-- scan the same code at once" race via one atomic guarded UPDATE.
+create or replace function dh101_check_in_ticket(p_code text)
+returns table (
+  status text,
+  ticket_id text,
+  full_name text,
+  school_name text,
+  checked_in_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid;
+  v_verified timestamptz;
+  v_rows int;
+begin
+  select s.id, s.verified_at into v_id, v_verified
+  from public.dh101_signups s where s.ticket_id = p_code or s.redemption_code = p_code;
+
+  if v_id is null then
+    return query select 'not_found'::text, null::text, null::text, null::text, null::timestamptz;
+    return;
+  end if;
+
+  if v_verified is null then
+    return query select 'not_verified'::text, s.ticket_id, s.full_name, sc.name, null::timestamptz
+      from public.dh101_signups s join public.dh101_schools sc on sc.id = s.school_id where s.id = v_id;
+    return;
+  end if;
+
+  update public.dh101_signups s set checked_in = true, checked_in_at = now()
+    where s.id = v_id and s.checked_in = false;
+  get diagnostics v_rows = row_count;
+
+  return query
+    select (case when v_rows > 0 then 'checked_in' else 'already_checked_in' end)::text,
+           s.ticket_id, s.full_name, sc.name, s.checked_in_at
+    from public.dh101_signups s join public.dh101_schools sc on sc.id = s.school_id where s.id = v_id;
+end;
+$$;
+
+-- See the dh101_next_ticket_id comment above -- `from public` alone leaves
+-- anon's separate default-privilege grant intact, so it must be revoked
+-- explicitly too, even though only `authenticated` should ever call this.
+revoke execute on function dh101_check_in_ticket(text) from public, anon;
+grant execute on function dh101_check_in_ticket(text) to authenticated;
+
+-- Read-only browse/search for door staff (e.g. name lookup when a phone is
+-- dead) -- deliberately omits edu_email/dob/verification_token.
+create or replace view dh101_door_checkin as
+select s.id, s.ticket_id, s.redemption_code, s.full_name, sc.name as school_name,
+  (s.verified_at is not null) as is_verified, s.checked_in, s.checked_in_at,
+  s.campaign_code, s.student_segment, s.created_at
+from dh101_signups s join dh101_schools sc on sc.id = s.school_id;
+
+grant select on dh101_door_checkin to authenticated;
+
+-- School logos. No anon insert policy -- staff upload via the Supabase
+-- dashboard, not client code (unlike game-submissions, there's no
+-- legitimate anon-write use case here).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('dh101-branding', 'dh101-branding', true, 5242880,
+  array['image/png','image/jpeg','image/webp','image/svg+xml'])
+on conflict (id) do nothing;
+
+create policy "public read dh101-branding" on storage.objects
+  for select to anon
+  using (bucket_id = 'dh101-branding');
+
+-- Public ambassador leaderboard: counts only, zero signup PII (no name/
+-- email/dob ever selected here), safe for anon.
+create or replace view dh101_ambassador_leaderboard as
+select a.id as ambassador_id, a.code, a.display_name, a.school_id, sc.slug as school_slug, sc.name as school_name,
+  count(s.id) as signup_count
+from dh101_ambassadors a
+join dh101_schools sc on sc.id = a.school_id
+left join dh101_signups s on s.ambassador_id = a.id
+group by a.id, a.code, a.display_name, a.school_id, sc.slug, sc.name;
+
+grant select on dh101_ambassador_leaderboard to anon;
