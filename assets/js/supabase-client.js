@@ -90,4 +90,67 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  // Resizes/re-encodes an image client-side (long edge capped at 1600px,
+  // JPEG q=0.82) before upload. Keeps the free Storage tier's 1GB budget
+  // stretching across many more submitted photos than raw phone photos
+  // would allow — a single uncompressed phone photo can be 10-20MB.
+  async _compressImage(file) {
+    const bitmap = await createImageBitmap(file);
+    const maxEdge = 1600;
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.82));
+    return blob || file;
+  },
+
+  // Uploads an optional photo + optional video (max 50MB, matching both
+  // Supabase's free-tier per-file cap and the bucket's own configured
+  // limit) to the game-submissions Storage bucket, then records the
+  // submission. Videos are a TEMPORARY holding spot -- staff move approved
+  // ones to YouTube by hand and delete the Storage copy (see schema.sql).
+  async submitGameStory({ gameSlug, gameName, submitterName, submitterEmail, storyText, photoFile, videoFile }) {
+    const MAX_BYTES = 50 * 1024 * 1024;
+    if (videoFile && videoFile.size > MAX_BYTES) {
+      throw new Error('Video is too large (50MB max). Please trim it and try again.');
+    }
+
+    const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+
+    let photoPath = null;
+    if (photoFile) {
+      const compressed = await this._compressImage(photoFile);
+      photoPath = `${gameSlug}/${stamp}-photo.jpg`;
+      const { error } = await client.storage.from('game-submissions').upload(photoPath, compressed, {
+        contentType: 'image/jpeg',
+      });
+      if (error) throw error;
+    }
+
+    let videoPath = null;
+    if (videoFile) {
+      const ext = (videoFile.name.split('.').pop() || 'mp4').toLowerCase();
+      videoPath = `${gameSlug}/${stamp}-video.${ext}`;
+      const { error } = await client.storage.from('game-submissions').upload(videoPath, videoFile, {
+        contentType: videoFile.type || 'video/mp4',
+      });
+      if (error) throw error;
+    }
+
+    const { error } = await client.from('game_submissions').insert({
+      game_slug: gameSlug,
+      game_name: gameName,
+      submitter_name: submitterName,
+      submitter_email: submitterEmail || null,
+      story_text: storyText || null,
+      photo_path: photoPath,
+      video_path: videoPath,
+    });
+    if (error) throw error;
+  },
 };

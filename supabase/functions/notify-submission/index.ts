@@ -18,6 +18,7 @@ const REPLY_TO = 'selassiefest@gmail.com';
 // without any code here. Every newsletter_subscribers insert gets synced
 // into it below, in addition to the subscriber's own confirmation email.
 const NEWSLETTER_AUDIENCE_ID = '6561e97b-31be-45c8-a069-e8d8ae29711e';
+const STORAGE_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/game-submissions';
 
 function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -119,10 +120,38 @@ function formatDonation(record: Record<string, any>) {
   };
 }
 
-// The only formatter that emails the SUBMITTER instead of the org — every
-// other table's trigger exists to notify staff of a new submission, but
-// newsletter signups get a subscriber-facing confirmation instead (see
-// TABLE_CONFIG's `to` below).
+function formatGameSubmission(record: Record<string, any>) {
+  const photoUrl = record.photo_path ? `${STORAGE_PUBLIC_BASE}/${record.photo_path}` : null;
+  const videoUrl = record.video_path ? `${STORAGE_PUBLIC_BASE}/${record.video_path}` : null;
+  return {
+    subject: `New Games Archive Submission — ${record.game_name}`,
+    html: `
+      <h2>New Games Archive Submission</h2>
+      <p><strong>Game:</strong> ${escapeHtml(record.game_name)} (${escapeHtml(record.game_slug)})</p>
+      <p><strong>Submitted by:</strong> ${escapeHtml(record.submitter_name)}${record.submitter_email ? ' (' + escapeHtml(record.submitter_email) + ')' : ''}</p>
+      ${record.story_text ? `<p><strong>Story:</strong><br>${escapeHtml(record.story_text)}</p>` : ''}
+      ${photoUrl ? `<p><strong>Photo:</strong> <a href="${photoUrl}">${photoUrl}</a></p>` : ''}
+      ${videoUrl ? `<p><strong>Video (temporary — move to YouTube, then update video_path and delete from Storage):</strong> <a href="${videoUrl}">${videoUrl}</a></p>` : ''}
+      <p><strong>Status:</strong> ${escapeHtml(record.status)}</p>
+    `,
+  };
+}
+
+function formatGameSubmissionConfirmation(record: Record<string, any>) {
+  return {
+    subject: `Thanks for sharing your ${record.game_name} story!`,
+    html: `
+      <h2>Thank you, ${escapeHtml(record.submitter_name)}!</h2>
+      <p>We got your ${escapeHtml(record.game_name)} story${record.photo_path ? ', photo' : ''}${record.video_path ? ', video' : ''} for the Pickney Time Games Archive.</p>
+      <p>Our team reviews every submission by hand — if yours is featured, we'll credit you right on the game's page.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Thank you for helping preserve this piece of culture for the next generation.</p>
+    `,
+  };
+}
+
+// Most tables' triggers exist to notify staff of a new submission; a couple
+// (newsletter signups, game story submissions) ALSO/instead send a
+// confirmation back to the person who submitted — see TABLE_CONFIG below.
 function formatNewsletterConfirmation(record: Record<string, any>) {
   return {
     subject: `You're on the list — SelassieFest`,
@@ -135,19 +164,30 @@ function formatNewsletterConfirmation(record: Record<string, any>) {
   };
 }
 
-type TableConfig = {
-  to: (record: Record<string, any>) => string;
+type Notification = {
+  to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
 };
 
+type TableConfig = {
+  notifications: Notification[];
+};
+
 const TABLE_CONFIG: Record<string, TableConfig> = {
-  raffle_entries: { to: () => NOTIFY_TO, format: formatRaffleEntry },
-  marketplace_preorders: { to: () => NOTIFY_TO, format: formatMarketplacePreorder },
-  volunteer_signups: { to: () => NOTIFY_TO, format: formatVolunteerSignup },
-  sponsor_inquiries: { to: () => NOTIFY_TO, format: formatSponsorInquiry },
-  camp_registrations: { to: () => NOTIFY_TO, format: formatCampRegistration },
-  stripe_donations: { to: () => NOTIFY_TO, format: formatDonation },
-  newsletter_subscribers: { to: (record) => record.email, format: formatNewsletterConfirmation },
+  raffle_entries: { notifications: [{ to: () => NOTIFY_TO, format: formatRaffleEntry }] },
+  marketplace_preorders: { notifications: [{ to: () => NOTIFY_TO, format: formatMarketplacePreorder }] },
+  volunteer_signups: { notifications: [{ to: () => NOTIFY_TO, format: formatVolunteerSignup }] },
+  sponsor_inquiries: { notifications: [{ to: () => NOTIFY_TO, format: formatSponsorInquiry }] },
+  camp_registrations: { notifications: [{ to: () => NOTIFY_TO, format: formatCampRegistration }] },
+  stripe_donations: { notifications: [{ to: () => NOTIFY_TO, format: formatDonation }] },
+  newsletter_subscribers: { notifications: [{ to: (record) => record.email, format: formatNewsletterConfirmation }] },
+  game_submissions: {
+    notifications: [
+      { to: () => NOTIFY_TO, format: formatGameSubmission },
+      // Only sent if the submitter gave an email -- it's optional on this form.
+      { to: (record) => record.submitter_email, format: formatGameSubmissionConfirmation },
+    ],
+  },
 };
 
 Deno.serve(async (req: Request) => {
@@ -163,11 +203,6 @@ Deno.serve(async (req: Request) => {
     const config = TABLE_CONFIG[table];
     if (!config) {
       return new Response(JSON.stringify({ skipped: true, reason: `no formatter for table ${table}` }), { status: 200 });
-    }
-
-    const to = config.to(record);
-    if (!to) {
-      return new Response(JSON.stringify({ skipped: true, reason: 'no recipient email on record' }), { status: 200 });
     }
 
     // Best-effort — a Resend Audience hiccup shouldn't block the
@@ -187,24 +222,37 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    const { subject, html } = config.format(record);
+    const results = [];
+    for (const notification of config.notifications) {
+      const to = notification.to(record);
+      if (!to) {
+        results.push({ skipped: true, reason: 'no recipient email on record' });
+        continue;
+      }
 
-    const resendRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ from: FROM, to, reply_to: REPLY_TO, subject, html }),
-    });
+      const { subject, html } = notification.format(record);
 
-    if (!resendRes.ok) {
-      const errText = await resendRes.text();
-      console.error('Resend send failed:', resendRes.status, errText);
-      return new Response(JSON.stringify({ error: errText }), { status: 502 });
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ from: FROM, to, reply_to: REPLY_TO, subject, html }),
+      });
+
+      if (!resendRes.ok) {
+        const errText = await resendRes.text();
+        console.error('Resend send failed:', resendRes.status, errText);
+        results.push({ error: errText });
+      } else {
+        results.push({ sent: true, to });
+      }
     }
 
-    return new Response(JSON.stringify({ sent: true }), { status: 200 });
+    const anySent = results.some((r) => r.sent);
+    const anyError = results.some((r) => r.error);
+    return new Response(JSON.stringify({ results }), { status: anySent || !anyError ? 200 : 502 });
   } catch (e) {
     console.error('notify-submission error:', e);
     return new Response(JSON.stringify({ error: String(e) }), { status: 500 });

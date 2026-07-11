@@ -228,6 +228,56 @@ grant insert on volunteer_signups to anon;
 grant insert on sponsor_inquiries to anon;
 grant insert on camp_registrations to anon;
 
+-- Pickney Time games archive submissions ("Did You Play [Game]?" on each
+-- of the 110 calendar/games/*.html pages). photo_path/video_path are
+-- storage object paths within the `game-submissions` Storage bucket (not
+-- full URLs) -- see the bucket/policy setup below. video_path is meant to
+-- be TEMPORARY: staff review the submission, manually upload approved
+-- videos to the org's YouTube channel, then update video_path to the
+-- YouTube URL and delete the temp object from Storage (kept deliberately
+-- small on the free tier's 1GB/50MB-per-file limits). Approved photos are
+-- incorporated into the relevant static game page by hand, same as every
+-- other manually-curated piece of content on this site.
+create table if not exists game_submissions (
+  id uuid primary key default gen_random_uuid(),
+  game_slug text not null,
+  game_name text not null,
+  submitter_name text not null,
+  submitter_email text,
+  story_text text,
+  photo_path text,
+  video_path text,
+  status text not null default 'pending_verification',
+  created_at timestamptz not null default now()
+);
+
+alter table game_submissions enable row level security;
+
+create policy "Allow anon insert" on game_submissions
+  for insert to anon
+  with check (true);
+
+grant insert on game_submissions to anon;
+
+-- Storage bucket for the above: photos stay long-term (served publicly so
+-- approved ones can be linked from the static pages), videos are a
+-- temporary staging area only (see comment above). 50MB matches Supabase's
+-- own free-tier per-file cap, so there's no point allowing more.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'game-submissions', 'game-submissions', true, 52428800,
+  array['image/jpeg','image/png','image/webp','image/heic','video/mp4','video/quicktime','video/webm']
+)
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to game-submissions" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'game-submissions');
+
+create policy "Allow public read of game-submissions" on storage.objects
+  for select to anon
+  using (bucket_id = 'game-submissions');
+
 -- The Ital Marketplace email-capture form ("notify me about Ital menu
 -- updates") reuses newsletter_subscribers rather than a dedicated table —
 -- it's the same shape (just an email address) — tagged via `source` so it
@@ -254,7 +304,8 @@ alter table newsletter_subscribers add column if not exists source text;
 -- `perform net.http_post(url := '<function-url>', headers := jsonb_build_object('Content-Type','application/json','x-webhook-secret','<secret>'), body := jsonb_build_object('table', TG_TABLE_NAME, 'record', row_to_json(NEW)))`,
 -- attached as an AFTER INSERT trigger on raffle_entries,
 -- marketplace_preorders, volunteer_signups, sponsor_inquiries,
--- camp_registrations, and newsletter_subscribers. The secret is also stored as the Edge Function's
+-- camp_registrations, newsletter_subscribers, and game_submissions. The
+-- secret is also stored as the Edge Function's
 -- WEBHOOK_SECRET environment secret (`supabase secrets set`).
 
 -- ─────────────────────────────────────────────────────────────────────────
