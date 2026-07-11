@@ -645,12 +645,31 @@ alter table dh101_schools enable row level security;
 alter table dh101_ambassadors enable row level security;
 alter table dh101_signups enable row level security;
 
+-- Granted to BOTH anon and authenticated, deliberately -- there is no PII
+-- in either table, so there is no reason to restrict this to a role. This
+-- matters in practice: supabase-js persists an auth session in localStorage
+-- for the whole selassiefest.com origin, not scoped per-subpath, so anyone
+-- who has ever logged into /chicago-dancehall/ or /dancehall101/checkin/ in
+-- the same browser will be treated as `authenticated` on every other page
+-- on the site afterward, including the public /dancehall101/ picker/landing
+-- pages. An anon-only policy here would silently 404 the schools list for
+-- exactly that visitor (a real bug hit once already -- door staff testing
+-- check-in, then browsing the public signup flow in the same browser, saw
+-- zero schools).
 create policy "anon read active schools" on dh101_schools
   for select to anon
   using (is_active);
 
+create policy "authenticated read active schools" on dh101_schools
+  for select to authenticated
+  using (is_active);
+
 create policy "anon read ambassadors" on dh101_ambassadors
   for select to anon
+  using (true);
+
+create policy "authenticated read ambassadors" on dh101_ambassadors
+  for select to authenticated
   using (true);
 
 -- No select/update policy at all on dh101_signups, for anon OR
@@ -660,8 +679,8 @@ create policy "anon insert signups" on dh101_signups
   for insert to anon
   with check (true);
 
-grant select on dh101_schools to anon;
-grant select on dh101_ambassadors to anon;
+grant select on dh101_schools to anon, authenticated;
+grant select on dh101_ambassadors to anon, authenticated;
 grant insert on dh101_signups to anon;
 
 -- Verification RPC: looks up by token, checks expiry (only matters
