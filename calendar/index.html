@@ -566,6 +566,54 @@
             }
         }
 
+        /* ── Archive Results ── */
+        .archive-results {
+            background: rgba(229, 169, 60, 0.06);
+            border: 1px solid rgba(229, 169, 60, 0.25);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin: 4px 0 20px;
+        }
+        .archive-results h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: var(--gold-accent, #E5A93C);
+            margin: 0 0 12px;
+        }
+        .archive-results h3 i { margin-right: 8px; }
+        .archive-results-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+        }
+        .archive-result-item {
+            display: block;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            text-decoration: none;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .archive-result-item:hover {
+            border-color: rgba(229, 169, 60, 0.4);
+            background: rgba(229, 169, 60, 0.06);
+        }
+        .archive-result-item .ari-section {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #888;
+        }
+        .archive-result-item .ari-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #F5F5F5;
+            margin-top: 2px;
+        }
+
         /* ── Event Grid ── */
         .event-grid {
             display: grid;
@@ -903,6 +951,7 @@
                 <a href="/donate/" class="global-badge-wrapper" aria-label="Donate to SelassieFest">
                     <span class="global-badge-text">DONATE</span>
                 </a>
+    <button class="site-search-trigger" data-sf-search-trigger aria-label="Search the site"><i class="fas fa-search" aria-hidden="true"></i></button>
             </div>
         </div>
     </header>
@@ -988,6 +1037,12 @@
                     <button data-view="list" aria-pressed="false"><i class="fas fa-list"></i></button>
                 </div>
             </div>
+        </div>
+
+        <!-- Archive results (Pickney Time games, festivals/special-events/weekly detail pages) -->
+        <div class="archive-results" id="archiveResults" style="display:none;">
+            <h3><i class="fas fa-book-open" aria-hidden="true"></i> Also in the Games &amp; Culture Archive</h3>
+            <div class="archive-results-list" id="archiveResultsList"></div>
         </div>
 
         <!-- Event Grid -->
@@ -1093,6 +1148,8 @@
             const grid = document.getElementById('eventGrid');
             const empty = document.getElementById('emptyState');
             const searchInput = document.getElementById('searchInput');
+            const archiveResults = document.getElementById('archiveResults');
+            const archiveResultsList = document.getElementById('archiveResultsList');
             const filterBtns = document.querySelectorAll('.filter-btn');
             const viewBtns = document.querySelectorAll('.view-toggle button');
             const statTotal = document.getElementById('statTotal');
@@ -1110,6 +1167,53 @@
             let currentView = 'grid';
             let currentSearch = '';
             let currentScope = 'upcoming';
+            let eventsFuse = null;
+
+            // ─── Fuzzy search (Fuse.js) ──────────────────────────────────────
+            function ensureFuseLoaded() {
+                if (window.Fuse) return Promise.resolve();
+                return new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js';
+                    s.onload = resolve;
+                    s.onerror = reject;
+                    document.head.appendChild(s);
+                });
+            }
+
+            // Also searches the Pickney Time games archive and other static
+            // calendar sub-pages (festivals/special-events/weekly), which live
+            // as standalone HTML pages and are never part of the Supabase
+            // event_occurrences feed above -- the old search only ever
+            // covered scheduled event dates, never this archive content.
+            const ARCHIVE_INDEX_URL = '/assets/data/search-index.json';
+            let archiveFuse = null;
+            let archiveFusePromise = null;
+
+            function ensureArchiveFuse() {
+                if (archiveFusePromise) return archiveFusePromise;
+                archiveFusePromise = ensureFuseLoaded()
+                    .then(() => fetch(ARCHIVE_INDEX_URL))
+                    .then(r => r.json())
+                    .then(data => {
+                        const archiveEntries = data.filter(d =>
+                            (d.url.startsWith('/calendar/games/') ||
+                             d.url.startsWith('/calendar/festivals/') ||
+                             d.url.startsWith('/calendar/special-events/') ||
+                             d.url.startsWith('/calendar/weekly/')) &&
+                            d.url !== '/calendar/games/index.html' &&
+                            d.url !== '/calendar/festivals/index.html' &&
+                            d.url !== '/calendar/special-events/index.html' &&
+                            d.url !== '/calendar/weekly/index.html'
+                        );
+                        archiveFuse = new Fuse(archiveEntries, {
+                            keys: [{ name: 'title', weight: 0.5 }, { name: 'heading', weight: 0.3 }, { name: 'description', weight: 0.2 }],
+                            threshold: 0.34,
+                            ignoreLocation: true,
+                        });
+                    });
+                return archiveFusePromise;
+            }
 
             // ─── Helpers ──────────────────────────────────────────────────────
             function dateOnlyUTC(d) {
@@ -1145,16 +1249,52 @@
                 if (currentFilter !== 'all') {
                     filtered = filtered.filter(e => matchesFilter(e, currentFilter));
                 }
-                if (currentSearch.trim()) {
-                    const q = currentSearch.trim().toLowerCase();
+                const q = currentSearch.trim();
+                if (q) {
+                    if (eventsFuse) {
+                        const scopedIds = new Set(filtered.map(e => e.id));
+                        const matches = eventsFuse.search(q).map(r => r.item).filter(e => scopedIds.has(e.id));
+                        return matches;
+                    }
+                    // Fuse not ready yet (rare) -- fall back to plain substring match.
+                    const ql = q.toLowerCase();
                     filtered = filtered.filter(e =>
-                        e.title.toLowerCase().includes(q) ||
-                        e.desc.toLowerCase().includes(q) ||
-                        e.category.toLowerCase().includes(q) ||
-                        e.seriesName.toLowerCase().includes(q)
+                        e.title.toLowerCase().includes(ql) ||
+                        e.desc.toLowerCase().includes(ql) ||
+                        e.category.toLowerCase().includes(ql) ||
+                        e.seriesName.toLowerCase().includes(ql)
                     );
                 }
                 return filtered;
+            }
+
+            let archiveSearchToken = 0;
+
+            function renderArchiveResults() {
+                const q = currentSearch.trim();
+                if (!q) {
+                    archiveResults.style.display = 'none';
+                    archiveResultsList.innerHTML = '';
+                    return;
+                }
+                const token = ++archiveSearchToken;
+                ensureArchiveFuse().then(() => {
+                    if (token !== archiveSearchToken) return; // a newer search superseded this one
+                    const matches = archiveFuse.search(q, { limit: 6 });
+                    if (!matches.length) {
+                        archiveResults.style.display = 'none';
+                        archiveResultsList.innerHTML = '';
+                        return;
+                    }
+                    archiveResultsList.innerHTML = matches.map(m => {
+                        const item = m.item;
+                        return `<a class="archive-result-item" href="${item.url}">
+                            <div class="ari-section">${escapeHtml(item.section)}</div>
+                            <div class="ari-title">${escapeHtml(item.heading || item.title)}</div>
+                        </a>`;
+                    }).join('');
+                    archiveResults.style.display = 'block';
+                });
             }
 
             function renderStats() {
@@ -1287,6 +1427,7 @@
             searchInput.addEventListener('input', debounce(function() {
                 currentSearch = this.value;
                 renderCards();
+                renderArchiveResults();
             }, 200));
 
             // ─── Init ──────────────────────────────────────────────────────────
@@ -1312,6 +1453,12 @@
 
             try {
                 await loadEvents();
+                await ensureFuseLoaded();
+                eventsFuse = new Fuse(events, {
+                    keys: [{ name: 'title', weight: 0.4 }, { name: 'seriesName', weight: 0.3 }, { name: 'desc', weight: 0.2 }, { name: 'category', weight: 0.1 }],
+                    threshold: 0.35,
+                    ignoreLocation: true,
+                });
                 renderStats();
                 renderCards();
                 console.log('🌿 TRC Events Calendar Dashboard · ' + events.length + ' events loaded (live from Supabase).');
@@ -1322,5 +1469,7 @@
         })();
     </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js" defer></script>
+  <script src="/assets/js/site-search.js" defer></script>
 </body>
 </html>
