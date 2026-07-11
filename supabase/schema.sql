@@ -90,6 +90,17 @@ alter table event_occurrences enable row level security;
 -- is no insert/update/delete policy, so events are managed from the
 -- Supabase Table Editor (or a future authenticated admin tool), never from
 -- the public site.
+--
+-- IMPORTANT: also grant `authenticated` the same read access, not just
+-- anon. supabase-js persists an auth session for the whole selassiefest.com
+-- origin, not per-subpath -- once real logins existed on this site (the
+-- /chicago-dancehall/ and /dancehall101/checkin/ password gates), any
+-- visitor who had signed into either of those in the same browser started
+-- getting queried here as `authenticated`, and an anon-only policy meant
+-- the public /calendar/ dashboard silently showed all-zero counts for them
+-- (a real incident, not theoretical -- caught 2026-07-11). Same fix as
+-- dh101_schools/dh101_ambassadors: this data has no PII, so there's no
+-- reason to withhold it from `authenticated` too.
 create policy "Allow anon read" on event_series
   for select to anon
   using (true);
@@ -98,8 +109,16 @@ create policy "Allow anon read" on event_occurrences
   for select to anon
   using (true);
 
-grant select on event_series to anon;
-grant select on event_occurrences to anon;
+create policy "authenticated read" on event_series
+  for select to authenticated
+  using (true);
+
+create policy "authenticated read" on event_occurrences
+  for select to authenticated
+  using (true);
+
+grant select on event_series to anon, authenticated;
+grant select on event_occurrences to anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- Raffle entries and marketplace pre-orders
