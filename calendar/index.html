@@ -776,6 +776,75 @@
             }
         }
 
+        /* ── Series chooser (shown when a day has more than one recurring event) ── */
+        .series-chooser {
+            text-align: center;
+            padding: 28px 16px 8px;
+        }
+        .series-chooser .sc-prompt {
+            font-weight: 300;
+            font-size: 0.85rem;
+            color: rgba(245, 245, 245, 0.55);
+            letter-spacing: 0.02em;
+            margin-bottom: 16px;
+        }
+        .series-chooser .sc-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        .sc-choice {
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 14px;
+            padding: 14px 22px;
+            color: #F5F5F5;
+            font-family: var(--font);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .sc-choice:hover {
+            border-color: var(--gold-accent);
+            transform: translateY(-2px);
+        }
+        .sc-choice .sc-count {
+            display: block;
+            margin-top: 4px;
+            font-weight: 300;
+            font-size: 0.7rem;
+            color: var(--gold-accent);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .series-active-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 16px 0;
+            font-size: 0.85rem;
+            color: rgba(245, 245, 245, 0.55);
+        }
+        .series-active-bar strong {
+            color: #F5F5F5;
+            font-weight: 500;
+        }
+        .series-active-bar button {
+            background: none;
+            border: none;
+            color: var(--gold-accent);
+            font-family: var(--font);
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
         /* ── Empty state ── */
         .empty-state {
             text-align: center;
@@ -1045,6 +1114,12 @@
             <div class="archive-results-list" id="archiveResultsList"></div>
         </div>
 
+        <!-- Series chooser: shown instead of the grid when a selected day has more than one recurring event -->
+        <div class="series-chooser" id="seriesChooser" style="display:none;"></div>
+
+        <!-- Shown above the grid once a series has been chosen for a multi-event day -->
+        <div class="series-active-bar" id="seriesActiveBar" style="display:none;"></div>
+
         <!-- Event Grid -->
         <div class="event-grid" id="eventGrid" role="list">
             <!-- Cards injected by JavaScript -->
@@ -1147,6 +1222,8 @@
             // ─── DOM refs ──────────────────────────────────────────────────────
             const grid = document.getElementById('eventGrid');
             const empty = document.getElementById('emptyState');
+            const seriesChooser = document.getElementById('seriesChooser');
+            const seriesActiveBar = document.getElementById('seriesActiveBar');
             const searchInput = document.getElementById('searchInput');
             const archiveResults = document.getElementById('archiveResults');
             const archiveResultsList = document.getElementById('archiveResultsList');
@@ -1167,6 +1244,7 @@
             let currentView = 'grid';
             let currentSearch = '';
             let currentScope = 'upcoming';
+            let currentSeriesFilter = null; // narrows a day-X filter to one recurring series, once chosen
             let eventsFuse = null;
 
             // ─── Fuzzy search (Fuse.js) ──────────────────────────────────────
@@ -1244,10 +1322,35 @@
                 return getScopedEvents().filter(e => matchesFilter(e, filterKey)).length;
             }
 
+            // When a day filter (day-0..day-6) has more than one distinct *recurring
+            // weekly* series on it, the day tab shouldn't just dump every occurrence
+            // into one flat list — return the distinct series + counts so the UI can
+            // ask "which one?" first. Deliberately scoped to category:'weekly' only —
+            // a one-off special/festival event that happens to land on that weekday
+            // in a given year (e.g. Ash Wednesday, Labour Day) isn't a "which
+            // recurring event" choice and shouldn't force the chooser to appear.
+            function getDaySeriesGroups() {
+                if (!currentFilter.startsWith('day-')) return null;
+                const dayEvents = getScopedEvents().filter(e => matchesFilter(e, currentFilter) && e.category === 'weekly');
+                const bySeries = new Map();
+                dayEvents.forEach(e => {
+                    const key = e.seriesName || e.title;
+                    bySeries.set(key, (bySeries.get(key) || 0) + 1);
+                });
+                return Array.from(bySeries.entries())
+                    .map(([name, count]) => ({ name, count }))
+                    .sort((a, b) => a.name.localeCompare(b.name));
+            }
+
             function getFilteredEvents() {
                 let filtered = getScopedEvents();
                 if (currentFilter !== 'all') {
                     filtered = filtered.filter(e => matchesFilter(e, currentFilter));
+                }
+                if (currentFilter.startsWith('day-') && currentSeriesFilter) {
+                    // Narrow the chosen recurring series down, but leave any one-off
+                    // special/festival events on that weekday visible either way.
+                    filtered = filtered.filter(e => e.category !== 'weekly' || (e.seriesName || e.title) === currentSeriesFilter);
                 }
                 const q = currentSearch.trim();
                 if (q) {
@@ -1321,6 +1424,34 @@
             }
 
             function renderCards() {
+                const dayGroups = getDaySeriesGroups();
+                const needsChoice = dayGroups && dayGroups.length > 1 && !currentSeriesFilter;
+
+                if (needsChoice) {
+                    const dayLabel = DAY_NAMES[Number(currentFilter.slice(4))];
+                    seriesChooser.innerHTML = `
+                        <div class="sc-prompt">${dayGroups.length} recurring events on ${dayLabel}s &mdash; which one do you want to see?</div>
+                        <div class="sc-options">
+                            ${dayGroups.map(g => `<button type="button" class="sc-choice" data-series="${escapeHtml(g.name)}">${escapeHtml(g.name)}<span class="sc-count">${g.count} ${currentScope === 'upcoming' ? 'upcoming' : 'total'}</span></button>`).join('')}
+                        </div>
+                    `;
+                    seriesChooser.style.display = 'block';
+                    seriesActiveBar.style.display = 'none';
+                    grid.style.display = 'none';
+                    grid.innerHTML = '';
+                    empty.style.display = 'none';
+                    return;
+                }
+                seriesChooser.style.display = 'none';
+
+                if (dayGroups && dayGroups.length > 1 && currentSeriesFilter) {
+                    const dayLabel = DAY_NAMES[Number(currentFilter.slice(4))];
+                    seriesActiveBar.innerHTML = `Showing <strong>${escapeHtml(currentSeriesFilter)}</strong> on ${dayLabel}s <button type="button" id="clearSeriesFilterBtn">Change</button>`;
+                    seriesActiveBar.style.display = 'flex';
+                } else {
+                    seriesActiveBar.style.display = 'none';
+                }
+
                 const filtered = getFilteredEvents();
                 grid.innerHTML = '';
                 if (filtered.length === 0) {
@@ -1379,6 +1510,7 @@
                     b.setAttribute('aria-selected', isActive ? 'true' : 'false');
                 });
                 currentFilter = btn.dataset.filter;
+                currentSeriesFilter = null; // switching days/tabs always starts fresh at the "which one?" step
                 renderCards();
             }
 
@@ -1389,6 +1521,7 @@
                     b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
                 });
                 currentScope = btn.dataset.scope;
+                currentSeriesFilter = null;
                 renderStats();
                 renderCards();
             }
@@ -1407,6 +1540,21 @@
                 btn.addEventListener('click', function(e) {
                     updateFilter(this);
                 });
+            });
+
+            // Chooser buttons and the "Change" link are re-created on every render,
+            // so these are delegated listeners on their (static) containers.
+            seriesChooser.addEventListener('click', function(e) {
+                const btn = e.target.closest('.sc-choice');
+                if (!btn) return;
+                currentSeriesFilter = btn.dataset.series;
+                renderCards();
+            });
+
+            seriesActiveBar.addEventListener('click', function(e) {
+                if (!e.target.closest('#clearSeriesFilterBtn')) return;
+                currentSeriesFilter = null;
+                renderCards();
             });
 
             viewBtns.forEach(btn => {
