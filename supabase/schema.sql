@@ -82,6 +82,14 @@ create table if not exists event_occurrences (
 
 create index if not exists event_occurrences_date_idx on event_occurrences (occurrence_date);
 
+-- Ras Tafari Inc (the nonprofit) runs both selassiefest.com and trcevent.com
+-- (TRC Events, its marketing/promotion arm) off this same Supabase project.
+-- brand marks which site owns/displays a given series so each site's
+-- dashboard can filter to its own events (e.g. `where brand = 'trc'`)
+-- without a second copy of this table. Defaults to 'selassiefest' since
+-- every series predates TRC Events having its own site.
+alter table event_series add column if not exists brand text not null default 'selassiefest' check (brand in ('selassiefest', 'trc'));
+
 alter table event_series enable row level security;
 alter table event_occurrences enable row level security;
 
@@ -472,13 +480,16 @@ grant select on dancehall_occurrences to authenticated;
 -- ─────────────────────────────────────────────────────────────────────────
 -- Dancehall 101 free student ticketing (dh101_*)
 -- ─────────────────────────────────────────────────────────────────────────
--- Dancehall 101 (weekly, Uptown Lounge) is its own event brand under Ras
--- Tafari Inc / TRC Events -- a sibling to SelassieFest, not a sub-feature of
--- it -- hosted at /dancehall101/ on this same domain purely for convenience.
--- 21+ students at 20 partner schools get free entry by verifying a .edu
--- email; each gets a branded digital ticket (QR + redemption code) unique to
--- their school. dh101_ prefix keeps this cluster separate from the site's
--- own event_series/event_occurrences tables.
+-- Dancehall 101 (weekly, Uptown Lounge) is TRC Events' signature event --
+-- TRC Events being Ras Tafari Inc's marketing/promotion arm, a sibling brand
+-- to SelassieFest, not a sub-feature of it. Originally hosted at
+-- /dancehall101/ on selassiefest.com purely for convenience while TRC Events
+-- had no site of its own; being rebuilt on trcevent.com against these same
+-- tables (no schema changes needed for the move -- dh101_ prefix already
+-- keeps this cluster fully separate from SelassieFest's own
+-- event_series/event_occurrences tables). 21+ students at 20 partner schools
+-- get free entry by verifying a .edu email; each gets a branded digital
+-- ticket (QR + redemption code) unique to their school.
 create table if not exists dh101_schools (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
