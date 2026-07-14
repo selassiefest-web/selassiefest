@@ -192,6 +192,28 @@ function formatNewsletterConfirmation(record: Record<string, any>) {
   };
 }
 
+function formatEventNotifySignup(record: Record<string, any>) {
+  return {
+    subject: `New "notify me" signup — ${record.event_name}`,
+    html: `
+      <h2>New Notify-Me Signup</h2>
+      <p><strong>Event:</strong> ${escapeHtml(record.event_name)} (${escapeHtml(record.event_slug)})</p>
+      <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
+    `,
+  };
+}
+
+function formatEventNotifyConfirmation(record: Record<string, any>) {
+  return {
+    subject: `You're on the list — ${record.event_name}`,
+    html: `
+      <h2>You're on the list!</h2>
+      <p>We'll email you the moment tickets for <strong>${escapeHtml(record.event_name)}</strong> go live.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't sign up for this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -229,6 +251,17 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: (record) => record.edu_email,
         format: formatDh101VerificationEmail,
         from: () => 'Dancehall 101 <hello@selassiefest.com>',
+      },
+    ],
+  },
+  event_notify_signups: {
+    notifications: [
+      { to: () => NOTIFY_TO, format: formatEventNotifySignup },
+      {
+        to: (record) => record.email,
+        format: formatEventNotifyConfirmation,
+        from: (record) =>
+          record.brand === 'trc' ? 'TRC Events <hello@selassiefest.com>' : 'SelassieFest <hello@selassiefest.com>',
       },
     ],
   },

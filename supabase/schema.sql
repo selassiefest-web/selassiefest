@@ -1032,3 +1032,45 @@ end $$;
 -- 'x-sync-secret','<secret>'), body := '{}'::jsonb); $$);`. Reuses the same
 -- SYNC_SECRET and NOTION_TOKEN Edge Function secrets already set for
 -- sync-notion-dancehall (shared across functions in this project).
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Event "notify me when tickets go live" signups
+-- ─────────────────────────────────────────────────────────────────────────
+-- Reusable across any TRC/SelassieFest event's ticket waitlist, rather than
+-- a one-off table per event (first use: Charly Black — Good Times, on
+-- trcevent.com, added because that page had no way to capture a ready-to-
+-- buy visitor while its real ticket links weren't live yet).
+--
+-- event_name and brand are denormalized here (rather than joined against
+-- event_series at notify time) so notify-submission's Edge Function can
+-- build the confirmation email and pick the right "from" display name
+-- without needing its own Supabase client/query.
+create table if not exists event_notify_signups (
+  id uuid primary key default gen_random_uuid(),
+  event_slug text not null references event_series(slug),
+  event_name text not null,
+  brand text not null check (brand in ('trc', 'selassiefest')),
+  email text not null,
+  created_at timestamptz not null default now(),
+  unique (event_slug, email)
+);
+
+alter table event_notify_signups enable row level security;
+
+-- Public form, submits with the anon key. Only INSERT is granted -- no
+-- SELECT policy, so the anon key can never read back other people's
+-- signups. Same pattern as newsletter_subscribers/anansi_story_submissions
+-- above.
+create policy "Allow anon insert" on event_notify_signups
+  for insert to anon
+  with check (true);
+
+grant insert on event_notify_signups to anon;
+
+-- Reuses the existing notify_submission_webhook() function (already live
+-- in the database with its webhook secret embedded -- see the
+-- notify-submission section above) rather than redefining it, so no
+-- secret needs to be committed here.
+create trigger event_notify_signups_after_insert
+  after insert on event_notify_signups
+  for each row execute function notify_submission_webhook();
