@@ -1074,3 +1074,134 @@ grant insert on event_notify_signups to anon;
 create trigger event_notify_signups_after_insert
   after insert on event_notify_signups
   for each row execute function notify_submission_webhook();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Ticket Tailor event setup (internal collaborative form, /ticket-event-setup/)
+-- ─────────────────────────────────────────────────────────────────────────
+-- A dedicated intake tool: several staff fill in different fields of the
+-- same in-progress event over time (venue, dates, ticket tiers, images,
+-- etc.), and an admin/Ticket Tailor operator later transfers the finished
+-- draft into Ticket Tailor by hand. Unlike every write-only form above,
+-- this needs real read+write for the team (autosave per field, live
+-- multi-editor sync), so it's gated behind its own password rather than
+-- open to anon.
+--
+-- Gated to ONE specific Auth account's email (rastafari501c3@gmail.com),
+-- not just `to authenticated` role membership. This matters here more than
+-- it did for dh101/dancehall_occurrences above: supabase-js persists an
+-- auth session for the whole selassiefest.com origin, not per-subpath, so
+-- a blanket `to authenticated` policy would let anyone who has ever logged
+-- into /chicago-dancehall/ or /chicago-dancehall-oscars/ in the same
+-- browser also read/write this tool's data -- defeating the point of
+-- giving this tool its own separate password. Checking auth.jwt()'s email
+-- directly scopes access to only sessions created via this tool's own
+-- login, regardless of what else is logged in in the same browser.
+create table if not exists ticket_event_drafts (
+  id uuid primary key default gen_random_uuid(),
+  event_name text,
+  event_description text,
+  venue_name text,
+  venue_address text,
+  event_date date,
+  start_time text,
+  end_time text,
+  time_zone text not null default 'Central',
+  is_recurring boolean not null default false,
+  recurrence_note text,
+  promo_codes_needed text,
+  booking_fee_handling text,
+  age_restriction text,
+  refund_policy text,
+  custom_checkout_questions text,
+  confirmation_message text,
+  event_image_path text,
+  organizer_logo_path text,
+  status text not null default 'draft'
+    check (status in ('draft', 'ready_for_ticket_tailor', 'entered_in_ticket_tailor')),
+  last_edited_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- One row per ticket tier (GA, VIP, Early Bird, ...) for a draft -- the
+-- fill-in sheet's "repeat this block for each tier" becomes repeatable
+-- child rows instead of a fixed set of columns.
+create table if not exists ticket_event_ticket_types (
+  id uuid primary key default gen_random_uuid(),
+  draft_id uuid not null references ticket_event_drafts(id) on delete cascade,
+  sort_order int not null default 0,
+  ticket_name text,
+  price numeric(10,2),
+  quantity_available int,
+  min_per_order int,
+  max_per_order int,
+  sale_start timestamptz,
+  sale_end timestamptz,
+  ticket_description text,
+  last_edited_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table ticket_event_drafts enable row level security;
+alter table ticket_event_ticket_types enable row level security;
+
+create policy "ticket setup account full access" on ticket_event_drafts
+  for all to authenticated
+  using ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+
+create policy "ticket setup account full access" on ticket_event_ticket_types
+  for all to authenticated
+  using ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+
+grant select, insert, update, delete on ticket_event_drafts to authenticated;
+grant select, insert, update, delete on ticket_event_ticket_types to authenticated;
+
+-- The editor page subscribes to postgres_changes (Supabase Realtime) on
+-- both tables so teammates editing the same draft see each other's fields
+-- update live. That requires the tables to be added to the
+-- `supabase_realtime` publication -- wrapped in existence checks so this
+-- file stays safely re-runnable, matching the rest of this schema.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'ticket_event_drafts'
+  ) then
+    alter publication supabase_realtime add table ticket_event_drafts;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'ticket_event_ticket_types'
+  ) then
+    alter publication supabase_realtime add table ticket_event_ticket_types;
+  end if;
+end $$;
+
+-- Event promo image + organizer logo uploads. Public read (like
+-- game-submissions above) so the finished URL can be handed straight to
+-- Ticket Tailor or previewed inline without another round trip through
+-- auth; only the gated account can write/manage objects.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('ticket-event-images', 'ticket-event-images', true, 10485760,
+  array['image/jpeg','image/png','image/webp'])
+on conflict (id) do nothing;
+
+create policy "ticket setup account upload images" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+
+create policy "ticket setup account manage images" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+
+create policy "ticket setup account delete images" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+
+create policy "public read of ticket-event-images" on storage.objects
+  for select to anon, authenticated
+  using (bucket_id = 'ticket-event-images');

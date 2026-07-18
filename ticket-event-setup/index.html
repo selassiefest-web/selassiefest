@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Ticket Tailor Event Setup | Ras Tafari Inc</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    a { color: var(--gold-accent); }
+    input, select, textarea, button { font-family: inherit; }
+
+    .page-header {
+      padding: 28px 32px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      text-align: center;
+    }
+    .page-header .eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+    }
+    .page-header h1 {
+      font-weight: 200;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+    }
+    .page-header p {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 10px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ---- Login gate ---- */
+    #gate {
+      max-width: 380px;
+      margin: 60px auto;
+      padding: 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px;
+    }
+    #gate h2 {
+      font-weight: 400;
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    #gate input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: var(--text-white);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    #gate input:focus { border-color: rgba(229, 169, 60, 0.5); }
+    #gate button {
+      width: 100%;
+      background: var(--roots-green);
+      color: var(--text-white);
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #gate button:hover { background: #0a4a2b; }
+    #gate .gate-msg {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      text-align: center;
+      min-height: 1.2em;
+      color: #e08585;
+    }
+
+    /* ---- App shell ---- */
+    #app { display: none; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      color: #999;
+    }
+    .top-bar button, .btn {
+      background: none;
+      border: 1px solid var(--border-dim);
+      color: #ccc;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--roots-green); border-color: var(--roots-green); color: var(--text-white); }
+    .btn-danger { border-color: rgba(200,55,55,0.5); color: #e08585; }
+    #editingAsChange { color: var(--gold-accent); cursor: pointer; text-decoration: underline; background: none; border: none; font-size: inherit; padding: 0; }
+
+    /* ---- List view ---- */
+    #listView h2 { font-weight: 400; font-size: 1.3rem; margin-bottom: 16px; }
+    .list-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .draft-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .draft-row:hover { border-color: rgba(229, 169, 60, 0.4); }
+    .draft-row .draft-title { font-size: 1rem; }
+    .draft-row .draft-meta { font-size: 0.78rem; color: #999; margin-top: 3px; }
+    .draft-row .draft-actions { display: flex; align-items: center; gap: 10px; }
+    .empty-note { color: #999; text-align: center; padding: 30px; }
+
+    .status-pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; }
+    .status-draft { background: rgba(255,255,255,0.08); color: #ccc; }
+    .status-ready_for_ticket_tailor { background: rgba(229, 169, 60, 0.25); color: var(--gold-accent); }
+    .status-entered_in_ticket_tailor { background: rgba(14, 94, 54, 0.4); color: #7fd4a5; }
+
+    /* ---- Editor view ---- */
+    #editorView { display: none; }
+    .editor-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+    .editor-header h2 { font-weight: 400; font-size: 1.4rem; }
+    .back-link { font-size: 0.85rem; color: #999; cursor: pointer; text-decoration: underline; margin-bottom: 14px; display: inline-block; }
+
+    .progress-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      font-size: 0.82rem;
+      color: #ccc;
+    }
+    .progress-bar button { white-space: nowrap; }
+
+    section.panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin-bottom: 22px;
+    }
+    section.panel h3 {
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--gold-accent);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-size: 0.78rem; color: #999; }
+    .field label .req { color: var(--red-accent); }
+    .field input, .field select, .field textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text-white);
+      font-size: 0.92rem;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(229, 169, 60, 0.5); }
+    .field input.required-field:invalid, .field textarea.required-field:invalid { }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .field-checkbox { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+    .field-checkbox input { width: auto; }
+
+    .ticket-card {
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.02);
+    }
+    .ticket-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .ticket-card-header span { color: var(--gold-accent); font-size: 0.85rem; }
+
+    .image-slot { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 16px; }
+    .image-slot .thumb {
+      width: 140px; height: 70px; border-radius: 8px; border: 1px solid var(--border-dim);
+      background: rgba(255,255,255,0.03) center/cover no-repeat;
+      display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem; flex-shrink: 0;
+    }
+    .image-slot .thumb.square { width: 90px; height: 90px; }
+    .image-slot .controls { flex: 1; min-width: 220px; }
+    .image-slot .controls label { font-size: 0.85rem; color: #ccc; display: block; margin-bottom: 6px; }
+    .image-spec-note { font-size: 0.78rem; color: #999; margin-top: 10px; }
+
+    .save-toast, .sync-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--roots-green);
+      color: var(--text-white);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 50;
+    }
+    .save-toast.show, .sync-toast.show { opacity: 1; transform: translateY(0); }
+    .sync-toast { bottom: 60px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-dim); }
+
+    .export-summary {
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      color: #ddd;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      min-height: 200px;
+    }
+    .export-actions { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+
+    footer.gate-footer { text-align: center; color: #666; font-size: 0.78rem; padding: 30px; }
+
+    @media print {
+      #gate, .top-bar, .back-link, .progress-bar, .btn, button, .export-actions, footer.gate-footer, #listView { display: none !important; }
+      body { background: #fff; color: #000; padding-bottom: 0; }
+      section.panel { background: #fff; border: 1px solid #999; color: #000; break-inside: avoid; }
+      section.panel h3 { color: #000; }
+      .field label { color: #333; }
+      .field input, .field select, .field textarea { background: #fff; color: #000; border: 1px solid #999; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="eyebrow">Ras Tafari Inc — Internal Tool</div>
+    <h1>Ticket Tailor Event Setup</h1>
+    <p>Fill in event details here as a team — everything saves instantly to the database, so nothing is lost between sessions or devices. When a draft is complete, use "Copy Summary" to hand it to whoever is entering it into Ticket Tailor.</p>
+  </header>
+
+  <div id="gate">
+    <h2><i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Enter Password</h2>
+    <form id="gateForm">
+      <input type="email" id="gateEmail" placeholder="Email" autocomplete="username" required />
+      <input type="password" id="gatePassword" placeholder="Password" autocomplete="current-password" required />
+      <button type="submit">Log In</button>
+      <div class="gate-msg" id="gateMsg"></div>
+    </form>
+  </div>
+
+  <div id="app">
+    <div class="top-bar">
+      <div>Editing as: <strong id="editingAsName">—</strong> · <button id="editingAsChange" type="button">change</button></div>
+      <button id="logoutBtn" type="button">Log out</button>
+    </div>
+
+    <div id="listView">
+      <div class="list-toolbar">
+        <h2>Event Drafts</h2>
+        <button class="btn btn-primary" id="newDraftBtn" type="button"><i class="fas fa-plus"></i>&nbsp; New Event Draft</button>
+      </div>
+      <div id="draftListContainer"></div>
+    </div>
+
+    <div id="editorView">
+      <span class="back-link" id="backToListBtn">&larr; Back to all drafts</span>
+
+      <div class="editor-header">
+        <h2 id="editorTitle">Untitled event</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="statusSelect" data-field="status">
+            <option value="draft">Draft</option>
+            <option value="ready_for_ticket_tailor">Ready for Ticket Tailor</option>
+            <option value="entered_in_ticket_tailor">Entered in Ticket Tailor</option>
+          </select>
+          <button class="btn btn-danger" id="deleteDraftBtn" type="button">Delete Draft</button>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <span id="progressText">0 / 0 required fields filled</span>
+        <button class="btn" id="nextEmptyBtn" type="button">Jump to next empty field &darr;</button>
+      </div>
+
+      <section class="panel" id="basicsPanel">
+        <h3>Event Basics</h3>
+        <div class="field-grid">
+          <div class="field full">
+            <label>Event name <span class="req">*</span></label>
+            <input type="text" class="required-field" data-field="event_name" />
+          </div>
+          <div class="field full">
+            <label>Event description</label>
+            <textarea data-field="event_description" placeholder="A paragraph or two — this shows on the event page"></textarea>
+          </div>
+          <div class="field">
+            <label>Venue name <span class="req">*</span></label>
+            <input type="text" class="required-field" data-field="venue_name" />
+          </div>
+          <div class="field">
+            <label>Venue address <span class="req">*</span></label>
+            <input type="text" class="required-field" data-field="venue_address" />
+          </div>
+          <div class="field">
+            <label>Event date <span class="req">*</span></label>
+            <input type="date" class="required-field" data-field="event_date" />
+          </div>
+          <div class="field">
+            <label>Time zone <span class="req">*</span></label>
+            <input type="text" class="required-field" data-field="time_zone" />
+          </div>
+          <div class="field">
+            <label>Start time <span class="req">*</span></label>
+            <input type="time" class="required-field" data-field="start_time" />
+          </div>
+          <div class="field">
+            <label>End time (or approximate)</label>
+            <input type="time" data-field="end_time" />
+          </div>
+          <div class="field full field-checkbox">
+            <input type="checkbox" id="isRecurringCheckbox" data-field="is_recurring" />
+            <label for="isRecurringCheckbox" style="margin:0;">This is a recurring event (multiple dates)</label>
+          </div>
+          <div class="field full">
+            <label>Recurrence notes (if recurring — list the other dates)</label>
+            <input type="text" data-field="recurrence_note" />
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="ticketTypesPanel">
+        <h3>Ticket Types</h3>
+        <div id="ticketTypesContainer"></div>
+        <button class="btn" id="addTicketTypeBtn" type="button"><i class="fas fa-plus"></i>&nbsp; Add ticket type</button>
+      </section>
+
+      <section class="panel" id="optionalPanel">
+        <h3>Optional but Good to Collect Now</h3>
+        <div class="field-grid">
+          <div class="field full">
+            <label>Promo/access codes needed?</label>
+            <input type="text" data-field="promo_codes_needed" placeholder="e.g. hidden tickets or discounts" />
+          </div>
+          <div class="field">
+            <label>Booking fee handling</label>
+            <input type="text" data-field="booking_fee_handling" placeholder="Absorb it, or pass to buyer?" />
+          </div>
+          <div class="field">
+            <label>Age restriction / 21+ note</label>
+            <input type="text" data-field="age_restriction" />
+          </div>
+          <div class="field full">
+            <label>Refund policy wording</label>
+            <textarea data-field="refund_policy"></textarea>
+          </div>
+          <div class="field full">
+            <label>Custom checkout questions (name of each guest, phone number, etc.)</label>
+            <textarea data-field="custom_checkout_questions"></textarea>
+          </div>
+          <div class="field full">
+            <label>Order confirmation message</label>
+            <textarea data-field="confirmation_message"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="imagesPanel">
+        <h3>Images</h3>
+        <div class="image-slot">
+          <div class="thumb" id="eventImageThumb">2:1</div>
+          <div class="controls">
+            <label>Event / promo image</label>
+            <input type="file" id="eventImageInput" accept="image/jpeg,image/png,image/webp" />
+          </div>
+        </div>
+        <div class="image-slot">
+          <div class="thumb square" id="organizerLogoThumb">Logo</div>
+          <div class="controls">
+            <label>Organizer logo (optional, square)</label>
+            <input type="file" id="organizerLogoInput" accept="image/jpeg,image/png,image/webp" />
+          </div>
+        </div>
+        <p class="image-spec-note">Ticket Tailor displays the event image at roughly a 2:1 ratio — around 1440 &times; 720px is a safe spec (minimum ~720 &times; 360). A square 1080 &times; 1080 version is worth having too if it'll also be used for socials. Double-check Ticket Tailor's own help article on image sizes when uploading, since specs can change.</p>
+      </section>
+
+      <section class="panel" id="exportPanel">
+        <h3>Handoff to Ticket Tailor</h3>
+        <div class="export-actions">
+          <button class="btn btn-primary" id="copySummaryBtn" type="button"><i class="fas fa-copy"></i>&nbsp; Copy Summary</button>
+          <button class="btn" id="printBtn" type="button"><i class="fas fa-print"></i>&nbsp; Print / Save as PDF</button>
+        </div>
+        <pre class="export-summary" id="exportSummaryText"></pre>
+      </section>
+    </div>
+  </div>
+
+  <footer class="gate-footer">SelassieFest / Ras Tafari Inc &mdash; not for public distribution</footer>
+
+  <div class="save-toast" id="saveToast">Saved &#10003;</div>
+  <div class="sync-toast" id="syncToast"></div>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script>
+    (function () {
+      var gate = document.getElementById('gate');
+      var app = document.getElementById('app');
+      var listView = document.getElementById('listView');
+      var editorView = document.getElementById('editorView');
+      var gateForm = document.getElementById('gateForm');
+      var gateMsg = document.getElementById('gateMsg');
+
+      var NAME_KEY = 'ticketSetupEditorName';
+      var myName = localStorage.getItem(NAME_KEY) || '';
+
+      var currentDraftId = null;
+      var currentDraft = null;
+      var ticketTypes = [];
+      var channel = null;
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function showToast(el, text, ms) {
+        if (text != null) el.textContent = text;
+        el.classList.add('show');
+        clearTimeout(el._hideTimer);
+        el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, ms || 1800);
+      }
+
+      // ---- Auth gate ----
+
+      function showGate() {
+        gate.style.display = 'block';
+        app.style.display = 'none';
+      }
+
+      function showApp() {
+        gate.style.display = 'none';
+        app.style.display = 'block';
+        ensureName();
+        showListView();
+      }
+
+      function ensureName() {
+        while (!myName) {
+          var entered = window.prompt('Your name (shown to teammates as who last edited a field):');
+          if (entered && entered.trim()) {
+            myName = entered.trim();
+            localStorage.setItem(NAME_KEY, myName);
+          }
+        }
+        document.getElementById('editingAsName').textContent = myName;
+      }
+
+      document.getElementById('editingAsChange').addEventListener('click', function () {
+        var entered = window.prompt('Your name:', myName);
+        if (entered && entered.trim()) {
+          myName = entered.trim();
+          localStorage.setItem(NAME_KEY, myName);
+          document.getElementById('editingAsName').textContent = myName;
+        }
+      });
+
+      gateForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        gateMsg.textContent = '';
+        var email = document.getElementById('gateEmail').value.trim();
+        var password = document.getElementById('gatePassword').value;
+        var client = await window.sfSupabaseReady;
+        var { error } = await client.auth.signInWithPassword({ email: email, password: password });
+        if (error) {
+          gateMsg.textContent = 'Incorrect email or password.';
+          return;
+        }
+        showApp();
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', async function () {
+        await closeEditor();
+        var client = await window.sfSupabaseReady;
+        await client.auth.signOut();
+        showGate();
+      });
+
+      // ---- List view ----
+
+      function showListView() {
+        editorView.style.display = 'none';
+        listView.style.display = 'block';
+        loadDrafts();
+      }
+
+      async function loadDrafts() {
+        var client = await window.sfSupabaseReady;
+        var container = document.getElementById('draftListContainer');
+        container.innerHTML = '<p class="empty-note">Loading…</p>';
+
+        var { data, error } = await client
+          .from('ticket_event_drafts')
+          .select('id, event_name, venue_name, event_date, status, updated_at')
+          .order('updated_at', { ascending: false });
+
+        if (error) {
+          container.innerHTML = '<p class="empty-note">Could not load drafts: ' + escapeHtml(error.message) + '</p>';
+          return;
+        }
+
+        if (!data.length) {
+          container.innerHTML = '<p class="empty-note">No event drafts yet. Click "New Event Draft" to start one.</p>';
+          return;
+        }
+
+        container.innerHTML = data.map(function (d) {
+          var statusLabel = { draft: 'Draft', ready_for_ticket_tailor: 'Ready for Ticket Tailor', entered_in_ticket_tailor: 'Entered in Ticket Tailor' }[d.status] || d.status;
+          var metaBits = [];
+          if (d.venue_name) metaBits.push(escapeHtml(d.venue_name));
+          if (d.event_date) metaBits.push(new Date(d.event_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+          metaBits.push('updated ' + new Date(d.updated_at).toLocaleString());
+          return '<div class="draft-row" data-id="' + d.id + '">' +
+            '<div>' +
+              '<div class="draft-title">' + escapeHtml(d.event_name || '(untitled event)') + '</div>' +
+              '<div class="draft-meta">' + metaBits.join(' · ') + '</div>' +
+            '</div>' +
+            '<div class="draft-actions">' +
+              '<span class="status-pill status-' + d.status + '">' + escapeHtml(statusLabel) + '</span>' +
+              '<button class="btn btn-danger delete-draft-btn" type="button" data-id="' + d.id + '">Delete</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+        Array.prototype.forEach.call(container.querySelectorAll('.draft-row'), function (row) {
+          row.addEventListener('click', function (e) {
+            if (e.target.closest('.delete-draft-btn')) return;
+            openDraft(row.dataset.id);
+          });
+        });
+        Array.prototype.forEach.call(container.querySelectorAll('.delete-draft-btn'), function (btn) {
+          btn.addEventListener('click', async function (e) {
+            e.stopPropagation();
+            if (!window.confirm('Delete this event draft and all its ticket types? This cannot be undone.')) return;
+            var client = await window.sfSupabaseReady;
+            await client.from('ticket_event_drafts').delete().eq('id', btn.dataset.id);
+            loadDrafts();
+          });
+        });
+      }
+
+      document.getElementById('newDraftBtn').addEventListener('click', async function () {
+        var client = await window.sfSupabaseReady;
+        var { data, error } = await client
+          .from('ticket_event_drafts')
+          .insert({ last_edited_by: myName })
+          .select('id')
+          .single();
+        if (error) {
+          alert('Could not create draft: ' + error.message);
+          return;
+        }
+        openDraft(data.id);
+      });
+
+      document.getElementById('backToListBtn').addEventListener('click', function () {
+        closeEditor().then(showListView);
+      });
+
+      // ---- Editor view ----
+
+      function toDatetimeLocal(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+      }
+
+      function fromDatetimeLocal(val) {
+        if (!val) return null;
+        return new Date(val).toISOString();
+      }
+
+      async function openDraft(id) {
+        currentDraftId = id;
+        var client = await window.sfSupabaseReady;
+
+        var { data: draft, error: draftErr } = await client
+          .from('ticket_event_drafts')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (draftErr || !draft) {
+          alert('Could not load that draft (it may have been deleted).');
+          showListView();
+          return;
+        }
+
+        var { data: types } = await client
+          .from('ticket_event_ticket_types')
+          .select('*')
+          .eq('draft_id', id)
+          .order('sort_order', { ascending: true });
+
+        currentDraft = draft;
+        ticketTypes = types || [];
+
+        listView.style.display = 'none';
+        editorView.style.display = 'block';
+
+        renderBasics(currentDraft);
+        renderTicketTypes();
+        renderImages(currentDraft);
+        updateExportText();
+        updateProgress();
+        subscribeRealtime(id);
+      }
+
+      async function closeEditor() {
+        if (channel) {
+          var client = await window.sfSupabaseReady;
+          await client.removeChannel(channel);
+          channel = null;
+        }
+        currentDraftId = null;
+        currentDraft = null;
+        ticketTypes = [];
+      }
+
+      function renderBasics(d) {
+        document.getElementById('editorTitle').textContent = d.event_name || 'Untitled event';
+        document.getElementById('statusSelect').value = d.status || 'draft';
+        setFieldValue(document.getElementById('basicsPanel'), 'event_name', d.event_name);
+        setFieldValue(document.getElementById('basicsPanel'), 'event_description', d.event_description);
+        setFieldValue(document.getElementById('basicsPanel'), 'venue_name', d.venue_name);
+        setFieldValue(document.getElementById('basicsPanel'), 'venue_address', d.venue_address);
+        setFieldValue(document.getElementById('basicsPanel'), 'event_date', d.event_date);
+        setFieldValue(document.getElementById('basicsPanel'), 'time_zone', d.time_zone || 'Central');
+        setFieldValue(document.getElementById('basicsPanel'), 'start_time', d.start_time);
+        setFieldValue(document.getElementById('basicsPanel'), 'end_time', d.end_time);
+        setFieldValue(document.getElementById('basicsPanel'), 'is_recurring', d.is_recurring);
+        setFieldValue(document.getElementById('basicsPanel'), 'recurrence_note', d.recurrence_note);
+
+        setFieldValue(document.getElementById('optionalPanel'), 'promo_codes_needed', d.promo_codes_needed);
+        setFieldValue(document.getElementById('optionalPanel'), 'booking_fee_handling', d.booking_fee_handling);
+        setFieldValue(document.getElementById('optionalPanel'), 'age_restriction', d.age_restriction);
+        setFieldValue(document.getElementById('optionalPanel'), 'refund_policy', d.refund_policy);
+        setFieldValue(document.getElementById('optionalPanel'), 'custom_checkout_questions', d.custom_checkout_questions);
+        setFieldValue(document.getElementById('optionalPanel'), 'confirmation_message', d.confirmation_message);
+      }
+
+      function setFieldValue(scope, field, value) {
+        var el = scope.querySelector('[data-field="' + field + '"]');
+        if (!el) return;
+        if (document.activeElement === el) return; // don't clobber what the user is typing
+        if (el.type === 'checkbox') {
+          el.checked = !!value;
+        } else {
+          el.value = value == null ? '' : value;
+        }
+      }
+
+      function renderImages(d) {
+        var eventThumb = document.getElementById('eventImageThumb');
+        var logoThumb = document.getElementById('organizerLogoThumb');
+        if (d.event_image_path) {
+          eventThumb.style.backgroundImage = 'url(' + d.event_image_path + ')';
+          eventThumb.textContent = '';
+        } else {
+          eventThumb.style.backgroundImage = 'none';
+          eventThumb.textContent = '2:1';
+        }
+        if (d.organizer_logo_path) {
+          logoThumb.style.backgroundImage = 'url(' + d.organizer_logo_path + ')';
+          logoThumb.textContent = '';
+        } else {
+          logoThumb.style.backgroundImage = 'none';
+          logoThumb.textContent = 'Logo';
+        }
+      }
+
+      function ticketCardHtml(t, idx) {
+        return '<div class="ticket-card" data-ticket-type-id="' + t.id + '">' +
+          '<div class="ticket-card-header"><span>Ticket ' + (idx + 1) + '</span>' +
+            '<button class="btn btn-danger remove-ticket-type-btn" type="button" data-id="' + t.id + '">Remove</button></div>' +
+          '<div class="field-grid">' +
+            '<div class="field"><label>Ticket name <span class="req">*</span></label><input type="text" class="required-field" data-field="ticket_name" /></div>' +
+            '<div class="field"><label>Price <span class="req">*</span></label><input type="number" step="0.01" min="0" class="required-field" data-field="price" /></div>' +
+            '<div class="field"><label>Quantity available <span class="req">*</span></label><input type="number" step="1" min="0" class="required-field" data-field="quantity_available" /></div>' +
+            '<div class="field"><label>Min per order</label><input type="number" step="1" min="0" data-field="min_per_order" /></div>' +
+            '<div class="field"><label>Max per order</label><input type="number" step="1" min="0" data-field="max_per_order" /></div>' +
+            '<div class="field"><label>Sale start (tickets go live)</label><input type="datetime-local" data-field="sale_start" /></div>' +
+            '<div class="field"><label>Sale end (usually day of / door time)</label><input type="datetime-local" data-field="sale_end" /></div>' +
+            '<div class="field full"><label>Ticket description</label><textarea data-field="ticket_description" placeholder="e.g. Includes meet &amp; greet"></textarea></div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function fillTicketCard(card, t) {
+        setFieldValue(card, 'ticket_name', t.ticket_name);
+        setFieldValue(card, 'price', t.price);
+        setFieldValue(card, 'quantity_available', t.quantity_available);
+        setFieldValue(card, 'min_per_order', t.min_per_order);
+        setFieldValue(card, 'max_per_order', t.max_per_order);
+        var saleStartEl = card.querySelector('[data-field="sale_start"]');
+        if (saleStartEl && document.activeElement !== saleStartEl) saleStartEl.value = toDatetimeLocal(t.sale_start);
+        var saleEndEl = card.querySelector('[data-field="sale_end"]');
+        if (saleEndEl && document.activeElement !== saleEndEl) saleEndEl.value = toDatetimeLocal(t.sale_end);
+        setFieldValue(card, 'ticket_description', t.ticket_description);
+      }
+
+      function renderTicketTypes() {
+        var container = document.getElementById('ticketTypesContainer');
+        if (!ticketTypes.length) {
+          container.innerHTML = '<p class="empty-note">No ticket types yet — add GA, VIP, Early Bird, etc.</p>';
+          return;
+        }
+        container.innerHTML = ticketTypes.map(function (t, i) { return ticketCardHtml(t, i); }).join('');
+        Array.prototype.forEach.call(container.querySelectorAll('.ticket-card'), function (card) {
+          var t = ticketTypes.find(function (x) { return String(x.id) === card.dataset.ticketTypeId; });
+          if (t) fillTicketCard(card, t);
+        });
+        bindRemoveTicketButtons();
+      }
+
+      function bindRemoveTicketButtons() {
+        Array.prototype.forEach.call(document.querySelectorAll('.remove-ticket-type-btn'), function (btn) {
+          btn.onclick = async function () {
+            if (!window.confirm('Remove this ticket type?')) return;
+            var client = await window.sfSupabaseReady;
+            await client.from('ticket_event_ticket_types').delete().eq('id', btn.dataset.id);
+            ticketTypes = ticketTypes.filter(function (t) { return String(t.id) !== btn.dataset.id; });
+            renderTicketTypes();
+            updateExportText();
+            updateProgress();
+          };
+        });
+      }
+
+      document.getElementById('addTicketTypeBtn').addEventListener('click', async function () {
+        var client = await window.sfSupabaseReady;
+        var { data, error } = await client
+          .from('ticket_event_ticket_types')
+          .insert({ draft_id: currentDraftId, sort_order: ticketTypes.length, last_edited_by: myName })
+          .select('*')
+          .single();
+        if (error) {
+          alert('Could not add ticket type: ' + error.message);
+          return;
+        }
+        ticketTypes.push(data);
+        renderTicketTypes();
+        updateExportText();
+        updateProgress();
+      });
+
+      // ---- Autosave ----
+
+      function readFieldValue(el) {
+        if (el.type === 'checkbox') return el.checked;
+        if (el.type === 'number') return el.value === '' ? null : parseFloat(el.value);
+        if (el.type === 'datetime-local') return fromDatetimeLocal(el.value);
+        return el.value === '' ? null : el.value;
+      }
+
+      async function handleFieldSave(el) {
+        var field = el.dataset.field;
+        if (!field) return;
+        var value = readFieldValue(el);
+        var client = await window.sfSupabaseReady;
+        var card = el.closest('[data-ticket-type-id]');
+
+        if (card) {
+          var id = card.dataset.ticketTypeId;
+          var patch = {};
+          patch[field] = value;
+          patch.updated_at = new Date().toISOString();
+          patch.last_edited_by = myName;
+          var { error } = await client.from('ticket_event_ticket_types').update(patch).eq('id', id);
+          if (!error) {
+            var t = ticketTypes.find(function (x) { return String(x.id) === id; });
+            if (t) t[field] = value;
+            showToast(document.getElementById('saveToast'));
+          }
+        } else if (currentDraftId) {
+          var draftPatch = {};
+          draftPatch[field] = value;
+          draftPatch.updated_at = new Date().toISOString();
+          draftPatch.last_edited_by = myName;
+          var { error: draftError } = await client.from('ticket_event_drafts').update(draftPatch).eq('id', currentDraftId);
+          if (!draftError) {
+            currentDraft[field] = value;
+            if (field === 'event_name') document.getElementById('editorTitle').textContent = value || 'Untitled event';
+            showToast(document.getElementById('saveToast'));
+          }
+        }
+        updateExportText();
+        updateProgress();
+      }
+
+      editorView.addEventListener('change', function (e) {
+        var el = e.target;
+        if (!el.matches('[data-field]')) return;
+        handleFieldSave(el);
+      });
+
+      // ---- Progress / next empty field ----
+
+      function updateProgress() {
+        var fields = document.querySelectorAll('#editorView .required-field');
+        var filled = 0;
+        fields.forEach(function (el) {
+          if (el.type === 'checkbox' ? el.checked : el.value.trim() !== '') filled++;
+        });
+        document.getElementById('progressText').textContent = filled + ' / ' + fields.length + ' required fields filled';
+      }
+
+      document.getElementById('nextEmptyBtn').addEventListener('click', function () {
+        var fields = document.querySelectorAll('#editorView .required-field');
+        for (var i = 0; i < fields.length; i++) {
+          var el = fields[i];
+          var empty = el.type === 'checkbox' ? !el.checked : el.value.trim() === '';
+          if (empty) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.focus();
+            return;
+          }
+        }
+        alert('All required fields are filled!');
+      });
+
+      // ---- Images ----
+
+      async function uploadImage(kind, file) {
+        var client = await window.sfSupabaseReady;
+        var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        var path = currentDraftId + '/' + kind + '-' + Date.now() + '.' + ext;
+        var { error } = await client.storage.from('ticket-event-images').upload(path, file, { contentType: file.type, upsert: true });
+        if (error) {
+          alert('Upload failed: ' + error.message);
+          return;
+        }
+        var { data } = client.storage.from('ticket-event-images').getPublicUrl(path);
+        var column = kind === 'event_image' ? 'event_image_path' : 'organizer_logo_path';
+        var patch = {};
+        patch[column] = data.publicUrl;
+        patch.updated_at = new Date().toISOString();
+        patch.last_edited_by = myName;
+        await client.from('ticket_event_drafts').update(patch).eq('id', currentDraftId);
+        currentDraft[column] = data.publicUrl;
+        renderImages(currentDraft);
+        updateExportText();
+        showToast(document.getElementById('saveToast'));
+      }
+
+      document.getElementById('eventImageInput').addEventListener('change', function (e) {
+        if (e.target.files[0]) uploadImage('event_image', e.target.files[0]);
+      });
+      document.getElementById('organizerLogoInput').addEventListener('change', function (e) {
+        if (e.target.files[0]) uploadImage('organizer_logo', e.target.files[0]);
+      });
+
+      // ---- Delete draft (from editor) ----
+
+      document.getElementById('deleteDraftBtn').addEventListener('click', async function () {
+        if (!currentDraftId) return;
+        if (!window.confirm('Delete this event draft and all its ticket types? This cannot be undone.')) return;
+        var client = await window.sfSupabaseReady;
+        await client.from('ticket_event_drafts').delete().eq('id', currentDraftId);
+        await closeEditor();
+        showListView();
+      });
+
+      // ---- Export / copy summary ----
+
+      function buildSummaryText() {
+        var d = currentDraft || {};
+        var lines = [];
+        lines.push('EVENT BASICS');
+        lines.push('Event name: ' + (d.event_name || ''));
+        lines.push('Event description: ' + (d.event_description || ''));
+        lines.push('Venue name: ' + (d.venue_name || ''));
+        lines.push('Venue address: ' + (d.venue_address || ''));
+        lines.push('Event date: ' + (d.event_date || ''));
+        lines.push('Start time: ' + (d.start_time || ''));
+        lines.push('End time: ' + (d.end_time || ''));
+        lines.push('Time zone: ' + (d.time_zone || ''));
+        lines.push('Recurring: ' + (d.is_recurring ? ('Yes — ' + (d.recurrence_note || '(no notes yet)')) : 'No, single event'));
+        lines.push('');
+        lines.push('TICKET TYPES');
+        if (!ticketTypes.length) {
+          lines.push('(none added yet)');
+        } else {
+          ticketTypes.forEach(function (t, i) {
+            lines.push('');
+            lines.push('Ticket ' + (i + 1) + ':');
+            lines.push('  Ticket name: ' + (t.ticket_name || ''));
+            lines.push('  Price: ' + (t.price != null ? ('$' + t.price) : ''));
+            lines.push('  Quantity available: ' + (t.quantity_available != null ? t.quantity_available : ''));
+            lines.push('  Min/max per order: ' + (t.min_per_order != null ? t.min_per_order : '') + ' / ' + (t.max_per_order != null ? t.max_per_order : ''));
+            lines.push('  Sale start: ' + (t.sale_start ? new Date(t.sale_start).toLocaleString() : ''));
+            lines.push('  Sale end: ' + (t.sale_end ? new Date(t.sale_end).toLocaleString() : ''));
+            lines.push('  Description: ' + (t.ticket_description || ''));
+          });
+        }
+        lines.push('');
+        lines.push('OPTIONAL BUT GOOD TO COLLECT NOW');
+        lines.push('Promo/access codes needed: ' + (d.promo_codes_needed || ''));
+        lines.push('Booking fee handling: ' + (d.booking_fee_handling || ''));
+        lines.push('Age restriction / 21+ note: ' + (d.age_restriction || ''));
+        lines.push('Refund policy wording: ' + (d.refund_policy || ''));
+        lines.push('Custom checkout questions: ' + (d.custom_checkout_questions || ''));
+        lines.push('Order confirmation message: ' + (d.confirmation_message || ''));
+        lines.push('');
+        lines.push('IMAGES');
+        lines.push('Event/promo image: ' + (d.event_image_path || '(not uploaded yet)'));
+        lines.push('Organizer logo: ' + (d.organizer_logo_path || '(not uploaded yet)'));
+        return lines.join('\n');
+      }
+
+      function updateExportText() {
+        document.getElementById('exportSummaryText').textContent = buildSummaryText();
+      }
+
+      document.getElementById('copySummaryBtn').addEventListener('click', async function () {
+        var text = buildSummaryText();
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(document.getElementById('saveToast'), 'Copied to clipboard', 1800);
+        } catch (e) {
+          alert('Could not copy automatically — select the text below and copy manually.');
+        }
+      });
+
+      document.getElementById('printBtn').addEventListener('click', function () {
+        window.print();
+      });
+
+      // ---- Realtime sync ----
+
+      async function subscribeRealtime(draftId) {
+        var client = await window.sfSupabaseReady;
+        if (channel) await client.removeChannel(channel);
+
+        channel = client.channel('ticket-draft-' + draftId)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'ticket_event_drafts', filter: 'id=eq.' + draftId }, handleDraftChange)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'ticket_event_ticket_types', filter: 'draft_id=eq.' + draftId }, handleTicketTypeChange)
+          .subscribe();
+      }
+
+      function handleDraftChange(payload) {
+        if (payload.eventType === 'DELETE') {
+          alert('This draft was deleted by someone else.');
+          closeEditor().then(showListView);
+          return;
+        }
+        var incoming = payload.new;
+        if (!incoming || !currentDraft) return;
+        Object.keys(incoming).forEach(function (k) { currentDraft[k] = incoming[k]; });
+        renderBasics(currentDraft);
+        renderImages(currentDraft);
+        updateExportText();
+        updateProgress();
+        if (incoming.last_edited_by && incoming.last_edited_by !== myName) {
+          showToast(document.getElementById('syncToast'), 'Updated by ' + incoming.last_edited_by, 2500);
+        }
+      }
+
+      function handleTicketTypeChange(payload) {
+        if (payload.eventType === 'DELETE') {
+          var oldId = payload.old && payload.old.id;
+          ticketTypes = ticketTypes.filter(function (t) { return String(t.id) !== String(oldId); });
+          renderTicketTypes();
+          updateExportText();
+          updateProgress();
+          return;
+        }
+
+        var incoming = payload.new;
+        if (!incoming) return;
+        var existing = ticketTypes.find(function (t) { return String(t.id) === String(incoming.id); });
+        if (existing) {
+          Object.keys(incoming).forEach(function (k) { existing[k] = incoming[k]; });
+          var card = document.querySelector('.ticket-card[data-ticket-type-id="' + incoming.id + '"]');
+          if (card) fillTicketCard(card, existing);
+        } else {
+          ticketTypes.push(incoming);
+          renderTicketTypes();
+        }
+        updateExportText();
+        updateProgress();
+        if (incoming.last_edited_by && incoming.last_edited_by !== myName) {
+          showToast(document.getElementById('syncToast'), 'Updated by ' + incoming.last_edited_by, 2500);
+        }
+      }
+
+      // ---- Init ----
+
+      (async function init() {
+        var client = await window.sfSupabaseReady;
+        var { data } = await client.auth.getSession();
+        if (data && data.session) {
+          showApp();
+        } else {
+          showGate();
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
