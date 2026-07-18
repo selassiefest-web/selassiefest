@@ -1210,6 +1210,8 @@ create policy "public delete ticket-event-images" on storage.objects
   for delete to anon, authenticated
   using (bucket_id = 'ticket-event-images');
 
+drop policy if exists "public read of ticket-event-images" on storage.objects;
+
 create policy "public read of ticket-event-images" on storage.objects
   for select to anon, authenticated
   using (bucket_id = 'ticket-event-images');
