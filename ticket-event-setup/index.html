@@ -58,54 +58,6 @@
       margin-right: auto;
     }
 
-    /* ---- Login gate ---- */
-    #gate {
-      max-width: 380px;
-      margin: 60px auto;
-      padding: 32px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-dim);
-      border-radius: 16px;
-    }
-    #gate h2 {
-      font-weight: 400;
-      font-size: 1.2rem;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    #gate input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-dim);
-      border-radius: 8px;
-      padding: 11px 14px;
-      color: var(--text-white);
-      font-size: 0.95rem;
-      margin-bottom: 12px;
-      outline: none;
-    }
-    #gate input:focus { border-color: rgba(229, 169, 60, 0.5); }
-    #gate button {
-      width: 100%;
-      background: var(--roots-green);
-      color: var(--text-white);
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    #gate button:hover { background: #0a4a2b; }
-    #gate .gate-msg {
-      margin-top: 12px;
-      font-size: 0.85rem;
-      text-align: center;
-      min-height: 1.2em;
-      color: #e08585;
-    }
-
     /* ---- App shell ---- */
     #app { display: none; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
     .top-bar {
@@ -273,7 +225,7 @@
     footer.gate-footer { text-align: center; color: #666; font-size: 0.78rem; padding: 30px; }
 
     @media print {
-      #gate, .top-bar, .back-link, .progress-bar, .btn, button, .export-actions, footer.gate-footer, #listView { display: none !important; }
+      .top-bar, .back-link, .progress-bar, .btn, button, .export-actions, footer.gate-footer, #listView { display: none !important; }
       body { background: #fff; color: #000; padding-bottom: 0; }
       section.panel { background: #fff; border: 1px solid #999; color: #000; break-inside: avoid; }
       section.panel h3 { color: #000; }
@@ -290,20 +242,9 @@
     <p>Fill in event details here as a team — everything saves instantly to the database, so nothing is lost between sessions or devices. When a draft is complete, use "Copy Summary" to hand it to whoever is entering it into Ticket Tailor.</p>
   </header>
 
-  <div id="gate">
-    <h2><i class="fas fa-lock" aria-hidden="true"></i>&nbsp; Enter Password</h2>
-    <form id="gateForm">
-      <input type="email" id="gateEmail" placeholder="Email" autocomplete="username" required />
-      <input type="password" id="gatePassword" placeholder="Password" autocomplete="current-password" required />
-      <button type="submit">Log In</button>
-      <div class="gate-msg" id="gateMsg"></div>
-    </form>
-  </div>
-
   <div id="app">
     <div class="top-bar">
       <div>Editing as: <strong id="editingAsName">—</strong> · <button id="editingAsChange" type="button">change</button></div>
-      <button id="logoutBtn" type="button">Log out</button>
     </div>
 
     <div id="listView">
@@ -454,12 +395,9 @@
   <script src="/assets/js/supabase-client.js"></script>
   <script>
     (function () {
-      var gate = document.getElementById('gate');
       var app = document.getElementById('app');
       var listView = document.getElementById('listView');
       var editorView = document.getElementById('editorView');
-      var gateForm = document.getElementById('gateForm');
-      var gateMsg = document.getElementById('gateMsg');
 
       var NAME_KEY = 'ticketSetupEditorName';
       var myName = localStorage.getItem(NAME_KEY) || '';
@@ -482,15 +420,7 @@
         el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, ms || 1800);
       }
 
-      // ---- Auth gate ----
-
-      function showGate() {
-        gate.style.display = 'block';
-        app.style.display = 'none';
-      }
-
       function showApp() {
-        gate.style.display = 'none';
         app.style.display = 'block';
         ensureName();
         showListView();
@@ -514,27 +444,6 @@
           localStorage.setItem(NAME_KEY, myName);
           document.getElementById('editingAsName').textContent = myName;
         }
-      });
-
-      gateForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        gateMsg.textContent = '';
-        var email = document.getElementById('gateEmail').value.trim();
-        var password = document.getElementById('gatePassword').value;
-        var client = await window.sfSupabaseReady;
-        var { error } = await client.auth.signInWithPassword({ email: email, password: password });
-        if (error) {
-          gateMsg.textContent = 'Incorrect email or password.';
-          return;
-        }
-        showApp();
-      });
-
-      document.getElementById('logoutBtn').addEventListener('click', async function () {
-        await closeEditor();
-        var client = await window.sfSupabaseReady;
-        await client.auth.signOut();
-        showGate();
       });
 
       // ---- List view ----
@@ -1048,15 +957,7 @@
 
       // ---- Init ----
 
-      (async function init() {
-        var client = await window.sfSupabaseReady;
-        var { data } = await client.auth.getSession();
-        if (data && data.session) {
-          showApp();
-        } else {
-          showGate();
-        }
-      })();
+      showApp();
     })();
   </script>
 </body>

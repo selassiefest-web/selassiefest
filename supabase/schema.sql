@@ -1083,19 +1083,15 @@ create trigger event_notify_signups_after_insert
 -- etc.), and an admin/Ticket Tailor operator later transfers the finished
 -- draft into Ticket Tailor by hand. Unlike every write-only form above,
 -- this needs real read+write for the team (autosave per field, live
--- multi-editor sync), so it's gated behind its own password rather than
--- open to anon.
+-- multi-editor sync).
 --
--- Gated to ONE specific Auth account's email (rastafari501c3@gmail.com),
--- not just `to authenticated` role membership. This matters here more than
--- it did for dh101/dancehall_occurrences above: supabase-js persists an
--- auth session for the whole selassiefest.com origin, not per-subpath, so
--- a blanket `to authenticated` policy would let anyone who has ever logged
--- into /chicago-dancehall/ or /chicago-dancehall-oscars/ in the same
--- browser also read/write this tool's data -- defeating the point of
--- giving this tool its own separate password. Checking auth.jwt()'s email
--- directly scopes access to only sessions created via this tool's own
--- login, regardless of what else is logged in in the same browser.
+-- Originally gated behind its own Supabase Auth login (one specific
+-- account's email); removed by request for zero-friction team access --
+-- open to anon, no login at all. This means anyone who has the
+-- /ticket-event-setup/ URL can read, edit, or delete any draft or upload
+-- images to it; there's no access check beyond the URL itself not being
+-- linked from anywhere public. Revisit if this page's link ever leaks or
+-- needs to be shared outside the immediate team.
 create table if not exists ticket_event_drafts (
   id uuid primary key default gen_random_uuid(),
   event_name text,
@@ -1146,18 +1142,28 @@ create table if not exists ticket_event_ticket_types (
 alter table ticket_event_drafts enable row level security;
 alter table ticket_event_ticket_types enable row level security;
 
-create policy "ticket setup account full access" on ticket_event_drafts
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com')
-  with check ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+-- No login gate anymore -- open to anon (see the page's own comment for
+-- why: the team wanted zero login friction and accepted that this means
+-- anyone with the URL can read/edit/delete any draft, relying on the link
+-- staying unlinked/unshared for privacy rather than a real access check).
+-- `drop policy if exists` on the old email-gated names so this file stays
+-- re-runnable whether it's a fresh install or an upgrade from the earlier
+-- password-gated version.
+drop policy if exists "ticket setup account full access" on ticket_event_drafts;
+drop policy if exists "ticket setup account full access" on ticket_event_ticket_types;
 
-create policy "ticket setup account full access" on ticket_event_ticket_types
-  for all to authenticated
-  using ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com')
-  with check ((auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+create policy "public full access" on ticket_event_drafts
+  for all to anon, authenticated
+  using (true)
+  with check (true);
 
-grant select, insert, update, delete on ticket_event_drafts to authenticated;
-grant select, insert, update, delete on ticket_event_ticket_types to authenticated;
+create policy "public full access" on ticket_event_ticket_types
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+grant select, insert, update, delete on ticket_event_drafts to anon, authenticated;
+grant select, insert, update, delete on ticket_event_ticket_types to anon, authenticated;
 
 -- The editor page subscribes to postgres_changes (Supabase Realtime) on
 -- both tables so teammates editing the same draft see each other's fields
@@ -1181,26 +1187,28 @@ begin
   end if;
 end $$;
 
--- Event promo image + organizer logo uploads. Public read (like
--- game-submissions above) so the finished URL can be handed straight to
--- Ticket Tailor or previewed inline without another round trip through
--- auth; only the gated account can write/manage objects.
+-- Event promo image + organizer logo uploads. Public read/write -- same
+-- no-login-gate tradeoff as the tables above.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('ticket-event-images', 'ticket-event-images', true, 10485760,
   array['image/jpeg','image/png','image/webp'])
 on conflict (id) do nothing;
 
-create policy "ticket setup account upload images" on storage.objects
-  for insert to authenticated
-  with check (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+drop policy if exists "ticket setup account upload images" on storage.objects;
+drop policy if exists "ticket setup account manage images" on storage.objects;
+drop policy if exists "ticket setup account delete images" on storage.objects;
 
-create policy "ticket setup account manage images" on storage.objects
-  for update to authenticated
-  using (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+create policy "public upload ticket-event-images" on storage.objects
+  for insert to anon, authenticated
+  with check (bucket_id = 'ticket-event-images');
 
-create policy "ticket setup account delete images" on storage.objects
-  for delete to authenticated
-  using (bucket_id = 'ticket-event-images' and (auth.jwt() ->> 'email') = 'rastafari501c3@gmail.com');
+create policy "public manage ticket-event-images" on storage.objects
+  for update to anon, authenticated
+  using (bucket_id = 'ticket-event-images');
+
+create policy "public delete ticket-event-images" on storage.objects
+  for delete to anon, authenticated
+  using (bucket_id = 'ticket-event-images');
 
 create policy "public read of ticket-event-images" on storage.objects
   for select to anon, authenticated
