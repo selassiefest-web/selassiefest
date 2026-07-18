@@ -187,6 +187,38 @@
       color: var(--gold-accent);
       font-weight: 300;
     }
+    .hero-cannabis-img {
+      height: 1.5em;
+      width: auto;
+      vertical-align: middle;
+      border-radius: 6px;
+      border: 1px solid rgba(229, 169, 60, 0.5);
+      cursor: zoom-in;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .hero-cannabis-img:hover,
+    .hero-cannabis-img:focus-visible {
+      transform: scale(1.06);
+      border-color: var(--gold-accent);
+    }
+    .hero-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .hero-lightbox.open { display: flex; }
+    .hero-lightbox img {
+      max-width: 92vw;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
     .festival-date {
       font-weight: 300;
       font-size: 0.75rem;
@@ -700,7 +732,16 @@
 <!-- HERO SECTION -->
 <section class="hero">
   <div class="festival-hero-title">
-    ROOTS | <span class="highlight-gold">CULTURE</span> | CANNABIS
+    ROOTS | <span class="highlight-gold">CULTURE</span> |
+    <img
+      src="/assets/images/events/sesh-bus-vip.webp"
+      alt="Sesh Bus VIP — $50, swag bag + access to the Sesh Bus, 6:45–9:15 PM. Click to view full details."
+      class="hero-cannabis-img"
+      role="button"
+      tabindex="0"
+      onclick="document.getElementById('heroLightbox').classList.add('open')"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('heroLightbox').classList.add('open');}"
+    >
   </div>
   <div class="festival-date">JULY 25th 2026 • ONE-DAY IMMERSION</div>
 
@@ -740,6 +781,16 @@
     <a href="/contact/volunteers.html" class="cta-button cta-secondary"><i class="fas fa-hands-helping"></i> VOLUNTEER</a>
   </div>
 </section>
+
+<!-- Lightbox for the Sesh Bus VIP thumbnail in the hero tagline -->
+<div id="heroLightbox" class="hero-lightbox" onclick="this.classList.remove('open')">
+  <img src="/assets/images/events/sesh-bus-vip.webp" alt="Sesh Bus VIP — full size flyer">
+</div>
+<script>
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') document.getElementById('heroLightbox').classList.remove('open');
+  });
+</script>
 
 <!-- TRC EVENTS STRIP: cross-promotion of upcoming TRC Events shows -->
 <section class="trc-events-section">
