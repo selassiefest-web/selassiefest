@@ -235,14 +235,43 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      cursor: zoom-out;
     }
     .hero-lightbox.open { display: flex; }
+    .lightbox-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      max-width: 92vw;
+    }
     .hero-lightbox img {
       max-width: 92vw;
-      max-height: 90vh;
+      max-height: 78vh;
       border-radius: 10px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      cursor: zoom-out;
+    }
+    .swag-bag-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #39FF6A;
+      color: #0a0a0a;
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 14px 36px;
+      border-radius: 60px;
+      text-decoration: none;
+      box-shadow: 0 0 25px rgba(57,255,106,0.5);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .swag-bag-cta:hover,
+    .swag-bag-cta:focus-visible {
+      transform: scale(1.04);
+      box-shadow: 0 0 40px rgba(57,255,106,0.75);
     }
     .festival-date {
       font-weight: 300;
@@ -755,7 +784,7 @@
 </nav>
 
 <!-- HERO SECTION -->
-<section class="hero">
+<section class="hero" id="sesh-bus-vip">
   <video class="hero-bg-video" autoplay muted loop playsinline poster="/assets/images/events/sesh-bus-hero-poster.jpg" aria-hidden="true">
     <source src="/assets/video/sesh-bus-hero.mp4" type="video/mp4">
   </video>
@@ -812,8 +841,11 @@
 </section>
 
 <!-- Lightbox for the Sesh Bus VIP thumbnail in the hero tagline -->
-<div id="heroLightbox" class="hero-lightbox" onclick="this.classList.remove('open')">
-  <img src="/assets/images/events/sesh-bus-vip.webp" alt="Sesh Bus VIP — full size flyer">
+<div id="heroLightbox" class="hero-lightbox" onclick="if(event.target===this){this.classList.remove('open')}">
+  <div class="lightbox-content">
+    <img src="/assets/images/events/sesh-bus-vip.webp" alt="Sesh Bus VIP — full size flyer" onclick="document.getElementById('heroLightbox').classList.remove('open')">
+    <a href="/tickets/" class="swag-bag-cta">Click here to reserve your Swag Bag <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+  </div>
 </div>
 <script>
   document.addEventListener('keydown', function (e) {
