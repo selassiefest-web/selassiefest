@@ -169,10 +169,35 @@
 
     /* ===== HERO SECTION ===== */
     .hero {
+      position: relative;
+      overflow: hidden;
       text-align: center;
       padding: 70px 24px 80px;
-      background: radial-gradient(circle at 30% 10%, rgba(14,94,54,0.2), #0a0a0a);
+      background: #0a0a0a;
       border-bottom: 1px solid var(--border-dim);
+    }
+    .hero-bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.82) 45%, rgba(14,94,54,0.25) 75%, rgba(14,94,54,0.15) 100%);
+      z-index: 1;
+    }
+    .hero > *:not(.hero-bg-video):not(.hero-overlay) {
+      position: relative;
+      z-index: 2;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg-video { display: none; }
+      .hero { background: #0a0a0a url('/assets/images/events/sesh-bus-hero-poster.jpg') center/cover no-repeat; }
     }
     .festival-hero-title {
       font-weight: 200;
@@ -731,6 +756,10 @@
 
 <!-- HERO SECTION -->
 <section class="hero">
+  <video class="hero-bg-video" autoplay muted loop playsinline poster="/assets/images/events/sesh-bus-hero-poster.jpg" aria-hidden="true">
+    <source src="/assets/video/sesh-bus-hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay" aria-hidden="true"></div>
   <div class="festival-hero-title">
     ROOTS | <span class="highlight-gold">CULTURE</span> |
     <img
