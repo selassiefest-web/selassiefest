@@ -213,7 +213,7 @@
       outline: none;
     }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(229, 169, 60, 0.5); }
-    .field textarea { resize: vertical; min-height: 60px; }
+    .field textarea { resize: vertical; min-height: 60px; overflow-y: hidden; }
 
     .djs-panel { border-top: 1px solid var(--border-dim); padding-top: 14px; margin-top: 4px; }
     .djs-panel h4 { font-size: 0.78rem; color: var(--gold-accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 400; }
@@ -343,7 +343,7 @@
   <section class="mission-panel">
     <h2><i class="fas fa-dove" aria-hidden="true"></i>&nbsp; The Story Arc — Told Through Bob Marley's Own Catalog</h2>
     <ul>
-      <li><i class="fas fa-check-circle" aria-hidden="true"></i> <span>This is one SelassieFest DJ show, not eight separate, competing sets — each chapter traces one era of Bob Marley's discography, in order.</span></li>
+      <li><i class="fas fa-check-circle" aria-hidden="true"></i> <span>This is one SelassieFest DJ show, not six (6) separate, competing sets — each chapter traces one era of Bob Marley's discography, in order.</span></li>
       <li><i class="fas fa-check-circle" aria-hidden="true"></i> <span>The arc: The Wailing Wailers &rarr; Catch a Fire &amp; Burnin' &rarr; Natty Dread &amp; Rastaman Vibration &rarr; Exodus &amp; Kaya &rarr; Survival &amp; Uprising &rarr; Confrontation &amp; Legend.</span></li>
       <li><i class="fas fa-check-circle" aria-hidden="true"></i> <span>The direct Selassie link: "War" on <em>Rastaman Vibration</em> (1976) sets Emperor Haile Selassie I's 1963 address to the United Nations to music almost word for word — that's Chapter 3, the heart of the whole show.</span></li>
       <li><i class="fas fa-check-circle" aria-hidden="true"></i> <span>Chapters connect, not compete — each set should hand off to the next, with no duplicate songs, no clashing energy, no starting over.</span></li>
@@ -391,6 +391,15 @@
         return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
         });
+      }
+
+      function autoResizeTextarea(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+      }
+
+      function autoResizeAll(scope) {
+        (scope || document).querySelectorAll('textarea').forEach(autoResizeTextarea);
       }
 
       function showToast(el, text, ms) {
@@ -524,6 +533,7 @@
         }
         container.innerHTML = chapters.map(chapterCardHtml).join('');
         bindChapterCardEvents();
+        autoResizeAll(container);
       }
 
       function bindChapterCardEvents() {
@@ -549,6 +559,10 @@
                 saveChapterField(chapterId, el.dataset.field, el.value);
               }
             });
+          });
+
+          card.querySelectorAll('textarea').forEach(function (el) {
+            el.addEventListener('input', function () { autoResizeTextarea(el); });
           });
 
           card.querySelectorAll('.remove-dj-btn').forEach(function (btn) {
