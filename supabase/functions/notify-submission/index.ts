@@ -19,6 +19,7 @@ const REPLY_TO = 'selassiefest@gmail.com';
 // into it below, in addition to the subscriber's own confirmation email.
 const NEWSLETTER_AUDIENCE_ID = '6561e97b-31be-45c8-a069-e8d8ae29711e';
 const STORAGE_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/game-submissions';
+const VENDOR_APPLICATIONS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/vendor-applications';
 
 function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -192,6 +193,26 @@ function formatNewsletterConfirmation(record: Record<string, any>) {
   };
 }
 
+function formatVendorApplication(record: Record<string, any>) {
+  const photos: string[] = Array.isArray(record.photo_paths) ? record.photo_paths : [];
+  const photoUrls = photos.map((p) => `${VENDOR_APPLICATIONS_PUBLIC_BASE}/${p}`);
+  const logoUrl = record.logo_path ? `${VENDOR_APPLICATIONS_PUBLIC_BASE}/${record.logo_path}` : null;
+  return {
+    subject: `New Vendor Application — ${record.business_name}`,
+    html: `
+      <h2>New Heritage Village Vendor Application</h2>
+      <p><strong>Business:</strong> ${escapeHtml(record.business_name)} (${escapeHtml(record.contact_email)})</p>
+      <p><strong>Items sold:</strong><br>${escapeHtml(record.product_description)}</p>
+      ${record.webpage_highlight ? `<p><strong>Webpage should highlight:</strong><br>${escapeHtml(record.webpage_highlight)}</p>` : ''}
+      <p><strong>Marketing plan:</strong><br>${escapeHtml(record.marketing_plan)}</p>
+      ${record.preferred_space ? `<p><strong>Preferred space:</strong> ${escapeHtml(record.preferred_space)}</p>` : ''}
+      ${logoUrl ? `<p><strong>Logo:</strong> <a href="${logoUrl}">${logoUrl}</a></p>` : ''}
+      ${photoUrls.length ? `<p><strong>Product photos:</strong><br>${photoUrls.map((u) => `<a href="${u}">${u}</a>`).join('<br>')}</p>` : ''}
+      <p><strong>Status:</strong> ${escapeHtml(record.status)}</p>
+    `,
+  };
+}
+
 function formatEventNotifySignup(record: Record<string, any>) {
   return {
     subject: `New "notify me" signup — ${record.event_name}`,
@@ -235,6 +256,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   volunteer_signups: { notifications: [{ to: () => NOTIFY_TO, format: formatVolunteerSignup }] },
   sponsor_inquiries: { notifications: [{ to: () => NOTIFY_TO, format: formatSponsorInquiry }] },
   camp_registrations: { notifications: [{ to: () => NOTIFY_TO, format: formatCampRegistration }] },
+  vendor_applications: { notifications: [{ to: () => NOTIFY_TO, format: formatVendorApplication }] },
   stripe_donations: { notifications: [{ to: () => NOTIFY_TO, format: formatDonation }] },
   newsletter_subscribers: { notifications: [{ to: (record) => record.email, format: formatNewsletterConfirmation }] },
   game_submissions: {

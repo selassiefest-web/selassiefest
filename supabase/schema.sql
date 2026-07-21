@@ -1215,3 +1215,67 @@ drop policy if exists "public read of ticket-event-images" on storage.objects;
 create policy "public read of ticket-event-images" on storage.objects
   for select to anon, authenticated
   using (bucket_id = 'ticket-event-images');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Heritage Village vendor applications (contact/vendorpackage.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Previously only a mailto: link, same "relies on the visitor having a
+-- desktop mail client configured" problem as volunteer/sponsor/camp forms
+-- had before their own tables above -- and in this case it silently did
+-- nothing at all for visitors with no mail client registered. logo_path and
+-- photo_paths are storage object paths within the vendor-applications
+-- bucket (not full URLs), same convention as game_submissions.photo_path.
+create table if not exists vendor_applications (
+  id uuid primary key default gen_random_uuid(),
+  business_name text not null,
+  contact_email text not null,
+  product_description text not null,
+  webpage_highlight text,
+  marketing_plan text not null,
+  preferred_space text,
+  logo_path text,
+  photo_paths text[] not null default '{}',
+  status text not null default 'pending_review',
+  created_at timestamptz not null default now()
+);
+
+alter table vendor_applications enable row level security;
+
+-- Same write-only pattern as every other public form table above: anon can
+-- insert an application but never read one back (business_name/email stay
+-- private to the org, reviewed via the Supabase Table Editor).
+create policy "Allow anon insert" on vendor_applications
+  for insert to anon
+  with check (true);
+
+grant insert on vendor_applications to anon;
+
+-- Reuses the existing notify_submission_webhook() function (see the
+-- notify-submission section above) rather than redefining it, so no secret
+-- needs to be committed here. Staff should add vendor_applications to
+-- notify-submission's TABLE_CONFIG (see supabase/functions/notify-submission)
+-- the same way the other tables using this trigger already are.
+create trigger vendor_applications_after_insert
+  after insert on vendor_applications
+  for each row execute function notify_submission_webhook();
+
+-- Business logo + product photos. Public read (so an accepted vendor's
+-- photos can eventually be shown on their dedicated webpage per the
+-- package's "What We Provide" promise), anon insert only -- same shape as
+-- the game-submissions bucket above. 10MB/file matches ticket-event-images
+-- rather than game-submissions' 50MB, since these are static photos, not
+-- video.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'vendor-applications', 'vendor-applications', true, 10485760,
+  array['image/jpeg','image/png','image/webp','image/heic']
+)
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to vendor-applications" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'vendor-applications');
+
+create policy "Allow public read of vendor-applications" on storage.objects
+  for select to anon
+  using (bucket_id = 'vendor-applications');

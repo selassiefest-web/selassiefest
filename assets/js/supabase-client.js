@@ -154,6 +154,48 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
+  // Uploads an optional logo + optional product photos (max 5, matching the
+  // vendor package's "3-5 images" request) to the vendor-applications
+  // Storage bucket, then records the application. Photos are compressed
+  // client-side via _compressImage, same as submitGameStory above.
+  async submitVendorApplication({ businessName, contactEmail, productDescription, webpageHighlight, marketingPlan, preferredSpace, logoFile, photoFiles }) {
+    const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+
+    let logoPath = null;
+    if (logoFile) {
+      const compressed = await this._compressImage(logoFile);
+      logoPath = `${stamp}-logo.jpg`;
+      const { error } = await client.storage.from('vendor-applications').upload(logoPath, compressed, {
+        contentType: 'image/jpeg',
+      });
+      if (error) throw error;
+    }
+
+    const photoPaths = [];
+    for (let i = 0; i < (photoFiles || []).length; i++) {
+      const compressed = await this._compressImage(photoFiles[i]);
+      const path = `${stamp}-photo-${i + 1}.jpg`;
+      const { error } = await client.storage.from('vendor-applications').upload(path, compressed, {
+        contentType: 'image/jpeg',
+      });
+      if (error) throw error;
+      photoPaths.push(path);
+    }
+
+    const { error } = await client.from('vendor_applications').insert({
+      business_name: businessName,
+      contact_email: contactEmail,
+      product_description: productDescription,
+      webpage_highlight: webpageHighlight || null,
+      marketing_plan: marketingPlan,
+      preferred_space: preferredSpace || null,
+      logo_path: logoPath,
+      photo_paths: photoPaths,
+    });
+    if (error) throw error;
+  },
+
   // Reads from game_submissions_public (a view, not the base table) --
   // pre-filtered to status='approved' and missing submitter_email entirely,
   // so this is safe to call from any page without further filtering.

@@ -399,6 +399,74 @@
             color: var(--gold-accent);
         }
 
+        /* vendor application form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 300;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+            color: var(--gold-accent);
+            font-size: 0.9rem;
+        }
+        .form-group label .hint {
+            display: block;
+            font-weight: 300;
+            letter-spacing: normal;
+            color: rgba(245, 245, 245, 0.45);
+            font-size: 0.78rem;
+            margin-top: 3px;
+            text-transform: none;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid var(--border-dim);
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: var(--text-white);
+            font-family: 'Jost', sans-serif;
+            font-size: 0.9rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold-accent);
+        }
+        .form-group input[type="file"] {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed var(--border-dim);
+            padding: 12px 14px;
+            border-radius: 16px;
+            color: #ccc;
+            font-family: 'Jost', sans-serif;
+            font-size: 0.85rem;
+        }
+        .vendor-form-msg {
+            margin-top: 18px;
+            font-weight: 400;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+        .vendor-form-msg.is-success { color: #6dbe8f; }
+        .vendor-form-msg.is-error { color: #e08585; }
+
         /* FOOTER - elegant & sleek, with all social media links */
         .footer {
             background: #050505;
@@ -691,23 +759,49 @@
         <!-- application steps -->
         <div class="vendor-section">
             <h2><i class="fas fa-pen-alt"></i> How to Apply</h2>
-            <ol style="margin-left: 1.2rem; margin-bottom: 1.2rem; font-weight: 300;">
-                <li>Email us at <strong>selassiefest@gmail.com</strong> with subject: <em>"Vendor Application – [Your Business Name]"</em></li>
-                <li>Include:
-                    <ul style="margin-top: 8px; margin-left: 1.2rem;">
-                        <li>Business name and description of cultural items you sell.</li>
-                        <li>Business logo (if you have).</li>
-                        <li>Photos of your products (3–5 images).</li>
-                        <li>What your webpage on selassiefest should highlight.</li>
-                        <li><strong>Your marketing plan:</strong> be specific: e.g. "I will post 3 times on Instagram, distribute 50 flyers on the Southside, and feature the event in my newsletter."</li>
-                        <li>Preferred table or ground space.</li>
-                    </ul>
-                </li>
-                <li>We respond within 24–48 hours. If accepted, we provide a digital flyer pack (printable PDF, social graphics).</li>
-                <li>Once marketing actions are confirmed (proof of flyer distribution / social shares), your booth spot is guaranteed.</li>
-            </ol>
-            <p><strong>Deadline for priority consideration:</strong> July 15, 2025. Rolling acceptance thereafter if space remains.</p>
-            <a href="mailto:selassiefest@gmail.com?subject=Vendor%20Application%20-%20Cultural%20Items" class="btn"><i class="fas fa-envelope"></i> Apply Now</a>
+            <p style="margin-bottom: 1.2rem; font-weight: 300;">Fill out the application below. We respond within 24–48 hours — if accepted, we send a digital flyer pack (printable PDF, social graphics), and your booth spot is guaranteed once your marketing actions are confirmed (proof of flyer distribution / social shares).</p>
+            <p style="margin-bottom: 1.5rem;"><strong>Deadline for priority consideration:</strong> July 15, 2025. Rolling acceptance thereafter if space remains.</p>
+
+            <form id="vendorForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Business Name *</label>
+                        <input type="text" id="businessName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Email *</label>
+                        <input type="email" id="contactEmail" required>
+                    </div>
+                </div>
+                <div class="form-group full">
+                    <label>Description of Cultural Items You Sell *</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>What Should Your SelassieFest Webpage Highlight? <span class="hint">Optional — helps us write your dedicated vendor page.</span></label>
+                    <textarea id="webpageHighlight" rows="2"></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>Your Marketing Plan * <span class="hint">Be specific — e.g. "I will post 3 times on Instagram, distribute 50 flyers on the Southside, and feature the event in my newsletter."</span></label>
+                    <textarea id="marketingPlan" rows="3" required></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>Preferred Table / Ground Space</label>
+                    <input type="text" id="preferredSpace" placeholder="e.g. 6' x 3' table, or 10'x10' ground space">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Business Logo <span class="hint">Optional</span></label>
+                        <input type="file" id="logoFile" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Photos <span class="hint">3–5 images, optional</span></label>
+                        <input type="file" id="photoFiles" accept="image/*" multiple>
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="vendorSubmitBtn"><i class="fas fa-envelope"></i> Submit Application</button>
+                <div id="vendorFormMsg" class="vendor-form-msg"></div>
+            </form>
         </div>
 
         <!-- rules & policies -->
@@ -743,6 +837,60 @@
         <i class="fas fa-dove"></i> Together we build the first annual — rooted in reciprocity, uplift, and selassie's love.
     </div>
 </div>
+
+<script>
+    // Vendor application — saved directly to Supabase (vendor_applications),
+    // which also triggers an email notification to the team.
+    const vendorForm = document.getElementById('vendorForm');
+    const vendorMsgEl = document.getElementById('vendorFormMsg');
+    const vendorSubmitBtn = document.getElementById('vendorSubmitBtn');
+    const vendorOriginalBtnHtml = vendorSubmitBtn.innerHTML;
+
+    function setVendorMsg(text, state) {
+        vendorMsgEl.textContent = text;
+        vendorMsgEl.className = 'vendor-form-msg' + (state ? ' ' + state : '');
+    }
+
+    vendorForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const businessName = document.getElementById('businessName').value.trim();
+        const contactEmail = document.getElementById('contactEmail').value.trim();
+        const productDescription = document.getElementById('productDescription').value.trim();
+        const marketingPlan = document.getElementById('marketingPlan').value.trim();
+
+        if (!businessName || !contactEmail || !productDescription || !marketingPlan) {
+            setVendorMsg('Please fill in all required fields.', 'is-error');
+            return;
+        }
+
+        vendorSubmitBtn.disabled = true;
+        vendorSubmitBtn.innerHTML = 'Submitting…';
+        setVendorMsg('', null);
+
+        try {
+            await window.sfSupabase.submitVendorApplication({
+                businessName,
+                contactEmail,
+                productDescription,
+                webpageHighlight: document.getElementById('webpageHighlight').value.trim(),
+                marketingPlan,
+                preferredSpace: document.getElementById('preferredSpace').value.trim(),
+                logoFile: document.getElementById('logoFile').files[0] || null,
+                photoFiles: Array.from(document.getElementById('photoFiles').files || []).slice(0, 5),
+            });
+
+            setVendorMsg("Thank you! Your vendor application is in — we'll respond within 24–48 hours. One Love.", 'is-success');
+            vendorForm.reset();
+        } catch (err) {
+            console.error('Vendor application submission failed:', err);
+            setVendorMsg("Sorry, something went wrong submitting your application. Please try again, or email selassiefest@gmail.com directly.", 'is-error');
+        } finally {
+            vendorSubmitBtn.disabled = false;
+            vendorSubmitBtn.innerHTML = vendorOriginalBtnHtml;
+        }
+    });
+</script>
 
 <!-- ========== UPDATED FOOTER: includes all social links + "Follow us: @selassiefest (Instagram)" ========== -->
 
