@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Main Stage DJ Run of Show | SelassieFest</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    a { color: var(--gold-accent); }
+    input, select, textarea, button { font-family: inherit; }
+
+    .page-header {
+      padding: 28px 32px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      text-align: center;
+    }
+    .page-header .eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+    }
+    .page-header h1 {
+      font-weight: 200;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+    }
+    .page-header p {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 10px;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .page-header p.rule {
+      color: var(--gold-accent);
+      font-weight: 400;
+      margin-top: 14px;
+    }
+
+    #app { max-width: 980px; margin: 0 auto; padding: 24px 20px 60px; }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      color: #999;
+    }
+    .btn {
+      background: none;
+      border: 1px solid var(--border-dim);
+      color: #ccc;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn:hover { border-color: rgba(229, 169, 60, 0.4); }
+    .btn-primary { background: var(--roots-green); border-color: var(--roots-green); color: var(--text-white); }
+    .btn-danger { border-color: rgba(200,55,55,0.5); color: #e08585; }
+    .btn-icon { padding: 4px 9px; font-size: 0.75rem; }
+    #editingAsChange { color: var(--gold-accent); cursor: pointer; text-decoration: underline; background: none; border: none; font-size: inherit; padding: 0; }
+
+    .chapter-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+    .chapter-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .chapter-title-row { display: flex; gap: 10px; flex-wrap: wrap; flex: 1; min-width: 260px; }
+    .chapter-title-row input[data-field="chapter_label"] { max-width: 110px; color: var(--gold-accent); }
+    .chapter-title-row input[data-field="title"] { flex: 1; min-width: 180px; font-size: 1.05rem; font-weight: 500; }
+    .chapter-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-size: 0.78rem; color: #999; }
+    .field input, .field select, .field textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text-white);
+      font-size: 0.92rem;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(229, 169, 60, 0.5); }
+    .field textarea { resize: vertical; min-height: 60px; }
+
+    .djs-panel { border-top: 1px solid var(--border-dim); padding-top: 14px; margin-top: 4px; }
+    .djs-panel h4 { font-size: 0.78rem; color: var(--gold-accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 400; }
+    .dj-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+    .dj-row input[data-field="dj_name"] { flex: 1; min-width: 140px; }
+    .dj-row select { min-width: 100px; }
+    .dj-row .role-primary { color: var(--gold-accent); }
+    .dj-row .role-backup { color: #999; }
+    .add-dj-row { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .add-dj-row input { flex: 1; min-width: 140px; }
+
+    .empty-note { color: #999; text-align: center; padding: 30px; }
+
+    #byDjSection { margin-top: 40px; }
+    #byDjSection h2 { font-weight: 400; font-size: 1.2rem; margin-bottom: 6px; color: var(--gold-accent); }
+    #byDjSection p.hint { color: #999; font-size: 0.85rem; margin-bottom: 16px; }
+    .dj-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .dj-summary-row .dj-summary-name { font-weight: 500; }
+    .dj-summary-row .dj-summary-chapters { color: #ccc; font-size: 0.85rem; }
+    .dj-summary-row.needs-more { border-color: rgba(200, 55, 55, 0.4); }
+    .warn-pill {
+      background: rgba(200, 55, 55, 0.18);
+      color: #e08585;
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .ok-pill {
+      background: rgba(14, 94, 54, 0.25);
+      color: #7fd4a5;
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .save-toast, .sync-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--roots-green);
+      color: var(--text-white);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 50;
+    }
+    .save-toast.show, .sync-toast.show { opacity: 1; transform: translateY(0); }
+    .sync-toast { bottom: 60px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-dim); }
+
+    footer.gate-footer { text-align: center; color: #666; font-size: 0.78rem; padding: 30px; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="eyebrow">SelassieFest — Internal Production Tool</div>
+    <h1>Main Stage DJ Run of Show</h1>
+    <p>This is one unified musical experience, not eight separate sets. Edit chapters here as a team — everything saves instantly and syncs live for everyone with this link.</p>
+    <p class="rule">Times are approximate. Every selector should be warmed up on at least 2, preferably 3 chapters — assignments may shift day-of.</p>
+  </header>
+
+  <div id="app">
+    <div class="top-bar">
+      <div>Editing as: <strong id="editingAsName">—</strong> · <button id="editingAsChange" type="button">change</button></div>
+      <button class="btn btn-primary" id="addChapterBtn" type="button"><i class="fas fa-plus"></i>&nbsp; Add Chapter</button>
+    </div>
+
+    <div id="chaptersContainer"></div>
+
+    <section id="byDjSection">
+      <h2>By Selector</h2>
+      <p class="hint">Auto-generated from the chapters above — who's prepared for what, and who still needs another chapter.</p>
+      <div id="byDjContainer"></div>
+    </section>
+  </div>
+
+  <footer class="gate-footer">SelassieFest / Ras Tafari Inc &mdash; not for public distribution</footer>
+
+  <div class="save-toast" id="saveToast">Saved &#10003;</div>
+  <div class="sync-toast" id="syncToast"></div>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script>
+    (function () {
+      var NAME_KEY = 'runOfShowEditorName';
+      var myName = localStorage.getItem(NAME_KEY) || '';
+
+      var chapters = [];   // each: {...row, djs: [...chapter_djs rows]}
+      var channel = null;
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function showToast(el, text, ms) {
+        if (text != null) el.textContent = text;
+        el.classList.add('show');
+        clearTimeout(el._hideTimer);
+        el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, ms || 1800);
+      }
+
+      function ensureName() {
+        while (!myName) {
+          var entered = window.prompt('Your name (shown to teammates as who last edited a field):');
+          if (entered && entered.trim()) {
+            myName = entered.trim();
+            localStorage.setItem(NAME_KEY, myName);
+          }
+        }
+        document.getElementById('editingAsName').textContent = myName;
+      }
+
+      document.getElementById('editingAsChange').addEventListener('click', function () {
+        var entered = window.prompt('Your name:', myName);
+        if (entered && entered.trim()) {
+          myName = entered.trim();
+          localStorage.setItem(NAME_KEY, myName);
+          document.getElementById('editingAsName').textContent = myName;
+        }
+      });
+
+      // ---- Load ----
+
+      async function loadAll() {
+        var client = await window.sfSupabaseReady;
+        var container = document.getElementById('chaptersContainer');
+        container.innerHTML = '<p class="empty-note">Loading…</p>';
+
+        var [chaptersRes, djsRes] = await Promise.all([
+          client.from('run_of_show_chapters').select('*').order('sort_order', { ascending: true }),
+          client.from('run_of_show_chapter_djs').select('*').order('sort_order', { ascending: true }),
+        ]);
+
+        if (chaptersRes.error) {
+          container.innerHTML = '<p class="empty-note">Could not load: ' + escapeHtml(chaptersRes.error.message) + '</p>';
+          return;
+        }
+
+        var djsByChapter = {};
+        (djsRes.data || []).forEach(function (d) {
+          (djsByChapter[d.chapter_id] = djsByChapter[d.chapter_id] || []).push(d);
+        });
+
+        chapters = (chaptersRes.data || []).map(function (c) {
+          c.djs = djsByChapter[c.id] || [];
+          return c;
+        });
+
+        renderChapters();
+        renderByDj();
+        subscribeRealtime();
+      }
+
+      // ---- Render: chapters ----
+
+      function chapterCardHtml(c) {
+        var djRows = c.djs.map(djRowHtml).join('');
+        return (
+          '<div class="chapter-card" data-chapter-id="' + c.id + '">' +
+            '<div class="chapter-card-header">' +
+              '<div class="chapter-title-row">' +
+                '<input type="text" data-field="chapter_label" value="' + escapeHtml(c.chapter_label || '') + '" placeholder="Chapter #" />' +
+                '<input type="text" data-field="title" value="' + escapeHtml(c.title || '') + '" placeholder="Chapter title" />' +
+              '</div>' +
+              '<div class="chapter-actions">' +
+                '<button class="btn btn-icon move-up-btn" type="button" title="Move earlier"><i class="fas fa-arrow-up"></i></button>' +
+                '<button class="btn btn-icon move-down-btn" type="button" title="Move later"><i class="fas fa-arrow-down"></i></button>' +
+                '<button class="btn btn-danger btn-icon delete-chapter-btn" type="button" title="Delete chapter"><i class="fas fa-trash"></i></button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-grid">' +
+              '<div class="field">' +
+                '<label>Time (approximate)</label>' +
+                '<input type="text" data-field="time_label" value="' + escapeHtml(c.time_label || '') + '" placeholder="e.g. 4:00-4:30 PM" />' +
+              '</div>' +
+              '<div class="field full">' +
+                '<label>Musical direction</label>' +
+                '<textarea data-field="musical_direction" placeholder="What sound/style belongs in this chapter">' + escapeHtml(c.musical_direction || '') + '</textarea>' +
+              '</div>' +
+              '<div class="field full">' +
+                '<label>Description / purpose</label>' +
+                '<textarea data-field="description" placeholder="Why this chapter exists in the story">' + escapeHtml(c.description || '') + '</textarea>' +
+              '</div>' +
+              '<div class="field full">' +
+                '<label>Notes (transitions, dubplate guidance, anything else)</label>' +
+                '<textarea data-field="notes" placeholder="Optional">' + escapeHtml(c.notes || '') + '</textarea>' +
+              '</div>' +
+            '</div>' +
+            '<div class="djs-panel">' +
+              '<h4>Prepared Selectors</h4>' +
+              '<div class="dj-list">' + (djRows || '<p class="empty-note" style="padding:8px 0;">No selectors added yet.</p>') + '</div>' +
+              '<div class="add-dj-row">' +
+                '<input type="text" class="new-dj-name" placeholder="Selector name" />' +
+                '<select class="new-dj-role">' +
+                  '<option value="primary">Primary</option>' +
+                  '<option value="backup">Backup / ready</option>' +
+                '</select>' +
+                '<button class="btn add-dj-btn" type="button"><i class="fas fa-plus"></i>&nbsp; Add</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
+      function djRowHtml(d) {
+        return (
+          '<div class="dj-row" data-dj-id="' + d.id + '">' +
+            '<input type="text" data-field="dj_name" value="' + escapeHtml(d.dj_name || '') + '" />' +
+            '<select data-field="role" class="role-' + escapeHtml(d.role) + '">' +
+              '<option value="primary"' + (d.role === 'primary' ? ' selected' : '') + '>Primary</option>' +
+              '<option value="backup"' + (d.role === 'backup' ? ' selected' : '') + '>Backup / ready</option>' +
+            '</select>' +
+            '<button class="btn btn-danger btn-icon remove-dj-btn" type="button" title="Remove"><i class="fas fa-times"></i></button>' +
+          '</div>'
+        );
+      }
+
+      function renderChapters() {
+        var container = document.getElementById('chaptersContainer');
+        if (!chapters.length) {
+          container.innerHTML = '<p class="empty-note">No chapters yet. Click "Add Chapter" to start building the run of show.</p>';
+          return;
+        }
+        container.innerHTML = chapters.map(chapterCardHtml).join('');
+        bindChapterCardEvents();
+      }
+
+      function bindChapterCardEvents() {
+        Array.prototype.forEach.call(document.querySelectorAll('.chapter-card'), function (card) {
+          var chapterId = card.dataset.chapterId;
+
+          card.querySelector('.delete-chapter-btn').addEventListener('click', function () {
+            deleteChapter(chapterId);
+          });
+          card.querySelector('.move-up-btn').addEventListener('click', function () {
+            moveChapter(chapterId, -1);
+          });
+          card.querySelector('.move-down-btn').addEventListener('click', function () {
+            moveChapter(chapterId, 1);
+          });
+
+          card.querySelectorAll('[data-field]').forEach(function (el) {
+            el.addEventListener('change', function () {
+              var djRow = el.closest('.dj-row');
+              if (djRow) {
+                saveDjField(djRow.dataset.djId, el.dataset.field, el.value, el);
+              } else {
+                saveChapterField(chapterId, el.dataset.field, el.value);
+              }
+            });
+          });
+
+          card.querySelectorAll('.remove-dj-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var djRow = btn.closest('.dj-row');
+              removeDj(djRow.dataset.djId);
+            });
+          });
+
+          card.querySelector('.add-dj-btn').addEventListener('click', function () {
+            var nameInput = card.querySelector('.new-dj-name');
+            var roleSelect = card.querySelector('.new-dj-role');
+            var name = nameInput.value.trim();
+            if (!name) return;
+            addDj(chapterId, name, roleSelect.value);
+            nameInput.value = '';
+            roleSelect.value = 'primary';
+          });
+        });
+      }
+
+      // ---- Render: by-selector summary ----
+
+      function renderByDj() {
+        var container = document.getElementById('byDjContainer');
+        var byName = {};
+        chapters.forEach(function (c) {
+          (c.djs || []).forEach(function (d) {
+            var key = d.dj_name.trim();
+            if (!key) return;
+            (byName[key] = byName[key] || []).push({ chapter: c, role: d.role });
+          });
+        });
+
+        var names = Object.keys(byName).sort(function (a, b) { return a.localeCompare(b); });
+        if (!names.length) {
+          container.innerHTML = '<p class="empty-note">No selectors added to any chapter yet.</p>';
+          return;
+        }
+
+        container.innerHTML = names.map(function (name) {
+          var entries = byName[name];
+          var enough = entries.length >= 2;
+          var chapterList = entries.map(function (e) {
+            return escapeHtml(e.chapter.title || '(untitled)') + (e.role === 'backup' ? ' (backup)' : '');
+          }).join(', ');
+          return (
+            '<div class="dj-summary-row' + (enough ? '' : ' needs-more') + '">' +
+              '<div>' +
+                '<div class="dj-summary-name">' + escapeHtml(name) + '</div>' +
+                '<div class="dj-summary-chapters">' + chapterList + '</div>' +
+              '</div>' +
+              (enough
+                ? '<span class="ok-pill">' + entries.length + ' chapters ready</span>'
+                : '<span class="warn-pill">only ' + entries.length + ' — needs at least 1 more</span>') +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      // ---- Save / mutate: chapters ----
+
+      document.getElementById('addChapterBtn').addEventListener('click', async function () {
+        var client = await window.sfSupabaseReady;
+        var nextSort = chapters.length ? Math.max.apply(null, chapters.map(function (c) { return c.sort_order || 0; })) + 1 : 1;
+        var { data, error } = await client
+          .from('run_of_show_chapters')
+          .insert({
+            slug: 'chapter-' + Date.now(),
+            sort_order: nextSort,
+            chapter_label: 'Chapter ' + (chapters.length + 1),
+            title: '',
+            last_edited_by: myName,
+          })
+          .select('*')
+          .single();
+        if (error) {
+          alert('Could not add chapter: ' + error.message);
+          return;
+        }
+        data.djs = [];
+        chapters.push(data);
+        renderChapters();
+        renderByDj();
+      });
+
+      async function deleteChapter(chapterId) {
+        if (!window.confirm('Delete this chapter and its prepared-selector list? This cannot be undone.')) return;
+        var client = await window.sfSupabaseReady;
+        await client.from('run_of_show_chapters').delete().eq('id', chapterId);
+        chapters = chapters.filter(function (c) { return String(c.id) !== String(chapterId); });
+        renderChapters();
+        renderByDj();
+      }
+
+      async function moveChapter(chapterId, direction) {
+        var idx = chapters.findIndex(function (c) { return String(c.id) === String(chapterId); });
+        var otherIdx = idx + direction;
+        if (idx === -1 || otherIdx < 0 || otherIdx >= chapters.length) return;
+
+        var a = chapters[idx];
+        var b = chapters[otherIdx];
+        var aSort = a.sort_order;
+        var bSort = b.sort_order;
+
+        var client = await window.sfSupabaseReady;
+        await Promise.all([
+          client.from('run_of_show_chapters').update({ sort_order: bSort, last_edited_by: myName }).eq('id', a.id),
+          client.from('run_of_show_chapters').update({ sort_order: aSort, last_edited_by: myName }).eq('id', b.id),
+        ]);
+        a.sort_order = bSort;
+        b.sort_order = aSort;
+        chapters.sort(function (x, y) { return (x.sort_order || 0) - (y.sort_order || 0); });
+        renderChapters();
+      }
+
+      async function saveChapterField(chapterId, field, value) {
+        var client = await window.sfSupabaseReady;
+        var patch = {};
+        patch[field] = value === '' ? null : value;
+        patch.updated_at = new Date().toISOString();
+        patch.last_edited_by = myName;
+        var { error } = await client.from('run_of_show_chapters').update(patch).eq('id', chapterId);
+        if (error) {
+          alert('Could not save: ' + error.message);
+          return;
+        }
+        var c = chapters.find(function (x) { return String(x.id) === String(chapterId); });
+        if (c) c[field] = patch[field];
+        showToast(document.getElementById('saveToast'));
+      }
+
+      // ---- Save / mutate: chapter DJs ----
+
+      async function addDj(chapterId, name, role) {
+        var client = await window.sfSupabaseReady;
+        var c = chapters.find(function (x) { return String(x.id) === String(chapterId); });
+        var nextSort = c && c.djs.length ? Math.max.apply(null, c.djs.map(function (d) { return d.sort_order || 0; })) + 1 : 1;
+        var { data, error } = await client
+          .from('run_of_show_chapter_djs')
+          .insert({ chapter_id: chapterId, dj_name: name, role: role, sort_order: nextSort, last_edited_by: myName })
+          .select('*')
+          .single();
+        if (error) {
+          alert('Could not add selector: ' + error.message);
+          return;
+        }
+        if (c) c.djs.push(data);
+        renderChapters();
+        renderByDj();
+      }
+
+      async function removeDj(djId) {
+        var client = await window.sfSupabaseReady;
+        await client.from('run_of_show_chapter_djs').delete().eq('id', djId);
+        chapters.forEach(function (c) { c.djs = c.djs.filter(function (d) { return String(d.id) !== String(djId); }); });
+        renderChapters();
+        renderByDj();
+      }
+
+      async function saveDjField(djId, field, value, el) {
+        var client = await window.sfSupabaseReady;
+        var patch = {};
+        patch[field] = value;
+        patch.last_edited_by = myName;
+        var { error } = await client.from('run_of_show_chapter_djs').update(patch).eq('id', djId);
+        if (error) {
+          alert('Could not save: ' + error.message);
+          return;
+        }
+        chapters.forEach(function (c) {
+          c.djs.forEach(function (d) {
+            if (String(d.id) === String(djId)) d[field] = value;
+          });
+        });
+        if (field === 'role' && el) {
+          el.className = 'role-' + value;
+        }
+        renderByDj();
+        showToast(document.getElementById('saveToast'));
+      }
+
+      // ---- Realtime sync ----
+      // One shared document, not per-record, so this subscribes to every
+      // change on both tables rather than filtering by id like the ticket
+      // event drafts editor does.
+
+      async function subscribeRealtime() {
+        var client = await window.sfSupabaseReady;
+        if (channel) await client.removeChannel(channel);
+
+        channel = client.channel('run-of-show')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'run_of_show_chapters' }, handleRemoteChange)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'run_of_show_chapter_djs' }, handleRemoteChange)
+          .subscribe();
+      }
+
+      var reloadPending = false;
+      function handleRemoteChange(payload) {
+        var editor = (payload.new && payload.new.last_edited_by) || (payload.old && payload.old.last_edited_by);
+        if (editor && editor !== myName) {
+          showToast(document.getElementById('syncToast'), 'Updated by ' + editor, 2500);
+        }
+        // Simplest-correct approach for a small, infrequently-concurrent
+        // team tool: reload the whole document on any change rather than
+        // patching individual rows in place. Debounced so a burst of
+        // changes (e.g. someone tabbing through several fields) triggers
+        // one reload, not one per field.
+        if (reloadPending) return;
+        reloadPending = true;
+        setTimeout(function () {
+          reloadPending = false;
+          loadAll();
+        }, 400);
+      }
+
+      // ---- Init ----
+
+      ensureName();
+      loadAll();
+    })();
+  </script>
+</body>
+</html>

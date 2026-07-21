@@ -1279,3 +1279,113 @@ create policy "Allow anon insert to vendor-applications" on storage.objects
 create policy "Allow public read of vendor-applications" on storage.objects
   for select to anon
   using (bucket_id = 'vendor-applications');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Main Stage DJ run-of-show (/run-of-show/, internal production tool)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Same "no login, anyone with the link can edit, last write wins" tradeoff
+-- as ticket_event_drafts above -- a small production team coordinating one
+-- show, not a general-purpose doc editor. slug (not id) is what seeding
+-- below keys off of, so re-running this file is safe.
+--
+-- The whole point of this tool: the DJ lineup isn't 6 fixed people in 6
+-- fixed slots -- times are approximate and a selector may swap chapters
+-- day-of, so every selector should be "warmed up" on at least 2, ideally 3
+-- chapters, not just the one they're nominally scheduled for. chapter_djs
+-- is the many-to-many that makes that visible: a chapter can list several
+-- prepared selectors, and a selector can appear under several chapters.
+-- role distinguishes "who's actually slated to play this chapter" (primary)
+-- from "warmed up and ready if needed" (backup).
+create table if not exists run_of_show_chapters (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  sort_order int not null default 0,
+  chapter_label text,       -- e.g. "Chapter 1" -- kept as free text, not an auto-numbered column, since chapters can be inserted/reordered
+  title text not null,      -- e.g. "The Foundation"
+  time_label text,          -- free text, e.g. "4:00-4:30 PM" -- deliberately not a real time range, since times are approximate and this is edited as a label, not scheduled
+  musical_direction text,
+  description text,
+  notes text,
+  last_edited_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists run_of_show_chapter_djs (
+  id uuid primary key default gen_random_uuid(),
+  chapter_id uuid not null references run_of_show_chapters(id) on delete cascade,
+  dj_name text not null,
+  role text not null default 'primary' check (role in ('primary', 'backup')),
+  sort_order int not null default 0,
+  notes text,
+  last_edited_by text,
+  created_at timestamptz not null default now(),
+  unique (chapter_id, dj_name)
+);
+
+alter table run_of_show_chapters enable row level security;
+alter table run_of_show_chapter_djs enable row level security;
+
+-- Deliberately open to anon AND authenticated, no login gate at all -- same
+-- tradeoff as ticket_event_drafts/ticket_event_ticket_types above (the team
+-- wanted zero-friction access via a shared link, not per-member accounts).
+create policy "public full access" on run_of_show_chapters
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+create policy "public full access" on run_of_show_chapter_djs
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+grant select, insert, update, delete on run_of_show_chapters to anon, authenticated;
+grant select, insert, update, delete on run_of_show_chapter_djs to anon, authenticated;
+
+-- Live multi-editor sync, same as ticket_event_drafts/ticket_event_ticket_types.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'run_of_show_chapters'
+  ) then
+    alter publication supabase_realtime add table run_of_show_chapters;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'run_of_show_chapter_djs'
+  ) then
+    alter publication supabase_realtime add table run_of_show_chapter_djs;
+  end if;
+end $$;
+
+-- Seed tonight's proposed running order. on conflict (slug) do nothing
+-- keeps this re-runnable -- once the team starts editing in the tool, this
+-- INSERT becomes a no-op forever (it will never overwrite live edits).
+insert into run_of_show_chapters (slug, sort_order, chapter_label, title, time_label, musical_direction, description)
+values
+  ('foundation', 1, 'Chapter 1', 'The Foundation', '4:00-4:30 PM', 'Classic rub-a-dub and the pioneers who laid the foundation.', 'Where we came from.'),
+  ('revival', 2, 'Chapter 2', 'The Revival', '4:30-5:15 PM', 'The modern generation carrying reggae''s message of justice, unity, and hope.', 'Who is carrying the torch today.'),
+  ('rastafari-message', 3, 'Chapter 3', 'The Rastafari Message', '5:15-6:00 PM', 'Deep roots, spirituality, liberation, and African consciousness.', 'Why the music exists.'),
+  ('celebration-of-the-people', 4, 'Chapter 4', 'Celebration of the People', '6:30-7:15 PM', 'Uplifting reggae, lovers rock, sing-alongs, cultural anthems, positive dancehall, and songs celebrating community and everyday joy. Keep the energy rising without abandoning the festival''s mission.', 'The culture in everyday life.'),
+  ('fire-of-the-lion', 5, 'Chapter 5', 'Fire of the Lion', '7:15-8:00 PM', 'High-energy conscious reggae and roots-influenced dancehall centered on righteousness, African pride, resistance, and empowerment. Dubplates are welcome if they support the message rather than overshadow it.', 'The strength, resilience, and spirit of the movement.'),
+  ('one-love-one-people-one-africa', 6, 'Chapter 6', 'One Love, One People, One Africa', '9:25-10:00 PM', 'A collaborative finale celebrating unity, freedom, and the enduring legacy of His Imperial Majesty Emperor Haile Selassie I.', 'The community comes together in unity.')
+on conflict (slug) do nothing;
+
+insert into run_of_show_chapter_djs (chapter_id, dj_name, role, sort_order)
+select c.id, v.dj_name, v.role, v.sort_order
+from (values
+  ('foundation', 'Tallas', 'primary', 1),
+  ('revival', 'St. Louis', 'primary', 1),
+  ('rastafari-message', 'Innovation', 'primary', 1),
+  ('celebration-of-the-people', 'Money Movements', 'primary', 1),
+  ('fire-of-the-lion', 'Fatta Fyah', 'primary', 1),
+  ('one-love-one-people-one-africa', 'Tallas', 'primary', 1),
+  ('one-love-one-people-one-africa', 'St. Louis', 'primary', 2),
+  ('one-love-one-people-one-africa', 'Innovation', 'primary', 3),
+  ('one-love-one-people-one-africa', 'Money Movements', 'primary', 4),
+  ('one-love-one-people-one-africa', 'Fatta Fyah', 'primary', 5)
+) as v(chapter_slug, dj_name, role, sort_order)
+join run_of_show_chapters c on c.slug = v.chapter_slug
+on conflict (chapter_id, dj_name) do nothing;
