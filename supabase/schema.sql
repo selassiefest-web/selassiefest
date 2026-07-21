@@ -1360,17 +1360,24 @@ begin
   end if;
 end $$;
 
--- Seed tonight's proposed running order. on conflict (slug) do nothing
--- keeps this re-runnable -- once the team starts editing in the tool, this
--- INSERT becomes a no-op forever (it will never overwrite live edits).
-insert into run_of_show_chapters (slug, sort_order, chapter_label, title, time_label, musical_direction, description)
+-- Seed tonight's proposed running order, reframed around Bob Marley's
+-- discography (revised 2026-07-21): each chapter maps to an era of his
+-- studio/live catalog, anchored by the fact that "War" (Rastaman
+-- Vibration, 1976) sets Emperor Haile Selassie I's 1963 UN address to
+-- music almost verbatim -- the clearest direct Marley/Selassie thread.
+-- on conflict (slug) do nothing keeps this re-runnable -- once the team
+-- starts editing in the tool, this INSERT becomes a no-op forever (it will
+-- never overwrite live edits, even a deliberate content revision like this
+-- one -- that was applied directly against the database instead, same as
+-- every other one-off content change in this file).
+insert into run_of_show_chapters (slug, sort_order, chapter_label, title, time_label, musical_direction, description, notes)
 values
-  ('foundation', 1, 'Chapter 1', 'The Foundation', '4:00-4:30 PM', 'Classic rub-a-dub and the pioneers who laid the foundation.', 'Where we came from.'),
-  ('revival', 2, 'Chapter 2', 'The Revival', '4:30-5:15 PM', 'The modern generation carrying reggae''s message of justice, unity, and hope.', 'Who is carrying the torch today.'),
-  ('rastafari-message', 3, 'Chapter 3', 'The Rastafari Message', '5:15-6:00 PM', 'Deep roots, spirituality, liberation, and African consciousness.', 'Why the music exists.'),
-  ('celebration-of-the-people', 4, 'Chapter 4', 'Celebration of the People', '6:30-7:15 PM', 'Uplifting reggae, lovers rock, sing-alongs, cultural anthems, positive dancehall, and songs celebrating community and everyday joy. Keep the energy rising without abandoning the festival''s mission.', 'The culture in everyday life.'),
-  ('fire-of-the-lion', 5, 'Chapter 5', 'Fire of the Lion', '7:15-8:00 PM', 'High-energy conscious reggae and roots-influenced dancehall centered on righteousness, African pride, resistance, and empowerment. Dubplates are welcome if they support the message rather than overshadow it.', 'The strength, resilience, and spirit of the movement.'),
-  ('one-love-one-people-one-africa', 6, 'Chapter 6', 'One Love, One People, One Africa', '9:25-10:00 PM', 'A collaborative finale celebrating unity, freedom, and the enduring legacy of His Imperial Majesty Emperor Haile Selassie I.', 'The community comes together in unity.')
+  ('foundation', 1, 'Chapter 1', 'The Wailing Wailers', '4:00-4:30 PM', 'Foundation ska, rocksteady, and early roots — the raw, rebellious sound of Trench Town before the world knew the name Rastafari.', 'Where the story begins. The Wailing Wailers (1965), Soul Rebels (1970), and Soul Revolution (1971) — three young voices laying the rhythmic and spiritual foundation everything after is built on.', 'Reference albums: The Wailing Wailers (1965), Soul Rebels (1970), Soul Revolution (1971), The Best of the Wailers (1971).'),
+  ('revival', 2, 'Chapter 2', 'Catch a Fire & Burnin''', '4:30-5:15 PM', 'The Wailers go international — raw roots reggae and righteous fire. "Get Up, Stand Up," "I Shot the Sheriff," "Concrete Jungle," "Burnin'' and Lootin''."', 'The message leaves Jamaica and reaches the world — reggae''s message of justice, unity, and hope, carried by the modern generation.', 'Reference albums: Catch a Fire (1973), Burnin'' (1973). Also: Talkin'' Blues (1991), archival live/interview material from this era, released posthumously.'),
+  ('rastafari-message', 3, 'Chapter 3', 'Natty Dread & Rastaman Vibration', '5:15-6:00 PM', 'Deep roots and Rastafari consciousness. "War" lifts its lyrics directly from Emperor Haile Selassie I''s 1963 address to the United Nations — the clearest bridge between Bob Marley''s music and His Imperial Majesty''s own words.', 'Why the music exists — Rastafari faith, African identity, and liberation theology, spoken plainly.', 'Reference albums: Natty Dread (1974), Rastaman Vibration (1976), plus the live album Live! (1975), recorded on the Natty Dread tour. Selassie connection: "War" (Rastaman Vibration) sets Emperor Haile Selassie I''s 1963 UN address to music, nearly word for word.'),
+  ('celebration-of-the-people', 4, 'Chapter 4', 'Exodus & Kaya', '6:30-7:15 PM', 'Exile, movement, and joy — "Exodus," "Jamming," "Is This Love," "One Love." Uplifting reggae, lovers rock, sing-alongs, cultural anthems, positive dancehall. Keep the energy rising without abandoning the festival''s mission.', 'The culture in everyday life — even written in exile after the 1976 assassination attempt, this music turns toward love, unity, and celebration.', 'Reference albums: Exodus (1977), Kaya (1978), plus the live album Babylon by Bus (1978).'),
+  ('fire-of-the-lion', 5, 'Chapter 5', 'Survival & Uprising', '7:15-8:00 PM', 'Pan-African liberation and righteous resistance — "Zimbabwe," "Africa Unite," "Redemption Song," "Could You Be Loved." High-energy conscious reggae and roots-influenced dancehall centered on righteousness, African pride, resistance, and empowerment. Dubplates are welcome if they support the message rather than overshadow it.', 'The strength, resilience, and spirit of the movement — Marley''s most overtly Pan-Africanist, activist chapter.', 'Reference albums: Survival (1979), Uprising (1980).'),
+  ('one-love-one-people-one-africa', 6, 'Chapter 6', 'Confrontation & Legend', '9:25-10:00 PM', '"Buffalo Soldier," "Chant Down Babylon," "Redemption Song" reprise — a collaborative finale for all selectors together.', 'The message outlives the man. Confrontation (1983), released after Marley''s passing, and Legend (1984) — the best-selling reggae album of all time — carried his message, and Emperor Haile Selassie I''s, to generations who never saw him perform live. A collaborative finale celebrating unity, freedom, and that enduring legacy.', 'Reference albums: Confrontation (1983, posthumous). Legacy: Legend (1984), the best-selling reggae album of all time.')
 on conflict (slug) do nothing;
 
 insert into run_of_show_chapter_djs (chapter_id, dj_name, role, sort_order)
