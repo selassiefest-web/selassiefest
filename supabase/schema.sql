@@ -1380,19 +1380,28 @@ values
   ('one-love-one-people-one-africa', 6, 'Chapter 6', 'Confrontation & Legend', '9:25-10:00 PM', '"Buffalo Soldier," "Chant Down Babylon," "Redemption Song" reprise — a collaborative finale for all selectors together.', 'The message outlives the man. Confrontation (1983), released after Marley''s passing, and Legend (1984) — the best-selling reggae album of all time — carried his message, and Emperor Haile Selassie I''s, to generations who never saw him perform live. A collaborative finale celebrating unity, freedom, and that enduring legacy.', 'Reference albums: Confrontation (1983, posthumous). Legacy: Legend (1984), the best-selling reggae album of all time.')
 on conflict (slug) do nothing;
 
+-- dj_name/role below reflect the current live roster as of 2026-07-21
+-- (Donavan was originally seeded as "St. Louis"; Prestige Sound was added
+-- directly in the tool, not by this seed, but is included here so a fresh
+-- install matches reality). Each chapter's description field in the live
+-- table also carries a bulleted "other artists/albums of this era" list and
+-- notable-cover notes -- not mirrored in the short seed text below to keep
+-- this file readable; see the live table for the full curated content.
 insert into run_of_show_chapter_djs (chapter_id, dj_name, role, sort_order)
 select c.id, v.dj_name, v.role, v.sort_order
 from (values
   ('foundation', 'Tallas', 'primary', 1),
-  ('revival', 'St. Louis', 'primary', 1),
+  ('revival', 'Donavan', 'primary', 1),
   ('rastafari-message', 'Innovation', 'primary', 1),
+  ('rastafari-message', 'Prestige Sound', 'backup', 2),
   ('celebration-of-the-people', 'Money Movements', 'primary', 1),
   ('fire-of-the-lion', 'Fatta Fyah', 'primary', 1),
   ('one-love-one-people-one-africa', 'Tallas', 'primary', 1),
-  ('one-love-one-people-one-africa', 'St. Louis', 'primary', 2),
+  ('one-love-one-people-one-africa', 'Donavan', 'primary', 2),
   ('one-love-one-people-one-africa', 'Innovation', 'primary', 3),
   ('one-love-one-people-one-africa', 'Money Movements', 'primary', 4),
-  ('one-love-one-people-one-africa', 'Fatta Fyah', 'primary', 5)
+  ('one-love-one-people-one-africa', 'Fatta Fyah', 'primary', 5),
+  ('one-love-one-people-one-africa', 'Prestige Sound', 'primary', 6)
 ) as v(chapter_slug, dj_name, role, sort_order)
 join run_of_show_chapters c on c.slug = v.chapter_slug
 on conflict (chapter_id, dj_name) do nothing;
