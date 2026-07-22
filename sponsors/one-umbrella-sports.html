@@ -27,6 +27,14 @@
         --red-accent: #C83737;
         --card-bg: rgba(255,255,255,0.04);
         --border-dim: rgba(255,255,255,0.08);
+        /* One Umbrella Sports & Entertainment brand colors, sampled from
+           their logo (pale-sage-to-green gradient globe, yellow umbrella
+           canopy) -- used only within this page's own sponsor-card, not
+           the shared site chrome above/below it. */
+        --ou-green: #4CAF50;
+        --ou-green-dark: #2E7D32;
+        --ou-yellow: #F2E122;
+        --ou-pale: #A9C7AC;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -137,33 +145,34 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        background: rgba(229,169,60,0.12);
-        border: 1px solid rgba(229,169,60,0.3);
+        background: rgba(76,175,80,0.14);
+        border: 1px solid rgba(76,175,80,0.35);
         border-radius: 60px;
         padding: 8px 22px;
         font-size: 0.75rem;
         font-weight: 400;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--gold-accent);
+        color: var(--ou-yellow);
         margin-bottom: 28px;
     }
     .sponsor-card {
-        background: var(--card-bg);
+        background:
+            linear-gradient(180deg, rgba(169,199,172,0.10), rgba(76,175,80,0.06) 60%, var(--card-bg) 100%),
+            var(--card-bg);
         border: 1px solid var(--border-dim);
         border-radius: 32px;
         padding: 48px 40px;
         text-align: center;
     }
     .sponsor-logo-big {
-        max-height: 140px;
-        max-width: 280px;
+        max-height: 170px;
+        max-width: 170px;
         width: auto;
         margin: 0 auto 28px;
         display: block;
-        background: #fff;
-        border-radius: 16px;
-        padding: 12px 20px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(76,175,80,0.25), 0 0 32px rgba(242,225,34,0.12);
     }
     .sponsor-name {
         font-size: 2.2rem;
@@ -172,12 +181,12 @@
         letter-spacing: 0.08em;
         margin-bottom: 20px;
     }
-    .sponsor-name .gold { color: var(--gold-accent); font-weight: 300; }
+    .sponsor-name .gold { color: var(--ou-yellow); font-weight: 300; }
     .sponsor-sub {
         font-size: 0.9rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #999;
+        color: var(--ou-pale);
         margin-bottom: 24px;
     }
     .sponsor-blurb {
@@ -205,10 +214,35 @@
         transition: 0.25s;
         border: 1px solid;
     }
-    .sponsor-cta-primary { background: var(--gold-accent); color: var(--bg-black); border-color: var(--gold-accent); }
-    .sponsor-cta-primary:hover { background: #c48a2c; transform: translateY(-2px); }
+    .sponsor-cta-primary { background: var(--ou-green); color: #fff; border-color: var(--ou-green); }
+    .sponsor-cta-primary:hover { background: var(--ou-green-dark); border-color: var(--ou-green-dark); transform: translateY(-2px); }
     .sponsor-cta-secondary { background: transparent; color: #ccc; border-color: var(--border-dim); }
-    .sponsor-cta-secondary:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+    .sponsor-cta-secondary:hover { border-color: var(--ou-yellow); color: var(--ou-yellow); }
+    .sponsor-social-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 20px;
+    }
+    .sponsor-social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid rgba(76,175,80,0.35);
+        color: var(--ou-yellow);
+        font-size: 1.05rem;
+        transition: 0.25s;
+    }
+    .sponsor-social-icon:hover {
+        background: var(--ou-green);
+        border-color: var(--ou-green);
+        color: #fff;
+        transform: translateY(-2px);
+    }
     .footer {
         background: #050505;
         border-top: 1px solid var(--border-dim);
@@ -288,7 +322,7 @@
         <img src="/assets/images/sponsors/culinarycannaco.png" alt="CulinaryCannaCo">
       </a>
       <a href="/sponsors/one-umbrella-sports.html" target="_blank" rel="noopener noreferrer" class="powered-by-logo">
-        <img src="/assets/images/sponsors/one-umbrella-sports.jpeg" alt="One Umbrella Sports & Entertainment">
+        <img src="/assets/images/sponsors/one-umbrella-sports.png" alt="One Umbrella Sports & Entertainment">
       </a>
     </div>
     <a href="/donate/" class="global-badge-wrapper" aria-label="Donate to SelassieFest">
@@ -318,7 +352,7 @@
             <span class="sponsor-badge"><i class="fas fa-futbol"></i> Sports &amp; Culture Partner</span>
         </div>
         <div class="sponsor-card">
-            <img src="/assets/images/sponsors/one-umbrella-sports.jpeg" alt="One Umbrella Sports & Entertainment" class="sponsor-logo-big">
+            <img src="/assets/images/sponsors/one-umbrella-sports.png" alt="One Umbrella Sports & Entertainment" class="sponsor-logo-big">
             <h1 class="sponsor-name">One <span class="gold">Umbrella</span></h1>
             <div class="sponsor-sub">Kingston, Jamaica · Sports &amp; Entertainment</div>
             <p class="sponsor-blurb">
@@ -329,7 +363,14 @@
             </p>
             <div class="sponsor-cta-group">
                 <a href="https://1umbrellasportsjm.com/" target="_blank" rel="noopener noreferrer" class="sponsor-cta sponsor-cta-primary"><i class="fas fa-globe"></i> Visit One Umbrella Sports</a>
-                <a href="https://www.instagram.com/oneumbrellasportsjm" target="_blank" rel="noopener noreferrer" class="sponsor-cta sponsor-cta-secondary"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+            <div class="sponsor-social-row">
+                <a href="https://www.instagram.com/oneumbrellasportsjm" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/share/19k3DZfuRq/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/1umbrellasports" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="X / Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.tiktok.com/@1.umbrella.sports" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.youtube.com/@1umbrellasportsjm" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://wa.me/4407329086" target="_blank" rel="noopener noreferrer" class="sponsor-social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
     </div>
