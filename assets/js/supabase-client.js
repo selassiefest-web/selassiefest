@@ -196,6 +196,32 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
+  // Uploads the client-generated signed contract PDF to the private
+  // security-guard-contracts bucket, then records the submission. The
+  // notify-submission Edge Function picks the PDF back up (service role,
+  // bypasses this bucket's no-public-read policy) and emails it to Stephen.
+  async submitSecurityGuardContract({ vendorCompanyName, vendorAddress, vendorContact, guardNames, signerName, signerTitle, pdfBlob }) {
+    const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const pdfPath = `${stamp}.pdf`;
+
+    const { error: uploadError } = await client.storage.from('security-guard-contracts').upload(pdfPath, pdfBlob, {
+      contentType: 'application/pdf',
+    });
+    if (uploadError) throw uploadError;
+
+    const { error } = await client.from('security_guard_contracts').insert({
+      vendor_company_name: vendorCompanyName,
+      vendor_address: vendorAddress || null,
+      vendor_contact: vendorContact || null,
+      guard_names: guardNames || null,
+      signer_name: signerName,
+      signer_title: signerTitle || null,
+      pdf_path: pdfPath,
+    });
+    if (error) throw error;
+  },
+
   // Reads from game_submissions_public (a view, not the base table) --
   // pre-filtered to status='approved' and missing submitter_email entirely,
   // so this is safe to call from any page without further filtering.

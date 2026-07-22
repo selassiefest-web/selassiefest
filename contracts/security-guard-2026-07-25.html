@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Security Guard Services Agreement | SelassieFest</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+  <script src="/assets/js/supabase-client.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-black: #0D0D0D;
+      --text-white: #F5F5F5;
+      --roots-green: #0E5E36;
+      --gold-accent: #E5A93C;
+      --red-accent: #C83737;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --border-dim: rgba(255, 255, 255, 0.08);
+    }
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: 'Jost', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    a { color: var(--gold-accent); }
+    input, select, textarea, button { font-family: inherit; }
+
+    .page-header {
+      padding: 28px 32px 16px;
+      border-bottom: 1px solid var(--border-dim);
+      text-align: center;
+    }
+    .page-header .eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+    }
+    .page-header h1 {
+      font-weight: 200;
+      font-size: 1.8rem;
+      letter-spacing: 0.02em;
+      margin-top: 8px;
+    }
+    .page-header p {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 10px;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contract, .form-wrap {
+      max-width: 760px;
+      margin: 28px auto 0;
+      padding: 0 22px;
+    }
+
+    .contract-doc {
+      background: var(--card-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 16px;
+      padding: 28px 30px;
+    }
+    .contract-doc h2 {
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--gold-accent);
+      margin: 22px 0 8px;
+    }
+    .contract-doc h2:first-child { margin-top: 0; }
+    .contract-doc p { margin-bottom: 10px; font-size: 0.95rem; color: #ddd; }
+    .contract-doc ul { margin: 8px 0 10px 22px; font-size: 0.95rem; color: #ddd; }
+    .contract-doc .party-block { font-size: 0.95rem; color: #ddd; margin-bottom: 6px; }
+    .contract-doc .rule { border: none; border-top: 1px solid var(--border-dim); margin: 20px 0; }
+    .contract-doc strong { color: var(--text-white); }
+
+    .form-wrap h2 {
+      font-weight: 400;
+      font-size: 1.2rem;
+      color: var(--gold-accent);
+      margin: 36px 0 16px;
+      text-align: center;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      color: #bbb;
+      margin-bottom: 6px;
+    }
+    .field label .req { color: var(--red-accent); }
+    .field input[type="text"],
+    .field input[type="email"],
+    .field textarea {
+      width: 100%;
+      padding: 11px 13px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-size: 0.95rem;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--gold-accent);
+    }
+    .field textarea { resize: vertical; min-height: 60px; }
+
+    .agree-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 22px 0;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .agree-row input { margin-top: 4px; }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: var(--roots-green);
+      color: var(--text-white);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .submit-btn:hover:not(:disabled) { background: #12784a; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-msg {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .status-msg.success {
+      display: block;
+      background: rgba(14, 94, 54, 0.25);
+      border: 1px solid var(--roots-green);
+      color: #a8e6c1;
+    }
+    .status-msg.error {
+      display: block;
+      background: rgba(200, 55, 55, 0.2);
+      border: 1px solid var(--red-accent);
+      color: #ffb3b3;
+    }
+
+    .signed-block {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .signed-block .col { flex: 1; min-width: 220px; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="eyebrow">Ras Tafari Inc. &middot; d/b/a SelassieFest</div>
+    <h1>Security Guard Services Agreement</h1>
+    <p>Please review the terms below, fill in your company's information, and submit. A signed PDF copy will be generated automatically and emailed to SelassieFest.</p>
+  </div>
+
+  <div class="contract">
+    <div class="contract-doc">
+      <p class="party-block"><strong>Client:</strong> Ras Tafari Inc., a 501(c)(3) nonprofit organization, d/b/a SelassieFest<br>Signed by: Stephen Henry, Authorized Representative</p>
+      <p class="party-block"><strong>Vendor:</strong> as entered below</p>
+
+      <h2>1. Event Details</h2>
+      <ul>
+        <li><strong>Event:</strong> SelassieFest 2026</li>
+        <li><strong>Event Date:</strong> Saturday, July 25, 2026</li>
+        <li><strong>Venue:</strong> 6227 Prairie Avenue, Chicago, IL 60637</li>
+        <li><strong>Shift Hours:</strong> 6:00 PM &ndash; 10:00 PM (4 hours)</li>
+      </ul>
+
+      <h2>2. Scope of Services</h2>
+      <p>Vendor shall provide <strong>two (2)</strong> licensed, uniformed security guards to be stationed at the venue's entry gate for the duration of the shift stated above.</p>
+      <p>Guards' duties are limited to:</p>
+      <ul>
+        <li>Checking in attendees at the gate (verifying tickets, wristbands, guest lists, and/or valid ID as directed by Client staff on site); and</li>
+        <li>Controlling and monitoring entry through the designated gate.</li>
+      </ul>
+      <p>Guards are <strong>not</strong> engaged for interior patrol, crowd control away from the gate, parking/traffic control, escort duties, or any other security function unless separately agreed to in writing and compensated accordingly.</p>
+
+      <h2>3. Personnel &amp; Compliance</h2>
+      <p>Vendor represents and warrants that each guard assigned to this Agreement holds a valid, current Illinois Permanent Employee Registration Card (PERC) and any other license required under the Illinois Private Detective, Alarm, Fire Alarm, and Security Contractor Act; will arrive in uniform, on time, and fit for duty; and will conduct themselves professionally with festival guests and staff. Vendor shall maintain commercial general liability insurance covering its personnel's activities under this Agreement.</p>
+
+      <h2>4. Compensation</h2>
+      <ul>
+        <li><strong>Rate:</strong> $135.00 per guard, flat rate for the 6:00 PM &ndash; 10:00 PM shift.</li>
+        <li><strong>Total:</strong> $270.00 (2 guards &times; $135.00).</li>
+        <li><strong>Payment Terms:</strong> Client shall pay the total amount due to Vendor in full by 10:00 PM on the Event date (July 25, 2026).</li>
+      </ul>
+
+      <h2>5. Independent Contractor</h2>
+      <p>Vendor and its personnel are independent contractors, not employees or agents of Client. Nothing in this Agreement creates a partnership, joint venture, or employment relationship between the Parties.</p>
+
+      <h2>6. Indemnification</h2>
+      <p>Vendor agrees to indemnify and hold harmless Client, Ras Tafari Inc., and its officers, directors, volunteers, and employees from and against any claims, damages, or liabilities arising directly from the negligence or misconduct of Vendor's personnel in the performance of this Agreement.</p>
+
+      <h2>7. Governing Law</h2>
+      <p>This Agreement shall be governed by and construed in accordance with the laws of the State of Illinois.</p>
+
+      <h2>8. Entire Agreement</h2>
+      <p>This Agreement constitutes the entire understanding between the Parties regarding the subject matter herein and supersedes all prior discussions or agreements, written or oral. Any amendments must be made in writing and signed by both Parties.</p>
+
+      <hr class="rule" />
+
+      <h2>Signatures</h2>
+      <div class="signed-block">
+        <div class="col">
+          <p><strong>Client &mdash; Ras Tafari Inc. (d/b/a SelassieFest)</strong><br>
+          Name: Stephen Henry<br>
+          Signature: <em>Stephen Henry</em> (typed, pre-authorized)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-wrap">
+    <h2>Vendor Signature &amp; Submission</h2>
+    <form id="contract-form">
+      <div class="field">
+        <label for="vendorCompanyName">Security Company Name <span class="req">*</span></label>
+        <input type="text" id="vendorCompanyName" required autocomplete="organization" />
+      </div>
+      <div class="field">
+        <label for="vendorAddress">Company Address</label>
+        <input type="text" id="vendorAddress" autocomplete="street-address" />
+      </div>
+      <div class="field">
+        <label for="vendorContact">Phone / Email</label>
+        <input type="text" id="vendorContact" placeholder="Phone and/or email" />
+      </div>
+      <div class="field">
+        <label for="guardNames">Guard Name(s) Assigned to This Shift</label>
+        <textarea id="guardNames" placeholder="e.g. Guard 1 Name, Guard 2 Name"></textarea>
+      </div>
+      <div class="field">
+        <label for="signerName">Your Full Legal Name (typed signature) <span class="req">*</span></label>
+        <input type="text" id="signerName" required autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="signerTitle">Your Title</label>
+        <input type="text" id="signerTitle" autocomplete="organization-title" />
+      </div>
+
+      <div class="agree-row">
+        <input type="checkbox" id="agreeCheck" required />
+        <label for="agreeCheck">I have read the Security Guard Services Agreement above, and typing my name in the field above constitutes my electronic signature agreeing to its terms on behalf of the Vendor.</label>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Sign &amp; Submit</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const CONTRACT_SECTIONS = [
+      { h: null, body: [
+        'SECURITY GUARD SERVICES AGREEMENT',
+        '',
+        'This Security Guard Services Agreement ("Agreement") is entered into as of July 22, 2026, by and between:',
+        '',
+        'Client: Ras Tafari Inc., a 501(c)(3) nonprofit organization, d/b/a SelassieFest ("Client")',
+        'Signed by: Stephen Henry, Authorized Representative',
+        '',
+        'and',
+        '',
+        'Vendor: {{vendorCompanyName}} ("Vendor" / "Security Company")',
+        'Address: {{vendorAddress}}',
+        'Phone / Email: {{vendorContact}}',
+      ]},
+      { h: '1. Event Details', body: [
+        'Event: SelassieFest 2026',
+        'Event Date: Saturday, July 25, 2026',
+        'Venue: 6227 Prairie Avenue, Chicago, IL 60637',
+        'Shift Hours: 6:00 PM - 10:00 PM (4 hours)',
+      ]},
+      { h: '2. Scope of Services', body: [
+        'Vendor shall provide two (2) licensed, uniformed security guards to be stationed at the venue\'s entry gate for the duration of the shift stated above.',
+        '',
+        'Guards\' duties are limited to: checking in attendees at the gate (verifying tickets, wristbands, guest lists, and/or valid ID as directed by Client staff on site); and controlling and monitoring entry through the designated gate.',
+        '',
+        'Guards are not engaged for interior patrol, crowd control away from the gate, parking/traffic control, escort duties, or any other security function unless separately agreed to in writing and compensated accordingly.',
+        '',
+        'Guard(s) assigned to this shift: {{guardNames}}',
+      ]},
+      { h: '3. Personnel & Compliance', body: [
+        'Vendor represents and warrants that each guard assigned to this Agreement holds a valid, current Illinois Permanent Employee Registration Card (PERC) and any other license required under the Illinois Private Detective, Alarm, Fire Alarm, and Security Contractor Act; will arrive in uniform, on time, and fit for duty; and will conduct themselves professionally with festival guests and staff. Vendor shall maintain commercial general liability insurance covering its personnel\'s activities under this Agreement.',
+      ]},
+      { h: '4. Compensation', body: [
+        'Rate: $135.00 per guard, flat rate for the 6:00 PM - 10:00 PM shift (no additional hourly billing).',
+        'Total for this Agreement: $270.00 (2 guards x $135.00).',
+        'Payment Terms: Client shall pay the total amount due to Vendor in full by 10:00 PM on the Event date (July 25, 2026).',
+      ]},
+      { h: '5. Independent Contractor', body: [
+        'Vendor and its personnel are independent contractors, not employees or agents of Client. Nothing in this Agreement creates a partnership, joint venture, or employment relationship between the Parties.',
+      ]},
+      { h: '6. Indemnification', body: [
+        'Vendor agrees to indemnify and hold harmless Client, Ras Tafari Inc., and its officers, directors, volunteers, and employees from and against any claims, damages, or liabilities arising directly from the negligence or misconduct of Vendor\'s personnel in the performance of this Agreement.',
+      ]},
+      { h: '7. Governing Law', body: [
+        'This Agreement shall be governed by and construed in accordance with the laws of the State of Illinois.',
+      ]},
+      { h: '8. Entire Agreement', body: [
+        'This Agreement constitutes the entire understanding between the Parties regarding the subject matter herein and supersedes all prior discussions or agreements, written or oral. Any amendments must be made in writing and signed by both Parties.',
+      ]},
+    ];
+
+    function fillTemplate(str, values) {
+      return str.replace(/\{\{(\w+)\}\}/g, (_, key) => values[key] || '(not provided)');
+    }
+
+    async function generateContractPdf(values, signedAtStr) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+      const marginX = 54;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const maxWidth = pageWidth - marginX * 2;
+      let y = 60;
+
+      function ensureSpace(lineHeight) {
+        if (y + lineHeight > pageHeight - 50) {
+          doc.addPage();
+          y = 60;
+        }
+      }
+
+      function writeParagraph(text, opts) {
+        opts = opts || {};
+        doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+        doc.setFontSize(opts.size || 10.5);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        lines.forEach((line) => {
+          ensureSpace(14);
+          doc.text(line, marginX, y);
+          y += 14;
+        });
+      }
+
+      CONTRACT_SECTIONS.forEach((section) => {
+        if (section.h) {
+          y += 6;
+          ensureSpace(20);
+          writeParagraph(section.h, { bold: true, size: 12 });
+          y += 2;
+        }
+        section.body.forEach((para) => {
+          if (para === '') { y += 6; return; }
+          writeParagraph(fillTemplate(para, values));
+        });
+      });
+
+      y += 16;
+      ensureSpace(80);
+      writeParagraph('Signatures', { bold: true, size: 12 });
+      y += 4;
+      writeParagraph('Client - Ras Tafari Inc. (d/b/a SelassieFest)', { bold: true });
+      writeParagraph('Signature: Stephen Henry (typed, pre-authorized)');
+      writeParagraph('Name: Stephen Henry');
+      y += 10;
+      writeParagraph('Vendor', { bold: true });
+      writeParagraph('Signature: ' + values.signerName + ' (typed electronic signature)');
+      writeParagraph('Name: ' + values.signerName);
+      writeParagraph('Title: ' + (values.signerTitle || '(not provided)'));
+      writeParagraph('Date signed: ' + signedAtStr);
+
+      return doc.output('blob');
+    }
+
+    const form = document.getElementById('contract-form');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusMsg.className = 'status-msg';
+      statusMsg.textContent = '';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const values = {
+        vendorCompanyName: document.getElementById('vendorCompanyName').value.trim(),
+        vendorAddress: document.getElementById('vendorAddress').value.trim(),
+        vendorContact: document.getElementById('vendorContact').value.trim(),
+        guardNames: document.getElementById('guardNames').value.trim(),
+        signerName: document.getElementById('signerName').value.trim(),
+        signerTitle: document.getElementById('signerTitle').value.trim(),
+      };
+
+      const signedAtStr = new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+
+      try {
+        const pdfBlob = await generateContractPdf(values, signedAtStr);
+
+        await window.sfSupabase.submitSecurityGuardContract({
+          vendorCompanyName: values.vendorCompanyName,
+          vendorAddress: values.vendorAddress,
+          vendorContact: values.vendorContact,
+          guardNames: values.guardNames,
+          signerName: values.signerName,
+          signerTitle: values.signerTitle,
+          pdfBlob,
+        });
+
+        statusMsg.className = 'status-msg success';
+        statusMsg.textContent = 'Contract signed and submitted. A copy has been sent to SelassieFest.';
+        form.reset();
+        submitBtn.textContent = 'Submitted';
+      } catch (err) {
+        console.error(err);
+        statusMsg.className = 'status-msg error';
+        statusMsg.textContent = 'Something went wrong submitting the contract. Please try again or contact stephen@selassiefest.com directly.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign & Submit';
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1281,6 +1281,56 @@ create policy "Allow public read of vendor-applications" on storage.objects
   using (bucket_id = 'vendor-applications');
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- Security guard contract e-sign (/contracts/security-guard-2026-07-25.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- One-off vendor-facing e-sign page for the July 25, 2026 gate security
+-- contract. The vendor fills in their company info and types a signature;
+-- the page generates a signed PDF client-side and uploads it here. Unlike
+-- every other form table above, there is no public-facing reason for this
+-- one to exist beyond routing the signed copy to Stephen -- see the
+-- notify-submission TABLE_CONFIG entry, which emails stephen@selassiefest.com
+-- (not the general NOTIFY_TO inbox) with the PDF attached.
+create table if not exists security_guard_contracts (
+  id uuid primary key default gen_random_uuid(),
+  vendor_company_name text not null,
+  vendor_address text,
+  vendor_contact text,
+  guard_names text,
+  signer_name text not null,
+  signer_title text,
+  pdf_path text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table security_guard_contracts enable row level security;
+
+create policy "Allow anon insert" on security_guard_contracts
+  for insert to anon
+  with check (true);
+
+grant insert on security_guard_contracts to anon;
+
+-- Reuses the existing notify_submission_webhook() function (see the
+-- notify-submission section above) rather than redefining it, so no secret
+-- needs to be committed here.
+create trigger security_guard_contracts_after_insert
+  after insert on security_guard_contracts
+  for each row execute function notify_submission_webhook();
+
+-- Signed PDF copies. Deliberately private (public = false, no anon select
+-- policy) -- this is a signed business contract, not user-facing content
+-- like the other buckets above. Anon can only insert (the signing page
+-- uploads directly with the anon key); the notify-submission Edge Function
+-- reads it back with the auto-injected service role key, which bypasses RLS.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('security-guard-contracts', 'security-guard-contracts', false, 5242880, array['application/pdf'])
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to security-guard-contracts" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'security-guard-contracts');
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- Main Stage DJ run-of-show (/run-of-show/, internal production tool)
 -- ─────────────────────────────────────────────────────────────────────────
 -- Same "no login, anyone with the link can edit, last write wins" tradeoff

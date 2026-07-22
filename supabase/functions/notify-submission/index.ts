@@ -6,6 +6,11 @@
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET')!;
+// Auto-injected into every Edge Function's env by Supabase -- used only to
+// fetch the signed PDF back out of the private security-guard-contracts
+// Storage bucket (see fetchStorageObjectAsBase64 below), which bypasses RLS.
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const NOTIFY_TO = 'selassiefest@gmail.com';
 // selassiefest.com is verified with Resend, so mail now sends from a real
 // address instead of the onboarding@resend.dev sandbox (which could only
@@ -20,6 +25,23 @@ const REPLY_TO = 'selassiefest@gmail.com';
 const NEWSLETTER_AUDIENCE_ID = '6561e97b-31be-45c8-a069-e8d8ae29711e';
 const STORAGE_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/game-submissions';
 const VENDOR_APPLICATIONS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/vendor-applications';
+
+// Downloads a private Storage object (service-role, bypasses RLS) and
+// base64-encodes it for Resend's `attachments[].content` field. Contract
+// PDFs here are a few pages/KB at most, so the char-by-char binary-string
+// conversion (btoa needs a binary string, not a raw byte array) is cheap.
+async function fetchStorageObjectAsBase64(bucket: string, path: string): Promise<string> {
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+    headers: { Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` },
+  });
+  if (!res.ok) {
+    throw new Error(`Storage fetch failed (${bucket}/${path}): ${res.status} ${await res.text()}`);
+  }
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
 
 function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -224,6 +246,22 @@ function formatEventNotifySignup(record: Record<string, any>) {
   };
 }
 
+function formatSecurityGuardContract(record: Record<string, any>) {
+  return {
+    subject: `Signed Security Guard Contract — ${record.vendor_company_name}`,
+    html: `
+      <h2>Signed Security Guard Services Agreement</h2>
+      <p><strong>Event:</strong> SelassieFest, July 25, 2026, 6:00 PM – 10:00 PM gate check-in shift</p>
+      <p><strong>Vendor:</strong> ${escapeHtml(record.vendor_company_name)}</p>
+      ${record.vendor_address ? `<p><strong>Vendor Address:</strong> ${escapeHtml(record.vendor_address)}</p>` : ''}
+      ${record.vendor_contact ? `<p><strong>Vendor Contact:</strong> ${escapeHtml(record.vendor_contact)}</p>` : ''}
+      ${record.guard_names ? `<p><strong>Guards Assigned:</strong> ${escapeHtml(record.guard_names)}</p>` : ''}
+      <p><strong>Signed by:</strong> ${escapeHtml(record.signer_name)}${record.signer_title ? ', ' + escapeHtml(record.signer_title) : ''}</p>
+      <p>Signed PDF is attached.</p>
+    `,
+  };
+}
+
 function formatEventNotifyConfirmation(record: Record<string, any>) {
   return {
     subject: `You're on the list — ${record.event_name}`,
@@ -244,6 +282,10 @@ type Notification = {
   // it), so its emails must not carry the "SelassieFest" display name even
   // though they still send from the same verified selassiefest.com domain.
   from?: (record: Record<string, any>) => string;
+  // Optional file attachments (Resend's {filename, content: base64} shape).
+  // Only security_guard_contracts uses this so far, to attach the signed PDF
+  // pulled back out of its private Storage bucket.
+  attachments?: (record: Record<string, any>) => Promise<{ filename: string; content: string }[]>;
 };
 
 type TableConfig = {
@@ -273,6 +315,20 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: (record) => record.edu_email,
         format: formatDh101VerificationEmail,
         from: () => 'Dancehall 101 <hello@selassiefest.com>',
+      },
+    ],
+  },
+  security_guard_contracts: {
+    notifications: [
+      {
+        to: () => 'stephen@selassiefest.com',
+        format: formatSecurityGuardContract,
+        attachments: async (record) => [
+          {
+            filename: `SelassieFest-Security-Guard-Contract-${record.vendor_company_name || record.id}.pdf`,
+            content: await fetchStorageObjectAsBase64('security-guard-contracts', record.pdf_path),
+          },
+        ],
       },
     ],
   },
@@ -331,6 +387,7 @@ Deno.serve(async (req: Request) => {
 
       const { subject, html } = notification.format(record);
       const from = notification.from ? notification.from(record) : FROM;
+      const attachments = notification.attachments ? await notification.attachments(record) : undefined;
 
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -338,7 +395,7 @@ Deno.serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, reply_to: REPLY_TO, subject, html }),
+        body: JSON.stringify({ from, to, reply_to: REPLY_TO, subject, html, ...(attachments ? { attachments } : {}) }),
       });
 
       if (!resendRes.ok) {
