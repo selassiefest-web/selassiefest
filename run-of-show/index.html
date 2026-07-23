@@ -783,6 +783,15 @@
 
       ensureName();
       loadAll();
+
+      // The Jost web font loads asynchronously -- if a textarea's height
+      // gets measured (autoResizeTextarea) before it swaps in, the box is
+      // sized to a fallback font's shorter metrics, then the real font
+      // makes the text taller without ever re-measuring. Re-run once the
+      // font is actually ready so the box always matches the real text.
+      if (window.document.fonts && window.document.fonts.ready) {
+        window.document.fonts.ready.then(function () { autoResizeAll(); });
+      }
     })();
   </script>
 </body>
