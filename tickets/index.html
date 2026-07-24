@@ -337,6 +337,37 @@
             color: var(--gold-accent);
         }
 
+        .prohibited-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4em;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-white, #F5F5F5);
+            background: rgba(229, 62, 62, 0.12);
+            border: 1px solid rgba(229, 62, 62, 0.55);
+            padding: 0.5em 1.1em;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 12px rgba(229, 62, 62, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            margin-bottom: 0.8rem;
+            animation: prohibited-glow-pulse 2.8s ease-in-out infinite;
+        }
+        .prohibited-badge:hover,
+        .prohibited-badge:focus-visible {
+            transform: scale(1.05);
+            border-color: var(--red-accent, #C83737);
+            box-shadow: 0 0 22px rgba(229, 62, 62, 0.65);
+        }
+        @keyframes prohibited-glow-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(229, 62, 62, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(229, 62, 62, 0.6); }
+        }
+
         /* humanitix uses a slightly different accent */
         .ticket-card.humanitix .card-icon {
             color: #6AB0E6;
@@ -612,7 +643,7 @@
 
         <div style="display:flex; align-items:center; flex-wrap:wrap; gap:1rem;">
             <h1 class="page-title" style="margin-bottom:0;">Get your free ticket</h1>
-            <a href="/tickets/admission.html" class="vip-badge" style="margin-bottom:0;"><i class="fas fa-cannabis" aria-hidden="true"></i> Admission &amp; BYOC Rules</a>
+            <a href="/tickets/admission.html#prohibited-items" class="prohibited-badge" style="margin-bottom:0;"><i class="fas fa-ban" aria-hidden="true"></i> Prohibited Items</a>
         </div>
 
         <!-- THREE COMPACT TICKET CARDS -->
