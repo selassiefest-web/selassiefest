@@ -16,14 +16,14 @@ const FRAMES = [
     id: 1,
     batch: 'hook',
     personalize: 'start',
-    visual: 'Aerial night shot of the Chicago skyline — one warm-lit building glowing on the South or West Side, everything else dark.',
-    headline: 'Chicago has never had a permanent home for Jamaican dancehall and reggae.',
+    visual: 'Aerial night shot of the Chicago skyline — one small, warm-lit storefront glowing on the South or West Side, and a single dark, empty lot beside it where a flagship-sized building could stand.',
+    headline: 'Chicago has never had a home for Jamaican dancehall and reggae sized for its biggest artists.',
     voice: [
       'Prepared for {{name}}.',
       "Chicago has every other genre covered — house, hip-hop, Latin music all have a room they can call home.",
-      "Dancehall and reggae don't. Not one permanent address, anywhere in this city."
+      "Dancehall and reggae have the Wild Hare. It's real, it's beloved — and it's not built to hold the artists who fill arenas back home."
     ],
-    tellMore: "Chicago's nightlife map is dense with hip-hop, house, and Latin music venues, but it has no permanent, purpose-built home for dancehall and reggae — despite a large and passionate Caribbean and Afro-diaspora audience across the city. The One Umbrella Experience is framed as a deliberate correction: using a dedicated property and a committed operating partner to build the infrastructure the culture has been missing."
+    tellMore: "Chicago's nightlife map is dense with hip-hop, house, and Latin music venues. Dancehall and reggae have a real room — the Wild Hare, a beloved neighborhood venue that calls itself the reggae capital of the USA — but nothing purpose-built at a scale that can host medium or top-tier touring acts, despite a large and passionate Caribbean and Afro-diaspora audience across the city. The One Umbrella Experience is framed as a deliberate correction: using a dedicated property and a committed operating partner to build the infrastructure the culture has been missing at that scale."
   },
   {
     id: 2,
@@ -253,12 +253,12 @@ const FRAMES = [
     id: 19,
     batch: 'systems',
     visual: "Map-style graphic — Chicago's existing music-venue density (house, hip-hop, Latin) with a highlighted gap where dancehall/reggae should be.",
-    headline: 'Every genre in this city has a room. This is dancehall’s.',
+    headline: 'Every genre in this city has a room sized for its biggest night. This is dancehall’s.',
     voice: [
       'This isn’t a bet on a new audience.',
-      'It’s building the room a real, existing audience has never had.'
+      'It’s building the room a real, existing audience has outgrown its current one.'
     ],
-    tellMore: 'Chicago’s nightlife map is dense with hip-hop, house, and Latin music venues, but has no permanent, purpose-built home for dancehall and reggae — despite a large and passionate Caribbean and Afro-diaspora audience across the city. The property is meant to create a recurring, predictable calendar reason for Jamaican music fans to gather monthly, give local promoters, selectas, dancers, vendors, and hospitality workers steady, repeatable income, build a direct cultural and economic bridge between Chicago and Jamaica, and give Chicago-based reggae and dancehall talent a training ground and stage.'
+    tellMore: 'Chicago’s nightlife map is dense with hip-hop, house, and Latin music venues. Dancehall and reggae have the Wild Hare, but nothing purpose-built at flagship scale — despite a large and passionate Caribbean and Afro-diaspora audience across the city. The property is meant to create a recurring, predictable calendar reason for Jamaican music fans to gather monthly, give local promoters, selectas, dancers, vendors, and hospitality workers steady, repeatable income, build a direct cultural and economic bridge between Chicago and Jamaica, and give Chicago-based reggae and dancehall talent a training ground and stage.'
   },
   {
     id: 20,
