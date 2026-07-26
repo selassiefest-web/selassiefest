@@ -1512,3 +1512,30 @@ They''ve since joined the planning committee for the 2027 revival — not as hon
   ('committee_quote', 'Denise & Diedra — quote', 'This isn''t nostalgia for its own sake. Something real happened here between 1981 and 1997, and it''s been missing ever since. We want our grandchildren to feel what we felt.'),
   ('jahsyll_note', 'Brother JahSyll', 'Brother JahSyll brought the 2026 historical display and has since agreed to join the SelassieFest organizing body for 2027 — adding a direct cultural/historical resource to the planning team alongside Denise and Diedra''s lived-experience perspective.')
 on conflict (section_key) do nothing;
+
+-- Voice notes: each editable section can carry one recorded audio note (a
+-- "voice note" button next to the text edit button) in place of, or
+-- alongside, typing a text edit. voice_note_path is a storage object path
+-- within the proposal-voice-notes bucket below (not a full URL), same
+-- convention as game_submissions.photo_path.
+alter table proposal_2027_sections add column if not exists voice_note_path text;
+
+-- Public bucket (so the recorded note can be played back by anyone viewing
+-- the page, no auth) -- anon can upload (the page records with the anon
+-- key) and read. 10MB/file is plenty for a short spoken note; MediaRecorder
+-- output is typically audio/webm, but Safari/iOS may produce audio/mp4, so
+-- both (plus a couple of other common encodings) are allowed.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'proposal-voice-notes', 'proposal-voice-notes', true, 10485760,
+  array['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav', 'audio/x-m4a']
+)
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to proposal-voice-notes" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'proposal-voice-notes');
+
+create policy "Allow public read of proposal-voice-notes" on storage.objects
+  for select to anon
+  using (bucket_id = 'proposal-voice-notes');

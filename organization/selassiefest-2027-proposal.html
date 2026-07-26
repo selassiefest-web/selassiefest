@@ -103,8 +103,13 @@
             border-bottom: 0.5px solid var(--border);
             padding-bottom: 6px;
             margin: 2.25rem 0 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
         .section-title:first-of-type { margin-top: 0; }
+        .section-title .title-text { display: flex; align-items: center; }
 
         .cover {
             border-left: 4px solid var(--border-accent);
@@ -293,10 +298,52 @@
         .edit-toggle:hover { color: var(--text-accent); }
         .editable-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; font-style: italic; min-height: 1.2em; }
 
+        /* ── read aloud ── */
+        .intro-toolbar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .read-aloud-btn {
+            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+            background: var(--bg-surface-2); border: 0.5px solid var(--border);
+            color: var(--text-accent); font-family: inherit; font-size: 10.5px;
+            letter-spacing: 0.03em; font-weight: 600;
+            padding: 5px 10px; border-radius: 999px; cursor: pointer; white-space: nowrap;
+        }
+        .read-aloud-btn:hover { background: var(--bg-accent); }
+        .read-aloud-btn.reading { background: var(--text-accent); color: #fff; border-color: var(--text-accent); }
+
+        /* ── voice notes ── */
+        .voice-btn {
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; margin-left: 12px;
+            background: none; border: none; cursor: pointer; font-family: inherit;
+            font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--text-accent); padding: 0;
+        }
+        .voice-btn:hover { color: var(--text-warning); }
+        .voice-recording-ui { display: none; align-items: center; gap: 8px; margin-top: 6px; font-size: 11px; color: var(--text-danger); }
+        .voice-recording-ui::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--text-danger); display: inline-block; animation: sf-pulse 1s infinite; }
+        @keyframes sf-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .voice-stop-btn, .voice-send-btn, .voice-discard-btn {
+            font-family: inherit; font-size: 11px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.05em; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: none;
+        }
+        .voice-stop-btn { background: var(--text-danger); color: #fff; }
+        .voice-send-btn { background: var(--text-accent); color: #fff; }
+        .voice-send-btn:disabled { opacity: 0.6; cursor: default; }
+        .voice-discard-btn { background: var(--bg-surface-2) !important; color: var(--text-secondary); border: 0.5px solid var(--border) !important; }
+        .voice-preview-ui { display: none; margin-top: 6px; }
+        .voice-preview-ui audio { width: 100%; max-width: 280px; height: 32px; }
+        .voice-preview-actions { display: flex; gap: 8px; margin-top: 6px; }
+        .voice-note-player { display: none; margin-top: 8px; padding-top: 8px; border-top: 0.5px dashed var(--border); }
+        .voice-note-label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+        .voice-note-player audio { width: 100%; max-width: 280px; height: 32px; }
+
         @media print {
             body { background: #fff; padding: 0.5in; }
             .memorandum { box-shadow: none; border: 1px solid #ddd; padding: 1.5rem; }
             .card { box-shadow: none; break-inside: avoid; }
+            .read-aloud-btn, .intro-toolbar, .voice-btn, .voice-recording-ui,
+            .voice-preview-ui, .voice-note-player, .edit-toggle, .editable-meta {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -307,6 +354,12 @@
         <div class="brand-strip">
             <a href="/"><span class="name">Selassiefest</span><span class="tag">One Day. One Love. One Society.</span></a>
         </div>
+
+        <div class="intro-toolbar">
+            <button type="button" class="read-aloud-btn" id="introReadBtn"><i class="fas fa-volume-high"></i> Listen to introduction</button>
+        </div>
+
+        <div id="introBlock">
 
         <!-- COVER -->
         <div class="cover">
@@ -330,6 +383,9 @@
             <p>Ras Tafari Inc., a 501(c)(3) nonprofit, respectfully requests a site-use and special event permit to hold <strong>SelassieFest 2027</strong> at <strong>Seven Hills in Washington Park</strong> on <strong>Saturday, July 24, 2027</strong>. SelassieFest is Chicago's roots reggae and Rastafari cultural festival, tracing its lineage to the city's original Caribbean cultural gatherings held between 1981 and 1997 — a run of festivals that, for many who attended, has never been matched since.</p>
             <p>This is not a cold request. Over the past several months a cross-agency working group has already come together around this proposal: two DCASE contacts (Camille and Jackie), a Chicago Park District contact (Denise), and two community members — Denise and Diedra — who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team already assembled, and what we're asking the City and the 3rd Ward to help us secure next.</p>
         </div>
+
+        </div>
+        <!-- end #introBlock -->
 
         <!-- 2026 TRACK RECORD -->
         <h2 class="section-title"><i class="fas fa-trophy" style="margin-right:8px;"></i>What we accomplished in 2026</h2>
@@ -565,6 +621,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
     <script>
     (function () {
         var TABLE = 'proposal_2027_sections';
+        var VOICE_BUCKET = 'proposal-voice-notes';
         var NAME_KEY = 'sfProposalEditorName';
         var myName = localStorage.getItem(NAME_KEY) || '';
 
@@ -590,15 +647,211 @@ They've since joined the planning committee for the 2027 revival — not as hono
             return 'Last edited by ' + escapeHtml(row.last_edited_by) + (when ? ' · ' + when : '');
         }
 
+        async function applyVoiceNote(block, row) {
+            var player = block.querySelector('.voice-note-player');
+            if (!player) return;
+            if (!row || !row.voice_note_path) {
+                player.style.display = 'none';
+                player.innerHTML = '';
+                return;
+            }
+            var client = await window.sfSupabaseReady;
+            var pub = client.storage.from(VOICE_BUCKET).getPublicUrl(row.voice_note_path);
+            var url = pub && pub.data ? pub.data.publicUrl : '';
+            player.innerHTML = '<div class="voice-note-label">' +
+                (row.last_edited_by ? 'Voice note from ' + escapeHtml(row.last_edited_by) : 'Voice note') +
+                '</div><audio controls src="' + escapeHtml(url) + '"></audio>';
+            player.style.display = 'block';
+        }
+
         function applyRow(block, row) {
             if (!row) return;
             var display = block.querySelector('.editable-content');
             if (row.content) display.textContent = row.content;
             var meta = block.querySelector('.editable-meta');
             if (meta) meta.textContent = formatMeta(row);
+            applyVoiceNote(block, row);
+        }
+
+        // ── read aloud ──────────────────────────────────────────────────
+        var activeReadBtn = null;
+
+        function getReadableText(el) {
+            var clone = el.cloneNode(true);
+            Array.prototype.forEach.call(
+                clone.querySelectorAll('button, textarea, audio, .editable-meta, .editable-actions, .voice-recording-ui, .voice-preview-ui, .voice-note-player'),
+                function (n) { n.remove(); }
+            );
+            return clone.textContent.replace(/\s+/g, ' ').trim();
+        }
+
+        function collectSectionText(h2) {
+            var parts = [getReadableText(h2)];
+            var node = h2.nextElementSibling;
+            while (node && !(node.tagName === 'H2' && node.classList.contains('section-title'))) {
+                parts.push(getReadableText(node));
+                node = node.nextElementSibling;
+            }
+            return parts.filter(Boolean).join('. ');
+        }
+
+        function handleReadClick(btn, getText) {
+            if (!('speechSynthesis' in window)) {
+                alert('Text-to-speech is not supported in this browser.');
+                return;
+            }
+            if (activeReadBtn === btn) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+            window.speechSynthesis.cancel();
+            var utter = new SpeechSynthesisUtterance(getText());
+            utter.rate = 0.95;
+            activeReadBtn = btn;
+            btn.classList.add('reading');
+            btn.innerHTML = '<i class="fas fa-stop"></i> Stop';
+            function reset() {
+                btn.classList.remove('reading');
+                btn.innerHTML = '<i class="fas fa-volume-high"></i> ' + (btn._label || 'Listen');
+                if (activeReadBtn === btn) activeReadBtn = null;
+            }
+            utter.onend = reset;
+            utter.onerror = reset;
+            window.speechSynthesis.speak(utter);
+        }
+
+        function setupReadAloud() {
+            var introBtn = document.getElementById('introReadBtn');
+            if (introBtn) {
+                introBtn._label = 'Listen to introduction';
+                introBtn.addEventListener('click', function () {
+                    handleReadClick(introBtn, function () {
+                        return getReadableText(document.getElementById('introBlock'));
+                    });
+                });
+            }
+
+            Array.prototype.forEach.call(document.querySelectorAll('h2.section-title'), function (h2) {
+                var wrap = document.createElement('span');
+                wrap.className = 'title-text';
+                while (h2.firstChild) wrap.appendChild(h2.firstChild);
+                h2.appendChild(wrap);
+
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'read-aloud-btn';
+                btn._label = 'Listen';
+                btn.innerHTML = '<i class="fas fa-volume-high"></i> Listen';
+                h2.appendChild(btn);
+
+                btn.addEventListener('click', function () {
+                    handleReadClick(btn, function () { return collectSectionText(h2); });
+                });
+            });
+        }
+
+        // ── voice notes ─────────────────────────────────────────────────
+        function setupVoiceNote(block, key, label) {
+            var player = document.createElement('div');
+            player.className = 'voice-note-player';
+
+            var recBtn = document.createElement('button');
+            recBtn.type = 'button';
+            recBtn.className = 'voice-btn';
+            recBtn.innerHTML = '<i class="fas fa-microphone"></i> Record voice note';
+
+            var recUi = document.createElement('div');
+            recUi.className = 'voice-recording-ui';
+            recUi.innerHTML = '<span class="voice-timer">0:00</span> <button type="button" class="voice-stop-btn">Stop</button>';
+
+            var previewUi = document.createElement('div');
+            previewUi.className = 'voice-preview-ui';
+            previewUi.innerHTML = '<audio class="voice-preview-audio" controls></audio>' +
+                '<div class="voice-preview-actions">' +
+                '<button type="button" class="voice-send-btn">Send</button>' +
+                '<button type="button" class="voice-discard-btn">Discard</button>' +
+                '</div>';
+
+            block.appendChild(player);
+            block.appendChild(recBtn);
+            block.appendChild(recUi);
+            block.appendChild(previewUi);
+
+            var mediaRecorder = null, timerInterval = null, seconds = 0, recordedBlob = null;
+
+            recBtn.addEventListener('click', async function () {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+                    alert('Voice recording is not supported in this browser.');
+                    return;
+                }
+                try {
+                    var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    var chunks = [];
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
+                    mediaRecorder.onstop = function () {
+                        stream.getTracks().forEach(function (t) { t.stop(); });
+                        clearInterval(timerInterval);
+                        recordedBlob = new Blob(chunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+                        previewUi.querySelector('.voice-preview-audio').src = URL.createObjectURL(recordedBlob);
+                        recUi.style.display = 'none';
+                        previewUi.style.display = 'block';
+                    };
+                    mediaRecorder.start();
+                    seconds = 0;
+                    recUi.querySelector('.voice-timer').textContent = '0:00';
+                    recBtn.style.display = 'none';
+                    recUi.style.display = 'flex';
+                    timerInterval = setInterval(function () {
+                        seconds++;
+                        var m = Math.floor(seconds / 60), s = seconds % 60;
+                        recUi.querySelector('.voice-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+                    }, 1000);
+                } catch (err) {
+                    alert('Could not access the microphone: ' + (err && err.message ? err.message : err));
+                }
+            });
+
+            recUi.querySelector('.voice-stop-btn').addEventListener('click', function () {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            });
+
+            previewUi.querySelector('.voice-discard-btn').addEventListener('click', function () {
+                recordedBlob = null;
+                previewUi.style.display = 'none';
+                recBtn.style.display = 'inline-flex';
+            });
+
+            previewUi.querySelector('.voice-send-btn').addEventListener('click', async function () {
+                if (!recordedBlob) return;
+                if (!ensureName()) return;
+                var sendBtn = previewUi.querySelector('.voice-send-btn');
+                sendBtn.disabled = true;
+                try {
+                    var client = await window.sfSupabaseReady;
+                    var ext = ((recordedBlob.type.split('/')[1] || 'webm').split(';')[0]) || 'webm';
+                    var path = key + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+                    var upload = await client.storage.from(VOICE_BUCKET).upload(path, recordedBlob, { contentType: recordedBlob.type });
+                    if (upload.error) throw upload.error;
+
+                    var row = { section_key: key, label: label, voice_note_path: path, last_edited_by: myName, updated_at: new Date().toISOString() };
+                    var result = await client.from(TABLE).upsert(row, { onConflict: 'section_key' });
+                    if (result.error) throw result.error;
+
+                    applyVoiceNote(block, row);
+                    previewUi.style.display = 'none';
+                    recBtn.style.display = 'inline-flex';
+                } catch (err) {
+                    alert('Could not send your voice note: ' + (err && err.message ? err.message : err));
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            setupReadAloud();
+
             var blocks = Array.prototype.slice.call(document.querySelectorAll('.editable[data-section-key]'));
             if (!blocks.length) return;
 
@@ -651,6 +904,8 @@ They've since joined the planning committee for the 2027 revival — not as hono
                         toggle.style.display = '';
                     }
                 });
+
+                setupVoiceNote(block, key, label);
             });
 
             (async function loadAll() {
