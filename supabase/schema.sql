@@ -1455,3 +1455,60 @@ from (values
 ) as v(chapter_slug, dj_name, role, sort_order)
 join run_of_show_chapters c on c.slug = v.chapter_slug
 on conflict (chapter_id, dj_name) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- SelassieFest 2027 proposal — per-person editable notes
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- The named contacts/committee members in the 2027 site-use proposal (DCASE's
+-- Camille and Jackie, Park District's Denise, Alderman Pat Powell's office,
+-- community committee members Denise and Diedra, and Brother JahSyll) each
+-- get one editable note directly on the page. section_key is the natural
+-- key (one row per named block), matching run_of_show_chapters' slug
+-- pattern above. Same "no login, anyone with the link can edit, last write
+-- wins" tradeoff as ticket_event_drafts/run_of_show_chapters -- this is a
+-- small known group updating their own notes, not a general-purpose doc
+-- editor open to the public web.
+create table if not exists proposal_2027_sections (
+  section_key text primary key,
+  label text not null,
+  content text not null default '',
+  last_edited_by text,
+  updated_at timestamptz not null default now()
+);
+
+alter table proposal_2027_sections enable row level security;
+
+create policy "public full access" on proposal_2027_sections
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+grant select, insert, update, delete on proposal_2027_sections to anon, authenticated;
+
+-- Live multi-editor sync, same as ticket_event_drafts/run_of_show_chapters.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'proposal_2027_sections'
+  ) then
+    alter publication supabase_realtime add table proposal_2027_sections;
+  end if;
+end $$;
+
+-- Seed with the current draft text from the page itself, so a fresh
+-- install matches what's already live. on conflict (section_key) do nothing
+-- keeps this re-runnable and never overwrites a real edit made in the tool.
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('contact_camille', 'Camille — DCASE', 'Special event permitting & coordination contact'),
+  ('contact_jackie', 'Jackie — DCASE', 'Cultural programming & community engagement contact'),
+  ('contact_denise_park', 'Denise — Chicago Park District', 'Permits & park operations liaison for Washington Park — also serves on our community planning committee (see below)'),
+  ('contact_alderman', 'Office of Alderman Pat Powell — 3rd Ward', 'Aldermanic support & community notification for events in Washington Park'),
+  ('committee_bio', 'Denise & Diedra — bio', 'Both attended the original SelassieFest during its 1981-1997 run and describe it as a profound cultural experience Chicago hasn''t seen replicated since. When asked directly whether they wanted to be part of bringing it back, the answer from both was immediate and unprompted: "I needed this."
+
+They''ve since joined the planning committee for the 2027 revival — not as honorary guests, but as working members helping shape site logistics, programming, and community outreach — driven by wanting their grandchildren to have the same experience they did.'),
+  ('committee_quote', 'Denise & Diedra — quote', 'This isn''t nostalgia for its own sake. Something real happened here between 1981 and 1997, and it''s been missing ever since. We want our grandchildren to feel what we felt.'),
+  ('jahsyll_note', 'Brother JahSyll', 'Brother JahSyll brought the 2026 historical display and has since agreed to join the SelassieFest organizing body for 2027 — adding a direct cultural/historical resource to the planning team alongside Denise and Diedra''s lived-experience perspective.')
+on conflict (section_key) do nothing;
