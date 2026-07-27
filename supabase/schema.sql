@@ -2214,3 +2214,71 @@ Paul Kelly
 Albert Harris'),
   ('legal_entity_open', 'Legal Entity — Still open', 'Still open, and a Board decision rather than an assumption: the dedicated festival bank account, and which of these three (or another named person) is formally assigned insurance, permit compliance, and Park District communication responsibility.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Bank account and responsibility assignments confirmed (Chase Bank /
+-- Field Marshall / Brother JahSyll), resolving what the legal_entity_open
+-- field above had flagged as still needing a Board decision
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set content = 'Legal permit applicant confirmed: Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6) and an IRS-recognized 501(c)(3) public charity under 509(a)(2) — EIN 42-3036705, exemption effective June 9, 2026, annual Form 990/990-EZ/990-N filing required. Registered agent and incorporator: Stephen Henry. Mailing address: 765 E 154th St, South Holland, IL 60473. Board of Directors: Stephen Henry, Paul Kelly, and Albert Harris. Festival bank account: Chase Bank. Insurance and permit-compliance responsibility: Field Marshall. Park District communication responsibility: Brother JahSyll. The permit is not transferable, so this is the correct entity to apply from the start.', updated_at = now()
+where section_key = 'vf_phase1';
+
+update proposal_2027_sections set content = 'Step 1 — Legal permit applicant confirmed: Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6) and an IRS-recognized 501(c)(3) public charity under 509(a)(2) — EIN 42-3036705, exemption effective June 9, 2026, annual Form 990/990-EZ/990-N filing required. Registered agent and incorporator: Stephen Henry. Mailing address: 765 E 154th St, South Holland, IL 60473. Board of Directors: Stephen Henry, Paul Kelly, and Albert Harris. Festival bank account: Chase Bank. Insurance and permit-compliance responsibility: Field Marshall. Park District communication responsibility: Brother JahSyll. The application and permit are not transferable, so this is the correct entity to apply from the start.', updated_at = now()
+where section_key = 'seq_phase1';
+
+update proposal_2027_sections set label = 'Legal Entity — Assignments', content = 'Confirmed assignments: festival bank account is held at Chase Bank; insurance and permit-compliance responsibility is assigned to Field Marshall; Park District communication responsibility is assigned to Brother JahSyll.', updated_at = now()
+where section_key = 'legal_entity_open';
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Restructured the legal-applicant facts into a bulleted list (bold label +
+-- editable content per line, e.g. "Applicant: Ras Tafari Inc.") in all
+-- three places it appears: the proposal's Phase 1 row (vf_app_*), the
+-- committee-structure page's Phase 1 row (cs_app_*), and the standalone
+-- "Legal entity — confirmed" card (legal_entity_applicant etc., reusing
+-- legal_entity_board with a shorter single-line value now that the label
+-- itself is a separate bold heading). vf_phase1 and seq_phase1 are
+-- narrowed to hold only the Step 2 "preliminary festival scope" text now
+-- that Step 1's content lives in its own bullet fields. legal_entity_summary
+-- and legal_entity_open are left in place, unused.
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set label = 'Phase 1 — Scope', content = 'Approve a preliminary festival scope: expected attendance, admission model, hours, setup/teardown dates, stage design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/loading needs. Confirmed Event Levels: 1-200 (Level 1), 201-500 (Level 2), 501-1,000 (Level 3), 1,001-3,000 (Level 4), 3,001-10,000 (Level 5), 10,000+ (Level 6, requiring provisional Park District Board approval). At 550 expected attendees, SelassieFest falls into Event Level 3.', updated_at = now()
+where section_key = 'vf_phase1';
+
+update proposal_2027_sections set label = 'Phase 1 — Scope', content = 'Approve a preliminary festival scope: expected attendance, admission model, festival hours, setup/teardown dates, stage count and design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/rideshare/loading needs. Attendance matters because the permit level, deposit, fees and review requirements change with crowd size — verified Event Levels are 1-200 (Level 1), 201-500 (Level 2), 501-1,000 (Level 3), 1,001-3,000 (Level 4), 3,001-10,000 (Level 5), and 10,000+ (Level 6, which requires provisional Park District Board approval and additional community engagement). At an expected 550 attendees, SelassieFest falls into Event Level 3.', updated_at = now()
+where section_key = 'seq_phase1';
+
+update proposal_2027_sections set content = 'Stephen Henry, Paul Kelly, and Albert Harris', updated_at = now()
+where section_key = 'legal_entity_board';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('vf_app_entity', 'Applicant — Legal entity', 'Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6)'),
+  ('vf_app_tax', 'Applicant — Tax status', 'IRS-recognized 501(c)(3) public charity under 509(a)(2)'),
+  ('vf_app_ein', 'Applicant — EIN', '42-3036705 (exemption effective June 9, 2026; annual Form 990/990-EZ/990-N filing required)'),
+  ('vf_app_agent', 'Applicant — Registered agent', 'Stephen Henry'),
+  ('vf_app_address', 'Applicant — Mailing address', '765 E 154th St, South Holland, IL 60473'),
+  ('vf_app_board', 'Applicant — Board of Directors', 'Stephen Henry, Paul Kelly, and Albert Harris'),
+  ('vf_app_bank', 'Applicant — Bank account', 'Chase Bank'),
+  ('vf_app_insurance', 'Applicant — Insurance and compliance', 'Field Marshall'),
+  ('vf_app_parkcomm', 'Applicant — Park District communication', 'Brother JahSyll'),
+  ('vf_app_note', 'Applicant — note', 'The permit is not transferable, so this is the correct entity to apply from the start.'),
+  ('cs_app_entity', 'Applicant — Legal entity', 'Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6)'),
+  ('cs_app_tax', 'Applicant — Tax status', 'IRS-recognized 501(c)(3) public charity under 509(a)(2)'),
+  ('cs_app_ein', 'Applicant — EIN', '42-3036705 (exemption effective June 9, 2026; annual Form 990/990-EZ/990-N filing required)'),
+  ('cs_app_agent', 'Applicant — Registered agent', 'Stephen Henry'),
+  ('cs_app_address', 'Applicant — Mailing address', '765 E 154th St, South Holland, IL 60473'),
+  ('cs_app_board', 'Applicant — Board of Directors', 'Stephen Henry, Paul Kelly, and Albert Harris'),
+  ('cs_app_bank', 'Applicant — Bank account', 'Chase Bank'),
+  ('cs_app_insurance', 'Applicant — Insurance and compliance', 'Field Marshall'),
+  ('cs_app_parkcomm', 'Applicant — Park District communication', 'Brother JahSyll'),
+  ('cs_app_note', 'Applicant — note', 'The application and permit are not transferable, so this is the correct entity to apply from the start.'),
+  ('legal_entity_applicant', 'Legal Entity — Applicant', 'Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6)'),
+  ('legal_entity_tax', 'Legal Entity — Tax status', 'IRS-recognized 501(c)(3) public charity under 509(a)(2)'),
+  ('legal_entity_ein', 'Legal Entity — EIN', '42-3036705 (exemption effective June 9, 2026; annual Form 990/990-EZ/990-N filing required)'),
+  ('legal_entity_agent', 'Legal Entity — Registered agent', 'Stephen Henry'),
+  ('legal_entity_address', 'Legal Entity — Mailing address', '765 E 154th St, South Holland, IL 60473'),
+  ('legal_entity_bank', 'Legal Entity — Bank account', 'Chase Bank'),
+  ('legal_entity_insurance', 'Legal Entity — Insurance and compliance', 'Field Marshall'),
+  ('legal_entity_parkcomm', 'Legal Entity — Park District communication', 'Brother JahSyll'),
+  ('legal_entity_note', 'Legal Entity — note', 'This is the confirmed legal entity that will hold the Park District permit.')
+on conflict (section_key) do nothing;
