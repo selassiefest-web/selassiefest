@@ -242,9 +242,10 @@
 
         .tline { margin-top: 0.5rem; }
         .trow {
-            display: grid; grid-template-columns: 110px 1fr; gap: 12px;
+            display: grid; grid-template-columns: 190px 1fr; gap: 12px;
             padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px;
         }
+        @media (max-width: 560px) { .trow { grid-template-columns: 1fr; gap: 4px; } }
         .trow:last-child { border-bottom: none; }
         .trow .when { font-weight: 600; color: var(--text-muted); }
         .trow .desc { color: var(--text-secondary); line-height: 1.6; }
@@ -541,39 +542,56 @@ They've since joined the planning committee for the 2027 revival — not as hono
         </div>
 
         <!-- PERMITTING ROADMAP -->
-        <h2 class="section-title"><i class="fas fa-route" style="margin-right:8px;"></i>Permitting &amp; approval roadmap</h2>
+        <h2 class="section-title"><i class="fas fa-route" style="margin-right:8px;"></i>Permitting and approval roadmap</h2>
+        <p style="font-size:11.5px;color:var(--text-muted);margin:-6px 0 10px;font-style:italic;">Dates marked "inferred" are not yet published by the City — they are projected from the last two years' pattern and should be reconfirmed closer to the date.</p>
         <div class="tline">
             <div class="trow">
-                <div class="when">Aug–Sep 2026</div>
-                <div class="desc"><strong>Joint site walk at Seven Hills</strong> with Denise (Park District) to confirm footprint, capacity, and any site restrictions.</div>
+                <div class="when">August 2026 to September 2026</div>
+                <div class="desc"><strong>Joint site walk at Seven Hills</strong> with Denise, Chicago Park District, to confirm footprint, capacity, and any site restrictions.</div>
             </div>
             <div class="trow">
-                <div class="when">Sep–Oct 2026</div>
-                <div class="desc"><strong>Submit Chicago Park District special event permit application</strong> for Seven Hills, July 24, 2027, including requested load-in/out dates.</div>
+                <div class="when">September 2026 to October 2026</div>
+                <div class="desc"><strong>Submit the Chicago Park District Special Event Permit application</strong> for Seven Hills, Saturday, July 24, 2027, including requested load-in and load-out dates. The application carries a 45 dollar fee, a minimum 14 day review, and must be filed 30 to 90 days before the reservation depending on event size.</div>
             </div>
             <div class="trow">
-                <div class="when">Oct–Nov 2026</div>
-                <div class="desc"><strong>DCASE special event registration</strong> with Camille and Jackie; coordinate multi-agency review (Police, Fire, Public Health) as required for the event's scale.</div>
+                <div class="when">October 2026 to November 2026</div>
+                <div class="desc"><strong>DCASE special event registration</strong> with Camille and Jackie; coordinate multi-agency review with Police, Fire, and Public Health as required for the event's scale.</div>
             </div>
             <div class="trow">
-                <div class="when">Nov 2026</div>
-                <div class="desc"><strong>Request letter of support from Alderman Pat Powell's office</strong> and begin required 3rd Ward community notification.</div>
+                <div class="when">Monday, November 2, 2026 (inferred)</div>
+                <div class="desc"><strong>Night Out in the Parks and Chicago Onscreen 2027 season application opens</strong> through the Chicago Park District. Apply separately for this program to seek supplemental city-backed programming support and promotion alongside the main site permit.</div>
             </div>
             <div class="trow">
-                <div class="when">Dec 2026–Feb 2027</div>
-                <div class="desc">Finalize insurance certificates, security &amp; medical plan, and traffic/pedestrian management plan for submission.</div>
+                <div class="when">November 2026</div>
+                <div class="desc"><strong>Request a letter of support from Alderman Pat Powell's office</strong> and begin the required 3rd Ward community notification.</div>
             </div>
             <div class="trow">
-                <div class="when">Mar–May 2027</div>
-                <div class="desc">Lock in vendor contracts, sponsorships, and public marketing rollout.</div>
+                <div class="when">Monday, December 14, 2026 (inferred)</div>
+                <div class="desc"><strong>Night Out in the Parks 2027 proposal deadline</strong>, 11:59 PM, if applying to that program.</div>
             </div>
             <div class="trow">
-                <div class="when">Jun 2027</div>
-                <div class="desc">Final walk-through with Park District and DCASE; confirm all permits issued and load-in logistics.</div>
+                <div class="when">December 2026 to February 2027</div>
+                <div class="desc">Finalize insurance certificates, the security and medical plan, and the traffic and pedestrian management plan for submission.</div>
             </div>
             <div class="trow">
-                <div class="when">Jul 24, 2027</div>
-                <div class="desc"><strong>SelassieFest 2027 — event day.</strong></div>
+                <div class="when">March 2027</div>
+                <div class="desc">If selected for Night Out in the Parks, confirm the performance schedule, matching that program's usual mid-March confirmation deadline.</div>
+            </div>
+            <div class="trow">
+                <div class="when">March 2027 to May 2027</div>
+                <div class="desc">Lock in vendor contracts, sponsorships, and the public marketing rollout.</div>
+            </div>
+            <div class="trow">
+                <div class="when">June 2027</div>
+                <div class="desc">Final walk-through with the Park District and DCASE; confirm all permits issued and load-in logistics.</div>
+            </div>
+            <div class="trow">
+                <div class="when">Early July 2027</div>
+                <div class="desc"><strong>Submit the special event liquor license application</strong> (Special Event Retailer's License, Not-For-Profit track), if alcohol service is planned. City rules require filing at least 20 calendar days before the event, with the ward alderman notified at least 5 days before the license is issued — submitting in early July gives buffer ahead of that 20 day floor.</div>
+            </div>
+            <div class="trow">
+                <div class="when">Saturday, July 24, 2027</div>
+                <div class="desc"><strong>SelassieFest 2027, event day.</strong></div>
             </div>
         </div>
 
@@ -695,6 +713,26 @@ They've since joined the planning committee for the 2027 revival — not as hono
             return parts.filter(Boolean).join('. ');
         }
 
+        // Prefer a female-sounding voice. The Web Speech API doesn't expose a
+        // real gender field, so this is a best-effort name match against the
+        // common female voice names each platform ships (Chrome/Edge/Safari/
+        // iOS/Android all differ) -- falls back to any English voice, then to
+        // the engine's default if nothing matches.
+        var cachedVoices = [];
+        function refreshVoices() { cachedVoices = window.speechSynthesis.getVoices() || []; }
+        if ('speechSynthesis' in window) {
+            refreshVoices();
+            window.speechSynthesis.onvoiceschanged = refreshVoices;
+        }
+        var FEMALE_VOICE_HINTS = /female|zira|samantha|victoria|karen|moira|tessa|susan|allison|ava|serena|fiona|kate|emma|joanna|salli|kimberly|ivy|amy|nicky|shelley|google us english|google uk english female/i;
+        function pickFemaleVoice() {
+            if (!cachedVoices.length) refreshVoices();
+            if (!cachedVoices.length) return null;
+            return cachedVoices.find(function (v) { return FEMALE_VOICE_HINTS.test(v.name); }) ||
+                cachedVoices.find(function (v) { return /^en/i.test(v.lang); }) ||
+                cachedVoices[0];
+        }
+
         function handleReadClick(btn, getText) {
             if (!('speechSynthesis' in window)) {
                 alert('Text-to-speech is not supported in this browser.');
@@ -707,6 +745,8 @@ They've since joined the planning committee for the 2027 revival — not as hono
             window.speechSynthesis.cancel();
             var utter = new SpeechSynthesisUtterance(getText());
             utter.rate = 0.95;
+            var femaleVoice = pickFemaleVoice();
+            if (femaleVoice) utter.voice = femaleVoice;
             activeReadBtn = btn;
             btn.classList.add('reading');
             btn.innerHTML = '<i class="fas fa-stop"></i> Stop';
