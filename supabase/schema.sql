@@ -2193,3 +2193,24 @@ where section_key = 'seq_60';
 
 update proposal_2027_sections set content = 'Two confirmed 45-day deadlines: submit stage/tent Department of Buildings paperwork and Park District verification letters, and — where alcohol or relevant public-way activity is involved — submit material to the appropriate police commander and Alderman Dowell''s 3rd Ward office, confirm licensed security, and finalize the crowd-control plan and alcohol perimeter/age verification.', updated_at = now()
 where section_key = 'seq_45';
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Ras Tafari Inc.'s confirmed legal entity facts (IRS determination letter
+-- + Illinois certified Articles of Incorporation), replacing the
+-- hypothetical "select a legal applicant" framing in Phase 1 on both pages
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set content = 'Legal permit applicant confirmed: Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6) and an IRS-recognized 501(c)(3) public charity under 509(a)(2) — EIN 42-3036705, exemption effective June 9, 2026, annual Form 990/990-EZ/990-N filing required. Registered agent and incorporator: Stephen Henry. Mailing address: 765 E 154th St, South Holland, IL 60473. Board of Directors: Stephen Henry, Paul Kelly, and Albert Harris. Still open: the dedicated festival bank account, and which of these three (or another named person) is assigned insurance, permit compliance, and Park District communication responsibility — that assignment should come from the Board, not be assumed. The permit is not transferable, so this is the correct entity to apply from the start.', updated_at = now()
+where section_key = 'vf_phase1';
+
+update proposal_2027_sections set content = 'Step 1 — Legal permit applicant confirmed: Ras Tafari Inc., an Illinois domestic not-for-profit corporation (incorporated June 8, 2026, in good standing, File #7559-872-6) and an IRS-recognized 501(c)(3) public charity under 509(a)(2) — EIN 42-3036705, exemption effective June 9, 2026, annual Form 990/990-EZ/990-N filing required. Registered agent and incorporator: Stephen Henry. Mailing address: 765 E 154th St, South Holland, IL 60473. Board of Directors: Stephen Henry, Paul Kelly, and Albert Harris. Still open: the dedicated festival bank account, and which of these three (or another named person) is assigned insurance, permit compliance, and Park District communication responsibility — that assignment should come from the Board, not be assumed. The application and permit are not transferable, so this is the correct entity to apply from the start.', updated_at = now()
+where section_key = 'seq_phase1';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('legal_entity_summary', 'Legal Entity — Confirmed', 'Ras Tafari Inc. is an Illinois domestic not-for-profit corporation, incorporated June 8, 2026 and in good standing (File #7559-872-6), and an IRS-recognized 501(c)(3) public charity under 509(a)(2) — EIN 42-3036705, exemption effective June 9, 2026, with annual Form 990/990-EZ/990-N filing required. Registered agent and incorporator: Stephen Henry. Mailing address: 765 E 154th St, South Holland, IL 60473. This is the confirmed legal entity that will hold the Park District permit.'),
+  ('legal_entity_board', 'Legal Entity — Board of Directors', 'Board of Directors (per the Articles of Incorporation):
+Stephen Henry
+Paul Kelly
+Albert Harris'),
+  ('legal_entity_open', 'Legal Entity — Still open', 'Still open, and a Board decision rather than an assumption: the dedicated festival bank account, and which of these three (or another named person) is formally assigned insurance, permit compliance, and Park District communication responsibility.')
+on conflict (section_key) do nothing;
