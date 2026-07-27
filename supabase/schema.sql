@@ -1920,3 +1920,14 @@ Nonrefundable travel
 Public claims that the event is officially approved'),
   ('gate_immediate_action', 'Immediate next action', 'The immediate next action is not artist booking or sponsor recruitment. It is a formal site walk and written feasibility meeting addressing the exact 7 Hills footprint, the 9:00 PM park closing time, the One Umbrella stage and the cannabis-promotion restrictions.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- 2027 goal bullets (added under "Turning 2026 into 2027 goals")
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('goal_bullet_1', '2027 Goal — Planning runway', 'Increase planning and promotion time from 47 days to approximately 300 days'),
+  ('goal_bullet_2', '2027 Goal — Attendance', 'Double the attendance from 273 to 550 attendees'),
+  ('goal_bullet_3', '2027 Goal — Partnership dollars', 'Increase partnership dollars from $0.00 to approximately $20,000')
+on conflict (section_key) do nothing;
