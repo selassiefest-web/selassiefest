@@ -1756,3 +1756,74 @@ Sponsorship and Fundraising
 Public Safety and Emergency Planning'),
   ('cs_first_committees_note', 'Committees to Form First — note', 'After those teams establish the festival''s scope, site, budget, capacity and legal framework, the remaining committees can begin booking, recruiting, marketing and detailed production planning.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- 2026 cost breakdown -- fully editable rows (add / delete / edit)
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- The cost breakdown table was originally a fixed set of 16 category rows
+-- stored as individual proposal_2027_sections keys (cost_venue, cost_stage,
+-- ...). That only supports editing existing values, not adding or removing
+-- rows, so it's superseded by this dedicated table: one row per line item,
+-- with the Total calculated client-side from whatever rows currently
+-- exist rather than stored/edited as its own row (so it can never go stale
+-- after an add/delete). The old cost_* keys above are left in place,
+-- unused, rather than deleted -- harmless dead data, not worth a
+-- destructive cleanup step.
+--
+-- Same "no login, anyone with the link can edit" tradeoff as every other
+-- collaborative table in this file (ticket_event_drafts,
+-- run_of_show_chapters, proposal_2027_sections).
+create table if not exists proposal_2027_cost_rows (
+  id uuid primary key default gen_random_uuid(),
+  sort_order int not null default 0,
+  label text not null default '',
+  amount text not null default '',
+  last_edited_by text,
+  updated_at timestamptz not null default now()
+);
+
+alter table proposal_2027_cost_rows enable row level security;
+
+create policy "public full access" on proposal_2027_cost_rows
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+grant select, insert, update, delete on proposal_2027_cost_rows to anon, authenticated;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'proposal_2027_cost_rows'
+  ) then
+    alter publication supabase_realtime add table proposal_2027_cost_rows;
+  end if;
+end $$;
+
+-- Seed with the same 16 line items the static table used to show, only if
+-- the table is currently empty -- unlike the section_key tables above,
+-- there's no natural per-row conflict key to guard a plain re-run with, so
+-- emptiness is the idempotency check instead. This never re-seeds once
+-- anyone has added or deleted a real row.
+insert into proposal_2027_cost_rows (sort_order, label, amount)
+select v.sort_order, v.label, v.amount from (values
+  (1, 'Venue & Site', '$1,800'),
+  (2, 'Stage & Production', '$1,150'),
+  (3, 'Security', '$1,100'),
+  (4, 'Portable Toilets & Sanitation', '$1,050'),
+  (5, 'Food & Beverage — Org', '$1,000'),
+  (6, 'Tents & Structures', '$900'),
+  (7, 'Print Materials', '$725'),
+  (8, 'Artist Hospitality / Rider', '$700'),
+  (9, 'Artist Fees', '$600'),
+  (10, 'Merchandise & Apparel', '$500'),
+  (11, 'Insurance', '$500'),
+  (12, 'DJ Fees', '$450'),
+  (13, 'Marketing & Advertising', '$300'),
+  (14, 'Staffing (uniforms)', '$300'),
+  (15, 'Photography & Videography', '$150'),
+  (16, 'Tables, Chairs & Furniture', '$100')
+) as v(sort_order, label, amount)
+where not exists (select 1 from proposal_2027_cost_rows);

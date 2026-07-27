@@ -293,6 +293,25 @@
         }
         .editable-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; font-style: italic; min-height: 1.2em; }
 
+        /* ── editable cost breakdown (add / delete rows) ── */
+        .cost-row { position: relative; padding-right: 26px; }
+        .cost-row-delete {
+            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: var(--text-muted);
+            font-size: 12px; padding: 2px 4px; opacity: 0.45;
+            transition: opacity 0.15s, color 0.15s;
+        }
+        .cost-row:hover .cost-row-delete { opacity: 1; }
+        .cost-row-delete:hover { color: var(--text-danger); }
+        .cost-add-btn {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+            background: var(--bg-accent); border: 0.5px solid var(--border-accent);
+            color: var(--text-accent); font-family: inherit; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 6px 12px; border-radius: 999px; cursor: pointer;
+        }
+        .cost-add-btn:hover { background: var(--bg-success); }
+
         .save-toast {
             position: fixed; bottom: 18px; right: 18px; z-index: 999;
             background: var(--text-primary); color: #fff; font-family: var(--font-sans);
@@ -347,7 +366,8 @@
             .memorandum { box-shadow: none; border: 1px solid #ddd; padding: 1.5rem; }
             .card { box-shadow: none; break-inside: avoid; }
             .read-aloud-btn, .intro-toolbar, .voice-btn, .voice-recording-ui,
-            .voice-preview-ui, .voice-note-player, .editable-meta, .save-toast, .cross-link {
+            .voice-preview-ui, .voice-note-player, .editable-meta, .save-toast, .cross-link,
+            .cost-add-btn, .cost-row-delete {
                 display: none !important;
             }
         }
@@ -430,25 +450,9 @@
             <p class="card-title"><i class="fas fa-sack-dollar"></i> 2026 cost breakdown</p>
             <div class="card-body">
                 <p class="ed" data-section-key="cost_breakdown_intro" data-label="2026 cost breakdown — intro">Total production cost for 2026 was <strong>$11,325</strong>, tracked in the Ras Tafari Inc. finance system we'll scale up for 2027 planning and City reporting:</p>
-                <div style="margin-top:8px;">
-                    <div class="recap-row"><span class="recap-label">Venue &amp; Site</span><span class="recap-val ed ed-line" data-section-key="cost_venue" data-label="2026 cost — Venue and Site">$1,800</span></div>
-                    <div class="recap-row"><span class="recap-label">Stage &amp; Production</span><span class="recap-val ed ed-line" data-section-key="cost_stage" data-label="2026 cost — Stage and Production">$1,150</span></div>
-                    <div class="recap-row"><span class="recap-label">Security</span><span class="recap-val ed ed-line" data-section-key="cost_security" data-label="2026 cost — Security">$1,100</span></div>
-                    <div class="recap-row"><span class="recap-label">Portable Toilets &amp; Sanitation</span><span class="recap-val ed ed-line" data-section-key="cost_sanitation" data-label="2026 cost — Sanitation">$1,050</span></div>
-                    <div class="recap-row"><span class="recap-label">Food &amp; Beverage — Org</span><span class="recap-val ed ed-line" data-section-key="cost_food" data-label="2026 cost — Food and Beverage">$1,000</span></div>
-                    <div class="recap-row"><span class="recap-label">Tents &amp; Structures</span><span class="recap-val ed ed-line" data-section-key="cost_tents" data-label="2026 cost — Tents and Structures">$900</span></div>
-                    <div class="recap-row"><span class="recap-label">Print Materials</span><span class="recap-val ed ed-line" data-section-key="cost_print" data-label="2026 cost — Print Materials">$725</span></div>
-                    <div class="recap-row"><span class="recap-label">Artist Hospitality / Rider</span><span class="recap-val ed ed-line" data-section-key="cost_hospitality" data-label="2026 cost — Artist Hospitality">$700</span></div>
-                    <div class="recap-row"><span class="recap-label">Artist Fees</span><span class="recap-val ed ed-line" data-section-key="cost_artist_fees" data-label="2026 cost — Artist Fees">$600</span></div>
-                    <div class="recap-row"><span class="recap-label">Merchandise &amp; Apparel</span><span class="recap-val ed ed-line" data-section-key="cost_merch" data-label="2026 cost — Merchandise">$500</span></div>
-                    <div class="recap-row"><span class="recap-label">Insurance</span><span class="recap-val ed ed-line" data-section-key="cost_insurance" data-label="2026 cost — Insurance">$500</span></div>
-                    <div class="recap-row"><span class="recap-label">DJ Fees</span><span class="recap-val ed ed-line" data-section-key="cost_dj" data-label="2026 cost — DJ Fees">$450</span></div>
-                    <div class="recap-row"><span class="recap-label">Marketing &amp; Advertising</span><span class="recap-val ed ed-line" data-section-key="cost_marketing" data-label="2026 cost — Marketing">$300</span></div>
-                    <div class="recap-row"><span class="recap-label">Staffing (uniforms)</span><span class="recap-val ed ed-line" data-section-key="cost_staffing" data-label="2026 cost — Staffing">$300</span></div>
-                    <div class="recap-row"><span class="recap-label">Photography &amp; Videography</span><span class="recap-val ed ed-line" data-section-key="cost_photo" data-label="2026 cost — Photography">$150</span></div>
-                    <div class="recap-row"><span class="recap-label">Tables, Chairs &amp; Furniture</span><span class="recap-val ed ed-line" data-section-key="cost_furniture" data-label="2026 cost — Furniture">$100</span></div>
-                    <div class="recap-row" style="border-top:1px solid var(--border);font-weight:600;margin-top:4px;padding-top:8px;"><span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val ed ed-line" data-section-key="cost_total" data-label="2026 cost — Total" style="color:var(--text-accent);">$11,325</span></div>
-                </div>
+                <div id="costRowsContainer" style="margin-top:8px;"></div>
+                <button type="button" id="costAddRowBtn" class="cost-add-btn"><i class="fas fa-plus"></i> Add row</button>
+                <p style="font-size:10.5px;color:var(--text-muted);margin-top:6px;font-style:italic;">The Total row is calculated automatically from the rows above — add, edit, or delete rows and it updates for everyone.</p>
             </div>
         </div>
         <div class="callout">
@@ -952,8 +956,185 @@ They've since joined the planning committee for the 2027 revival — not as hono
             }
         }
 
+        // ── 2026 cost breakdown: add / delete / edit rows ───────────────
+        var COST_TABLE = 'proposal_2027_cost_rows';
+        var costRowsCache = [];
+
+        function parseAmount(str) {
+            var n = parseFloat(String(str == null ? '' : str).replace(/[^0-9.\-]/g, ''));
+            return isNaN(n) ? 0 : n;
+        }
+        function formatTotal(n) {
+            return '$' + Math.round(n).toLocaleString('en-US');
+        }
+        function refreshCostTotal() {
+            var totalVal = document.querySelector('.cost-row-total .recap-val');
+            if (!totalVal) return;
+            var total = costRowsCache.reduce(function (sum, r) { return sum + parseAmount(r.amount); }, 0);
+            totalVal.textContent = formatTotal(total);
+        }
+
+        function wireCostField(el, rowId, field) {
+            var saveTimer = null;
+            function flush() {
+                if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+                var value = el.textContent.trim();
+                var patch = {};
+                patch[field] = value;
+                patch.last_edited_by = myName || null;
+                patch.updated_at = new Date().toISOString();
+                window.sfSupabaseReady.then(function (client) {
+                    return client.from(COST_TABLE).update(patch).eq('id', rowId);
+                }).then(function (result) {
+                    if (result.error) throw result.error;
+                    var row = costRowsCache.find(function (r) { return r.id === rowId; });
+                    if (row) row[field] = value;
+                    if (field === 'amount') refreshCostTotal();
+                    showToast('Cost row saved');
+                }).catch(function (err) {
+                    showToast('Could not save cost row');
+                    console.warn('Cost row save failed', rowId, field, err);
+                });
+            }
+            el.addEventListener('focus', function () { ensureName(); });
+            el.addEventListener('input', function () {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(flush, 900);
+            });
+            el.addEventListener('blur', function () { if (saveTimer) flush(); });
+            if (field === 'amount') {
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+                });
+            }
+        }
+
+        function deleteCostRow(id, label) {
+            if (!window.confirm('Delete "' + (label || 'this row') + '" from the cost breakdown?')) return;
+            window.sfSupabaseReady.then(function (client) {
+                return client.from(COST_TABLE).delete().eq('id', id);
+            }).then(function (result) {
+                if (result.error) throw result.error;
+                costRowsCache = costRowsCache.filter(function (r) { return r.id !== id; });
+                renderCostRows();
+                showToast('Row deleted');
+            }).catch(function (err) {
+                alert('Could not delete row: ' + (err && err.message ? err.message : err));
+            });
+        }
+
+        function renderCostRows() {
+            var container = document.getElementById('costRowsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            var sorted = costRowsCache.slice().sort(function (a, b) { return a.sort_order - b.sort_order; });
+            var total = 0;
+
+            sorted.forEach(function (row) {
+                total += parseAmount(row.amount);
+                var rowEl = document.createElement('div');
+                rowEl.className = 'recap-row cost-row';
+                rowEl.dataset.rowId = row.id;
+
+                var labelEl = document.createElement('span');
+                labelEl.className = 'recap-label ed cost-row-label';
+                labelEl.setAttribute('contenteditable', 'true');
+                labelEl.textContent = row.label;
+
+                var valEl = document.createElement('span');
+                valEl.className = 'recap-val ed ed-line cost-row-val';
+                valEl.setAttribute('contenteditable', 'true');
+                valEl.textContent = row.amount;
+
+                var delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'cost-row-delete';
+                delBtn.title = 'Delete this row';
+                delBtn.innerHTML = '<i class="fas fa-xmark"></i>';
+
+                rowEl.appendChild(labelEl);
+                rowEl.appendChild(valEl);
+                rowEl.appendChild(delBtn);
+                container.appendChild(rowEl);
+
+                wireCostField(labelEl, row.id, 'label');
+                wireCostField(valEl, row.id, 'amount');
+                delBtn.addEventListener('click', function () { deleteCostRow(row.id, row.label); });
+            });
+
+            var totalRow = document.createElement('div');
+            totalRow.className = 'recap-row cost-row-total';
+            totalRow.style.cssText = 'border-top:1px solid var(--border);font-weight:600;margin-top:4px;padding-top:8px;';
+            totalRow.innerHTML = '<span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val" style="color:var(--text-accent);">' + formatTotal(total) + '</span>';
+            container.appendChild(totalRow);
+        }
+
+        function handleCostRowChange(payload) {
+            if (payload.eventType === 'DELETE') {
+                costRowsCache = costRowsCache.filter(function (r) { return r.id !== payload.old.id; });
+                renderCostRows();
+                return;
+            }
+            var row = payload.new;
+            var idx = costRowsCache.findIndex(function (r) { return r.id === row.id; });
+            if (idx === -1) {
+                costRowsCache.push(row);
+                renderCostRows();
+                return;
+            }
+            costRowsCache[idx] = row;
+            var rowEl = document.querySelector('.cost-row[data-row-id="' + row.id + '"]');
+            if (rowEl) {
+                var labelEl = rowEl.querySelector('.cost-row-label');
+                var valEl = rowEl.querySelector('.cost-row-val');
+                if (labelEl && document.activeElement !== labelEl) labelEl.textContent = row.label;
+                if (valEl && document.activeElement !== valEl) valEl.textContent = row.amount;
+            }
+            refreshCostTotal();
+        }
+
+        function setupCostAddButton() {
+            var addBtn = document.getElementById('costAddRowBtn');
+            if (!addBtn) return;
+            addBtn.addEventListener('click', function () {
+                ensureName();
+                var maxSort = costRowsCache.reduce(function (m, r) { return Math.max(m, r.sort_order); }, 0);
+                var newRow = { sort_order: maxSort + 1, label: 'New line item', amount: '$0', last_edited_by: myName || null };
+                window.sfSupabaseReady.then(function (client) {
+                    return client.from(COST_TABLE).insert(newRow).select().single();
+                }).then(function (result) {
+                    if (result.error) throw result.error;
+                    costRowsCache.push(result.data);
+                    renderCostRows();
+                    showToast('Row added');
+                    var el = document.querySelector('.cost-row[data-row-id="' + result.data.id + '"] .cost-row-label');
+                    if (el) el.focus();
+                }).catch(function (err) {
+                    alert('Could not add row: ' + (err && err.message ? err.message : err));
+                });
+            });
+        }
+
+        async function initCostRows() {
+            setupCostAddButton();
+            try {
+                var client = await window.sfSupabaseReady;
+                var result = await client.from(COST_TABLE).select('*').order('sort_order', { ascending: true });
+                if (result.error) throw result.error;
+                costRowsCache = result.data || [];
+                renderCostRows();
+
+                client.channel('proposal-2027-cost-rows')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: COST_TABLE }, handleCostRowChange)
+                    .subscribe();
+            } catch (err) {
+                console.warn('Cost breakdown live sync unavailable:', err);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             setupReadAloud();
+            initCostRows();
 
             // Rich person-contact blocks: meta line + voice notes.
             var blocks = Array.prototype.slice.call(document.querySelectorAll('.editable[data-section-key]'));
