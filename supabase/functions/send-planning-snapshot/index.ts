@@ -11,6 +11,19 @@ const TO = 'stephen@selassiefest.com';
 const FROM = 'SelassieFest <hello@selassiefest.com>';
 const REPLY_TO = 'selassiefest@gmail.com';
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+  });
+}
+
 function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]
@@ -18,8 +31,10 @@ function escapeHtml(s: unknown): string {
 }
 
 Deno.serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'method not allowed' }), { status: 405 });
+    return json({ error: 'method not allowed' }, 405);
   }
 
   try {
@@ -30,7 +45,7 @@ Deno.serve(async (req: Request) => {
     const sections: { label?: string; content?: string }[] = Array.isArray(payload.sections) ? payload.sections : [];
 
     if (!sections.length) {
-      return new Response(JSON.stringify({ error: 'no sections provided' }), { status: 400 });
+      return json({ error: 'no sections provided' }, 400);
     }
 
     const bodyHtml = sections
@@ -70,12 +85,12 @@ Deno.serve(async (req: Request) => {
     if (!resendRes.ok) {
       const errText = await resendRes.text();
       console.error('Resend send failed:', resendRes.status, errText);
-      return new Response(JSON.stringify({ error: errText }), { status: 502 });
+      return json({ error: errText }, 502);
     }
 
-    return new Response(JSON.stringify({ sent: true }), { status: 200 });
+    return json({ sent: true });
   } catch (e) {
     console.error('send-planning-snapshot error:', e);
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500 });
+    return json({ error: String(e) }, 500);
   }
 });
