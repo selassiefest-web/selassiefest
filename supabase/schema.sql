@@ -2417,3 +2417,36 @@ values
   ('vf_food_deadline', 'Countdown — Food vendor filing deadline', 'Confirmed: each Single Event Food Booth or Food Truck application must be submitted at least 20 days before the event'),
   ('vf_food_docs', 'Countdown — Food vendor required documents', 'A Chicago Business Account number; a restaurant health inspection dated within the last 6 months (date of inspection if based in Chicago, a copy of the inspection if based outside Chicago); a food booth layout; a shared-kitchen affidavit if applicable; and Chicago Summer Sanitation Certification')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Confirmed the DCASE earliest-submission date (Monday, January 25, 2027)
+-- with day-of-week added for calendaring. Expanded the "Start now" gate
+-- list from a vague "Permit preparation" line into the specific DCASE
+-- documents that can be drafted immediately, and added non-binding vendor
+-- permit-readiness outreach. Added a 2027 food-vendor goal (2 -> 15) and,
+-- on the Food Vendor Licensing countdown card, task-assignment bullets for
+-- recruiting and tracking compliance for both food and non-food vendors —
+-- tying the food-vendor task directly back to the 2026 Health Department
+-- review's real "incomplete" note (missing inspection documentation).
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set content = 'Confirmed: DCASE accepts applications starting 180 days before the event and will not accept them less than 21 days before. For July 24, 2027, the 180-day mark is Monday, January 25, 2027 — the first day the application can be submitted (the tutorial specifies no particular time of day)', updated_at = now()
+where section_key = 'vf_phase6_notice';
+
+update proposal_2027_sections set content = 'Legal applicant selection
+Site feasibility
+Park meeting
+Community outreach
+Attendance planning
+Preliminary budgeting
+Preliminary site design
+DCASE document drafting — Site Map, Security/Safety Plan, Emergency Action Plan, and Emergency Medical Services Plan can all be drafted now, well ahead of the January 25, 2027 earliest submission date (Certificate of Insurance and Marketing Materials are finalized closer to submission)
+Vendor permit-readiness outreach — begin informal, non-binding solicitation of food and non-food vendors now so each has time to line up licenses/inspections before formal space is confirmed (final vendor-space sales still wait for conditional approval, below)
+Backup-site research', updated_at = now()
+where section_key = 'vf_start_now';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('goal_bullet_6', '2027 Goal — Food vendor count', 'Increase food vendors from 2 to 15'),
+  ('vf_food_target', 'Countdown — 2027 food vendor target and owner', 'Target: 15 food vendors for 2027 (up from 2 in 2026). Assign a team member from the Vendors, Food, Beverage & Marketplace committee to solicit all 15 and confirm each has completed their Chicago Business Account, health inspection, and Chicago Summer Sanitation Certification well ahead of the 20-day filing deadline — our 2026 permit''s Health Department review was initially marked incomplete for exactly this kind of missing documentation'),
+  ('vf_nonfood_vendor', 'Countdown — Non-food vendor recruitment and compliance', 'Assign a team member to solicit merchandise, craft, and wellness/cannabis vendors and confirm each holds whatever licenses, insurance certificates, or BACP registration the application requires before its applicable deadline')
+on conflict (section_key) do nothing;
