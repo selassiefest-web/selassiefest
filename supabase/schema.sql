@@ -1971,3 +1971,71 @@ values
   ('why_seven_hills_p3', 'Why Seven Hills — paragraph 3', 'With CTA Green Line and bus access, Seven Hills can welcome residents from across Chicago while providing the open, public and intergenerational environment that SelassieFest requires. Families, elders, youth, artists, educators and members of the wider African diaspora can gather in a setting more inclusive and culturally appropriate than a private entertainment venue.'),
   ('why_seven_hills_p4', 'Why Seven Hills — paragraph 4', 'Choosing Seven Hills is therefore more than selecting a festival site. It is a return to SelassieFest''s roots and an opportunity to reestablish the festival within one of Chicago''s most important landscapes of Black culture, history and public life.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Cross-agency team roster -- blank, add/delete rows by agency
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Replaces the four named contact_camille/contact_jackie/contact_denise_park/
+-- contact_alderman cards (left in proposal_2027_sections, unused, rather
+-- than deleted) -- the team is not actually confirmed yet, so presenting
+-- specific names as already-secured contacts was misleading. This table
+-- holds a variable number of blank rows per agency instead, same
+-- add/delete-row shape as proposal_2027_cost_rows.
+create table if not exists proposal_2027_team_contacts (
+  id uuid primary key default gen_random_uuid(),
+  agency text not null,
+  sort_order int not null default 0,
+  role_needed text not null default '',
+  name text not null default '',
+  title text not null default '',
+  last_edited_by text,
+  updated_at timestamptz not null default now()
+);
+
+alter table proposal_2027_team_contacts enable row level security;
+
+create policy "public full access" on proposal_2027_team_contacts
+  for all to anon, authenticated
+  using (true)
+  with check (true);
+
+grant select, insert, update, delete on proposal_2027_team_contacts to anon, authenticated;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'proposal_2027_team_contacts'
+  ) then
+    alter publication supabase_realtime add table proposal_2027_team_contacts;
+  end if;
+end $$;
+
+-- Blank starter rows (name/title empty) seeded only if the table is
+-- currently empty, matching proposal_2027_cost_rows' idempotency pattern --
+-- role_needed carries over what each contact card used to describe, so
+-- the "what kind of contact do we need here" context isn't lost.
+insert into proposal_2027_team_contacts (agency, sort_order, role_needed, name, title)
+select v.agency, v.sort_order, v.role_needed, '', '' from (values
+  ('DCASE', 1, 'Special event permitting & coordination contact'),
+  ('DCASE', 2, 'Cultural programming & community engagement contact'),
+  ('Chicago Park District', 1, 'Permits & park operations liaison for Washington Park'),
+  ('3rd Ward', 1, 'Aldermanic support & community notification for events in Washington Park')
+) as v(agency, sort_order, role_needed)
+where not exists (select 1 from proposal_2027_team_contacts);
+
+-- Corrected copy that previously named specific contacts (Camille, Jackie,
+-- Denise, Alderman Pat Powell) as already-secured/engaged, which
+-- contradicted the team not actually being confirmed yet.
+update proposal_2027_sections set content = 'The team is not yet in place. Add names and titles below as each contact is confirmed, organized by agency — every field saves automatically as you type.', updated_at = now()
+where section_key = 'permitting_team_intro';
+
+update proposal_2027_sections set content = 'This is not a cold request. We are actively building the cross-agency relationships this proposal depends on — DCASE, the Chicago Park District, and the 3rd Ward''s office — alongside two community members already on board, Denise and Diedra, who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team we are assembling, and what we''re asking the City and the 3rd Ward to help us secure next.', updated_at = now()
+where section_key = 'exec_summary_p2';
+
+update proposal_2027_sections set content = 'DCASE special event registration with the assigned DCASE contacts; coordinate multi-agency review with Police, Fire, and Public Health as required for the event''s scale.', updated_at = now()
+where section_key = 'tl_3';
+
+update proposal_2027_sections set content = 'SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward''s office as the partners this plan depends on, and a community planning committee already in place, we''re asking the City to help us bring this home to Washington Park.', updated_at = now()
+where section_key = 'closing_p1';

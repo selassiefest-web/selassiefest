@@ -228,6 +228,49 @@
         .contact-card .person { font-size: 14.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
         .contact-card .role { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
 
+        /* ── cross-agency team roster (blank, add/delete rows) ── */
+        .team-agency { margin-bottom: 22px; }
+        .team-agency:last-child { margin-bottom: 0; }
+        .team-agency-title {
+            font-size: 18px; font-weight: 700; color: var(--text-primary);
+            text-transform: uppercase; letter-spacing: 0.04em;
+            border-bottom: 2px solid var(--border-accent); padding-bottom: 6px; margin: 0 0 10px;
+            display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+        }
+        .team-agency-sub { font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-muted); }
+        .team-row {
+            display: grid; grid-template-columns: 1.4fr 1fr 1fr 22px; gap: 10px; align-items: center;
+            padding: 8px 0; border-bottom: 0.5px solid var(--border);
+        }
+        @media (max-width: 640px) { .team-row { grid-template-columns: 1fr; gap: 4px; padding-bottom: 12px; } }
+        .team-row:last-child { border-bottom: none; }
+        .team-row-role, .team-field {
+            cursor: text; border-radius: 4px; padding: 2px 4px; transition: background 0.15s;
+        }
+        .team-row-role:hover, .team-field:hover { background: rgba(14,94,54,0.07); }
+        .team-row-role:focus, .team-field:focus {
+            outline: 2px solid var(--text-accent); outline-offset: 1px; background: rgba(14,94,54,0.08);
+        }
+        .team-row-role { font-size: 12.5px; color: var(--text-secondary); }
+        .team-field { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .team-row [data-placeholder]:empty:before {
+            content: attr(data-placeholder); color: var(--text-muted); font-weight: 400; font-style: italic;
+        }
+        .team-row-delete {
+            background: none; border: none; cursor: pointer; color: var(--text-muted);
+            font-size: 12px; padding: 2px 4px; opacity: 0.45; justify-self: end;
+        }
+        .team-row:hover .team-row-delete { opacity: 1; }
+        .team-row-delete:hover { color: var(--text-danger); }
+        .team-add-btn {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+            background: var(--bg-accent); border: 0.5px solid var(--border-accent);
+            color: var(--text-accent); font-family: inherit; font-size: 10.5px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 5px 10px; border-radius: 999px; cursor: pointer;
+        }
+        .team-add-btn:hover { background: var(--bg-success); }
+
         .pull-quote {
             border-left: 3px solid var(--gold);
             background: var(--bg-warning);
@@ -383,7 +426,8 @@
             .card { box-shadow: none; break-inside: avoid; }
             .read-aloud-btn, .intro-toolbar, .voice-btn, .voice-recording-ui,
             .voice-preview-ui, .voice-note-player, .editable-meta, .save-toast, .cross-link,
-            .cost-add-btn, .cost-row-delete, .save-email-btn, .bottom-toolbar {
+            .cost-add-btn, .cost-row-delete, .save-email-btn, .bottom-toolbar,
+            .team-add-btn, .team-row-delete {
                 display: none !important;
             }
         }
@@ -427,7 +471,7 @@
         <div class="callout">
             <h3><i class="fas fa-scroll"></i> Executive summary</h3>
             <p class="ed" data-section-key="exec_summary_p1" data-label="Executive Summary — paragraph 1">Ras Tafari Inc., a 501(c)(3) nonprofit, respectfully requests a site-use and special event permit to hold <strong>SelassieFest 2027</strong> at <strong>Seven Hills in Washington Park</strong> on <strong>Saturday, July 24, 2027</strong>. SelassieFest is Chicago's roots reggae and Rastafari cultural festival, tracing its lineage to the city's original Caribbean cultural gatherings held between 1981 and 1997 — a run of festivals that, for many who attended, has never been matched since.</p>
-            <p class="ed" data-section-key="exec_summary_p2" data-label="Executive Summary — paragraph 2">This is not a cold request. Over the past several months a cross-agency working group has already come together around this proposal: two DCASE contacts (Camille and Jackie), a Chicago Park District contact (Denise), and two community members — Denise and Diedra — who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team already assembled, and what we're asking the City and the 3rd Ward to help us secure next.</p>
+            <p class="ed" data-section-key="exec_summary_p2" data-label="Executive Summary — paragraph 2">This is not a cold request. We are actively building the cross-agency relationships this proposal depends on — DCASE, the Chicago Park District, and the 3rd Ward's office — alongside two community members already on board, Denise and Diedra, who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team we are assembling, and what we're asking the City and the 3rd Ward to help us secure next.</p>
         </div>
 
         </div>
@@ -496,33 +540,25 @@
         </div>
 
         <!-- PERMITTING TEAM -->
-        <h2 class="section-title"><i class="fas fa-people-arrows" style="margin-right:8px;"></i>Cross-agency planning team already in place</h2>
-        <p class="ed" data-section-key="permitting_team_intro" data-label="Permitting team — intro" style="font-size:11.5px;color:var(--text-muted);margin:-6px 0 10px;font-style:italic;">Click directly into any note below to edit it — it saves automatically as you type, and everyone viewing this page sees the latest version.</p>
-        <div class="contact-grid">
-            <div class="contact-card editable" data-section-key="contact_camille" data-label="Camille — DCASE">
-                <p class="agency">DCASE</p>
-                <p class="person">Camille</p>
-                <p class="role editable-content">Special event permitting &amp; coordination contact</p>
-                <div class="editable-meta"></div>
-            </div>
-            <div class="contact-card editable" data-section-key="contact_jackie" data-label="Jackie — DCASE">
-                <p class="agency">DCASE</p>
-                <p class="person">Jackie</p>
-                <p class="role editable-content">Cultural programming &amp; community engagement contact</p>
-                <div class="editable-meta"></div>
-            </div>
-            <div class="contact-card editable" data-section-key="contact_denise_park" data-label="Denise — Chicago Park District">
-                <p class="agency">Chicago Park District</p>
-                <p class="person">Denise</p>
-                <p class="role editable-content">Permits &amp; park operations liaison for Washington Park — also serves on our community planning committee (see below)</p>
-                <div class="editable-meta"></div>
-            </div>
-            <div class="contact-card editable" data-section-key="contact_alderman" data-label="Office of Alderman Pat Powell — 3rd Ward">
-                <p class="agency">3rd Ward</p>
-                <p class="person">Office of Alderman Pat Powell</p>
-                <p class="role editable-content">Aldermanic support &amp; community notification for events in Washington Park</p>
-                <div class="editable-meta"></div>
-            </div>
+        <h2 class="section-title"><i class="fas fa-people-arrows" style="margin-right:8px;"></i>Cross-agency planning contacts</h2>
+        <p class="ed" data-section-key="permitting_team_intro" data-label="Permitting team — intro" style="font-size:11.5px;color:var(--text-muted);margin:-6px 0 10px;font-style:italic;">The team is not yet in place. Add names and titles below as each contact is confirmed, organized by agency — every field saves automatically as you type.</p>
+
+        <div class="team-agency" data-agency="DCASE">
+            <h3 class="team-agency-title">DCASE <span class="team-agency-sub">Dept. of Cultural Affairs &amp; Special Events</span></h3>
+            <div class="team-rows-container" data-agency-rows="DCASE"></div>
+            <button type="button" class="team-add-btn" data-agency-add="DCASE"><i class="fas fa-plus"></i> Add contact</button>
+        </div>
+
+        <div class="team-agency" data-agency="Chicago Park District">
+            <h3 class="team-agency-title">Chicago Park District</h3>
+            <div class="team-rows-container" data-agency-rows="Chicago Park District"></div>
+            <button type="button" class="team-add-btn" data-agency-add="Chicago Park District"><i class="fas fa-plus"></i> Add contact</button>
+        </div>
+
+        <div class="team-agency" data-agency="3rd Ward">
+            <h3 class="team-agency-title">3rd Ward</h3>
+            <div class="team-rows-container" data-agency-rows="3rd Ward"></div>
+            <button type="button" class="team-add-btn" data-agency-add="3rd Ward"><i class="fas fa-plus"></i> Add contact</button>
         </div>
 
         <!-- COMMUNITY COMMITTEE -->
@@ -571,7 +607,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
             </div>
             <div class="trow">
                 <div class="when">October 2026 to November 2026</div>
-                <div class="desc ed" data-section-key="tl_3" data-label="Timeline — October to November 2026"><strong>DCASE special event registration</strong> with Camille and Jackie; coordinate multi-agency review with Police, Fire, and Public Health as required for the event's scale.</div>
+                <div class="desc ed" data-section-key="tl_3" data-label="Timeline — October to November 2026"><strong>DCASE special event registration</strong> with the assigned DCASE contacts; coordinate multi-agency review with Police, Fire, and Public Health as required for the event's scale.</div>
             </div>
             <div class="trow">
                 <div class="when">Monday, November 2, 2026 (inferred)</div>
@@ -634,7 +670,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <h2 class="section-title"><i class="fas fa-flag-checkered" style="margin-right:8px;"></i>Closing statement</h2>
         <div class="card card-accent">
             <div class="card-body">
-                <p class="ed" data-section-key="closing_p1" data-label="Closing statement">SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward's office already engaged and a community planning committee in place, we're asking the City to help us bring this home to Washington Park.</p>
+                <p class="ed" data-section-key="closing_p1" data-label="Closing statement">SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward's office as the partners this plan depends on, and a community planning committee already in place, we're asking the City to help us bring this home to Washington Park.</p>
             </div>
         </div>
 
@@ -1166,6 +1202,176 @@ They've since joined the planning committee for the 2027 revival — not as hono
             }
         }
 
+        // ── Cross-agency team roster: blank, add/delete rows grouped by
+        // agency (DCASE, Chicago Park District, 3rd Ward). The team isn't
+        // confirmed yet, so every row starts blank -- name and title are
+        // filled in as real contacts are established.
+        var TEAM_TABLE = 'proposal_2027_team_contacts';
+        var teamRowsCache = [];
+        var TEAM_AGENCIES = ['DCASE', 'Chicago Park District', '3rd Ward'];
+
+        function wireTeamField(el, rowId, field) {
+            var saveTimer = null;
+            function flush() {
+                if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+                var value = el.textContent.trim();
+                var patch = {};
+                patch[field] = value;
+                patch.last_edited_by = myName || null;
+                patch.updated_at = new Date().toISOString();
+                window.sfSupabaseReady.then(function (client) {
+                    return client.from(TEAM_TABLE).update(patch).eq('id', rowId);
+                }).then(function (result) {
+                    if (result.error) throw result.error;
+                    var row = teamRowsCache.find(function (r) { return r.id === rowId; });
+                    if (row) row[field] = value;
+                    showToast('Saved');
+                }).catch(function (err) {
+                    showToast('Could not save');
+                    console.warn('Team row save failed', rowId, field, err);
+                });
+            }
+            el.addEventListener('focus', function () { ensureName(); });
+            el.addEventListener('input', function () {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(flush, 900);
+            });
+            el.addEventListener('blur', function () { if (saveTimer) flush(); });
+        }
+
+        function deleteTeamRow(id) {
+            if (!window.confirm('Remove this contact row?')) return;
+            window.sfSupabaseReady.then(function (client) {
+                return client.from(TEAM_TABLE).delete().eq('id', id);
+            }).then(function (result) {
+                if (result.error) throw result.error;
+                teamRowsCache = teamRowsCache.filter(function (r) { return r.id !== id; });
+                renderAllTeamAgencies();
+                showToast('Row removed');
+            }).catch(function (err) {
+                alert('Could not remove row: ' + (err && err.message ? err.message : err));
+            });
+        }
+
+        function renderTeamAgency(agency) {
+            var container = document.querySelector('.team-rows-container[data-agency-rows="' + agency + '"]');
+            if (!container) return;
+            container.innerHTML = '';
+            var rows = teamRowsCache
+                .filter(function (r) { return r.agency === agency; })
+                .sort(function (a, b) { return a.sort_order - b.sort_order; });
+
+            rows.forEach(function (row) {
+                var rowEl = document.createElement('div');
+                rowEl.className = 'team-row';
+                rowEl.dataset.rowId = row.id;
+
+                var roleEl = document.createElement('div');
+                roleEl.className = 'team-row-role';
+                roleEl.setAttribute('contenteditable', 'true');
+                roleEl.setAttribute('data-placeholder', 'Role needed');
+                roleEl.textContent = row.role_needed || '';
+
+                var nameEl = document.createElement('span');
+                nameEl.className = 'team-field';
+                nameEl.setAttribute('contenteditable', 'true');
+                nameEl.setAttribute('data-placeholder', 'Name');
+                nameEl.textContent = row.name || '';
+
+                var titleEl = document.createElement('span');
+                titleEl.className = 'team-field';
+                titleEl.setAttribute('contenteditable', 'true');
+                titleEl.setAttribute('data-placeholder', 'Title');
+                titleEl.textContent = row.title || '';
+
+                var delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'team-row-delete';
+                delBtn.title = 'Remove this row';
+                delBtn.innerHTML = '<i class="fas fa-xmark"></i>';
+
+                rowEl.appendChild(roleEl);
+                rowEl.appendChild(nameEl);
+                rowEl.appendChild(titleEl);
+                rowEl.appendChild(delBtn);
+                container.appendChild(rowEl);
+
+                wireTeamField(roleEl, row.id, 'role_needed');
+                wireTeamField(nameEl, row.id, 'name');
+                wireTeamField(titleEl, row.id, 'title');
+                delBtn.addEventListener('click', function () { deleteTeamRow(row.id); });
+            });
+        }
+
+        function renderAllTeamAgencies() {
+            TEAM_AGENCIES.forEach(renderTeamAgency);
+        }
+
+        function handleTeamRowChange(payload) {
+            if (payload.eventType === 'DELETE') {
+                teamRowsCache = teamRowsCache.filter(function (r) { return r.id !== payload.old.id; });
+                renderAllTeamAgencies();
+                return;
+            }
+            var row = payload.new;
+            var idx = teamRowsCache.findIndex(function (r) { return r.id === row.id; });
+            if (idx === -1) {
+                teamRowsCache.push(row);
+                renderAllTeamAgencies();
+                return;
+            }
+            teamRowsCache[idx] = row;
+            var rowEl = document.querySelector('.team-row[data-row-id="' + row.id + '"]');
+            if (rowEl) {
+                var roleEl = rowEl.querySelector('.team-row-role');
+                var fields = rowEl.querySelectorAll('.team-field');
+                if (roleEl && document.activeElement !== roleEl) roleEl.textContent = row.role_needed || '';
+                if (fields[0] && document.activeElement !== fields[0]) fields[0].textContent = row.name || '';
+                if (fields[1] && document.activeElement !== fields[1]) fields[1].textContent = row.title || '';
+            }
+        }
+
+        function setupTeamAddButtons() {
+            Array.prototype.forEach.call(document.querySelectorAll('.team-add-btn'), function (btn) {
+                btn.addEventListener('click', function () {
+                    ensureName();
+                    var agency = btn.dataset.agencyAdd;
+                    var agencyRows = teamRowsCache.filter(function (r) { return r.agency === agency; });
+                    var maxSort = agencyRows.reduce(function (m, r) { return Math.max(m, r.sort_order); }, 0);
+                    var newRow = { agency: agency, sort_order: maxSort + 1, role_needed: '', name: '', title: '', last_edited_by: myName || null };
+                    window.sfSupabaseReady.then(function (client) {
+                        return client.from(TEAM_TABLE).insert(newRow).select().single();
+                    }).then(function (result) {
+                        if (result.error) throw result.error;
+                        teamRowsCache.push(result.data);
+                        renderAllTeamAgencies();
+                        showToast('Contact row added');
+                        var el = document.querySelector('.team-row[data-row-id="' + result.data.id + '"] .team-row-role');
+                        if (el) el.focus();
+                    }).catch(function (err) {
+                        alert('Could not add row: ' + (err && err.message ? err.message : err));
+                    });
+                });
+            });
+        }
+
+        async function initTeamContacts() {
+            setupTeamAddButtons();
+            try {
+                var client = await window.sfSupabaseReady;
+                var result = await client.from(TEAM_TABLE).select('*').order('sort_order', { ascending: true });
+                if (result.error) throw result.error;
+                teamRowsCache = result.data || [];
+                renderAllTeamAgencies();
+
+                client.channel('proposal-2027-team-contacts')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: TEAM_TABLE }, handleTeamRowChange)
+                    .subscribe();
+            } catch (err) {
+                console.warn('Team contacts live sync unavailable:', err);
+            }
+        }
+
         // ── Save & Email: send a full snapshot of the page's current
         // editable content (person-contact notes, every inline field, and
         // the live cost breakdown rows/total) to stephen@selassiefest.com
@@ -1194,6 +1400,18 @@ They've since joined the planning committee for the 2027 revival — not as hono
             if (totalVal && totalVal.textContent.trim()) {
                 sections.push({ label: '2026 cost breakdown — Total', content: totalVal.textContent.trim() });
             }
+
+            teamRowsCache.slice().sort(function (a, b) {
+                return TEAM_AGENCIES.indexOf(a.agency) - TEAM_AGENCIES.indexOf(b.agency) || a.sort_order - b.sort_order;
+            }).forEach(function (row) {
+                var parts = [];
+                if (row.name) parts.push(row.name);
+                if (row.title) parts.push(row.title);
+                sections.push({
+                    label: row.agency + ' — ' + (row.role_needed || 'contact'),
+                    content: parts.length ? parts.join(', ') : '(not yet confirmed)',
+                });
+            });
 
             return sections;
         }
@@ -1229,6 +1447,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
         document.addEventListener('DOMContentLoaded', function () {
             setupReadAloud();
             initCostRows();
+            initTeamContacts();
             setupSaveEmailButton(document.getElementById('saveEmailBtnTop'));
             setupSaveEmailButton(document.getElementById('saveEmailBtnBottom'));
 
