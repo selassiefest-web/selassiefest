@@ -1827,3 +1827,96 @@ select v.sort_order, v.label, v.amount from (values
   (16, 'Tables, Chairs & Furniture', '$100')
 ) as v(sort_order, label, amount)
 where not exists (select 1 from proposal_2027_cost_rows);
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Venue approval gates, site feasibility issues, and master planning
+-- sequence added to the committee-structure page
+-- (/organization/selassiefest-2027-committee-structure.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Same proposal_2027_sections table, 28 more section_key rows covering the
+-- three-gate approval framework (application submitted / pending permit /
+-- final permit), the three site-feasibility issues with "7 Hills" at
+-- Washington Park, venue/ward contacts, the 8-phase planning sequence, the
+-- 90/60/45/30/14-day countdown milestones, and the three approval-gate risk
+-- tiers (start now / wait for pending permit / wait for final permit).
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('gate_intro', 'Venue Gates — Intro', 'Planning should not stop while waiting to secure Washington Park. The work required to determine whether the site is feasible and to submit a complete permit application must begin immediately. However, major public or irreversible commitments should wait until the venue reaches the appropriate approval stage.'),
+  ('gate_stages', 'Venue Gates — Three Stages', 'Application submitted — the venue is not secured.
+Pending permit / conditional approval received — the date and location are tentatively accepted, subject to payments, insurance, plans and other permits.
+Final Special Event Permit issued — the event is authorized to proceed under the approved conditions.'),
+  ('gate_note', 'Venue Gates — Park District note', 'Chicago Park District states that submitting an application or paying the application fee does not grant permission to conduct the event. After at least 14 business days, an accepted application receives a pending permit identifying additional requirements and deadlines. The final permit is issued only after all requirements and payments are satisfied.'),
+  ('siteissue_1', 'Site Issue 1 — Official site identification', 'The Park District''s official name for the venue is Washington (George) Park, at 5531 S. King Drive. Its published facility list does not identify an area officially called "7 Hills." "7 Hills" may be a familiar community name, but the permit must show the exact field, lawn or geographic footprint on a detailed site map. Do not submit the application merely stating "7 Hills" — it should read something like: "Washington (George) Park — exact lawn area commonly known as ''7 Hills,'' as shown within the attached site-plan boundary." The Park District must confirm the approved official description.'),
+  ('siteissue_2', 'Site Issue 2 — Operating hours', 'Washington Park currently publishes park hours of 6:00 AM to 9:00 PM, and Park District permit rules generally restrict events to a park''s posted public operating hours. If SelassieFest intends to operate from noon until midnight, do not assume Washington Park can accommodate that schedule. Ask in writing whether the Park District would approve amplified music after 9:00 PM, audience presence after 9:00 PM, vendor shutdown after 9:00 PM, stage strike and equipment removal after public hours, and overnight security or next-morning teardown. This is a venue-killing question — resolve it before spending money on application design, stage engineering or artist bookings.'),
+  ('siteissue_3', 'Site Issue 3 — Cannabis restrictions', 'The current Park District application states that cannabis-derived products may not be consumed, sampled, sold or promoted through signage on Park District property. That potentially affects cannabis sponsor logos, cannabis swag bags, infused-product promotion, cannabis vendors, sampling or giveaways, consumption areas, and cannabis-related signs or banners. SelassieFest can still discuss Rastafari culture and history, but commercial cannabis promotion at this particular venue may need to be removed or substantially restructured. Obtain a written interpretation from the assigned permit coordinator.'),
+  ('venuecontact_park_supervisor', 'Contact — Park Supervisor', 'Washington Park supervisor · Washington Park main office: 773-256-1248 · 5531 S. King Drive'),
+  ('venuecontact_ward3', 'Contact — Ward 3 Office', 'ward03@cityofchicago.org · 773-373-9273. Note: this source (ward03chicago.com) lists the alderperson as Pat Dowell — this conflicts with "Alderman Pat Powell" used in the companion Site-Use & Permit Proposal. Confirm which name is correct before using either publicly.'),
+  ('venuecontact_advisory_council', 'Contact — Advisory Council', 'Generally meets the third Wednesday of the month. Park District guidance encourages early contact with the alderperson, Park Advisory Council, police commander and community organizations whenever an event may affect public access to park amenities.'),
+  ('seq_phase1', 'Phase 1 — Establish the Applicant and Proposed Event', 'Step 1 — Select the legal permit applicant: the organization or person who will legally hold the Park District permit. Determine its legal entity name, authorized signatory, EIN/nonprofit status, mailing address, festival bank account, and who is responsible for insurance, permit compliance, and Park District communication. The application and permit are not transferable, so the correct entity must apply from the start.
+
+Step 2 — Approve a preliminary festival scope: expected attendance, admission model, festival hours, setup/teardown dates, stage count and design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/rideshare/loading needs. Attendance matters because the permit level, deposit, fees and review requirements change with crowd size — 1,001-3,000 attendees is Event Level 4; 3,001-10,000 is Event Level 5; 10,000+ is Event Level 6, which requires provisional Park District Board approval and additional community engagement. At an expected 500 attendees, SelassieFest currently falls below the Level 4 threshold.'),
+  ('seq_phase2', 'Phase 2 — Conduct Venue Feasibility Before Applying', 'Step 3 — Request a formal site walk with the Washington Park supervisor (Janie M. Collins, 773-256-1248, 5531 S. King Drive). Bring a printed aerial map, proposed stage dimensions, estimated attendance, proposed entrance locations, operating hours, preliminary vendor count, setup/teardown requirements, utility questions, and photographs of the area locally called "7 Hills."
+
+Step 4 — Obtain preliminary answers on: 7 Hills availability for July 24, 2027; the official name/designation to use; whether the lawn can handle the anticipated crowd; roofed-stage installation; staking permission; equipment truck access; noon-to-midnight hours; amplified music permission; approved stage speaker direction; alcohol; cannabis sponsorship restrictions; restroom/dumpster locations; accessible routes; emergency vehicle access; conflicts with other park programming; setup/teardown dates; rain and turf-restoration requirements; and a backup area within the park.
+
+Step 5 — Decide whether Washington Park passes the feasibility test with a written go/no-go decision, proceeding only if the venue can support the desired hours, capacity, stage and roof, amplified programming, vendors, security/emergency access, cultural and sponsor plans, and adequate setup/teardown. If hours, cannabis promotion, or stage/vehicle access can''t be resolved, leadership must decide whether to modify SelassieFest or select another site.'),
+  ('seq_phase3', 'Phase 3 — Begin Community Engagement', 'Step 6 — Brief the Ward 3 office on SelassieFest''s cultural mission, proposed date/hours, estimated attendance, community benefits, youth/elder programming, local-vendor opportunities, safety plan concept, neighborhood notification plan, cleanup commitment, transportation concept, and preliminary site plan. The alderperson''s office does not replace Park District permitting authority, but early support and issue identification matters.
+
+Step 7 — Meet the Washington Park Advisory Council (generally the third Wednesday of the month) for community input, knowledge of the "7 Hills" area, information about competing park uses, neighborhood concerns, local organization participation, and recommendations on sound, traffic and cleanup. Park District guidance encourages early contact with the alderperson, Park Advisory Council, police commander and community organizations whenever an event may affect public access to park amenities.'),
+  ('seq_phase4', 'Phase 4 — Prepare the Park District Application Package', 'Step 8 — Produce the preliminary site plan showing the exact festival boundary, stage/roof footprint, speaker locations and sound direction, FOH position, emergency exits, public entrances, security screening lanes, fencing, barricades, vendors, sponsor booths, children''s area, elder/accessible seating, first-aid station, ambulance position, command post, toilets, generators, dumpsters, water stations, artist compound, staff/volunteer check-in, equipment paths, loading areas, and any requested street or sidewalk use. The Park District requires a site map for every special-event application showing all major structures and operational features.
+
+Step 9 — Prepare three choices: first choice is July 24, 2027 at the exact 7 Hills footprint; second choice is an alternate area within Washington Park; third choice is an alternate date or Park District location. Availability generally can''t be confirmed before application review, so alternatives are recommended.
+
+Step 10 — Prepare an application-ready package before the 2027 window opens: as of July 2026 the Park District site shows 2025 and 2026 application links but not yet 2027. Have applicant information, event narrative, attendance estimate, site plan, setup/event/teardown schedule, marketing description, vendor plan, preliminary security/medical plans, alcohol decision, sponsorship/activation list, stage/tent/generator specifications, and backup dates/sites ready in advance. For the 2026 cycle, applications opened in November of the prior year, with the fee establishing processing position and the completed application due within three business days — the 2027 procedure and opening date must be confirmed once published.'),
+  ('seq_phase5', 'Phase 5 — Submit Immediately When 2027 Applications Open', 'Step 11 — Pay the application fee first, following the 2027 instructions exactly; the current procedure requires the nonrefundable application fee before submission because the receipt number is required.
+
+Step 12 — Submit the completed application and site plan; do not submit a placeholder, since an incomplete submission may lose its processing position or be delayed.
+
+Step 13 — Monitor the application daily. Review takes a minimum of 14 business days and can result in conditional approval for the requested date/site, a request for more information, an offer of an alternate site or date, or denial with explanation.'),
+  ('seq_phase6', 'Phase 6 — Submit the City of Chicago Permit Package', 'Step 14 — File with DCASE as early as permitted. SelassieFest will almost certainly require a separate City of Chicago/DCASE process if it includes merchandise sales, alcohol, food preparation triggering city review, tents exceeding 400 square feet, a stage taller than two feet, or street/public-way use. DCASE currently allows applications up to 180 days before the event and requires them at least 21 days before — for July 24, 2027, the 180-day point is approximately January 25, 2027. A major festival should submit at the earliest opportunity rather than relying on the minimum.'),
+  ('seq_phase7', 'Phase 7 — Finalize Production and Operating Plans', 'Step 15 — Contract the stage and production team. The One Umbrella roof will likely be treated as a roofed stage or platform requiring additional review — stages over two feet high, more than 400 square feet, or with roofing/wings require a Department of Buildings permit and a Park District verification letter, and that process should begin at least 60 days before the event. Obtain engineered stage drawings, wind-rating documentation, ballast/staking plan, structural calculations, lighting plot, sound-system specifications, generator/grounding plan, emergency stage-evacuation procedure, and load-in/out schedule.
+
+Step 16 — Finalize security and medical providers. Current Park District requirements call for security and medical provisions for events with 500 or more attendees or events involving alcohol — SelassieFest''s planned 500 attendance sits right at that threshold. Security plans are subject to Park District approval. Complete the security staffing matrix, entrance screening plan, prohibited-items procedure, emergency evacuation plan, severe-weather plan, missing-child procedure, artist security, cash-handling security, medical staffing, ambulance access, incident-reporting system, and command-post structure.
+
+Step 17 — Finalize insurance. Current requirements include at least $1 million in general liability coverage, with the Park District named as an additional insured on a primary, noncontributory basis, covering all setup, event and teardown dates, with both a certificate and endorsement required. Additional coverage may be needed for alcohol, animals, inflatables, amusement devices, contractors, vehicles and workers'' compensation.'),
+  ('seq_90', 'Countdown — 90 days out', 'Freeze the fundamental event footprint; confirm final attendance projection; confirm stage count; confirm the alcohol decision; confirm sponsor activation types; confirm all major contractors; complete the community presentation; establish refund and cancellation exposure.'),
+  ('seq_60', 'Countdown — 60 days out', 'Begin or complete stage and tent Department of Buildings permits, Park District verification letters, the DCASE alcohol process, the liquor-license process, generator permits if required, food and vendor licensing, fire-safety review, final structural engineering, and the transportation and traffic plan. Park District instructions specifically advise at least 60 days for qualifying stage/tent applications and alcohol paperwork.'),
+  ('seq_45', 'Countdown — 45 days out', 'Where alcohol or relevant public-way activity is involved: obtain police district review, submit material to the alderperson''s office, confirm licensed security, finalize the crowd-control plan, and finalize the alcohol perimeter and age verification. Current alcohol instructions specify submission to the appropriate police commander and alderperson''s office at least 45 days before the event.'),
+  ('seq_30', 'Countdown — 30 days out', 'Submit all outside agency permits to the Park District; freeze the site plan; submit final security and medical plans; submit stage, tent and generator approvals; submit vendor and food documentation; submit sanitation and waste plans; submit the accessibility plan; confirm emergency contacts; confirm setup and teardown schedules. Event Levels 3-5 and festivals of 10,000 or more must provide required city, state and federal approvals at least 30 days before the reservation begins.'),
+  ('seq_14', 'Countdown — 14 days out', 'Subject to final 2027 permit terms: pay the remaining Park District balance; confirm the insurance certificate and endorsement; confirm all contractor certificates; confirm the accessible toilet count; issue final credentials; submit the final vendor roster; complete the final Park District walkthrough; confirm final permit issuance. The current fee schedule uses 14 days before the reservation as a key balance and documentation deadline, though the exact 2027 pending permit will control.'),
+  ('seq_finalweek', 'Countdown — Final week', 'Conduct a command-team tabletop exercise; test radios; confirm weather-monitoring responsibility; issue vendor arrival appointments; mark the approved site; verify underground utilities before staking; inspect the stage and tents; conduct a sound-system test only during approved hours; place toilets, waste stations and barricades; complete fire, building and Park District inspections; and keep a copy of the permit onsite.'),
+  ('gate_start_now', 'Gate — Start now', 'Legal applicant selection
+Site feasibility
+Park meeting
+Community outreach
+Attendance planning
+Preliminary budgeting
+Preliminary site design
+Permit preparation
+Backup-site research'),
+  ('gate_wait_pending', 'Gate — Wait for pending permit', 'Nonrefundable artist deposits
+Nonrefundable equipment deposits
+Guaranteed sponsor benefits tied to Washington Park
+Final vendor-space sales
+Major printing
+Public announcement that Washington Park is confirmed'),
+  ('gate_after_pending_ok', 'Gate — OK after pending permit', 'Artist negotiations
+Sponsor agreements
+Vendor recruitment
+Production bids
+Stage engineering
+Security-company negotiations
+Medical-provider negotiations
+Equipment rentals
+Volunteer recruitment
+Community outreach
+Grant applications'),
+  ('gate_pending_note', 'Gate — Pending permit note', 'Contracts should include language making performance dependent upon receipt and continued validity of all government and Park District permits. Public promotion before the final permit remains at the organizer''s risk — the Park District expressly warns that an application does not guarantee approval and that promotional expenses incurred before permit issuance are the organizer''s responsibility.'),
+  ('gate_wait_final', 'Gate — Wait for final permit', 'Ticket sales
+Unconditional artist contracts
+Unconditional production contracts
+Large media purchases
+Nonrefundable travel
+Public claims that the event is officially approved'),
+  ('gate_immediate_action', 'Immediate next action', 'The immediate next action is not artist booking or sponsor recruitment. It is a formal site walk and written feasibility meeting addressing the exact 7 Hills footprint, the 9:00 PM park closing time, the One Umbrella stage and the cannabis-promotion restrictions.')
+on conflict (section_key) do nothing;
