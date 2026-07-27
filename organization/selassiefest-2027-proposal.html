@@ -273,31 +273,32 @@
             margin-top: 2.5rem; line-height: 1.7;
         }
 
-        /* ── per-person live editing ── */
+        /* ── inline editing (everything is live + autosaving) ── */
         .editable-content { white-space: pre-line; }
-        .editable-textarea {
-            display: none;
-            width: 100%; box-sizing: border-box; font-family: inherit; font-size: 12pt;
-            padding: 8px; border: 1px solid var(--border-accent); border-radius: 8px;
-            margin-top: 6px; resize: vertical; min-height: 64px; color: var(--text-primary);
-            background: var(--bg-surface);
+        .ed, .editable-content {
+            cursor: text;
+            border-radius: 4px;
+            padding: 1px 4px;
+            margin: -1px -4px;
+            transition: background 0.15s;
         }
-        .editable-actions { display: none; gap: 8px; margin-top: 6px; }
-        .editable-actions button {
-            font-family: inherit; font-size: 11px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.05em; padding: 5px 12px; border-radius: 6px; cursor: pointer; border: none;
+        .ed:hover, .editable-content:hover { background: rgba(14,94,54,0.07); }
+        .ed:focus, .editable-content:focus {
+            outline: 2px solid var(--text-accent); outline-offset: 2px;
+            background: rgba(14,94,54,0.08);
         }
-        .edit-save { background: var(--text-accent); color: #fff; }
-        .edit-save:disabled { opacity: 0.6; cursor: default; }
-        .edit-cancel { background: var(--bg-surface-2) !important; color: var(--text-secondary); border: 0.5px solid var(--border) !important; }
-        .edit-toggle {
-            display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
-            background: none; border: none; cursor: pointer; font-family: inherit;
-            font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
-            color: var(--text-muted); padding: 0;
-        }
-        .edit-toggle:hover { color: var(--text-accent); }
         .editable-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; font-style: italic; min-height: 1.2em; }
+
+        .save-toast {
+            position: fixed; bottom: 18px; right: 18px; z-index: 999;
+            background: var(--text-primary); color: #fff; font-family: var(--font-sans);
+            font-size: 12px; padding: 8px 14px; border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            opacity: 0; transform: translateY(8px);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none; max-width: 260px;
+        }
+        .save-toast.show { opacity: 1; transform: translateY(0); }
 
         /* ── read aloud ── */
         .intro-toolbar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
@@ -311,7 +312,7 @@
         .read-aloud-btn:hover { background: var(--bg-accent); }
         .read-aloud-btn.reading { background: var(--text-accent); color: #fff; border-color: var(--text-accent); }
 
-        /* ── voice notes ── */
+        /* ── voice notes (person-contact blocks only) ── */
         .voice-btn {
             display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; margin-left: 12px;
             background: none; border: none; cursor: pointer; font-family: inherit;
@@ -342,7 +343,7 @@
             .memorandum { box-shadow: none; border: 1px solid #ddd; padding: 1.5rem; }
             .card { box-shadow: none; break-inside: avoid; }
             .read-aloud-btn, .intro-toolbar, .voice-btn, .voice-recording-ui,
-            .voice-preview-ui, .voice-note-player, .edit-toggle, .editable-meta {
+            .voice-preview-ui, .voice-note-player, .editable-meta, .save-toast {
                 display: none !important;
             }
         }
@@ -364,9 +365,9 @@
 
         <!-- COVER -->
         <div class="cover">
-            <h1>SelassieFest 2027 — Site Use &amp; Special Event Proposal</h1>
-            <p class="subhead">Seven Hills, Washington Park · Chicago, IL · 3rd Ward</p>
-            <p class="meta">Prepared for: Chicago Park District · Dept. of Cultural Affairs &amp; Special Events (DCASE) · Office of Alderman Pat Powell, 3rd Ward</p>
+            <h1 class="ed" data-section-key="cover_title" data-label="Cover — Title">SelassieFest 2027 — Site Use &amp; Special Event Proposal</h1>
+            <p class="subhead ed" data-section-key="cover_subhead" data-label="Cover — Subhead">Seven Hills, Washington Park · Chicago, IL · 3rd Ward</p>
+            <p class="meta ed" data-section-key="cover_meta" data-label="Cover — Prepared for">Prepared for: Chicago Park District · Dept. of Cultural Affairs &amp; Special Events (DCASE) · Office of Alderman Pat Powell, 3rd Ward</p>
             <div class="badge-row">
                 <span class="badge badge-green"><i class="fas fa-seedling" style="margin-right:4px;"></i>501(c)(3) — Ras Tafari Inc.</span>
                 <span class="badge badge-gold"><i class="fas fa-crown" style="margin-right:4px;"></i>Legacy festival, rooted in 1981</span>
@@ -374,15 +375,15 @@
                 <span class="badge badge-green"><i class="fas fa-people-group" style="margin-right:4px;"></i>Planning committee already formed</span>
             </div>
             <div class="date-block">
-                <i class="far fa-calendar-alt" style="margin-right:6px;"></i> Event date requested: <strong>Saturday, July 24, 2027</strong> &nbsp;·&nbsp; <i class="far fa-file-lines"></i> Draft — for internal review before submission
+                <i class="far fa-calendar-alt" style="margin-right:6px;"></i> <span class="ed" data-section-key="cover_date_block" data-label="Cover — Date line">Event date requested: Saturday, July 24, 2027 · Draft — for internal review before submission</span>
             </div>
         </div>
 
         <!-- EXECUTIVE SUMMARY -->
         <div class="callout">
             <h3><i class="fas fa-scroll"></i> Executive summary</h3>
-            <p>Ras Tafari Inc., a 501(c)(3) nonprofit, respectfully requests a site-use and special event permit to hold <strong>SelassieFest 2027</strong> at <strong>Seven Hills in Washington Park</strong> on <strong>Saturday, July 24, 2027</strong>. SelassieFest is Chicago's roots reggae and Rastafari cultural festival, tracing its lineage to the city's original Caribbean cultural gatherings held between 1981 and 1997 — a run of festivals that, for many who attended, has never been matched since.</p>
-            <p>This is not a cold request. Over the past several months a cross-agency working group has already come together around this proposal: two DCASE contacts (Camille and Jackie), a Chicago Park District contact (Denise), and two community members — Denise and Diedra — who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team already assembled, and what we're asking the City and the 3rd Ward to help us secure next.</p>
+            <p class="ed" data-section-key="exec_summary_p1" data-label="Executive Summary — paragraph 1">Ras Tafari Inc., a 501(c)(3) nonprofit, respectfully requests a site-use and special event permit to hold <strong>SelassieFest 2027</strong> at <strong>Seven Hills in Washington Park</strong> on <strong>Saturday, July 24, 2027</strong>. SelassieFest is Chicago's roots reggae and Rastafari cultural festival, tracing its lineage to the city's original Caribbean cultural gatherings held between 1981 and 1997 — a run of festivals that, for many who attended, has never been matched since.</p>
+            <p class="ed" data-section-key="exec_summary_p2" data-label="Executive Summary — paragraph 2">This is not a cold request. Over the past several months a cross-agency working group has already come together around this proposal: two DCASE contacts (Camille and Jackie), a Chicago Park District contact (Denise), and two community members — Denise and Diedra — who lived the original festival era first-hand and have joined the planning committee specifically to help bring it back. This document lays out the case for the Seven Hills site, the team already assembled, and what we're asking the City and the 3rd Ward to help us secure next.</p>
         </div>
 
         </div>
@@ -391,64 +392,61 @@
         <!-- 2026 TRACK RECORD -->
         <h2 class="section-title"><i class="fas fa-trophy" style="margin-right:8px;"></i>What we accomplished in 2026</h2>
         <div class="stat-grid">
-            <div class="stat-card"><p class="stat-label">Planning to show</p><p class="stat-value">47 days</p></div>
-            <div class="stat-card"><p class="stat-label">Peak attendance</p><p class="stat-value">273</p></div>
-            <div class="stat-card"><p class="stat-label">Performing acts</p><p class="stat-value">11</p></div>
-            <div class="stat-card"><p class="stat-label">Production cost</p><p class="stat-value">$11,325</p></div>
+            <div class="stat-card"><p class="stat-label">Planning to show</p><p class="stat-value ed ed-line" data-section-key="stat_days" data-label="2026 stat — Planning to show">47 days</p></div>
+            <div class="stat-card"><p class="stat-label">Peak attendance</p><p class="stat-value ed ed-line" data-section-key="stat_attendance" data-label="2026 stat — Peak attendance">273</p></div>
+            <div class="stat-card"><p class="stat-label">Performing acts</p><p class="stat-value ed ed-line" data-section-key="stat_acts" data-label="2026 stat — Performing acts">11</p></div>
+            <div class="stat-card"><p class="stat-label">Production cost</p><p class="stat-value ed ed-line" data-section-key="stat_cost" data-label="2026 stat — Production cost">$11,325</p></div>
         </div>
         <div class="card card-accent">
             <p class="card-title"><i class="fas fa-bolt"></i> A full festival, built in 47 days</p>
             <div class="card-body">
-                <p>Planning for SelassieFest 2026 began <strong>June 8, 2026</strong>, and the event was successfully produced <strong>47 days later on July 25, 2026</strong> — proof that this organizing team can deliver under a tight runway. For 2027, that same team now has a full year of lead time instead of seven weeks.</p>
+                <p class="ed" data-section-key="track_record_intro" data-label="2026 — Built in 47 days">Planning for SelassieFest 2026 began <strong>June 8, 2026</strong>, and the event was successfully produced <strong>47 days later on July 25, 2026</strong> — proof that this organizing team can deliver under a tight runway. For 2027, that same team now has a full year of lead time instead of seven weeks.</p>
             </div>
         </div>
         <div class="card">
             <p class="card-title"><i class="fas fa-music"></i> Programming &amp; lineup</p>
             <div class="card-body">
-                <div class="recap-row"><span class="recap-label"><strong>Music</strong> — 6 DJs, plus Indika Reggae Band headlining with 4 opening acts</span><span class="recap-val">11 acts</span></div>
-                <div class="recap-row"><span class="recap-label"><strong>Host</strong> — full-day emcee carrying the show</span><span class="recap-val">1</span></div>
-                <div class="recap-row"><span class="recap-label"><strong>Food vendors</strong> — Jamaican kitchen &amp; Ital kitchen</span><span class="recap-val">2</span></div>
-                <div class="recap-row"><span class="recap-label"><strong>Cannabis vendors</strong></span><span class="recap-val">5</span></div>
-                <div class="recap-row"><span class="recap-label"><strong>Arts &amp; crafts vendor</strong></span><span class="recap-val">1</span></div>
-                <div class="recap-row"><span class="recap-label"><strong>Historical display</strong> — Brother JahSyll's cultural/historical exhibit</span><span class="recap-val">1</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_music_label" data-label="Lineup — Music"><strong>Music</strong> — 6 DJs, plus Indika Reggae Band headlining with 4 opening acts</span><span class="recap-val ed ed-line" data-section-key="lineup_music_val" data-label="Lineup — Music count">11 acts</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_host_label" data-label="Lineup — Host"><strong>Host</strong> — full-day emcee carrying the show</span><span class="recap-val ed ed-line" data-section-key="lineup_host_val" data-label="Lineup — Host count">1</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_food_label" data-label="Lineup — Food vendors"><strong>Food vendors</strong> — Jamaican kitchen &amp; Ital kitchen</span><span class="recap-val ed ed-line" data-section-key="lineup_food_val" data-label="Lineup — Food count">2</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_cannabis_label" data-label="Lineup — Cannabis vendors"><strong>Cannabis vendors</strong></span><span class="recap-val ed ed-line" data-section-key="lineup_cannabis_val" data-label="Lineup — Cannabis count">5</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_crafts_label" data-label="Lineup — Arts and crafts vendor"><strong>Arts &amp; crafts vendor</strong></span><span class="recap-val ed ed-line" data-section-key="lineup_crafts_val" data-label="Lineup — Crafts count">1</span></div>
+                <div class="recap-row"><span class="recap-label ed" data-section-key="lineup_historical_label" data-label="Lineup — Historical display"><strong>Historical display</strong> — Brother JahSyll's cultural/historical exhibit</span><span class="recap-val ed ed-line" data-section-key="lineup_historical_val" data-label="Lineup — Historical count">1</span></div>
             </div>
         </div>
         <div class="callout editable" data-section-key="jahsyll_note" data-label="Brother JahSyll">
             <h3><i class="fas fa-user-plus"></i> Brother JahSyll joins the organizing body</h3>
             <p class="editable-content">Brother JahSyll brought the 2026 historical display and has since agreed to join the SelassieFest organizing body for 2027 — adding a direct cultural/historical resource to the planning team alongside Denise and Diedra's lived-experience perspective.</p>
-            <textarea class="editable-textarea"></textarea>
-            <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-            <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit this note</button>
             <div class="editable-meta"></div>
         </div>
         <div class="card">
             <p class="card-title"><i class="fas fa-sack-dollar"></i> 2026 cost breakdown</p>
             <div class="card-body">
-                <p>Total production cost for 2026 was <strong>$11,325</strong>, tracked in the Ras Tafari Inc. finance system we'll scale up for 2027 planning and City reporting:</p>
+                <p class="ed" data-section-key="cost_breakdown_intro" data-label="2026 cost breakdown — intro">Total production cost for 2026 was <strong>$11,325</strong>, tracked in the Ras Tafari Inc. finance system we'll scale up for 2027 planning and City reporting:</p>
                 <div style="margin-top:8px;">
-                    <div class="recap-row"><span class="recap-label">Venue &amp; Site</span><span class="recap-val">$1,800</span></div>
-                    <div class="recap-row"><span class="recap-label">Stage &amp; Production</span><span class="recap-val">$1,150</span></div>
-                    <div class="recap-row"><span class="recap-label">Security</span><span class="recap-val">$1,100</span></div>
-                    <div class="recap-row"><span class="recap-label">Portable Toilets &amp; Sanitation</span><span class="recap-val">$1,050</span></div>
-                    <div class="recap-row"><span class="recap-label">Food &amp; Beverage — Org</span><span class="recap-val">$1,000</span></div>
-                    <div class="recap-row"><span class="recap-label">Tents &amp; Structures</span><span class="recap-val">$900</span></div>
-                    <div class="recap-row"><span class="recap-label">Print Materials</span><span class="recap-val">$725</span></div>
-                    <div class="recap-row"><span class="recap-label">Artist Hospitality / Rider</span><span class="recap-val">$700</span></div>
-                    <div class="recap-row"><span class="recap-label">Artist Fees</span><span class="recap-val">$600</span></div>
-                    <div class="recap-row"><span class="recap-label">Merchandise &amp; Apparel</span><span class="recap-val">$500</span></div>
-                    <div class="recap-row"><span class="recap-label">Insurance</span><span class="recap-val">$500</span></div>
-                    <div class="recap-row"><span class="recap-label">DJ Fees</span><span class="recap-val">$450</span></div>
-                    <div class="recap-row"><span class="recap-label">Marketing &amp; Advertising</span><span class="recap-val">$300</span></div>
-                    <div class="recap-row"><span class="recap-label">Staffing (uniforms)</span><span class="recap-val">$300</span></div>
-                    <div class="recap-row"><span class="recap-label">Photography &amp; Videography</span><span class="recap-val">$150</span></div>
-                    <div class="recap-row"><span class="recap-label">Tables, Chairs &amp; Furniture</span><span class="recap-val">$100</span></div>
-                    <div class="recap-row" style="border-top:1px solid var(--border);font-weight:600;margin-top:4px;padding-top:8px;"><span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val" style="color:var(--text-accent);">$11,325</span></div>
+                    <div class="recap-row"><span class="recap-label">Venue &amp; Site</span><span class="recap-val ed ed-line" data-section-key="cost_venue" data-label="2026 cost — Venue and Site">$1,800</span></div>
+                    <div class="recap-row"><span class="recap-label">Stage &amp; Production</span><span class="recap-val ed ed-line" data-section-key="cost_stage" data-label="2026 cost — Stage and Production">$1,150</span></div>
+                    <div class="recap-row"><span class="recap-label">Security</span><span class="recap-val ed ed-line" data-section-key="cost_security" data-label="2026 cost — Security">$1,100</span></div>
+                    <div class="recap-row"><span class="recap-label">Portable Toilets &amp; Sanitation</span><span class="recap-val ed ed-line" data-section-key="cost_sanitation" data-label="2026 cost — Sanitation">$1,050</span></div>
+                    <div class="recap-row"><span class="recap-label">Food &amp; Beverage — Org</span><span class="recap-val ed ed-line" data-section-key="cost_food" data-label="2026 cost — Food and Beverage">$1,000</span></div>
+                    <div class="recap-row"><span class="recap-label">Tents &amp; Structures</span><span class="recap-val ed ed-line" data-section-key="cost_tents" data-label="2026 cost — Tents and Structures">$900</span></div>
+                    <div class="recap-row"><span class="recap-label">Print Materials</span><span class="recap-val ed ed-line" data-section-key="cost_print" data-label="2026 cost — Print Materials">$725</span></div>
+                    <div class="recap-row"><span class="recap-label">Artist Hospitality / Rider</span><span class="recap-val ed ed-line" data-section-key="cost_hospitality" data-label="2026 cost — Artist Hospitality">$700</span></div>
+                    <div class="recap-row"><span class="recap-label">Artist Fees</span><span class="recap-val ed ed-line" data-section-key="cost_artist_fees" data-label="2026 cost — Artist Fees">$600</span></div>
+                    <div class="recap-row"><span class="recap-label">Merchandise &amp; Apparel</span><span class="recap-val ed ed-line" data-section-key="cost_merch" data-label="2026 cost — Merchandise">$500</span></div>
+                    <div class="recap-row"><span class="recap-label">Insurance</span><span class="recap-val ed ed-line" data-section-key="cost_insurance" data-label="2026 cost — Insurance">$500</span></div>
+                    <div class="recap-row"><span class="recap-label">DJ Fees</span><span class="recap-val ed ed-line" data-section-key="cost_dj" data-label="2026 cost — DJ Fees">$450</span></div>
+                    <div class="recap-row"><span class="recap-label">Marketing &amp; Advertising</span><span class="recap-val ed ed-line" data-section-key="cost_marketing" data-label="2026 cost — Marketing">$300</span></div>
+                    <div class="recap-row"><span class="recap-label">Staffing (uniforms)</span><span class="recap-val ed ed-line" data-section-key="cost_staffing" data-label="2026 cost — Staffing">$300</span></div>
+                    <div class="recap-row"><span class="recap-label">Photography &amp; Videography</span><span class="recap-val ed ed-line" data-section-key="cost_photo" data-label="2026 cost — Photography">$150</span></div>
+                    <div class="recap-row"><span class="recap-label">Tables, Chairs &amp; Furniture</span><span class="recap-val ed ed-line" data-section-key="cost_furniture" data-label="2026 cost — Furniture">$100</span></div>
+                    <div class="recap-row" style="border-top:1px solid var(--border);font-weight:600;margin-top:4px;padding-top:8px;"><span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val ed ed-line" data-section-key="cost_total" data-label="2026 cost — Total" style="color:var(--text-accent);">$11,325</span></div>
                 </div>
             </div>
         </div>
         <div class="callout">
             <h3><i class="fas fa-bullseye"></i> Turning 2026 into 2027 goals</h3>
-            <p>2026 proved the concept at small scale: a real crowd, a full day of programming, a diverse vendor mix, and a team that can execute fast. 2027's goals build directly from that baseline — a fixed year-long runway instead of 47 days, an expected attendance of 500 at a civic-scaled site instead of 273 at a constrained one, and an organizing body now including Denise, Diedra, and Brother JahSyll in addition to the core team that delivered 2026.</p>
+            <p class="ed" data-section-key="goals_2027" data-label="Turning 2026 into 2027 goals">2026 proved the concept at small scale: a real crowd, a full day of programming, a diverse vendor mix, and a team that can execute fast. 2027's goals build directly from that baseline — a fixed year-long runway instead of 47 days, an expected attendance of 500 at a civic-scaled site instead of 273 at a constrained one, and an organizing body now including Denise, Diedra, and Brother JahSyll in addition to the core team that delivered 2026.</p>
         </div>
 
         <!-- WHY SEVEN HILLS -->
@@ -456,49 +454,37 @@
         <div class="card card-accent">
             <p class="card-title"><i class="fas fa-tree"></i> A civic-scaled outdoor home for a festival that has outgrown a room</p>
             <div class="card-body">
-                <p>Chicago's reggae and dancehall community has real venues it loves — but nothing built at the scale the original SelassieFest reached in its 1981–1997 run. Seven Hills' natural bowl topography inside Washington Park gives us a purpose-built outdoor amphitheater setting: a sloped green that works as a built-in gallery for a main stage, with the surrounding lawn and path network able to host a marketplace, heritage village, healing grove, and a dedicated family/kids zone side by side — without needing to shut down city streets.</p>
-                <p>The site sits within the 3rd Ward, is served by CTA Green Line and bus routes, and is a short walk from the DuSable Black History Museum — a natural cultural anchor for a festival rooted in Pan-African and Rastafari heritage. Choosing a Chicago Park District green space also puts this proposal squarely inside the Park District's own mission of hosting civic cultural programming, rather than asking the City to accommodate an ill-fitting private venue.</p>
+                <p class="ed" data-section-key="why_seven_hills_p1" data-label="Why Seven Hills — paragraph 1">Chicago's reggae and dancehall community has real venues it loves — but nothing built at the scale the original SelassieFest reached in its 1981–1997 run. Seven Hills' natural bowl topography inside Washington Park gives us a purpose-built outdoor amphitheater setting: a sloped green that works as a built-in gallery for a main stage, with the surrounding lawn and path network able to host a marketplace, heritage village, healing grove, and a dedicated family/kids zone side by side — without needing to shut down city streets.</p>
+                <p class="ed" data-section-key="why_seven_hills_p2" data-label="Why Seven Hills — paragraph 2">The site sits within the 3rd Ward, is served by CTA Green Line and bus routes, and is a short walk from the DuSable Black History Museum — a natural cultural anchor for a festival rooted in Pan-African and Rastafari heritage. Choosing a Chicago Park District green space also puts this proposal squarely inside the Park District's own mission of hosting civic cultural programming, rather than asking the City to accommodate an ill-fitting private venue.</p>
             </div>
         </div>
 
         <!-- PERMITTING TEAM -->
         <h2 class="section-title"><i class="fas fa-people-arrows" style="margin-right:8px;"></i>Cross-agency planning team already in place</h2>
-        <p style="font-size:11.5px;color:var(--text-muted);margin:-6px 0 10px;font-style:italic;">Each contact can click "Edit" below to update their own note directly — it saves immediately and everyone viewing this page sees the latest version.</p>
+        <p class="ed" data-section-key="permitting_team_intro" data-label="Permitting team — intro" style="font-size:11.5px;color:var(--text-muted);margin:-6px 0 10px;font-style:italic;">Click directly into any note below to edit it — it saves automatically as you type, and everyone viewing this page sees the latest version.</p>
         <div class="contact-grid">
             <div class="contact-card editable" data-section-key="contact_camille" data-label="Camille — DCASE">
                 <p class="agency">DCASE</p>
                 <p class="person">Camille</p>
                 <p class="role editable-content">Special event permitting &amp; coordination contact</p>
-                <textarea class="editable-textarea"></textarea>
-                <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-                <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit</button>
                 <div class="editable-meta"></div>
             </div>
             <div class="contact-card editable" data-section-key="contact_jackie" data-label="Jackie — DCASE">
                 <p class="agency">DCASE</p>
                 <p class="person">Jackie</p>
                 <p class="role editable-content">Cultural programming &amp; community engagement contact</p>
-                <textarea class="editable-textarea"></textarea>
-                <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-                <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit</button>
                 <div class="editable-meta"></div>
             </div>
             <div class="contact-card editable" data-section-key="contact_denise_park" data-label="Denise — Chicago Park District">
                 <p class="agency">Chicago Park District</p>
                 <p class="person">Denise</p>
                 <p class="role editable-content">Permits &amp; park operations liaison for Washington Park — also serves on our community planning committee (see below)</p>
-                <textarea class="editable-textarea"></textarea>
-                <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-                <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit</button>
                 <div class="editable-meta"></div>
             </div>
             <div class="contact-card editable" data-section-key="contact_alderman" data-label="Office of Alderman Pat Powell — 3rd Ward">
                 <p class="agency">3rd Ward</p>
                 <p class="person">Office of Alderman Pat Powell</p>
                 <p class="role editable-content">Aldermanic support &amp; community notification for events in Washington Park</p>
-                <textarea class="editable-textarea"></textarea>
-                <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-                <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit</button>
                 <div class="editable-meta"></div>
             </div>
         </div>
@@ -511,9 +497,6 @@
                 <p class="editable-content">Both attended the original SelassieFest during its 1981–1997 run and describe it as a profound cultural experience Chicago hasn't seen replicated since. When asked directly whether they wanted to be part of bringing it back, the answer from both was immediate and unprompted: "I needed this."
 
 They've since joined the planning committee for the 2027 revival — not as honorary guests, but as working members helping shape site logistics, programming, and community outreach — driven by wanting their grandchildren to have the same experience they did.</p>
-                <textarea class="editable-textarea"></textarea>
-                <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-                <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit this bio</button>
                 <div class="editable-meta"></div>
             </div>
         </div>
@@ -521,9 +504,6 @@ They've since joined the planning committee for the 2027 revival — not as hono
             <span class="editable-content">"This isn't nostalgia for its own sake. Something real happened here between 1981 and 1997, and it's been missing ever since. We want our grandchildren to feel what we felt."</span>
             <cite>— Paraphrased from planning committee conversations, Denise &amp; Diedra</cite>
             <span class="draft-flag"><i class="fas fa-pen"></i> Draft paraphrase — confirm exact wording and get sign-off from Denise &amp; Diedra before this is used in any public or submitted materials.</span>
-            <textarea class="editable-textarea"></textarea>
-            <div class="editable-actions"><button type="button" class="edit-save">Save</button><button type="button" class="edit-cancel">Cancel</button></div>
-            <button type="button" class="edit-toggle"><i class="fas fa-pen"></i> Edit this quote</button>
             <div class="editable-meta"></div>
         </div>
 
@@ -531,13 +511,13 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <h2 class="section-title"><i class="fas fa-calendar-day" style="margin-right:8px;"></i>Event overview</h2>
         <div class="card">
             <div class="card-body">
-                <p><strong>Date:</strong> Saturday, July 24, 2027 <span class="tbd">(rain date TBD)</span></p>
-                <p><strong>Site:</strong> Seven Hills, Washington Park, Chicago, IL — 3rd Ward</p>
-                <p><strong>Hours:</strong> 10:00 AM – 10:00 PM, running to the park's standard closing time</p>
-                <p><strong>Footprint:</strong> Main stage set into the natural bowl, with Ital Marketplace, Heritage Village, Healing Grove, Higher Learning Roots pavilion, and a dedicated Pickney Time kids zone on the surrounding lawn.</p>
-                <p><strong>Expected attendance:</strong> 500 people</p>
-                <p><strong>Admission:</strong> Free to enter</p>
-                <p><strong>Load-in / load-out:</strong> <span class="tbd">TBD — request multi-day access for stage build and teardown</span></p>
+                <p><strong>Date:</strong> <span class="ed ed-line" data-section-key="ov_date" data-label="Event Overview — Date">Saturday, July 24, 2027 (rain date TBD)</span></p>
+                <p><strong>Site:</strong> <span class="ed ed-line" data-section-key="ov_site" data-label="Event Overview — Site">Seven Hills, Washington Park, Chicago, IL — 3rd Ward</span></p>
+                <p><strong>Hours:</strong> <span class="ed ed-line" data-section-key="ov_hours" data-label="Event Overview — Hours">10:00 AM – 10:00 PM, running to the park's standard closing time</span></p>
+                <p><strong>Footprint:</strong> <span class="ed" data-section-key="ov_footprint" data-label="Event Overview — Footprint">Main stage set into the natural bowl, with Ital Marketplace, Heritage Village, Healing Grove, Higher Learning Roots pavilion, and a dedicated Pickney Time kids zone on the surrounding lawn.</span></p>
+                <p><strong>Expected attendance:</strong> <span class="ed ed-line" data-section-key="ov_attendance" data-label="Event Overview — Expected attendance">500 people</span></p>
+                <p><strong>Admission:</strong> <span class="ed ed-line" data-section-key="ov_admission" data-label="Event Overview — Admission">Free to enter</span></p>
+                <p><strong>Load-in / load-out:</strong> <span class="ed" data-section-key="ov_loadinout" data-label="Event Overview — Load-in and load-out">TBD — request multi-day access for stage build and teardown</span></p>
             </div>
         </div>
 
@@ -547,51 +527,51 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <div class="tline">
             <div class="trow">
                 <div class="when">August 2026 to September 2026</div>
-                <div class="desc"><strong>Joint site walk at Seven Hills</strong> with Denise, Chicago Park District, to confirm footprint, capacity, and any site restrictions.</div>
+                <div class="desc ed" data-section-key="tl_1" data-label="Timeline — August to September 2026"><strong>Joint site walk at Seven Hills</strong> with Denise, Chicago Park District, to confirm footprint, capacity, and any site restrictions.</div>
             </div>
             <div class="trow">
                 <div class="when">September 2026 to October 2026</div>
-                <div class="desc"><strong>Submit the Chicago Park District Special Event Permit application</strong> for Seven Hills, Saturday, July 24, 2027, including requested load-in and load-out dates. The application carries a 45 dollar fee, a minimum 14 day review, and must be filed 30 to 90 days before the reservation depending on event size.</div>
+                <div class="desc ed" data-section-key="tl_2" data-label="Timeline — September to October 2026"><strong>Submit the Chicago Park District Special Event Permit application</strong> for Seven Hills, Saturday, July 24, 2027, including requested load-in and load-out dates. The application carries a 45 dollar fee, a minimum 14 day review, and must be filed 30 to 90 days before the reservation depending on event size.</div>
             </div>
             <div class="trow">
                 <div class="when">October 2026 to November 2026</div>
-                <div class="desc"><strong>DCASE special event registration</strong> with Camille and Jackie; coordinate multi-agency review with Police, Fire, and Public Health as required for the event's scale.</div>
+                <div class="desc ed" data-section-key="tl_3" data-label="Timeline — October to November 2026"><strong>DCASE special event registration</strong> with Camille and Jackie; coordinate multi-agency review with Police, Fire, and Public Health as required for the event's scale.</div>
             </div>
             <div class="trow">
                 <div class="when">Monday, November 2, 2026 (inferred)</div>
-                <div class="desc"><strong>Night Out in the Parks and Chicago Onscreen 2027 season application opens</strong> through the Chicago Park District. Apply separately for this program to seek supplemental city-backed programming support and promotion alongside the main site permit.</div>
+                <div class="desc ed" data-section-key="tl_4" data-label="Timeline — November 2, 2026"><strong>Night Out in the Parks and Chicago Onscreen 2027 season application opens</strong> through the Chicago Park District. Apply separately for this program to seek supplemental city-backed programming support and promotion alongside the main site permit.</div>
             </div>
             <div class="trow">
                 <div class="when">November 2026</div>
-                <div class="desc"><strong>Request a letter of support from Alderman Pat Powell's office</strong> and begin the required 3rd Ward community notification.</div>
+                <div class="desc ed" data-section-key="tl_5" data-label="Timeline — November 2026"><strong>Request a letter of support from Alderman Pat Powell's office</strong> and begin the required 3rd Ward community notification.</div>
             </div>
             <div class="trow">
                 <div class="when">Monday, December 14, 2026 (inferred)</div>
-                <div class="desc"><strong>Night Out in the Parks 2027 proposal deadline</strong>, 11:59 PM, if applying to that program.</div>
+                <div class="desc ed" data-section-key="tl_6" data-label="Timeline — December 14, 2026"><strong>Night Out in the Parks 2027 proposal deadline</strong>, 11:59 PM, if applying to that program.</div>
             </div>
             <div class="trow">
                 <div class="when">December 2026 to February 2027</div>
-                <div class="desc">Finalize insurance certificates, the security and medical plan, and the traffic and pedestrian management plan for submission.</div>
+                <div class="desc ed" data-section-key="tl_7" data-label="Timeline — December 2026 to February 2027">Finalize insurance certificates, the security and medical plan, and the traffic and pedestrian management plan for submission.</div>
             </div>
             <div class="trow">
                 <div class="when">March 2027</div>
-                <div class="desc">If selected for Night Out in the Parks, confirm the performance schedule, matching that program's usual mid-March confirmation deadline.</div>
+                <div class="desc ed" data-section-key="tl_8" data-label="Timeline — March 2027">If selected for Night Out in the Parks, confirm the performance schedule, matching that program's usual mid-March confirmation deadline.</div>
             </div>
             <div class="trow">
                 <div class="when">March 2027 to May 2027</div>
-                <div class="desc">Lock in vendor contracts, sponsorships, and the public marketing rollout.</div>
+                <div class="desc ed" data-section-key="tl_9" data-label="Timeline — March to May 2027">Lock in vendor contracts, sponsorships, and the public marketing rollout.</div>
             </div>
             <div class="trow">
                 <div class="when">June 2027</div>
-                <div class="desc">Final walk-through with the Park District and DCASE; confirm all permits issued and load-in logistics.</div>
+                <div class="desc ed" data-section-key="tl_10" data-label="Timeline — June 2027">Final walk-through with the Park District and DCASE; confirm all permits issued and load-in logistics.</div>
             </div>
             <div class="trow">
                 <div class="when">Early July 2027</div>
-                <div class="desc"><strong>Submit the special event liquor license application</strong> (Special Event Retailer's License, Not-For-Profit track), if alcohol service is planned. City rules require filing at least 20 calendar days before the event, with the ward alderman notified at least 5 days before the license is issued — submitting in early July gives buffer ahead of that 20 day floor.</div>
+                <div class="desc ed" data-section-key="tl_11" data-label="Timeline — Early July 2027"><strong>Submit the special event liquor license application</strong> (Special Event Retailer's License, Not-For-Profit track), if alcohol service is planned. City rules require filing at least 20 calendar days before the event, with the ward alderman notified at least 5 days before the license is issued — submitting in early July gives buffer ahead of that 20 day floor.</div>
             </div>
             <div class="trow">
                 <div class="when">Saturday, July 24, 2027</div>
-                <div class="desc"><strong>SelassieFest 2027, event day.</strong></div>
+                <div class="desc ed" data-section-key="tl_12" data-label="Timeline — Event day"><strong>SelassieFest 2027, event day.</strong></div>
             </div>
         </div>
 
@@ -599,7 +579,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <h2 class="section-title"><i class="fas fa-hand-holding-heart" style="margin-right:8px;"></i>Community &amp; cultural impact</h2>
         <div class="card">
             <div class="card-body">
-                <p>SelassieFest 2027 continues Ras Tafari Inc.'s mission of preserving and reviving Rastafari and Caribbean cultural heritage in Chicago, and directly supports the organization's ongoing Historical Reconstruction Project documenting the festival's 1981–1997 era. Hosting in Washington Park roots this revival in the 3rd Ward, bringing foot traffic and vendor opportunity to local businesses and giving the community that lived the original festival — and the generation that never got to — a shared, intergenerational gathering.</p>
+                <p class="ed" data-section-key="impact_p1" data-label="Community and Cultural Impact">SelassieFest 2027 continues Ras Tafari Inc.'s mission of preserving and reviving Rastafari and Caribbean cultural heritage in Chicago, and directly supports the organization's ongoing Historical Reconstruction Project documenting the festival's 1981–1997 era. Hosting in Washington Park roots this revival in the 3rd Ward, bringing foot traffic and vendor opportunity to local businesses and giving the community that lived the original festival — and the generation that never got to — a shared, intergenerational gathering.</p>
             </div>
         </div>
 
@@ -607,10 +587,10 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <h2 class="section-title"><i class="fas fa-clipboard-check" style="margin-right:8px;"></i>What we're asking for</h2>
         <div class="card">
             <div class="ask-list">
-                <div class="ask-item"><span class="num">1</span><span><strong>Chicago Park District site-use / special event permit</strong> for Seven Hills, Washington Park, for July 24, 2027, plus requested load-in/out days.</span></div>
-                <div class="ask-item"><span class="num">2</span><span><strong>DCASE special event registration and coordination support</strong>, including guidance on required city departments and timelines.</span></div>
-                <div class="ask-item"><span class="num">3</span><span><strong>A letter of support and community notification assistance</strong> from Alderman Pat Powell's 3rd Ward office.</span></div>
-                <div class="ask-item"><span class="num">4</span><span><strong>A scheduled joint site walk-through</strong> at Seven Hills with Park District staff in the coming months to finalize the footprint.</span></div>
+                <div class="ask-item"><span class="num">1</span><span class="ed" data-section-key="ask_1" data-label="The Ask — item 1"><strong>Chicago Park District site-use / special event permit</strong> for Seven Hills, Washington Park, for July 24, 2027, plus requested load-in/out days.</span></div>
+                <div class="ask-item"><span class="num">2</span><span class="ed" data-section-key="ask_2" data-label="The Ask — item 2"><strong>DCASE special event registration and coordination support</strong>, including guidance on required city departments and timelines.</span></div>
+                <div class="ask-item"><span class="num">3</span><span class="ed" data-section-key="ask_3" data-label="The Ask — item 3"><strong>A letter of support and community notification assistance</strong> from Alderman Pat Powell's 3rd Ward office.</span></div>
+                <div class="ask-item"><span class="num">4</span><span class="ed" data-section-key="ask_4" data-label="The Ask — item 4"><strong>A scheduled joint site walk-through</strong> at Seven Hills with Park District staff in the coming months to finalize the footprint.</span></div>
             </div>
         </div>
 
@@ -618,13 +598,13 @@ They've since joined the planning committee for the 2027 revival — not as hono
         <h2 class="section-title"><i class="fas fa-flag-checkered" style="margin-right:8px;"></i>Closing statement</h2>
         <div class="card card-accent">
             <div class="card-body">
-                <p>SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward's office already engaged and a community planning committee in place, we're asking the City to help us bring this home to Washington Park.</p>
+                <p class="ed" data-section-key="closing_p1" data-label="Closing statement">SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward's office already engaged and a community planning committee in place, we're asking the City to help us bring this home to Washington Park.</p>
             </div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer-note">
-            <i class="fas fa-circle-info" style="margin-right:6px;"></i> This is a draft proposal prepared for internal review. Fields marked <span class="tbd">TBD</span> and the committee quote must be finalized before this document is submitted to the Chicago Park District, DCASE, or the 3rd Ward office. 3rd Ward reference: <a href="https://www.chicago.gov/city/en/about/wards/03.html" style="color:var(--text-accent);">chicago.gov/city/en/about/wards/03</a>.
+            <i class="fas fa-circle-info" style="margin-right:6px;"></i> <span class="ed" data-section-key="footer_note_text" data-label="Footer note">This is a draft proposal prepared for internal review. Fields marked TBD and the committee quote must be finalized before this document is submitted to the Chicago Park District, DCASE, or the 3rd Ward office.</span> 3rd Ward reference: <a href="https://www.chicago.gov/city/en/about/wards/03.html" style="color:var(--text-accent);">chicago.gov/city/en/about/wards/03</a>.
             <br /><br />
             <span style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
                 <span><i class="far fa-copyright"></i> 2026 Ras Tafari Inc., a 501(c)(3) nonprofit</span>
@@ -635,6 +615,8 @@ They've since joined the planning committee for the 2027 revival — not as hono
     </div>
     <!-- end .memorandum -->
 
+    <div id="sfSaveToast" class="save-toast" aria-live="polite"></div>
+
     <script src="/assets/js/supabase-client.js"></script>
     <script>
     (function () {
@@ -642,10 +624,11 @@ They've since joined the planning committee for the 2027 revival — not as hono
         var VOICE_BUCKET = 'proposal-voice-notes';
         var NAME_KEY = 'sfProposalEditorName';
         var myName = localStorage.getItem(NAME_KEY) || '';
+        var AUTOSAVE_DELAY = 900;
 
         function ensureName() {
             if (myName) return myName;
-            var entered = window.prompt('Your name (shown as who last edited this note):');
+            var entered = window.prompt('Your name (shown as who last edited a note):');
             if (entered && entered.trim()) {
                 myName = entered.trim();
                 localStorage.setItem(NAME_KEY, myName);
@@ -665,6 +648,25 @@ They've since joined the planning committee for the 2027 revival — not as hono
             return 'Last edited by ' + escapeHtml(row.last_edited_by) + (when ? ' · ' + when : '');
         }
 
+        // ── save toast ──────────────────────────────────────────────────
+        var toastEl = document.getElementById('sfSaveToast');
+        var toastTimer = null;
+        function showToast(text) {
+            if (!toastEl) return;
+            toastEl.textContent = text;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+        }
+
+        async function upsertSection(key, label, fields) {
+            var client = await window.sfSupabaseReady;
+            var row = Object.assign({ section_key: key, label: label, updated_at: new Date().toISOString() }, fields);
+            var result = await client.from(TABLE).upsert(row, { onConflict: 'section_key' });
+            if (result.error) throw result.error;
+            return row;
+        }
+
         async function applyVoiceNote(block, row) {
             var player = block.querySelector('.voice-note-player');
             if (!player) return;
@@ -682,13 +684,28 @@ They've since joined the planning committee for the 2027 revival — not as hono
             player.style.display = 'block';
         }
 
-        function applyRow(block, row) {
+        // Applies an incoming row (from initial load or realtime) to whichever
+        // element on the page owns that section_key -- a rich person-contact
+        // block (.editable) or a plain inline field (.ed). Skips overwriting
+        // an element the local visitor currently has focused/mid-edit, so a
+        // concurrent editor's save never clobbers what someone is typing.
+        function applyIncomingRow(row) {
             if (!row) return;
-            var display = block.querySelector('.editable-content');
-            if (row.content) display.textContent = row.content;
-            var meta = block.querySelector('.editable-meta');
-            if (meta) meta.textContent = formatMeta(row);
-            applyVoiceNote(block, row);
+            var block = document.querySelector('.editable[data-section-key="' + row.section_key + '"]');
+            if (block) {
+                var display = block.querySelector('.editable-content');
+                if (display && document.activeElement !== display && row.content) {
+                    display.textContent = row.content;
+                }
+                var meta = block.querySelector('.editable-meta');
+                if (meta) meta.textContent = formatMeta(row);
+                applyVoiceNote(block, row);
+                return;
+            }
+            var inline = document.querySelector('.ed[data-section-key="' + row.section_key + '"]');
+            if (inline && document.activeElement !== inline && row.content) {
+                inline.textContent = row.content;
+            }
         }
 
         // ── read aloud ──────────────────────────────────────────────────
@@ -697,7 +714,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
         function getReadableText(el) {
             var clone = el.cloneNode(true);
             Array.prototype.forEach.call(
-                clone.querySelectorAll('button, textarea, audio, .editable-meta, .editable-actions, .voice-recording-ui, .voice-preview-ui, .voice-note-player'),
+                clone.querySelectorAll('button, textarea, audio, .editable-meta, .voice-recording-ui, .voice-preview-ui, .voice-note-player'),
                 function (n) { n.remove(); }
             );
             return clone.textContent.replace(/\s+/g, ' ').trim();
@@ -790,7 +807,7 @@ They've since joined the planning committee for the 2027 revival — not as hono
             });
         }
 
-        // ── voice notes ─────────────────────────────────────────────────
+        // ── voice notes (person-contact blocks only) ───────────────────
         function setupVoiceNote(block, key, label) {
             var player = document.createElement('div');
             player.className = 'voice-note-player';
@@ -874,13 +891,11 @@ They've since joined the planning committee for the 2027 revival — not as hono
                     var upload = await client.storage.from(VOICE_BUCKET).upload(path, recordedBlob, { contentType: recordedBlob.type });
                     if (upload.error) throw upload.error;
 
-                    var row = { section_key: key, label: label, voice_note_path: path, last_edited_by: myName, updated_at: new Date().toISOString() };
-                    var result = await client.from(TABLE).upsert(row, { onConflict: 'section_key' });
-                    if (result.error) throw result.error;
-
+                    var row = await upsertSection(key, label, { voice_note_path: path, last_edited_by: myName });
                     applyVoiceNote(block, row);
                     previewUi.style.display = 'none';
                     recBtn.style.display = 'inline-flex';
+                    showToast('Voice note saved: ' + label);
                 } catch (err) {
                     alert('Could not send your voice note: ' + (err && err.message ? err.message : err));
                 } finally {
@@ -889,63 +904,64 @@ They've since joined the planning committee for the 2027 revival — not as hono
             });
         }
 
+        // ── generic autosave engine ─────────────────────────────────────
+        // Applied to every [data-section-key] element on the page: rich
+        // person-contact blocks' .editable-content, and every plain inline
+        // .ed field. Both become directly contenteditable; edits autosave
+        // ~900ms after the visitor stops typing (flushed immediately on
+        // blur), with no Save button anywhere.
+        function setupAutosave(el, key, label) {
+            el.setAttribute('contenteditable', 'true');
+            var saveTimer = null;
+            var singleLine = el.classList.contains('ed-line');
+
+            function flush() {
+                if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+                var content = el.innerText.replace(/ /g, ' ').trim();
+                if (!content) return;
+                upsertSection(key, label, { content: content, last_edited_by: myName || null })
+                    .then(function () { showToast('Saved: ' + label); })
+                    .catch(function (err) {
+                        showToast('Could not save "' + label + '"');
+                        console.warn('Autosave failed for', key, err);
+                    });
+            }
+
+            el.addEventListener('focus', function () { ensureName(); });
+            el.addEventListener('input', function () {
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(flush, AUTOSAVE_DELAY);
+            });
+            el.addEventListener('blur', function () {
+                if (saveTimer) flush();
+            });
+            if (singleLine) {
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        el.blur();
+                    }
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             setupReadAloud();
 
+            // Rich person-contact blocks: meta line + voice notes.
             var blocks = Array.prototype.slice.call(document.querySelectorAll('.editable[data-section-key]'));
-            if (!blocks.length) return;
-
             blocks.forEach(function (block) {
                 var key = block.dataset.sectionKey;
                 var label = block.dataset.label || key;
                 var display = block.querySelector('.editable-content');
-                var textarea = block.querySelector('.editable-textarea');
-                var actions = block.querySelector('.editable-actions');
-                var toggle = block.querySelector('.edit-toggle');
-                var saveBtn = block.querySelector('.edit-save');
-                var cancelBtn = block.querySelector('.edit-cancel');
-
-                toggle.addEventListener('click', function () {
-                    if (!ensureName()) return;
-                    textarea.value = display.textContent.trim();
-                    display.style.display = 'none';
-                    textarea.style.display = 'block';
-                    actions.style.display = 'flex';
-                    toggle.style.display = 'none';
-                    textarea.focus();
-                });
-
-                cancelBtn.addEventListener('click', function () {
-                    textarea.style.display = 'none';
-                    actions.style.display = 'none';
-                    display.style.display = '';
-                    toggle.style.display = '';
-                });
-
-                saveBtn.addEventListener('click', async function () {
-                    var content = textarea.value.trim();
-                    if (!content) return;
-                    saveBtn.disabled = true;
-                    try {
-                        var client = await window.sfSupabaseReady;
-                        var row = { section_key: key, label: label, content: content, last_edited_by: myName, updated_at: new Date().toISOString() };
-                        var result = await client.from(TABLE).upsert(row, { onConflict: 'section_key' });
-                        if (result.error) throw result.error;
-                        display.textContent = content;
-                        var meta = block.querySelector('.editable-meta');
-                        if (meta) meta.textContent = formatMeta(row);
-                    } catch (err) {
-                        alert('Could not save your edit: ' + (err && err.message ? err.message : err));
-                    } finally {
-                        saveBtn.disabled = false;
-                        textarea.style.display = 'none';
-                        actions.style.display = 'none';
-                        display.style.display = '';
-                        toggle.style.display = '';
-                    }
-                });
-
+                if (display) setupAutosave(display, key, label);
                 setupVoiceNote(block, key, label);
+            });
+
+            // Every plain inline editable field across the rest of the document.
+            var inlineFields = Array.prototype.slice.call(document.querySelectorAll('.ed[data-section-key]'));
+            inlineFields.forEach(function (el) {
+                setupAutosave(el, el.dataset.sectionKey, el.dataset.label || el.dataset.sectionKey);
             });
 
             (async function loadAll() {
@@ -953,17 +969,11 @@ They've since joined the planning committee for the 2027 revival — not as hono
                     var client = await window.sfSupabaseReady;
                     var result = await client.from(TABLE).select('*');
                     if (result.error) throw result.error;
-                    (result.data || []).forEach(function (row) {
-                        var block = document.querySelector('.editable[data-section-key="' + row.section_key + '"]');
-                        if (block) applyRow(block, row);
-                    });
+                    (result.data || []).forEach(applyIncomingRow);
 
                     client.channel('proposal-2027-sections')
                         .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, function (payload) {
-                            var row = payload.new;
-                            if (!row) return;
-                            var block = document.querySelector('.editable[data-section-key="' + row.section_key + '"]');
-                            if (block) applyRow(block, row);
+                            applyIncomingRow(payload.new);
                         })
                         .subscribe();
                 } catch (err) {
