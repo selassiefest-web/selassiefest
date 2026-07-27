@@ -1931,3 +1931,43 @@ values
   ('goal_bullet_2', '2027 Goal — Attendance', 'Double the attendance from 273 to 550 attendees'),
   ('goal_bullet_3', '2027 Goal — Partnership dollars', 'Increase partnership dollars from $0.00 to approximately $20,000')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Corrected expected attendance (500 -> 550) and rewritten "Why Seven
+-- Hills" section (historic 1981-1997 home, DuSable Museum, Obama
+-- Presidential Center, Olmsted's South Park system)
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Plain UPDATEs, not seed inserts -- these section_keys already exist from
+-- earlier migrations and need their content corrected/replaced outright,
+-- not left alone by an on-conflict-do-nothing seed.
+update proposal_2027_sections set content = '2026 proved the concept at small scale: a real crowd, a full day of programming, a diverse vendor mix, and a team that can execute fast. 2027''s goals build directly from that baseline — a fixed year-long runway instead of 47 days, an expected attendance of 550 at a civic-scaled site instead of 273 at a constrained one, and an organizing body now including Denise, Diedra, and Brother JahSyll in addition to the core team that delivered 2026.', updated_at = now()
+where section_key = 'goals_2027';
+
+update proposal_2027_sections set content = '550 people', updated_at = now()
+where section_key = 'ov_attendance';
+
+update proposal_2027_sections set content = 'Step 1 — Select the legal permit applicant: the organization or person who will legally hold the Park District permit. Determine its legal entity name, authorized signatory, EIN/nonprofit status, mailing address, festival bank account, and who is responsible for insurance, permit compliance, and Park District communication. The application and permit are not transferable, so the correct entity must apply from the start.
+
+Step 2 — Approve a preliminary festival scope: expected attendance, admission model, festival hours, setup/teardown dates, stage count and design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/rideshare/loading needs. Attendance matters because the permit level, deposit, fees and review requirements change with crowd size — 1,001-3,000 attendees is Event Level 4; 3,001-10,000 is Event Level 5; 10,000+ is Event Level 6, which requires provisional Park District Board approval and additional community engagement. At an expected 550 attendees, SelassieFest currently falls below the Level 4 threshold.', updated_at = now()
+where section_key = 'seq_phase1';
+
+update proposal_2027_sections set content = 'Step 15 — Contract the stage and production team. The One Umbrella roof will likely be treated as a roofed stage or platform requiring additional review — stages over two feet high, more than 400 square feet, or with roofing/wings require a Department of Buildings permit and a Park District verification letter, and that process should begin at least 60 days before the event. Obtain engineered stage drawings, wind-rating documentation, ballast/staking plan, structural calculations, lighting plot, sound-system specifications, generator/grounding plan, emergency stage-evacuation procedure, and load-in/out schedule.
+
+Step 16 — Finalize security and medical providers. Current Park District requirements call for security and medical provisions for events with 500 or more attendees or events involving alcohol — SelassieFest''s planned 550 attendance exceeds that threshold. Security plans are subject to Park District approval. Complete the security staffing matrix, entrance screening plan, prohibited-items procedure, emergency evacuation plan, severe-weather plan, missing-child procedure, artist security, cash-handling security, medical staffing, ambulance access, incident-reporting system, and command-post structure.
+
+Step 17 — Finalize insurance. Current requirements include at least $1 million in general liability coverage, with the Park District named as an additional insured on a primary, noncontributory basis, covering all setup, event and teardown dates, with both a certificate and endorsement required. Additional coverage may be needed for alcohol, animals, inflatables, amusement devices, contractors, vehicles and workers'' compensation.', updated_at = now()
+where section_key = 'seq_phase7';
+
+update proposal_2027_sections set content = 'Seven Hills is not merely a possible venue for SelassieFest — it is the festival''s historic home. According to the festival''s history, the original SelassieFest was held at Seven Hills from 1981 through 1997, making a return in 2027 both a homecoming and the restoration of a significant Chicago Rastafari and reggae tradition.', updated_at = now()
+where section_key = 'why_seven_hills_p1';
+
+update proposal_2027_sections set content = 'The location also sits within an exceptional South Side cultural corridor. The DuSable Black History Museum and Education Center stands inside Washington Park, while the now-open Obama Presidential Center is nearby in Jackson Park. Washington and Jackson Parks are connected by the Midway Plaisance as parts of Frederick Law Olmsted''s original South Park system. Together, these institutions and landscapes create a powerful setting shaped by Black history, Pan-African identity, civic leadership and community gathering.', updated_at = now()
+where section_key = 'why_seven_hills_p2';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('why_seven_hills_title', 'Why Seven Hills — card title', 'A homecoming to SelassieFest''s original site — and a landmark South Side cultural corridor'),
+  ('why_seven_hills_p3', 'Why Seven Hills — paragraph 3', 'With CTA Green Line and bus access, Seven Hills can welcome residents from across Chicago while providing the open, public and intergenerational environment that SelassieFest requires. Families, elders, youth, artists, educators and members of the wider African diaspora can gather in a setting more inclusive and culturally appropriate than a private entertainment venue.'),
+  ('why_seven_hills_p4', 'Why Seven Hills — paragraph 4', 'Choosing Seven Hills is therefore more than selecting a festival site. It is a return to SelassieFest''s roots and an opportunity to reestablish the festival within one of Chicago''s most important landscapes of Black culture, history and public life.')
+on conflict (section_key) do nothing;
