@@ -1621,3 +1621,138 @@ values
   ('closing_p1', 'Closing statement', 'SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward''s office already engaged and a community planning committee in place, we''re asking the City to help us bring this home to Washington Park.'),
   ('footer_note_text', 'Footer note', 'This is a draft proposal prepared for internal review. Fields marked TBD and the committee quote must be finalized before this document is submitted to the Chicago Park District, DCASE, or the 3rd Ward office.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- SelassieFest 2027 planning & committee structure
+-- (/organization/selassiefest-2027-committee-structure.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- A second editable document reusing this same table (section_key is a
+-- free-text natural key, so no schema change needed) -- the 15 standing
+-- committees, executive/steering committee, subcommittees, Chicago
+-- compliance notes, and day-of command team, all editable inline the same
+-- way as the proposal above. Keys are prefixed cs_ to stay distinct from
+-- the proposal's own keys sharing this table.
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('cs_cover_title', 'Cover — Title', 'SelassieFest 2027 Planning Structure'),
+  ('cs_cover_subhead', 'Cover — Subhead', '15 standing committees, a festival executive and steering committee, and a separate day-of command structure'),
+  ('cs_intro', 'Overview', 'For SelassieFest — July 24, 2027, we recommend forming 15 standing committees, supported by one centralized festival leadership team and a separate day-of command structure. The committees reflect SelassieFest''s identity as a celebration of roots, culture, music, wellness, knowledge, unity and community, while professionally managing a large, multicultural and multigenerational outdoor festival.'),
+  ('cs_exec_members', 'Executive Committee — Members', 'Festival Founder/Executive Producer
+Festival Director
+Operations Director
+Finance Director
+Cultural Director
+Safety Director
+Sponsorship/Revenue Director
+Community representative
+Legal adviser'),
+  ('cs_exec_responsibilities', 'Executive Committee — Responsibilities', 'Establish the mission, size and goals of SelassieFest 2027
+Approve budgets, contracts, major performers and sponsors
+Resolve disputes between committees
+Approve policies and major public announcements
+Maintain the master timeline
+Protect the SelassieFest name, reputation and cultural integrity
+Decide whether admission remains free, becomes ticketed or uses a hybrid model
+Establish attendance targets and financial success measures'),
+  ('cs_pmo_note', 'Project Management Office', 'A smaller Festival Project Management Office should report to this committee and maintain the master calendar, meeting notes, task tracker, contracts, risk register and decision log.'),
+  ('cs_c1', 'Committee 1 — Cultural Integrity, Rastafari and Community Advisory', 'Protect the meaning and cultural integrity of SelassieFest; advise on the representation of His Imperial Majesty Haile Selassie I; develop the "One Love/One People" message; engage Rastafari elders, faith leaders, historians, Jamaican, Ethiopian, African and Caribbean organizations; review cultural language, imagery, ceremonies and educational content.'),
+  ('cs_c2', 'Committee 2 — Festival Programming', 'Develop the complete noon-to-midnight program; music, DJs, bands, speakers, tributes, reasoning sessions, cultural presentations, wellness programming, children''s activities, elder recognition, lion-themed processions, contests and community performances; prevent gaps or conflicts in the schedule.'),
+  ('cs_c3', 'Committee 3 — Finance, Budget and Cash-Control', 'Build the complete festival budget; maintain cash-flow projections; approve expenditures; process deposits and invoices; establish purchase-order rules; manage petty cash, vendor payments and reimbursements; conduct post-event reconciliation; protect against unauthorized spending.'),
+  ('cs_c4', 'Committee 4 — Sponsorship, Grants and Fundraising', 'Create sponsorship packages; recruit presenting, stage, community, wellness, transportation and in-kind sponsors; manage grant applications; organize fundraising events; assign sponsor benefits; collect logos and advertising materials; ensure every promised sponsor benefit is delivered.'),
+  ('cs_c5', 'Committee 5 — Legal, Permits, Insurance and Compliance', 'Manage venue agreements, performer contracts, vendor agreements, music licensing, releases, insurance, permits, tax documentation and regulatory compliance; review alcohol, food, cannabis, security, fire, medical and accessibility requirements; maintain copies of all licenses and certificates.'),
+  ('cs_c6', 'Committee 6 — Venue, Site Design and Infrastructure', 'Confirm the property; create the site map; determine capacity; position the giant One Umbrella stage, entrances, exits, emergency lanes, vendors, restrooms, first aid, backstage, VIP areas, children''s areas, seating, accessibility routes, sponsor activations, waste stations and utilities.'),
+  ('cs_c7', 'Committee 7 — Stage Production and Technical', 'Manage staging, the One Umbrella roof, sound, lighting, power, generators, video, screens, microphones, backline, DJ equipment, livestreaming, internet, stage barricades and technical labor; develop soundcheck, changeover and shutdown schedules.'),
+  ('cs_c8', 'Committee 8 — Talent Booking and Artist Relations', 'Recruit performers, DJs, bands, hosts, speakers and cultural presenters; negotiate fees; secure contracts; collect technical riders; arrange transportation, lodging and meals; manage backstage credentials, dressing rooms, hospitality and artist arrival/departure schedules.'),
+  ('cs_c9', 'Committee 9 — Vendors, Food, Beverage and Marketplace', 'Recruit and approve food vendors, merchandise vendors, cultural exhibitors, nonprofit organizations and wellness providers; prevent duplicate offerings; collect licenses and insurance; assign spaces; manage vendor fees, arrival instructions, inspections, utilities and cleanup requirements.'),
+  ('cs_c10', 'Committee 10 — Cannabis, Wellness and Responsible Participation', 'Define what cannabis-related education, sponsorship, branding or activity is legally permissible; screen cannabis-related businesses; prevent unauthorized or black-market sales; develop age-control and prohibited-item procedures; coordinate wellness education, harm reduction and responsible-use messaging.'),
+  ('cs_c11', 'Committee 11 — Public Safety, Security, Medical and Emergency', 'Create the safety plan; hire licensed security; coordinate police, fire and EMS requirements; establish emergency exits, missing-child procedures, severe-weather plans, evacuation, crowd management, incident reporting, lost property, prohibited-item enforcement and emergency communications.'),
+  ('cs_c12', 'Committee 12 — Guest Experience, Accessibility and Entry Operations', 'Design the complete guest journey; entrance signage, bag checks, ticket or RSVP scanning, wristbands, information booths, lost-and-found, complaint resolution, hydration, seating and shade; accommodate elders, families and people with disabilities; train hospitality ambassadors.'),
+  ('cs_c13', 'Committee 13 — Marketing, Public Relations and Creative', 'Create the campaign strategy; flyers, social media, website, email, radio, press releases, community outreach, performer announcements, countdowns and sponsor content; maintain brand consistency; manage photography, video and media credentials; protect accuracy of dates, addresses and event rules.'),
+  ('cs_c14', 'Committee 14 — Staffing, Volunteers and Training', 'Determine every paid and volunteer position; recruit, screen and schedule workers; prepare job descriptions; conduct orientation and safety training; manage check-in, uniforms, meals, breaks, radios, credential levels, supervision and volunteer appreciation.'),
+  ('cs_c15', 'Committee 15 — Transportation, Neighborhood, Sanitation and Sustainability', 'Coordinate parking, rideshare, artist transportation, buses, loading areas, street access and traffic flow; communicate with residents and neighboring organizations; manage toilets, handwashing, trash, recycling, overnight cleanup, noise concerns and site restoration.'),
+  ('cs_tech_workstream', 'Technology and Data Workstream', 'Festival email accounts and shared files
+Website and registration systems
+Ticketing or free RSVP registration
+QR codes and credential databases
+Sponsor and vendor databases
+Staff communication systems
+Radios and radio assignments
+Wi-Fi and internet access
+Payment systems
+Attendance counting
+Surveys and post-event reporting
+Data privacy and backups
+Cybersecurity and scam prevention'),
+  ('cs_sub_elder', 'Elder and Accessibility Council', 'Shaded elder seating
+Accessible Rasta-style chairs
+Walker and wheelchair routes
+Close restroom access
+Drop-off areas
+Medical support
+Quiet rest areas
+Elder hosts or escorts
+Reserved viewing areas
+Recognition of Rastafari and community elders'),
+  ('cs_sub_family', 'Children and Family Team', 'Child-friendly programming
+Family seating and shade
+Missing-child procedures
+Parent/guardian wristbands
+Safe activity areas
+Age-appropriate cultural education
+Youth performers
+Family restroom considerations
+Separation from any age-restricted areas'),
+  ('cs_sub_culture', 'Cultural Education and Reasoning Team', 'Haile Selassie I history presentations
+Ethiopian and Jamaican history
+Rastafari reasoning sessions
+Reggae history
+Community wellness discussions
+Art and literature displays
+"Out of Many, One People" programming
+African diaspora presentations
+Youth education
+Community-resource booths'),
+  ('cs_sub_entrance', 'Entrance Policy Team', 'Two or more clearly organized entrances
+Posted prohibited-item signs
+Weapons policy
+Glass and cooler restrictions
+Alcohol controls
+Cannabis policy
+Bag-search procedures
+Confiscation/refusal procedures
+Re-entry rules
+Staff scripts for handling disputes
+Escalation to supervisors or security'),
+  ('cs_compliance_1', 'Compliance — Special Event Permit', 'Assuming SelassieFest remains an outdoor Chicago festival, the Legal and Permits Committee should begin early. Chicago currently requires a Festival/Athletic Event Permit Application for applicable outdoor events, and the application process collects information concerning the event site, organizers, emergency contacts and operating plans. The rules and forms should be checked again when the 2027 application period opens.'),
+  ('cs_compliance_2', 'Compliance — Food Safety', 'Food booths and food trucks have separate special-event licensing and food-safety requirements, so the festival should not accept a vendor solely on the basis of payment or popularity. Licensing, sanitation, cooking equipment, insurance and food-handling documentation need to be reviewed before final approval.'),
+  ('cs_compliance_3', 'Compliance — EMS and Fire', 'Chicago also publishes outdoor-event EMS and fire-safety requirements. Medical coverage, cooking fuel, generators, tents, stage equipment and any special effects should be reviewed by the Safety Committee and the appropriate authorities before the site plan is finalized.'),
+  ('cs_compliance_4', 'Compliance — Cannabis', 'Cannabis-related activities need especially careful legal review. Illinois regulates cannabis businesses, sales and dispensing through licensed programs. SelassieFest should not assume that cannabis-themed sponsorship, possession, sale, sampling and consumption are governed by the same rules. Every proposed activation should be approved individually by legal counsel and the appropriate regulators.'),
+  ('cs_dayof_intro', 'Day-of Command — Intro', 'The committees should not attempt to make decisions collectively during the festival. On July 24, 2027, control should transfer to a clearly identified command team.'),
+  ('cs_cmd_1', 'Command — Festival Director', 'Final operational authority'),
+  ('cs_cmd_2', 'Command — Operations Chief', 'Site, vendors, transportation and infrastructure'),
+  ('cs_cmd_3', 'Command — Safety Officer', 'Security, medical, weather and emergency authority'),
+  ('cs_cmd_4', 'Command — Production Manager', 'Stage, artists, sound and schedule'),
+  ('cs_cmd_5', 'Command — Guest Services Manager', 'Entrances, accessibility, complaints and information'),
+  ('cs_cmd_6', 'Command — Volunteer Manager', 'Staffing, breaks and redeployment'),
+  ('cs_cmd_7', 'Command — Communications Officer', 'Radios, public announcements and internal updates'),
+  ('cs_cmd_8', 'Command — Finance/Cash Manager', 'Onsite financial controls'),
+  ('cs_cmd_9', 'Command — Media Representative', 'Press, public statements and crisis messaging'),
+  ('cs_cmd_10', 'Command — Documentation Officer', 'Incident log, attendance and operational records'),
+  ('cs_cmd_note', 'Command — Safety Officer authority note', 'The Safety Officer should have the authority to pause or stop an activity when conditions become unsafe.'),
+  ('cs_deliverables', 'Required Deliverables', 'Written scope and responsibilities
+Committee chair and deputy
+Budget and spending authority
+Timeline with deadlines
+Risk and problem register
+Day-of staffing and operating procedure
+Post-event report and financial closeout'),
+  ('cs_deliverables_note', 'Required Deliverables — note', 'This prevents committees from becoming discussion groups without measurable results.'),
+  ('cs_first_committees', 'Committees to Form First', 'Executive and Project Management
+Cultural Integrity and Community
+Finance and Budget
+Legal, Permits and Insurance
+Venue and Site Operations
+Sponsorship and Fundraising
+Public Safety and Emergency Planning'),
+  ('cs_first_committees_note', 'Committees to Form First — note', 'After those teams establish the festival''s scope, site, budget, capacity and legal framework, the remaining committees can begin booking, recruiting, marketing and detailed production planning.')
+on conflict (section_key) do nothing;
