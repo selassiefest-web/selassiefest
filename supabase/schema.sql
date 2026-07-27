@@ -2056,3 +2056,140 @@ values
   ('goal_bullet_4', '2027 Goal — Organizing body size', 'Increase the number of people on the organizing body'),
   ('goal_bullet_5', '2027 Goal — Address deficiencies', 'Improve all areas noted to be deficient')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Venue feasibility & master planning sequence -- verified, with owner
+-- pills per phase (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Replaces the old, shorter tl_1..tl_12 roadmap (left in place, unused) with
+-- a verified, phase-by-phase sequence -- fact-checked against Chicago Park
+-- District and City of Chicago sources (see commit message for what was
+-- corrected: Pat Dowell not Pat Powell, Event Level thresholds, the DOB
+-- stage/tent 45-day deadline not 60, and the DCASE fee-tier schedule).
+-- Keys are prefixed vf_ ("venue feasibility") to stay distinct from this
+-- table's other prefixes (cs_, seq_, gate_, siteissue_, cost_, etc.).
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('vf_intro', 'Venue feasibility — intro', 'This is the detailed, verified version of our timeline — every claim below has been checked against Chicago Park District and City of Chicago sources. Dates marked "inferred" are projected from the last two years'' pattern and should be reconfirmed closer to the date.'),
+  ('vf_gate_intro', 'Venue Gates — Intro', 'Planning should not stop while waiting to secure Washington Park. The work required to determine whether the site is feasible and to submit a complete permit application must begin immediately. However, major public or irreversible commitments should wait until the venue reaches the appropriate approval stage.'),
+  ('vf_gate_stage_1', 'Gate stage 1', 'Application submitted — the venue is not secured.'),
+  ('vf_gate_stage_2', 'Gate stage 2', 'Pending permit / conditional approval received — the date and location are tentatively accepted, subject to payments, insurance, plans and other permits.'),
+  ('vf_gate_stage_3', 'Gate stage 3', 'Final Special Event Permit issued — the event is authorized to proceed under the approved conditions.'),
+  ('vf_gate_note', 'Venue Gates — Park District note', 'Confirmed: submitting an application or paying the application fee does not grant permission to conduct the event. An accepted application receives a pending permit after a minimum 14-day review, identifying additional requirements and deadlines. The final permit is issued only after all requirements and payments are satisfied.'),
+  ('vf_siteissue_1', 'Site Issue 1 — Official site identification', 'Confirmed: the Park District''s official name for the venue is Washington (George) Park, at 5531 S. King Drive. Its published facility list does not identify an area officially called "7 Hills" — that''s a community name, not an official Park District designation. The permit must show the exact field, lawn or geographic footprint on a detailed site map, described as something like: "Washington (George) Park — exact lawn area commonly known as ''7 Hills,'' as shown within the attached site-plan boundary." The Park District must confirm the approved official description.'),
+  ('vf_siteissue_2', 'Site Issue 2 — Operating hours', 'Confirmed: Washington Park''s posted hours are 6:00 AM to 9:00 PM daily, and Park District rules generally restrict events to a park''s posted public operating hours. If SelassieFest intends to run noon to midnight, do not assume the park can accommodate that schedule — ask the Park District in writing whether it would approve amplified music after 9:00 PM, audience presence after 9:00 PM, vendor shutdown after 9:00 PM, stage strike and equipment removal after public hours, and overnight security or next-morning teardown. This is a venue-defining question — resolve it before spending money on application design, stage engineering or artist bookings.'),
+  ('vf_siteissue_3', 'Site Issue 3 — Cannabis restrictions', 'The Park District''s application states that cannabis-derived products may not be consumed, sampled, sold or promoted through signage on Park District property. That potentially affects cannabis sponsor logos, swag bags, infused-product promotion, cannabis vendors, sampling or giveaways, consumption areas, and cannabis-related signage. SelassieFest can still discuss Rastafari culture and history, but commercial cannabis promotion at this venue may need to be removed or substantially restructured. Obtain a written interpretation from the assigned permit coordinator before finalizing any cannabis sponsorship.'),
+  ('vf_phase1', 'Phase 1 — Applicant and Scope', 'Select the legal permit applicant — the organization that will legally hold the Park District permit, with its legal entity name, authorized signatory, EIN/nonprofit status, mailing address, festival bank account, and named people responsible for insurance, permit compliance, and Park District communication. The permit is not transferable, so the correct entity must apply from the start.
+
+Approve a preliminary festival scope: expected attendance, admission model, hours, setup/teardown dates, stage design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/loading needs. Confirmed Event Levels: 1-200 (Level 1), 201-500 (Level 2), 501-1,000 (Level 3), 1,001-3,000 (Level 4), 3,001-10,000 (Level 5), 10,000+ (Level 6, requiring provisional Park District Board approval). At 550 expected attendees, SelassieFest falls into Event Level 3.'),
+  ('vf_phase2', 'Phase 2 — Venue Feasibility', 'Request a formal site walk with the Washington Park supervisor, Janie M. Collins (773-256-1248, 5531 S. King Drive). Bring an aerial map, proposed stage dimensions, attendance estimate, entrance locations, hours, vendor count, setup/teardown needs, utility questions, and photos of the "7 Hills" area.
+
+Get preliminary answers on: 7 Hills availability for July 24, 2027; the official site designation; crowd/lawn capacity; roofed-stage feasibility; staking and equipment truck access; noon-to-midnight hours; amplified music and speaker direction; alcohol and cannabis restrictions; restroom/dumpster placement; accessible and emergency-vehicle routes; conflicts with other park programming; setup/teardown dates; rain/turf restoration; and a backup area within the park.
+
+Make a written go/no-go decision. Proceed only if the venue supports the desired hours, capacity, stage and roof, amplified programming, vendors, security/emergency access, and adequate setup/teardown.'),
+  ('vf_phase3', 'Phase 3 — Community Engagement', 'Brief the 3rd Ward office (Alderman Pat Dowell, ward03@cityofchicago.org, 773-373-9273) on the cultural mission, proposed date/hours, attendance estimate, community benefits, safety concept, notification plan, cleanup commitment, and preliminary site plan. The alderperson''s office doesn''t replace Park District permitting authority, but early support matters.
+
+Meet the Washington Park Advisory Council (President Cecilia Butler, 773-667-4160; meets the 3rd Wednesday of the month at 7:00 PM) for community input, knowledge of the "7 Hills" area, and recommendations on sound, traffic, and cleanup.'),
+  ('vf_phase4', 'Phase 4 — Application Package', 'Produce the preliminary site plan: festival boundary, stage/roof footprint, speaker locations, FOH position, exits, entrances, security screening, fencing, vendor and sponsor booths, children''s area, elder/accessible seating, first-aid, ambulance position, command post, toilets, generators, dumpsters, water stations, artist compound, staff check-in, and any requested street or sidewalk use.
+
+Prepare three choices: first choice is July 24, 2027 at the exact 7 Hills footprint; second choice is an alternate area within Washington Park; third choice is an alternate date or Park District location — availability generally can''t be confirmed before review, so alternatives are recommended.
+
+Prepare an application-ready package before the 2027 portal opens (as of this writing, the Park District site shows 2025 and 2026 links but not yet 2027): applicant info, event narrative, attendance estimate, site plan, schedule, vendor plan, preliminary security/medical plans, alcohol decision, sponsorship list, stage/tent/generator specs, and backup dates/sites.'),
+  ('vf_now_dates', 'Night Out in the Parks — application opens', 'Night Out in the Parks and Chicago Onscreen 2027 season application opens through the Chicago Park District — a separate, supplemental city-backed programming opportunity alongside the main site permit.'),
+  ('vf_phase5', 'Phase 5 — Submit', 'Pay the application fee first — the current procedure requires the non-refundable, non-transferable fee before submission because the receipt number is required (confirm the current amount when the 2027 cycle opens).
+
+Submit the completed application and site plan — not a placeholder, which can lose its processing position or be delayed.
+
+Monitor daily. Review takes a minimum of 14 days and can result in conditional approval, a request for more information, an alternate site/date offer, or denial with explanation.'),
+  ('vf_now_deadline', 'Night Out in the Parks — proposal deadline', 'Night Out in the Parks 2027 proposal deadline, 11:59 PM, if applying to that program.'),
+  ('vf_phase6', 'Phase 6 — City of Chicago / DCASE Permit', 'File with DCASE as early as possible if the event includes merchandise sales, alcohol, food preparation triggering city review, tents over 400 sq ft, a stage over two feet, or street/public-way use. Confirmed: DCASE will not accept applications less than 21 days before the event, and processing fees rise the later you file — $100 (180-60 days out), $200 (59-45 days), $500 (44-37 days), $1,000 (36-29 days), $2,000 (28-21 days). For July 24, 2027, the 180-day point is approximately January 25, 2027 — filing early is a real cost saving, not just a best practice.'),
+  ('vf_now_confirm', 'Night Out in the Parks — confirm schedule', 'If selected for Night Out in the Parks, confirm the performance schedule — that program''s usual mid-March deadline.'),
+  ('vf_phase7', 'Phase 7 — Production and Compliance', 'Contract the stage and production team. The One Umbrella roof will likely need a City of Chicago Department of Buildings (DOB) permit — tents/canopies over 400 sq ft, or stages over two feet high or with roofing/wings, require a DOB permit supported by a Park District verification letter (template in the DCASE special events package). Submit this paperwork to DOB at least 45 days before the event.
+
+Finalize security and medical: confirmed Park District rules require a security plan for 500+ attendees or any event with alcohol — our planned 550 exceeds that threshold. An EMS Region XI-approved medical provider must be on site for the full permit duration.
+
+Finalize insurance: confirmed at least $1 million in general liability ($2 million if serving alcohol), Park District named as additional insured on a primary, non-contributory basis, covering all setup/event/teardown dates. Certificate and endorsement must be received and approved at least 48 hours before setup begins.'),
+  ('vf_gate1', 'Gate 1 — Conditional venue approval', 'This is the point the venue becomes tentatively secured. Upon receiving the pending permit: review every deadline and condition, pay the first required installment or deposit, confirm the exact permitted footprint and hours, confirm the attendance classification, confirm alcohol/cannabis restrictions, request required Park District support letters, and update the master site plan and compliance calendar. Only after this gate should major festival commitments begin.'),
+  ('vf_90', 'Countdown — 90 days out', 'Freeze the event footprint; confirm final attendance projection, stage count, alcohol decision, sponsor activation types, and major contractors; complete the community presentation; establish refund/cancellation exposure.'),
+  ('vf_60', 'Countdown — 60 days out', 'Begin the DCASE alcohol process (if applicable), liquor-license process, generator permits, food/vendor licensing, fire-safety review, final structural engineering, and the transportation/traffic plan, so nothing is rushed against the 45-day deadlines below.'),
+  ('vf_45', 'Countdown — 45 days out', 'Two confirmed 45-day deadlines: submit stage/tent DOB paperwork and Park District verification letters, and — if serving alcohol or using the public way — submit to the police district commander and Alderman Dowell''s office, confirm licensed security, and finalize the crowd-control and alcohol-perimeter/age-verification plans.'),
+  ('vf_30', 'Countdown — 30 days out', 'Submit all outside agency permits to the Park District; freeze the site plan; submit final security, medical, stage, tent, generator, vendor, food, sanitation, and accessibility plans; confirm emergency contacts and setup/teardown schedules.'),
+  ('vf_liquor', 'Countdown — Liquor license', 'Submit the special event liquor license application (Special Event Retailer''s License, Not-For-Profit track), if alcohol service is planned. City rules require filing at least 20 calendar days before the event, with the ward alderman notified at least 5 days before the license is issued.'),
+  ('vf_14', 'Countdown — 14 days out', 'Pay the remaining Park District balance; confirm the insurance certificate and endorsement, contractor certificates, and accessible toilet count; issue final credentials; submit the final vendor roster; complete the final Park District walkthrough; confirm final permit issuance.'),
+  ('vf_finalweek', 'Countdown — Final week', 'Command-team tabletop exercise; test radios; confirm weather-monitoring responsibility; issue vendor arrival appointments; mark the approved site; verify underground utilities before staking; inspect stage and tents; sound-system test only during approved hours; place toilets, waste stations, and barricades; complete fire, building, and Park District inspections; keep a copy of the permit onsite.'),
+  ('vf_eventday', 'Countdown — Event day', 'SelassieFest 2027, event day.'),
+  ('vf_start_now', 'Gate — Start now', 'Legal applicant selection
+Site feasibility
+Park meeting
+Community outreach
+Attendance planning
+Preliminary budgeting
+Preliminary site design
+Permit preparation
+Backup-site research'),
+  ('vf_wait_pending', 'Gate — Wait for pending permit', 'Nonrefundable artist deposits
+Nonrefundable equipment deposits
+Guaranteed sponsor benefits tied to Washington Park
+Final vendor-space sales
+Major printing
+Public announcement that Washington Park is confirmed'),
+  ('vf_after_pending', 'Gate — OK after pending permit', 'Artist negotiations
+Sponsor agreements
+Vendor recruitment
+Production bids
+Stage engineering
+Security-company negotiations
+Medical-provider negotiations
+Equipment rentals
+Volunteer recruitment
+Community outreach
+Grant applications'),
+  ('vf_pending_note', 'Gate — Pending permit note', 'Contracts should be contingent on receipt and continued validity of all government and Park District permits. Public promotion before the final permit remains at the organizer''s risk — the Park District doesn''t guarantee approval, and promotional expenses before permit issuance are the organizer''s responsibility.'),
+  ('vf_wait_final', 'Gate — Wait for final permit', 'Ticket sales
+Unconditional artist contracts
+Unconditional production contracts
+Large media purchases
+Nonrefundable travel
+Public claims that the event is officially approved'),
+  ('vf_immediate_action', 'Immediate next action', 'Not artist booking or sponsor recruitment. It is a formal site walk and written feasibility meeting addressing the exact 7 Hills footprint, the 9:00 PM park closing time, the One Umbrella stage, and the cannabis-promotion restrictions.')
+on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Title change to "Planning Committee" and the confirmed Pat Dowell
+-- corrections applied directly in the proposal's own HTML this round
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set content = 'SelassieFest Saturday, July 24, 2027 — Planning Committee', updated_at = now()
+where section_key = 'cover_title';
+
+update proposal_2027_sections set content = 'Prepared for: Chicago Park District · Dept. of Cultural Affairs & Special Events (DCASE) · Office of Alderman Pat Dowell, 3rd Ward', updated_at = now()
+where section_key = 'cover_meta';
+
+update proposal_2027_sections set content = 'Request a letter of support from Alderman Pat Dowell''s office and begin the required 3rd Ward community notification.', updated_at = now()
+where section_key = 'tl_5';
+
+update proposal_2027_sections set content = 'A letter of support and community notification assistance from Alderman Pat Dowell''s 3rd Ward office.', updated_at = now()
+where section_key = 'ask_3';
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Same-round corrections applied to the committee-structure page's own
+-- copy of this content (/organization/selassiefest-2027-committee-structure.html)
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set content = 'ward03@cityofchicago.org · 773-373-9273. Alderman Pat Dowell is confirmed correct (verified against chicago.gov''s official ward page and Wikipedia) — "Alderman Pat Powell," used earlier in this proposal''s drafting, was incorrect and has been corrected throughout.', updated_at = now()
+where section_key = 'venuecontact_ward3';
+
+update proposal_2027_sections set content = 'Step 2 — Approve a preliminary festival scope: expected attendance, admission model, festival hours, setup/teardown dates, stage count and design, vendor counts, sponsors, alcohol, generators, fencing, toilets, security/medical, children''s area, elder/accessible seating, and parking/rideshare/loading needs. Attendance matters because the permit level, deposit, fees and review requirements change with crowd size — verified Event Levels are 1-200 (Level 1), 201-500 (Level 2), 501-1,000 (Level 3), 1,001-3,000 (Level 4), 3,001-10,000 (Level 5), and 10,000+ (Level 6, which requires provisional Park District Board approval and additional community engagement). At an expected 550 attendees, SelassieFest falls into Event Level 3.', updated_at = now()
+where section_key = 'seq_phase1';
+
+update proposal_2027_sections set content = 'Step 15 — Contract the stage and production team. The One Umbrella roof will likely be treated as a roofed stage or platform requiring additional review — tents/canopies over 400 square feet, or stages/platforms over two feet high or with roofing or wings, require a City of Chicago Department of Buildings (DOB) permit, supported by a Park District verification letter (using the template in the DCASE special events package). Submit this paperwork to DOB at least 45 days before the event. Obtain engineered stage drawings, wind-rating documentation, ballast/staking plan, structural calculations, lighting plot, sound-system specifications, generator/grounding plan, emergency stage-evacuation procedure, and load-in/out schedule.
+
+Step 16 — Finalize security and medical providers. Confirmed Park District requirements call for a security plan for events with 500 or more attendees or events involving alcohol — SelassieFest''s planned 550 attendance exceeds that threshold. An EMS Region XI-approved medical provider must be on site for the full permit duration. Security plans are subject to Park District approval. Complete the security staffing matrix, entrance screening plan, prohibited-items procedure, emergency evacuation plan, severe-weather plan, missing-child procedure, artist security, cash-handling security, medical staffing, ambulance access, incident-reporting system, and command-post structure.
+
+Step 17 — Finalize insurance. Confirmed requirements: at least $1 million in general liability coverage ($2 million if serving alcohol), with the Park District named as an additional insured on a primary, non-contributory basis, covering all setup, event and teardown dates. Both a certificate of insurance and a policy endorsement are required, and must be received and approved at least 48 hours before event setup begins. Additional coverage may be needed for alcohol liquor liability, animals, inflatables, amusement devices, contractors, vehicles and workers'' compensation.', updated_at = now()
+where section_key = 'seq_phase7';
+
+update proposal_2027_sections set content = 'Begin the DCASE alcohol process (if applicable), the liquor-license process, generator permits if required, food and vendor licensing, fire-safety review, final structural engineering, and the transportation and traffic plan, so nothing is rushed against the 45-day deadlines below.', updated_at = now()
+where section_key = 'seq_60';
+
+update proposal_2027_sections set content = 'Two confirmed 45-day deadlines: submit stage/tent Department of Buildings paperwork and Park District verification letters, and — where alcohol or relevant public-way activity is involved — submit material to the appropriate police commander and Alderman Dowell''s 3rd Ward office, confirm licensed security, and finalize the crowd-control plan and alcohol perimeter/age verification.', updated_at = now()
+where section_key = 'seq_45';
