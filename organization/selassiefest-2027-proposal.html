@@ -422,7 +422,7 @@
             <div class="stat-card"><p class="stat-label">Planning to show</p><p class="stat-value ed ed-line" data-section-key="stat_days" data-label="2026 stat — Planning to show">47 days</p></div>
             <div class="stat-card"><p class="stat-label">Peak attendance</p><p class="stat-value ed ed-line" data-section-key="stat_attendance" data-label="2026 stat — Peak attendance">273</p></div>
             <div class="stat-card"><p class="stat-label">Performing acts</p><p class="stat-value ed ed-line" data-section-key="stat_acts" data-label="2026 stat — Performing acts">11</p></div>
-            <div class="stat-card"><p class="stat-label">Production cost</p><p class="stat-value ed ed-line" data-section-key="stat_cost" data-label="2026 stat — Production cost">$11,325</p></div>
+            <div class="stat-card"><p class="stat-label">Production cost</p><p class="stat-value" id="statCostValue" title="Calculated automatically from the 2026 cost breakdown below">$11,325</p></div>
         </div>
         <div class="card card-accent">
             <p class="card-title"><i class="fas fa-bolt"></i> A full festival, built in 47 days</p>
@@ -967,11 +967,15 @@ They've since joined the planning committee for the 2027 revival — not as hono
         function formatTotal(n) {
             return '$' + Math.round(n).toLocaleString('en-US');
         }
-        function refreshCostTotal() {
+        function applyComputedTotal(total) {
+            var formatted = formatTotal(total);
             var totalVal = document.querySelector('.cost-row-total .recap-val');
-            if (!totalVal) return;
-            var total = costRowsCache.reduce(function (sum, r) { return sum + parseAmount(r.amount); }, 0);
-            totalVal.textContent = formatTotal(total);
+            if (totalVal) totalVal.textContent = formatted;
+            var statVal = document.getElementById('statCostValue');
+            if (statVal) statVal.textContent = formatted;
+        }
+        function refreshCostTotal() {
+            applyComputedTotal(costRowsCache.reduce(function (sum, r) { return sum + parseAmount(r.amount); }, 0));
         }
 
         function wireCostField(el, rowId, field) {
@@ -1065,8 +1069,9 @@ They've since joined the planning committee for the 2027 revival — not as hono
             var totalRow = document.createElement('div');
             totalRow.className = 'recap-row cost-row-total';
             totalRow.style.cssText = 'border-top:1px solid var(--border);font-weight:600;margin-top:4px;padding-top:8px;';
-            totalRow.innerHTML = '<span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val" style="color:var(--text-accent);">' + formatTotal(total) + '</span>';
+            totalRow.innerHTML = '<span class="recap-label" style="color:var(--text-primary);">Total</span><span class="recap-val" style="color:var(--text-accent);"></span>';
             container.appendChild(totalRow);
+            applyComputedTotal(total);
         }
 
         function handleCostRowChange(payload) {
