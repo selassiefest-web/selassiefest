@@ -2282,3 +2282,95 @@ values
   ('legal_entity_parkcomm', 'Legal Entity — Park District communication', 'Brother JahSyll'),
   ('legal_entity_note', 'Legal Entity — note', 'This is the confirmed legal entity that will hold the Park District permit.')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Broke the proposal's Master Planning Sequence (Phases 2-7) and Countdown
+-- Milestones out of single run-on paragraphs into bold-label bullet lists,
+-- matching the Phase 1 row's format, and paired each phase/milestone card
+-- with a date/phase pill alongside its committee owner-pill(s) (markup-only
+-- change, see proposal.html). Also surfaced two already-confirmed real facts
+-- that were previously only stated in Phase 1 (vf_phase2_parkcomm =
+-- Brother JahSyll, vf_phase5_payment = Chase Bank; vf_phase7_owner =
+-- Field Marshall) into the specific phases they're actually relevant to.
+-- The old single-paragraph keys they replace (vf_phase2 .. vf_phase7,
+-- vf_90, vf_60, vf_45, vf_30, vf_liquor, vf_14, vf_finalweek) are deleted
+-- below. vf_now_dates, vf_now_deadline, vf_now_confirm, vf_eventday and
+-- vf_gate1 are unchanged in content — only their surrounding markup moved
+-- into the new card format.
+-- ─────────────────────────────────────────────────────────────────────────
+delete from proposal_2027_sections
+where section_key in (
+  'vf_phase2', 'vf_phase3', 'vf_phase4', 'vf_phase5', 'vf_phase6', 'vf_phase7',
+  'vf_90', 'vf_60', 'vf_45', 'vf_30', 'vf_liquor', 'vf_14', 'vf_finalweek'
+);
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('vf_phase2_contact', 'Phase 2 — Site walk contact', 'Washington Park supervisor Janie M. Collins (773-256-1248, 5531 S. King Drive)'),
+  ('vf_phase2_bring', 'Phase 2 — Bring to the walk', 'An aerial map, proposed stage dimensions, attendance estimate, entrance locations, hours, vendor count, setup/teardown needs, utility questions, and photos of the "7 Hills" area'),
+  ('vf_phase2_questions', 'Phase 2 — Preliminary answers needed', '7 Hills availability for July 24, 2027; the official site designation; crowd/lawn capacity; roofed-stage feasibility; staking and equipment truck access; noon-to-midnight hours; amplified music and speaker direction; alcohol and cannabis restrictions; restroom/dumpster placement; accessible and emergency-vehicle routes; conflicts with other park programming; setup/teardown dates; rain/turf restoration; and a backup area within the park'),
+  ('vf_phase2_decision', 'Phase 2 — Go/no-go decision', 'Proceed only if the venue supports the desired hours, capacity, stage and roof, amplified programming, vendors, security/emergency access, and adequate setup/teardown'),
+  ('vf_phase2_parkcomm', 'Phase 2 — Park District communication owner', 'Brother JahSyll'),
+
+  ('vf_phase3_ward', 'Phase 3 — 3rd Ward briefing', 'Brief the 3rd Ward office (Alderman Pat Dowell, ward03@cityofchicago.org, 773-373-9273) on the cultural mission, proposed date/hours, attendance estimate, community benefits, safety concept, notification plan, cleanup commitment, and preliminary site plan. The alderperson''s office doesn''t replace Park District permitting authority, but early support matters'),
+  ('vf_phase3_council', 'Phase 3 — Community advisory council', 'Meet the Washington Park Advisory Council (President Cecilia Butler, 773-667-4160; meets the 3rd Wednesday of the month at 7:00 PM) for community input, knowledge of the "7 Hills" area, and recommendations on sound, traffic, and cleanup'),
+
+  ('vf_phase4_siteplan', 'Phase 4 — Site plan elements', 'Festival boundary, stage/roof footprint, speaker locations, FOH position, exits, entrances, security screening, fencing, vendor and sponsor booths, children''s area, elder/accessible seating, first-aid, ambulance position, command post, toilets, generators, dumpsters, water stations, artist compound, staff check-in, and any requested street or sidewalk use'),
+  ('vf_phase4_choices', 'Phase 4 — Site/date choices', 'First choice — July 24, 2027 at the exact 7 Hills footprint. Second choice — an alternate area within Washington Park. Third choice — an alternate date or Park District location. Availability generally can''t be confirmed before review, so alternatives are recommended'),
+  ('vf_phase4_package', 'Phase 4 — Application package contents', 'Applicant info, event narrative, attendance estimate, site plan, schedule, vendor plan, preliminary security/medical plans, alcohol decision, sponsorship list, stage/tent/generator specs, and backup dates/sites'),
+  ('vf_phase4_portal', 'Phase 4 — 2027 portal status', 'As of this writing, the Park District site shows 2025 and 2026 links but not yet 2027 — prepare the package ready to submit the moment the 2027 portal opens'),
+
+  ('vf_phase5_fee', 'Phase 5 — Pay the application fee first', 'The current procedure requires the non-refundable, non-transferable fee before submission because the receipt number is required (confirm the current amount when the 2027 cycle opens)'),
+  ('vf_phase5_payment', 'Phase 5 — Payment source', 'Chase Bank festival account'),
+  ('vf_phase5_submit', 'Phase 5 — Submit the complete package', 'The completed application and site plan — not a placeholder, which can lose its processing position or be delayed'),
+  ('vf_phase5_monitor', 'Phase 5 — Monitor daily', 'Review takes a minimum of 14 days and can result in conditional approval, a request for more information, an alternate site/date offer, or denial with explanation'),
+
+  ('vf_phase6_trigger', 'Phase 6 — When filing is required', 'If the event includes merchandise sales, alcohol, food preparation triggering city review, tents over 400 sq ft, a stage over two feet, or street/public-way use'),
+  ('vf_phase6_notice', 'Phase 6 — Minimum notice', 'DCASE will not accept applications less than 21 days before the event'),
+  ('vf_phase6_fees', 'Phase 6 — Fee schedule', '$100 (180-60 days out), $200 (59-45 days), $500 (44-37 days), $1,000 (36-29 days), $2,000 (28-21 days)'),
+  ('vf_phase6_deadline', 'Phase 6 — Filing deadline for this date', 'For July 24, 2027, the 180-day point is approximately January 25, 2027 — filing early is a real cost saving, not just a best practice'),
+
+  ('vf_phase7_stage', 'Phase 7 — Stage/roof permit', 'The One Umbrella roof will likely need a City of Chicago Department of Buildings (DOB) permit — tents/canopies over 400 sq ft, or stages over two feet high or with roofing/wings, require a DOB permit supported by a Park District verification letter (template in the DCASE special events package). Submit this paperwork to DOB at least 45 days before the event'),
+  ('vf_phase7_security', 'Phase 7 — Security and medical', 'Confirmed Park District rules require a security plan for 500+ attendees or any event with alcohol — our planned 550 exceeds that threshold. An EMS Region XI-approved medical provider must be on site for the full permit duration'),
+  ('vf_phase7_insurance', 'Phase 7 — Insurance', 'Confirmed at least $1 million in general liability ($2 million if serving alcohol), Park District named as additional insured on a primary, non-contributory basis, covering all setup/event/teardown dates. Certificate and endorsement must be received and approved at least 48 hours before setup begins'),
+  ('vf_phase7_owner', 'Phase 7 — Insurance and permit-compliance owner', 'Field Marshall'),
+
+  ('vf_90_freeze', 'Countdown 90 — Freeze', 'The event footprint'),
+  ('vf_90_confirm', 'Countdown 90 — Confirm', 'Final attendance projection, stage count, alcohol decision, sponsor activation types, and major contractors'),
+  ('vf_90_presentation', 'Countdown 90 — Complete', 'The community presentation'),
+  ('vf_90_exposure', 'Countdown 90 — Establish', 'Refund/cancellation exposure'),
+
+  ('vf_60_begin', 'Countdown 60 — Begin these processes', 'DCASE alcohol process (if applicable), liquor-license process, generator permits, food/vendor licensing, fire-safety review, final structural engineering, and the transportation/traffic plan'),
+  ('vf_60_why', 'Countdown 60 — Why now', 'So nothing is rushed against the 45-day deadlines below'),
+
+  ('vf_45_dob', 'Countdown 45 — DOB deadline', 'Submit stage/tent DOB paperwork and Park District verification letters'),
+  ('vf_45_safety', 'Countdown 45 — Public safety deadline', 'Submit to the police district commander and Alderman Dowell''s office, confirm licensed security, and finalize the crowd-control and alcohol-perimeter/age-verification plans'),
+
+  ('vf_30_submitagency', 'Countdown 30 — Submit', 'All outside agency permits to the Park District'),
+  ('vf_30_freeze', 'Countdown 30 — Freeze', 'The site plan'),
+  ('vf_30_finalplans', 'Countdown 30 — Submit final plans', 'Security, medical, stage, tent, generator, vendor, food, sanitation, and accessibility plans'),
+  ('vf_30_confirm', 'Countdown 30 — Confirm', 'Emergency contacts and setup/teardown schedules'),
+
+  ('vf_liquor_app', 'Countdown — Liquor license application', 'Special Event Retailer''s License, Not-For-Profit track — if alcohol service is planned'),
+  ('vf_liquor_deadline', 'Countdown — Liquor license filing deadline', 'At least 20 calendar days before the event'),
+  ('vf_liquor_notice', 'Countdown — Liquor license alderman notice', 'Ward alderman notified at least 5 days before the license is issued'),
+
+  ('vf_14_pay', 'Countdown 14 — Pay', 'The remaining Park District balance'),
+  ('vf_14_confirminsurance', 'Countdown 14 — Confirm insurance', 'The insurance certificate and endorsement, contractor certificates, and accessible toilet count'),
+  ('vf_14_credentials', 'Countdown 14 — Issue credentials', 'Final credentials'),
+  ('vf_14_vendor', 'Countdown 14 — Submit vendor roster', 'The final vendor roster'),
+  ('vf_14_walkthrough', 'Countdown 14 — Complete walkthrough', 'The final Park District walkthrough'),
+  ('vf_14_permit', 'Countdown 14 — Confirm permit issuance', 'Final permit issuance'),
+
+  ('vf_finalweek_1', 'Final week — Item 1', 'Command-team tabletop exercise'),
+  ('vf_finalweek_2', 'Final week — Item 2', 'Test radios'),
+  ('vf_finalweek_3', 'Final week — Item 3', 'Confirm weather-monitoring responsibility'),
+  ('vf_finalweek_4', 'Final week — Item 4', 'Issue vendor arrival appointments'),
+  ('vf_finalweek_5', 'Final week — Item 5', 'Mark the approved site'),
+  ('vf_finalweek_6', 'Final week — Item 6', 'Verify underground utilities before staking'),
+  ('vf_finalweek_7', 'Final week — Item 7', 'Inspect stage and tents'),
+  ('vf_finalweek_8', 'Final week — Item 8', 'Sound-system test only during approved hours'),
+  ('vf_finalweek_9', 'Final week — Item 9', 'Place toilets, waste stations, and barricades'),
+  ('vf_finalweek_10', 'Final week — Item 10', 'Complete fire, building, and Park District inspections'),
+  ('vf_finalweek_11', 'Final week — Item 11', 'Keep a copy of the permit onsite')
+on conflict (section_key) do nothing;
