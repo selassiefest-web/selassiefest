@@ -2039,3 +2039,20 @@ where section_key = 'tl_3';
 
 update proposal_2027_sections set content = 'SelassieFest 2027 is a chance to give Chicago back something it lost — not as a recreation, but as a living continuation, led in part by the very people who experienced its original run. With DCASE, the Chicago Park District, and the 3rd Ward''s office as the partners this plan depends on, and a community planning committee already in place, we''re asking the City to help us bring this home to Washington Park.', updated_at = now()
 where section_key = 'closing_p1';
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Concise pass on the cover, plus two more 2027 goal bullets
+-- (/organization/selassiefest-2027-proposal.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Cover date-block dropped the redundant "Event date requested" line
+-- (already stated in the executive summary and event overview) and kept
+-- just the draft disclaimer. Note: "Planning committee already formed" ->
+-- "Planning committee forming" is a static badge, not stored here.
+update proposal_2027_sections set content = 'Draft — for internal review before submission', updated_at = now()
+where section_key = 'cover_date_block';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('goal_bullet_4', '2027 Goal — Organizing body size', 'Increase the number of people on the organizing body'),
+  ('goal_bullet_5', '2027 Goal — Address deficiencies', 'Improve all areas noted to be deficient')
+on conflict (section_key) do nothing;
