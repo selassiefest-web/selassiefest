@@ -2374,3 +2374,46 @@ values
   ('vf_finalweek_10', 'Final week — Item 10', 'Complete fire, building, and Park District inspections'),
   ('vf_finalweek_11', 'Final week — Item 11', 'Keep a copy of the permit onsite')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Sourced from DCASE's official "Special Event Permit Tutorial" PDF
+-- (chicago.gov/.../dca/permit_app/sepermittutorial.pdf), replacing generic/
+-- hypothetical language in Phase 4, Phase 6, Phase 7 and the Liquor License
+-- countdown card with confirmed specifics: named Service Providers
+-- (incl. Streets & Sanitation contact and the Police/Fire prohibition),
+-- the real required-document list and application mechanics, a corrected
+-- explanation of the DCASE fee-tier timing (no savings from filing right
+-- at 180 days vs. any time past 60 days), refined liquor-license facts
+-- (COI content, Police Commander/property letter, City app not required
+-- for a not-for-profit), and a new Food Vendor Licensing card that also
+-- fills the previously-identified gap of no phase/countdown card carrying
+-- the "Vendors, Food, Beverage & Marketplace" committee pill.
+-- ─────────────────────────────────────────────────────────────────────────
+update proposal_2027_sections set label = 'Phase 6 — Earliest submission date', content = 'Confirmed: DCASE accepts applications starting 180 days before the event and will not accept them less than 21 days before. For July 24, 2027, the 180-day mark is January 25, 2027 — the earliest possible submission day (the tutorial specifies no particular time of day)', updated_at = now()
+where section_key = 'vf_phase6_notice';
+
+update proposal_2027_sections set label = 'Phase 6 — When filing is required', content = 'Confirmed per DCASE''s Special Event Permit Tutorial: streets closed or private property open to the public, liquor sold, food prepared outdoors, merchandise sold, tent(s) over 20''x20''/400 sq ft, and/or stage(s) over 24" tall', updated_at = now()
+where section_key = 'vf_phase6_trigger';
+
+update proposal_2027_sections set label = 'Phase 6 — Fee schedule', content = '$100 (60+ days out), $200 (59-45 days), $500 (44-37 days), $1,000 (36-29 days), $2,000 (28-21 days). Fees are based on when the application is COMPLETE and ready for DCASE review, not just submitted', updated_at = now()
+where section_key = 'vf_phase6_fees';
+
+update proposal_2027_sections set label = 'Phase 6 — Filing deadline for this date', content = 'Correction to an earlier assumption: the $100 minimum fee applies to any complete application filed more than 60 days before the event — there''s no added cost saving to filing at the 180-day mark specifically versus any time before the 60-day cutoff. The real benefit of filing as early as possible is avoiding the escalating fee tiers and leaving time to resolve follow-up questions', updated_at = now()
+where section_key = 'vf_phase6_deadline';
+
+update proposal_2027_sections set content = 'At least 20 calendar days before the event, confirmed per DCASE''s tutorial', updated_at = now()
+where section_key = 'vf_liquor_deadline';
+
+insert into proposal_2027_sections (section_key, label, content)
+values
+  ('vf_phase4_serviceproviders', 'Phase 4 — Named service providers', 'DCASE''s application has a dedicated "Service Providers" step requiring an actual named company (not a description) for each of: Ambulance/EMS Provider, Security Company, Type III Barricade/Traffic Management Company (only if closing a street), Portable Toilet Vendor, Propane Company, Producing Agent, and Waste Management Company. Chicago Police and Chicago Fire Department cannot be listed as the Security Company or Ambulance/EMS Provider — a licensed private security firm and private EMS provider must be named'),
+  ('vf_streets_contact', 'Phase 4 — Streets and Sanitation contact', '(312) 744-1912 — contact at least 1 week before the event to arrange "No Parking" signage around the site, and ensure the named Waste Management Company (trash hauler/dumpster vendor) is entered on the Service Providers step; a generic waste-management description without a named vendor will be rejected'),
+  ('vf_phase6_docs', 'Phase 6 — Required documents at submittal', 'Confirmed required for every event: Site Map, Security/Safety Plan, Certificate of Insurance, Emergency Action Plan, and Emergency Medical Services Plan, plus Marketing Materials. A Street Closure Template is required only if requesting a street closure — not expected to apply if the festival footprint stays entirely within the park'),
+  ('vf_phase6_mechanics', 'Phase 6 — Application mechanics', 'Online only (no paper applications), submitted via Google Chrome; uploaded documents must be PDF or JPEG. Reference the application number in all DCASE correspondence. General Special Event Permit questions go to SEPermits@cityofchicago.org'),
+  ('vf_phase7_policefire', 'Phase 7 — Cannot list Police or Fire as providers', 'Confirmed per DCASE''s Special Event Permit Tutorial: Chicago Police Department and Chicago Fire Department cannot be listed as the application''s Security Company or Ambulance/EMS Provider — a licensed private security firm and private EMS provider must be named instead'),
+  ('vf_liquor_coi', 'Countdown — Liquor license COI', 'Confirmed required: must name the event, date(s), and location, and include liquor liability coverage'),
+  ('vf_liquor_letter', 'Countdown — Liquor license police and property letter', 'Confirmed required: a letter from the police district commander and from the Park District as the property owner'),
+  ('vf_liquor_stateapp', 'Countdown — City vs State liquor applications', 'Confirmed: because Ras Tafari Inc. is a registered not-for-profit, the separate City Liquor Application is not required (for-profit organizers only). A State of Illinois Liquor Application is still required regardless of nonprofit status, processed through the City of Chicago'),
+  ('vf_food_deadline', 'Countdown — Food vendor filing deadline', 'Confirmed: each Single Event Food Booth or Food Truck application must be submitted at least 20 days before the event'),
+  ('vf_food_docs', 'Countdown — Food vendor required documents', 'A Chicago Business Account number; a restaurant health inspection dated within the last 6 months (date of inspection if based in Chicago, a copy of the inspection if based outside Chicago); a food booth layout; a shared-kitchen affidavit if applicable; and Chicago Summer Sanitation Certification')
+on conflict (section_key) do nothing;
