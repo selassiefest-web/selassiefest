@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Selassie Fest Legacy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+  --bg-black: #0D0D0D;
+  --text-white: #F5F5F5;
+  --gold-accent: #E5A93C;
+  --gold-dim: rgba(229,169,60,0.35);
+  --green: #0E5E36;
+  --green-dim: rgba(14,94,54,0.45);
+  --red-accent: #C83737;
+  --red-dim: rgba(200,55,55,0.28);
+  --border-dim: rgba(255,255,255,0.10);
+  --card-bg: rgba(255,255,255,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--bg-black);
+  color: var(--text-white);
+  font-family: 'Jost', sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+/* ---------- Start screen ---------- */
+
+#start-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 30% 20%, var(--gold-dim), transparent 55%),
+    radial-gradient(circle at 75% 80%, var(--green-dim), transparent 55%),
+    var(--bg-black);
+  z-index: 50;
+  padding: 24px;
+}
+
+#start-screen[hidden] { display: none; }
+
+.start-card {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.start-kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-bottom: 18px;
+}
+
+.start-title {
+  font-weight: 200;
+  font-size: 2.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+.start-title .accent { color: var(--gold-accent); font-weight: 300; }
+
+.start-sub {
+  font-size: 0.95rem;
+  color: #ccc;
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.start-form input {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 14px 18px;
+  border-radius: 40px;
+  border: 1px solid var(--border-dim);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-white);
+}
+
+.start-form input::placeholder { color: #888; }
+.start-form input:focus { outline: none; border-color: var(--gold-accent); }
+
+.start-begin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border-radius: 40px;
+  border: 1px solid var(--gold-accent);
+  background: var(--gold-accent);
+  color: #1a1200;
+  transition: 0.25s;
+}
+
+.start-begin:hover { transform: translateY(-2px); box-shadow: 0 0 24px var(--gold-dim); }
+
+.start-note {
+  margin-top: 18px;
+  font-size: 0.72rem;
+  color: #777;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.start-footer {
+  margin-top: 32px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ---------- Deck ---------- */
+
+#deck {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#deck[hidden] { display: none; }
+
+#progress-dots {
+  display: flex;
+  gap: 5px;
+  padding: 14px 16px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+#progress-dots::-webkit-scrollbar { display: none; }
+
+.dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.15);
+  transition: 0.25s;
+}
+
+.dot.active { background: var(--gold-accent); width: 26px; }
+.dot.seen { background: rgba(229,169,60,0.4); }
+
+#frame-viewer {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.frame.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.frame-visual {
+  position: relative;
+  flex: 1 1 55%;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.frame-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(8,9,12,0.75) 100%);
+  pointer-events: none;
+}
+
+.frame-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, transparent 2px, transparent 4px);
+  pointer-events: none;
+}
+
+/* Mood palettes — placeholder visuals until real festival photography is dropped in */
+.frame[data-batch="hook"] .frame-visual { background-image: radial-gradient(circle at 30% 25%, rgba(229,169,60,0.30), transparent 55%), radial-gradient(circle at 75% 75%, rgba(14,94,54,0.55), transparent 60%), linear-gradient(160deg, #0c1712, #05070a); }
+.frame[data-batch="legacy"] .frame-visual { background-image: radial-gradient(circle at 60% 30%, rgba(229,169,60,0.18), transparent 55%), linear-gradient(160deg, #1a1408, #05070a); filter: sepia(0.15) saturate(0.75); }
+.frame[data-batch="organization"] .frame-visual { background-image: radial-gradient(circle at 25% 70%, rgba(14,94,54,0.45), transparent 55%), linear-gradient(160deg, #0a1f14, #05070a); }
+.frame[data-batch="momentum"] .frame-visual { background-image: radial-gradient(circle at 70% 30%, rgba(229,169,60,0.24), transparent 50%), radial-gradient(circle at 20% 80%, rgba(14,94,54,0.30), transparent 55%), linear-gradient(160deg, #101a10, #05070a); }
+.frame[data-batch="experience"] .frame-visual { background-image: radial-gradient(circle at 40% 25%, rgba(200,55,55,0.22), transparent 50%), radial-gradient(circle at 75% 75%, rgba(229,169,60,0.28), transparent 55%), radial-gradient(circle at 15% 80%, rgba(14,94,54,0.30), transparent 55%), linear-gradient(160deg, #140f08, #05070a); }
+.frame[data-batch="impact"] .frame-visual { background-image: radial-gradient(circle at 50% 25%, rgba(14,94,54,0.35), transparent 55%), radial-gradient(circle at 80% 75%, rgba(229,169,60,0.18), transparent 55%), linear-gradient(160deg, #0c1a10, #05070a); }
+.frame[data-batch="partnership"] .frame-visual { background-image: radial-gradient(circle at 50% 20%, rgba(229,169,60,0.30), transparent 55%), linear-gradient(160deg, #1a1200, #05070a); }
+.frame[data-batch="close"] .frame-visual { background-image: radial-gradient(circle at 50% 25%, rgba(229,169,60,0.28), transparent 55%), radial-gradient(circle at 20% 80%, rgba(14,94,54,0.45), transparent 55%), radial-gradient(circle at 80% 80%, rgba(200,55,55,0.15), transparent 55%), linear-gradient(160deg, #0c1712, #05070a); }
+
+.frame-visual.ask::before {
+  background-image: none;
+  border: 1px solid var(--gold-dim);
+  box-shadow: inset 0 0 60px rgba(229,169,60,0.10);
+}
+
+.wordmark-reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px 90px;
+  pointer-events: none;
+}
+
+.wordmark-reveal .word {
+  font-weight: 200;
+  font-size: clamp(2.4rem, 9vw, 4.6rem);
+  letter-spacing: 0.1em;
+  color: var(--gold-accent);
+  line-height: 1.08;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+}
+
+.wordmark-reveal .word strong {
+  display: block;
+  color: var(--text-white);
+  font-weight: 300;
+}
+
+.wordmark-reveal .sub {
+  margin-top: 16px;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+
+.proof-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bg-black);
+  background: var(--gold-accent);
+  padding: 5px 14px;
+  border-radius: 30px;
+  margin-bottom: 10px;
+}
+
+.visual-caption {
+  position: relative;
+  z-index: 1;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+  line-height: 1.5;
+  max-width: 640px;
+}
+
+.visual-caption strong {
+  display: block;
+  color: rgba(255,255,255,0.65);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.6rem;
+  margin-bottom: 4px;
+}
+
+.frame-counter {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 1;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.55);
+}
+
+.frame-content {
+  flex: 0 0 auto;
+  padding: 22px 22px 18px;
+  overflow-y: auto;
+  max-height: 45vh;
+}
+
+.personalize-tag {
+  font-size: 0.78rem;
+  color: #999;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.batch-label {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-bottom: 10px;
+}
+
+.headline {
+  font-weight: 300;
+  font-size: 1.5rem;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  max-width: 680px;
+}
+
+.frame[data-ask="true"] .headline { font-size: 1.7rem; color: var(--gold-accent); }
+
+.tell-me-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ccc;
+  border: 1px solid var(--border-dim);
+  border-radius: 30px;
+  padding: 9px 20px;
+  transition: 0.2s;
+}
+
+.tell-me-more-toggle:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+.tell-me-more-toggle[hidden] { display: none; }
+.tell-me-more-toggle .chev { transition: transform 0.2s; }
+.tell-me-more-toggle.open .chev { transform: rotate(180deg); }
+
+.tell-me-more-panel {
+  margin-top: 16px;
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #ccc;
+  max-width: 680px;
+}
+
+.tell-me-more-panel[hidden] { display: none; }
+.tell-me-more-panel p { margin-bottom: 10px; white-space: pre-line; }
+.tell-me-more-panel p:last-child { margin-bottom: 0; }
+
+/* CTA frame (final) */
+.cta-card {
+  max-width: 420px;
+}
+
+.cta-card .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  border-radius: 40px;
+  border: 1px solid var(--gold-accent);
+  transition: 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cta-btn.primary { background: var(--gold-accent); color: #1a1200; }
+.cta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--gold-dim); }
+.cta-btn.secondary { color: #ccc; border-color: var(--border-dim); }
+.cta-btn.secondary:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+
+.cta-fill-note {
+  margin-top: 14px;
+  font-size: 0.72rem;
+  color: var(--red-accent);
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-dim);
+  background: rgba(5,6,8,0.9);
+}
+
+.controls button {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border-dim);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.controls button:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+.controls button:disabled { opacity: 0.3; cursor: default; }
+.controls button:disabled:hover { border-color: var(--border-dim); color: inherit; }
+
+#nav-next, #nav-prev { width: 54px; height: 54px; font-size: 1.3rem; }
+
+.controls .spacer { flex: 1; max-width: 24px; }
+
+@media (min-width: 780px) {
+  .frame { flex-direction: row; }
+  .frame-visual { flex: 1 1 55%; min-height: 0; padding: 24px 28px; }
+  .frame-content { flex: 1 1 45%; max-height: none; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; }
+  .frame-content-inner { margin: auto 0; }
+  .headline { font-size: 2rem; }
+  .frame[data-ask="true"] .headline { font-size: 2.3rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="start-kicker">Ras Tafari Inc. Presents</div>
+    <div class="start-title">The <span class="accent">Selassie Fest</span> Legacy</div>
+    <div class="start-sub">A 27-frame audio &amp; visual walkthrough of the Vision Proposal to restore Selassie Fest — Chicago's historic Caribbean &amp; African Diaspora festival, returning July 24, 2027 to the Historic Seven Hills in Washington Park. Tap begin to start the narration — this also lets your browser enable audio playback.</div>
+    <div class="start-form">
+      <input type="text" id="investor-name" placeholder="Your name or organization (optional)" autocomplete="off">
+    </div>
+    <button class="start-begin" id="begin-btn"><span>Begin the Experience</span></button>
+    <div class="start-note">Voice narration uses your browser's built-in speech engine. For the best experience, use Chrome or Edge on a laptop. You can mute narration at any time.</div>
+    <div class="start-footer">Ras Tafari Inc. &middot; A 501(c)(3) Nonprofit Organization</div>
+  </div>
+</div>
+
+<div id="deck" hidden>
+  <div id="progress-dots"></div>
+  <div id="frame-viewer"></div>
+  <div class="controls">
+    <button id="nav-prev" aria-label="Previous frame">‹</button>
+    <button id="nav-mute" aria-label="Mute narration">🔊</button>
+    <button id="nav-replay" aria-label="Replay narration">↻</button>
+    <div class="spacer"></div>
+    <button id="nav-next" aria-label="Next frame">›</button>
+  </div>
+</div>
+
+<script src="js/frames-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
