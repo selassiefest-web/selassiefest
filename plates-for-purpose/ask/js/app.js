@@ -126,9 +126,15 @@ function buildFrames(r, confirmedCount) {
       id: 8,
       batch: 'decision',
       decision: true,
+      offerChoices: Array.isArray(r.offer_choices) ? r.offer_choices : [],
+      offerNote: r.offer_note || null,
       image: 'assets/images/marketplace.jpg',
       headline: 'What do you think?',
-      voice: ['Whenever you’re ready — yes, let’s talk more, or not right now. Just tap your answer below.'],
+      // Only the "yes" path gets spoken -- narration nudges toward the
+      // desired action rather than reading out all three options evenly;
+      // "Let's talk more" and "Not right now" stay visible as real buttons,
+      // just unspoken.
+      voice: [`Whenever you’re ready, just tap “Yes, count us in” below.`],
       tellMore: null,
     },
     {
@@ -199,6 +205,9 @@ function renderFrames() {
         </div>
       `;
     } else if (frame.decision) {
+      const offerChoiceButtons = (frame.offerChoices || [])
+        .map((choice) => `<button type="button" class="offer-choice" data-value="${escapeHtml(choice)}">${escapeHtml(choice)}</button>`)
+        .join('');
       content.innerHTML = `
         <div class="frame-content-inner">
           <span class="batch-label">${BATCH_LABELS[frame.batch] || ''}</span>
@@ -211,16 +220,28 @@ function renderFrames() {
               <button type="button" class="decision-choice" data-value="no">Not right now</button>
             </div>
             <div class="decision-fields" id="decision-fields" hidden>
-              <div class="form-field">
-                <label for="offer-details">What can you offer? (optional — we’re flexible)</label>
-                <textarea id="offer-details" name="offerDetails"></textarea>
+              <div class="offer-choices-block" id="offer-choices-block" hidden>
+                <label class="offer-choices-label">What can you offer?</label>
+                <div class="offer-choices" id="offer-choices">
+                  ${offerChoiceButtons}
+                  <button type="button" class="offer-choice" data-value="__other__">Something else</button>
+                </div>
+                <div class="form-field" id="offer-other-field" hidden>
+                  <label for="offer-other-text">Tell us what you’d like to give</label>
+                  <textarea id="offer-other-text" name="offerOther"></textarea>
+                </div>
+                ${frame.offerNote ? `<p class="offer-note">${escapeHtml(frame.offerNote)}</p>` : ''}
               </div>
               <div class="form-field">
                 <label for="respondent-name">Your name</label>
                 <input type="text" id="respondent-name" name="respondentName">
               </div>
               <div class="form-field">
-                <label for="contact-info">Best way to reach you (phone or email)</label>
+                <label for="respondent-email">Your email <span class="required-mark">*</span></label>
+                <input type="email" id="respondent-email" name="respondentEmail" required>
+              </div>
+              <div class="form-field">
+                <label for="contact-info">Phone (optional)</label>
                 <input type="text" id="contact-info" name="contactInfo">
               </div>
               <button type="submit" class="submit-btn" id="submit-btn">Send Our Decision</button>
@@ -228,7 +249,7 @@ function renderFrames() {
           </form>
           <div id="thank-you" class="thank-you" hidden>
             <div class="big">Thank you! \u{1F64F}\u{1F3FE}</div>
-            <p>We’ve got your response and someone from the SelassieFest team will follow up. Appreciate you taking the time.</p>
+            <p>We’ve got your response. If you said yes, keep an eye on your email — that's where we'll confirm your raffle tickets are being prepared.</p>
           </div>
         </div>
       `;
@@ -291,14 +312,28 @@ function renderFrames() {
 
   const decisionForm = document.getElementById('decision-form');
   if (decisionForm) {
+    let selectedOffer = null;
+
     decisionForm.querySelectorAll('.decision-choice').forEach((btn) => {
       btn.addEventListener('click', () => {
         state.selectedDecision = btn.dataset.value;
         decisionForm.querySelectorAll('.decision-choice').forEach((b) => b.classList.toggle('selected', b === btn));
         document.getElementById('decision-fields').hidden = false;
+        // The offer picker only makes sense once someone's actually said
+        // yes -- asking "which package" before that is presumptuous.
+        document.getElementById('offer-choices-block').hidden = btn.dataset.value !== 'yes';
         clearAutoAdvance();
       });
     });
+
+    decisionForm.querySelectorAll('.offer-choice').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedOffer = btn.dataset.value;
+        decisionForm.querySelectorAll('.offer-choice').forEach((b) => b.classList.toggle('selected', b === btn));
+        document.getElementById('offer-other-field').hidden = selectedOffer !== '__other__';
+      });
+    });
+
     decisionForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
@@ -307,13 +342,17 @@ function renderFrames() {
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.textContent = 'Sending…';
+      const offerDetails = state.selectedDecision !== 'yes'
+        ? null
+        : (selectedOffer === '__other__' ? form.offerOther.value : selectedOffer) || null;
       try {
         await window.sfSupabase.submitPlatesForPurposeResponse({
           restaurantSlug: state.restaurant.slug,
           businessName: state.restaurant.business_name,
           decision: state.selectedDecision,
-          offerDetails: form.offerDetails.value,
+          offerDetails,
           respondentName: form.respondentName.value,
+          email: form.respondentEmail.value,
           contactInfo: form.contactInfo.value,
         });
         form.hidden = true;

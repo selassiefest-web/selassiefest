@@ -2701,3 +2701,37 @@ from plates_for_purpose_restaurants
 where contact_status = 'Donation Received' and count_toward_public_tally;
 
 grant select on plates_for_purpose_confirmed_count to anon;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Plates for Purpose — decision-frame offer picker + confirmation email
+-- ─────────────────────────────────────────────────────────────────────────
+-- Restaurant-specific "what can you offer" preset choices shown on the ask
+-- deck's decision frame once someone taps "Yes." Defaults to a generic
+-- dinner-count set; a restaurant with a fundamentally different product
+-- (the bakery) gets its own tailored set built from its real menu. A
+-- "Something else" free-text option is always available in the UI
+-- regardless of what's here, so this never needs to be exhaustive.
+alter table plates_for_purpose_restaurants add column if not exists offer_choices jsonb;
+alter table plates_for_purpose_restaurants add column if not exists offer_note text;
+
+update plates_for_purpose_restaurants
+set offer_choices = '["Dinner for Two", "2 Dinners for Two", "3 Dinners for Two"]'::jsonb,
+    offer_note = 'Raffle winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.'
+where offer_choices is null;
+
+update plates_for_purpose_restaurants
+set offer_choices = '["Flavor Sampler — 2 of each patty flavor (Beef, Beef & Cheese, Jerk Chicken, Curry Chicken, Mixed Vegetable, Spinach)", "Coco Bread & Patty 4-Pack — 4 coco breads, 4 patties (any flavor mix)", "Cocktail Patty Party Pack — one dozen cocktail-size patties (any flavor mix)", "Baker''s Choice Dozen — one dozen regular patties (any flavor mix)"]'::jsonb,
+    offer_note = null
+where slug = 'caribbean-american-baking-co';
+
+create or replace view plates_for_purpose_restaurants_public as
+select slug, business_name, address, donation_ask, target_ask_value, suggested_donation, logo_path, offer_choices, offer_note
+from plates_for_purpose_restaurants;
+
+grant select on plates_for_purpose_restaurants_public to anon;
+
+-- Email is required to send the raffle-ticket confirmation auto-reply on a
+-- "yes" decision (see notify-submission's formatPlatesForPurposeConfirmation
+-- and its conditional `to` in TABLE_CONFIG, gated on decision = 'yes').
+-- contact_info remains as an optional secondary phone/other-contact field.
+alter table plates_for_purpose_responses add column if not exists email text;

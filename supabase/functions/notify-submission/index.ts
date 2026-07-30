@@ -246,8 +246,25 @@ function formatPlatesForPurposeResponse(record: Record<string, any>) {
       <p><strong>Decision:</strong> ${escapeHtml(decisionLabel)}</p>
       ${record.offer_details ? `<p><strong>What they're offering:</strong><br>${escapeHtml(record.offer_details)}</p>` : ''}
       ${record.respondent_name ? `<p><strong>Respondent:</strong> ${escapeHtml(record.respondent_name)}${record.respondent_title ? ', ' + escapeHtml(record.respondent_title) : ''}</p>` : ''}
-      ${record.contact_info ? `<p><strong>Contact info:</strong> ${escapeHtml(record.contact_info)}</p>` : ''}
+      ${record.email ? `<p><strong>Email:</strong> ${escapeHtml(record.email)}</p>` : ''}
+      ${record.contact_info ? `<p><strong>Other contact info:</strong> ${escapeHtml(record.contact_info)}</p>` : ''}
       ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+    `,
+  };
+}
+
+// Confirmation sent back to the restaurant itself, only on a "yes" decision
+// (a maybe/no doesn't have raffle tickets to prepare) -- see the
+// conditional `to` in TABLE_CONFIG below, which is what actually gates this
+// to decision === 'yes'.
+function formatPlatesForPurposeConfirmation(record: Record<string, any>) {
+  return {
+    subject: `You're in! Your Plates for Purpose raffle tickets are being prepared`,
+    html: `
+      <h2>Thank you, ${escapeHtml(record.business_name)}!</h2>
+      <p>We've got your "yes" for Plates for Purpose${record.offer_details ? ` — <strong>${escapeHtml(record.offer_details)}</strong>` : ''}.</p>
+      <p>Your raffle tickets are being prepared now. Someone from the SelassieFest team will follow up shortly to confirm the details and next steps.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest. Questions in the meantime? Reply to this email or call (414) 909-3279.</p>
     `,
   };
 }
@@ -316,7 +333,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   sponsor_inquiries: { notifications: [{ to: () => NOTIFY_TO, format: formatSponsorInquiry }] },
   camp_registrations: { notifications: [{ to: () => NOTIFY_TO, format: formatCampRegistration }] },
   vendor_applications: { notifications: [{ to: () => NOTIFY_TO, format: formatVendorApplication }] },
-  plates_for_purpose_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatPlatesForPurposeResponse }] },
+  plates_for_purpose_responses: {
+    notifications: [
+      { to: () => 'stephen@selassiefest.com', format: formatPlatesForPurposeResponse },
+      {
+        to: (record) => (record.decision === 'yes' ? record.email : null),
+        format: formatPlatesForPurposeConfirmation,
+      },
+    ],
+  },
   stripe_donations: { notifications: [{ to: () => NOTIFY_TO, format: formatDonation }] },
   newsletter_subscribers: { notifications: [{ to: (record) => record.email, format: formatNewsletterConfirmation }] },
   game_submissions: {

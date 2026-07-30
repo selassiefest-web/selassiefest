@@ -230,7 +230,7 @@ window.sfSupabase = {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('plates_for_purpose_restaurants_public')
-      .select('slug, business_name, address, donation_ask, target_ask_value, suggested_donation, logo_path')
+      .select('slug, business_name, address, donation_ask, target_ask_value, suggested_donation, logo_path, offer_choices, offer_note')
       .eq('slug', slug)
       .maybeSingle();
     if (error) throw error;
@@ -263,6 +263,7 @@ window.sfSupabase = {
     offerDetails,
     respondentName,
     respondentTitle,
+    email,
     contactInfo,
     message,
   }) {
@@ -274,6 +275,7 @@ window.sfSupabase = {
       offer_details: offerDetails || null,
       respondent_name: respondentName || null,
       respondent_title: respondentTitle || null,
+      email: email || null,
       contact_info: contactInfo || null,
       message: message || null,
     });
