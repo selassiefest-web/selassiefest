@@ -25,163 +25,272 @@ html, body {
   background: var(--bg-black);
   color: var(--text-white);
   font-family: 'Jost', sans-serif;
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-
-body {
-  padding: 32px 20px 80px;
-}
-
-a { color: var(--gold-accent); }
 
 button {
   font-family: inherit;
   cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
 }
 
-.wrap {
-  max-width: 640px;
-  margin: 0 auto;
+/* ---------- Start / loading / not-found screens ---------- */
+
+#start-screen, #loading-screen, #not-found-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 30% 20%, var(--gold-accent-dim), transparent 55%),
+    radial-gradient(circle at 75% 80%, rgba(14,94,54,0.35), transparent 55%),
+    var(--bg-black);
+  z-index: 50;
+  padding: 24px;
+  text-align: center;
 }
 
-.kicker {
+#start-screen[hidden], #loading-screen[hidden], #not-found-screen[hidden] { display: none; }
+
+.start-card { max-width: 480px; width: 100%; }
+
+.start-kicker {
   font-size: 0.75rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gold-accent);
-  margin-bottom: 10px;
-  text-align: center;
+  margin-bottom: 18px;
 }
 
-.title {
+.start-title {
   font-weight: 200;
-  font-size: 2rem;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
-  text-align: center;
-  margin-bottom: 36px;
+  font-size: 2.2rem;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  margin-bottom: 14px;
 }
 
-.title .accent { color: var(--gold-accent); font-weight: 300; }
+.start-title .accent { color: var(--gold-accent); font-weight: 300; }
 
-.state-message {
-  text-align: center;
+.start-restaurant-logo { max-height: 70px; max-width: 220px; object-fit: contain; margin-bottom: 20px; }
+
+.start-sub {
+  font-size: 0.95rem;
   color: #ccc;
   font-weight: 300;
-  padding: 60px 20px;
   line-height: 1.7;
+  margin-bottom: 28px;
 }
 
-.state-message a { text-decoration: underline; }
+.start-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  text-align: left;
+}
 
-.section {
-  background: var(--card-bg);
-  border: 1px solid var(--border-dim);
+.start-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: #ccc;
+  font-weight: 300;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.start-option input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--gold-accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.start-begin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border-radius: 40px;
+  border: 1px solid var(--gold-accent);
+  background: var(--gold-accent);
+  color: #1a1200;
+  transition: 0.25s;
+}
+
+.start-begin:hover { transform: translateY(-2px); box-shadow: 0 0 24px var(--gold-accent-dim); }
+
+.start-note {
+  margin-top: 18px;
+  font-size: 0.72rem;
+  color: #777;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.start-footer {
+  margin-top: 28px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.not-found-screen a { color: var(--gold-accent); }
+
+/* ---------- Deck ---------- */
+
+#deck { position: fixed; inset: 0; display: flex; flex-direction: column; }
+#deck[hidden] { display: none; }
+
+#progress-dots {
+  display: flex;
+  gap: 5px;
+  padding: 14px 16px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+#progress-dots::-webkit-scrollbar { display: none; }
+
+.dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.15);
+  transition: 0.25s;
+}
+
+.dot.active { background: var(--gold-accent); width: 26px; }
+.dot.seen { background: rgba(229,169,60,0.4); }
+
+#frame-viewer { position: relative; flex: 1; overflow: hidden; }
+
+.frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.frame.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+.frame-visual {
+  position: relative;
+  flex: 1 1 55%;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.frame-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,10,10,0.75) 100%);
+  pointer-events: none;
+}
+
+.logo-row {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 90px;
+  pointer-events: none;
+}
+
+.logo-row img {
+  max-height: 160px;
+  max-width: 260px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 14px rgba(0,0,0,0.7));
+  background: rgba(255,255,255,0.95);
   border-radius: 16px;
-  padding: 28px 24px;
-  margin-bottom: 20px;
+  padding: 14px 20px;
 }
 
-.section-label {
+.frame-counter {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 1;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.55);
+}
+
+.frame-content { flex: 0 0 auto; padding: 22px 22px 18px; overflow-y: auto; max-height: 45vh; }
+
+.batch-label {
   display: inline-block;
   font-size: 0.68rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold-accent);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
-.ask-headline {
+.headline {
   font-weight: 300;
-  font-size: 1.5rem;
-  line-height: 1.4;
-  color: var(--gold-accent);
-  margin-bottom: 14px;
+  font-size: 1.4rem;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  max-width: 680px;
 }
 
-.ask-sub {
-  font-size: 0.95rem;
-  color: #ddd;
-  font-weight: 300;
-  line-height: 1.7;
-  margin-bottom: 14px;
-}
+.frame[data-ask="true"] .headline { font-size: 1.6rem; color: var(--gold-accent); }
 
-.ask-sub:last-child { margin-bottom: 0; }
-
-.ask-detail {
-  display: inline-block;
-  font-size: 0.8rem;
-  color: #aaa;
-  font-weight: 300;
-  border-left: 2px solid var(--gold-accent-dim);
-  padding-left: 10px;
-  margin-top: 6px;
-}
-
-.benefits-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.benefits-list li {
-  font-size: 0.92rem;
-  font-weight: 300;
-  line-height: 1.6;
-  color: #ddd;
-  padding-left: 22px;
-  position: relative;
-}
-
-.benefits-list li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: var(--roots-green);
-  font-weight: 600;
-}
-
-.proof-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.proof-link-text {
-  font-size: 0.95rem;
-  font-weight: 300;
-  color: #ddd;
-  line-height: 1.6;
-}
-
-.proof-btn {
+.tell-me-more-toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 12px 22px;
-  border-radius: 40px;
-  border: 1px solid var(--gold-accent);
-  color: var(--gold-accent);
-  text-decoration: none;
-  white-space: nowrap;
+  color: #ccc;
+  border: 1px solid var(--border-dim);
+  border-radius: 30px;
+  padding: 9px 20px;
   transition: 0.2s;
 }
 
-.proof-btn:hover { background: var(--gold-accent); color: #1a1200; }
+.tell-me-more-toggle:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+.tell-me-more-toggle[hidden] { display: none; }
+.tell-me-more-toggle .chev { transition: transform 0.2s; }
+.tell-me-more-toggle.open .chev { transform: rotate(180deg); }
 
-.decision-choices {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
+.tell-me-more-panel { margin-top: 16px; font-size: 0.9rem; font-weight: 300; line-height: 1.7; color: #ccc; max-width: 680px; }
+.tell-me-more-panel[hidden] { display: none; }
+.tell-me-more-panel p { margin-bottom: 10px; white-space: pre-line; }
+.tell-me-more-panel p:last-child { margin-bottom: 0; }
+
+/* Decision frame */
+.decision-choices { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
 
 .decision-choice {
   flex: 1 1 auto;
@@ -199,28 +308,27 @@ button {
 }
 
 .decision-choice:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
-
 .decision-choice.selected[data-value="yes"] { background: var(--roots-green); border-color: var(--roots-green); color: #fff; }
 .decision-choice.selected[data-value="maybe"] { background: var(--gold-accent); border-color: var(--gold-accent); color: #1a1200; }
 .decision-choice.selected[data-value="no"] { background: var(--red-accent); border-color: var(--red-accent); color: #fff; }
 
-.form-field { margin-bottom: 14px; }
+.decision-fields[hidden] { display: none; }
+.form-field { margin-bottom: 12px; }
 
 .form-field label {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #999;
   margin-bottom: 6px;
 }
 
-.form-field input,
-.form-field textarea {
+.form-field input, .form-field textarea {
   width: 100%;
   font-family: inherit;
-  font-size: 0.92rem;
-  padding: 12px 14px;
+  font-size: 0.9rem;
+  padding: 11px 13px;
   border-radius: 10px;
   border: 1px solid var(--border-dim);
   background: rgba(255,255,255,0.05);
@@ -228,20 +336,18 @@ button {
   resize: vertical;
 }
 
-.form-field input:focus,
-.form-field textarea:focus { outline: none; border-color: var(--gold-accent); }
-
-.form-field textarea { min-height: 70px; }
+.form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--gold-accent); }
+.form-field textarea { min-height: 60px; }
 
 .honeypot { position: absolute; left: -9999px; opacity: 0; height: 0; }
 
 .submit-btn {
   width: 100%;
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 0.85rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 15px;
+  padding: 14px;
   border-radius: 40px;
   border: 1px solid var(--gold-accent);
   background: var(--gold-accent);
@@ -252,263 +358,177 @@ button {
 .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 0 20px var(--gold-accent-dim); }
 .submit-btn:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
 
-.thank-you {
-  text-align: center;
-  padding: 20px 10px;
-}
+.thank-you { text-align: center; padding: 10px; }
+.thank-you .big { font-size: 1.2rem; color: var(--gold-accent); font-weight: 300; margin-bottom: 8px; }
+.thank-you p { color: #ccc; font-weight: 300; line-height: 1.7; font-size: 0.9rem; }
 
-.thank-you .big {
-  font-size: 1.3rem;
-  color: var(--gold-accent);
-  font-weight: 300;
-  margin-bottom: 10px;
-}
+/* CTA (final) frame */
+.cta-card { max-width: 420px; }
+.cta-card .cta-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
 
-.thank-you p {
-  color: #ccc;
-  font-weight: 300;
-  line-height: 1.7;
-  font-size: 0.92rem;
-}
-
-.footer-note {
-  text-align: center;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.4);
-  margin-top: 30px;
-  line-height: 1.7;
-}
-
-.restaurant-logo-wrap {
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.restaurant-logo-wrap img {
-  max-height: 72px;
-  max-width: 220px;
-  object-fit: contain;
-}
-
-.confirmed-ticker-wrap {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.confirmed-ticker {
-  display: inline-block;
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  border-radius: 40px;
+  border: 1px solid var(--gold-accent);
+  transition: 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cta-btn.primary { background: var(--gold-accent); color: #1a1200; }
+.cta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--gold-accent-dim); }
+.cta-btn.secondary { color: #ccc; border-color: var(--border-dim); }
+.cta-btn.secondary:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+
+.cta-copy-email {
+  display: block;
+  margin-top: 14px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: #999;
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cta-copy-email:hover { color: var(--gold-accent); }
+
+/* Proof-link frame */
+.proof-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border-radius: 40px;
+  border: 1px solid var(--gold-accent);
   color: var(--gold-accent);
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  padding: 9px 18px;
-  border: 1px solid var(--gold-accent-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.2s;
+  margin-top: 14px;
+}
+.proof-link-btn:hover { background: var(--gold-accent); color: #1a1200; }
+
+/* ---------- Controls ---------- */
+
+.controls {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-dim);
+  background: rgba(5,6,8,0.9);
+}
+
+.controls button {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border-dim);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.controls button:hover { border-color: var(--gold-accent); color: var(--gold-accent); }
+.controls button:disabled { opacity: 0.3; cursor: default; }
+.controls button:disabled:hover { border-color: var(--border-dim); color: inherit; }
+
+#nav-next, #nav-prev { width: 54px; height: 54px; font-size: 1.3rem; }
+
+.controls .spacer { flex: 1; max-width: 24px; }
+
+.controls button.toggle-btn {
+  width: auto;
+  height: auto;
   border-radius: 30px;
+  padding: 10px 16px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.controls button.toggle-btn.active { border-color: var(--gold-accent); background: var(--gold-accent); color: #1a1200; }
+
+@media (min-width: 780px) {
+  .frame { flex-direction: row; }
+  .frame-visual { flex: 1 1 55%; min-height: 0; padding: 24px 28px; }
+  .frame-content { flex: 1 1 45%; max-height: none; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; }
+  .frame-content-inner { margin: auto 0; }
+  .headline { font-size: 1.8rem; }
+  .frame[data-ask="true"] .headline { font-size: 2.1rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div id="restaurant-logo-wrap" class="restaurant-logo-wrap" hidden>
-    <img id="restaurant-logo" alt="">
+<div id="loading-screen"><div class="start-card"><div class="start-sub">Loading your invitation&hellip;</div></div></div>
+
+<div id="not-found-screen" hidden>
+  <div class="start-card">
+    <div class="start-title">Hmm.</div>
+    <div class="start-sub">
+      We couldn't find this invitation. The link on your card may be out of date &mdash;
+      reach out directly at <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>
+      or <a href="tel:+14149093279">(414) 909-3279</a> and we'll sort it out.
+    </div>
   </div>
-  <div class="kicker">Ras Tafari Inc &middot; SelassieFest Presents</div>
-  <div class="title">Plates for <span class="accent">Purpose</span></div>
-  <div id="confirmed-ticker-wrap" class="confirmed-ticker-wrap" hidden>
-    <span class="confirmed-ticker" id="confirmed-ticker"></span>
+</div>
+
+<div id="start-screen" hidden>
+  <div class="start-card">
+    <img id="start-logo" class="start-restaurant-logo" hidden alt="">
+    <div class="start-kicker">Ras Tafari Inc &middot; SelassieFest Presents</div>
+    <div class="start-title">Plates for <span class="accent">Purpose</span></div>
+    <div class="start-sub" id="start-sub-text"></div>
+    <div class="start-options">
+      <label class="start-option">
+        <input type="checkbox" id="opt-autoplay">
+        <span>Auto-advance through slides hands-free — great if you're driving and listening</span>
+      </label>
+      <label class="start-option">
+        <input type="checkbox" id="opt-extended">
+        <span>Also read the extended "Tell me more" detail aloud on every slide</span>
+      </label>
+    </div>
+    <button class="start-begin" id="begin-btn"><span>Begin the Experience</span></button>
+    <div class="start-note">Voice narration uses your browser's built-in speech engine. For the best experience, use Chrome or Edge. You can mute narration, or change either option above, at any time.</div>
+    <div class="start-footer">Ras Tafari Inc &middot; A 501(c)(3) Nonprofit Organization</div>
   </div>
+</div>
 
-  <div id="loading-state" class="state-message">Loading your invitation&hellip;</div>
-
-  <div id="not-found-state" class="state-message" hidden>
-    We couldn't find this invitation. The link on your card may be out of date &mdash;
-    reach out directly at <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>
-    or <a href="tel:+14149093279">(414) 909-3279</a> and we'll sort it out.
-  </div>
-
-  <div id="content" hidden>
-    <div class="section">
-      <span class="section-label">The Ask</span>
-      <div class="ask-headline" id="ask-headline"></div>
-      <p class="ask-sub" id="ask-detail-line"></p>
-      <p class="ask-sub">You're an integral part of our community, and we're asking you to help us preserve, celebrate, and advance Jamaican culture through education, the arts, music, and community engagement.</p>
-      <p class="ask-sub">Sized so it never puts real strain on your kitchen or your books &mdash; whatever's comfortable is welcome.</p>
-    </div>
-
-    <div class="section">
-      <span class="section-label">What Happens Next</span>
-      <p class="ask-sub">Say yes, and here's exactly what that looks like: we confirm the details with you this week, you hand off the certificates whenever's convenient ahead of SelassieFest on <strong>July 24, 2027</strong>, and your name goes straight into festival promotion and the raffle lineup.</p>
-      <p class="ask-sub">We're building our 2027 Founding Restaurant Partner roster right now &mdash; the earlier you're confirmed, the earlier your name starts showing up in our promotion. We'd love to hear back within the next 7 days so we can lock in the lineup.</p>
-    </div>
-
-    <div class="section">
-      <span class="section-label">What It Comes With</span>
-      <ul class="benefits-list">
-        <li>Free promotion through SelassieFest's social channels and on-site signage</li>
-        <li>A shoutout from the Main Stage in front of the festival crowd</li>
-        <li>A standing invite to return as a vendor at Ital Marketplace or Heritage Village</li>
-        <li>A donation acknowledgment letter for your tax records</li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <span class="section-label">See It In Action</span>
-      <div class="proof-link">
-        <span class="proof-link-text">This isn't a hypothetical &mdash; here's a completed example of exactly how it worked with Jerky Jerk.</span>
-        <a class="proof-btn" href="/plates-for-purpose/jerky-jerk/" target="_blank" rel="noopener">View the Example →</a>
-      </div>
-    </div>
-
-    <div class="section">
-      <span class="section-label">Your Decision</span>
-      <form id="decision-form">
-        <input type="text" name="sf_hp_company" class="honeypot" tabindex="-1" autocomplete="off">
-        <div class="decision-choices">
-          <button type="button" class="decision-choice" data-value="yes">Yes, count us in</button>
-          <button type="button" class="decision-choice" data-value="maybe">Let's talk more</button>
-          <button type="button" class="decision-choice" data-value="no">Not right now</button>
-        </div>
-        <div class="form-field">
-          <label for="offer-details">What can you offer? (optional — we're flexible)</label>
-          <textarea id="offer-details" name="offerDetails" placeholder="e.g. dinner-for-two certificates, a gift basket, catering credit&hellip;"></textarea>
-        </div>
-        <div class="form-field">
-          <label for="respondent-name">Your name</label>
-          <input type="text" id="respondent-name" name="respondentName">
-        </div>
-        <div class="form-field">
-          <label for="respondent-title">Your role (owner, manager, etc.)</label>
-          <input type="text" id="respondent-title" name="respondentTitle">
-        </div>
-        <div class="form-field">
-          <label for="contact-info">Best way to reach you (phone or email)</label>
-          <input type="text" id="contact-info" name="contactInfo">
-        </div>
-        <div class="form-field">
-          <label for="message">Anything else you want us to know?</label>
-          <textarea id="message" name="message"></textarea>
-        </div>
-        <button type="submit" class="submit-btn" id="submit-btn">Send Our Decision</button>
-      </form>
-      <div id="thank-you" class="thank-you" hidden>
-        <div class="big">Thank you! 🙏🏾</div>
-        <p>We've got your response and someone from the SelassieFest team will follow up. Appreciate you taking the time.</p>
-      </div>
-    </div>
-
-    <div class="footer-note">Ras Tafari Inc &middot; A 501(c)(3) Nonprofit Organization<br>Questions? <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> &middot; (414) 909-3279</div>
+<div id="deck" hidden>
+  <div id="progress-dots"></div>
+  <div id="frame-viewer"></div>
+  <div class="controls">
+    <button id="nav-prev" aria-label="Previous frame">‹</button>
+    <button id="nav-mute" aria-label="Mute narration">🔊</button>
+    <button id="nav-replay" aria-label="Replay narration">↻</button>
+    <button id="nav-autoplay" class="toggle-btn" aria-label="Toggle hands-free auto-advance" aria-pressed="false">Auto-Advance</button>
+    <button id="nav-extended" class="toggle-btn" aria-label="Toggle extended narration" aria-pressed="false">Full Detail</button>
+    <div class="spacer"></div>
+    <button id="nav-next" aria-label="Next frame">›</button>
   </div>
 </div>
 
 <script src="/assets/js/supabase-client.js"></script>
-<script>
-  const params = new URLSearchParams(location.search);
-  const slug = (params.get('r') || '').trim();
-  let restaurant = null;
-  let selectedDecision = null;
-
-  const LOGOS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/plates-for-purpose-logos';
-
-  async function init() {
-    // Independent of the restaurant lookup below -- runs in parallel and
-    // fails silently (see fetchPlatesForPurposeConfirmedCount) so a hiccup
-    // here never blocks the page the restaurant actually came for.
-    loadConfirmedTicker();
-
-    if (!slug) {
-      showNotFound();
-      return;
-    }
-    try {
-      restaurant = await window.sfSupabase.fetchPlatesForPurposeRestaurant(slug);
-    } catch (err) {
-      console.error('Failed to load restaurant:', err);
-    }
-    if (!restaurant) {
-      showNotFound();
-      return;
-    }
-    renderAsk(restaurant);
-  }
-
-  async function loadConfirmedTicker() {
-    const count = await window.sfSupabase.fetchPlatesForPurposeConfirmedCount();
-    // Below 2, the only confirmed partner is the one already shown in "See
-    // It In Action" -- a ticker saying "1 restaurant" would undercut itself
-    // rather than build momentum, so it only appears once there's a second.
-    if (count < 2) return;
-    document.getElementById('confirmed-ticker').textContent =
-      `🎉 ${count} Chicago restaurants have already said yes to Plates for Purpose.`;
-    document.getElementById('confirmed-ticker-wrap').hidden = false;
-  }
-
-  function showNotFound() {
-    document.getElementById('loading-state').hidden = true;
-    document.getElementById('not-found-state').hidden = false;
-  }
-
-  function renderAsk(r) {
-    document.title = `Plates for Purpose — ${r.business_name}`;
-    if (r.logo_path) {
-      const img = document.getElementById('restaurant-logo');
-      img.src = `${LOGOS_PUBLIC_BASE}/${r.logo_path}`;
-      img.alt = r.business_name;
-      document.getElementById('restaurant-logo-wrap').hidden = false;
-    }
-    document.getElementById('ask-headline').textContent =
-      `${r.business_name}, here's the ask, upfront: ${r.donation_ask || 'a donation to our festival raffle'}.`;
-    const detailBits = [];
-    if (r.suggested_donation) detailBits.push(r.suggested_donation);
-    if (r.target_ask_value) detailBits.push(`roughly ${r.target_ask_value} in value`);
-    document.getElementById('ask-detail-line').textContent = detailBits.length
-      ? `In practice, that usually looks like: ${detailBits.join(' — ')}.`
-      : '';
-    document.getElementById('loading-state').hidden = true;
-    document.getElementById('content').hidden = false;
-  }
-
-  document.querySelectorAll('.decision-choice').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      selectedDecision = btn.dataset.value;
-      document.querySelectorAll('.decision-choice').forEach((b) => b.classList.toggle('selected', b === btn));
-    });
-  });
-
-  document.getElementById('decision-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    if (form.sf_hp_company.value) return; // honeypot tripped, silently drop
-    if (!selectedDecision) {
-      alert('Please choose Yes, Let’s talk more, or Not right now before sending.');
-      return;
-    }
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
-    try {
-      await window.sfSupabase.submitPlatesForPurposeResponse({
-        restaurantSlug: restaurant.slug,
-        businessName: restaurant.business_name,
-        decision: selectedDecision,
-        offerDetails: form.offerDetails.value,
-        respondentName: form.respondentName.value,
-        respondentTitle: form.respondentTitle.value,
-        contactInfo: form.contactInfo.value,
-        message: form.message.value,
-      });
-      form.hidden = true;
-      document.getElementById('thank-you').hidden = false;
-    } catch (err) {
-      console.error('Failed to submit decision:', err);
-      btn.disabled = false;
-      btn.textContent = 'Send Our Decision';
-      alert('Sorry, something went wrong sending your decision. Please try again, or email stephen@selassiefest.com directly.');
-    }
-  });
-
-  init();
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>
