@@ -200,8 +200,8 @@ const FRAMES = [
     visual: "A close-up photograph of a Jerky Jerk 'Dinner for One' raffle certificate alongside a SelassieFest raffle ticket, warm lighting.",
     headline: 'It helped that Jerky Jerk was already one of us.',
     voice: [
-      'Taylor Street and Rolling Meadows were both already SelassieFest raffle donors before this program existed.',
-      'Plates for Purpose didn’t start the relationship — it built it out properly, with content, tracking, and a real ask in writing.'
+      'Plates for Purpose didn’t start this relationship — it built on one that already existed.',
+      'Being one of us already meant real trust: Jerky Jerk was already a SelassieFest raffle donor, so this was never a cold ask to a stranger.'
     ],
     tellMore: 'Jerky Jerk was already donating Dinner-for-One certificates to SelassieFest’s raffle at its Taylor Street ($35 value) and Rolling Meadows ($25 value) locations before Plates for Purpose began. That existing trust is a big part of why the pilot worked as cleanly as it did — this wasn’t a cold ask to a stranger.'
   },
@@ -212,11 +212,11 @@ const FRAMES = [
     visual: 'A simple badge/text card on a dark background: "Caribbean. From Scratch." with a palm-leaf accent.',
     headline: 'Here’s the profile that made it work — does yours match?',
     voice: [
-      'Caribbean, African diaspora, or Ital/plant-based cuisine that fits the SelassieFest food identity.',
+      'Jamaican cuisine — jerk chicken, brown stew chicken, oxtail, curry goat — the food SelassieFest is actually built around.',
       'Locally owned, community-facing, and active — or growth-minded — on social media.',
       'Able to comfortably donate two or three dinners for two, or the gift-certificate equivalent, without financial strain.'
     ],
-    tellMore: 'Restaurants best suited for Plates for Purpose serve Caribbean, African diaspora, or Ital/plant-based cuisine that fits the SelassieFest food identity; are locally owned, community-facing, and active (or growth-minded) on social media; and can comfortably donate two or three dinner-for-two meals or an equivalent gift-certificate value without financial strain. Jerky Jerk’s made-to-order, family-recipe, three-location footprint fit every line of that criteria directly — and it’s the same checklist we’re using now.'
+    tellMore: 'Restaurants best suited for Plates for Purpose serve Jamaican cuisine — jerk chicken, brown stew chicken, oxtail, curry goat, and the like — the food SelassieFest is actually built around; are locally owned, community-facing, and active (or growth-minded) on social media; and can comfortably donate two or three dinner-for-two meals or an equivalent gift-certificate value without financial strain. Jerky Jerk’s made-to-order, family-recipe, three-location footprint fit every line of that criteria directly — and it’s the same checklist we’re using now.'
   },
   {
     id: 14,
