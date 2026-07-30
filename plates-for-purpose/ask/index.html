@@ -279,13 +279,46 @@ button {
   margin-top: 30px;
   line-height: 1.7;
 }
+
+.restaurant-logo-wrap {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.restaurant-logo-wrap img {
+  max-height: 72px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+.confirmed-ticker-wrap {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.confirmed-ticker {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--gold-accent);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  padding: 9px 18px;
+  border: 1px solid var(--gold-accent-dim);
+  border-radius: 30px;
+}
 </style>
 </head>
 <body>
 
 <div class="wrap">
+  <div id="restaurant-logo-wrap" class="restaurant-logo-wrap" hidden>
+    <img id="restaurant-logo" alt="">
+  </div>
   <div class="kicker">Ras Tafari Inc &middot; SelassieFest Presents</div>
   <div class="title">Plates for <span class="accent">Purpose</span></div>
+  <div id="confirmed-ticker-wrap" class="confirmed-ticker-wrap" hidden>
+    <span class="confirmed-ticker" id="confirmed-ticker"></span>
+  </div>
 
   <div id="loading-state" class="state-message">Loading your invitation&hellip;</div>
 
@@ -376,7 +409,14 @@ button {
   let restaurant = null;
   let selectedDecision = null;
 
+  const LOGOS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/plates-for-purpose-logos';
+
   async function init() {
+    // Independent of the restaurant lookup below -- runs in parallel and
+    // fails silently (see fetchPlatesForPurposeConfirmedCount) so a hiccup
+    // here never blocks the page the restaurant actually came for.
+    loadConfirmedTicker();
+
     if (!slug) {
       showNotFound();
       return;
@@ -393,6 +433,17 @@ button {
     renderAsk(restaurant);
   }
 
+  async function loadConfirmedTicker() {
+    const count = await window.sfSupabase.fetchPlatesForPurposeConfirmedCount();
+    // Below 2, the only confirmed partner is the one already shown in "See
+    // It In Action" -- a ticker saying "1 restaurant" would undercut itself
+    // rather than build momentum, so it only appears once there's a second.
+    if (count < 2) return;
+    document.getElementById('confirmed-ticker').textContent =
+      `🎉 ${count} Chicago restaurants have already said yes to Plates for Purpose.`;
+    document.getElementById('confirmed-ticker-wrap').hidden = false;
+  }
+
   function showNotFound() {
     document.getElementById('loading-state').hidden = true;
     document.getElementById('not-found-state').hidden = false;
@@ -400,6 +451,12 @@ button {
 
   function renderAsk(r) {
     document.title = `Plates for Purpose — ${r.business_name}`;
+    if (r.logo_path) {
+      const img = document.getElementById('restaurant-logo');
+      img.src = `${LOGOS_PUBLIC_BASE}/${r.logo_path}`;
+      img.alt = r.business_name;
+      document.getElementById('restaurant-logo-wrap').hidden = false;
+    }
     document.getElementById('ask-headline').textContent =
       `${r.business_name}, here's the ask, upfront: ${r.donation_ask || 'a donation to our festival raffle'}.`;
     const detailBits = [];

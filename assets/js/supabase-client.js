@@ -230,11 +230,30 @@ window.sfSupabase = {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('plates_for_purpose_restaurants_public')
-      .select('slug, business_name, address, donation_ask, target_ask_value, suggested_donation')
+      .select('slug, business_name, address, donation_ask, target_ask_value, suggested_donation, logo_path')
       .eq('slug', slug)
       .maybeSingle();
     if (error) throw error;
     return data;
+  },
+
+  // Aggregate-only count (see plates_for_purpose_confirmed_count in
+  // schema.sql) -- never exposes which specific restaurants have confirmed,
+  // only how many. Returns 0 on any error so a hiccup here just hides the
+  // social-proof line rather than breaking the page.
+  async fetchPlatesForPurposeConfirmedCount() {
+    try {
+      const client = await window.sfSupabaseReady;
+      const { data, error } = await client
+        .from('plates_for_purpose_confirmed_count')
+        .select('confirmed_count')
+        .maybeSingle();
+      if (error) throw error;
+      return data ? data.confirmed_count : 0;
+    } catch (err) {
+      console.error('Failed to fetch confirmed count:', err);
+      return 0;
+    }
   },
 
   async submitPlatesForPurposeResponse({

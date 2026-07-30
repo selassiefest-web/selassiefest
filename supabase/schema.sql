@@ -2643,3 +2643,61 @@ values
   ('saint-bess', 'Saint Bess', '5729 N Northwest Hwy, Chicago, IL 60646', '(773) 792-1553', null, 'https://stbessjerk.com', 'Dwight Muirhead', null, null, 'Dinner for Two or Catering Package', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Norwood Park (Chicago) location; owner Dwight Muirhead identified via BBB; also has Burbank IL location (708-634-2057); featured on ABC7 & NBC Chicago; corporation est. 2020; catering available'),
   ('reggae-boys', 'Reggae Boys', '412 E 87th St, Chicago, IL 60619', null, null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Chatham/87th St corridor; active on DoorDash & GrubHub with catering menu; no phone or email found online — in-person visit recommended to establish contact')
 on conflict (slug) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Plates for Purpose — restaurant logos + live "confirmed partners" count
+-- ─────────────────────────────────────────────────────────────────────────
+-- logo_path: object path (not a full URL) within the public
+-- plates-for-purpose-logos Storage bucket below. A restaurant's own public
+-- brand logo isn't sensitive -- same reasoning as business_name/address --
+-- so it's exposed on the public view alongside them. Sourcing these is a
+-- manual staff task (pull from the restaurant's own website/Instagram/
+-- Facebook, already on file in this table, and upload via the Table
+-- Editor/Storage UI); there's no reliable automated way to fetch a
+-- restaurant's logo, so this column is simply null until staff fill it in
+-- per restaurant.
+alter table plates_for_purpose_restaurants add column if not exists logo_path text;
+
+create or replace view plates_for_purpose_restaurants_public as
+select slug, business_name, address, donation_ask, target_ask_value, suggested_donation, logo_path
+from plates_for_purpose_restaurants;
+
+grant select on plates_for_purpose_restaurants_public to anon;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'plates-for-purpose-logos', 'plates-for-purpose-logos', true, 5242880,
+  array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do nothing;
+
+create policy "Allow public read of plates-for-purpose-logos" on storage.objects
+  for select to anon
+  using (bucket_id = 'plates-for-purpose-logos');
+
+-- Multi-location owners (Jerky Jerk, Irie Jerk Hut, Tropic Island Jerk
+-- Chicken) have more than one CRM row for the same business. Counting every
+-- row toward the public "N restaurants have said yes" tally below would
+-- double- or quadruple-count a single owner. This flag marks exactly one
+-- row per ownership group as the one that counts; the rest are duplicate
+-- locations of an already-counted business. Set false for the known
+-- duplicate-location rows at seed time; true (the default) for everything
+-- else, including future single-location restaurants added later.
+alter table plates_for_purpose_restaurants add column if not exists count_toward_public_tally boolean not null default true;
+
+update plates_for_purpose_restaurants set count_toward_public_tally = false
+where slug in ('jerky-jerk-rolling-meadows', 'irie-jerk-hut-2', 'irie-jerk-hut-3', 'irie-jerk-hut-4', 'tropic-island-jerk-chicken-calumet-city');
+
+-- Aggregate-only count of restaurants with a confirmed donation
+-- (contact_status = 'Donation Received'), for a small social-proof line on
+-- the ask page ("N restaurants have already said yes"). Deliberately a
+-- COUNT only, not a list -- plates_for_purpose_restaurants itself stays
+-- unreachable by anon, so this is the one narrow, safe aggregate carved out
+-- of it. Grows automatically as staff mark more restaurants confirmed; no
+-- code change needed when the count changes.
+create or replace view plates_for_purpose_confirmed_count as
+select count(*)::int as confirmed_count
+from plates_for_purpose_restaurants
+where contact_status = 'Donation Received' and count_toward_public_tally;
+
+grant select on plates_for_purpose_confirmed_count to anon;
