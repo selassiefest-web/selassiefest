@@ -158,8 +158,8 @@ const FRAMES = [
     visual: 'A formal letter graphic on letterhead, a pen resting on it, warm desk lighting.',
     headline: 'Week 4: we sent the recap, then the ask — in writing.',
     voice: [
-      'A short recap of impressions, engagement, and follower lift, plus the formal request for the donation.',
-      'Framed as gratitude and continued partnership, not a bill for content already delivered.',
+      'A short recap of impressions, engagement, and follower lift.',
+      'Plus the formal request for the donation.',
       'Jerky Jerk got a donation acknowledgment letter for their tax records.'
     ],
     tellMore: 'Ras Tafari Inc sent Jerky Jerk a short recap (impressions, engagement, follower lift) plus a formal written request for the in-kind donation. The ask was framed as gratitude and continued partnership, not a bill — the influencer content was already delivered as goodwill. Ras Tafari Inc provided a donation acknowledgment letter for the restaurant’s tax records.'
