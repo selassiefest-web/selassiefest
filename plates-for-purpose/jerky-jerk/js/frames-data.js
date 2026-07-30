@@ -74,7 +74,7 @@ const FRAMES = [
     headline: 'Jerky Jerk said yes — and donated three dinners for two.',
     voice: [
       'Three dinner-for-two gift certificates, structured so the winner comes back for three separate visits, not all at once.',
-      'Three locations. Charcoal-grilled jerk chicken, oxtail, curry goat, and Mrs. Brown stew chicken — made to order, no microwave, no shortcuts.'
+      'Charcoal-grilled jerk chicken, oxtail, curry goat, and Brown stew chicken — made to order.'
     ],
     tellMore: 'Jerky Jerk agreed to donate three dinner-for-two gift certificates as the SelassieFest raffle prize — built so the winner redeems them across three separate visits, one dinner-for-two at a time, instead of a single sitting. That turns one raffle win into three trips back through the door. Jerky Jerk has three Chicago-area locations — 2253 W Taylor St, 7300 Western Ave, and 3991 W Algonquin Rd in Rolling Meadows — plus a "Jerketarian" vegetarian menu. No renegotiation, no surprise line items: the ask we made is the ask they agreed to.'
   },
