@@ -51,16 +51,32 @@ function renderFrames() {
 
     const visual = document.createElement('div');
     visual.className = 'frame-visual' + (frame.ask ? ' ask' : '');
+    if (frame.image) {
+      visual.style.backgroundImage = `url('${frame.image}')`;
+      visual.style.backgroundRepeat = 'no-repeat';
+      // Text-heavy graphic frames sit on a solid near-black background --
+      // 'contain' shows the whole image with invisible letterboxing rather
+      // than 'cover' cropping their edge-to-edge text.
+      if (frame.imageFit === 'contain') {
+        visual.style.backgroundSize = 'contain';
+        visual.style.backgroundColor = '#0D0D0D';
+      }
+    }
     const wordmarkBlock = frame.wordmark ? `
       <div class="wordmark-reveal">
         <div class="word">${frame.wordmark.line1}<strong>${frame.wordmark.line2 || ''}</strong></div>
         ${frame.wordmark.sub ? `<div class="sub">${frame.wordmark.sub}</div>` : ''}
       </div>
     ` : '';
+    // Once a real designed image exists, the "Visual spec" caption (the
+    // original art-direction note) would just be redundant text sitting on
+    // top of the finished artwork -- only show it for frame 1, still on the
+    // CSS mood-gradient placeholder.
+    const captionBlock = frame.image ? '' : `<span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>`;
     visual.innerHTML = `
       <span class="frame-counter">${String(i + 1).padStart(2, '0')} / ${FRAMES.length}</span>
       ${wordmarkBlock}
-      <span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>
+      ${captionBlock}
     `;
 
     const content = document.createElement('div');

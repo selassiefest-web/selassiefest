@@ -1,8 +1,10 @@
 // Content spec: transcribed from Draft_Proposal_Selassie_Fest.docx (Ras Tafari Inc.'s
 // Vision Proposal for restoring Selassie Fest), in the same 27-frame flip-book format
 // as /the-yawd. {{name}} is replaced at render time with the viewer's name/org
-// (frames 1 and 26 only). No partner logo images exist for this project yet — frame 2
-// uses a text wordmark instead (see the `wordmark` field).
+// (frames 1 and 26 only). Frames 2-27 have a real designed `image` (assets/images/) —
+// frame 1 has none yet and falls back to the CSS mood-gradient placeholder in
+// index.html. The `visual` field remains as the original art-direction spec / a11y
+// caption even where a final image already exists.
 
 const FRAMES = [
   {
@@ -20,8 +22,9 @@ const FRAMES = [
   },
   {
     id: 2,
+    image: 'assets/images/frame-02.jpg',
+    imageFit: 'contain',
     batch: 'hook',
-    wordmark: { line1: 'SELASSIE', line2: 'FEST', sub: 'Preserving the Past. Inspiring the Future.' },
     visual: 'Full-bleed reveal of the Selassie Fest wordmark in gold and white over a dark, minimal background.',
     headline: 'Ras Tafari Inc. presents a vision to restore that legacy.',
     voice: ['Ras Tafari Inc. presents a vision to restore that legacy.'],
@@ -29,6 +32,8 @@ const FRAMES = [
   },
   {
     id: 3,
+    image: 'assets/images/frame-03.jpg',
+    imageFit: 'contain',
     batch: 'hook',
     visual: 'Split frame — a black-and-white archival crowd shot from the original festival beside a full-color rendering of a modern Washington Park gathering.',
     headline: 'Not a rerun. A living, year-round institution — with an unforgettable festival at its center.',
@@ -40,6 +45,7 @@ const FRAMES = [
   },
   {
     id: 4,
+    image: 'assets/images/frame-04.jpg',
     batch: 'legacy',
     visual: 'Archival-mood photo collage — a crowded festival field, vendor tents, a stage, family portraits, warm film-grain color.',
     headline: 'Where families reunited, elders taught history, and culture wasn’t performed — it was lived.',
@@ -51,6 +57,8 @@ const FRAMES = [
   },
   {
     id: 5,
+    image: 'assets/images/frame-05.jpg',
+    imageFit: 'contain',
     batch: 'legacy',
     visual: 'A simple timeline graphic — 1981, 1997, 2026, July 24 2027 — four markers on a single line.',
     headline: '1981–1997: sixteen years running. 1998–2026: the legacy waited. July 24, 2027: it comes home.',
@@ -62,6 +70,8 @@ const FRAMES = [
   },
   {
     id: 6,
+    image: 'assets/images/frame-06.jpg',
+    imageFit: 'contain',
     batch: 'organization',
     visual: 'Clean, institutional graphic — the Ras Tafari Inc. name alongside simple icons for education, arts, entrepreneurship, and wellness.',
     headline: 'Ras Tafari Inc.: a 501(c)(3) cultural curator, not a one-weekend promoter.',
@@ -73,6 +83,8 @@ const FRAMES = [
   },
   {
     id: 7,
+    image: 'assets/images/frame-07.jpg',
+    imageFit: 'contain',
     batch: 'organization',
     visual: "Two stacked panels — 'Mission' and 'Vision' — clean typographic layout, no photography.",
     headline: 'Mission: preserve and advance the culture. Vision: a Chicago where that heritage is treated like infrastructure.',
@@ -84,6 +96,8 @@ const FRAMES = [
   },
   {
     id: 8,
+    image: 'assets/images/frame-08.jpg',
+    imageFit: 'contain',
     batch: 'organization',
     visual: 'Overlapping circles motif in green and gold, representing residents, educators, artists, businesses, and public agencies converging.',
     headline: 'Stewardship is the job — not just running an annual event, but building an institution worth the trust placed in it.',
@@ -95,6 +109,7 @@ const FRAMES = [
   },
   {
     id: 9,
+    image: 'assets/images/frame-09.jpg',
     batch: 'momentum',
     visual: 'A calendar page turning, landing on July 2027, with soft gold light.',
     headline: 'Some traditions quietly fade. Others get rediscovered because a community decides they still matter.',
@@ -106,6 +121,7 @@ const FRAMES = [
   },
   {
     id: 10,
+    image: 'assets/images/frame-10.jpg',
     batch: 'momentum',
     visual: "A single date, large on screen — 'July 24, 2027' — with a small portrait-style engraving motif of Emperor Haile Selassie I in the corner.",
     headline: 'July 24, 2027 — commemorating the Earthstrong of His Imperial Majesty Emperor Haile Selassie I.',
@@ -117,6 +133,7 @@ const FRAMES = [
   },
   {
     id: 11,
+    image: 'assets/images/frame-11.jpg',
     batch: 'momentum',
     visual: 'A wide crowd shot rendered as a mosaic of many different faces and cultures gathered on the same lawn.',
     headline: 'Rooted in the Caribbean and African Diaspora. Open to every neighbor in Chicago.',
@@ -128,6 +145,7 @@ const FRAMES = [
   },
   {
     id: 12,
+    image: 'assets/images/frame-12.jpg',
     batch: 'momentum',
     visual: "A wide landscape shot of Washington Park's Seven Hills, empty and green, golden-hour light.",
     headline: 'The Historic Seven Hills isn’t just the venue. It’s part of the story.',
@@ -139,6 +157,7 @@ const FRAMES = [
   },
   {
     id: 13,
+    image: 'assets/images/frame-13.jpg',
     batch: 'experience',
     visual: 'Wide festival-day montage — a stage performance, a food vendor row, a children’s activity tent, an artisan market table, all under string lights and afternoon sun.',
     headline: 'One day. Music, education, entrepreneurship, family, and food — all on the same lawn.',
@@ -150,6 +169,7 @@ const FRAMES = [
   },
   {
     id: 14,
+    image: 'assets/images/frame-14.jpg',
     batch: 'experience',
     visual: 'Close-up montage — hands drumming, a dancer mid-motion, a historian speaking to a small circle of listeners.',
     headline: 'Culture is the heartbeat. Education is woven through every corner of it.',
@@ -161,6 +181,7 @@ const FRAMES = [
   },
   {
     id: 15,
+    image: 'assets/images/frame-15.jpg',
     batch: 'experience',
     visual: 'A row of small-business vendor tents, artisans at work, a family with children at a craft table.',
     headline: 'A launchpad for small business. A homecoming for families.',
@@ -172,6 +193,7 @@ const FRAMES = [
   },
   {
     id: 16,
+    image: 'assets/images/frame-16.jpg',
     batch: 'experience',
     visual: 'Volunteers in matching festival shirts guiding guests, an accessible seating area, a welcome tent.',
     headline: 'Built on service. Designed so every visitor feels they belong.',
@@ -183,6 +205,8 @@ const FRAMES = [
   },
   {
     id: 17,
+    image: 'assets/images/frame-17.jpg',
+    imageFit: 'contain',
     batch: 'impact',
     visual: 'A neighborhood-scale graphic — small icons of a school, a storefront, a family, a community center, all connected by lines to a central festival icon.',
     headline: 'This isn’t measured in one day of attendance. It’s measured in what it leaves behind.',
@@ -194,6 +218,7 @@ const FRAMES = [
   },
   {
     id: 18,
+    image: 'assets/images/frame-18.jpg',
     batch: 'impact',
     visual: 'A simple bar-style graphic representing local vendors, artists, and entrepreneurs gaining new customers and exposure.',
     headline: 'Strong communities need strong local economies — and civic pride that isn’t manufactured.',
@@ -205,6 +230,8 @@ const FRAMES = [
   },
   {
     id: 19,
+    image: 'assets/images/frame-19.jpg',
+    imageFit: 'contain',
     batch: 'impact',
     visual: "A simple scorecard-style graphic — not ticket sales, but 'partnerships formed,' 'volunteers engaged,' 'businesses supported,' 'youth inspired.'",
     headline: 'Success isn’t attendance. It’s partnerships formed, businesses supported, and youth inspired.',
@@ -216,6 +243,8 @@ const FRAMES = [
   },
   {
     id: 20,
+    image: 'assets/images/frame-20.jpg',
+    imageFit: 'contain',
     batch: 'impact',
     visual: 'A calendar showing a single festival weekend in July, with faint activity markers scattered across the rest of the year — workshops, mentorship sessions, small gatherings.',
     headline: 'The festival is one day. The work behind it never stops.',
@@ -227,6 +256,8 @@ const FRAMES = [
   },
   {
     id: 21,
+    image: 'assets/images/frame-21.jpg',
+    imageFit: 'contain',
     batch: 'impact',
     visual: 'A simple five-marker timeline graphic — Year 1 through Year 5 — each marker slightly taller than the last.',
     headline: 'Five years out: growth measured by quality, not just size.',
@@ -238,6 +269,8 @@ const FRAMES = [
   },
   {
     id: 22,
+    image: 'assets/images/frame-22.jpg',
+    imageFit: 'contain',
     batch: 'partnership',
     ask: true,
     visual: 'An open circle graphic with five empty seats labeled — City of Chicago, Chicago Park District, Educational Institutions, Businesses & Philanthropy, Community Organizations.',
@@ -258,6 +291,8 @@ const FRAMES = [
   },
   {
     id: 23,
+    image: 'assets/images/frame-23.jpg',
+    imageFit: 'contain',
     batch: 'partnership',
     visual: "A simple 'what we're asking for' checklist graphic — five lines, each with an open checkbox.",
     headline: 'What partnership looks like, concretely — not just goodwill.',
@@ -270,6 +305,8 @@ const FRAMES = [
   },
   {
     id: 24,
+    image: 'assets/images/frame-24.jpg',
+    imageFit: 'contain',
     batch: 'close',
     visual: 'A simple five-line commitment card — Heritage, Community, Education, Partnership, Stewardship — each with a small check already ticked.',
     headline: 'Five commitments Ras Tafari Inc. is making before asking anyone else to make one.',
@@ -282,6 +319,7 @@ const FRAMES = [
   },
   {
     id: 25,
+    image: 'assets/images/frame-25.jpg',
     batch: 'close',
     proof: true,
     visual: "A formal document graphic — 'Resolution No. 2026-01' letterhead, with a signature line.",
@@ -294,6 +332,7 @@ const FRAMES = [
   },
   {
     id: 26,
+    image: 'assets/images/frame-26.jpg',
     batch: 'close',
     personalize: 'close',
     visual: "Return to frame 1's shot of the Seven Hills — now lit at dusk, tents up, a crowd gathered.",
@@ -306,6 +345,8 @@ const FRAMES = [
   },
   {
     id: 27,
+    image: 'assets/images/frame-27.jpg',
+    imageFit: 'contain',
     batch: 'close',
     cta: true,
     visual: "Minimal, on-brand card — the Selassie Fest wordmark, the Ras Tafari Inc. name, and a 'Let's talk' prompt.",
