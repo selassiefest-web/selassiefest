@@ -71,10 +71,25 @@ function renderFrames() {
     // Once a real designed image or logo exists, the "Visual spec" caption
     // (the original art-direction note) would just be redundant text sitting
     // on top of the finished artwork.
-    const captionBlock = (frame.image || frame.logos) ? '' : `<span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>`;
+    const captionBlock = (frame.image || frame.logos || frame.video) ? '' : `<span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>`;
+    // frame.video: set `src` to a locally-stored file for an inline player,
+    // or `url` to an external link (YouTube/Instagram/etc.) for a play-button
+    // link. Leave both unset and it renders as a marked "coming soon" slot.
+    const videoBlock = frame.video ? `
+      <div class="video-slot">
+        ${frame.video.src
+          ? `<video class="video-embed" controls playsinline${frame.video.poster ? ` poster="${frame.video.poster}"` : ''}><source src="${frame.video.src}"></video>`
+          : frame.video.url
+            ? `<a class="video-play" href="${frame.video.url}" target="_blank" rel="noopener" aria-label="Watch the video">&#9658;</a>`
+            : `<span class="video-play video-play--pending" aria-label="Video coming soon">&#9658;</span>`
+        }
+        <span class="video-caption">${frame.video.caption || ''}</span>
+      </div>
+    ` : '';
     visual.innerHTML = `
       <span class="frame-counter">${String(i + 1).padStart(2, '0')} / ${FRAMES.length}</span>
       ${logoRow}
+      ${videoBlock}
       ${captionBlock}
     `;
 
