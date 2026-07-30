@@ -581,6 +581,10 @@
                 <div style="margin-top: 20px;">
                     <label><input type="checkbox" id="waiver" required> I confirm that I have read and agree to the <a href="/festival/code-of-conduct/" style="color: var(--gold-accent);">Volunteer Code of Conduct</a> and will sign the liability waiver upon acceptance.*</label>
                 </div>
+                <div style="margin-top: 12px;">
+                    <label><input type="checkbox" id="humanCheck" required> I confirm I'm a real person submitting this application (not a bot).*</label>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.8rem; color: #999; font-weight: 300;"><i class="fas fa-shield-alt"></i> After you submit, we'll email a 6-digit code to confirm your address before your application is sent to the volunteer team.</p>
                 <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> SUBMIT APPLICATION</button>
             </form>
             <div id="formResponse" style="margin-top: 24px; display: none;" class="info-card"></div>
@@ -604,6 +608,7 @@
     </div>
 </main>
 
+<script src="/assets/js/verify-widget.js"></script>
 <script>
     // FAQ toggle
     const faqItems = document.querySelectorAll('.faq-item');
@@ -621,9 +626,13 @@
         });
     });
     // Form submission — saved directly to Supabase (volunteer_signups), which
-    // also triggers an email notification to the volunteer team.
+    // also triggers an email notification to the volunteer team. Gated on a
+    // honeypot/timing bot check and an emailed one-time code (see
+    // /assets/js/verify-widget.js) -- volunteer_signups' INSERT policy
+    // rejects the row outright unless that code was confirmed.
     const form = document.getElementById('volunteerForm');
     const responseDiv = document.getElementById('formResponse');
+    window.sfVerify.protect(form);
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('fullname').value;
@@ -632,14 +641,25 @@
         const role = document.getElementById('role1').value;
         const shift = document.getElementById('shift').value;
         const waiver = document.getElementById('waiver').checked;
-        if (!name || !email || !phone || !waiver) {
-            alert('Please fill all required fields and accept the code of conduct.');
+        const humanCheck = document.getElementById('humanCheck').checked;
+        if (!name || !email || !phone || !waiver || !humanCheck) {
+            alert('Please fill all required fields, accept the code of conduct, and confirm the human check.');
+            return;
+        }
+        if (window.sfVerify.looksLikeBot(form)) {
+            alert('Please take a moment reviewing the form before submitting.');
             return;
         }
 
         const submitBtn = form.querySelector('.btn-submit');
         const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
         if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Submitting…'; }
+
+        const verified = await window.sfVerify.confirm({ purpose: 'volunteer', email });
+        if (!verified) {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+            return;
+        }
 
         try {
             await window.sfSupabase.submitVolunteerSignup({

@@ -779,6 +779,7 @@
   </div>
 </footer>
 
+<script src="/assets/js/verify-widget.js"></script>
 <script>
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -787,13 +788,24 @@
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+  var inquiryForm = document.querySelector('form[onsubmit="handleSubmit(event)"]');
+  if (inquiryForm) {
+    window.sfVerify.protect(inquiryForm);
+    window.sfVerify.insertHumanCheckbox(inquiryForm);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     var form = e.target;
+    if (window.sfVerify.looksLikeBot(form) || !window.sfVerify.humanCheckPassed(form)) {
+      alert('Please take a moment reviewing the form before submitting.');
+      return;
+    }
     var btn = form.querySelector('button[type="submit"]');
     var fields = [];
     var email = '';
     form.querySelectorAll('input, textarea, select').forEach(function (field) {
+      if (field.dataset.sfHumanCheck || field.name === 'sf_hp_website') return;
       var label, value;
       if (field.tagName === 'SELECT') {
         var placeholderOpt = field.options[0];
@@ -810,6 +822,12 @@
     var originalBtnText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Submitting\u2026';
+    var verified = await window.sfVerify.confirm({ purpose: 'sponsor', email: email });
+    if (!verified) {
+      btn.disabled = false;
+      btn.textContent = originalBtnText;
+      return;
+    }
     try {
       await window.sfSupabase.submitSponsorInquiry({
         sourcePage: 'sponsors/pharmacann.html',

@@ -213,10 +213,13 @@ create table if not exists volunteer_signups (
 -- the exact field set varies slightly page to page, so `fields` keeps the
 -- full generic {label, value} list rather than forcing per-page columns.
 -- `source_page` and `email` are pulled out since every page has them.
+-- `email` is required (not just nullable) so the verification gate below
+-- always has an address to check against -- every live form already
+-- `required`s an <input type="email">, this just codifies it in the DB.
 create table if not exists sponsor_inquiries (
   id uuid primary key default gen_random_uuid(),
   source_page text not null,
-  email text,
+  email text not null,
   fields jsonb not null,
   created_at timestamptz not null default now()
 );
@@ -239,13 +242,17 @@ alter table volunteer_signups enable row level security;
 alter table sponsor_inquiries enable row level security;
 alter table camp_registrations enable row level security;
 
-create policy "Allow anon insert" on volunteer_signups
+-- volunteer_signups and sponsor_inquiries are gated on a verified email
+-- (see the "Volunteer + sponsor email verification" block further down) --
+-- an unconditional `with check (true)` on either let anyone with the
+-- published anon key insert spam rows directly, no human required.
+create policy "public can submit a verified volunteer signup" on volunteer_signups
   for insert to anon
-  with check (true);
+  with check (volunteer_email_is_verified(email));
 
-create policy "Allow anon insert" on sponsor_inquiries
+create policy "public can submit a verified sponsor inquiry" on sponsor_inquiries
   for insert to anon
-  with check (true);
+  with check (sponsor_email_is_verified(email));
 
 create policy "Allow anon insert" on camp_registrations
   for insert to anon
@@ -254,6 +261,70 @@ create policy "Allow anon insert" on camp_registrations
 grant insert on volunteer_signups to anon;
 grant insert on sponsor_inquiries to anon;
 grant insert on camp_registrations to anon;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Volunteer + sponsor email verification
+-- ─────────────────────────────────────────────────────────────────────────
+-- A short-lived one-time code emailed to the address before the real
+-- insert above is allowed through. Mirrors the comp_verifications /
+-- email_is_verified pattern used elsewhere in this project (see the
+-- request-comp-verification / verify-comp-code Edge Functions). The
+-- request-volunteer-verification / verify-volunteer-code and
+-- request-sponsor-verification / verify-sponsor-code Edge Functions are
+-- the only things that ever touch these two tables (via the service
+-- role) -- there are deliberately zero RLS policies on either, so anon
+-- has no path to read or forge a verified row.
+
+create table if not exists volunteer_verifications (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  code_hash text not null,
+  verified boolean not null default false,
+  attempts int not null default 0,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null
+);
+
+create table if not exists sponsor_verifications (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  code_hash text not null,
+  verified boolean not null default false,
+  attempts int not null default 0,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null
+);
+
+alter table volunteer_verifications enable row level security;
+alter table sponsor_verifications enable row level security;
+
+create or replace function volunteer_email_is_verified(check_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.volunteer_verifications
+    where lower(email) = lower(check_email)
+    and verified = true
+    and expires_at > now()
+  );
+$$;
+
+create or replace function sponsor_email_is_verified(check_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.sponsor_verifications
+    where lower(email) = lower(check_email)
+    and verified = true
+    and expires_at > now()
+  );
+$$;
 
 -- Pickney Time games archive submissions ("Did You Play [Game]?" on each
 -- of the 110 calendar/games/*.html pages). photo_path/video_path are
