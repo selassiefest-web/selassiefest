@@ -57,8 +57,8 @@ const FRAMES = [
     visual: 'A single dinner-for-two spread — two plates, charcoal-grilled jerk chicken and oxtail — beautifully lit, on a dark background with a subtle numbered tally beside it.',
     headline: 'Here’s the ask, upfront: 2 to 3 dinners for two to raffle at SelassieFest, or the gift-certificate equivalent.',
     voice: [
-      'Prepared for {{name}}.',
-      'You’re an integral part of our community, and we’re asking you to help us preserve, celebrate, and advance Jamaican culture through education, the arts, music, and community engagement.',
+      'This is Plates for Purpose.',
+      'Being one of us means your name promoted right alongside the festival itself — new customers walking through your door, and a standing invite back every year SelassieFest returns.',
       'Could {{name}} provide two or three dinner-for-two raffle prizes, or a gift-certificate equivalent — whichever’s easiest?',
       'Sized so it never puts real strain on {{name}}’s kitchen or books.'
     ],
@@ -104,7 +104,7 @@ const FRAMES = [
     image: 'assets/images/slide-04.jpg',
     batch: 'benefits',
     visual: 'A clean two-column "Gives / Gets" graphic on a dark background.',
-    headline: 'What they gave. What they got back. Here’s the actual trade.',
+    headline: 'What Jerky Jerk gave. What they got back. Here’s the actual trade.',
     voice: [
       'They gave: a donated meal or two for the content shoot, then three dinner-for-two gift certificates as the raffle prize.',
       'They got: free promotion, new customers walking through the door three separate times, festival-day exposure, a vendor invite, and a tax-deductible receipt.'
@@ -181,8 +181,8 @@ const FRAMES = [
     image: 'assets/images/slide-11.jpg',
     batch: 'program',
     visual: 'A clean 5-step horizontal timeline graphic on a dark background.',
-    headline: 'Eight weeks, five milestones, one Main Stage moment — start to finish.',
-    voice: ['That’s the whole arc, and it’s the same arc we’d run again.'],
+    headline: 'Eight weeks, five milestones, one Main Stage moment — that’s what worked for Jerky Jerk, and it’ll work for you.',
+    voice: ['That’s the whole arc, start to finish — the same one that’s ready to run for you next.'],
     tellMore: [
       '8 weeks out — Identified and approached the restaurant; confirmed the influencer partner and content plan.',
       '6–7 weeks out — Influencer visited and posted.',

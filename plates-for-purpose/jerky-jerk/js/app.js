@@ -116,6 +116,7 @@ function renderFrames() {
               <a class="cta-btn primary" href="mailto:${CONFIG.contactEmail}">Email Ras Tafari Inc.</a>
               ${CONFIG.scheduleUrl ? `<a class="cta-btn secondary" href="${CONFIG.scheduleUrl}" target="_blank" rel="noopener">Visit SelassieFest.com</a>` : ''}
             </div>
+            <button type="button" class="cta-copy-email" id="cta-copy-email" data-email="${CONFIG.contactEmail}">No mail app? Tap to copy: ${CONFIG.contactEmail}</button>
           </div>
         </div>
       `;
@@ -150,6 +151,22 @@ function renderFrames() {
       const open = !panel.hidden;
       panel.hidden = open;
       btn.classList.toggle('open', !open);
+    });
+  });
+
+  // Fallback for viewers with no mail app configured -- mailto: links go
+  // nowhere silently in that case, so this copies the address instead.
+  viewer.querySelectorAll('.cta-copy-email').forEach((btn) => {
+    const original = btn.textContent;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.email);
+        btn.textContent = 'Copied! ' + btn.dataset.email;
+      } catch (err) {
+        console.error('Clipboard copy failed:', err);
+        btn.textContent = btn.dataset.email + ' (copy failed — select manually)';
+      }
+      setTimeout(() => { btn.textContent = original; }, 2500);
     });
   });
 }
