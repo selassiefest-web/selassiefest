@@ -75,6 +75,17 @@ function renderFrames() {
     // frame.video: set `src` to a locally-stored file for an inline player,
     // or `url` to an external link (YouTube/Instagram/etc.) for a play-button
     // link. Leave both unset and it renders as a marked "coming soon" slot.
+    // frame.video.links: list of {platform, url} pointing to the influencer's
+    // actual posts on each platform (Instagram, TikTok, etc.). A null url
+    // renders as a "coming soon" pill instead of a link.
+    const socialLinksRow = (frame.video && frame.video.links && frame.video.links.length) ? `
+      <div class="video-links">
+        ${frame.video.links.map((l) => l.url
+          ? `<a class="social-pill" href="${l.url}" target="_blank" rel="noopener">${l.platform}</a>`
+          : `<span class="social-pill social-pill--pending">${l.platform} — coming soon</span>`
+        ).join('')}
+      </div>
+    ` : '';
     const videoBlock = frame.video ? `
       <div class="video-slot">
         ${frame.video.src
@@ -84,6 +95,7 @@ function renderFrames() {
             : `<span class="video-play video-play--pending" aria-label="Video coming soon">&#9658;</span>`
         }
         <span class="video-caption">${frame.video.caption || ''}</span>
+        ${socialLinksRow}
       </div>
     ` : '';
     visual.innerHTML = `
