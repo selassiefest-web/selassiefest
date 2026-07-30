@@ -1,5 +1,5 @@
 const CONFIG = {
-  contactEmail: 'selassiefest@gmail.com',
+  contactEmail: 'stephen@selassiefest.com',
   contactPhone: '(414) 909-3279',
   scheduleUrl: 'https://selassiefest.com/'
 };
@@ -20,9 +20,7 @@ function interpolate(text, name) {
 function voiceLinesFor(frame) {
   const name = state.investorName.trim();
   if (frame.personalize === 'start') {
-    return frame.voice
-      .filter((line) => name || !line.includes('{{name}}'))
-      .map((line) => interpolate(line, name));
+    return frame.voice.map((line) => interpolate(line, name || 'your restaurant'));
   }
   if (frame.personalize === 'close') {
     return frame.voice.map((line) => {

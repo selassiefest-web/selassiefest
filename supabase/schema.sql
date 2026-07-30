@@ -2521,3 +2521,125 @@ values
   ('vf_food_target', 'Countdown — 2027 food vendor target and owner', 'Target: 15 food vendors for 2027 (up from 2 in 2026). Assign a team member from the Vendors, Food, Beverage & Marketplace committee to solicit all 15 and confirm each has completed their Chicago Business Account, health inspection, and Chicago Summer Sanitation Certification well ahead of the 20-day filing deadline — our 2026 permit''s Health Department review was initially marked incomplete for exactly this kind of missing documentation'),
   ('vf_nonfood_vendor', 'Countdown — Non-food vendor recruitment and compliance', 'Assign a team member to solicit merchandise, craft, and wellness/cannabis vendors and confirm each holds whatever licenses, insurance certificates, or BACP registration the application requires before its applicable deadline')
 on conflict (section_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Plates for Purpose — restaurant outreach (QR-code ask pages)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Each restaurant in SelassieFest_CaribbeanRestarant_CRM.xlsx gets a unique
+-- slug, a printed QR card (see /plates-for-purpose/cards/), and a
+-- personalized ask page at /plates-for-purpose/ask/?r=<slug> that pulls its
+-- own tailored ask from this table and links out to the completed Jerky
+-- Jerk example (/plates-for-purpose/jerky-jerk/) as social proof. The base
+-- table carries the full CRM record — owner name, internal notes, contact
+-- status, partnership rating — and is intentionally NOT reachable by the
+-- anon key; staff manage it via the Table Editor, same as any other CRM
+-- data. plates_for_purpose_restaurants_public is the safe subset (name,
+-- address, the ask itself) the ask/cards pages actually read.
+create table if not exists plates_for_purpose_restaurants (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  business_name text not null,
+  address text,
+  phone text,
+  email text,
+  website text,
+  owner_name text,
+  instagram text,
+  facebook text,
+  donation_ask text,
+  target_ask_value text,
+  suggested_donation text,
+  contact_status text not null default 'Not Contacted',
+  partnership_potential text,
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+alter table plates_for_purpose_restaurants enable row level security;
+-- No policies granted to anon/authenticated -- this table has RLS enabled
+-- with zero policies, so it is unreachable from the public anon key in
+-- either direction. Only the public view below, and the Supabase dashboard
+-- (which uses the service role, bypassing RLS), can read it.
+
+create or replace view plates_for_purpose_restaurants_public as
+select slug, business_name, address, donation_ask, target_ask_value, suggested_donation
+from plates_for_purpose_restaurants;
+
+grant select on plates_for_purpose_restaurants_public to anon;
+
+create table if not exists plates_for_purpose_responses (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_slug text not null,
+  business_name text not null,
+  decision text not null check (decision in ('yes', 'no', 'maybe')),
+  offer_details text,
+  respondent_name text,
+  respondent_title text,
+  contact_info text,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+alter table plates_for_purpose_responses enable row level security;
+
+-- Same write-only pattern as vendor_applications/sponsor_inquiries above:
+-- anon can insert a decision but never read one back.
+create policy "Allow anon insert" on plates_for_purpose_responses
+  for insert to anon
+  with check (true);
+
+grant insert on plates_for_purpose_responses to anon;
+
+-- Reuses the existing notify_submission_webhook() function (see the
+-- notify-submission section's long-form comment above sponsor_inquiries for
+-- why it isn't reproduced here) so a decision on any restaurant's ask page
+-- emails Stephen immediately. Requires a matching
+-- plates_for_purpose_responses entry in notify-submission's TABLE_CONFIG
+-- (supabase/functions/notify-submission/index.ts).
+create trigger plates_for_purpose_responses_after_insert
+  after insert on plates_for_purpose_responses
+  for each row execute function notify_submission_webhook();
+
+-- Seed data imported from SelassieFest_CaribbeanRestarant_CRM.xlsx (32
+-- rows, one per physical location, matching how outreach actually happens —
+-- staff walk into each location individually). The two Jerky Jerk rows are
+-- updated from the CRM's stale "Not Contacted" snapshot to reflect the real,
+-- confirmed pilot outcome (three dinner-for-two gift certificates,
+-- redeemable across three separate visits) documented on their completed
+-- example page. on conflict (slug) do nothing keeps this re-runnable without
+-- clobbering any status staff have since updated by hand.
+insert into plates_for_purpose_restaurants (slug, business_name, address, phone, email, website, owner_name, instagram, facebook, donation_ask, target_ask_value, suggested_donation, contact_status, partnership_potential, notes)
+values
+  ('14-parish-restaurant-and-rhum-bar', '14 Parish Restaurant & Rhum Bar', '1644 E 53rd St, Chicago, IL 60615', '(312) 291-8379', 'info@14parish.com', 'https://www.14parish.com', null, null, null, 'Donation of 2 Dinner Certificates', '$100', 'Dinner for Two Certificates', 'Not Contacted', 'High', 'Upscale Caribbean restaurant; strong raffle appeal'),
+  ('caribbean-american-baking-co', 'Caribbean American Baking Co', '1539 W Howard St, Chicago, IL 60626', '(773) 761-0700', 'caribak@aol.com', null, 'Michael Humes', null, null, 'Bakery Gift Basket', '$50', 'Gift Basket or Bakery Certificate', 'Not Contacted', 'High', 'Community-focused bakery; likely approachable'),
+  ('fh-jerkgod', 'FH JerkGOD', '111 E 51st St, Chicago, IL 60615', '(213) 537-5463', 'contact@fhjerk.com', null, null, null, null, 'Dinner for Two', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Modern Jamaican concept'),
+  ('garifuna-flava', 'Garifuna Flava', '2518 W 63rd St, Chicago, IL 60629', '(773) 776-7440', 'info@garifunaflava.com', null, 'Rhodel & Yolanda Castillo', null, null, 'Family Meal Voucher', '$75', 'Family Meal Voucher', 'Not Contacted', 'High', 'Established cultural restaurant with community presence'),
+  ('irie-jerk', 'Irie Jerk', '3404 N Clark St, Chicago, IL 60657', '(872) 802-4999', 'iriejerkbarandgrill@gmail.com', null, null, null, null, 'Jerk Chicken Dinner for Two', '$50', 'Dinner for Two', 'Not Contacted', 'Medium', 'Good fit for raffle basket or dining package'),
+  ('irie-jerk-hut-1', 'Irie Jerk Hut #1', '311 W 79th St, Chicago, IL 60620', '(773) 891-2460', 'info@iriejerkhut123.com', 'https://iriejerkhut123.com', null, '@iriejerkhut', 'iriejerkhut123', 'Jerk Catering Package or Dinner for Two', '$75', 'Catering Sample Package or Dining Certificate', 'Not Contacted', 'High', '4 Chicago-area locations; strong community brand; multi-location reach ideal for raffle or catering tie-in'),
+  ('irie-jerk-hut-2', 'Irie Jerk Hut #2', '2304 State St, Calumet City, IL 60409', '(708) 801-9518', 'info@iriejerkhut123.com', 'https://iriejerkhut123.com', null, '@iriejerkhut', 'iriejerkhut123', 'Jerk Dinner for Two', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Calumet City location; south suburbs reach; same ownership as #1 — consider single outreach to owner covering all locations'),
+  ('irie-jerk-hut-3', 'Irie Jerk Hut #3', '3633 Sauk Trail, Richton Park, IL 60471', '(708) 248-5056', 'info@iriejerkhut123.com', 'https://iriejerkhut123.com', null, '@iriejerkhut', 'iriejerkhut123', 'Jerk Dinner for Two', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Richton Park location; south suburbs reach; same ownership — coordinate outreach with Huts #1 & #2'),
+  ('irie-jerk-hut-4', 'Irie Jerk Hut #4', '18304 S Cicero Ave, Country Club Hills, IL 60478', '(708) 799-0761', 'info@iriejerkhut123.com', 'https://iriejerkhut123.com', null, '@iriejerkhut', 'iriejerkhut123', 'Jerk Dinner for Two', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Country Club Hills location; 4th and newest Irie Jerk Hut — same ownership, coordinate group ask for maximum donation value'),
+  ('ja-grill-hyde-park', 'Ja'' Grill Hyde Park', '1510 E Harper Ct, Chicago, IL 60615', '(773) 752-5375', 'info@jagrill.com', 'https://jagrill.com', null, '@jagrillhydepark', null, 'Dinner for Two or Gift Card', '$100', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Upscale Jamaican spot in Hyde Park near U of C; catering email available; strong brand alignment with SelassieFest'),
+  ('jamaica-jerk-king', 'Jamaica Jerk King', '206 E 35th St, Chicago, IL 60616', '(312) 754-0480', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Bronzeville location; longtime South Side staple; solid raffle appeal; walk-in approach may work well'),
+  ('jamgrill', 'JamGrill', '5241 W Chicago Ave, Chicago, IL 60644', '(872) 265-2565', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'West Side Austin neighborhood; family-run spot known for owner/son hospitality; approachable for in-person ask'),
+  ('jerk-48', 'Jerk 48', '548 E 67th St, Chicago, IL 60637', '(773) 420-3416', 'Jerk48inc@gmail.com', 'https://jerk48.com', null, null, null, 'Dinner for Two Certificate', '$75', 'Dinner Certificate (2 locations)', 'Not Contacted', 'High', 'Two active Chicago locations (67th St & 95th St); email on file; strong raffle potential; consider asking for combined certificate covering both'),
+  ('jerk-choice', 'Jerk Choice', '1934 E 95th St, Chicago, IL 60617', '(773) 437-5358', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'South Chicago neighborhood; family-owned multi-location operation; described as community-focused'),
+  ('jerk-villa-bar-and-grill', 'Jerk Villa Bar & Grill', '2216 S Michigan Ave, Chicago, IL 60616', '(312) 225-0932', 'jerkvilla@gmail.com', 'https://jerkvillabarandgrill.com', null, null, null, 'Dinner for Two or Gift Card', '$100', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Founding family Jamaican spot since 2002; 2 Chicago locations (Michigan Ave & 79th St); email on file; strong brand for raffle; high-value ask justified'),
+  ('jerk-yard', 'Jerk Yard', '1310 E 53rd St, Chicago, IL 60615', null, 'jerkyardchicago@gmail.com', 'https://jerkyardchicago.com', null, '@jerkyardchicago', null, 'Dinner for Two or Gift Certificate', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Hyde Park flagship; 3 locations total (Hyde Park, South Loop, Evanston); email on file; 9K+ IG followers; strong cultural brand alignment with SelassieFest'),
+  ('jerk-jamaican-barbecue', 'Jerk. Jamaican Barbecue', '811 W Chicago Ave, Chicago, IL 60642', '(312) 763-2870', null, 'https://jerkbbq.com', 'Dion Solano & Brett Gough', null, null, 'Dinner for Two or Catering Credit', '$100', 'Dining Certificate', 'Not Contacted', 'High', 'West Town; co-founders Dion Solano & Brett Gough identified; food truck + restaurant + catering; featured on Chicago''s Best & Food Network; high-visibility partner'),
+  ('jerky-jerk', 'Jerky Jerk', '2253 W Taylor St, Chicago, IL 60612', '(312) 600-5375', null, 'https://jerkyjerk.net', null, '@jerkyjerkchicago', 'JerkChicago', 'Dinner for Two or Gift Certificate', '$75', 'Three dinner-for-two gift certificates, redeemable across three separate visits (confirmed)', 'Donation Received', 'High', 'Tri-Taylor flagship; Food Network "Sandwich Kings" feature; 13K+ IG followers; from-scratch Caribbean; multi-location chain — coordinate outreach with Rolling Meadows row. PILOT PARTNER: completed Plates for Purpose case study -- see /plates-for-purpose/jerky-jerk/.'),
+  ('jerky-jerk-rolling-meadows', 'Jerky Jerk (Rolling Meadows)', '3991 W Algonquin Rd, Rolling Meadows, IL 60008', '(847) 686-3174', null, 'https://jerkyjerk.net', null, '@jerkyjerkchicago', 'JerkChicago', 'Dinner for Two Certificate', '$50', 'Covered by the Taylor St flagship''s combined donation (confirmed)', 'Donation Received', 'High', 'Suburbs location; same ownership as Taylor St flagship — single outreach to owner can cover both; note 7300 N Western Ave (Rogers Park) listed as 3rd active location. Same ownership/outcome as the Jerky Jerk Taylor St pilot -- see /plates-for-purpose/jerky-jerk/.'),
+  ('little-jamaica-jerk-cuisine-llc', 'Little Jamaica Jerk Cuisine, LLC', '6319 S King Dr, Chicago, IL 60637', '(773) 420-3278', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Woodlawn neighborhood; LLC-registered; near U of C; community-rooted with authentic Jamaican focus; good cultural alignment'),
+  ('mr-bs-caribbean-grill', 'Mr. B''s Caribbean Grill', '4801 N Milwaukee Ave, Chicago, IL 60630', '(708) 967-2387', null, 'https://mrbscaribbean.com', 'Canute Barrett', '@mrbscaribbeangrill', null, 'Dinner for Two or Catering Package', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Jefferson Park; owner Canute Barrett (Jamaica native) identified via Block Club Chicago; new 2025 opening; sit-down dining with catering; strong story for SelassieFest'),
+  ('one-stop-jamaica-jerk', 'One Stop Jamaica Jerk', '1849 E 79th St, Chicago, IL 60649', '(773) 264-2100', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'South Shore neighborhood; LLC-registered; catering menu available online; solid community presence on 79th St corridor'),
+  ('shattaz-jerk-bar-and-grill', 'SHATTAZ Jerk Bar & Grill', '3109 W Irving Park Rd, Chicago, IL 60618', '(773) 961-7136', 'Info@shattazjerkbargrill.com', 'https://shattazjerkbargrill.com', null, '@shattazjerkbarandgrill', 'ShattazJerkBarAndGrill', 'Dinner for Two or Gift Card', '$100', 'Dining Certificate', 'Not Contacted', 'High', 'Irving Park/North Side; newest upscale Jamaican concept in Chicago; VIP room + karaoke; email & full socials on file; strong crossover appeal for SelassieFest crowd'),
+  ('the-perfect-jerk', 'The Perfect Jerk', '6954-56 W North Ave, Chicago, IL 60707', '(773) 417-7560', 'theperfectjerk@gmail.com', 'https://theperfectjerkchicken.com', 'William Dodds', '@theperfectjerk', null, 'Dinner for Two or Catering Credit', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Elmwood Park/Austin neighborhood; founder William Dodds identified; email on file; opened 2023; active catering program; warm community-first approach makes outreach easy'),
+  ('tropic-island-jerk-chicken', 'Tropic Island Jerk Chicken', '553 E 79th St, Chicago, IL 60619', '(773) 224-7766', null, 'https://tropicislandjerkchicken.com', null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Chatham flagship; long-standing South Side institution; 2 locations; Nextdoor Neighborhood Favorite; single owner outreach can cover both'),
+  ('tropic-island-jerk-chicken-calumet-city', 'Tropic Island Jerk Chicken (Calumet City)', '570 Torrence Ave, Calumet City, IL 60409', '(708) 730-0033', null, 'https://tropicislandjerkchicken.com', null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'High', 'Second location of Tropic Island Jerk Chicken; listed as "Tropical Jerk" in source — same ownership as 79th St; coordinate outreach together'),
+  ('uncle-joes-jerk-chicken', 'Uncle Joe''s Jerk Chicken', '1461 E Hyde Park Blvd, Chicago, IL 60615', '(773) 241-5550', null, 'https://unclejoesjerk.com', null, null, null, 'Dinner for Two Certificate', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Hyde Park institution; featured by Time Out Chicago & The Infatuation; #1 Yelp jerk ranking; long community tenure; strong raffle appeal — in-person ask recommended'),
+  ('west-indies-bakery', 'West Indies Bakery', '841 E 79th St, Chicago, IL 60619', null, null, null, null, null, 'westindiesbackery79', 'Bakery Gift Basket or Festival Bread Package', '$50', 'Baked Goods Gift Basket', 'Not Contacted', 'High', 'Chatham; known for hard dough Jamaican bread & West Indian pastries; limited online footprint — in-person visit recommended; strong festival catering history; distinct raffle offering'),
+  ('wi-jammin', 'Wi Jammin', '316 E 95th St, Chicago, IL 60619', '(773) 701-6091', null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dining Certificate', 'Not Contacted', 'Medium', 'Roseland/Burnside; family-owned LLC; community-focused mission stated on Yelp; authentic jerk catfish & shrimp standouts; approachable for in-person or phone outreach'),
+  ('jerk-factory', 'Jerk Factory', '225 E 47th St, Chicago, IL 60653', '(773) 855-9528', null, null, null, null, 'jerkfactory47th', 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Kenwood/Bronzeville; 2 locations (47th St + 87th St); Facebook active; phone outreach recommended; outdoor seating available'),
+  ('saint-bess', 'Saint Bess', '5729 N Northwest Hwy, Chicago, IL 60646', '(773) 792-1553', null, 'https://stbessjerk.com', 'Dwight Muirhead', null, null, 'Dinner for Two or Catering Package', '$75', 'Dining Certificate', 'Not Contacted', 'High', 'Norwood Park (Chicago) location; owner Dwight Muirhead identified via BBB; also has Burbank IL location (708-634-2057); featured on ABC7 & NBC Chicago; corporation est. 2020; catering available'),
+  ('reggae-boys', 'Reggae Boys', '412 E 87th St, Chicago, IL 60619', null, null, null, null, null, null, 'Dinner for Two Certificate', '$50', 'Dinner for Two Certificate', 'Not Contacted', 'Medium', 'Chatham/87th St corridor; active on DoorDash & GrubHub with catering menu; no phone or email found online — in-person visit recommended to establish contact')
+on conflict (slug) do nothing;

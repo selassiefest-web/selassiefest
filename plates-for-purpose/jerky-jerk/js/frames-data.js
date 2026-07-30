@@ -31,12 +31,17 @@
 // - Already a SelassieFest raffle donor (Dinner-for-One certificates at two
 //   locations) before Plates for Purpose -- that existing relationship is
 //   part of why the pilot worked
+// - The actual ask: 2-3 dinner-for-two raffle prizes, or the gift-certificate
+//   equivalent. Confirmed outcome: Jerky Jerk donated three dinner-for-two
+//   gift certificates, structured so the raffle winner redeems them across
+//   three separate visits rather than all at once.
 // - SelassieFest returns July 24, 2027 at the Historic Seven Hills, Washington
 //   Park. Ras Tafari Inc, EIN 42-3036705, is the 501(c)(3) behind it.
 //
-// NOTE: plate counts, timeline, and outcomes described here should be checked
-// against what actually happened with Jerky Jerk before this is shown to a
-// prospective restaurant -- keep the "completed example" framing honest.
+// NOTE: the ask/outcome numbers above are confirmed for Jerky Jerk. Double
+// check them against what's actually agreed before reusing this deck's
+// structure for the next restaurant -- keep the "completed example" framing
+// honest.
 
 const LOGOS = {
   jerkyJerk: { src: 'assets/logos/jerky-jerk.png', alt: 'Jerky Jerk' },
@@ -48,14 +53,15 @@ const FRAMES = [
     batch: 'ask',
     ask: true,
     personalize: 'start',
-    visual: 'A single charcoal-grilled jerk chicken plate, beautifully lit, on a dark background with a subtle numbered tally beside it.',
-    headline: 'Here’s the ask, upfront: 10 to 25 plates, or the gift-certificate equivalent.',
+    visual: 'A single dinner-for-two spread — two plates, charcoal-grilled jerk chicken and oxtail — beautifully lit, on a dark background with a subtle numbered tally beside it.',
+    headline: 'Here’s the ask, upfront: 2 to 3 dinners for two to raffle at SelassieFest, or the gift-certificate equivalent.',
     voice: [
       'Prepared for {{name}}.',
-      'That’s the same ask we made to Jerky Jerk — meal plates, gift certificates, or a SelassieFest vendor slot, restaurant’s choice.',
-      'Sized so it never puts real strain on the kitchen or the books.'
+      'You’re an integral part of our community, and we’re asking you to help us preserve, celebrate, and advance Jamaican culture through education, the arts, music, and community engagement.',
+      'Could {{name}} provide two or three dinner-for-two raffle prizes, or a gift-certificate equivalent — whichever’s easiest?',
+      'Sized so it never puts real strain on {{name}}’s kitchen or books.'
     ],
-    tellMore: 'This is a completed case study from Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest — showing exactly how Plates for Purpose played out with its pilot partner, Jerky Jerk. We’re leading with the ask, not burying it: a set number of meal plates (illustratively 10–25), gift certificates, or a SelassieFest vendor slot — whatever’s comfortable. The influencer content that follows is the actual value exchange; the donation is gratitude on top of it, not payment for it.'
+    tellMore: 'This is a completed case study from Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest — showing exactly how Plates for Purpose played out with its pilot partner, Jerky Jerk. The ask itself is simple and upfront: two or three dinner-for-two raffle prizes, or a gift-certificate equivalent — whatever’s comfortable. What matters more is the invitation behind it — restaurants like this one are already part of what makes this community work, and Plates for Purpose is one way to help that work grow, through education, the arts, music, and the kind of community engagement SelassieFest exists to support.'
   },
   {
     id: 2,
@@ -63,9 +69,12 @@ const FRAMES = [
     logoReveal: true,
     logos: [LOGOS.jerkyJerk],
     visual: "Full-bleed reveal of the Jerky Jerk palm-tree logo on a near-black background, next to the words 'Plates for Purpose.'",
-    headline: 'Jerky Jerk said yes to exactly that.',
-    voice: ['Three locations. Charcoal-grilled jerk chicken, oxtail, curry goat, and Mrs. Brown stew chicken — made to order, no microwave, no shortcuts.'],
-    tellMore: 'Jerky Jerk has three Chicago-area locations — 2253 W Taylor St, 7300 Western Ave, and 3991 W Algonquin Rd in Rolling Meadows — plus a "Jerketarian" vegetarian menu. No renegotiation, no surprise line items: the ask we made is the ask they agreed to. Everything on the next few screens is what that same-size ask bought them in return.'
+    headline: 'Jerky Jerk said yes — and donated three dinners for two.',
+    voice: [
+      'Three dinner-for-two gift certificates, structured so the winner comes back for three separate visits, not all at once.',
+      'Three locations. Charcoal-grilled jerk chicken, oxtail, curry goat, and Mrs. Brown stew chicken — made to order, no microwave, no shortcuts.'
+    ],
+    tellMore: 'Jerky Jerk agreed to donate three dinner-for-two gift certificates as the SelassieFest raffle prize — built so the winner redeems them across three separate visits, one dinner-for-two at a time, instead of a single sitting. That turns one raffle win into three trips back through the door. Jerky Jerk has three Chicago-area locations — 2253 W Taylor St, 7300 Western Ave, and 3991 W Algonquin Rd in Rolling Meadows — plus a "Jerketarian" vegetarian menu. No renegotiation, no surprise line items: the ask we made is the ask they agreed to.'
   },
   {
     id: 3,
@@ -93,10 +102,10 @@ const FRAMES = [
     visual: 'A clean two-column "Gives / Gets" graphic on a dark background.',
     headline: 'What they gave. What they got back. Here’s the actual trade.',
     voice: [
-      'They gave: a donated meal or two for the content shoot, then the agreed number of raffle plates and vouchers.',
-      'They got: free promotion, new customers, festival-day exposure, a vendor invite, and a tax-deductible receipt.'
+      'They gave: a donated meal or two for the content shoot, then three dinner-for-two gift certificates as the raffle prize.',
+      'They got: free promotion, new customers walking through the door three separate times, festival-day exposure, a vendor invite, and a tax-deductible receipt.'
     ],
-    tellMore: 'Jerky Jerk gave a donated meal or two for the content shoot, then the agreed number of raffle plates/vouchers — and got free promotion, new customers, festival-day exposure, a vendor invite, and a tax-deductible donation receipt. The influencer gave authentic content and their time and reach — and got comped meals, content for their own channel, cross-promotion via SelassieFest’s audience, and credit as an Official SelassieFest Food Ambassador. Ras Tafari Inc gave introductions, coordination, and festival-day recognition — and got raffle inventory at no cash cost, a new restaurant partner, and content and reach for SelassieFest itself.'
+    tellMore: 'Jerky Jerk gave a donated meal or two for the content shoot, then three dinner-for-two gift certificates, redeemable across three separate visits, as the SelassieFest raffle prize — and got free promotion, new customers, festival-day exposure, a vendor invite, and a tax-deductible donation receipt. The influencer gave authentic content and their time and reach — and got comped meals, content for their own channel, cross-promotion via SelassieFest’s audience, and credit as an Official SelassieFest Food Ambassador. Ras Tafari Inc gave introductions, coordination, and festival-day recognition — and got raffle inventory at no cash cost, a new restaurant partner, and content and reach for SelassieFest itself.'
   },
   {
     id: 5,
@@ -118,13 +127,13 @@ const FRAMES = [
     id: 7,
     batch: 'program',
     visual: 'A food influencer filming charcoal jerk chicken and oxtail at a Jerky Jerk table, phone/camera in hand, warm restaurant lighting.',
-    headline: 'How that content actually got made: weeks 1–3, a local food creator visited, filmed, and posted.',
+    headline: 'How that content actually got made: a local food creator visited, filmed, and posted.',
     voice: [
       'Charcoal jerk chicken. Oxtail. Curry goat. The Jerketarian menu.',
-      'Two or three sponsored visits — short-form video and photo content, every post tagged back to Jerky Jerk.',
+      'A handful of sponsored visits in the weeks leading up to the festival — short-form video and photo content, every post tagged back to Jerky Jerk.',
       'Every post carried an honest #ad or #gifted disclosure — required by law, non-negotiable.'
     ],
-    tellMore: 'Ras Tafari Inc connected an influencer with Jerky Jerk for 2–3 sponsored visits. The influencer posted short-form video/photo content (Reels, TikTok, Stories) featuring signature dishes, tagging the restaurant and using a shared hashtag (#JerkyJerkxSelassiefest). Every post carried an FTC-compliant disclosure — that part was never optional, and it protected both sides.'
+    tellMore: 'Ras Tafari Inc connected an influencer with Jerky Jerk for a handful of sponsored visits, timed in the weeks leading up to the festival. The influencer posted short-form video/photo content (Reels, TikTok, Stories) featuring signature dishes, tagging the restaurant and using a shared hashtag (#JerkyJerkxSelassiefest). Every post carried an FTC-compliant disclosure — that part was never optional, and it protected both sides.'
   },
   {
     id: 8,
@@ -192,9 +201,9 @@ const FRAMES = [
     voice: [
       'Caribbean, African diaspora, or Ital/plant-based cuisine that fits the SelassieFest food identity.',
       'Locally owned, community-facing, and active — or growth-minded — on social media.',
-      'Able to comfortably donate 10 to 25 plates, or the gift-certificate equivalent, without financial strain.'
+      'Able to comfortably donate two or three dinners for two, or the gift-certificate equivalent, without financial strain.'
     ],
-    tellMore: 'Restaurants best suited for Plates for Purpose serve Caribbean, African diaspora, or Ital/plant-based cuisine that fits the SelassieFest food identity; are locally owned, community-facing, and active (or growth-minded) on social media; and can comfortably donate 10–25 plates or an equivalent gift-certificate value without financial strain. Jerky Jerk’s made-to-order, family-recipe, three-location footprint fit every line of that criteria directly — and it’s the same checklist we’re using now.'
+    tellMore: 'Restaurants best suited for Plates for Purpose serve Caribbean, African diaspora, or Ital/plant-based cuisine that fits the SelassieFest food identity; are locally owned, community-facing, and active (or growth-minded) on social media; and can comfortably donate two or three dinner-for-two meals or an equivalent gift-certificate value without financial strain. Jerky Jerk’s made-to-order, family-recipe, three-location footprint fit every line of that criteria directly — and it’s the same checklist we’re using now.'
   },
   {
     id: 14,

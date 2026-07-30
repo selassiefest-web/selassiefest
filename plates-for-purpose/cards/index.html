@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Plates for Purpose — Outreach Cards (Staff)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+  --bg-black: #0a0a0a;
+  --text-white: #f5f5f0;
+  --roots-green: #0E5E36;
+  --gold-accent: #E5A93C;
+  --border-dim: rgba(255,255,255,0.10);
+  --card-bg: rgba(255,255,255,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-black);
+  color: var(--text-white);
+  font-family: 'Jost', sans-serif;
+  padding: 28px 20px 80px;
+}
+
+.header {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+}
+
+.header .kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  margin-bottom: 6px;
+}
+
+.header h1 {
+  font-weight: 300;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #aaa;
+  font-weight: 300;
+  font-size: 0.88rem;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.controls {
+  max-width: 1100px;
+  margin: 18px auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.controls input {
+  flex: 1 1 260px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-dim);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-white);
+}
+
+.controls button {
+  font-family: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--gold-accent);
+  background: transparent;
+  color: var(--gold-accent);
+  cursor: pointer;
+}
+
+.controls button:hover { background: var(--gold-accent); color: #1a1200; }
+
+#state-message {
+  max-width: 1100px;
+  margin: 40px auto;
+  text-align: center;
+  color: #aaa;
+  font-weight: 300;
+}
+
+.grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-dim);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.card-qr {
+  flex-shrink: 0;
+  background: #fff;
+  padding: 6px;
+  border-radius: 8px;
+  line-height: 0;
+}
+
+.card-info { min-width: 0; }
+
+.card-name {
+  font-weight: 400;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.card-address {
+  font-size: 0.76rem;
+  color: #999;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.card-ask {
+  font-size: 0.76rem;
+  color: var(--gold-accent);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.card-url {
+  font-size: 0.68rem;
+  color: #777;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+@media print {
+  body { background: #fff; color: #000; padding: 0; }
+  .header, .controls { display: none; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .card { border: 1px dashed #999; background: #fff; page-break-inside: avoid; }
+  .card-name { color: #000; }
+  .card-address, .card-url { color: #444; }
+  .card-ask { color: #000; font-weight: 600; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">Ras Tafari Inc &middot; Staff Tool</div>
+  <h1>Plates for Purpose — Outreach Cards</h1>
+  <p>One QR card per restaurant, generated from the CRM. Each code opens that restaurant's own personalized ask page. Hand-deliver one card per physical location, or use Print (Ctrl/Cmd+P) to print a sheet to cut apart.</p>
+</div>
+
+<div class="controls">
+  <input type="text" id="filter-input" placeholder="Filter by restaurant name…">
+  <button type="button" onclick="window.print()">Print Cards</button>
+</div>
+
+<div id="state-message">Loading restaurants&hellip;</div>
+<div class="grid" id="card-grid" hidden></div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+  var QR_CDN = 'https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js';
+  var qrPromise = null;
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  function ensureQr() {
+    if (qrPromise) return qrPromise;
+    qrPromise = window.QRCode ? Promise.resolve() : loadScript(QR_CDN);
+    return qrPromise;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  var ASK_BASE = 'https://selassiefest.com/plates-for-purpose/ask/';
+  var restaurants = [];
+
+  async function init() {
+    try {
+      const client = await window.sfSupabaseReady;
+      const { data, error } = await client
+        .from('plates_for_purpose_restaurants_public')
+        .select('slug, business_name, address, donation_ask, target_ask_value')
+        .order('business_name');
+      if (error) throw error;
+      restaurants = data || [];
+    } catch (err) {
+      console.error('Failed to load restaurants:', err);
+      document.getElementById('state-message').textContent = 'Could not load the restaurant list. Check the console for details.';
+      return;
+    }
+
+    if (!restaurants.length) {
+      document.getElementById('state-message').textContent = 'No restaurants found in plates_for_purpose_restaurants yet.';
+      return;
+    }
+
+    document.getElementById('state-message').hidden = true;
+    document.getElementById('card-grid').hidden = false;
+    await ensureQr().catch((err) => console.error('QR library failed to load:', err));
+    render(restaurants);
+  }
+
+  function render(list) {
+    const grid = document.getElementById('card-grid');
+    grid.innerHTML = '';
+    list.forEach((r) => {
+      const url = ASK_BASE + '?r=' + encodeURIComponent(r.slug);
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="card-qr" id="qr-' + escapeHtml(r.slug) + '"></div>' +
+        '<div class="card-info">' +
+          '<div class="card-name">' + escapeHtml(r.business_name) + '</div>' +
+          (r.address ? '<div class="card-address">' + escapeHtml(r.address) + '</div>' : '') +
+          (r.donation_ask ? '<div class="card-ask">' + escapeHtml(r.donation_ask) + (r.target_ask_value ? ' (' + escapeHtml(r.target_ask_value) + ')' : '') + '</div>' : '') +
+          '<div class="card-url">' + escapeHtml(url) + '</div>' +
+        '</div>';
+      grid.appendChild(card);
+
+      if (window.QRCode) {
+        new window.QRCode(document.getElementById('qr-' + r.slug), {
+          text: url,
+          width: 96,
+          height: 96,
+        });
+      }
+    });
+  }
+
+  document.getElementById('filter-input').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    const filtered = q ? restaurants.filter((r) => r.business_name.toLowerCase().includes(q)) : restaurants;
+    render(filtered);
+  });
+
+  init();
+</script>
+</body>
+</html>

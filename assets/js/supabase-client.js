@@ -222,6 +222,45 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
+  // Reads from plates_for_purpose_restaurants_public (a view, not the base
+  // table) -- the ask page passes the ?r=<slug> from its own URL. Returns
+  // null if the slug doesn't match any restaurant (bad/old QR code), which
+  // the calling page treats as "show a fallback, don't crash".
+  async fetchPlatesForPurposeRestaurant(slug) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client
+      .from('plates_for_purpose_restaurants_public')
+      .select('slug, business_name, address, donation_ask, target_ask_value, suggested_donation')
+      .eq('slug', slug)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async submitPlatesForPurposeResponse({
+    restaurantSlug,
+    businessName,
+    decision,
+    offerDetails,
+    respondentName,
+    respondentTitle,
+    contactInfo,
+    message,
+  }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('plates_for_purpose_responses').insert({
+      restaurant_slug: restaurantSlug,
+      business_name: businessName,
+      decision,
+      offer_details: offerDetails || null,
+      respondent_name: respondentName || null,
+      respondent_title: respondentTitle || null,
+      contact_info: contactInfo || null,
+      message: message || null,
+    });
+    if (error) throw error;
+  },
+
   // Reads from game_submissions_public (a view, not the base table) --
   // pre-filtered to status='approved' and missing submitter_email entirely,
   // so this is safe to call from any page without further filtering.

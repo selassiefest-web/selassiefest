@@ -235,6 +235,23 @@ function formatVendorApplication(record: Record<string, any>) {
   };
 }
 
+function formatPlatesForPurposeResponse(record: Record<string, any>) {
+  const decisionLabel =
+    { yes: "YES — they're in", no: 'No / declined', maybe: 'Maybe / needs follow-up' }[record.decision] || record.decision;
+  return {
+    subject: `Plates for Purpose — ${record.business_name}: ${decisionLabel}`,
+    html: `
+      <h2>Plates for Purpose — Restaurant Decision</h2>
+      <p><strong>Restaurant:</strong> ${escapeHtml(record.business_name)} (${escapeHtml(record.restaurant_slug)})</p>
+      <p><strong>Decision:</strong> ${escapeHtml(decisionLabel)}</p>
+      ${record.offer_details ? `<p><strong>What they're offering:</strong><br>${escapeHtml(record.offer_details)}</p>` : ''}
+      ${record.respondent_name ? `<p><strong>Respondent:</strong> ${escapeHtml(record.respondent_name)}${record.respondent_title ? ', ' + escapeHtml(record.respondent_title) : ''}</p>` : ''}
+      ${record.contact_info ? `<p><strong>Contact info:</strong> ${escapeHtml(record.contact_info)}</p>` : ''}
+      ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+    `,
+  };
+}
+
 function formatEventNotifySignup(record: Record<string, any>) {
   return {
     subject: `New "notify me" signup — ${record.event_name}`,
@@ -299,6 +316,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   sponsor_inquiries: { notifications: [{ to: () => NOTIFY_TO, format: formatSponsorInquiry }] },
   camp_registrations: { notifications: [{ to: () => NOTIFY_TO, format: formatCampRegistration }] },
   vendor_applications: { notifications: [{ to: () => NOTIFY_TO, format: formatVendorApplication }] },
+  plates_for_purpose_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatPlatesForPurposeResponse }] },
   stripe_donations: { notifications: [{ to: () => NOTIFY_TO, format: formatDonation }] },
   newsletter_subscribers: { notifications: [{ to: (record) => record.email, format: formatNewsletterConfirmation }] },
   game_submissions: {
