@@ -1,14 +1,14 @@
 // Content spec: transcribed from Draft_Proposal_Selassie_Fest.docx (Ras Tafari Inc.'s
 // Vision Proposal for restoring Selassie Fest), in the same 27-frame flip-book format
 // as /the-yawd. {{name}} is replaced at render time with the viewer's name/org
-// (frames 1 and 26 only). Frames 2-27 have a real designed `image` (assets/images/) —
-// frame 1 has none yet and falls back to the CSS mood-gradient placeholder in
-// index.html. The `visual` field remains as the original art-direction spec / a11y
-// caption even where a final image already exists.
+// (frames 1 and 26 only). Every frame has a real designed `image` (assets/images/).
+// The `visual` field remains as the original art-direction spec / a11y caption but is
+// no longer rendered once a frame has an `image` (see app.js).
 
 const FRAMES = [
   {
     id: 1,
+    image: 'assets/images/frame-01.jpg',
     batch: 'hook',
     personalize: 'start',
     visual: "Archival-toned photo of a packed festival field at Seven Hills in Washington Park, 1990s film grain, dissolving into the same hillside today — quiet, empty, waiting.",
