@@ -10,8 +10,16 @@ const state = {
   muted: false,
   seen: new Set(),
   voice: null,
-  speaking: false
+  speaking: false,
+  autoPlay: false,
+  extended: false,
+  autoAdvanceTimer: null
 };
+
+// If speech is unavailable/muted, auto-advance still needs to move on
+// eventually rather than sit frozen -- this is a flat "roughly enough time
+// to read the slide" fallback, not a per-word estimate.
+const MUTED_AUTOPLAY_DELAY_MS = 6000;
 
 function interpolate(text, name) {
   return text.replace('{{name}}', name);
@@ -151,6 +159,15 @@ function renderFrames() {
       const open = !panel.hidden;
       panel.hidden = open;
       btn.classList.toggle('open', !open);
+      // Tapping this while driving beats having to read the panel -- also
+      // pause any pending auto-advance so it doesn't cut the explanation off.
+      clearAutoAdvance();
+      if (!open) {
+        const idx = Number(btn.dataset.index);
+        speakOnce(tellMoreParagraphs(FRAMES[idx].tellMore));
+      } else if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+      }
     });
   });
 
@@ -203,19 +220,63 @@ function pickVoice() {
   return voices.sort((a, b) => byScore(b) - byScore(a))[0];
 }
 
-function speakFrame(frame) {
-  if (!('speechSynthesis' in window) || state.muted) return;
+function clearAutoAdvance() {
+  if (state.autoAdvanceTimer) {
+    clearTimeout(state.autoAdvanceTimer);
+    state.autoAdvanceTimer = null;
+  }
+}
+
+// Schedules the hands-free jump to the next frame. No-ops if auto-play is
+// off or this is already the last frame -- called unconditionally from
+// speakFrame's completion path, so it's the single place that decides
+// whether a jump actually happens.
+function scheduleAutoAdvance(delayMs) {
+  clearAutoAdvance();
+  if (!state.autoPlay || state.index >= FRAMES.length - 1) return;
+  state.autoAdvanceTimer = setTimeout(() => goTo(state.index + 1), delayMs);
+}
+
+// One-off speech for the manually-tapped "Tell me more" panel -- independent
+// of the auto-play chain, so it never fights with a scheduled auto-advance.
+function speakOnce(lines, rate = 0.92, gapMs = 350) {
+  if (!('speechSynthesis' in window) || !lines.length) return;
   speechSynthesis.cancel();
-  const lines = voiceLinesFor(frame);
-  if (!lines.length) return;
+  let i = 0;
+  const speakNext = () => {
+    if (i >= lines.length) return;
+    const utter = new SpeechSynthesisUtterance(lines[i]);
+    utter.voice = state.voice;
+    utter.rate = rate;
+    utter.onend = () => { i += 1; setTimeout(speakNext, gapMs); };
+    speechSynthesis.speak(utter);
+  };
+  speakNext();
+}
+
+function speakFrame(frame) {
+  clearAutoAdvance();
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+
+  const mainLines = voiceLinesFor(frame);
+  const extraLines = state.extended ? tellMoreParagraphs(frame.tellMore) : [];
+  const lines = [...mainLines, ...extraLines];
 
   const isAskFrame = frame.batch === 'ask';
   const rate = isAskFrame ? 0.85 : 0.92;
   const gapMs = isAskFrame ? 650 : 350;
 
+  if (!('speechSynthesis' in window) || state.muted || !lines.length) {
+    scheduleAutoAdvance(MUTED_AUTOPLAY_DELAY_MS);
+    return;
+  }
+
   let i = 0;
   const speakNext = () => {
-    if (i >= lines.length || state.muted) return;
+    if (i >= lines.length || state.muted) {
+      scheduleAutoAdvance(1200);
+      return;
+    }
     const utter = new SpeechSynthesisUtterance(lines[i]);
     utter.voice = state.voice;
     utter.rate = rate;
@@ -247,16 +308,55 @@ function goTo(index) {
 function setMuted(muted) {
   state.muted = muted;
   document.getElementById('nav-mute').textContent = muted ? '🔇' : '🔊';
-  if (muted) speechSynthesis.cancel();
+  if (muted && 'speechSynthesis' in window) speechSynthesis.cancel();
+  // Muting mid-speech needs the auto-advance fallback timer instead of the
+  // onend callback it would otherwise get; unmuting just replays the frame,
+  // which re-establishes the normal onend-based timing.
+  speakFrame(FRAMES[state.index]);
+}
+
+function setAutoPlay(on) {
+  state.autoPlay = on;
+  const btn = document.getElementById('nav-autoplay');
+  btn.classList.toggle('active', on);
+  btn.setAttribute('aria-pressed', String(on));
+  if (!on) {
+    clearAutoAdvance();
+  } else if (!('speechSynthesis' in window) || !speechSynthesis.speaking) {
+    scheduleAutoAdvance(1200);
+  }
+}
+
+function setExtended(on) {
+  state.extended = on;
+  const btn = document.getElementById('nav-extended');
+  btn.classList.toggle('active', on);
+  btn.setAttribute('aria-pressed', String(on));
+  // Re-speak the current frame so the change takes effect immediately
+  // instead of waiting for the next slide.
+  speakFrame(FRAMES[state.index]);
 }
 
 function beginExperience() {
   state.investorName = document.getElementById('investor-name').value;
+  // Set state directly rather than via setAutoPlay/setExtended -- those also
+  // trigger an immediate re-speak, which would race with goTo(0)'s own
+  // first speakFrame call below.
+  state.autoPlay = document.getElementById('opt-autoplay').checked;
+  state.extended = document.getElementById('opt-extended').checked;
   document.getElementById('start-screen').hidden = true;
   document.getElementById('deck').hidden = false;
 
   renderFrames();
   renderDots();
+
+  const autoBtn = document.getElementById('nav-autoplay');
+  autoBtn.classList.toggle('active', state.autoPlay);
+  autoBtn.setAttribute('aria-pressed', String(state.autoPlay));
+  const extBtn = document.getElementById('nav-extended');
+  extBtn.classList.toggle('active', state.extended);
+  extBtn.setAttribute('aria-pressed', String(state.extended));
+
   goTo(0);
 }
 
@@ -266,6 +366,8 @@ document.getElementById('nav-next').addEventListener('click', () => goTo(state.i
 document.getElementById('nav-prev').addEventListener('click', () => goTo(state.index - 1));
 document.getElementById('nav-replay').addEventListener('click', () => speakFrame(FRAMES[state.index]));
 document.getElementById('nav-mute').addEventListener('click', () => setMuted(!state.muted));
+document.getElementById('nav-autoplay').addEventListener('click', () => setAutoPlay(!state.autoPlay));
+document.getElementById('nav-extended').addEventListener('click', () => setExtended(!state.extended));
 
 document.addEventListener('keydown', (e) => {
   if (document.getElementById('deck').hidden) return;
