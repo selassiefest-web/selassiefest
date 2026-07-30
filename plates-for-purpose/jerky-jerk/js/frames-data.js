@@ -50,6 +50,7 @@ const LOGOS = {
 const FRAMES = [
   {
     id: 1,
+    image: 'assets/images/slide-01.jpg',
     batch: 'ask',
     ask: true,
     personalize: 'start',
@@ -65,6 +66,7 @@ const FRAMES = [
   },
   {
     id: 2,
+    image: 'assets/images/slide-02.jpg',
     batch: 'ask',
     logoReveal: true,
     logos: [LOGOS.jerkyJerk],
@@ -78,6 +80,7 @@ const FRAMES = [
   },
   {
     id: 3,
+    image: 'assets/images/slide-03.jpg',
     batch: 'benefits',
     video: {
       url: null,
@@ -98,6 +101,7 @@ const FRAMES = [
   },
   {
     id: 4,
+    image: 'assets/images/slide-04.jpg',
     batch: 'benefits',
     visual: 'A clean two-column "Gives / Gets" graphic on a dark background.',
     headline: 'What they gave. What they got back. Here’s the actual trade.',
@@ -109,6 +113,7 @@ const FRAMES = [
   },
   {
     id: 5,
+    image: 'assets/images/slide-05.jpg',
     batch: 'benefits',
     visual: "A phone screen showing a food influencer's Reel/TikTok of Jerky Jerk, softly blurred SelassieFest stage lights in the background.",
     headline: 'It wasn’t just a logo on a page. It was their name from the stage, in front of a crowd that came to eat.',
@@ -117,6 +122,7 @@ const FRAMES = [
   },
   {
     id: 6,
+    image: 'assets/images/slide-06.jpg',
     batch: 'benefits',
     visual: 'A warm, bustling festival marketplace row of vendor tents at golden hour, string lights overhead.',
     headline: 'And the festival wasn’t the finish line — it was the introduction to a standing invite.',
@@ -125,6 +131,7 @@ const FRAMES = [
   },
   {
     id: 7,
+    image: 'assets/images/slide-07.jpg',
     batch: 'program',
     visual: 'A food influencer filming charcoal jerk chicken and oxtail at a Jerky Jerk table, phone/camera in hand, warm restaurant lighting.',
     headline: 'How that content actually got made: a local food creator visited, filmed, and posted.',
@@ -137,6 +144,7 @@ const FRAMES = [
   },
   {
     id: 8,
+    image: 'assets/images/slide-08.jpg',
     batch: 'program',
     visual: 'A simple analytics graphic — views, follower growth, saves/shares — clean numbers on a dark background.',
     headline: 'We tracked what it actually did — before we ever made the ask.',
@@ -145,6 +153,7 @@ const FRAMES = [
   },
   {
     id: 9,
+    image: 'assets/images/slide-09.jpg',
     batch: 'program',
     visual: 'A formal letter graphic on letterhead, a pen resting on it, warm desk lighting.',
     headline: 'Week 4: we sent the recap, then the ask — in writing.',
@@ -157,6 +166,7 @@ const FRAMES = [
   },
   {
     id: 10,
+    image: 'assets/images/slide-10.jpg',
     batch: 'program',
     visual: 'SelassieFest festival day — a raffle drawing on the Main Stage, a large crowd, string lights, golden hour.',
     headline: 'Festival day: the plates became raffle prizes — with Jerky Jerk’s name from the Main Stage.',
@@ -168,6 +178,7 @@ const FRAMES = [
   },
   {
     id: 11,
+    image: 'assets/images/slide-11.jpg',
     batch: 'program',
     visual: 'A clean 5-step horizontal timeline graphic on a dark background.',
     headline: 'Eight weeks, five milestones, one Main Stage moment — start to finish.',
@@ -183,6 +194,7 @@ const FRAMES = [
   },
   {
     id: 12,
+    image: 'assets/images/slide-12.jpg',
     batch: 'proof',
     proof: true,
     visual: "A close-up photograph of a Jerky Jerk 'Dinner for One' raffle certificate alongside a SelassieFest raffle ticket, warm lighting.",
@@ -195,6 +207,7 @@ const FRAMES = [
   },
   {
     id: 13,
+    image: 'assets/images/slide-13.jpg',
     batch: 'proof',
     visual: 'A simple badge/text card on a dark background: "Caribbean. From Scratch." with a palm-leaf accent.',
     headline: 'Here’s the profile that made it work — does yours match?',
@@ -207,6 +220,7 @@ const FRAMES = [
   },
   {
     id: 14,
+    image: 'assets/images/slide-14.jpg',
     batch: 'close',
     visual: 'SelassieFest at night, a lit stage banner featuring a partner restaurant name, a packed and joyful crowd.',
     headline: 'This is what it looked like for Jerky Jerk. It could look like this for you next.',
@@ -215,6 +229,7 @@ const FRAMES = [
   },
   {
     id: 15,
+    image: 'assets/images/slide-15.jpg',
     batch: 'close',
     personalize: 'close',
     visual: "Return to frame 1's storefront shot — now at dusk, warmly lit, a small crowd of new customers at the counter.",
@@ -227,6 +242,7 @@ const FRAMES = [
   },
   {
     id: 16,
+    image: 'assets/images/slide-16.jpg',
     batch: 'close',
     cta: true,
     logos: [LOGOS.jerkyJerk],
