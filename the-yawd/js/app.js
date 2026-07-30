@@ -54,15 +54,30 @@ function renderFrames() {
 
     const visual = document.createElement('div');
     visual.className = 'frame-visual' + (frame.ask ? ' ask' : '');
+    if (frame.image) {
+      visual.style.backgroundImage = `url('${frame.image}')`;
+      visual.style.backgroundRepeat = 'no-repeat';
+      // Text-heavy graphic frames sit on a solid near-black background --
+      // 'contain' shows the whole image with invisible letterboxing rather
+      // than 'cover' cropping their edge-to-edge text.
+      if (frame.imageFit === 'contain') {
+        visual.style.backgroundSize = 'contain';
+        visual.style.backgroundColor = '#08090c';
+      }
+    }
     const logoRow = frame.logos ? `
       <div class="logo-row${frame.logoReveal ? ' reveal' : ''}">
         ${frame.logos.map((l) => `<img src="${l.src}" alt="${l.alt}">`).join('')}
       </div>
     ` : '';
+    // Once a real designed image exists, the "Visual spec" caption (the
+    // original art-direction note) would just be redundant text sitting on
+    // top of the finished artwork.
+    const captionBlock = frame.image ? '' : `<span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>`;
     visual.innerHTML = `
       <span class="frame-counter">${String(i + 1).padStart(2, '0')} / ${FRAMES.length}</span>
       ${logoRow}
-      <span class="visual-caption"><strong>Visual spec</strong>${frame.visual}</span>
+      ${captionBlock}
     `;
 
     const content = document.createElement('div');

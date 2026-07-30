@@ -2,6 +2,9 @@
 // The One Umbrella Experience proposal (MarlonTRC x One Umbrella Sports & Entertainment x Ticket Tailor).
 // {{name}} is replaced at render time with the investor's name/firm (frames 1 and 25 only).
 // Real partner logos live in assets/logos/ — see the `logos` field on frames 2, 3, and 27.
+// Frames 5, 6, 7, 9, 16, 21, 22, 24, and 26 have real designed `image`s (assets/images/) --
+// the rest still fall back to the CSS mood-gradient placeholder. Some frames have an unused
+// "-alt.jpg" sibling image sitting next to the active one (a second take from the same batch).
 
 const LOGOS = {
   marlontrc: { src: 'assets/logos/marlontrc.png', alt: 'MarlonTRC — The Reggae Connection' },
@@ -69,6 +72,7 @@ const FRAMES = [
   },
   {
     id: 5,
+    image: 'assets/images/frame-05.jpg',
     batch: 'hook',
     visual: 'Concept render — exterior + interior mainstage shot, warm stage lighting, a glimpse of a rooftop apartment window.',
     headline: 'Welcome to The Yawd: 200 to 4,000 guests, world-class sound, a 5-star suite for the artist.',
@@ -89,6 +93,7 @@ const FRAMES = [
   },
   {
     id: 6,
+    image: 'assets/images/frame-06.jpg',
     batch: 'momentum',
     visual: "Portrait-style art — a silhouette of an artist stepping off a plane at O'Hare, city lights behind.",
     headline: 'One Umbrella opens the door. The artists keep it open.',
@@ -100,6 +105,7 @@ const FRAMES = [
   },
   {
     id: 7,
+    image: 'assets/images/frame-07.jpg',
     batch: 'momentum',
     visual: 'Chain-link / relay-baton motif — one artist icon handing off to the next, radiating outward.',
     headline: 'Every artist who plays becomes the next booking agent.',
@@ -124,6 +130,7 @@ const FRAMES = [
   },
   {
     id: 9,
+    image: 'assets/images/frame-09.jpg',
     batch: 'momentum',
     visual: "A live-updating ticket counter graphic (mocked, e.g. '347 / 500 sold — 3 days to show').",
     headline: 'The artist doesn’t wait on a promoter’s word. They watch the room fill in real time.',
@@ -218,6 +225,7 @@ const FRAMES = [
   },
   {
     id: 16,
+    image: 'assets/images/frame-16.jpg',
     batch: 'money',
     visual: 'A single frame photo-style render of the artist suite (bed, recording nook, skyline view).',
     headline: 'Housing, transport, a stocked pantry, a recording rig — a $2,500–$4,000 value, in-kind, every booking.',
@@ -278,6 +286,7 @@ const FRAMES = [
   },
   {
     id: 21,
+    image: 'assets/images/frame-21.jpg',
     batch: 'experience',
     visual: 'Split-frame — sunrise fitness class on the mainstage floor / the Selecta Academy classroom on the same rig, day vs. night lighting.',
     headline: 'The building that never sleeps: fitness at 6 AM, the Academy at 2 PM, the flagship at 10 PM.',
@@ -289,6 +298,7 @@ const FRAMES = [
   },
   {
     id: 22,
+    image: 'assets/images/frame-22.jpg',
     batch: 'experience',
     visual: "The artist suite reimagined as a boutique short-stay listing — moodboard style, 'Legacy Closet' display case with a signed item under glass.",
     headline: 'Between residencies, the suite pays for itself — and the Legacy Closet keeps paying the artist for months after they fly home.',
@@ -308,6 +318,7 @@ const FRAMES = [
   },
   {
     id: 24,
+    image: 'assets/images/frame-24.jpg',
     batch: 'close',
     visual: 'Same building-icon graphic from the ask frame, now shown fully built and lit.',
     headline: 'This is the single largest open item in the proposal — and the one thing that sets the timeline.',
@@ -337,6 +348,7 @@ const FRAMES = [
   },
   {
     id: 26,
+    image: 'assets/images/frame-26.jpg',
     batch: 'close',
     personalize: 'close',
     visual: "Return to frame 1's skyline shot — now the building is lit, and the whole block around it is lit too.",
