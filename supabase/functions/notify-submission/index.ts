@@ -1,5 +1,5 @@
-// Fires on inserts into notification-worthy tables (raffle_entries,
-// marketplace_preorders, and more as they're added) via a database trigger
+// Fires on inserts into notification-worthy tables (marketplace_preorders,
+// and more as they're added) via a database trigger
 // that calls net.http_post — see supabase/schema.sql. Not called from any
 // client-side code; only the database itself calls this, authenticated by
 // the shared WEBHOOK_SECRET header rather than a user JWT.
@@ -47,20 +47,6 @@ function escapeHtml(s: unknown): string {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]
   );
-}
-
-function formatRaffleEntry(record: Record<string, any>) {
-  return {
-    subject: `New Raffle Entry — ${record.buyer_name}`,
-    html: `
-      <h2>New Raffle Entry</h2>
-      <p><strong>Buyer:</strong> ${escapeHtml(record.buyer_name)} (${escapeHtml(record.buyer_email)})</p>
-      <p><strong>Tickets:</strong> ${escapeHtml(record.ticket_qty)} ($${escapeHtml(record.total_amount)})</p>
-      <p><strong>Prize:</strong> ${escapeHtml(record.prize_name)}</p>
-      <p><strong>Payment:</strong> ${escapeHtml(record.payment_method)}, TX: ${escapeHtml(record.transaction_id)}</p>
-      <p><strong>Status:</strong> ${escapeHtml(record.status)}</p>
-    `,
-  };
 }
 
 function formatMarketplacePreorder(record: Record<string, any>) {
@@ -254,16 +240,16 @@ function formatPlatesForPurposeResponse(record: Record<string, any>) {
 }
 
 // Confirmation sent back to the restaurant itself, only on a "yes" decision
-// (a maybe/no doesn't have raffle tickets to prepare) -- see the
+// (a maybe/no doesn't have an auction item to prepare) -- see the
 // conditional `to` in TABLE_CONFIG below, which is what actually gates this
 // to decision === 'yes'.
 function formatPlatesForPurposeConfirmation(record: Record<string, any>) {
   return {
-    subject: `You're in! Your Plates for Purpose raffle tickets are being prepared`,
+    subject: `You're in! Your Plates for Purpose auction item is being prepared`,
     html: `
       <h2>Thank you, ${escapeHtml(record.business_name)}!</h2>
       <p>We've got your "yes" for Plates for Purpose${record.offer_details ? ` — <strong>${escapeHtml(record.offer_details)}</strong>` : ''}.</p>
-      <p>Your raffle tickets are being prepared now. Someone from the SelassieFest team will follow up shortly to confirm the details and next steps.</p>
+      <p>Your auction item is being prepared now. Someone from the SelassieFest team will follow up shortly to confirm the details and next steps.</p>
       <p>If you have a logo on file with us, you'll find your official "Proud Plates for Purpose Partner" badge attached — feel free to share it on your own social media!</p>
       <p style="margin-top:24px;color:#888;font-size:0.85rem;">Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest. Questions in the meantime? Reply to this email or call (414) 909-3279.</p>
     `,
@@ -340,7 +326,6 @@ type TableConfig = {
 };
 
 const TABLE_CONFIG: Record<string, TableConfig> = {
-  raffle_entries: { notifications: [{ to: () => NOTIFY_TO, format: formatRaffleEntry }] },
   marketplace_preorders: { notifications: [{ to: () => NOTIFY_TO, format: formatMarketplacePreorder }] },
   volunteer_signups: { notifications: [{ to: () => NOTIFY_TO, format: formatVolunteerSignup }] },
   sponsor_inquiries: { notifications: [{ to: () => NOTIFY_TO, format: formatSponsorInquiry }] },

@@ -36,21 +36,6 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
-  async submitRaffleEntry({ buyerName, buyerEmail, ticketQty, totalAmount, paymentMethod, transactionId, prizeId, prizeName }) {
-    const client = await window.sfSupabaseReady;
-    const { error } = await client.from('raffle_entries').insert({
-      buyer_name: buyerName,
-      buyer_email: buyerEmail,
-      ticket_qty: ticketQty,
-      total_amount: totalAmount,
-      payment_method: paymentMethod,
-      transaction_id: transactionId,
-      prize_id: prizeId,
-      prize_name: prizeName,
-    });
-    if (error) throw error;
-  },
-
   async submitVolunteerSignup({ fullName, email, phone, age, roleChoice, shiftPreference, tshirtSize, emergencyContact, accommodations, referralSource, waiverAccepted }) {
     const client = await window.sfSupabaseReady;
     const { error } = await client.from('volunteer_signups').insert({

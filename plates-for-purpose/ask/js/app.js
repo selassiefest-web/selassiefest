@@ -39,7 +39,7 @@ function buildFrames(r, confirmedCount) {
   if (r.suggested_donation) detailBits.push(r.suggested_donation);
   if (r.target_ask_value) detailBits.push(`roughly ${r.target_ask_value} in value`);
   const detailLine = detailBits.length ? `In practice, that usually looks like: ${detailBits.join(' — ')}.` : '';
-  const ask = r.donation_ask || 'a donation to our festival raffle';
+  const ask = r.donation_ask || 'a donation to our festival silent auction';
   const momentumLine = confirmedCount >= 2
     ? `${confirmedCount} Chicago restaurants have already said yes to this exact program.`
     : `A real Chicago restaurant already said yes to this exact program.`;
@@ -249,7 +249,7 @@ function renderFrames() {
           </form>
           <div id="thank-you" class="thank-you" hidden>
             <div class="big">Thank you! \u{1F64F}\u{1F3FE}</div>
-            <p>We’ve got your response. If you said yes, keep an eye on your email — that's where we'll confirm your raffle tickets are being prepared.</p>
+            <p>We’ve got your response. If you said yes, keep an eye on your email — that's where we'll confirm your auction item is being prepared.</p>
           </div>
         </div>
       `;

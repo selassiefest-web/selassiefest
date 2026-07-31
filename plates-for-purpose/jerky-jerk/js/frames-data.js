@@ -28,12 +28,12 @@
 // - Signature dishes: charcoal-grilled Jerky Jerk Chicken, Oxtail, Curry
 //   Chicken/Goat, Mrs. Brown Stew Chicken; "Jerketarian" vegetarian menu
 // - No microwave -- everything made to order, family recipes
-// - Already a SelassieFest raffle donor (Dinner-for-One certificates at two
-//   locations) before Plates for Purpose -- that existing relationship is
-//   part of why the pilot worked
-// - The actual ask: 2-3 dinner-for-two raffle prizes, or the gift-certificate
+// - Already a SelassieFest silent-auction donor (Dinner-for-One certificates
+//   at two locations) before Plates for Purpose -- that existing relationship
+//   is part of why the pilot worked
+// - The actual ask: 2-3 dinner-for-two auction items, or the gift-certificate
 //   equivalent. Confirmed outcome: Jerky Jerk donated three dinner-for-two
-//   gift certificates, structured so the raffle winner redeems them across
+//   gift certificates, structured so the winning bidder redeems them across
 //   three separate visits rather than all at once.
 // - SelassieFest returns July 24, 2027 at the Historic Seven Hills, Washington
 //   Park. Ras Tafari Inc, EIN 42-3036705, is the 501(c)(3) behind it.
@@ -55,14 +55,14 @@ const FRAMES = [
     ask: true,
     personalize: 'start',
     visual: 'A single dinner-for-two spread — two plates, charcoal-grilled jerk chicken and oxtail — beautifully lit, on a dark background with a subtle numbered tally beside it.',
-    headline: 'Here’s the ask, upfront: 2 to 3 dinners for two to raffle at SelassieFest, or the gift-certificate equivalent.',
+    headline: 'Here’s the ask, upfront: 2 to 3 dinners for two to auction off at SelassieFest, or the gift-certificate equivalent.',
     voice: [
       'This is Plates for Purpose.',
       'Being one of us means your name promoted right alongside the festival itself — new customers walking through your door, and a standing invite back every year SelassieFest returns.',
-      'Could {{name}} provide two or three dinner-for-two raffle prizes, or a gift-certificate equivalent — whichever’s easiest?',
+      'Could {{name}} provide two or three dinner-for-two auction items, or a gift-certificate equivalent — whichever’s easiest?',
       'Sized so it never puts real strain on {{name}}’s kitchen or books.'
     ],
-    tellMore: 'This is a completed case study from Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest — showing exactly how Plates for Purpose played out with its pilot partner, Jerky Jerk. The ask itself is simple and upfront: two or three dinner-for-two raffle prizes, or a gift-certificate equivalent — whatever’s comfortable. What matters more is the invitation behind it — restaurants like this one are already part of what makes this community work, and Plates for Purpose is one way to help that work grow, through education, the arts, music, and the kind of community engagement SelassieFest exists to support.'
+    tellMore: 'This is a completed case study from Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest — showing exactly how Plates for Purpose played out with its pilot partner, Jerky Jerk. The ask itself is simple and upfront: two or three dinner-for-two auction items, or a gift-certificate equivalent — whatever’s comfortable. What matters more is the invitation behind it — restaurants like this one are already part of what makes this community work, and Plates for Purpose is one way to help that work grow, through education, the arts, music, and the kind of community engagement SelassieFest exists to support.'
   },
   {
     id: 2,
@@ -76,7 +76,7 @@ const FRAMES = [
       'Three dinner-for-two gift certificates, structured so the winner comes back for three separate visits, not all at once.',
       'Charcoal-grilled jerk chicken, oxtail, curry goat, and Brown stew chicken — made to order.'
     ],
-    tellMore: 'Jerky Jerk agreed to donate three dinner-for-two gift certificates as the SelassieFest raffle prize — built so the winner redeems them across three separate visits, one dinner-for-two at a time, instead of a single sitting. That turns one raffle win into three trips back through the door. Jerky Jerk has three Chicago-area locations — 2253 W Taylor St, 7300 Western Ave, and 3991 W Algonquin Rd in Rolling Meadows — plus a "Jerketarian" vegetarian menu. No renegotiation, no surprise line items: the ask we made is the ask they agreed to.'
+    tellMore: 'Jerky Jerk agreed to donate three dinner-for-two gift certificates as the SelassieFest silent-auction item — built so the winning bidder redeems them across three separate visits, one dinner-for-two at a time, instead of a single sitting. That turns one winning bid into three trips back through the door. Jerky Jerk has three Chicago-area locations — 2253 W Taylor St, 7300 Western Ave, and 3991 W Algonquin Rd in Rolling Meadows — plus a "Jerketarian" vegetarian menu. No renegotiation, no surprise line items: the ask we made is the ask they agreed to.'
   },
   {
     id: 3,
@@ -106,10 +106,10 @@ const FRAMES = [
     visual: 'A clean two-column "Gives / Gets" graphic on a dark background.',
     headline: 'What Jerky Jerk gave. What they got back. Here’s the actual trade.',
     voice: [
-      'They gave: a donated meal or two for the content shoot, then three dinner-for-two gift certificates as the raffle prize.',
+      'They gave: a donated meal or two for the content shoot, then three dinner-for-two gift certificates as the auction item.',
       'They got: free promotion, new customers walking through the door three separate times, festival-day exposure, a vendor invite, and a tax-deductible receipt.'
     ],
-    tellMore: 'Jerky Jerk gave a donated meal or two for the content shoot, then three dinner-for-two gift certificates, redeemable across three separate visits, as the SelassieFest raffle prize — and got free promotion, new customers, festival-day exposure, a vendor invite, and a tax-deductible donation receipt. The influencer gave authentic content and their time and reach — and got comped meals, content for their own channel, cross-promotion via SelassieFest’s audience, and credit as an Official SelassieFest Food Ambassador. Ras Tafari Inc gave introductions, coordination, and festival-day recognition — and got raffle inventory at no cash cost, a new restaurant partner, and content and reach for SelassieFest itself.'
+    tellMore: 'Jerky Jerk gave a donated meal or two for the content shoot, then three dinner-for-two gift certificates, redeemable across three separate visits, as the SelassieFest silent-auction item — and got free promotion, new customers, festival-day exposure, a vendor invite, and a tax-deductible donation receipt. The influencer gave authentic content and their time and reach — and got comped meals, content for their own channel, cross-promotion via SelassieFest’s audience, and credit as an Official SelassieFest Food Ambassador. Ras Tafari Inc gave introductions, coordination, and festival-day recognition — and got auction inventory at no cash cost, a new restaurant partner, and content and reach for SelassieFest itself.'
   },
   {
     id: 5,
@@ -168,13 +168,13 @@ const FRAMES = [
     id: 10,
     image: 'assets/images/slide-10.jpg',
     batch: 'program',
-    visual: 'SelassieFest festival day — a raffle drawing on the Main Stage, a large crowd, string lights, golden hour.',
-    headline: 'Festival day: the plates became raffle prizes — with Jerky Jerk’s name from the Main Stage.',
+    visual: 'SelassieFest festival day — the silent auction closing live on the Main Stage, a large crowd, string lights, golden hour.',
+    headline: 'Festival day: the plates became auction items — with Jerky Jerk’s name from the Main Stage.',
     voice: [
       'On-site signage. A Main Stage announcement. A shoutout on SelassieFest’s own social channels.',
       'And the invite back as a vendor at the next Ital Marketplace or Heritage Village.'
     ],
-    tellMore: 'The donated plates and vouchers became raffle prizes; raffle tickets were sold or included with festival admission per Ras Tafari Inc’s usual raffle rules. Jerky Jerk received on-site signage, an announcement from the Main Stage, and a shoutout on SelassieFest’s own social channels.'
+    tellMore: 'The donated plates and vouchers became silent-auction items, bid on live at the festival per Ras Tafari Inc’s usual auction rules. Jerky Jerk received on-site signage, an announcement from the Main Stage, and a shoutout on SelassieFest’s own social channels.'
   },
   {
     id: 11,
@@ -187,8 +187,8 @@ const FRAMES = [
       '8 weeks out — Identified and approached the restaurant; confirmed the influencer partner and content plan.',
       '6–7 weeks out — Influencer visited and posted.',
       '5 weeks out — Sent the performance recap and formal donation request.',
-      '4 weeks out — Confirmed the donation, sent the acknowledgment letter, added the prize to the raffle listing.',
-      'Festival day — Raffle drawing, on-site signage, Main Stage shoutout.',
+      '4 weeks out — Confirmed the donation, sent the acknowledgment letter, added the item to the auction listing.',
+      'Festival day — Auction close, on-site signage, Main Stage shoutout.',
       '1 week after — Thank-you note; invited Jerky Jerk back as a vendor for next year.'
     ]
   },
@@ -197,13 +197,13 @@ const FRAMES = [
     image: 'assets/images/slide-12.jpg',
     batch: 'proof',
     proof: true,
-    visual: "A close-up photograph of a Jerky Jerk 'Dinner for One' raffle certificate alongside a SelassieFest raffle ticket, warm lighting.",
+    visual: "A close-up photograph of a Jerky Jerk 'Dinner for One' auction item card alongside a SelassieFest bid sheet, warm lighting.",
     headline: 'It helped that Jerky Jerk was already one of us.',
     voice: [
       'Plates for Purpose didn’t start this relationship — it built on one that already existed.',
-      'Being one of us already meant real trust: Jerky Jerk was already a SelassieFest raffle donor, so this was never a cold ask to a stranger.'
+      'Being one of us already meant real trust: Jerky Jerk was already a SelassieFest auction donor, so this was never a cold ask to a stranger.'
     ],
-    tellMore: 'Jerky Jerk was already donating Dinner-for-One certificates to SelassieFest’s raffle at its Taylor Street ($35 value) and Rolling Meadows ($25 value) locations before Plates for Purpose began. That existing trust is a big part of why the pilot worked as cleanly as it did — this wasn’t a cold ask to a stranger.'
+    tellMore: 'Jerky Jerk was already donating Dinner-for-One certificates to SelassieFest’s silent auction at its Taylor Street ($35 value) and Rolling Meadows ($25 value) locations before Plates for Purpose began. That existing trust is a big part of why the pilot worked as cleanly as it did — this wasn’t a cold ask to a stranger.'
   },
   {
     id: 13,

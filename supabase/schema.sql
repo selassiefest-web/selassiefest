@@ -129,27 +129,11 @@ grant select on event_series to anon, authenticated;
 grant select on event_occurrences to anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────
--- Raffle entries and marketplace pre-orders
+-- Marketplace pre-orders
 -- ─────────────────────────────────────────────────────────────────────────
--- Both forms previously had no real backend: raffle entries were saved to
--- the *submitting visitor's own* localStorage (never reaching the org, even
--- though a real payment/transaction ID was involved), and marketplace
--- pre-orders were only console.log'd behind a fake "check your email"
--- success message. These tables give both a real, durable destination.
-
-create table if not exists raffle_entries (
-  id uuid primary key default gen_random_uuid(),
-  buyer_name text not null,
-  buyer_email text not null,
-  ticket_qty int not null check (ticket_qty > 0),
-  total_amount numeric(10,2) not null,
-  payment_method text not null,
-  transaction_id text not null,
-  prize_id text,
-  prize_name text,
-  status text not null default 'pending_verification',
-  created_at timestamptz not null default now()
-);
+-- This form previously had no real backend: pre-orders were only
+-- console.log'd behind a fake "check your email" success message. This
+-- table gives it a real, durable destination.
 
 create table if not exists marketplace_preorders (
   id uuid primary key default gen_random_uuid(),
@@ -163,18 +147,7 @@ create table if not exists marketplace_preorders (
   created_at timestamptz not null default now()
 );
 
-alter table raffle_entries enable row level security;
 alter table marketplace_preorders enable row level security;
-
--- Same write-only pattern as the newsletter/Anansi forms above: anon can
--- insert (submit an entry) but never read back — buyer names, emails, and
--- transaction IDs stay private to the org, viewed via the Supabase Table
--- Editor.
-create policy "Allow anon insert" on raffle_entries
-  for insert to anon
-  with check (true);
-
-grant insert on raffle_entries to anon;
 
 -- marketplace_preorders is intentionally NOT anon-insertable. A row here is
 -- only ever supposed to exist because Stripe confirmed a real charge; anon
@@ -418,8 +391,8 @@ alter table newsletter_subscribers add column if not exists source text;
 -- commit that introduced this feature, or regenerate it fresh: a plpgsql
 -- function, security definer, that does
 -- `perform net.http_post(url := '<function-url>', headers := jsonb_build_object('Content-Type','application/json','x-webhook-secret','<secret>'), body := jsonb_build_object('table', TG_TABLE_NAME, 'record', row_to_json(NEW)))`,
--- attached as an AFTER INSERT trigger on raffle_entries,
--- marketplace_preorders, volunteer_signups, sponsor_inquiries,
+-- attached as an AFTER INSERT trigger on marketplace_preorders,
+-- volunteer_signups, sponsor_inquiries,
 -- camp_registrations, newsletter_subscribers, and game_submissions. The
 -- secret is also stored as the Edge Function's
 -- WEBHOOK_SECRET environment secret (`supabase secrets set`).
@@ -2716,7 +2689,7 @@ alter table plates_for_purpose_restaurants add column if not exists offer_note t
 
 update plates_for_purpose_restaurants
 set offer_choices = '["Dinner for Two", "2 Dinners for Two", "3 Dinners for Two"]'::jsonb,
-    offer_note = 'Raffle winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.'
+    offer_note = 'Auction winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.'
 where offer_choices is null;
 
 update plates_for_purpose_restaurants
@@ -2730,7 +2703,7 @@ from plates_for_purpose_restaurants;
 
 grant select on plates_for_purpose_restaurants_public to anon;
 
--- Email is required to send the raffle-ticket confirmation auto-reply on a
+-- Email is required to send the auction-item confirmation auto-reply on a
 -- "yes" decision (see notify-submission's formatPlatesForPurposeConfirmation
 -- and its conditional `to` in TABLE_CONFIG, gated on decision = 'yes').
 -- contact_info remains as an optional secondary phone/other-contact field.
@@ -2754,7 +2727,7 @@ values (
   '$50',
   'Dinner for Two Certificate',
   '["Dinner for Two", "2 Dinners for Two", "3 Dinners for Two"]'::jsonb,
-  'Raffle winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.',
+  'Auction winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.',
   'Internal Test',
   'INTERNAL TEST ENTRY -- not a real restaurant. Used by Ras Tafari Inc organization members to test the Plates for Purpose ask/decision flow end to end. Safe to submit real test decisions against this slug at any time.',
   false

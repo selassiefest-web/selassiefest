@@ -4,17 +4,17 @@
     <meta name="robots" content="noindex,nofollow">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>SelassieFest · Caribbean Restaurant Raffle Partner System</title>
+  <title>SelassieFest · Caribbean Restaurant Auction Partner System</title>
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="SelassieFest" />
-    <meta property="og:title" content="SelassieFest · Caribbean Restaurant Raffle Partner System" />
+    <meta property="og:title" content="SelassieFest · Caribbean Restaurant Auction Partner System" />
     <meta property="og:description" content="SelassieFest — Chicago's celebration of Rastafari culture, heritage, and community." />
     <meta property="og:url" content="https://selassiefest.com/sponsors/cr_partners.html" />
     <meta property="og:image" content="https://selassiefest.com/assets/images/og-default.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SelassieFest · Caribbean Restaurant Raffle Partner System" />
+    <meta name="twitter:title" content="SelassieFest · Caribbean Restaurant Auction Partner System" />
     <meta name="twitter:description" content="SelassieFest — Chicago's celebration of Rastafari culture, heritage, and community." />
     <meta name="twitter:image" content="https://selassiefest.com/assets/images/og-default.png" />
   <style>
@@ -450,8 +450,8 @@
 </head>
 <body>
 <div class="fest-container">
-  <div class="page-title">🇯🇲 SelassieFest · Caribbean Restaurant Raffle Partners</div>
-  <div class="page-subhead">SmartCard outreach — request a raffle prize (dinner for two, gift certificate) to support our community festival.</div>
+  <div class="page-title">🇯🇲 SelassieFest · Caribbean Restaurant Auction Partners</div>
+  <div class="page-subhead">SmartCard outreach — request a silent-auction item (dinner for two, gift certificate) to support our community festival.</div>
 
   <!-- Contact info bar -->
   <div class="contact-bar">
@@ -509,7 +509,7 @@
   </div>
 
   <!-- PARTNER DIRECTORY (all Caribbean restaurants) -->
-  <div class="section-label">📋 All Caribbean partners — click to preview card & raffle request</div>
+  <div class="section-label">📋 All Caribbean partners — click to preview card & auction request</div>
   <div class="partner-grid" id="partnerGrid"></div>
 
   <!-- INTELLIGENCE DASHBOARD -->
@@ -518,14 +518,14 @@
     <div class="intel-card"><div class="intel-label">Cards sent</div><div class="intel-val" id="totalPartners">32</div><div class="intel-sub">unique Caribbean spots</div></div>
     <div class="intel-card"><div class="intel-label">Scans logged</div><div class="intel-val" id="totalScans">18</div><div class="intel-sub">real engagement</div></div>
     <div class="intel-card"><div class="intel-label">Hot leads</div><div class="intel-val" id="hotCount">4</div><div class="intel-sub">multiple scans</div></div>
-    <div class="intel-card"><div class="intel-label">Raffle value goal</div><div class="intel-val">$1,200</div><div class="intel-sub">prizes for attendees</div></div>
+    <div class="intel-card"><div class="intel-label">Auction value goal</div><div class="intel-val">$1,200</div><div class="intel-sub">items for bidding</div></div>
   </div>
 
-  <!-- EMAIL DRAFT PREVIEW (specific raffle ask) -->
+  <!-- EMAIL DRAFT PREVIEW (specific auction ask) -->
   <div class="draft-preview-area">
-    <div class="draft-title">✍️ Smart raffle request email (ready to personalise)</div>
+    <div class="draft-title">✍️ Smart auction request email (ready to personalise)</div>
     <div class="draft-content draft-placeholder" id="draftMessage">
-      Click any restaurant above → generates a warm ask for a dinner-for-two or gift certificate to be raffled at SelassieFest.
+      Click any restaurant above → generates a warm ask for a dinner-for-two or gift certificate to be auctioned at SelassieFest.
     </div>
   </div>
   <p style="font-size: 0.7rem; text-align: center; margin-top: 0.5rem; color: var(--color-text-tertiary);">
@@ -536,7 +536,7 @@
 <script>
   // --------------------------------------------------------------
   // PARTNER DATA (same 28 unique restaurants + mirror statements)
-  // Updated email asks for a SPECIFIC RAFFLE PRIZE (dinner for two / gift card)
+  // Updated email asks for a SPECIFIC AUCTION ITEM (dinner for two / gift card)
   // Contact info: (414) 909-3279 & selassiefest@gmail.com in signature
   // --------------------------------------------------------------
   const partnersData = [
@@ -581,26 +581,26 @@
     document.getElementById('qrCaption').innerHTML = `⚡ ${p.qr}`;
   }
 
-  // NEW EMAIL: specific raffle ask (dinner for two or $50 gift certificate)
-  function generateRaffleEmail(p) {
+  // NEW EMAIL: specific auction ask (dinner for two or $50 gift certificate)
+  function generateAuctionEmail(p) {
     const scanNote = p.scans === 0 ? "card delivered" : `scanned ${p.scans} time(s) · last ${p.lastActive}`;
     let body = `Hi ${p.name} team,\n\n`;
     body += `“${p.belief}” — that’s what we love about your spot. We’re reaching out because SelassieFest (July 25, Chicago · noon to midnight) is a free community celebration of Caribbean culture, reggae, and food. We’re expecting 5,000–8,000 people from across Chicago.\n\n`;
-    body += `**Here’s the specific ask:** would you be willing to donate **one dinner for two (or a $50 gift certificate)** to our festival raffle? We’ll promote your restaurant on stage, on our social media (10k+ followers), and in our event program. The raffle raises funds to keep the festival free for families.\n\n`;
+    body += `**Here’s the specific ask:** would you be willing to donate **one dinner for two (or a $50 gift certificate)** to our festival's silent auction? We’ll promote your restaurant on stage, on our social media (10k+ followers), and in our event program. The auction raises funds to keep the festival free for families.\n\n`;
     if (p.scans === 0) {
-      body += `We hand‑delivered your SmartCard — inside is a QR code that leads to a page about the raffle. Even if you can’t donate a full dinner, a small gift card or branded merchandise would mean the world. Every donor gets a shout‑out on our main stage.\n\n`;
+      body += `We hand‑delivered your SmartCard — inside is a QR code that leads to a page about the auction. Even if you can’t donate a full dinner, a small gift card or branded merchandise would mean the world. Every donor gets a shout‑out on our main stage.\n\n`;
     } else if (p.scans === 1) {
-      body += `You already scanned the card (${p.lastActive}) — so you know we’re serious about community. A dinner-for-two from your kitchen would be an incredible prize, and we’ll make sure your logo is visible to every single attendee.\n\n`;
+      body += `You already scanned the card (${p.lastActive}) — so you know we’re serious about community. A dinner-for-two from your kitchen would be an incredible auction item, and we’ll make sure your logo is visible to every single attendee.\n\n`;
     } else {
-      body += `You’ve scanned multiple times — that tells us you’re interested. Let’s make it official: a dinner raffle prize in exchange for massive visibility. We’ll also invite you to set up a small info table at the festival if you’d like.\n\n`;
+      body += `You’ve scanned multiple times — that tells us you’re interested. Let’s make it official: a dinner auction item in exchange for massive visibility. We’ll also invite you to set up a small info table at the festival if you’d like.\n\n`;
     }
     body += `To donate, just reply to this email or call/text (414) 909-3279. We can pick up the gift certificate or you can email a digital version.\n\n`;
-    body += `Thank you for feeding our culture — let’s build something beautiful together.\n\n— SelassieFest Organizing Team\n📞 (414) 909-3279  |  ✉️ selassiefest@gmail.com\nselassiefest.com/raffle`;
-    return `Subject: SelassieFest raffle — could you donate a dinner for two?\n\n${body}`;
+    body += `Thank you for feeding our culture — let’s build something beautiful together.\n\n— SelassieFest Organizing Team\n📞 (414) 909-3279  |  ✉️ selassiefest@gmail.com\nselassiefest.com/silent-auction`;
+    return `Subject: SelassieFest silent auction — could you donate a dinner for two?\n\n${body}`;
   }
 
   function updateEmailPreview(partner) {
-    const emailText = generateRaffleEmail(partner);
+    const emailText = generateAuctionEmail(partner);
     const draftDiv = document.getElementById('draftMessage');
     draftDiv.classList.remove('draft-placeholder');
     draftDiv.innerHTML = `<strong style="display:block; margin-bottom:0.5rem;">📧 To: ${partner.name} · ${emailText.split('\n')[0]}</strong><br>${emailText.replace(/\n/g, '<br>')}`;
@@ -655,7 +655,7 @@
   // Add URL box for demonstration
   const urlDiv = document.createElement('div');
   urlDiv.className = 'url-box';
-  urlDiv.innerHTML = `<span class="url-base">https://selassiefest.com/raffle/</span><span class="url-param">jerk-villa</span><span class="url-base">?ref=card&src=caribbean</span>`;
+  urlDiv.innerHTML = `<span class="url-base">https://selassiefest.com/silent-auction/</span><span class="url-param">jerk-villa</span><span class="url-base">?ref=card&src=caribbean</span>`;
   document.querySelector('.intel-grid').after(urlDiv);
 
   buildPartnerGrid();

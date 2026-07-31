@@ -13,7 +13,7 @@ const ROOT = process.cwd();
 const IN_SCOPE_DIRS = [
   'about', 'festival', 'sound-system-yard', 'main-stage', 'higher-learning-roots',
   'ital-marketplace', 'reasoning-circle', 'healing-grove', 'heritage-village',
-  'marketplace', 'tickets', 'contact', 'calendar', 'raffle', 'donate', 'legal',
+  'marketplace', 'tickets', 'contact', 'calendar', 'silent-auction', 'donate', 'legal',
   'media', 'sponsors', 'youth-village', 'scholarship', 'pickney-time', 'founding-partners',
 ];
 
@@ -23,7 +23,7 @@ const SECTION_LABELS = {
   'ital-marketplace': 'Ital Marketplace', 'reasoning-circle': 'Reasoning Circle',
   'healing-grove': 'Healing Grove', 'heritage-village': 'Heritage Village',
   marketplace: 'Marketplace', tickets: 'Tickets', contact: 'Contact',
-  calendar: 'Calendar', raffle: 'Raffle', donate: 'Donate', legal: 'Legal',
+  calendar: 'Calendar', 'silent-auction': 'Silent Auction', donate: 'Donate', legal: 'Legal',
   media: 'Media', sponsors: 'Sponsors', 'youth-village': 'Youth Village',
   scholarship: 'Scholarship', 'pickney-time': 'Pickney Time',
   'founding-partners': 'Founding Partners', '.': 'Home',
