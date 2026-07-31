@@ -2735,3 +2735,37 @@ grant select on plates_for_purpose_restaurants_public to anon;
 -- and its conditional `to` in TABLE_CONFIG, gated on decision = 'yes').
 -- contact_info remains as an optional secondary phone/other-contact field.
 alter table plates_for_purpose_responses add column if not exists email text;
+
+-- Internal test entry so Ras Tafari Inc org members can walk through the
+-- full Plates for Purpose ask/decision flow end to end before real
+-- restaurant outreach starts. Not a real restaurant -- excluded from the
+-- public confirmed-partners tally (count_toward_public_tally = false) so
+-- internal test submissions never inflate it. Anyone can submit real test
+-- decisions against this slug at any time; multiple people submitting
+-- against the same slug is fine, each is just its own response row.
+insert into plates_for_purpose_restaurants (
+  slug, business_name, donation_ask, target_ask_value, suggested_donation,
+  offer_choices, offer_note, contact_status, notes, count_toward_public_tally
+)
+values (
+  'ras-tafari-foods',
+  'Ras Tafari Foods',
+  'Dinner for Two Certificate',
+  '$50',
+  'Dinner for Two Certificate',
+  '["Dinner for Two", "2 Dinners for Two", "3 Dinners for Two"]'::jsonb,
+  'Raffle winners can either bring their own drinks, or you can include a drink with the dinner — whichever works best for you.',
+  'Internal Test',
+  'INTERNAL TEST ENTRY -- not a real restaurant. Used by Ras Tafari Inc organization members to test the Plates for Purpose ask/decision flow end to end. Safe to submit real test decisions against this slug at any time.',
+  false
+)
+on conflict (slug) do update set
+  business_name = excluded.business_name,
+  donation_ask = excluded.donation_ask,
+  target_ask_value = excluded.target_ask_value,
+  suggested_donation = excluded.suggested_donation,
+  offer_choices = excluded.offer_choices,
+  offer_note = excluded.offer_note,
+  contact_status = excluded.contact_status,
+  notes = excluded.notes,
+  count_toward_public_tally = excluded.count_toward_public_tally;
