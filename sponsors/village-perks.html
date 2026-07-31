@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SelassieFest · Village Perks Outreach System</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SelassieFest" />
+    <meta property="og:title" content="SelassieFest · Village Perks Outreach System" />
+    <meta property="og:description" content="SelassieFest — Chicago's celebration of Rastafari culture, heritage, and community." />
+    <meta property="og:url" content="https://selassiefest.com/sponsors/village-perks.html" />
+    <meta property="og:image" content="https://selassiefest.com/assets/images/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SelassieFest · Village Perks Outreach System" />
+    <meta name="twitter:description" content="SelassieFest — Chicago's celebration of Rastafari culture, heritage, and community." />
+    <meta name="twitter:image" content="https://selassiefest.com/assets/images/og-default.png" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-page: #fefaf2;
+      --surface: #ffffff;
+      --surface-muted: #faf7f0;
+      --border-light: #e9e2d4;
+      --border-med: #d6cdbc;
+      --text-primary: #2c2418;
+      --text-secondary: #6b5f4e;
+      --text-tertiary: #9b8f7a;
+      --accent: #2b7a4b;
+      --accent-dark: #1f5c38;
+      --accent-light: #cfe8da;
+      --success: #2b7a4b;
+      --success-bg: #e6f2ec;
+      --info: #2c6e9e;
+      --info-bg: #e6f0f7;
+      --warning: #c47b2b;
+      --warning-bg: #fff0e2;
+      --danger: #b33c2e;
+      --danger-bg: #fbeae7;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 14px rgba(0,0,0,0.05);
+      --font-sans: system-ui, -apple-system, 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    body {
+      background: var(--bg-page);
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .outreach-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .sys-header { margin-bottom: 2rem; }
+    .sys-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1f3a28 0%, #2b7a4b 80%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.25rem;
+    }
+    .sys-sub {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--accent);
+      padding-left: 0.8rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--surface-muted);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .phase-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.75rem;
+    }
+    .phase-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .phase-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .phase-block { display: none; }
+    .phase-block.active { display: block; }
+
+    .script-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .script-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .script-tag { font-size: 0.65rem; font-weight: 500; padding: 0.15rem 0.6rem; border-radius: 100px; }
+    .tag-village { background: var(--info-bg); color: var(--info); }
+    .tag-fmv { background: var(--warning-bg); color: var(--warning); }
+
+    .tip-box {
+      border-left: 3px solid var(--accent);
+      background: var(--surface-muted);
+      padding: 0.7rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .legal-pill {
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card { background: var(--surface); border-radius: var(--radius-md); padding: 1rem; text-align: center; border: 1px solid var(--border-light); }
+    .stat-number { font-size: 1.8rem; font-weight: 700; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); }
+
+    .action-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .search-filter { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .search-filter input, .search-filter select {
+      padding: 0.5rem 0.8rem; border-radius: 2rem; border: 1px solid var(--border-light); background: var(--surface); font-size: 0.8rem;
+    }
+    button, .btn {
+      background: var(--surface); border: 1px solid var(--border-med); padding: 0.4rem 1rem;
+      border-radius: 2rem; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    button.primary:hover { background: var(--accent-dark); }
+
+    .add-form {
+      background: var(--surface-muted); border-radius: var(--radius-md); padding: 1.2rem;
+      margin-bottom: 1.5rem; border: 1px solid var(--border-light); display: none;
+    }
+    .add-form.open { display: block; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 0.8rem; }
+    .field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .field label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-tertiary); }
+    .field input, .field select, .field textarea {
+      padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-light);
+      font-family: var(--font-sans); font-size: 0.8rem; background: var(--surface);
+    }
+
+    .contacts-table-wrapper { overflow-x: auto; }
+    .contacts-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .contacts-table th { text-align: left; padding: 0.7rem 0.5rem; font-weight: 600; color: var(--text-tertiary); border-bottom: 1px solid var(--border-light); }
+    .contacts-table td { padding: 0.8rem 0.5rem; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+    .status-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 500; }
+    .badge-new { background: var(--surface-muted); color: var(--text-secondary); }
+    .badge-approached { background: var(--info-bg); color: var(--info); }
+    .badge-interested { background: var(--warning-bg); color: var(--warning); }
+    .badge-confirmed { background: var(--success-bg); color: var(--success); }
+    .badge-declined { background: var(--danger-bg); color: var(--danger); }
+    .icon-btn { background: none; border: none; font-size: 1rem; cursor: pointer; padding: 0.2rem; opacity: 0.6; }
+    .icon-btn:hover { opacity: 1; }
+    .empty-state { text-align: center; padding: 2.5rem; color: var(--text-tertiary); }
+    hr { margin: 1rem 0; border: none; border-top: 1px solid var(--border-light); }
+
+    @media (max-width: 680px) {
+      body { padding: 1rem; }
+      .stat-number { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="outreach-container">
+  <div class="sys-header">
+    <div class="sys-title">Ras Tafari Inc. · Village Perks Outreach</div>
+    <div class="sys-sub">Turn a village into a real donate-and-receive experience — outreach scripts, prospect tracker, and IRS quid-pro-quo guidance for Ital Marketplace, Heritage Village, Healing Grove, and Higher Learning Roots.</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="guide">📖 Outreach Guide</button>
+    <button class="tab-btn" data-tab="tracker">📋 Prospect Tracker</button>
+    <button class="tab-btn" data-tab="irs">⚖️ IRS Quid Pro Quo Rules</button>
+  </div>
+
+  <!-- GUIDE PANEL -->
+  <div id="panel-guide" class="panel active">
+    <div class="tip-box"><strong>✨ How this works:</strong> Each village gets its own perk tier — a donor gives a set amount and receives something real in return (a plate of food, an artwork, a session, a class seat). Nothing here promises anything publicly until a real vendor/artist confirms — this tab is just for approaching them. Once someone says yes with a real price and item, add them in the Prospect Tracker tab and mark them Confirmed; that's what eventually becomes a public perk page and a Zeffy shop item.</div>
+
+    <div class="phase-nav">
+      <button class="phase-btn active" data-phase="ital">Ital Marketplace</button>
+      <button class="phase-btn" data-phase="heritage">Heritage Village</button>
+      <button class="phase-btn" data-phase="healing">Healing Grove</button>
+      <button class="phase-btn" data-phase="learning">Higher Learning Roots</button>
+    </div>
+
+    <div id="phase-ital" class="phase-block active">
+      <div class="script-card"><div class="script-label"><span>Opening ask</span><span class="script-tag tag-village">Food vendor</span></div><div class="script-text">"We're building a 'donate and get a real plate' program for Ital Marketplace at SelassieFest. A donor gives, say, $50, and gets a real dish from your kitchen at the festival — plus your name on our site and stage recognition. Would you want to be one of the vendors featured?"</div></div>
+      <div class="script-card"><div class="script-label"><span>What we need from them</span><span class="script-tag tag-fmv">Ask for FMV</span></div><div class="script-text">A specific dish or combo, the donation amount you'd suggest for it, and — importantly — what that dish would normally cost on its own (its fair market value). We need that last number for the tax receipt, not for pricing.</div></div>
+    </div>
+
+    <div id="phase-heritage" class="phase-block">
+      <div class="script-card"><div class="script-label"><span>Opening ask</span><span class="script-tag tag-village">Artist</span></div><div class="script-text">"Heritage Village is building a 'donate and receive an original piece' program. A donor gives an amount you set, and receives a piece of your work — a print, a small original, a craft piece — plus your name and a link to your page on our site. Interested in offering a piece or a limited run?"</div></div>
+      <div class="script-card"><div class="script-label"><span>What we need from them</span><span class="script-tag tag-fmv">Ask for FMV</span></div><div class="script-text">Which piece(s) or class of piece, how many are available (inventory cap matters here — one-of-a-kind art can't oversell), the donation amount, and the piece's normal retail/gallery value.</div></div>
+    </div>
+
+    <div id="phase-healing" class="phase-block">
+      <div class="script-card"><div class="script-label"><span>Opening ask</span><span class="script-tag tag-village">Practitioner</span></div><div class="script-text">"Healing Grove is putting together a 'donate and receive a real session' program — sound healing, a wellness kit, a short class. A donor gives an amount, gets the real thing at the festival, and you get featured on our site and stage. Want to offer something?"</div></div>
+      <div class="script-card"><div class="script-label"><span>What we need from them</span><span class="script-tag tag-fmv">Ask for FMV</span></div><div class="script-text">The specific service/item, how many slots you can realistically deliver on festival day, the donation amount, and its normal price.</div></div>
+    </div>
+
+    <div id="phase-learning" class="phase-block">
+      <div class="tip-box"><strong>⚠️ Non-cannabis perks only.</strong> Higher Learning Roots is our cannabis-education village — the perk offered here can't be an actual cannabis product exchanged for a donation. Stick to merchandise, a class seat, educational material, or similar.</div>
+      <div class="script-card"><div class="script-label"><span>Opening ask</span><span class="script-tag tag-village">Educator</span></div><div class="script-text">"Higher Learning Roots is building a 'donate and receive' program too — a class seat, a workbook, branded merch — nothing cannabis-product-based. Want to offer something for this?"</div></div>
+    </div>
+  </div>
+
+  <!-- TRACKER PANEL -->
+  <div id="panel-tracker" class="panel">
+    <div class="stats-grid" id="stats-container">
+      <div class="stat-card"><div class="stat-number" id="total-contacts">0</div><div class="stat-label">Total prospects</div></div>
+      <div class="stat-card"><div class="stat-number" id="interested-count">0</div><div class="stat-label">Interested</div></div>
+      <div class="stat-card"><div class="stat-number" id="confirmed-count">0</div><div class="stat-label">Confirmed</div></div>
+      <div class="stat-card"><div class="stat-number" id="total-value">$0</div><div class="stat-label">Suggested donation total (confirmed)</div></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="search-filter">
+        <input type="text" id="search-input" placeholder="🔍 Filter by name...">
+        <select id="village-filter"><option value="">All villages</option><option value="Ital Marketplace">Ital Marketplace</option><option value="Heritage Village">Heritage Village</option><option value="Healing Grove">Healing Grove</option><option value="Higher Learning Roots">Higher Learning Roots</option></select>
+        <select id="status-filter"><option value="">All statuses</option><option value="new">Not Contacted</option><option value="approached">Approached</option><option value="interested">Interested</option><option value="confirmed">Confirmed</option><option value="declined">Declined</option></select>
+      </div>
+      <div>
+        <button id="export-csv-btn" class="btn">📎 Export CSV</button>
+        <button id="toggle-form-btn" class="btn primary">+ Add Prospect</button>
+      </div>
+    </div>
+
+    <div id="add-form" class="add-form">
+      <div class="form-row">
+        <div class="field"><label>Vendor / Artist Name *</label><input type="text" id="contact-name" placeholder="e.g. Jane's Kitchen"></div>
+        <div class="field"><label>Village *</label><select id="contact-village">
+          <option value="Ital Marketplace">Ital Marketplace</option>
+          <option value="Heritage Village">Heritage Village</option>
+          <option value="Healing Grove">Healing Grove</option>
+          <option value="Higher Learning Roots">Higher Learning Roots</option>
+        </select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Contact info</label><input type="text" id="contact-info" placeholder="email or phone"></div>
+        <div class="field"><label>Status</label><select id="contact-status"><option value="new">Not Contacted</option><option value="approached">Approached</option><option value="interested">Interested</option><option value="confirmed">Confirmed</option><option value="declined">Declined</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Proposed perk</label><input type="text" id="contact-perk" placeholder="e.g. Plate of ital stew"></div>
+        <div class="field"><label>Suggested donation ($)</label><input type="number" id="contact-donation" placeholder="50"></div>
+        <div class="field"><label>Fair market value ($)</label><input type="number" id="contact-fmv" placeholder="12"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Inventory cap</label><input type="number" id="contact-inventory" placeholder="e.g. 20 available"></div>
+        <div class="field"><label>Date contacted</label><input type="date" id="contact-date"></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="contact-notes" placeholder="What was discussed, next steps..."></textarea></div>
+      <div style="display: flex; gap: 0.6rem; margin-top: 0.8rem;">
+        <button id="save-contact-btn" class="primary">Save Prospect</button>
+        <button id="cancel-form-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="contacts-table-wrapper" id="contacts-list-container"></div>
+  </div>
+
+  <!-- IRS PANEL -->
+  <div id="panel-irs" class="panel">
+    <div style="max-width: 780px;">
+      <div class="legal-pill">⚠️ Read before any perk page goes live</div>
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">What "quid pro quo" means here</h3>
+      <div class="tip-box">Whenever a donor receives something of real value in exchange for a gift — a plate of food, an artwork, a session — the IRS calls this a "quid pro quo" contribution. Only the portion of the payment <em>above</em> the fair market value of what they received is tax-deductible.</div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">The $75 disclosure rule</h3>
+      <div class="tip-box">If the total payment is <strong>more than $75</strong>, we're required to give the donor a written disclosure stating (a) only the amount over the item's fair market value is deductible, and (b) a good-faith estimate of that value. Example: "Your $50 contribution includes a $12 plate of ital stew; $38 is tax-deductible." Below $75 total, this written disclosure isn't legally required, but it's good practice to include anyway.</div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">Why the fair market value field matters</h3>
+      <div class="tip-box">This is why every prospect in the tracker needs a real fair-market-value number, not just a suggested donation amount — without it we can't generate a correct receipt, and Zeffy's Online Shop needs both numbers to build the receipt automatically.</div>
+
+      <h3 style="font-size: 1rem; margin: 1rem 0 0.5rem;">Inventory caps</h3>
+      <div class="tip-box">One-of-a-kind items (original artwork, limited sessions) need a hard inventory cap so we never oversell a real, physical thing. Perishable items (a plate of food) should be capped to what the vendor can realistically produce for festival day.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'selassiefest_village_perks_v1';
+  let editingId = null;
+
+  function loadContacts() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  function saveContacts(contacts) { localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts)); renderContacts(); updateStats(); }
+
+  function updateStats() {
+    const contacts = loadContacts();
+    const total = contacts.length;
+    const interested = contacts.filter(c => c.status === 'interested').length;
+    const confirmed = contacts.filter(c => c.status === 'confirmed').length;
+    const totalValue = contacts.filter(c => c.status === 'confirmed').reduce((s,c) => s + (Number(c.donation)||0), 0);
+    document.getElementById('total-contacts').innerText = total;
+    document.getElementById('interested-count').innerText = interested;
+    document.getElementById('confirmed-count').innerText = confirmed;
+    document.getElementById('total-value').innerText = `$${totalValue.toLocaleString()}`;
+  }
+
+  function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  function renderContacts() {
+    let contacts = loadContacts();
+    const search = document.getElementById('search-input')?.value.toLowerCase() || '';
+    const villageFilter = document.getElementById('village-filter')?.value || '';
+    const statusFilter = document.getElementById('status-filter')?.value || '';
+    if (search) contacts = contacts.filter(c => c.name.toLowerCase().includes(search));
+    if (villageFilter) contacts = contacts.filter(c => c.village === villageFilter);
+    if (statusFilter) contacts = contacts.filter(c => c.status === statusFilter);
+    const container = document.getElementById('contacts-list-container');
+    if (!contacts.length) { container.innerHTML = '<div class="empty-state">No prospects found. Add your first one above.</div>'; return; }
+    const statusMap = { new: ['Not Contacted','badge-new'], approached: ['Approached','badge-approached'], interested: ['Interested','badge-interested'], confirmed: ['Confirmed','badge-confirmed'], declined: ['Declined','badge-declined'] };
+    const html = `<table class="contacts-table"><thead><tr><th>Name</th><th>Village</th><th>Perk</th><th>Donation</th><th>FMV</th><th>Inventory</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${contacts.map(c => {
+      const [statusLabel, badgeClass] = statusMap[c.status] || ['Unknown','badge-new'];
+      return `<tr>
+        <td><strong>${escapeHtml(c.name)}</strong>${c.notes ? `<br><span style="font-size:0.7rem;color:var(--text-tertiary)">${escapeHtml(c.notes.substring(0,60))}${c.notes.length>60?'…':''}</span>` : ''}</td>
+        <td style="color:var(--text-secondary)">${escapeHtml(c.village || '—')}</td>
+        <td>${escapeHtml(c.perk || '—')}</td>
+        <td>${c.donation ? `$${Number(c.donation).toLocaleString()}` : '—'}</td>
+        <td>${c.fmv ? `$${Number(c.fmv).toLocaleString()}` : '—'}</td>
+        <td>${c.inventory || '—'}</td>
+        <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
+        <td class="action-icons"><button class="icon-btn" onclick="editContact(${c.id})" title="Edit">✏️</button><button class="icon-btn" onclick="deleteContact(${c.id})" title="Delete">🗑️</button></td>
+      </tr>`}).join('')}</tbody></table>`;
+    container.innerHTML = html;
+  }
+
+  function deleteContact(id) { if(confirm('Remove this prospect permanently?')) { saveContacts(loadContacts().filter(c => c.id !== id)); if(editingId===id) resetForm(); } }
+  function editContact(id) {
+    const contact = loadContacts().find(c => c.id === id); if(!contact) return;
+    editingId = contact.id;
+    document.getElementById('contact-name').value = contact.name;
+    document.getElementById('contact-village').value = contact.village || 'Ital Marketplace';
+    document.getElementById('contact-info').value = contact.info || '';
+    document.getElementById('contact-status').value = contact.status;
+    document.getElementById('contact-perk').value = contact.perk || '';
+    document.getElementById('contact-donation').value = contact.donation || '';
+    document.getElementById('contact-fmv').value = contact.fmv || '';
+    document.getElementById('contact-inventory').value = contact.inventory || '';
+    document.getElementById('contact-date').value = contact.date || '';
+    document.getElementById('contact-notes').value = contact.notes || '';
+    document.getElementById('add-form').classList.add('open');
+  }
+  function resetForm() {
+    editingId = null;
+    document.getElementById('contact-name').value = '';
+    document.getElementById('contact-village').value = 'Ital Marketplace';
+    document.getElementById('contact-info').value = '';
+    document.getElementById('contact-status').value = 'new';
+    document.getElementById('contact-perk').value = '';
+    document.getElementById('contact-donation').value = '';
+    document.getElementById('contact-fmv').value = '';
+    document.getElementById('contact-inventory').value = '';
+    document.getElementById('contact-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('contact-notes').value = '';
+  }
+
+  function saveContactHandler() {
+    const name = document.getElementById('contact-name').value.trim();
+    if(!name) { alert('Please enter a name'); return; }
+    const contacts = loadContacts();
+    const newContact = {
+      id: editingId || Date.now(),
+      name: name,
+      village: document.getElementById('contact-village').value,
+      info: document.getElementById('contact-info').value,
+      status: document.getElementById('contact-status').value,
+      perk: document.getElementById('contact-perk').value,
+      donation: parseInt(document.getElementById('contact-donation').value) || 0,
+      fmv: parseInt(document.getElementById('contact-fmv').value) || 0,
+      inventory: document.getElementById('contact-inventory').value,
+      date: document.getElementById('contact-date').value,
+      notes: document.getElementById('contact-notes').value,
+    };
+    if(editingId) { const index = contacts.findIndex(c => c.id === editingId); if(index!==-1) contacts[index] = newContact; }
+    else { contacts.push(newContact); }
+    saveContacts(contacts);
+    resetForm();
+    document.getElementById('add-form').classList.remove('open');
+    renderContacts(); updateStats();
+  }
+
+  function exportToCSV() {
+    const contacts = loadContacts();
+    if(!contacts.length) { alert('No prospects to export'); return; }
+    const headers = ['Name','Village','Contact Info','Status','Perk','Suggested Donation','Fair Market Value','Inventory Cap','Date Contacted','Notes'];
+    const rows = contacts.map(c => [c.name, c.village, c.info, c.status, c.perk, c.donation, c.fmv, c.inventory, c.date, c.notes]);
+    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${String(cell || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `village_perks_prospects_${new Date().toISOString().slice(0,19)}.csv`; a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { const tab = btn.dataset.tab; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.getElementById(`panel-${tab}`).classList.add('active'); }); });
+  document.querySelectorAll('.phase-btn').forEach(btn => { btn.addEventListener('click', (e) => { const phase = btn.dataset.phase; document.querySelectorAll('.phase-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.phase-block').forEach(b=>b.classList.remove('active')); document.getElementById(`phase-${phase}`).classList.add('active'); }); });
+
+  document.getElementById('toggle-form-btn').addEventListener('click', () => { resetForm(); document.getElementById('add-form').classList.toggle('open'); });
+  document.getElementById('cancel-form-btn').addEventListener('click', () => { resetForm(); document.getElementById('add-form').classList.remove('open'); });
+  document.getElementById('save-contact-btn').addEventListener('click', saveContactHandler);
+  document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
+  document.getElementById('search-input').addEventListener('input', () => renderContacts());
+  document.getElementById('village-filter').addEventListener('change', () => renderContacts());
+  document.getElementById('status-filter').addEventListener('change', () => renderContacts());
+
+  resetForm();
+  renderContacts();
+  updateStats();
+</script>
+</body>
+</html>
