@@ -264,9 +264,22 @@ function formatPlatesForPurposeConfirmation(record: Record<string, any>) {
       <h2>Thank you, ${escapeHtml(record.business_name)}!</h2>
       <p>We've got your "yes" for Plates for Purpose${record.offer_details ? ` — <strong>${escapeHtml(record.offer_details)}</strong>` : ''}.</p>
       <p>Your raffle tickets are being prepared now. Someone from the SelassieFest team will follow up shortly to confirm the details and next steps.</p>
+      <p>If you have a logo on file with us, you'll find your official "Proud Plates for Purpose Partner" badge attached — feel free to share it on your own social media!</p>
       <p style="margin-top:24px;color:#888;font-size:0.85rem;">Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest. Questions in the meantime? Reply to this email or call (414) 909-3279.</p>
     `,
   };
+}
+
+// Looks up the restaurant's badge_path by slug (service-role, bypasses RLS
+// on the otherwise anon-unreachable plates_for_purpose_restaurants table).
+async function fetchRestaurantBadgePath(slug: string): Promise<string | null> {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/plates_for_purpose_restaurants?slug=eq.${encodeURIComponent(slug)}&select=badge_path`,
+    { headers: { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` } },
+  );
+  if (!res.ok) return null;
+  const rows = await res.json();
+  return rows[0]?.badge_path ?? null;
 }
 
 function formatEventNotifySignup(record: Record<string, any>) {
@@ -339,6 +352,16 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       {
         to: (record) => (record.decision === 'yes' ? record.email : null),
         format: formatPlatesForPurposeConfirmation,
+        attachments: async (record) => {
+          const badgePath = await fetchRestaurantBadgePath(record.restaurant_slug);
+          if (!badgePath) return [];
+          return [
+            {
+              filename: `Plates-for-Purpose-Partner-Badge-${record.restaurant_slug}.jpg`,
+              content: await fetchStorageObjectAsBase64('plates-for-purpose-badges', badgePath),
+            },
+          ];
+        },
       },
     ],
   },
