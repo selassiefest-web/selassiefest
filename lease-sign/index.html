@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Sign Your Lease | 2nd Chance Housing</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f4f5f7;
+    --panel: #ffffff;
+    --border: #d7dae0;
+    --text: #1c1e21;
+    --muted: #5b6270;
+    --accent: #2b7a4b;
+    --danger: #a4342a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c;
+      --panel: #1f2226;
+      --border: #33373d;
+      --text: #e7e9ec;
+      --muted: #9aa1ac;
+      --accent: #5fc088;
+      --danger: #e08078;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .top-bar {
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 24px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  .page-wrap { max-width: 900px; margin: 0 auto; padding: 24px; }
+  .status-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  .status-box.success { color: var(--accent); font-weight: 600; }
+  .status-box.invalid { color: var(--danger); font-weight: 600; }
+
+  .letter-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+  .letter {
+    background: white;
+    color: #000;
+    width: 8.5in;
+    max-width: 100%;
+    min-height: 11in;
+    padding: 0.7in 0.8in;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+  .letter h2.doc-title { text-align: center; font-weight: bold; font-size: 12pt; margin: 0 0 2px; }
+  .letter .created-on { text-align: center; margin: 0 0 14px; font-size: 9pt; }
+  .letter .intro { margin: 0 0 12px; text-align: justify; }
+  .letter .sec-title { font-weight: bold; margin: 14px 0 4px; font-size: 10.5pt; }
+  .letter table.info { width: 100%; border-collapse: collapse; margin: 4px 0 10px; }
+  .letter table.info td { border: 1px solid #000; padding: 3px 6px; vertical-align: top; }
+  .letter table.info td.label { font-weight: bold; width: 34%; }
+  .letter p { margin: 0 0 10px; text-align: justify; }
+  .letter ol.clauses { margin: 0 0 10px; padding-left: 20px; }
+  .letter ol.clauses li { margin-bottom: 8px; text-align: justify; }
+  .letter .rules-group-title { font-weight: bold; margin: 10px 0 2px; }
+  .letter ul.rules { margin: 0 0 6px; padding-left: 18px; }
+  .letter ul.rules li { margin-bottom: 4px; text-align: justify; }
+  .letter .nsp-item { margin-bottom: 8px; text-align: justify; }
+  .letter .nsp-item b { font-weight: bold; }
+  .letter .callout { border: 1px solid #000; padding: 8px 10px; margin: 8px 0 14px; background: #f7f7f7; }
+  .letter .page-break { break-before: page; page-break-before: always; margin-top: 24px; }
+  .signature-line { border-top: 1px solid #000; display: inline-block; min-width: 260px; padding-top: 2px; margin-top: 22px; }
+  .sig-row { display: flex; gap: 40px; align-items: flex-end; margin: 10px 0 4px; flex-wrap: wrap; }
+  .sig-img { display: block; height: 40px; }
+  .parking-section { margin-bottom: 10px; }
+  .parking-section b { font-weight: bold; }
+  .parking-initial { display: inline-block; border-bottom: 1px solid #000; min-width: 60px; margin-left: 8px; }
+
+  .sign-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  .sign-panel h3 { margin: 0 0 12px; font-size: 1.05rem; }
+  .sign-panel label { display: block; font-size: 0.85rem; color: var(--muted); margin: 10px 0 4px; }
+  .sign-panel input[type="text"] {
+    width: 100%; font: inherit; font-size: 0.95rem; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text);
+  }
+  .check-row { display: flex; align-items: flex-start; gap: 8px; margin: 14px 0; font-size: 0.9rem; }
+  .check-row input { margin-top: 3px; }
+  button {
+    font: inherit; font-size: 0.95rem; cursor: pointer; border-radius: 6px;
+    border: 1px solid var(--accent); background: var(--accent); color: white; padding: 10px 20px;
+  }
+  button:disabled { opacity: 0.6; cursor: default; }
+  .submit-error { color: var(--danger); font-size: 0.85rem; margin-top: 8px; }
+
+  @media (max-width: 700px) {
+    .letter { padding: 0.4in; font-size: 9pt; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">2nd Chance Housing — Lease Signing</div>
+
+<div class="page-wrap">
+
+  <div id="loadingState" class="status-box">Loading your lease…</div>
+
+  <div id="invalidState" class="status-box invalid" style="display:none;">
+    This link is no longer valid. It may have already been signed, or the link may be incorrect.
+    Please contact your property manager if you believe this is an error.
+  </div>
+
+  <div id="successState" class="status-box success" style="display:none;">
+    ✅ Thank you! Your signed lease has been submitted. Check your email — a copy is on its way to you now.
+  </div>
+
+  <div id="leaseContent" style="display:none;">
+
+    <div class="letter-wrap">
+      <div class="letter" id="letter">
+
+        <div id="cviBanner" class="callout" style="display:none;">
+          <b>NOTE: This Agreement is contingent upon approval [by] The Center for Veterans Issues (CVI).</b><br>
+          Signee may take possession of the unit with agency approval letter for security deposit and 1st month's rent.<br>
+          The move in date IS the day after the prospective Tenant receives the key.
+        </div>
+
+        <div id="annualBanner" class="callout" style="display:none;">
+          NOTE: This Agreement is contingent upon approval by either:
+          <ul class="rules" id="annualAgencyList"></ul>
+          Signee can not take possession of the unit until security deposit and 1st month's rent are paid in full.<br>
+          Signee can not take possession of the unit until the unit has passed their agencies' inspections.<br>
+          The move in date IS the day after the prospective Tenant receives the key.
+        </div>
+
+        <h2 class="doc-title" id="p_docHeader1">Royal Orleans Condominium Addition 1 (ROCA1)</h2>
+        <h2 class="doc-title" id="p_docHeader2" style="display:none;"></h2>
+        <h2 class="doc-title">Residential Rental Agreement</h2>
+        <p class="created-on">Created On: <span id="p_createdOn">________________________________________</span></p>
+
+        <p class="intro">This Agreement for the premises identified below is entered into by and between the Landlord and Tenant (referred to in the singular whether one or more) on the following terms and conditions:</p>
+
+        <div class="sec-title">§ Tenant 1</div>
+        <table class="info">
+          <tr><td class="label"># of Adults</td><td id="p_numAdults"></td><td class="label"># of Children</td><td id="p_numChildren"></td></tr>
+          <tr><td class="label">Name</td><td colspan="3" id="p_tenant1Name"></td></tr>
+          <tr><td class="label">E-Mail</td><td colspan="3" id="p_tenant1Email"></td></tr>
+          <tr><td class="label" colspan="4">Children Information</td></tr>
+          <tr><td class="label">Name 1</td><td id="p_child1Name"></td><td class="label">D.O.B. 1</td><td id="p_child1Dob"></td></tr>
+          <tr><td class="label">Name 2</td><td id="p_child2Name"></td><td class="label">D.O.B. 2</td><td id="p_child2Dob"></td></tr>
+          <tr id="p_childRow3" style="display:none;"><td class="label">Name 3</td><td id="p_child3Name"></td><td class="label">D.O.B. 3</td><td id="p_child3Dob"></td></tr>
+          <tr id="p_childRow4" style="display:none;"><td class="label">Name 4</td><td id="p_child4Name"></td><td class="label">D.O.B. 4</td><td id="p_child4Dob"></td></tr>
+          <tr id="p_childRow5" style="display:none;"><td class="label">Name 5</td><td id="p_child5Name"></td><td class="label">D.O.B. 5</td><td id="p_child5Dob"></td></tr>
+          <tr id="p_childRow6" style="display:none;"><td class="label">Name 6</td><td id="p_child6Name"></td><td class="label">D.O.B. 6</td><td id="p_child6Dob"></td></tr>
+        </table>
+
+        <div id="tenant2Block" style="display:none;">
+          <div class="sec-title">§ Tenant 2</div>
+          <table class="info">
+            <tr><td class="label">Name</td><td id="p_tenant2Name"></td></tr>
+            <tr><td class="label">E-Mail</td><td id="p_tenant2Email"></td></tr>
+          </table>
+        </div>
+
+        <div class="sec-title">§ Owner</div>
+        <table class="info">
+          <tr><td class="label">Owner</td><td id="p_ownerName"></td></tr>
+          <tr><td colspan="2" id="p_ownerNote"></td></tr>
+        </table>
+
+        <div class="sec-title">§ Agent — for service of process, collection, maintenance and management, and collection of rents</div>
+        <p>If mailing, send rents to the Agent's address:</p>
+        <table class="info">
+          <tr><td class="label">Agent</td><td id="p_agentOrgName"></td></tr>
+          <tr><td class="label">Address</td><td id="p_agentAddress"></td></tr>
+          <tr><td class="label">E-Mail</td><td id="p_agentEmail"></td></tr>
+        </table>
+
+        <div class="sec-title">§ Premises</div>
+        <p id="p_premises">[Unit address]</p>
+
+        <div class="sec-title">§ Terms</div>
+        <table class="info">
+          <tr><td class="label">Initial Start Date</td><td id="p_initialStartDate"></td></tr>
+          <tr id="p_renewalOnRow"><td class="label">Perpetual Renewal On</td><td id="p_renewalOn"></td></tr>
+          <tr id="p_expirationDateRow" style="display:none;"><td class="label">Expiration Date</td><td id="p_expirationDate"></td></tr>
+          <tr><td class="label">Rent Late On</td><td id="p_rentLateOn"></td></tr>
+          <tr><td class="label">Rent Amount</td><td id="p_rentAmount"></td><td class="label">Security Deposit Amount</td><td id="p_securityDeposit"></td></tr>
+          <tr><td class="label">Rent Due On</td><td id="p_rentDueOn"></td><td class="label">Late Rent Fee</td><td id="p_lateFee"></td></tr>
+          <tr><td class="label">5 Day Notice, Wis. Stat. §704.17 (1) or (2)(a) and/or (2)(b) to Quit or Pay issued on</td><td colspan="3" id="p_fiveDayNoticeOn"></td></tr>
+          <tr id="p_moveInRow"><td colspan="4" id="p_moveInText"></td></tr>
+          <tr id="p_depositSplitRow" style="display:none;"><td class="label">Who pays Security Deposit?</td><td colspan="3" id="p_depositSplitText"></td></tr>
+          <tr id="p_rentSplitRow" style="display:none;"><td class="label">Who pays 1st month's rent?</td><td colspan="3" id="p_rentSplitText"></td></tr>
+        </table>
+
+        <div class="sec-title">§ Utilities</div>
+        <p>Tenant does not pay for water services. Tenant pays all other utility services.</p>
+        <table class="info">
+          <tr><td class="label">Electricity</td><td id="p_utilElectricity"></td><td class="label">Gas</td><td id="p_utilGas"></td></tr>
+          <tr><td class="label">Heat</td><td id="p_utilHeat"></td><td class="label">Air Conditioning</td><td id="p_utilAC"></td></tr>
+          <tr><td class="label">Sewer/Water</td><td id="p_utilSewer"></td><td class="label">Hot Water</td><td id="p_utilHotWater"></td></tr>
+          <tr><td class="label">Trash</td><td id="p_utilTrash"></td><td class="label">Internet</td><td id="p_utilInternet"></td></tr>
+        </table>
+        <p>Charges incurred by Landlord for Tenant's returned checks are payable by Tenant. Landlord shall provide a receipt for cash payments of rent. All tenants, if more than one, are jointly and severally liable for the full amount of any payments due under this Agreement. Acceptance of a delinquent payment does not constitute a waiver of that default or any other default under this Agreement.</p>
+
+        <div class="sec-title">§ Attachments</div>
+        <p>Attachments checked below are attached to this contract and incorporated herein by reference.</p>
+        <ul class="rules" id="p_attachmentsList"></ul>
+
+        <div class="sec-title">§ Notice of Habitability</div>
+        <p>I hereby acknowledge that Landlord has disclosed any code violations, code enforcement litigation and/or compliance board proceedings during the previous 12 months for the residence and common area and any notice of intent to terminate utility service, copies of which, if any, are listed below to this lease. No known conditions affecting habitability.</p>
+
+        <div class="sec-title">§ Notice of Foreclosure</div>
+        <p>I hereby acknowledge that Landlord has disclosed any foreclosure proceedings against the property or Landlord, copies of which, if any, are listed below. No known foreclosure proceedings.</p>
+
+        <div class="sec-title">§ Further Acknowledgement by Tenant</div>
+        <p><b>Lead Warning Statement.</b> Housing built before 1978 may contain lead-based paint. Lead from paint, paint chips, and dust can pose health hazards if not managed properly. Lead exposure is especially harmful to young children and pregnant women. Before renting pre-1978 housing, Landlord must disclose the presence of known lead-based paint and/or lead-based paint hazards in the dwelling. Tenant must also receive a federally approved pamphlet on lead poisoning prevention.</p>
+        <p><b>Landlord's Disclosure.</b> Landlord has no knowledge of lead-based paint and/or lead-based paint hazards in the housing. Landlord has no reports or records pertaining to lead-based paint and/or lead-based paint hazards in the housing.</p>
+        <p><b>Tenant's Acknowledgment.</b> Tenant hereby acknowledges that on or before <span id="p_leadAckDate">[date]</span>, he/she/they received from <span id="p_leadAckAgent">[Agent]</span>, in connection with the rental of the dwelling located at <span id="p_leadAckAddress">[unit address]</span>, the following documents: Enclosure (1) — US; Enclosure (2) — US. Tenant has received copies of all information listed above. Tenant has received the pamphlet Protect Your Family from Lead in Your Home.</p>
+
+        <p><b>Disclosure of Information on Radon Hazards — Radon Warning Statement.</b> Every tenant interested in leasing residential real property is notified that the property may present exposure to dangerous levels of indoor radon gas that may place the occupants at risk of developing radon-induced lung cancer. Radon, a Class-A human carcinogen, is the leading cause of lung cancer in non-smokers and the second leading cause overall. The landlord leasing the property has agreed to provide the tenant with any information on radon test results of the dwelling showing elevated levels of radon in the owner's possession.</p>
+        <p><b>Landlord's Disclosure.</b> Landlord has no knowledge of elevated radon concentrations in the dwelling. Landlord has no records or reports pertaining to elevated radon concentrations with the dwelling. <b>Tenant's Acknowledgment.</b> Tenant has received copies of all information listed above.</p>
+
+        <p><b>Mold Disclosure — Mold Warning Statement.</b> This mold disclosure is incorporated into and made part of the Lease executed by the Landlord and the Tenant referring to and incorporating the Leased Premises. Potential health effects and symptoms associated with mold exposures include allergic reactions, asthma, and other respiratory complaints. Mold can be found almost anywhere and can grow on virtually any substance, providing moisture is present. There is no practical way to eliminate all mold and mold spores in an indoor environment. The best way to control indoor mold growth is by controlling moisture. Tenant acknowledges that the Landlord has provided direction to the Tenant on how to obtain mold informational pamphlets that are made available to the public through the United States Environmental Protection Agency (EPA) (Mail: Protection U.S. EPA/Office of Radiation and Indoor Air Indoor Environments Division, 1200 Pennsylvania Avenue, NW, #6609J, Washington, DC 20460, Phone: (202) 343-9370). <b>Landlord's Disclosure.</b> Landlord has no knowledge of mold issues in the Leased Premises.</p>
+
+        <p><b>Asbestos Disclosure.</b> Asbestos is a common building material that may be present in many buildings constructed prior to 1981. The United States Environmental Protection Agency (EPA) has determined the mere presence of asbestos materials does not pose a health risk to residents and that such materials are safe as long as they are not disturbed or dislodged in a manner that causes the asbestos fibers to be released. Sanding, scraping, pounding and other remodeling techniques that release dust may cause asbestos particles to become airborne. EPA rules do not require the material to be removed. Federal law requires that reasonable precautions are taken to minimize the chance of damage or disturbance of asbestos containing materials. Tenant(s) acknowledge that this is a WARNING that the Leased Premises may contain asbestos and may expose him/her to a chemical known to cause cancer. Tenant(s) agree that no improvements, alterations, modifications, or repairs to the premises shall be made without the express approval of the Landlord. This approval will depend upon the acceptance of a written plan of protection from the release of or exposure to asbestos. Tenant(s) may hang only pictures and other wall ornaments with hangers that are less than ¼” diameter. Tenant(s) will notify the Landlord immediately where there exists a hole larger than ¼” diameter, evidence of a water leak, and/or any appearance of crumbling or peeling in the wallboard or ceilings. For more information on asbestos, we recommend the Environmental Protection Agency's web site at http://www.epa.gov/asbestos or contact them by calling (202) 554-1404. <b>Landlord's Disclosure.</b> Landlord has no knowledge of asbestos hazards located in or around the Leased Premises.</p>
+
+        <p><b>Disclosure of Bedbug Infestation History.</b> During the past year, the building did not have a bedbug infestation history and it has not been the subject of eradication measures.</p>
+
+        <div class="page-break"></div>
+
+        <ol class="clauses">
+          <li><b>Security Deposit.</b> Upon execution of this Agreement, Tenant shall pay a security deposit in the amount of <span id="p_clauseDeposit">[$amount]</span> to be held by Landlord or Landlord's agent. The deposit, less any amounts legally withheld, will be returned to Tenant's last known address within twenty-one (21) days after any event set forth in §704.28(4), Wis. Stats. If any portion of the deposit is withheld, Landlord must provide Tenant with a written statement accounting for amounts withheld. The statement shall describe each item of physical damage or other claim made against the security deposit, and the amount withheld as reasonable compensation for each item or claim. If repair costs are not known within twenty-one (21) days Landlord may use a good faith estimate in the written accounting. The reasonable cost for tenant damage, waste, or neglect of the premises, normal wear and tear excluded, may be deducted from Tenant's security deposit as well as any amounts set forth in §704.28(1), Wis. Stats. Tenant has seven (7) days from the beginning of the term of the Agreement to notify Landlord of any additional damage or defects existing prior to the Tenant's occupancy and/or request in writing a list of physical damages or defects, if any, charged against the previous tenant's security deposit. No deduction from Tenant's security deposit shall be made for any such damage or defect for which written notification was given within the time stated. Tenant may not use the security deposit as payment for the last month's rent without the written permission of Landlord.</li>
+          <li><b>Deductions from Prior Tenant's Security Deposit.</b> Tenant is hereby notified that Tenant may do any of the following within seven (7) days after the start of their tenancy: (a) inspect the unit and notify Landlord of any pre-existing damages or defects, and (b) request a list of physical damages or defects charged against the previous Tenant's security deposit. If such a request is made by Tenant, Landlord will supply Tenant with a list of all physical damages or defects charged against the previous tenant's security deposit regardless of whether or not those damages or defects have been repaired. Said list will be provided to Tenant within thirty (30) days from when the request was received or, within seven (7) days after Landlord notifies the previous tenant of the security deposit deductions, whichever occurs later. Landlord need not disclose the previous tenant's identity, nor the amount deducted from the previous tenant's security deposit. Landlord will provide Tenant with a Check-In / Check-Out sheet. Should Tenant fail to return it to Landlord within seven (7) days after the start of the tenancy, Tenant will be considered to have accepted the Premises without any exceptions.</li>
+          <li><b>Rules.</b> Landlord may make reasonable rules governing the use and occupancy of the Premises and the building in which it is located. Any failure by the Tenant to substantially comply with the rules will be a breach of this Agreement and may result in the eviction of the Tenant. Landlord may amend the rules to provide for newly added amenities or to meet changed circumstances or conditions adversely affecting the property. No such amendments may unreasonably interfere with Tenant's use and enjoyment of the Premises or the property of which it is part. A copy of the rules, if applicable, has been given to Tenant at the time of application and at the time of the signing of this Agreement. See Rules &amp; Regulations as a part of the Lease.</li>
+          <li><b>Notice to Vacate.</b> Lease for Term – No written notice is required to terminate a lease for term because the lease automatically ends on the last day of the term. Nonetheless, both Landlord and Tenant should discuss prior to the end of the original lease term whether or not they wish to continue the tenancy beyond the original lease term and if so, enter into a new rental agreement accordingly. Month to Month Tenancy – Written notice must be received by the other party at least twenty-eight (28) days prior to the ending of a month to month tenancy. A month to month tenancy may only be terminated at the end of a rental period. A rental period runs from the first day of a calendar month through the last day of a calendar month.</li>
+          <li><b>Controlling Law.</b> Landlord and Tenant understand their rights and obligations under this Agreement and that they are subject to the laws of Wisconsin, including Chapter 704 and Chapter 709 of the Wisconsin Statutes, Wisconsin Administrative Code Chapter ATCP 134, and applicable local ordinances. Both parties shall obey all governmental orders, rules and regulations related to the Premises, including local housing codes.</li>
+          <li><b>Condition of Premises.</b> Tenant has had the opportunity to inspect the rental unit and has determined that it will fulfill their needs and acknowledges that the unit is in good and satisfactory condition, except as noted in the Check-In / Check-Out sheet provided to them, prior to taking occupancy. Tenant agrees to maintain the premises during their tenancy and return it to Landlord in the same condition as it was received less normal wear and tear.</li>
+          <li><b>Possession and Abandonment.</b> Landlord shall give Tenant possession of the Premises as provided herein. Tenant shall vacate the Premises and return all of Landlord's property promptly upon the expiration of this Agreement, including any extension or renewal, or its termination, in accordance with its terms and the law. A Tenant will be considered to have surrendered the Premises on the last day of the tenancy provided under this Agreement, except that, (1) if the Tenant vacates before the last day of the tenancy, and gives Landlord written notice that Tenant has vacated, surrender occurs when Landlord receives the written notice that Tenant has vacated. If the Tenant mails the notice to Landlord, Landlord is deemed to have received the notice on the second day after mailing. (2) If Tenant vacates the Premises after the last day of the tenancy, surrender occurs when Landlord learns that Tenant has vacated. If Tenant abandons the Premises before expiration or termination of this Agreement or its extension or renewal, or if the tenancy is terminated for Tenant's breach of this Agreement, Landlord shall make reasonable efforts to re-rent the Premises and apply any rent received, less costs of re-renting, toward Tenant's obligations under this Agreement. Tenant shall remain liable for any deficiency. If Tenant is absent from the Premises for two (2) successive weeks without notifying Landlord in writing of this absence, Landlord may deem the Premises abandoned unless rent has been paid for the full period of the absence.</li>
+          <li><b>Abandoned Property.</b> If Tenant vacates or is evicted from the premises and leaves personal property, Landlord may presume, in the absence of a written agreement between the Landlord and Tenant to the contrary, that the Tenant has abandoned the personal property and Landlord may dispose of it in any manner that the Landlord, in his sole discretion, determines is appropriate. Landlord will not store any items of personal property that tenant leaves behind when Tenant vacates or is evicted from the premises, except for prescription medicine or prescription medical equipment, which will be held for seven (7) days from the date of discovery. If Tenant abandons a manufactured or mobile home or a titled vehicle, Landlord will give Tenant and any other secured party that Landlord is aware of, written notice of intent to dispose of property by personal service, regular mail, or certified mail to Tenant's last known address, prior to disposal.</li>
+          <li><b>Use of Premises and Guests.</b> Tenant shall use the Premises for residential purposes only. Operating a business or providing childcare for children not listed as occupants in this Agreement is prohibited. Neither party may: (1) make or knowingly permit use of the Premises for any unlawful purpose; (2) engage in activities which unduly disturb neighbors or tenants; and/or (3) do, use, or keep in or about the Premises anything which would adversely affect coverage under a standard fire and extended insurance policy. Tenant may have guests residing temporarily in Premises if their presence does not interfere with the quiet use and enjoyment of other tenants and if the number of guests is not excessive for the size and facilities of the Premises. No guest may remain for more than two (2) weeks without the written consent of Landlord which will not be unreasonably withheld. Tenant shall be liable for any property damage, waste, or neglect of the Premises, building, or development in which it is located, that is caused by the negligence or improper use by Tenant or Tenant's guests and invitees.</li>
+          <li><b>Criminal Activity Prohibited.</b> Tenant, any member of Tenant's household, guest, or invitee, shall not engage in or allow others to engage in any criminal activity, including drug-related criminal activity, in the Premises or on the property.</li>
+          <li><b>Maintenance.</b> Pursuant to §704.07, Wis. Stats., Landlord shall keep the structure of the building in which the Premises are located and those portions of the building and equipment under Landlord's control in a reasonable state of repair. Tenant shall maintain the Premises under Tenant's control in a clean manner and in as good of a general condition as it was at the beginning of the term or as subsequently improved by Landlord, normal wear and tear excluded. Tenant shall not physically alter or redecorate the Premises, cause any contractor's lien to attach to the Premises, commit waste to the Premises or the property of which it is a part, or attach or display anything which substantially affects the exterior appearance of the Premises or the property in which it is located, unless otherwise allowed under the rules or unless Landlord has granted specific written approval. Landlord shall keep heating equipment in a safe and operable condition. Whichever party is obligated to provide heat for the Premises they shall maintain a reasonable level of heat to prevent damage to the Premises and the building in which it is located.</li>
+          <li><b>Breach and Termination.</b> Failure of either party to comply substantially with any material provision is a breach of this Agreement. Should Tenant neglect or fail to perform and observe any of the terms of this Agreement, Landlord shall give Tenant written notice of the breach requiring Tenant to remedy the breach or vacate the Premises on or before a date at least five (5) days after the giving of such notice, and if Tenant fails to comply with such notice, Landlord may declare the tenancy terminated and proceed to evict Tenant from the Premises, without limiting the liability of Tenant for the rent due to become due under this Agreement. If Tenant has been given such notice and remedied the breach or been permitted to remain in the Premises, and within one (1) year of such previous breach, Tenant breaches the same or any other covenant or condition of Tenant's lease, this lease may be terminated if, before the breach has been remedied, Landlord gives notice to Tenant to vacate on or before a date at least fourteen (14) days after the giving of the notice as provided in §704.17, Wis. Stats. These provisions shall apply to any lease for a specific term and do not apply to a month to month tenancy. If Landlord commits a breach, Tenant has all rights and remedies as set forth under the law, including §704.07(4) and §704.45, Wis. Stats., and Wisconsin Administrative Code Chapter ATCP 134.</li>
+          <li><b>Responsibility for Utilities.</b> Tenant must maintain utilities for the Premises until the end of the lease term or until the last day that Tenant is responsible for rent. Tenant will be responsible for the cost of all utilities through the end of the lease term or until the last day that Tenant is responsible for rent.</li>
+          <li><b>Rent.</b> All late fees, security deposit, utility charges, or any other monetary amount set forth under this Agreement are to be considered and defined as "rent."</li>
+          <li><b>Repairs.</b> Any promise by Landlord, made before execution of this Agreement, to repair, clean, or improve the Premises, including the promised date of completion, will be listed in this Agreement or in a separate addendum to this Agreement. Time being of the essence as to the completion of repairs does not apply to any delay beyond Landlord's control. Landlord shall give timely notice of any delay to Tenant.</li>
+          <li><b>Code Violations and Adverse Conditions.</b> There are no code violations or other conditions affecting habitability of the Premises unless indicated otherwise in writing.</li>
+          <li><b>Renters Insurance Recommended.</b> Landlord recommends that Tenant purchase Renter's Insurance to protect Tenant's personal property and to protect Tenant from any liabilities while living at the property. Tenant understands that if they do not purchase Renter's Insurance that Tenant may not have any insurance coverage should Tenant's belongings be damaged, or should Tenant be held liable to a third party and/or the Landlord.</li>
+          <li><b>Notice of Domestic Abuse Protections.</b> As provided in section 106.50 (5m) (dm) of the Wisconsin statutes, a tenant has a defense to an eviction action if the tenant can prove that the landlord knew, or should have known, the tenant is a victim of domestic abuse, sexual assault, or stalking and that the eviction action is based on conduct related to domestic abuse, sexual assault, or stalking committed by either of the following: A person who was not the tenant's invited guest. A person who was the tenant's invited guest, but the tenant has done either of the following: sought an injunction barring the person from the premises, or provided a written statement to the landlord stating that the person will no longer be an invited guest of the tenant and the tenant has not subsequently invited the person to be the tenant's guest. A tenant who is a victim of domestic abuse, sexual assault, or stalking may have the right to terminate the rental agreement in certain limited situations, as provided in section 704.16 of the Wisconsin Statutes. If the tenant has safety concerns, the tenant should contact a local victim service provider or law enforcement agency. A tenant is advised that this notice is only a summary of the tenant's rights and the specific language of the statutes governs in all instances.</li>
+          <li><b>Damage by Casualty.</b> If the Premises are damaged by fire or other casualty to a degree which renders them untenantable, Tenant may terminate this Agreement or vacate the Premises and rent shall abate until the Premises are restored to a condition comparable to its condition prior to the casualty. Landlord shall have the option to repair the Premises, and if repairs are not made, this Agreement shall terminate. If the Premises are damaged to a degree which does not render them untenantable, Landlord shall repair the damages as soon as reasonably possible.</li>
+          <li><b>Entry by Landlord.</b> Landlord may enter the Premises occupied by Tenant, with or without Tenant's consent, at reasonable times upon twelve (12) hours advance notice to inspect the Premises, make repairs, show the Premises to prospective tenants or purchasers, or comply with applicable laws or regulations. Landlord may enter without advance notice when a health or safety emergency exists, or if Tenant is absent and Landlord believes entry is necessary to protect the Premises or the building from damage. Neither party shall add or change locks without providing the other party keys. Improper denial of access to the Premises is a breach of this Agreement.</li>
+          <li><b>Extermination Costs.</b> Tenant will be responsible for the costs of extermination or removal of any insects, pests, or rodents that are found on the Premises, and which are the result of the Tenant's (or any member of the Tenant's household, Tenant's guests, or invitees) acts, negligence, failure to keep the Premises clean, failure to remove garbage and waste, and/or improper use of the Premises.</li>
+          <li><b>Continuation of Agreement.</b> If Tenant continues to occupy the Premises after the expiration of this Agreement and makes a timely payment of rent, which is accepted by Landlord, Tenant shall be under a month to month tenancy with the same terms and conditions of the original rental agreement unless other arrangements have been made in writing.</li>
+          <li><b>Assignment or Sublease.</b> Tenant shall not assign this Agreement or sublet the Premises without the written consent of Landlord.</li>
+          <li><b>Modifications and Termination.</b> This Agreement may be terminated or modified by written agreement of Landlord and Tenant. The parties may terminate this Agreement and enter into a new Agreement instead of renewing it, assigning it, or subleasing the Premises.</li>
+          <li><b>Severability of Rental Agreement Provisions.</b> The provisions of this rental agreement are severable. If any provision of this rental agreement is found to be void or unenforceable, the unenforceability of that provision does not affect the other provisions that can be given effect without the invalid provisions.</li>
+          <li><b>Non-Waiver.</b> Any failure to act by Landlord with regard to any specific violation or breach of any term of this Agreement by Tenant shall be considered temporary and does not waive Landlord's right to act on any future violation or breach by Tenant. Landlord, by accepting payment from Tenant for rent or any other amount owed, is not waiving its right to enforce a violation or breach of any term of this Agreement by Tenant.</li>
+          <li><b>Time Is of The Essence.</b> As to delivery of possession of Premises to Tenant, completion of repairs promised in writing in the Agreement or before; vacating of the Premises, return of Landlord's property, payment of rent, performance of any act for which a date is set in this Agreement or by law. Time is of the essence means that a deadline must be strictly followed. Special Provisions: see Rules and Regulations.</li>
+        </ol>
+
+        <p>Landlord has given Tenant a copy of the Residential Rental Agreement as well as any Rules and Regulations, if applicable, for review prior to entering into this Agreement and prior to accepting any earnest money or security deposit.</p>
+
+        <p><b>Legal Acknowledgment &amp; Binding Effect.</b> By signing below, I, the undersigned Tenant, certify that I have read, understood, and agree to all terms, conditions, rules, and disclosures set forth in this Residential Rental Agreement, including all attached addendums and exhibits. I acknowledge that this document constitutes a legally binding contract between myself and the Landlord, and that I am entering into this agreement freely and voluntarily. I further affirm that all information provided by me in this agreement is true, complete, and accurate to the best of my knowledge. I understand that my signature below serves as my official acceptance of this lease and that I am responsible for all obligations contained herein.</p>
+
+        <div class="sig-row">
+          <div>
+            <div class="signature-line" id="p_sigTenant1Name"></div><br>
+            Tenant 1 signature &amp; date
+          </div>
+          <div id="p_sigTenant2Wrap" style="display:none;">
+            <div class="signature-line" id="p_sigTenant2Name"></div><br>
+            Tenant 2 signature &amp; date
+          </div>
+        </div>
+        <div class="sig-row">
+          <div>
+            <img src="/lease-sign/assets/signature.png" alt="Signature" class="sig-img" id="p_sigImg">
+            <div class="signature-line" id="p_sigAgentName"></div><br>
+            <span id="p_sigAgentTitle"></span> — Agent, signature &amp; date
+          </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2 class="doc-title">RULES AND REGULATIONS</h2>
+        <p><b>I/We, the undersigned, Tenant(s):</b> <span id="p_rulesTenantNames"></span>, have read and agree to adhere to the rules and regulations as detailed below.</p>
+
+        <div class="rules-group-title">GENERAL</div>
+        <ul class="rules">
+          <li>These rules and regulations are necessary to ensure the proper use and care of the property as well as to ensure the protection and safety of the landlord, his employees, other tenants, and neighbors.</li>
+          <li>Tenant will be responsible for the conduct of any and all family members, guests, invitees, and/or others under tenant's control.</li>
+          <li>The term "tenant" is defined broadly and includes all persons named in the rental agreement, their family members, guests, invitees, and/or others under their control.</li>
+          <li>Landlord will not tolerate criminal activity or any other activity that disturbs others or damages the property.</li>
+          <li>Landlord has the right to make other reasonable rules and regulations as may be necessary for the safety of others and the property.</li>
+          <li>A violation of these rules and regulations constitutes a material breach of Tenant's rental agreement and may result in termination of tenancy and eviction.</li>
+          <li>These rules and regulations will be enforced strictly and without exception.</li>
+        </ul>
+
+        <div class="rules-group-title">USE OF THE PROPERTY</div>
+        <ul class="rules">
+          <li>The term "property" is defined broadly and includes, but is not limited to, the home or apartment building, individual rental units, common areas, grounds upon which the home or apartment building is located, and any other associated physical structures.</li>
+          <li>The property is to be used as a personal residence only and is for the individuals listed on the rental agreement only.</li>
+          <li>The property shall not be used to operate any form of business for any reason, including but not limited to, a child-care facility.</li>
+          <li>The property shall not be used for any illegal activity whatsoever or for any activity that in the opinion of the landlord will damage the property.</li>
+          <li>Tenant shall not do anything in the premises or on the property that may increase the risk of fire or compromise safety, increase the landlord's insurance premiums, or which would be a violation of state or local laws or regulations.</li>
+          <li>Tenant shall not keep any hazardous items on or inside of property including, but not limited to, paint, lacquer, turpentine, paint thinner, acetone, gasoline, motor oil, pesticides, herbicides, kerosene, propane, lighter fluid or any other hazardous, flammable or combustible items.</li>
+          <li>Tenant shall not possess or use on the property the following items including, but not limited to, swimming or wading pools, trampolines, slip 'n slides or any other water recreation devices, air, pellet or BB guns/rifles, explosives, fireworks, sparklers, candles, space heaters or any other items that, in the opinion of landlord, create an unreasonable risk of injury or damage, without the prior written consent of Landlord.</li>
+          <li>No rummage sales, or sales of any kind, may be held on the property without the prior written consent of Landlord.</li>
+          <li>No car washes, for profit or otherwise, may be held on the property without the prior written consent of Landlord.</li>
+          <li>Tenant agrees to use all appliances, fixtures, and equipment in a safe manner and only for the purpose for which it was intended.</li>
+          <li>Tenant agrees not to destroy, deface, damage, or remove, any part of the property.</li>
+        </ul>
+
+        <div class="rules-group-title">APPEARANCE &amp; UPKEEP OF PROPERTY</div>
+        <ul class="rules">
+          <li>Tenant shall not allow any sign, advertisement, or notice to be placed inside or outside the rental unit or on the property without the prior written consent of Landlord.</li>
+          <li>Tenant shall use only appropriate window coverings, such as drapes or blinds. Rugs, towels, blankets, or sheets are not allowed.</li>
+          <li>Tenant agrees to keep the rental unit in a clean, safe, and sanitary condition and not litter the property.</li>
+          <li>Tenant is responsible for replacing any light bulbs within the rental unit. Tenant shall only use the proper wattage of bulb as specified on the light fixture.</li>
+          <li>Tenant is responsible for replacing any smoke alarm and carbon monoxide detectors located within the rental unit if the unit has been tampered with by Tenant.</li>
+          <li>Tenant agrees to regularly and properly dispose of garbage and recyclable materials and to place such items in the proper receptacles provided for that purpose.</li>
+          <li>Neither garbage nor recyclable materials shall be kept on the porch, common areas, or grounds. Tenant agrees to comply with any and all laws, ordinances, and/or regulations regarding the collection, sorting, separation, and recycling of materials.</li>
+          <li>If Tenant wishes to dispose of any large items, it is the responsibility of Tenant to make special arrangements in accordance with local ordinances and laws, to dispose of such items. Any charges incurred by Landlord as a result of Tenant's failure to comply with the above will be the responsibility of the tenant.</li>
+          <li>Tenant agrees to keep all personal property within the rental unit or other assigned areas. Personal property shall not be kept in common areas or on the grounds and will be immediately removed and disposed of by landlord. Any costs incurred by Landlord to remove Tenant's property will be the tenant's responsibility.</li>
+          <li>Tenant shall cooperate with the landlord to keep common areas and grounds in a safe and clean condition.</li>
+          <li>Tenant agrees to promptly notify Landlord of any maintenance or repair issues.</li>
+        </ul>
+
+        <div class="rules-group-title">MODIFICATIONS TO PROPERTY</div>
+        <ul class="rules">
+          <li>Tenant is prohibited from making any alterations, additions, or improvements to the inside or outside of the property, including but not limited to, painting, varnishing, wallpapering, or installing any fixtures, without the prior written consent of Landlord.</li>
+          <li>Should tenant make any alterations, additions or improvements in violation of the above, Landlord may immediately remove it and Tenant will be responsible for all costs incurred by Landlord to return the property to its original condition.</li>
+          <li>Tenant is not authorized to instruct any contractors hired by Landlord to provide any additional services not previously authorized by Landlord.</li>
+        </ul>
+
+        <div class="rules-group-title">DAMAGE TO THE PROPERTY</div>
+        <ul class="rules">
+          <li>If the property is damaged as a result of the intentional acts, negligence, carelessness, or misuse by Tenant, Tenant will be responsible for the repair costs incurred by Landlord.</li>
+          <li>Tenant must reimburse Landlord for any repair costs within fifteen (15) days of demand.</li>
+        </ul>
+
+        <div class="rules-group-title">CHANGING LOCKS</div>
+        <ul class="rules">
+          <li>Tenant will not install additional or different locks or gates on any doors or windows in the property without the prior written consent of Landlord.</li>
+          <li>If landlord approves tenant's request to install or change locks, tenant agrees to provide Landlord with a new key within twenty-four (24) hours.</li>
+          <li>Tenant will be responsible for any repair costs incurred by Landlord to gain entry to property if Tenant does not provide Landlord with a new key within twenty-four (24) hours.</li>
+          <li>Tenant shall not give any keys to the property to any person other than those listed on the rental agreement without the prior written consent of Landlord.</li>
+        </ul>
+
+        <div class="rules-group-title">PLUMBING</div>
+        <ul class="rules">
+          <li>Tenant will be responsible for the cost of any and all plumbing repairs resulting from the improper use of the plumbing facilities by Tenant. Tenant will not dispose of any cloth, metal, glass, wool, plastic, condoms, feminine hygiene products, or similar items in the toilet, sink, or garbage disposal.</li>
+          <li>Tenant will immediately report to Landlord in writing if any pipes or faucets are leaking or if any toilet continues to run.</li>
+          <li>Tenant will not leave the water running except during actual use.</li>
+          <li>Tenant will only do laundry in designated areas and during the posted hours unless otherwise approved by Landlord.</li>
+        </ul>
+
+        <div class="rules-group-title">SMOKING</div>
+        <ul class="rules">
+          <li>No smoking is allowed on the property at any time unless otherwise indicated in writing by Landlord.</li>
+          <li>Any damage to the property as a result of Tenant's smoking will be the tenant's responsibility.</li>
+        </ul>
+
+        <div class="rules-group-title">WATERBEDS</div>
+        <ul class="rules"><li>No furniture filled with liquid, including but not limited to waterbeds, is allowed on the property without the prior written approval of Landlord.</li></ul>
+
+        <div class="rules-group-title">LOITERING</div>
+        <ul class="rules"><li>Tenant will not loiter, congregate, or play in common areas of the building, including but not limited to the hallways, stairways, basement, garages, storage areas, and driveways.</li></ul>
+
+        <div class="rules-group-title">NOISES &amp; ODORS</div>
+        <ul class="rules">
+          <li>Tenant will not make or permit noises or acts that will disturb the right or comfort of other tenants and/or neighbors.</li>
+          <li>Tenant agrees to keep the volume of any radio, stereo, television, computer, musical instrument, or any other device at a level that will not disturb other tenants or neighbors.</li>
+        </ul>
+
+        <div class="rules-group-title">GUESTS</div>
+        <ul class="rules">
+          <li>Tenant is responsible for the conduct of any and all guests.</li>
+          <li>No guest shall remain overnight in the property for more than two (2) weeks per month without the prior written consent of Landlord.</li>
+          <li>No guest shall remain on the property unless Tenant is also present.</li>
+        </ul>
+
+        <div class="rules-group-title">PETS</div>
+        <ul class="rules" id="p_petsRule"></ul>
+
+        <div class="rules-group-title">GRILLING</div>
+        <ul class="rules">
+          <li>No grilling is allowed within ten (10) feet of the property.</li>
+          <li>No grilling is allowed on any balcony or porch.</li>
+          <li>Only covered grills are allowed to be used - no fire pits or bonfires allowed.</li>
+          <li>Any grilling materials must be removed from common areas and/or grounds after use.</li>
+          <li>Indoor storage of gas grills, gas tanks, charcoal, or lighter fluid is prohibited.</li>
+        </ul>
+
+        <div class="rules-group-title">SUBLETTING / ASSIGNMENT</div>
+        <ul class="rules"><li>Tenant is not allowed to sublet or assign the rental unit, or any part of it, without the prior written consent of Landlord.</li></ul>
+
+        <div class="rules-group-title">VEHICLES</div>
+        <ul class="rules"><li>Read and comply with the Parking document found on your Tenant portal.</li></ul>
+
+        <div class="rules-group-title">INSURANCE</div>
+        <ul class="rules"><li>It is Tenant's responsibility to obtain insurance coverage for their personal property stored on the property. Landlord shall not be responsible for any loss or damage to Tenant's property unless the loss or damage was the result of Landlord's negligent acts or omissions.</li></ul>
+
+        <div class="rules-group-title">NON-WAIVER</div>
+        <ul class="rules">
+          <li>Any failure to act by Landlord with regard to any specific violation or breach of these Rules and Regulations by Tenant shall be considered temporary and does not waive Landlord's right to act on any future violation or breach by Tenant.</li>
+          <li>ADDITIONAL RULES AND REGULATIONS: See the provided ROCA1 By-Laws. See the provided ROCA1 Rules and Regulations.</li>
+        </ul>
+        <p><b>A VIOLATION OF THE ABOVE RULES AND REGULATIONS SHALL CONSTITUTE A MATERIAL VIOLATION OF TENANT'S RENTAL AGREEMENT AND IS GOOD CAUSE FOR TERMINATION OF TENANCY AND EVICTION OF TENANT.</b></p>
+
+        <div class="page-break"></div>
+
+        <h2 class="doc-title">NONSTANDARD RENTAL PROVISIONS</h2>
+        <p>The Nonstandard Rental Provisions listed below are part of your rental agreement and list the various charges and costs that your Landlord may assess and withhold from your security deposit. These charges and costs supersede charges and costs detailed in the Rules and Regulations.</p>
+        <p><b>I/We, the undersigned, Tenant(s):</b> <span id="p_nspTenantNames"></span>, have read and agree to adhere to the provisions as detailed below.</p>
+
+        <div id="p_nspList"></div>
+
+        <div id="parkingFullSection" style="display:none;">
+          <div class="page-break"></div>
+          <h2 class="doc-title">PARKING AGREEMENT</h2>
+          <p style="text-align:center;">(Enforceable Under Wisconsin Chapters 703 and 704)</p>
+
+          <div class="parking-section"><b>1. LEGAL AUTHORITY</b><span class="parking-initial" id="pi-1"></span><br>
+          This Agreement is adopted pursuant to Wis. Stat. §703.10(1), §703.20(1), and §703.30, granting the Association authority to regulate common elements, including parking, and to impose and collect charges, fines, and enforcement costs. This Agreement is also a binding occupancy contract under Wis. Stat. Chapter 704, and applies to all Unit Occupants as a condition of occupancy.</div>
+
+          <div class="parking-section"><b>2. BINDING EFFECT ON UNIT OCCUPANT</b><span class="parking-initial" id="pi-2"></span><br>
+          All Unit Occupants agree to comply with this Agreement. Failure to comply constitutes: (a) a violation under Chapter 703, and (b) a material breach of occupancy rights under Chapter 704. Parking is a revocable privilege, not a right.</div>
+
+          <div class="parking-section"><b>3. ASSIGNMENT OF PARKING RIGHTS</b><span class="parking-initial" id="pi-3"></span><br>
+          Parking stalls are limited common elements controlled by the Association. Assignment of one (1) stall is conditioned upon the Unit Occupant maintaining a zero ($0.00) balance. If rent or any required payment is due on the 1st day of the month and is not paid in full, the Unit Occupant is deemed delinquent as of 12:01 a.m. on the 2nd day of the month, and all parking privileges are immediately revoked without further notice. Any vehicle remaining on the property after revocation is considered unauthorized and will be towed at the Unit Occupant's expense by the Association's designated towing provider. The Association will suspend parking rights for delinquent accounts consistent with Wis. Stat. §703.165 and §703.20. Parking is restricted to the stall corresponding to the unit number.</div>
+
+          <div class="parking-section"><b>4. RESIDENT USE ONLY</b><span class="parking-initial" id="pi-4"></span><br>
+          Parking stalls are for Unit Occupants only and will not be rented or assigned to non-residents. Temporary guest use is permitted only within the assigned stall and must comply with all provisions of this Agreement.</div>
+
+          <div class="parking-section"><b>5. VEHICLE ELIGIBILITY</b><span class="parking-initial" id="pi-5"></span><br>
+          Permitted vehicles include automobiles, vans, motorcycles, and light trucks. Prohibited vehicles include, but are not limited to: trailers of any kind; boats or recreational vehicles; vehicles requiring Class C or higher licensing; unregistered or improperly licensed vehicles; inoperable vehicles. Vehicles with expired registration beyond twenty-four (24) hours are considered non-compliant and will be subject to towing.</div>
+
+          <div class="parking-section"><b>6. STORAGE AND ABANDONMENT</b><span class="parking-initial" id="pi-6"></span><br>
+          Vehicles not moved for seven (7) consecutive days are considered stored. Storage without written approval is prohibited and will result in towing.</div>
+
+          <div class="parking-section"><b>7. PARKING POSITION AND USE</b><span class="parking-initial" id="pi-7"></span><br>
+          All vehicles must be parked fully within assigned stall lines; not touch or cross boundary markings; not obstruct sidewalks, dumpsters, or access lanes. Motorcycles must use protective material under kickstands. Violations will result in enforcement, including towing.</div>
+
+          <div class="parking-section"><b>8. COMMERCIAL VEHICLES</b><span class="parking-initial" id="pi-8"></span><br>
+          Commercial vehicles are prohibited except: (a) temporary service vehicles, or (b) vehicles assigned to approved rented stalls. Unauthorized commercial vehicles will be towed.</div>
+
+          <div class="parking-section"><b>9. VEHICLE CONDITION</b><span class="parking-initial" id="pi-9"></span><br>
+          All vehicles must be operable and in good condition. Vehicles with flat tires, leaks, or visible damage are considered inoperable and will be towed after seventy-two (72) hours or sooner if deemed necessary.</div>
+
+          <div class="parking-section"><b>10. MAINTENANCE AND CONDUCT</b><span class="parking-initial" id="pi-10"></span><br>
+          The following are prohibited and will result in enforcement action: vehicle repairs or maintenance; oil changes; car washing; cooking, sleeping, or loitering in vehicles.</div>
+
+          <div class="parking-section"><b>11. CLEANLINESS</b><span class="parking-initial" id="pi-11"></span><br>
+          Unit Occupants must maintain parking stalls free of oil or fluid stains and garbage or debris. Failure to maintain cleanliness will result in fines and/or enforcement.</div>
+
+          <div class="parking-section"><b>12. FIRE LANES AND ROADWAYS</b><span class="parking-initial" id="pi-12"></span><br>
+          All roadways are designated fire lanes. Parking, stopping, or standing for more than three (3) minutes is prohibited. Violations will result in immediate towing without notice.</div>
+
+          <div class="parking-section"><b>13. SNOW REMOVAL COMPLIANCE</b><span class="parking-initial" id="pi-13"></span><br>
+          During snow events of two (2) inches or more, vehicles must be removed from the parking lot. 7:30 a.m. is defined as 24 hours after the conclusion of the most recent snowfall event, as determined by the Association. Vehicles must not return until snow removal is complete. Noncompliance will result in towing only, at the Unit Occupant's expense.</div>
+
+          <div class="parking-section"><b>14. VEHICLE REGISTRATION REQUIREMENT</b><span class="parking-initial" id="pi-14"></span><br>
+          All vehicles must be registered with the Association (Make / Model / Plate # / VIN #). A valid parking permit must be clearly displayed in the front windshield at all times. Failure to register or display a permit constitutes unauthorized parking and will result in towing.</div>
+
+          <div class="parking-section"><b>15. UNAUTHORIZED PARKING</b><span class="parking-initial" id="pi-15"></span><br>
+          Parking in another assigned stall without written permission is prohibited. Unauthorized vehicles will be towed immediately at the Unit Occupant's expense.</div>
+
+          <div class="parking-section"><b>16. ENFORCEMENT AND PENALTIES</b><span class="parking-initial" id="pi-16"></span><br>
+          The Association will enforce this Agreement through fines and assessments under Wis. Stat. §703.165, suspension of parking privileges, towing, and legal action. All costs, including towing, administrative fees, and attorney's fees, will be charged to the Unit Occupant and assessed to the Unit.</div>
+
+          <div class="parking-section"><b>17. NOTICE AND DUE PROCESS</b><span class="parking-initial" id="pi-17"></span><br>
+          Except for immediate enforcement situations (including fire lanes, unauthorized vehicles, delinquency-based revocation, and snow removal), enforcement will follow: written notice of violation (via email and/or Tenant Portal Announcements); opportunity to cure where applicable; assessment of fines. Notice will be deemed delivered when sent electronically, posted, hand-delivered, or sent via certified mail.</div>
+
+          <div class="parking-section"><b>18. TOWING AUTHORIZATION</b><span class="parking-initial" id="pi-18"></span><br>
+          Unit Occupant authorizes the Association and its agents to tow vehicles in violation of this Agreement without prior notice where permitted by law. All towing and storage costs will be the responsibility of the Unit Occupant.</div>
+
+          <div class="parking-section"><b>19. LIABILITY</b><span class="parking-initial" id="pi-19"></span><br>
+          The Association is not liable for damage, theft, or loss of any vehicle or its contents.</div>
+
+          <div class="parking-section"><b>20. COST RECOVERY</b><span class="parking-initial" id="pi-20"></span><br>
+          The Association will recover all enforcement costs, including towing charges, fines, administrative costs, and attorney's fees. Such costs may be assessed to the Unit under Wis. Stat. §703.165.</div>
+
+          <div class="parking-section"><b>21. PRIORITY AND INCORPORATION</b><span class="parking-initial" id="pi-21"></span><br>
+          This Agreement supplements all condominium documents. The stricter provision governs in all cases.</div>
+
+          <div class="parking-section"><b>22. ACKNOWLEDGMENT</b><span class="parking-initial" id="pi-22"></span><br>
+          Unit Occupant acknowledges that they: have read and understand this Agreement; agree to be legally bound; understand violations will result in towing, fines, and legal action.</div>
+
+          <table class="info">
+            <tr><td class="label">Unit Address</td><td id="p_parkingUnitAddress"></td></tr>
+            <tr><td class="label">Unit Occupant Name(s)</td><td id="p_parkingOccupantNames"></td></tr>
+            <tr><td class="label">Signature(s)</td><td>&nbsp;</td></tr>
+            <tr><td class="label">Date</td><td>&nbsp;</td></tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sign-panel">
+      <h3>Sign &amp; Submit</h3>
+      <p style="font-size:0.85rem;color:var(--muted);">Please read the full lease above before signing. Once submitted, you and our office will both automatically receive a copy of the fully signed lease by email.</p>
+      <label for="signatureTypedName">Type your full legal name to sign</label>
+      <input type="text" id="signatureTypedName" placeholder="Full legal name">
+      <div class="check-row">
+        <input type="checkbox" id="signatureAttest">
+        <label for="signatureAttest" style="margin:0;">I am electronically signing this document and intend this as my legal signature.</label>
+      </div>
+      <button type="button" id="submitBtn">Sign &amp; Submit Lease</button>
+      <p id="submitError" class="submit-error" style="display:none;"></p>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function () {
+  const MAX_CHILDREN = 6;
+  let record = null;
+  let leaseData = null;
+
+  function el(id) { return document.getElementById(id); }
+  function val(id) { return leaseData[id] || ""; }
+  function checked(id) { return !!leaseData[id]; }
+
+  function escapeHtml(s) {
+    return String(s || "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+
+  function money(n) {
+    if (n === "" || n === null || n === undefined || isNaN(Number(n))) return "";
+    const v = Number(n);
+    const abs = Math.abs(v);
+    const sign = v < 0 ? "-" : "";
+    return sign + "$" + abs.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    return new Date(dateStr + "T00:00:00").toLocaleDateString("en-US");
+  }
+
+  function nspItem(title, body) {
+    return `<div class="nsp-item"><b>${title}:</b> ${body}</div>`;
+  }
+
+  function buildNsp() {
+    const lateFee = money(val("lateFee")) || "[$amount]";
+    const deposit = money(val("securityDeposit")) || "[$amount]";
+    const items = [];
+    items.push(nspItem("LATE FEE", `A late fee of ${lateFee} will be charged as set forth in the rental agreement upon all late rental payments. These fees may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("RETURNED CHECK/STOP PAYMENT FEE", `If any payment by Tenant is returned unpaid due to insufficient funds or for any other reason, Tenant will be charged a fee of $30.00 per occurrence. If Landlord incurs any other costs or fees as a result of Tenant's payment being returned due to insufficient funds or for any other reason, Tenant will also be charged the actual costs incurred by Landlord as a result. These fees and costs may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("GARBAGE/TRASH REMOVAL", `If Tenant leaves garbage or trash in hallway, outside of door of unit, or in any other common area of building or grounds which is not designated for the deposit of garbage or trash, Tenant will be charged a fee of $25.00 per occurrence, plus the actual costs incurred by Landlord to remove the garbage or trash. These fees and costs may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("FAILURE TO PROPERLY DISPOSE OF RECYCLABLES", `It is the Tenant's responsibility to separate all recyclable materials and deposit them in appropriate containers as required by law or local ordinance. If Tenant fails to separate recyclable materials and deposit them in the appropriate containers, Tenant will be charged a fee of $25.00 for each occurrence plus the actual costs incurred by Landlord to properly dispose of the recyclables. These fees and costs may be deducted from Tenant's security deposit.`));
+
+    if (val("parkingVariant") === "short") {
+      items.push(nspItem("PARKING", `Tenant has read and understood the provisions set forth in the Rules and Regulations document. Tenant must ensure that all visitors follow the rules or risk being charged the fees stated in the Rules and Regulations document. These fees may be deducted from Tenant's security deposit.`));
+    }
+
+    items.push(nspItem("FAILURE TO PERMIT ACCESS TO UNIT", `If Tenant fails to permit access to the unit after Landlord has properly complied with all notice provisions set forth in Wis. Stat. ch. 704 and Wis. Admin. Code § ATCP 134, Tenant will be charged a fee of $30.00 for each occurrence. Tenant will also be charged for any damages and/or costs incurred by Landlord as a result of Tenant's failure to allow access to unit. These fees and costs may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("RETURN OF KEYS", `If Tenant fails to return all keys including, but not limited to, building entry, unit entry, mailbox, laundry, and storage keys upon vacating, Tenant will be charged a fee of $75.00. These fees may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("DAMAGE, WASTE OR NEGLECT", `Tenant is responsible for any damage, waste or neglect to the Premises including but not limited to the building, grounds upon which the building sits, rental unit, and any common areas. The Premises should be left in the same condition that it was received less any normal wear and tear. If there is any damage, waste or neglect to the Premises, Tenant will be charged the actual costs incurred by Landlord up to $21.00 per hour plus the costs of any materials. These fees and costs may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("MODIFICATIONS TO UNIT", `Tenant is not allowed to make any modifications to the unit without the prior written consent of Landlord. If Tenant makes modifications to the unit without the prior written consent of Landlord, then Tenant will be charged the actual costs to return the unit to its original condition. These costs may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("REMOVAL OF ABANDONED PROPERTY", `If Tenant leaves behind any personal property after vacating or if Tenant's personal property is removed by the Sheriff and/or a moving company pursuant to an eviction, Tenant will be charged the actual costs incurred by Landlord to remove and/or dispose of Tenant's personal property. These fees and costs may be deducted from Tenant's security deposit.`));
+
+    if (checked("includeAppliancesClause")) {
+      items.push(nspItem("APPLIANCES; TENANT RESPONSIBILITY; DEFAULT; SECURITY DEPOSIT",
+        `(a) No Landlord Obligation. Landlord does not supply, maintain, repair, or replace appliances. Any appliance located in the Premises at the commencement of tenancy is provided, if at all, strictly "AS-IS," without representation or warranty, and without any obligation of Landlord. `
+        + `(b) Tenant Assumption of Duty. Tenant accepts all existing appliances in their present condition and shall, at Tenant's sole cost and expense, maintain, service, repair, and replace any and all appliances located in or used at the Premises during the tenancy, whether originally present or later installed by Tenant. `
+        + `(c) Prohibition on Removal or Disposal. Tenant shall not remove, discard, sell, transfer, or replace any appliance that was present in the Premises at move-in ("Original Appliances") without Landlord's prior written consent. Unauthorized removal or disposal constitutes a material breach of this Lease. `
+        + `(d) Tenant-Owned Appliances. Any appliance brought onto the Premises by Tenant is at Tenant's sole risk. Tenant is responsible for proper installation, code compliance, and any damage caused thereby. `
+        + `(e) Surrender Condition. Upon vacating, Tenant shall leave all Original Appliances in the Premises and return them in substantially the same condition as at move-in, ordinary wear and tear excepted; if any is missing or not in the required condition, Tenant shall, at Landlord's election, return the same appliance or pay the reasonable cost to replace it, including delivery and installation. `
+        + `(f) Default; Cure; Remedies. Any violation of this Section is a material noncompliance with the Lease, subject to notice-and-cure and eviction as permitted by Wisconsin law. `
+        + `(g) Security Deposit; Deductions. To the extent permitted by Wisconsin law, Landlord may deduct from the security deposit amounts reasonably necessary to repair, replace, or clean appliances as described above, and to cover any other unpaid amounts lawfully chargeable.`
+      ));
+    }
+
+    items.push(nspItem("RE-RENTAL COSTS", `If Tenant vacates the unit without proper notice or is removed from the property for failure to pay rent or any other breach of the rental agreement, Tenant will be responsible for all charges permitted under Wis. Stat. § 704.29 including, but not limited to, all costs incurred to re-rent the vacated unit and all utilities for which Tenant is responsible through the end of the term of the rental agreement, subject to Landlord's duty to mitigate. These charges may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("FAILURE TO VACATE AT END OF LEASE OR AFTER NOTICE", `If Tenant remains in possession of the premises without the consent of Landlord after expiration of lease or termination of tenancy by notice given by either Landlord or Tenant, or after termination by valid agreement of the parties, Tenant shall be liable for any damages suffered by Landlord because of Tenant's failure to vacate within the time required. In absence of proof of greater damages, Landlord shall recover as minimum damages twice the rental value apportioned on a daily basis for the time Tenant remains in possession. These charges may be deducted from Tenant's security deposit.`));
+    items.push(nspItem("RENTAL PROMOTION/CONCESSION", `If Tenant vacates the rental unit prior to the end of the rental term, is evicted prior to the end of the rental term, or if Tenant's tenancy is terminated for any reason prior to the end of the rental term, Tenant will forfeit any rent promotion/concession received. Any forfeited rent promotion/concession will be treated as unpaid rent and will immediately become due and payable by Tenant, and may be deducted from Tenant's security deposit. Tenant acknowledges that Landlord or Landlord's agent has specifically identified each nonstandard rental provision with Tenant prior to entering into a rental agreement.`));
+    items.push(nspItem("DEDUCTED CHARGES", `Charges will be deducted on the last day of the month within which the infraction was adjudicated. If full payment is not made on or before the 14th day of the month, charges will be deducted on the 15th day of the month. Tenant must maintain a security deposit of ${deposit} on file at all times.`));
+
+    el("p_nspList").innerHTML = items.join("");
+  }
+
+  function renderLease(data) {
+    leaseData = data;
+    const type = val("leaseType");
+    const isMtm = type === "mtm", isCvi = type === "cvi", isAnnual = type === "annual";
+
+    el("p_docHeader1").style.display = isAnnual ? "none" : "block";
+    el("p_docHeader2").style.display = isAnnual ? "block" : "none";
+    if (isAnnual) {
+      el("p_docHeader2").innerHTML = "2nd Chance Housing Inc for<br>Royal Orleans Condominium Association – Addition 1 (ROCA1)";
+    }
+    el("cviBanner").style.display = isCvi ? "block" : "none";
+    el("annualBanner").style.display = isAnnual ? "block" : "none";
+
+    const agencies = [];
+    if (checked("agencyHACM")) agencies.push("Housing Authority of the City of Milwaukee");
+    if (checked("agencyMCHA")) agencies.push("Milwaukee County Housing Authority");
+    if (checked("agencyHUDVASH")) agencies.push("HUDVASH");
+    if (checked("agencyOther")) agencies.push("The agency with whom the prospective Tenant is a client");
+    el("annualAgencyList").innerHTML = agencies.map(a => `<li>${escapeHtml(a)}</li>`).join("") || "<li>[select an agency]</li>";
+
+    el("p_createdOn").textContent = val("createdOnDate") ? formatDate(val("createdOnDate")) : "________________________________________";
+
+    el("p_numAdults").textContent = val("numAdults") || "";
+    el("p_numChildren").textContent = val("numChildren") || "";
+    el("p_tenant1Name").textContent = val("tenant1Name") || "[Tenant Name]";
+    el("p_tenant1Email").textContent = val("tenant1Email") || "";
+    el("p_child1Name").textContent = val("child1Name") || "N/A";
+    el("p_child1Dob").textContent = val("child1Dob") || "N/A";
+    el("p_child2Name").textContent = val("child2Name") || "N/A";
+    el("p_child2Dob").textContent = val("child2Dob") || "N/A";
+    for (let n = 3; n <= MAX_CHILDREN; n++) {
+      const hasRow = !!(val("child" + n + "Name") || val("child" + n + "Dob"));
+      el("p_childRow" + n).style.display = hasRow ? "table-row" : "none";
+      if (hasRow) {
+        el("p_child" + n + "Name").textContent = val("child" + n + "Name") || "N/A";
+        el("p_child" + n + "Dob").textContent = val("child" + n + "Dob") || "N/A";
+      }
+    }
+
+    const hasT2 = checked("includeTenant2");
+    el("tenant2Block").style.display = hasT2 ? "block" : "none";
+    el("p_sigTenant2Wrap").style.display = hasT2 ? "block" : "none";
+    if (hasT2) {
+      el("p_tenant2Name").textContent = val("tenant2Name") || "[Tenant 2 Name]";
+      el("p_tenant2Email").textContent = val("tenant2Email") || "";
+      el("p_sigTenant2Name").textContent = val("tenant2Name") || "[Tenant 2 Name]";
+    }
+
+    el("p_ownerName").textContent = val("ownerName") || "[Owner Name]";
+    const agentOrgDisplay = val("agentOrgName") || "[Agent]";
+    el("p_ownerNote").textContent = "The Owner listed above is not permitted to directly rent their unit; all rentals are managed by " + agentOrgDisplay + ".";
+
+    el("p_agentOrgName").textContent = val("agentOrgName") || "";
+    el("p_agentAddress").textContent = val("agentAddress") || "";
+    el("p_agentEmail").textContent = val("agentEmail") || "";
+
+    const unitValue = val("unitSelect") === "__custom__" ? val("unitCustom") : val("unitSelect");
+    const premisesText = unitValue || "[Unit address]";
+    el("p_premises").textContent = premisesText;
+    el("p_parkingUnitAddress").textContent = premisesText;
+
+    el("p_initialStartDate").textContent = formatDate(val("initialStartDate")) || "[date]";
+    el("p_renewalOnRow").style.display = (isMtm || isCvi) ? "table-row" : "none";
+    el("p_expirationDateRow").style.display = isAnnual ? "table-row" : "none";
+    el("p_renewalOn").textContent = val("renewalOn");
+    el("p_expirationDate").textContent = formatDate(val("expirationDate")) || "[date]";
+    el("p_rentLateOn").textContent = val("rentLateOn");
+    el("p_rentAmount").textContent = money(val("rentAmount")) || "[$amount]";
+    el("p_securityDeposit").textContent = money(val("securityDeposit")) || "[$amount]";
+    el("p_rentDueOn").textContent = val("rentDueOn");
+    el("p_lateFee").textContent = money(val("lateFee")) || "[$amount]";
+    el("p_fiveDayNoticeOn").textContent = val("fiveDayNoticeOn");
+
+    el("p_moveInRow").style.display = (isMtm || isCvi) ? "table-row" : "none";
+    if (isMtm || isCvi) {
+      const name = val("tenant1Name") || "[Tenant Name]";
+      el("p_moveInText").textContent = `${name} needs ${money(val("moveInTotal")) || "[$amount]"} to get the keys.`;
+    }
+
+    el("p_depositSplitRow").style.display = isCvi ? "table-row" : "none";
+    el("p_rentSplitRow").style.display = isCvi ? "table-row" : "none";
+    if (isCvi) {
+      el("p_depositSplitText").textContent = `Tenant ${val("depositSplitTenantPct") || "0"}% / CVI ${val("depositSplitCviPct") || "100"}%`;
+      el("p_rentSplitText").textContent = `Tenant ${val("rentSplitTenantPct") || "0"}% / CVI ${val("rentSplitCviPct") || "100"}%`;
+    }
+
+    ["Electricity","Gas","Heat","AC","Sewer","HotWater","Trash","Internet"].forEach(key => {
+      const tenantPays = checked("util" + key);
+      el("p_util" + key).textContent = tenantPays ? "Tenant" : "Landlord";
+    });
+
+    const attachments = [
+      ["attGuarantee", "Guarantee/Renewal/Assignment/Sublease"],
+      ["attNonstandard", "Nonstandard Rental Provision"],
+      ["attRules", "Rules & Regulations"],
+      ["attPromises", "Promises to Repair"],
+      ["attSmoke", "Smoke Detector Notice"],
+      ["attCode", "Code Violations"],
+      ["attLead", "Lead Based Paint Disclosure & Pamphlet"],
+      ["attRealEstate", "Real Estate Agency Disclosure"],
+      ["attParkingDoc", "Rules & Parking document"],
+      ["attHud", "HUD-52641-A"]
+    ];
+    el("p_attachmentsList").innerHTML = attachments
+      .map(([id, label]) => `<li>${checked(id) ? "☑" : "☐"} ${escapeHtml(label)}</li>`)
+      .join("");
+
+    el("p_leadAckDate").textContent = formatDate(val("initialStartDate")) || "[date]";
+    el("p_leadAckAgent").textContent = val("agentOrgName") || "[Agent]";
+    el("p_leadAckAddress").textContent = premisesText;
+
+    el("p_clauseDeposit").textContent = money(val("securityDeposit")) || "[$amount]";
+
+    el("p_sigAgentName").textContent = val("signerName") || "[Agent Signer Name]";
+    el("p_sigAgentTitle").textContent = val("signerTitle") || "Agent";
+    el("p_sigImg").style.display = checked("includeSig") ? "block" : "none";
+
+    const names = [val("tenant1Name") || "[Tenant Name]"];
+    if (hasT2 && val("tenant2Name")) names.push(val("tenant2Name"));
+    el("p_rulesTenantNames").textContent = names.join(" and ");
+    el("p_nspTenantNames").textContent = names.join(" and ");
+
+    if (val("petsPolicy") === "fee") {
+      el("p_petsRule").innerHTML = `<li><b>Pets are not permitted on the property at any time without the prior written consent of Landlord. Tenant will be charged a fee of $150.00 per month for every month the pet is on the property. These fees may be deducted from Tenant's security deposit if not paid by the 10th day of the month. Tenant types the following attestation:</b> "${escapeHtml(val("petsAttestationText") || "I will not bring any pets on the property.")}"</li>`;
+    } else {
+      el("p_petsRule").innerHTML = `<li>Pets are not permitted on the property at any time without the prior written consent of Landlord.</li>`;
+    }
+
+    buildNsp();
+
+    const parkingFull = val("parkingVariant") === "full";
+    el("parkingFullSection").style.display = parkingFull ? "block" : "none";
+    document.querySelectorAll(".parking-initial").forEach(spanEl => {
+      spanEl.textContent = checked("parkingRequireInitials") ? "Initial: ______" : "";
+    });
+    el("p_parkingOccupantNames").textContent = names.join(" and ");
+  }
+
+  function showInvalid() {
+    el("loadingState").style.display = "none";
+    el("invalidState").style.display = "block";
+  }
+
+  function showSubmitError(msg) {
+    const e = el("submitError");
+    e.textContent = msg;
+    e.style.display = "block";
+  }
+
+  async function init() {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) { showInvalid(); return; }
+    try {
+      record = await window.sfSupabase.fetchLeaseSigningRequest(id);
+    } catch (e) {
+      console.error(e);
+      showInvalid();
+      return;
+    }
+    if (!record || record.status !== "pending") { showInvalid(); return; }
+
+    renderLease(record.lease_data || {});
+    el("loadingState").style.display = "none";
+    el("leaseContent").style.display = "block";
+
+    el("submitBtn").addEventListener("click", async () => {
+      const typedName = el("signatureTypedName").value.trim();
+      const attested = el("signatureAttest").checked;
+      el("submitError").style.display = "none";
+
+      if (!typedName) { showSubmitError("Please type your full legal name."); return; }
+      if (!attested) { showSubmitError("Please check the box to confirm this is your legal signature."); return; }
+
+      el("submitBtn").disabled = true;
+      el("submitBtn").textContent = "Submitting…";
+
+      const signedAtStr = new Date().toLocaleString("en-US");
+      el("p_sigTenant1Name").textContent = typedName + "  —  " + signedAtStr;
+
+      try {
+        const pdfBlob = await html2pdf()
+          .from(el("letter"))
+          .set({
+            margin: 0,
+            filename: "lease.pdf",
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+            pagebreak: { mode: ["css", "legacy"] },
+          })
+          .outputPdf("blob");
+
+        const id = new URLSearchParams(window.location.search).get("id");
+        await window.sfSupabase.submitLeaseSignature({
+          requestId: id,
+          tenantName: record.tenant_name,
+          tenantEmail: record.tenant_email,
+          unitLabel: record.unit_label,
+          signedData: leaseData,
+          signatureTypedName: typedName,
+          pdfBlob,
+        });
+
+        el("leaseContent").style.display = "none";
+        el("successState").style.display = "block";
+      } catch (e) {
+        console.error(e);
+        showSubmitError("Something went wrong submitting your signature. Please try again, or contact your property manager.");
+        el("submitBtn").disabled = false;
+        el("submitBtn").textContent = "Sign & Submit Lease";
+      }
+    });
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

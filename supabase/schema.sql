@@ -2770,3 +2770,122 @@ on conflict (id) do nothing;
 create policy "Allow public read of plates-for-purpose-badges" on storage.objects
   for select to anon
   using (bucket_id = 'plates-for-purpose-badges');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- 2nd Chance Housing — lease e-signature bridge
+-- ─────────────────────────────────────────────────────────────────────────
+-- Bridges the private secondchanceforall/lease repo (which holds every
+-- applicant's PII and can never be made public) to a single public-facing
+-- signing page at selassiefest.com/lease-sign/. Nothing here is specific to
+-- SelassieFest -- this is purely reusing an already-configured Supabase
+-- project + Resend account for a second, unrelated org (2nd Chance Housing),
+-- per an explicit decision to share infrastructure rather than stand up a
+-- second backend. Both tables are write-only to anon (never selectable) --
+-- the only public-safe read path is the get_lease_signing_request() RPC
+-- below, which returns exactly one row, keyed by an unguessable random
+-- uuid used as a bearer token (the link itself is the credential, same
+-- pattern as most e-mailed "click to view" links).
+create table if not exists lease_signing_requests (
+  id uuid primary key default gen_random_uuid(),
+  prospect_id text,
+  tenant_name text not null,
+  tenant_email text not null,
+  unit_label text,
+  lease_data jsonb not null,
+  status text not null default 'pending' check (status in ('pending', 'completed')),
+  created_at timestamptz not null default now()
+);
+
+alter table lease_signing_requests enable row level security;
+
+create policy "Allow anon insert" on lease_signing_requests
+  for insert to anon
+  with check (true);
+
+grant insert on lease_signing_requests to anon;
+
+-- Reuses the existing notify_submission_webhook() function -- emails the
+-- tenant a "please review and sign" link (notify-submission's
+-- lease_signing_requests config builds the actual selassiefest.com/lease-sign/
+-- URL from this row's id).
+create trigger lease_signing_requests_after_insert
+  after insert on lease_signing_requests
+  for each row execute function notify_submission_webhook();
+
+-- Security-definer RPC: the only way anon can ever read a signing request.
+-- Returns null (not an error) for an unknown id or one already marked
+-- completed, so a used/invalid link just shows "no longer valid" rather
+-- than leaking whether the id ever existed.
+create or replace function get_lease_signing_request(request_id uuid)
+returns table (tenant_name text, tenant_email text, unit_label text, lease_data jsonb, status text)
+language sql
+security definer
+set search_path = public
+as $$
+  select tenant_name, tenant_email, unit_label, lease_data, status
+  from lease_signing_requests
+  where id = request_id and status = 'pending';
+$$;
+
+grant execute on function get_lease_signing_request(uuid) to anon;
+
+create table if not exists lease_signatures (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references lease_signing_requests(id),
+  tenant_name text not null,
+  tenant_email text not null,
+  unit_label text,
+  signed_data jsonb not null,
+  signature_typed_name text not null,
+  pdf_path text not null,
+  signed_at timestamptz not null default now()
+);
+
+alter table lease_signatures enable row level security;
+
+create policy "Allow anon insert" on lease_signatures
+  for insert to anon
+  with check (true);
+
+grant insert on lease_signatures to anon;
+
+-- Marks the originating request completed so its signing link can't be
+-- reused (get_lease_signing_request only ever returns status = 'pending'
+-- rows). Kept as its own small function -- separate from
+-- notify_submission_webhook() -- since it does real business logic
+-- (an update to another table) rather than just firing the shared webhook,
+-- and doesn't need to embed any secret.
+create or replace function mark_lease_signing_request_completed()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update lease_signing_requests set status = 'completed' where id = new.request_id;
+  return new;
+end;
+$$;
+
+create trigger lease_signatures_mark_completed
+  after insert on lease_signatures
+  for each row execute function mark_lease_signing_request_completed();
+
+-- Reuses the existing notify_submission_webhook() function -- emails both
+-- mkepropertymanager@gmail.com and the tenant with the signed PDF attached
+-- (notify-submission's lease_signatures config, mirroring the
+-- security_guard_contracts attachment pattern above).
+create trigger lease_signatures_after_insert
+  after insert on lease_signatures
+  for each row execute function notify_submission_webhook();
+
+-- Private bucket for the client-generated signed PDF -- notify-submission
+-- (service role) fetches it back out to attach to both emails, same as
+-- security-guard-contracts above.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('lease-signed-pdfs', 'lease-signed-pdfs', false, 10485760, array['application/pdf'])
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to lease-signed-pdfs" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'lease-signed-pdfs');

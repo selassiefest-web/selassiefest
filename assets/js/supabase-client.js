@@ -281,4 +281,39 @@ window.sfSupabase = {
     if (error) throw error;
     return data || [];
   },
+
+  // 2nd Chance Housing lease e-signature bridge (see supabase/schema.sql's
+  // "lease e-signature bridge" section) -- unrelated to SelassieFest itself,
+  // just reusing this already-configured Supabase project. get_lease_signing_request
+  // is a security-definer RPC, not a table select, so it's the only way this
+  // (public, unauthenticated) page can ever read a single lease record --
+  // it returns null for an unknown id or one already marked completed.
+  async fetchLeaseSigningRequest(id) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('get_lease_signing_request', { request_id: id });
+    if (error) throw error;
+    return (data && data[0]) || null;
+  },
+
+  async submitLeaseSignature({ requestId, tenantName, tenantEmail, unitLabel, signedData, signatureTypedName, pdfBlob }) {
+    const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const pdfPath = `${stamp}.pdf`;
+
+    const { error: uploadError } = await client.storage.from('lease-signed-pdfs').upload(pdfPath, pdfBlob, {
+      contentType: 'application/pdf',
+    });
+    if (uploadError) throw uploadError;
+
+    const { error } = await client.from('lease_signatures').insert({
+      request_id: requestId,
+      tenant_name: tenantName,
+      tenant_email: tenantEmail,
+      unit_label: unitLabel || null,
+      signed_data: signedData,
+      signature_typed_name: signatureTypedName,
+      pdf_path: pdfPath,
+    });
+    if (error) throw error;
+  },
 };

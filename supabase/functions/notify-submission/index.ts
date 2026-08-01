@@ -295,6 +295,57 @@ function formatSecurityGuardContract(record: Record<string, any>) {
   };
 }
 
+// 2nd Chance Housing lease e-signature bridge -- see supabase/schema.sql's
+// "lease e-signature bridge" section for the full data-flow explanation.
+// This is unrelated-organization mail routed through SelassieFest's already
+// -verified Resend sending domain (a shared-infrastructure decision, not a
+// SelassieFest feature), so both formatters below use the `from`/`replyTo`
+// overrides to keep the display name and reply address correct for 2nd
+// Chance Housing rather than SelassieFest.
+const LEASE_SIGN_FROM = '2nd Chance Housing <hello@selassiefest.com>';
+const LEASE_MANAGER_EMAIL = 'mkepropertymanager@gmail.com';
+
+function formatLeaseSigningRequest(record: Record<string, any>) {
+  const signUrl = `https://selassiefest.com/lease-sign/?id=${record.id}`;
+  return {
+    subject: `Please review and sign your lease${record.unit_label ? ' — ' + record.unit_label : ''}`,
+    html: `
+      <h2>Your lease is ready to sign</h2>
+      <p>Hi ${escapeHtml(record.tenant_name)},</p>
+      <p>Please review and sign your lease${record.unit_label ? ` for <strong>${escapeHtml(record.unit_label)}</strong>` : ''} using the secure link below:</p>
+      <p style="margin:24px 0;"><a href="${signUrl}" style="background:#2b7a4b;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;">Review &amp; Sign Lease</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${signUrl}</p>
+      <p>Once you sign, you and our office will both automatically receive a copy of the fully signed lease by email.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Questions? Reply to this email.</p>
+    `,
+  };
+}
+
+function formatLeaseSignatureStaff(record: Record<string, any>) {
+  return {
+    subject: `Signed Lease — ${record.tenant_name}${record.unit_label ? ' (' + record.unit_label + ')' : ''}`,
+    html: `
+      <h2>Lease Signed</h2>
+      <p><strong>Tenant:</strong> ${escapeHtml(record.tenant_name)} (${escapeHtml(record.tenant_email)})</p>
+      ${record.unit_label ? `<p><strong>Unit:</strong> ${escapeHtml(record.unit_label)}</p>` : ''}
+      <p><strong>Signed as:</strong> ${escapeHtml(record.signature_typed_name)}</p>
+      <p><strong>Signed at:</strong> ${escapeHtml(record.signed_at)}</p>
+      <p>Signed PDF is attached.</p>
+    `,
+  };
+}
+
+function formatLeaseSignatureTenantCopy(record: Record<string, any>) {
+  return {
+    subject: `Your signed lease copy${record.unit_label ? ' — ' + record.unit_label : ''}`,
+    html: `
+      <h2>Thank you, ${escapeHtml(record.tenant_name)}!</h2>
+      <p>Your lease${record.unit_label ? ` for <strong>${escapeHtml(record.unit_label)}</strong>` : ''} has been signed and submitted. A copy is attached for your records.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Questions? Reply to this email.</p>
+    `,
+  };
+}
+
 function formatEventNotifyConfirmation(record: Record<string, any>) {
   return {
     subject: `You're on the list — ${record.event_name}`,
@@ -315,6 +366,10 @@ type Notification = {
   // it), so its emails must not carry the "SelassieFest" display name even
   // though they still send from the same verified selassiefest.com domain.
   from?: (record: Record<string, any>) => string;
+  // Optional reply-to override -- defaults to REPLY_TO below. Used by the
+  // lease e-signature notifications so replies land at
+  // mkepropertymanager@gmail.com instead of SelassieFest's own inbox.
+  replyTo?: (record: Record<string, any>) => string;
   // Optional file attachments (Resend's {filename, content: base64} shape).
   // Only security_guard_contracts uses this so far, to attach the signed PDF
   // pulled back out of its private Storage bucket.
@@ -394,6 +449,44 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       },
     ],
   },
+  lease_signing_requests: {
+    notifications: [
+      {
+        to: (record) => record.tenant_email,
+        format: formatLeaseSigningRequest,
+        from: () => LEASE_SIGN_FROM,
+        replyTo: () => LEASE_MANAGER_EMAIL,
+      },
+    ],
+  },
+  lease_signatures: {
+    notifications: [
+      {
+        to: () => LEASE_MANAGER_EMAIL,
+        format: formatLeaseSignatureStaff,
+        from: () => LEASE_SIGN_FROM,
+        replyTo: () => LEASE_MANAGER_EMAIL,
+        attachments: async (record) => [
+          {
+            filename: `Signed-Lease-${record.tenant_name || record.id}.pdf`,
+            content: await fetchStorageObjectAsBase64('lease-signed-pdfs', record.pdf_path),
+          },
+        ],
+      },
+      {
+        to: (record) => record.tenant_email,
+        format: formatLeaseSignatureTenantCopy,
+        from: () => LEASE_SIGN_FROM,
+        replyTo: () => LEASE_MANAGER_EMAIL,
+        attachments: async (record) => [
+          {
+            filename: `Signed-Lease-${record.tenant_name || record.id}.pdf`,
+            content: await fetchStorageObjectAsBase64('lease-signed-pdfs', record.pdf_path),
+          },
+        ],
+      },
+    ],
+  },
 };
 
 Deno.serve(async (req: Request) => {
@@ -438,6 +531,7 @@ Deno.serve(async (req: Request) => {
 
       const { subject, html } = notification.format(record);
       const from = notification.from ? notification.from(record) : FROM;
+      const replyTo = notification.replyTo ? notification.replyTo(record) : REPLY_TO;
       const attachments = notification.attachments ? await notification.attachments(record) : undefined;
 
       const resendRes = await fetch('https://api.resend.com/emails', {
@@ -446,7 +540,7 @@ Deno.serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, reply_to: REPLY_TO, subject, html, ...(attachments ? { attachments } : {}) }),
+        body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, ...(attachments ? { attachments } : {}) }),
       });
 
       if (!resendRes.ok) {
