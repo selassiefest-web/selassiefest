@@ -32,7 +32,10 @@ const VENDOR_APPLICATIONS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.c
 // conversion (btoa needs a binary string, not a raw byte array) is cheap.
 async function fetchStorageObjectAsBase64(bucket: string, path: string): Promise<string> {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
-    headers: { Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` },
+    headers: {
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+    },
   });
   if (!res.ok) {
     throw new Error(`Storage fetch failed (${bucket}/${path}): ${res.status} ${await res.text()}`);
