@@ -324,6 +324,18 @@ function formatLeaseSigningRequest(record: Record<string, any>) {
   };
 }
 
+function formatLeaseSigningRequestStaffCopy(record: Record<string, any>) {
+  return {
+    subject: `The Attached Lease was sent to ${record.tenant_name}`,
+    html: `
+      <h2>Lease sent for signature</h2>
+      <p><strong>Tenant:</strong> ${escapeHtml(record.tenant_name)} (${escapeHtml(record.tenant_email)})</p>
+      ${record.unit_label ? `<p><strong>Unit:</strong> ${escapeHtml(record.unit_label)}</p>` : ''}
+      <p>A copy of the lease as sent (unsigned) is attached for your records. You'll get another email once it's signed.</p>
+    `,
+  };
+}
+
 function formatLeaseSignatureStaff(record: Record<string, any>) {
   return {
     subject: `Signed Lease — ${record.tenant_name}${record.unit_label ? ' (' + record.unit_label + ')' : ''}`,
@@ -459,6 +471,21 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         format: formatLeaseSigningRequest,
         from: () => LEASE_SIGN_FROM,
         replyTo: () => LEASE_MANAGER_EMAIL,
+      },
+      {
+        to: () => LEASE_MANAGER_EMAIL,
+        format: formatLeaseSigningRequestStaffCopy,
+        from: () => LEASE_SIGN_FROM,
+        replyTo: () => LEASE_MANAGER_EMAIL,
+        attachments: async (record) => {
+          if (!record.draft_pdf_path) return [];
+          return [
+            {
+              filename: `Lease-Sent-${record.tenant_name || record.id}.pdf`,
+              content: await fetchStorageObjectAsBase64('lease-draft-pdfs', record.draft_pdf_path),
+            },
+          ];
+        },
       },
     ],
   },

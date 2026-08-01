@@ -2889,3 +2889,17 @@ on conflict (id) do nothing;
 create policy "Allow anon insert to lease-signed-pdfs" on storage.objects
   for insert to anon
   with check (bucket_id = 'lease-signed-pdfs');
+
+-- draft_pdf_path: a client-generated PDF snapshot of the lease as it stood
+-- at send time (unsigned) -- attached to the staff confirmation email
+-- ("The Attached Lease was sent to {tenant}") so there's a record of
+-- exactly what was sent, independent of the later signed copy.
+alter table lease_signing_requests add column if not exists draft_pdf_path text;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('lease-draft-pdfs', 'lease-draft-pdfs', false, 10485760, array['application/pdf'])
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to lease-draft-pdfs" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'lease-draft-pdfs');
