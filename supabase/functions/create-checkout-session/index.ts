@@ -36,7 +36,7 @@ function json(body: unknown, status = 200) {
 // name/variant/price is ignored so a tampered request can never make Stripe
 // charge less than the real menu price. Keep in sync with the
 // data-id/data-name/data-variant/data-price attributes in
-// marketplace/index.html.
+// marketplace/jamaican-kitchen.html.
 const MENU_ITEMS: Record<string, { name: string; variant?: string; price: number }> = {
   'jerk-14': { name: 'Jerk Chicken', variant: '1/4 Chicken', price: 7.00 },
   'jerk-12': { name: 'Jerk Chicken', variant: '1/2 Chicken', price: 14.00 },
@@ -55,7 +55,7 @@ const MENU_ITEMS: Record<string, { name: string; variant?: string; price: number
   'rice-jerk': { name: 'Jerk Fried Rice', variant: 'with Peas', price: 10.00 },
   'rice-veg': { name: 'Vegetable Fried Rice', variant: 'with Peas', price: 10.00 },
   'cabbage': { name: 'Cabbage', variant: 'Stewed', price: 6.00 },
-  // Ital Marketplace menu (ital-marketplace/index.html) — all meals $20.
+  // Ital Kitchen menu (marketplace/ital-kitchen.html) — all meals $20.
   'ital-curry': { name: 'Curry Chunks', price: 20.00 },
   'ital-brownstew': { name: 'Brown Stew Chunks', price: 20.00 },
   'ital-veganfish': { name: 'Vegan Fish', price: 20.00 },
@@ -70,8 +70,8 @@ const MENU_ITEMS: Record<string, { name: string; variant?: string; price: number
 // keyed by an explicit `source` the client sends, not a raw client URL, so
 // this can never become an open redirect.
 const CANCEL_PATHS: Record<string, string> = {
-  marketplace: '/marketplace/',
-  'ital-marketplace': '/ital-marketplace/',
+  marketplace: '/marketplace/jamaican-kitchen.html',
+  'ital-marketplace': '/marketplace/ital-kitchen.html',
 };
 
 type ResolvedItem = { id: string; name: string; variant?: string; qty: number; price: number };
