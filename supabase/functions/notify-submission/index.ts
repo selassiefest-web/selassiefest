@@ -674,12 +674,16 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    const results = [];
-    for (const notification of config.notifications) {
+    // Dispatched concurrently, not sequentially -- the trigger's net.http_post
+    // call into this function has a hard 5s timeout (pg_net default), and two
+    // sequential Resend round-trips (each individually well under 5s) can add
+    // up past that ceiling on tables with 2+ notifications, silently dropping
+    // the whole webhook call (confirmed: bbpac_membership_signups' 2-email
+    // config reliably timed out sequential, completed fine parallel).
+    const results = await Promise.all(config.notifications.map(async (notification) => {
       const to = notification.to(record);
       if (!to) {
-        results.push({ skipped: true, reason: 'no recipient email on record' });
-        continue;
+        return { skipped: true, reason: 'no recipient email on record' };
       }
 
       const { subject, html } = notification.format(record);
@@ -699,11 +703,10 @@ Deno.serve(async (req: Request) => {
       if (!resendRes.ok) {
         const errText = await resendRes.text();
         console.error('Resend send failed:', resendRes.status, errText);
-        results.push({ error: errText });
-      } else {
-        results.push({ sent: true, to });
+        return { error: errText };
       }
-    }
+      return { sent: true, to };
+    }));
 
     const anySent = results.some((r) => r.sent);
     const anyError = results.some((r) => r.error);

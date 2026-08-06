@@ -291,7 +291,11 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (window.sfVerify.looksLikeBot(form)) return;
+      if (window.sfVerify.looksLikeBot(form)) {
+        formMsg.textContent = 'Please take a moment reviewing the form before submitting.';
+        formMsg.className = 'form-msg error';
+        return;
+      }
 
       pendingSignup = {
         fullName: form.querySelector('#m-name').value.trim(),
@@ -328,10 +332,15 @@
     verifyBtn.addEventListener('click', function () {
       var code = codeInput.value.trim();
       if (!code) return;
+      // Snapshot pendingSignup now, not a live reference -- if "Use a
+      // different email" reassigns the shared pendingSignup while this
+      // request is in flight, this chain must keep using the signup it
+      // was actually verifying, not whatever pendingSignup became later.
+      var signupAtClick = pendingSignup;
       verifyBtn.disabled = true;
       codeMsg.textContent = 'Checking...';
       codeMsg.className = 'form-msg';
-      postJson(VERIFY_URL, { email: pendingSignup.email, code: code }).then(function (res) {
+      postJson(VERIFY_URL, { email: signupAtClick.email, code: code }).then(function (res) {
         if (!res.valid) {
           verifyBtn.disabled = false;
           codeMsg.textContent = res.error || "That code doesn't match.";
@@ -340,7 +349,7 @@
         }
         codeMsg.textContent = 'Joining...';
         codeMsg.className = 'form-msg';
-        window.sfSupabase.bbpacMembershipSignup(pendingSignup).then(function () {
+        window.sfSupabase.bbpacMembershipSignup(signupAtClick).then(function () {
           codeMsg.textContent = '';
           stepCode.hidden = true;
           stepForm.hidden = false;

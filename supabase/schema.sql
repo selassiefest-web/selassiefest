@@ -2909,11 +2909,15 @@ create policy "Allow anon insert to lease-draft-pdfs" on storage.objects
 -- ─────────────────────────────────────────────────────────────────────────
 -- A Ras Tafari Inc. community initiative, separate from the SelassieFest
 -- festival itself but sharing this same Supabase project. Six simple
--- write-only tables, same unconditional anon-insert pattern as
--- camp_registrations/game_submissions above (no email-verification gate --
--- these are low-stakes forms, not the volunteer/sponsor pattern's
--- OTP-gated tables). Each has notify_submission_webhook() attached as an
--- AFTER INSERT trigger below, same as every other form table in this file.
+-- write-only tables. Five of the six (all but bbpac_membership_signups)
+-- use the unconditional anon-insert pattern from camp_registrations/
+-- game_submissions above -- no email-verification gate, low-stakes forms.
+-- bbpac_membership_signups is the exception: it's gated on a verified
+-- email, same as volunteer_signups/sponsor_inquiries -- see "Membership
+-- signup email verification" further down, which is also where its real
+-- INSERT policy lives (NOT in the unconditional block below). Each of the
+-- six has notify_submission_webhook() attached as an AFTER INSERT trigger
+-- below, same as every other form table in this file.
 
 create table if not exists bbpac_meeting_notify (
   id uuid primary key default gen_random_uuid(),
