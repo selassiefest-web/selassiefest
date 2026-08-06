@@ -2903,3 +2903,103 @@ on conflict (id) do nothing;
 create policy "Allow anon insert to lease-draft-pdfs" on storage.objects
   for insert to anon
   with check (bucket_id = 'lease-draft-pdfs');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- 63rd Street Bongo Beach Park Advisory Council (bbpac/)
+-- ─────────────────────────────────────────────────────────────────────────
+-- A Ras Tafari Inc. community initiative, separate from the SelassieFest
+-- festival itself but sharing this same Supabase project. Six simple
+-- write-only tables, same unconditional anon-insert pattern as
+-- camp_registrations/game_submissions above (no email-verification gate --
+-- these are low-stakes forms, not the volunteer/sponsor pattern's
+-- OTP-gated tables). Each needs notify_submission_webhook() attached as an
+-- AFTER INSERT trigger, same as every other form table in this file --
+-- not included below since that trigger function embeds a secret and is
+-- applied directly against the live project (see the "Email notifications"
+-- comment earlier in this file for the recreate-from-scratch recipe).
+
+create table if not exists bbpac_meeting_notify (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_volunteer_signups (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  interest_area text,
+  availability text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_membership_signups (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  membership_level text,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_sponsor_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  business_name text not null,
+  contact_name text,
+  email text not null,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_vendor_applications (
+  id uuid primary key default gen_random_uuid(),
+  business_name text not null,
+  contact_name text,
+  email text not null,
+  product_description text,
+  preferred_event text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  topic text,
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_photo_submissions (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  description text,
+  era text,
+  created_at timestamptz not null default now()
+);
+
+alter table bbpac_meeting_notify enable row level security;
+alter table bbpac_volunteer_signups enable row level security;
+alter table bbpac_membership_signups enable row level security;
+alter table bbpac_sponsor_inquiries enable row level security;
+alter table bbpac_vendor_applications enable row level security;
+alter table bbpac_contact_messages enable row level security;
+alter table bbpac_photo_submissions enable row level security;
+
+create policy "Allow anon insert" on bbpac_meeting_notify for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_volunteer_signups for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_membership_signups for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_sponsor_inquiries for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_vendor_applications for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_contact_messages for insert to anon with check (true);
+create policy "Allow anon insert" on bbpac_photo_submissions for insert to anon with check (true);
+
+grant insert on bbpac_meeting_notify to anon;
+grant insert on bbpac_volunteer_signups to anon;
+grant insert on bbpac_membership_signups to anon;
+grant insert on bbpac_sponsor_inquiries to anon;
+grant insert on bbpac_vendor_applications to anon;
+grant insert on bbpac_contact_messages to anon;
+grant insert on bbpac_photo_submissions to anon;

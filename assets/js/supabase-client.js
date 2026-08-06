@@ -316,4 +316,82 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  // 63rd Street Bongo Beach Park Advisory Council (bbpac/) -- a Ras Tafari
+  // Inc. community initiative, separate from the SelassieFest festival itself
+  // but sharing this same Supabase project. All six tables below are
+  // write-only inserts, same convention as everything above.
+  async bbpacMeetingNotify(email) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_meeting_notify').insert({ email });
+    if (error) throw error;
+  },
+
+  async bbpacVolunteerSignup({ fullName, email, phone, interestArea, availability }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_volunteer_signups').insert({
+      full_name: fullName,
+      email,
+      phone: phone || null,
+      interest_area: interestArea || null,
+      availability: availability || null,
+    });
+    if (error) throw error;
+  },
+
+  async bbpacMembershipSignup({ fullName, email, membershipLevel, message }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_membership_signups').insert({
+      full_name: fullName,
+      email,
+      membership_level: membershipLevel || null,
+      message: message || null,
+    });
+    if (error) throw error;
+  },
+
+  async bbpacSponsorInquiry({ businessName, contactName, email, message }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_sponsor_inquiries').insert({
+      business_name: businessName,
+      contact_name: contactName || null,
+      email,
+      message: message || null,
+    });
+    if (error) throw error;
+  },
+
+  async bbpacVendorApplication({ businessName, contactName, email, productDescription, preferredEvent }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_vendor_applications').insert({
+      business_name: businessName,
+      contact_name: contactName || null,
+      email,
+      product_description: productDescription || null,
+      preferred_event: preferredEvent || null,
+    });
+    if (error) throw error;
+  },
+
+  async bbpacContactMessage({ name, email, topic, message }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_contact_messages').insert({
+      name,
+      email,
+      topic: topic || null,
+      message,
+    });
+    if (error) throw error;
+  },
+
+  async bbpacPhotoSubmission({ name, email, description, era }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_photo_submissions').insert({
+      name,
+      email,
+      description: description || null,
+      era: era || null,
+    });
+    if (error) throw error;
+  },
 };
