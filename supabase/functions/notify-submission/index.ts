@@ -12,6 +12,10 @@ const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const NOTIFY_TO = 'selassiefest@gmail.com';
+// Bongo Beach PAC (bbpac/) is a Ras Tafari Inc. community initiative, not
+// the festival itself -- its forms go to Stephen directly rather than the
+// shared festival inbox above.
+const BBPAC_NOTIFY_TO = 'stephen@selassiefest.com';
 // selassiefest.com is verified with Resend, so mail now sends from a real
 // address instead of the onboarding@resend.dev sandbox (which could only
 // ever deliver to the account's own inbox). reply_to keeps replies landing
@@ -372,6 +376,94 @@ function formatEventNotifyConfirmation(record: Record<string, any>) {
   };
 }
 
+// 63rd Street Bongo Beach Park Advisory Council (bbpac/) formatters -- six
+// simple low-stakes forms, all notifying BBPAC_NOTIFY_TO only (no submitter
+// confirmation), same pattern as sponsor_inquiries/vendor_applications above.
+function formatBbpacMeetingNotify(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC meeting notify signup`,
+    html: `
+      <h2>New Meeting Notification Signup</h2>
+      <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
+    `,
+  };
+}
+
+function formatBbpacVolunteerSignup(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC Volunteer — ${record.full_name}`,
+    html: `
+      <h2>New Bongo Beach PAC Volunteer Signup</h2>
+      <p><strong>Name:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)}${record.phone ? ', ' + escapeHtml(record.phone) : ''})</p>
+      ${record.interest_area ? `<p><strong>Interest area:</strong> ${escapeHtml(record.interest_area)}</p>` : ''}
+      ${record.availability ? `<p><strong>Availability:</strong> ${escapeHtml(record.availability)}</p>` : ''}
+    `,
+  };
+}
+
+function formatBbpacMembershipSignup(record: Record<string, any>) {
+  return {
+    subject: `New Friends of Bongo Beach Member — ${record.full_name}`,
+    html: `
+      <h2>New Friends of Bongo Beach Membership Signup</h2>
+      <p><strong>Name:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)})</p>
+      ${record.membership_level ? `<p><strong>Membership level:</strong> ${escapeHtml(record.membership_level)}</p>` : ''}
+      ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+    `,
+  };
+}
+
+function formatBbpacSponsorInquiry(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC Sponsor Inquiry — ${record.business_name}`,
+    html: `
+      <h2>New Bongo Beach PAC Sponsor Inquiry</h2>
+      <p><strong>Business:</strong> ${escapeHtml(record.business_name)}</p>
+      ${record.contact_name ? `<p><strong>Contact:</strong> ${escapeHtml(record.contact_name)}</p>` : ''}
+      <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
+      ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+    `,
+  };
+}
+
+function formatBbpacVendorApplication(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC Vendor Application — ${record.business_name}`,
+    html: `
+      <h2>New Bongo Beach PAC Vendor Application</h2>
+      <p><strong>Business:</strong> ${escapeHtml(record.business_name)}</p>
+      ${record.contact_name ? `<p><strong>Contact:</strong> ${escapeHtml(record.contact_name)}</p>` : ''}
+      <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
+      ${record.product_description ? `<p><strong>Products:</strong><br>${escapeHtml(record.product_description)}</p>` : ''}
+      ${record.preferred_event ? `<p><strong>Preferred event:</strong> ${escapeHtml(record.preferred_event)}</p>` : ''}
+    `,
+  };
+}
+
+function formatBbpacContactMessage(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC Contact Message — ${record.name}`,
+    html: `
+      <h2>New Bongo Beach PAC Contact Message</h2>
+      <p><strong>From:</strong> ${escapeHtml(record.name)} (${escapeHtml(record.email)})</p>
+      ${record.topic ? `<p><strong>Topic:</strong> ${escapeHtml(record.topic)}</p>` : ''}
+      <p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>
+    `,
+  };
+}
+
+function formatBbpacPhotoSubmission(record: Record<string, any>) {
+  return {
+    subject: `New Bongo Beach PAC Photo Submission — ${record.name}`,
+    html: `
+      <h2>New Bongo Beach PAC Photo/Archive Submission</h2>
+      <p><strong>From:</strong> ${escapeHtml(record.name)} (${escapeHtml(record.email)})</p>
+      ${record.era ? `<p><strong>Era:</strong> ${escapeHtml(record.era)}</p>` : ''}
+      ${record.description ? `<p><strong>Description:</strong><br>${escapeHtml(record.description)}</p>` : ''}
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -489,6 +581,13 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       },
     ],
   },
+  bbpac_meeting_notify: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacMeetingNotify }] },
+  bbpac_volunteer_signups: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacVolunteerSignup }] },
+  bbpac_membership_signups: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacMembershipSignup }] },
+  bbpac_sponsor_inquiries: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacSponsorInquiry }] },
+  bbpac_vendor_applications: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacVendorApplication }] },
+  bbpac_contact_messages: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacContactMessage }] },
+  bbpac_photo_submissions: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacPhotoSubmission }] },
   lease_signatures: {
     notifications: [
       {

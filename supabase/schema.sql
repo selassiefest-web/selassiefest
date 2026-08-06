@@ -2912,11 +2912,8 @@ create policy "Allow anon insert to lease-draft-pdfs" on storage.objects
 -- write-only tables, same unconditional anon-insert pattern as
 -- camp_registrations/game_submissions above (no email-verification gate --
 -- these are low-stakes forms, not the volunteer/sponsor pattern's
--- OTP-gated tables). Each needs notify_submission_webhook() attached as an
--- AFTER INSERT trigger, same as every other form table in this file --
--- not included below since that trigger function embeds a secret and is
--- applied directly against the live project (see the "Email notifications"
--- comment earlier in this file for the recreate-from-scratch recipe).
+-- OTP-gated tables). Each has notify_submission_webhook() attached as an
+-- AFTER INSERT trigger below, same as every other form table in this file.
 
 create table if not exists bbpac_meeting_notify (
   id uuid primary key default gen_random_uuid(),
@@ -3003,3 +3000,56 @@ grant insert on bbpac_sponsor_inquiries to anon;
 grant insert on bbpac_vendor_applications to anon;
 grant insert on bbpac_contact_messages to anon;
 grant insert on bbpac_photo_submissions to anon;
+
+-- Reuses the existing notify_submission_webhook() function (see the
+-- notify-submission section above) rather than redefining it, so no secret
+-- needs to be committed here. Matching entries live in notify-submission's
+-- TABLE_CONFIG (supabase/functions/notify-submission/index.ts).
+create trigger bbpac_meeting_notify_after_insert
+  after insert on bbpac_meeting_notify
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_volunteer_signups_after_insert
+  after insert on bbpac_volunteer_signups
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_membership_signups_after_insert
+  after insert on bbpac_membership_signups
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_sponsor_inquiries_after_insert
+  after insert on bbpac_sponsor_inquiries
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_vendor_applications_after_insert
+  after insert on bbpac_vendor_applications
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_contact_messages_after_insert
+  after insert on bbpac_contact_messages
+  for each row execute function notify_submission_webhook();
+create trigger bbpac_photo_submissions_after_insert
+  after insert on bbpac_photo_submissions
+  for each row execute function notify_submission_webhook();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Member directory access (bbpac/get-involved/members.html)
+-- ─────────────────────────────────────────────────────────────────────────
+-- The "Friends of Bongo Beach" member list (names only, no emails) is shown
+-- only after the viewer proves they're actually on it, via a 6-digit code
+-- emailed to the address they type in -- same short-lived-code mechanics as
+-- volunteer_verifications/sponsor_verifications above, but gating a READ
+-- instead of a write. request-bbpac-directory-code / verify-bbpac-directory-
+-- code (service role) are the only things that ever touch this table --
+-- deliberately zero RLS policies, so anon has no path to read or forge a
+-- verified row. On a successful code check, verify-bbpac-directory-code
+-- itself queries bbpac_membership_signups (service role, bypassing its own
+-- lack of an anon select policy) and returns just the full_name column --
+-- there is no public view/RPC exposing member names, so the base table
+-- stays fully write-only from anon's perspective.
+create table if not exists bbpac_directory_verifications (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  code_hash text not null,
+  verified boolean not null default false,
+  attempts int not null default 0,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null
+);
+
+alter table bbpac_directory_verifications enable row level security;
