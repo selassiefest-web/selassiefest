@@ -142,7 +142,7 @@
 
       <div class="note-box"><i class="fas fa-circle-info" style="color:var(--lakefront); margin-right:8px;"></i>Paid membership processing (Zeffy/GoFundMe) launches alongside our first programming. For now, sign up below and we'll follow up directly — membership is always free to join at the Community level. Already a member? <a href="/bbpac/get-involved/members.html" style="text-decoration:underline;">View the member directory</a>.</div>
 
-      <div class="form-card">
+      <div class="form-card" id="membership-step-form">
         <h2>Join Friends of Bongo Beach</h2>
         <form data-bbpac-form="membership">
           <div class="form-row">
@@ -161,9 +161,22 @@
           <div class="form-row">
             <div class="full"><label for="m-msg">Anything you'd like us to know? (optional)</label><textarea id="m-msg" rows="3"></textarea></div>
           </div>
-          <button type="submit" class="btn primary">Join Friends of Bongo Beach</button>
+          <button type="submit" class="btn primary">Send Verification Code</button>
           <p class="form-msg" data-form-msg aria-live="polite"></p>
         </form>
+      </div>
+
+      <div class="form-card" id="membership-step-code" hidden>
+        <h2>Confirm your email</h2>
+        <p style="font-size:0.85rem; color:var(--ink-dim); margin:0 0 20px;" id="m-code-hint"></p>
+        <label for="m-code">6-digit code</label>
+        <input type="text" id="m-code" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="max-width:220px; letter-spacing:0.4em; text-align:center; font-size:1.2rem; margin-bottom:16px;">
+        <p class="form-msg" id="m-code-msg" aria-live="polite"></p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn primary" id="m-verify-btn">Verify &amp; Join</button>
+          <button type="button" class="link-btn" id="m-resend-btn" style="background:none; border:none; color:var(--lakefront); font-size:0.82rem; text-decoration:underline; cursor:pointer; padding:0; font-family:inherit;">Resend code</button>
+          <button type="button" class="link-btn" id="m-change-email-btn" style="background:none; border:none; color:var(--ink-dim); font-size:0.82rem; text-decoration:underline; cursor:pointer; padding:0; font-family:inherit;">Use a different email</button>
+        </div>
       </div>
     </div>
   </section>
@@ -205,27 +218,154 @@
 </footer>
 <script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/verify-widget.js"></script>
 <script>
-  document.querySelector('[data-bbpac-form="membership"]').addEventListener('submit', function(e){
-    e.preventDefault();
-    var form = this;
-    var btn = form.querySelector('button[type="submit"]');
-    var msg = form.querySelector('[data-form-msg]');
-    btn.disabled = true; msg.textContent = 'Submitting...'; msg.className = 'form-msg';
-    window.sfSupabase.bbpacMembershipSignup({
-      fullName: form.querySelector('#m-name').value.trim(),
-      email: form.querySelector('#m-email').value.trim(),
-      membershipLevel: form.querySelector('#m-level').value,
-      message: form.querySelector('#m-msg').value.trim(),
-    }).then(function(){
-      msg.textContent = "Welcome to Friends of Bongo Beach!";
-      msg.className = 'form-msg success';
-      form.reset();
-    }).catch(function(){
-      msg.textContent = 'Something went wrong. Please try again.';
-      msg.className = 'form-msg error';
-    }).finally(function(){ btn.disabled = false; });
-  });
+  (function () {
+    var FUNCTIONS_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1';
+    var REQUEST_URL = FUNCTIONS_BASE + '/request-bbpac-membership-verification';
+    var VERIFY_URL = FUNCTIONS_BASE + '/verify-bbpac-membership-code';
+
+    var form = document.querySelector('[data-bbpac-form="membership"]');
+    var sendBtn = form.querySelector('button[type="submit"]');
+    var formMsg = form.querySelector('[data-form-msg]');
+
+    var stepForm = document.getElementById('membership-step-form');
+    var stepCode = document.getElementById('membership-step-code');
+    var codeHint = document.getElementById('m-code-hint');
+    var codeInput = document.getElementById('m-code');
+    var codeMsg = document.getElementById('m-code-msg');
+    var verifyBtn = document.getElementById('m-verify-btn');
+    var resendBtn = document.getElementById('m-resend-btn');
+    var changeEmailBtn = document.getElementById('m-change-email-btn');
+
+    window.sfVerify.protect(form);
+
+    var pendingSignup = null;
+    var cooldownTimer = null;
+
+    function postJson(url, body) {
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }).then(function (res) { return res.json(); });
+    }
+
+    function startCooldown(seconds) {
+      var remaining = seconds;
+      resendBtn.disabled = true;
+      if (cooldownTimer) clearInterval(cooldownTimer);
+      var tick = function () {
+        if (remaining <= 0) {
+          clearInterval(cooldownTimer);
+          resendBtn.disabled = false;
+          resendBtn.textContent = 'Resend code';
+          return;
+        }
+        resendBtn.textContent = 'Resend code (' + remaining + 's)';
+        remaining -= 1;
+      };
+      tick();
+      cooldownTimer = setInterval(tick, 1000);
+    }
+
+    function sendCode() {
+      codeMsg.textContent = 'Sending code...';
+      codeMsg.className = 'form-msg';
+      resendBtn.disabled = true;
+      return postJson(REQUEST_URL, { email: pendingSignup.email }).then(function (res) {
+        if (res.error) {
+          codeMsg.textContent = res.error;
+          codeMsg.className = 'form-msg error';
+        } else {
+          codeMsg.textContent = 'Code sent -- check your inbox (and spam folder).';
+          codeMsg.className = 'form-msg success';
+        }
+        startCooldown(60);
+      }).catch(function () {
+        codeMsg.textContent = 'Could not send the code. Check your connection and try again.';
+        codeMsg.className = 'form-msg error';
+        resendBtn.disabled = false;
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (window.sfVerify.looksLikeBot(form)) return;
+
+      pendingSignup = {
+        fullName: form.querySelector('#m-name').value.trim(),
+        email: form.querySelector('#m-email').value.trim(),
+        membershipLevel: form.querySelector('#m-level').value,
+        message: form.querySelector('#m-msg').value.trim(),
+      };
+
+      sendBtn.disabled = true;
+      formMsg.textContent = 'Sending verification code...';
+      formMsg.className = 'form-msg';
+
+      postJson(REQUEST_URL, { email: pendingSignup.email }).then(function (res) {
+        sendBtn.disabled = false;
+        if (res.error) {
+          formMsg.textContent = res.error;
+          formMsg.className = 'form-msg error';
+          return;
+        }
+        formMsg.textContent = '';
+        stepForm.hidden = true;
+        stepCode.hidden = false;
+        codeHint.innerHTML = 'We sent a 6-digit code to <strong>' + pendingSignup.email.replace(/</g, '&lt;') + '</strong>. Check your inbox (and spam folder).';
+        codeInput.value = '';
+        codeInput.focus();
+        startCooldown(60);
+      }).catch(function () {
+        sendBtn.disabled = false;
+        formMsg.textContent = 'Something went wrong. Please try again.';
+        formMsg.className = 'form-msg error';
+      });
+    });
+
+    verifyBtn.addEventListener('click', function () {
+      var code = codeInput.value.trim();
+      if (!code) return;
+      verifyBtn.disabled = true;
+      codeMsg.textContent = 'Checking...';
+      codeMsg.className = 'form-msg';
+      postJson(VERIFY_URL, { email: pendingSignup.email, code: code }).then(function (res) {
+        if (!res.valid) {
+          verifyBtn.disabled = false;
+          codeMsg.textContent = res.error || "That code doesn't match.";
+          codeMsg.className = 'form-msg error';
+          return;
+        }
+        codeMsg.textContent = 'Joining...';
+        codeMsg.className = 'form-msg';
+        window.sfSupabase.bbpacMembershipSignup(pendingSignup).then(function () {
+          codeMsg.textContent = '';
+          stepCode.hidden = true;
+          stepForm.hidden = false;
+          form.reset();
+          formMsg.textContent = 'Welcome to Friends of Bongo Beach! Check your email for a welcome message.';
+          formMsg.className = 'form-msg success';
+        }).catch(function () {
+          verifyBtn.disabled = false;
+          codeMsg.textContent = 'Verified, but something went wrong joining. Please try again.';
+          codeMsg.className = 'form-msg error';
+        });
+      }).catch(function () {
+        verifyBtn.disabled = false;
+        codeMsg.textContent = 'Could not check the code. Try again.';
+        codeMsg.className = 'form-msg error';
+      });
+    });
+
+    codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); verifyBtn.click(); } });
+    resendBtn.addEventListener('click', sendCode);
+    changeEmailBtn.addEventListener('click', function () {
+      stepCode.hidden = true;
+      stepForm.hidden = false;
+    });
+  })();
 </script>
 </body>
 </html>

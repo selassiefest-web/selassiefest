@@ -2987,7 +2987,11 @@ alter table bbpac_photo_submissions enable row level security;
 
 create policy "Allow anon insert" on bbpac_meeting_notify for insert to anon with check (true);
 create policy "Allow anon insert" on bbpac_volunteer_signups for insert to anon with check (true);
-create policy "Allow anon insert" on bbpac_membership_signups for insert to anon with check (true);
+-- bbpac_membership_signups is NOT in this unconditional-true group -- see
+-- "Membership signup email verification" below, same reasoning as
+-- volunteer_signups/sponsor_inquiries above: a bare `with check (true)`
+-- lets anyone with the published anon key insert spam rows, no human or
+-- real email required.
 create policy "Allow anon insert" on bbpac_sponsor_inquiries for insert to anon with check (true);
 create policy "Allow anon insert" on bbpac_vendor_applications for insert to anon with check (true);
 create policy "Allow anon insert" on bbpac_contact_messages for insert to anon with check (true);
@@ -3026,6 +3030,52 @@ create trigger bbpac_contact_messages_after_insert
 create trigger bbpac_photo_submissions_after_insert
   after insert on bbpac_photo_submissions
   for each row execute function notify_submission_webhook();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Membership signup email verification
+-- ─────────────────────────────────────────────────────────────────────────
+-- A short-lived one-time code emailed to the address before the real
+-- bbpac_membership_signups insert is allowed through -- same
+-- volunteer_verifications/sponsor_verifications mechanics as above, just
+-- proving the submitter owns the email (not checking it against any list,
+-- since at this point they aren't a member yet). request-bbpac-membership-
+-- verification / verify-bbpac-membership-code (service role) are the only
+-- things that ever touch this table -- deliberately zero RLS policies, so
+-- anon has no path to read or forge a verified row.
+create table if not exists bbpac_membership_verifications (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  code_hash text not null,
+  verified boolean not null default false,
+  attempts int not null default 0,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null
+);
+
+alter table bbpac_membership_verifications enable row level security;
+
+create or replace function bbpac_membership_email_is_verified(check_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.bbpac_membership_verifications
+    where lower(email) = lower(check_email)
+    and verified = true
+    and expires_at > now()
+  );
+$$;
+
+-- Replaces the original unconditional `with check (true)` policy (bbpac_
+-- membership_signups was initially grouped with the other low-stakes bbpac
+-- forms -- see the comment where that policy used to live) now that bots
+-- submitting the public membership form is an actual problem worth gating.
+drop policy if exists "Allow anon insert" on bbpac_membership_signups;
+create policy "public can submit a verified membership signup" on bbpac_membership_signups
+  for insert to anon
+  with check (bbpac_membership_email_is_verified(email));
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- Member directory access (bbpac/get-involved/members.html)

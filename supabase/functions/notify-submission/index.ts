@@ -413,6 +413,21 @@ function formatBbpacMembershipSignup(record: Record<string, any>) {
   };
 }
 
+// Sent back to the new member themselves, in addition to the staff
+// notification above -- points them at the member directory so they can
+// confirm they were actually added rather than just trusting the form.
+function formatBbpacMembershipConfirmation(record: Record<string, any>) {
+  return {
+    subject: `Welcome to Friends of Bongo Beach!`,
+    html: `
+      <h2>Welcome, ${escapeHtml(record.full_name)}!</h2>
+      <p>You're in — thanks for joining Friends of Bongo Beach${record.membership_level ? ` as a <strong>${escapeHtml(record.membership_level)}</strong>` : ''}.</p>
+      <p>Want to double-check you're actually on the list? Head to our <a href="https://selassiefest.com/bbpac/get-involved/members.html">member directory</a> and confirm your email to see your name.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Questions in the meantime? Reply to this email.</p>
+    `,
+  };
+}
+
 function formatBbpacSponsorInquiry(record: Record<string, any>) {
   return {
     subject: `New Bongo Beach PAC Sponsor Inquiry — ${record.business_name}`,
@@ -583,7 +598,16 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   },
   bbpac_meeting_notify: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacMeetingNotify }] },
   bbpac_volunteer_signups: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacVolunteerSignup }] },
-  bbpac_membership_signups: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacMembershipSignup }] },
+  bbpac_membership_signups: {
+    notifications: [
+      { to: () => BBPAC_NOTIFY_TO, format: formatBbpacMembershipSignup },
+      {
+        to: (record) => record.email,
+        format: formatBbpacMembershipConfirmation,
+        from: () => 'Bongo Beach PAC <hello@selassiefest.com>',
+      },
+    ],
+  },
   bbpac_sponsor_inquiries: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacSponsorInquiry }] },
   bbpac_vendor_applications: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacVendorApplication }] },
   bbpac_contact_messages: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacContactMessage }] },
