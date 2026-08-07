@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-root="./" data-page="roadmap.html">
+<html lang="en" data-root="./" data-page="roadmap.html" data-minimal-nav="true">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,26 +40,27 @@
   .status-btn--in-progress { background:var(--status-partial-bg); color:var(--status-partial); border-color:var(--status-partial); }
   .status-btn--done { background:var(--status-confirmed-bg); color:var(--status-confirmed); border-color:var(--status-confirmed); }
   .status-btn:hover { filter:brightness(0.96); }
+
+  /* Minimal top bar replacing the full site header/breadcrumb/hero on this page only — see data-minimal-nav in nav.js. */
+  .rm-topbar { max-width:var(--maxw); margin:0 auto; padding:10px 20px 0; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .rm-topbar a { font-family:Arial,sans-serif; font-size:12.5px; color:var(--color-teal-dark); white-space:nowrap; }
+  .rm-topbar h1 { font-family:Arial,sans-serif; font-size:19px; color:var(--color-navy); margin:0; line-height:1.3; }
+  main#main { padding-top:10px; }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div id="site-nav"></div>
-<nav class="breadcrumb"><a href="index.html">System Overview</a><span class="sep">/</span>Start &rarr; Yes Roadmap</nav>
+<div class="rm-topbar"><a href="index.html">&larr; System Overview</a><h1>Start &rarr; Yes: Interactive Roadmap</h1></div>
 
 <main id="main">
-  <div class="page-hero">
-    <span class="audience-tag tier-global">Interactive tracker</span>
-    <h1>Start &rarr; Yes: Park Recognition, BBPAC Formation &amp; 501(c)(3) Formation</h1>
-    <p class="subhead">One critical path through the Chicago Park District (Gate 0 &rarr; recognition &rarr; PAC formation), with the community/political track and the nonprofit-formation track running simultaneously alongside it, converging at Phase 1. Click any step &mdash; on the diagram or in the list below &mdash; to mark it not started, in progress, or done. Status is saved in this browser only.</p>
-  </div>
-
   <div class="legend">
     <div><span class="swatch" style="background:#dce9f2;"></span><b>Track A</b> — CPD administrative path (the critical path / Gate 0)</div>
     <div><span class="swatch" style="background:#e3f6ec;"></span><b>Track B</b> — Community &amp; political support (parallel)</div>
     <div><span class="swatch" style="background:#f7ecd8;"></span><b>Track C</b> — 501(c)(3) / nonprofit formation (parallel, starts Day 1)</div>
     <div><span class="swatch" style="background:#f6e3e3;"></span><b>Decision gate</b></div>
     <div>&mdash;&mdash; solid = sequential step &nbsp;&nbsp; &middot;&middot;&middot;&gt; dotted = feeds into / informs</div>
+    <div><b>Click any step</b> (diagram or list below) to cycle not started &rarr; in progress &rarr; done. Saved in this browser only.</div>
   </div>
 
   <div id="roadmap-summary" class="rm-summary"></div>

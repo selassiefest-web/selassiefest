@@ -86,6 +86,14 @@
   ];
 
   function buildHeader() {
+    // Pages that need maximum vertical space for their own content (e.g. the
+    // interactive roadmap) can opt out of the full header/banner by setting
+    // <html data-minimal-nav="true">. window.SITE_ROOT is still set below so
+    // search.js and page-relative links keep working.
+    if (document.documentElement.getAttribute('data-minimal-nav') === 'true') {
+      return;
+    }
+
     var groupsHtml = NAV_LINKS.map(function (g) {
       var links = g.items.map(function (item) {
         var isActive = item.file === CURRENT;
