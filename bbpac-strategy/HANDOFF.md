@@ -61,6 +61,25 @@ assets/
   data/search-index.json         Generated search index (see "Regenerating" below)
 ```
 
+## roadmap.html — the one page that isn't purely self-contained
+
+`roadmap.html` renders the Start→Yes flowchart via Mermaid, loaded from a CDN
+(`cdn.jsdelivr.net/npm/mermaid@11`) rather than bundled locally — the original
+one-off export of this page inlined the full Mermaid library and produced a
+3.2MB HTML file, which isn't something to put in git. Every other page in this
+system has zero external dependencies; this is the sole exception. If CDN
+access is ever a problem for the deployment target, vendor a pinned Mermaid
+build into `assets/js/` and swap the `<script src>` — nothing else changes.
+
+`assets/js/roadmap.js` re-renders the diagram on every click rather than
+patching the SVG in place: clicking a step calls `mermaid.render()` again with
+extra `class NodeId done|inprogress` lines appended to the same diagram
+source, which is far more robust than trying to guess Mermaid's
+internally-generated SVG element ids across versions. Status is stored in
+`localStorage` (`bbpac-roadmap-status-v1`), per-browser, not synced anywhere —
+if you need shared/multi-user progress tracking later, that's the piece to
+replace.
+
 ## Design discipline to preserve
 
 Every deck **links into** the Precedent Library and Evidence/Verification pages

@@ -34,6 +34,7 @@
       group: 'Start',
       items: [
         { file: 'index.html', label: 'System Overview' },
+        { file: 'roadmap.html', label: 'Start → Yes Roadmap' },
         { file: 'matrix.html', label: 'Stakeholder & Authority Matrix' },
         { file: 'precedents.html', label: 'Precedent Library' },
         { file: 'evidence-status.html', label: 'Evidence & Verification Status' },

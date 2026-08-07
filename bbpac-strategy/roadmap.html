@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-root="./" data-page="roadmap.html">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Start &rarr; Yes Roadmap — Bongo Beach PAC Recognition Campaign</title>
+<meta name="description" content="An interactive, clickable roadmap from founding committee to CPD recognition: three parallel tracks converging at Phase 1, with per-step status tracking and links into the rest of the presentation system.">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  .legend { display:flex; gap:22px; flex-wrap:wrap; font-size:13px; color:var(--color-ink-soft); margin-bottom:18px; background:var(--color-paper); border:1px solid var(--color-border); border-radius:var(--radius); padding:14px 18px; }
+  .legend b { color:var(--color-ink); }
+  .swatch { display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:6px; vertical-align:-2px; }
+  .diagram-card { background:var(--color-paper); border:1px solid var(--color-border); border-radius:10px; padding:18px; box-shadow:var(--shadow-1); overflow-x:auto; }
+  #roadmap-diagram-target { min-width:900px; }
+  #roadmap-diagram-target svg { max-width:none; font-family:"Helvetica Neue",Arial,sans-serif !important; }
+
+  .rm-summary { background:var(--color-paper); border:1px solid var(--color-border); border-radius:var(--radius); padding:14px 18px; margin:18px 0; }
+  .rm-summary-bar { height:8px; border-radius:4px; background:var(--status-na-bg); overflow:hidden; margin-bottom:10px; }
+  .rm-summary-fill { height:100%; background:var(--status-confirmed); border-radius:4px; transition:width .2s ease; }
+  .rm-summary-text { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--color-ink-soft); }
+  .rm-summary-text b { color:var(--color-ink); }
+  .rm-dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-left:6px; }
+  .rm-dot--inprogress { background:var(--status-partial); }
+  .rm-dot--todo { background:var(--status-na); }
+  .rm-reset-btn { margin-left:auto; font:inherit; font-size:12.5px; color:var(--color-teal-dark); background:none; border:1px solid var(--color-border); border-radius:5px; padding:5px 10px; cursor:pointer; }
+  .rm-reset-btn:hover { background:var(--color-sand); }
+
+  .track-group { margin-bottom:22px; }
+  .track-group h3 { font-size:15px; color:var(--color-navy); margin:0 0 8px; font-family:Arial,sans-serif; }
+  .node-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:8px 0; border-bottom:1px solid var(--color-border-soft); }
+  .node-row:last-child { border-bottom:none; }
+  .node-label { flex:1 1 320px; font-size:14px; color:var(--color-ink); }
+  .node-links { font-size:12.5px; display:flex; gap:12px; flex-wrap:wrap; }
+  .node-links a { color:var(--color-teal-dark); white-space:nowrap; }
+
+  .status-btn { flex:0 0 auto; width:118px; font:inherit; font-size:12px; font-weight:600; text-align:center; border-radius:5px; padding:6px 8px; border:1px solid transparent; cursor:pointer; }
+  .status-btn--todo { background:var(--status-na-bg); color:var(--status-na); border-color:var(--status-na); }
+  .status-btn--in-progress { background:var(--status-partial-bg); color:var(--status-partial); border-color:var(--status-partial); }
+  .status-btn--done { background:var(--status-confirmed-bg); color:var(--status-confirmed); border-color:var(--status-confirmed); }
+  .status-btn:hover { filter:brightness(0.96); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="site-nav"></div>
+<nav class="breadcrumb"><a href="index.html">System Overview</a><span class="sep">/</span>Start &rarr; Yes Roadmap</nav>
+
+<main id="main">
+  <div class="page-hero">
+    <span class="audience-tag tier-global">Interactive tracker</span>
+    <h1>Start &rarr; Yes: Park Recognition, BBPAC Formation &amp; 501(c)(3) Formation</h1>
+    <p class="subhead">One critical path through the Chicago Park District (Gate 0 &rarr; recognition &rarr; PAC formation), with the community/political track and the nonprofit-formation track running simultaneously alongside it, converging at Phase 1. Click any step &mdash; on the diagram or in the list below &mdash; to mark it not started, in progress, or done. Status is saved in this browser only.</p>
+  </div>
+
+  <div class="legend">
+    <div><span class="swatch" style="background:#dce9f2;"></span><b>Track A</b> — CPD administrative path (the critical path / Gate 0)</div>
+    <div><span class="swatch" style="background:#e3f6ec;"></span><b>Track B</b> — Community &amp; political support (parallel)</div>
+    <div><span class="swatch" style="background:#f7ecd8;"></span><b>Track C</b> — 501(c)(3) / nonprofit formation (parallel, starts Day 1)</div>
+    <div><span class="swatch" style="background:#f6e3e3;"></span><b>Decision gate</b></div>
+    <div>&mdash;&mdash; solid = sequential step &nbsp;&nbsp; &middot;&middot;&middot;&gt; dotted = feeds into / informs</div>
+  </div>
+
+  <div id="roadmap-summary" class="rm-summary"></div>
+
+  <div class="diagram-card">
+    <div id="roadmap-diagram-target">Loading diagram&hellip;</div>
+  </div>
+
+  <div class="callout warn" style="margin-top:18px;">
+    <h4>Read before treating this as a finished plan</h4>
+    <p>This roadmap sequences the campaign; it does not certify that every step is legally or procedurally correct. Verify each administrative claim (what CPD requires, what order it must happen in, what authority applies) against current CPD PAC guidance and, for anything Law-adjacent, an actual attorney &mdash; see <a href="sources.html">Sources &amp; Methodology</a>.</p>
+  </div>
+
+  <h2 style="font-family:Arial,sans-serif;color:#14304d;margin:34px 0 4px;">Step-by-step, with links into the system</h2>
+  <p style="font-family:Arial,sans-serif;color:#4a5a68;margin-top:0;">Same steps as the diagram, grouped by track, each linked to the deck or document phase that covers it. Click a status button here or on the diagram &mdash; they're the same tracker.</p>
+  <div id="roadmap-panel"></div>
+
+  <div class="callout">
+    <h4>Why 501(c)(3) formation starts on Day 1, not after Gate 0</h4>
+    <p>Forming the nonprofit corporation and filing for tax exemption doesn't depend on CPD's classification decision at all — it can and should start immediately, in parallel with Track A and Track B, because IRS processing time is the longest single clock in this whole roadmap. The same bylaws you adopt for the nonprofit corporation double as the bylaws CPD requires in Phase 1, so that work isn't duplicated. If the 501(c)(3) determination is still pending when you reach Phase 1, use Chicago Parks Foundation's fiscal sponsorship as the bridge — CPD's process doesn't wait on the IRS, and neither should your fundraising.</p>
+  </div>
+
+  <div class="callout">
+    <h4>Where the "singular focused path" actually is</h4>
+    <p>There is exactly one hard sequential spine: <b>Gate 0 determination &rarr; Phase 1 (Letter of Intent through registration) &rarr; Phase 2 (recognition confirmed) &rarr; Phase 3 (operate)</b>. Everything else — community organizing, evidence-gathering, the Alderman's sponsorship, JPAC coordination, and 501(c)(3) formation — is a parallel branch that either feeds evidence into the spine or removes a future bottleneck (fundraising capacity) before it's needed. None of the parallel branches block each other; only the Gate 0 decision gate blocks entry into Phase 1.</p>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/roadmap.js"></script>
+</body>
+</html>
