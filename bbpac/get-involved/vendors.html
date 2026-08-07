@@ -169,12 +169,20 @@
 </footer>
 <script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/verify-widget.js"></script>
 <script>
-  document.querySelector('[data-bbpac-form="vendor"]').addEventListener('submit', function(e){
+  var bbpacVendorForm = document.querySelector('[data-bbpac-form="vendor"]');
+  window.sfVerify.protect(bbpacVendorForm);
+  bbpacVendorForm.addEventListener('submit', function(e){
     e.preventDefault();
     var form = this;
-    var btn = form.querySelector('button[type="submit"]');
     var msg = form.querySelector('[data-form-msg]');
+    if (window.sfVerify.looksLikeBot(form)) {
+      msg.textContent = 'Please take a moment reviewing the form before submitting.';
+      msg.className = 'form-msg error';
+      return;
+    }
+    var btn = form.querySelector('button[type="submit"]');
     btn.disabled = true; msg.textContent = 'Submitting...'; msg.className = 'form-msg';
     window.sfSupabase.bbpacVendorApplication({
       businessName: form.querySelector('#vd-business').value.trim(),

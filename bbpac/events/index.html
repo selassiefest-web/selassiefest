@@ -282,12 +282,20 @@
 </footer>
 <script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/verify-widget.js"></script>
 <script>
-  document.querySelector('[data-bbpac-form="event-idea"]').addEventListener('submit', function(e){
+  var bbpacEventIdeaForm = document.querySelector('[data-bbpac-form="event-idea"]');
+  window.sfVerify.protect(bbpacEventIdeaForm);
+  bbpacEventIdeaForm.addEventListener('submit', function(e){
     e.preventDefault();
     var form = this;
-    var btn = form.querySelector('button[type="submit"]');
     var msg = form.querySelector('[data-form-msg]');
+    if (window.sfVerify.looksLikeBot(form)) {
+      msg.textContent = 'Please take a moment reviewing the form before submitting.';
+      msg.className = 'form-msg error';
+      return;
+    }
+    var btn = form.querySelector('button[type="submit"]');
     btn.disabled = true; msg.textContent = 'Submitting...'; msg.className = 'form-msg';
     window.sfSupabase.bbpacContactMessage({
       name: form.querySelector('#e-name').value.trim(),

@@ -255,12 +255,20 @@
 </footer>
 <script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/verify-widget.js"></script>
 <script>
-  document.querySelector('[data-bbpac-form="meeting-notify"]').addEventListener('submit', function(e){
+  var bbpacMeetingForm = document.querySelector('[data-bbpac-form="meeting-notify"]');
+  window.sfVerify.protect(bbpacMeetingForm);
+  bbpacMeetingForm.addEventListener('submit', function(e){
     e.preventDefault();
     var form = this;
-    var email = form.querySelector('#meeting-email').value.trim();
     var msg = form.querySelector('[data-form-msg]');
+    if (window.sfVerify.looksLikeBot(form)) {
+      msg.textContent = 'Please take a moment reviewing the form before submitting.';
+      msg.className = 'form-msg error';
+      return;
+    }
+    var email = form.querySelector('#meeting-email').value.trim();
     var btn = form.querySelector('button');
     btn.disabled = true;
     msg.textContent = 'Submitting...'; msg.className = 'form-msg';

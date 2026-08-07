@@ -356,7 +356,20 @@
           form.reset();
           formMsg.textContent = 'Welcome to Friends of Bongo Beach! Check your email for a welcome message.';
           formMsg.className = 'form-msg success';
-        }).catch(function () {
+        }).catch(function (err) {
+          // One signup per email is enforced by a unique index -- a repeat
+          // join (e.g. verifying again after a refresh) throws a
+          // unique-violation (23505), which reads to the person as "it
+          // worked before", not as a scary error. See schema.sql.
+          if (err && err.code === '23505') {
+            codeMsg.textContent = '';
+            stepCode.hidden = true;
+            stepForm.hidden = false;
+            form.reset();
+            formMsg.textContent = "You're already a member of Friends of Bongo Beach -- welcome back!";
+            formMsg.className = 'form-msg success';
+            return;
+          }
           verifyBtn.disabled = false;
           codeMsg.textContent = 'Verified, but something went wrong joining. Please try again.';
           codeMsg.className = 'form-msg error';

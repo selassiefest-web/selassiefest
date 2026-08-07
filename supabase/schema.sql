@@ -299,6 +299,31 @@ as $$
   );
 $$;
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- IP-based rate limiting for the request-*-verification functions
+-- ─────────────────────────────────────────────────────────────────────────
+-- The 60-second-per-email cooldown enforced inside each request-*-
+-- verification Edge Function only throttles repeated codes to the SAME
+-- address -- it does nothing to stop a script rotating through many
+-- different addresses and using this project's Resend account to blast
+-- verification-code emails at strangers who never asked for one. Every
+-- request-*-verification function (bbpac membership, bbpac directory,
+-- volunteer, sponsor) logs one row here per attempt and checks the count
+-- for its own purpose+IP combo in the last few minutes before sending
+-- anything -- service role only, zero RLS policies, so anon has no path to
+-- read or clear its own throttle history.
+create table if not exists verification_ip_rate_limits (
+  id uuid primary key default gen_random_uuid(),
+  ip text not null,
+  purpose text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists verification_ip_rate_limits_lookup_idx
+  on verification_ip_rate_limits (purpose, ip, created_at);
+
+alter table verification_ip_rate_limits enable row level security;
+
 -- Pickney Time games archive submissions ("Did You Play [Game]?" on each
 -- of the 110 calendar/games/*.html pages). photo_path/video_path are
 -- storage object paths within the `game-submissions` Storage bucket (not
@@ -2943,6 +2968,20 @@ create table if not exists bbpac_membership_signups (
   message text,
   created_at timestamptz not null default now()
 );
+
+-- One signup per email, ever -- without this, the verified-email gate below
+-- only proves someone owns the address at signup time, not that they only
+-- get to use that proof once. Since bbpac_membership_email_is_verified()
+-- stays true for the whole 10-minute code TTL, anyone who verifies can, in
+-- that window, call the anon insert directly (bypassing membership.html's
+-- one-shot UI) as many times as they want -- each row fires a staff email
+-- via notify_submission_webhook AND a "Welcome!" email back to that
+-- address. Case-insensitive to match bbpac_membership_email_is_verified's
+-- own lower(email) comparison. A repeat signup now fails with a unique
+-- violation (23505), which the client treats as a friendly "you're already
+-- a member" rather than an error -- same pattern as newsletter_subscribers.
+create unique index if not exists bbpac_membership_signups_email_uidx
+  on bbpac_membership_signups (lower(email));
 
 create table if not exists bbpac_sponsor_inquiries (
   id uuid primary key default gen_random_uuid(),

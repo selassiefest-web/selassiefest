@@ -11,9 +11,10 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const MAX_ATTEMPTS = 8;
 
-// See request-bbpac-directory-code for why these are required on every response.
+// See request-bbpac-directory-code for why these are required on every
+// response. Origin locked to selassiefest.com, not "*".
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://selassiefest.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
@@ -47,8 +48,22 @@ Deno.serve(async (req) => {
     .eq("email", normalizedEmail)
     .maybeSingle();
 
+  // No row exists for a non-member (request-bbpac-directory-code never
+  // creates one for them) *and* for a member who just never requested a
+  // code -- those two cases must look identical, or trying one code here
+  // becomes a second way to learn who's a member, defeating the same-
+  // response fix in request-bbpac-directory-code. So this returns the
+  // exact same "doesn't match" wording as an actual wrong-code guess below,
+  // not a distinct "no code on file" message.
+  //
+  // NOTE: the MAX_ATTEMPTS check right after this can still leak a member
+  // signal at the margin -- a non-member can never accumulate attempts (no
+  // row to increment), so seeing "too many attempts" instead of "doesn't
+  // match" after ~8 guesses implies a real row exists. Closing that fully
+  // would mean removing the attempts lockout protection entirely; left as
+  // an accepted, much-more-expensive-to-exploit (8+ requests vs. 1) residual.
   if (error || !row) {
-    return new Response(JSON.stringify({ valid: false, error: "No code on file for this email -- request a new one" }), { status: 200, headers: jsonHeaders });
+    return new Response(JSON.stringify({ valid: false, error: "That code doesn't match" }), { status: 200, headers: jsonHeaders });
   }
 
   if (row.attempts >= MAX_ATTEMPTS) {

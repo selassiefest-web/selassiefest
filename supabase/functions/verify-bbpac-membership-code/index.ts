@@ -10,9 +10,10 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const MAX_ATTEMPTS = 8;
 
-// See request-bbpac-membership-verification for why these are required on every response.
+// See request-bbpac-membership-verification for why these are required on
+// every response. Origin locked to selassiefest.com, not "*".
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://selassiefest.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
