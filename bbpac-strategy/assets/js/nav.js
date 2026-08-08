@@ -103,6 +103,7 @@
     }).join('');
 
     var html =
+      '<div class="compact-topbar" style="padding:10px 20px 0;"><a href="' + ROOT + 'roadmap.html">&larr; Back to Command Center</a></div>' +
       '<div class="top-banner">Internal campaign planning system — <strong>not an official Chicago Park District document</strong>. See <a href="' + ROOT + 'sources.html" style="color:#fff;text-decoration:underline;">Sources &amp; Methodology</a> before external distribution.</div>' +
       '<header class="site-header">' +
         '<div class="site-header-inner">' +
