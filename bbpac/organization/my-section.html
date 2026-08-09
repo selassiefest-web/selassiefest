@@ -70,6 +70,14 @@
   .howto-box li{margin-bottom:6px;}
   .howto-box p{margin:0 0 8px;}
 
+  .guidance-box{border-radius:10px; padding:12px 14px; margin:10px 0; font-size:0.84rem; line-height:1.5;}
+  .guidance-box.already{background:rgba(71,109,62,0.08); color:#2f4a2a;}
+  .guidance-box.external{background:rgba(220,131,17,0.1); color:#4a3a1e;}
+  .guidance-box.fieldwork{background:rgba(47,129,180,0.08); color:#1d3a4d;}
+  .guidance-box.unknown{background:rgba(91,107,122,0.1); color:#374a5c;}
+  .guidance-box i{margin-right:4px;}
+  .guidance-box .done-line{margin-top:8px; font-size:0.8rem; font-style:italic; opacity:0.9;}
+
   .waiting-box{background:rgba(220,131,17,0.08); border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0;}
   .waiting-box h3{margin:0 0 10px; font-size:1rem; color:#8a5a0d;}
   .waiting-row{font-size:0.86rem; color:#374a5c; padding:6px 0; border-top:1px solid rgba(220,131,17,0.2);}
@@ -284,6 +292,34 @@
     return { blocked: blocked, lines: lines };
   }
 
+  // Answers, right on the item, the three questions a first-time volunteer
+  // actually has: what kind of work is this, is there a document behind it,
+  // and what does "done" mean here. Computed from the item's own real
+  // state (a written resolution vs. a named stakeholder vs. neither) --
+  // not generic boilerplate repeated on every card.
+  function renderGuidance(it) {
+    if (it.our_proposed_resolution) {
+      return '<div class="guidance-box already"><i class="fas fa-check"></i> <strong>Already answered.</strong> ' + escapeHtml(it.our_proposed_resolution) +
+        '<div class="done-line">To finish: read this, confirm it still looks right to you, and set Progress status to Complete below. If you disagree or know more, add it to Current state / Proposed state first.</div></div>';
+    }
+
+    var stakes = (stakesByItemNo[it.item_no] || []).filter(function (s) { return s.relationship_type === 'has_jurisdiction' || s.relationship_type === 'must_approve'; });
+    var fieldwork = stakes.filter(function (s) { return s.stakeholder_name === 'Bongo Beach Founding Committee'; });
+    var external = stakes.filter(function (s) { return s.stakeholder_name !== 'Bongo Beach Founding Committee'; });
+
+    if (external.length) {
+      var names = external.map(function (s) { return escapeHtml(s.stakeholder_name); }).join(', ');
+      return '<div class="guidance-box external"><i class="fas fa-phone"></i> <strong>There is no separate document for this.</strong> The two boxes below are the entire record. To move it forward: find out from <strong>' + names + '</strong> how this actually works today (a call, an email, or their public website), then write what you learn into Current state, and what should change into Proposed state.' +
+        '<div class="done-line">To finish: set Progress status to Complete once you have written a real, checked answer in both boxes -- or to Reviewed, no change needed if you check and nothing actually needs to change (say why in Proposed state).</div></div>';
+    }
+    if (fieldwork.length) {
+      return '<div class="guidance-box fieldwork"><i class="fas fa-magnifying-glass"></i> <strong>This is fieldwork, not a phone call.</strong> Nobody outside our own group needs to answer this one -- go check it yourself (walk the site, look at a public record online), then write what you find into Current state and Proposed state.' +
+        '<div class="done-line">To finish: set Progress status to Complete once you have written down what you actually found.</div></div>';
+    }
+    return '<div class="guidance-box unknown"><i class="fas fa-question"></i> <strong>Nobody has figured out who to ask about this yet.</strong> If you have a guess who would know at CPD or the city, that is itself a useful first step -- note it in Current state, then follow up.' +
+      '<div class="done-line">This one is not expected to reach Complete yet -- Not started or In progress is the honest state until a real contact is identified.</div></div>';
+  }
+
   function renderOwnedItem(it) {
     var status = blockingStatusFor(it.item_no);
     var blockHtml = status.blocked
@@ -295,6 +331,7 @@
         '<div class="top"><div><div class="oid">#' + it.item_no + ' &middot; ' + escapeHtml(it.section_title) + '</div>' +
         '<div class="otitle">' + escapeHtml(it.item_label) + '</div></div></div>' +
         '<p class="obody">' + escapeHtml(it.investigation) + '</p>' +
+        renderGuidance(it) +
         '<div class="field-edit"><label>Current state</label><textarea data-field="current_state" data-item="' + it.item_no + '" placeholder="What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.">' + escapeHtml(it.current_state || '') + '</textarea></div>' +
         '<div class="field-edit"><label>Proposed state</label><textarea data-field="proposed_state" data-item="' + it.item_no + '" placeholder="What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?">' + escapeHtml(it.proposed_state || '') + '</textarea></div>' +
         '<div class="field-edit"><label>Progress status</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
