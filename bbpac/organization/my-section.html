@@ -70,13 +70,40 @@
   .howto-box li{margin-bottom:6px;}
   .howto-box p{margin:0 0 8px;}
 
-  .guidance-box{border-radius:10px; padding:12px 14px; margin:10px 0; font-size:0.84rem; line-height:1.5;}
+  .guidance-box{border-radius:10px 10px 0 0; padding:12px 14px; margin:0; font-size:0.84rem; line-height:1.5;}
   .guidance-box.already{background:rgba(71,109,62,0.08); color:#2f4a2a;}
   .guidance-box.external{background:rgba(220,131,17,0.1); color:#4a3a1e;}
   .guidance-box.fieldwork{background:rgba(47,129,180,0.08); color:#1d3a4d;}
   .guidance-box.unknown{background:rgba(91,107,122,0.1); color:#374a5c;}
   .guidance-box i{margin-right:4px;}
   .guidance-box .done-line{margin-top:8px; font-size:0.8rem; font-style:italic; opacity:0.9;}
+
+  .ta-wrap{position:relative;}
+  .ta-wrap textarea{padding-right:38px;}
+  .mic-btn{position:absolute; right:6px; top:6px; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--line); background:#fff; color:var(--ink-dim); cursor:pointer; font-size:0.78rem; display:flex; align-items:center; justify-content:center; padding:0;}
+  .mic-btn:hover{border-color:var(--lakefront); color:var(--lakefront);}
+  .mic-btn.listening{background:var(--culture); border-color:var(--culture); color:#fff; animation:mic-pulse 1.2s infinite;}
+  @keyframes mic-pulse{0%{box-shadow:0 0 0 0 rgba(166,51,26,0.5);} 70%{box-shadow:0 0 0 8px rgba(166,51,26,0);} 100%{box-shadow:0 0 0 0 rgba(166,51,26,0);}}
+  .grammar-line{margin-top:4px;}
+  .grammar-btn{background:none; border:none; color:var(--lakefront); font-size:0.72rem; font-weight:700; cursor:pointer; padding:2px 0; font-family:inherit;}
+  .grammar-btn:hover{text-decoration:underline;}
+  .grammar-suggestions{margin-top:6px; background:#fdf6ec; border:1px solid rgba(220,131,17,0.3); border-radius:8px; padding:8px 10px; font-size:0.78rem;}
+  .grammar-item{padding:4px 0; border-bottom:1px dashed rgba(220,131,17,0.25);}
+  .grammar-item:last-child{border-bottom:none;}
+  .g-msg{display:block; color:#4a3a1e;}
+  .g-fix{display:block; color:var(--community); font-weight:600; margin-top:2px;}
+  .grammar-note{color:var(--ink-dim); font-style:italic;}
+  .grammar-note.ok{color:var(--community);}
+
+  /* Joins the guidance box to the actual input fields so there is one
+     unmistakable "read this, then type here" unit instead of a floating
+     explainer above a separate, ambiguous set of boxes. */
+  .answer-block{border:1.5px solid rgba(31,58,77,0.16); border-radius:10px; margin-top:10px; overflow:hidden; background:#fff;}
+  .answer-block .guidance-box{border-bottom:1.5px dashed rgba(31,58,77,0.18);}
+  .answer-block .pointer-arrow{text-align:center; font-weight:800; font-size:0.68rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--navy); background:#f4f7f9; padding:6px 0; border-bottom:1.5px dashed rgba(31,58,77,0.18);}
+  .answer-block .pointer-arrow i{margin-right:5px;}
+  .answer-block .field-edit{margin:0; padding:10px 14px 0;}
+  .answer-block .save-row{margin:10px 14px 14px;}
 
   .waiting-box{background:rgba(220,131,17,0.08); border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0;}
   .waiting-box h3{margin:0 0 10px; font-size:1rem; color:#8a5a0d;}
@@ -320,6 +347,26 @@
       '<div class="done-line">This one is not expected to reach Complete yet -- Not started or In progress is the honest state until a real contact is identified.</div></div>';
   }
 
+  var STT_SUPPORTED = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+  // One textarea + optional mic (speech-to-text) button + a "Check
+  // writing" grammar/spellcheck control, reused for both Current state
+  // and Proposed state so both fields get the same tools automatically.
+  function renderTextField(it, field, label, placeholder) {
+    var key = field + '-' + it.item_no;
+    return (
+      '<div class="field-edit">' +
+        '<label>' + label + '</label>' +
+        '<div class="ta-wrap">' +
+          '<textarea data-field="' + field + '" data-item="' + it.item_no + '" placeholder="' + placeholder + '">' + escapeHtml(it[field] || '') + '</textarea>' +
+          (STT_SUPPORTED ? '<button type="button" class="mic-btn" data-mic-field="' + field + '" data-mic-item="' + it.item_no + '" title="Dictate by voice"><i class="fas fa-microphone"></i></button>' : '') +
+        '</div>' +
+        '<div class="grammar-line"><button type="button" class="grammar-btn" data-grammar-field="' + field + '" data-grammar-item="' + it.item_no + '">Check writing</button></div>' +
+        '<div class="grammar-suggestions" data-grammar-suggestions="' + key + '" style="display:none;"></div>' +
+      '</div>'
+    );
+  }
+
   function renderOwnedItem(it) {
     var status = blockingStatusFor(it.item_no);
     var blockHtml = status.blocked
@@ -331,15 +378,18 @@
         '<div class="top"><div><div class="oid">#' + it.item_no + ' &middot; ' + escapeHtml(it.section_title) + '</div>' +
         '<div class="otitle">' + escapeHtml(it.item_label) + '</div></div></div>' +
         '<p class="obody">' + escapeHtml(it.investigation) + '</p>' +
-        renderGuidance(it) +
-        '<div class="field-edit"><label>Current state</label><textarea data-field="current_state" data-item="' + it.item_no + '" placeholder="What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.">' + escapeHtml(it.current_state || '') + '</textarea></div>' +
-        '<div class="field-edit"><label>Proposed state</label><textarea data-field="proposed_state" data-item="' + it.item_no + '" placeholder="What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?">' + escapeHtml(it.proposed_state || '') + '</textarea></div>' +
-        '<div class="field-edit"><label>Progress status</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
-          ['not_started', 'in_progress', 'complete', 'reviewed_no_change'].map(function (s) {
-            return '<option value="' + s + '"' + (it.progress_status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
-          }).join('') +
-        '</select></div>' +
-        '<div class="save-row"><button class="btn primary" data-save="' + it.item_no + '">Save</button><span class="saved-msg" data-saved="' + it.item_no + '">Saved &amp; versioned.</span></div>' +
+        '<div class="answer-block">' +
+          renderGuidance(it) +
+          '<div class="pointer-arrow"><i class="fas fa-arrow-down"></i>Type your answer in the two boxes below</div>' +
+          renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.') +
+          renderTextField(it, 'proposed_state', 'Proposed state', 'What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?') +
+          '<div class="field-edit"><label>Progress status</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
+            ['not_started', 'in_progress', 'complete', 'reviewed_no_change'].map(function (s) {
+              return '<option value="' + s + '"' + (it.progress_status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
+            }).join('') +
+          '</select></div>' +
+          '<div class="save-row"><button class="btn primary" data-save="' + it.item_no + '">Save</button><span class="saved-msg" data-saved="' + it.item_no + '">Saved &amp; versioned.</span></div>' +
+        '</div>' +
         blockHtml +
       '</div>'
     );
@@ -407,6 +457,98 @@
     document.getElementById('ownedSections').innerHTML = html || '<p style="color:var(--ink-dim);">No items found for your section(s).</p>';
   }
 
+  // Free public grammar/spellcheck API (LanguageTool) -- no account, no
+  // backend involved. Returns null on any failure so callers can treat
+  // "could not reach the checker" differently from "checked, no issues".
+  async function checkGrammar(text) {
+    if (!text || !text.trim()) return [];
+    try {
+      var res = await fetch('https://api.languagetool.org/v2/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ text: text, language: 'en-US' }).toString(),
+      });
+      if (!res.ok) return null;
+      var data = await res.json();
+      return data.matches || [];
+    } catch (err) {
+      console.error('grammar check failed', err);
+      return null;
+    }
+  }
+
+  function renderGrammarSuggestions(matches) {
+    if (matches === null) return '<span class="grammar-note">Could not reach the grammar checker -- you can still save.</span>';
+    if (!matches.length) return '<span class="grammar-note ok"><i class="fas fa-check"></i> No issues found.</span>';
+    return matches.slice(0, 8).map(function (m) {
+      var fixes = (m.replacements || []).slice(0, 3).map(function (r) { return r.value; }).join(' / ');
+      return '<div class="grammar-item"><span class="g-msg">' + escapeHtml(m.message) + '</span>' +
+        (fixes ? '<span class="g-fix">Suggested: ' + escapeHtml(fixes) + '</span>' : '') + '</div>';
+    }).join('');
+  }
+
+  // Speech-to-text dictation into whichever Current state / Proposed
+  // state box the mic button sits next to. One recognizer per field so a
+  // volunteer can dictate into Current state, stop, then dictate into
+  // Proposed state without them interfering with each other.
+  var activeRecognizers = {};
+  document.addEventListener('click', function (e) {
+    var micBtn = e.target.closest('[data-mic-field]');
+    if (!micBtn) return;
+    var field = micBtn.getAttribute('data-mic-field');
+    var itemNo = micBtn.getAttribute('data-mic-item');
+    var key = field + '-' + itemNo;
+    var textarea = document.querySelector('textarea[data-field="' + field + '"][data-item="' + itemNo + '"]');
+    if (activeRecognizers[key]) {
+      activeRecognizers[key].stop();
+      return;
+    }
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec = new SR();
+    rec.lang = 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+    var baseText = textarea.value;
+    var finalTranscript = '';
+    function stopMic() {
+      micBtn.classList.remove('listening');
+      micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+      delete activeRecognizers[key];
+    }
+    rec.onresult = function (ev) {
+      var interim = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalTranscript += t + ' ';
+        else interim += t;
+      }
+      textarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
+    };
+    rec.onerror = function (ev) { console.error('speech recognition error', ev.error); stopMic(); };
+    rec.onend = stopMic;
+    activeRecognizers[key] = rec;
+    micBtn.classList.add('listening');
+    micBtn.innerHTML = '<i class="fas fa-stop"></i>';
+    rec.start();
+  });
+
+  document.addEventListener('click', async function (e) {
+    var btn = e.target.closest('[data-grammar-field]');
+    if (!btn) return;
+    var field = btn.getAttribute('data-grammar-field');
+    var itemNo = btn.getAttribute('data-grammar-item');
+    var textarea = document.querySelector('textarea[data-field="' + field + '"][data-item="' + itemNo + '"]');
+    var panel = document.querySelector('[data-grammar-suggestions="' + field + '-' + itemNo + '"]');
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    var matches = await checkGrammar(textarea.value);
+    panel.innerHTML = renderGrammarSuggestions(matches);
+    panel.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = original;
+  });
+
   document.addEventListener('click', async function (e) {
     var saveBtn = e.target.closest('[data-save]');
     if (!saveBtn) return;
@@ -414,6 +556,22 @@
     var card = document.getElementById('owned-item-' + itemNo);
     var update = {};
     card.querySelectorAll('[data-field]').forEach(function (el) { update[el.getAttribute('data-field')] = el.value; });
+
+    // Grammar check runs at submission time, but never blocks the save --
+    // a slow or unreachable third-party API should never stop a real
+    // contribution from being recorded.
+    ['current_state', 'proposed_state'].forEach(function (field) {
+      var val = update[field];
+      var panel = card.querySelector('[data-grammar-suggestions="' + field + '-' + itemNo + '"]');
+      if (!panel || !val || !val.trim()) return;
+      checkGrammar(val).then(function (matches) {
+        if (matches && matches.length) {
+          panel.innerHTML = renderGrammarSuggestions(matches);
+          panel.style.display = 'block';
+        }
+      });
+    });
+
     var result = await client.from('bbpac_formation_matrix_items').update(update).eq('item_no', itemNo);
     var msg = card.querySelector('[data-saved="' + itemNo + '"]');
     if (result.error) {
