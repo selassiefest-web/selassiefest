@@ -3146,3 +3146,639 @@ create table if not exists bbpac_directory_verifications (
 );
 
 alter table bbpac_directory_verifications enable row level security;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Bongo Beach Formation Records (bbpac_formation_*)
+-- ─────────────────────────────────────────────────────────────────────────
+-- The governance/institutional-memory layer for the Bongo Beach (63rd Street
+-- Beach) formation effort's "Digital Operating System" -- distinct from the
+-- write-only public-form tables above (bbpac_meeting_notify, bbpac_volunteer_
+-- signups, etc.), which just collect submissions. These tables are the
+-- actual determinations, boundaries, and adopted-document status records
+-- that /bbpac/organization/ currently tracks by hand in static HTML (G0-01
+-- through G0-10, NP-01 through NP-17). Every table here is fully public to
+-- read (anon + authenticated) -- nothing here is PII -- and every change to
+-- any of them is captured permanently in bbpac_formation_history via one
+-- shared trigger, so "who changed what, when, from what to what" is always
+-- answerable without a bespoke audit system per table. Writes are staff-only
+-- (Table Editor, or a future authenticated admin tool) -- no anon/
+-- authenticated insert/update policy -- same pattern as event_series/
+-- event_occurrences above.
+
+-- The underlying CPD jurisdiction/classification questions this formation
+-- effort is asking, and (once answered) the outcome. One row per distinct
+-- question being put to CPD -- NOT one row per letter. G0-01 (Track B's PAC-
+-- jurisdiction ask) and NP-01/NP-16 (Track A's park-classification ask,
+-- combined into a single row here since they're one underlying question
+-- asked via two documents) are each their own row, cross-linked via
+-- related_slug so the site's "don't blindside CPD" coordination notes have
+-- a live backing record, not just a static-HTML reminder. G0-04 and NP-17
+-- are the templates that record whatever ends up in this row's outcome
+-- columns -- they don't get their own determination rows.
+create table if not exists bbpac_formation_determinations (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  track text not null check (track in ('A', 'B')),
+  title text not null,
+  question_summary text not null,
+  ask_document_ids text[] not null default '{}',
+  outcome_document_id text,
+  status text not null default 'drafted' check (status in ('drafted', 'sent', 'answered', 'superseded')),
+  outcome text,
+  cpd_department text,
+  cpd_contact text,
+  sent_at date,
+  determined_at date,
+  effective_date date,
+  conditions text,
+  related_slug text references bbpac_formation_determinations(slug),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- The proposed-boundary artifacts (G0-02's PAC advisory scope, NP-02's park
+-- classification boundary). Two distinct purposes, deliberately kept as two
+-- rows, but cross-linked via reconciled_with so they can't quietly diverge
+-- without it being visible in the data itself.
+create table if not exists bbpac_formation_boundary (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  label text not null,
+  description text,
+  document_id text,
+  geojson jsonb,
+  status text not null default 'draft' check (status in ('draft', 'cpd_review', 'confirmed')),
+  reconciled_with text references bbpac_formation_boundary(slug),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Catalog of the individual drafted artifacts (letters, memos, bylaws
+-- articles, checklists) -- mirrors the doc_id/title/classification/status/
+-- owner/purpose shape already used in bbpac/organization/documents/data.js
+-- and in Track A's path-to-formation.html doc-cards, so this table can
+-- eventually become the live source those static pages render from instead
+-- of the other way around.
+create table if not exists bbpac_formation_documents (
+  id uuid primary key default gen_random_uuid(),
+  doc_id text not null unique,
+  track text not null check (track in ('Gate0', 'A', 'B')),
+  phase int,
+  title text not null,
+  classification text[] not null default '{}',
+  status text not null default 'proposed' check (status in ('proposed', 'drafted', 'adopted', 'superseded', 'retired')),
+  owner text,
+  purpose text,
+  full_text text,
+  source_page_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Board resolutions/decisions -- empty until there's an actual elected board,
+-- but the table exists now so the versioning pattern covers it from day one
+-- rather than being bolted on after the first real vote.
+create table if not exists bbpac_formation_resolutions (
+  id uuid primary key default gen_random_uuid(),
+  resolution_number text not null unique,
+  title text not null,
+  body text not null,
+  status text not null default 'draft' check (status in ('draft', 'proposed', 'approved', 'rejected', 'withdrawn')),
+  meeting_date date,
+  vote_summary text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table bbpac_formation_determinations enable row level security;
+alter table bbpac_formation_boundary enable row level security;
+alter table bbpac_formation_documents enable row level security;
+alter table bbpac_formation_resolutions enable row level security;
+
+-- Fully public read -- no anon/authenticated insert/update policy on any of
+-- these, so writes only happen from the Table Editor or a future
+-- authenticated admin tool. Matches event_series/event_occurrences above.
+create policy "Allow anon read" on bbpac_formation_determinations for select to anon using (true);
+create policy "Allow anon read" on bbpac_formation_boundary for select to anon using (true);
+create policy "Allow anon read" on bbpac_formation_documents for select to anon using (true);
+create policy "Allow anon read" on bbpac_formation_resolutions for select to anon using (true);
+
+create policy "authenticated read" on bbpac_formation_determinations for select to authenticated using (true);
+create policy "authenticated read" on bbpac_formation_boundary for select to authenticated using (true);
+create policy "authenticated read" on bbpac_formation_documents for select to authenticated using (true);
+create policy "authenticated read" on bbpac_formation_resolutions for select to authenticated using (true);
+
+grant select on bbpac_formation_determinations, bbpac_formation_boundary, bbpac_formation_documents, bbpac_formation_resolutions to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Generic, dynamic version history
+-- ─────────────────────────────────────────────────────────────────────────
+-- One shared table + one shared trigger function, attached to every
+-- bbpac_formation_* table above. Every INSERT and real UPDATE snapshots the
+-- full new row state as a version, so "what did this record look like on
+-- any given date" and "who/what changed, when" are always answerable from
+-- one place -- adding version history to a future table is a one-line
+-- `create trigger ... execute function bbpac_formation_record_version()`,
+-- not a new bespoke history table.
+create table if not exists bbpac_formation_history (
+  id uuid primary key default gen_random_uuid(),
+  table_name text not null,
+  record_id uuid not null,
+  version_number int not null,
+  operation text not null check (operation in ('insert', 'update')),
+  snapshot jsonb not null,
+  changed_fields text[],
+  changed_at timestamptz not null default now()
+);
+
+create index if not exists bbpac_formation_history_lookup_idx
+  on bbpac_formation_history (table_name, record_id, version_number);
+
+create index if not exists bbpac_formation_history_changed_at_idx
+  on bbpac_formation_history (changed_at desc);
+
+alter table bbpac_formation_history enable row level security;
+
+-- Fully public -- this IS the transparency feature. No insert/update/delete
+-- policy for anyone: the trigger function below is SECURITY DEFINER and
+-- writes as the table owner, bypassing RLS. There is deliberately no path
+-- for anon, authenticated, or a future admin tool to edit history directly --
+-- it is only ever written as a side effect of a change to a tracked table.
+create policy "Allow anon read" on bbpac_formation_history for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_history for select to authenticated using (true);
+grant select on bbpac_formation_history to anon, authenticated;
+
+create or replace function bbpac_formation_record_version()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_next_version int;
+  v_changed_fields text[];
+  v_old jsonb;
+  v_new jsonb;
+begin
+  select coalesce(max(version_number), 0) + 1 into v_next_version
+  from public.bbpac_formation_history
+  where table_name = TG_TABLE_NAME and record_id = NEW.id;
+
+  if TG_OP = 'UPDATE' then
+    v_old := to_jsonb(OLD);
+    v_new := to_jsonb(NEW);
+    v_changed_fields := array(
+      select n.key from jsonb_each(v_new) as n(key, value)
+      where n.value is distinct from (v_old -> n.key)
+      and n.key <> 'updated_at'
+    );
+    -- No real change (e.g. only updated_at moved) -- skip a no-op version.
+    if v_changed_fields is null or array_length(v_changed_fields, 1) is null then
+      return NEW;
+    end if;
+  end if;
+
+  insert into public.bbpac_formation_history (table_name, record_id, version_number, operation, snapshot, changed_fields)
+  values (TG_TABLE_NAME, NEW.id, v_next_version, lower(TG_OP), to_jsonb(NEW), v_changed_fields);
+
+  return NEW;
+end;
+$$;
+
+revoke execute on function bbpac_formation_record_version() from public, anon, authenticated;
+
+drop trigger if exists bbpac_formation_determinations_versioned on bbpac_formation_determinations;
+create trigger bbpac_formation_determinations_versioned
+  after insert or update on bbpac_formation_determinations
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_boundary_versioned on bbpac_formation_boundary;
+create trigger bbpac_formation_boundary_versioned
+  after insert or update on bbpac_formation_boundary
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_documents_versioned on bbpac_formation_documents;
+create trigger bbpac_formation_documents_versioned
+  after insert or update on bbpac_formation_documents
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_resolutions_versioned on bbpac_formation_resolutions;
+create trigger bbpac_formation_resolutions_versioned
+  after insert or update on bbpac_formation_resolutions
+  for each row execute function bbpac_formation_record_version();
+
+-- updated_at maintenance, plain plpgsql (no legacy column-name ambiguity
+-- here, unlike the stripe schema's jsonb_populate_record variant above).
+create or replace function bbpac_formation_set_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists bbpac_formation_determinations_touch on bbpac_formation_determinations;
+create trigger bbpac_formation_determinations_touch
+  before update on bbpac_formation_determinations
+  for each row execute function bbpac_formation_set_updated_at();
+
+drop trigger if exists bbpac_formation_boundary_touch on bbpac_formation_boundary;
+create trigger bbpac_formation_boundary_touch
+  before update on bbpac_formation_boundary
+  for each row execute function bbpac_formation_set_updated_at();
+
+drop trigger if exists bbpac_formation_documents_touch on bbpac_formation_documents;
+create trigger bbpac_formation_documents_touch
+  before update on bbpac_formation_documents
+  for each row execute function bbpac_formation_set_updated_at();
+
+drop trigger if exists bbpac_formation_resolutions_touch on bbpac_formation_resolutions;
+create trigger bbpac_formation_resolutions_touch
+  before update on bbpac_formation_resolutions
+  for each row execute function bbpac_formation_set_updated_at();
+
+-- Realtime for the Version Log page (bbpac/organization/version-log.html):
+-- new ledger entries and determination-status changes push to the page
+-- live, no refresh -- matching the ticket_event_drafts/proposal_2027_
+-- sections pattern above. Wrapped in existence checks so this stays safely
+-- re-runnable.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'bbpac_formation_history'
+  ) then
+    alter publication supabase_realtime add table bbpac_formation_history;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'bbpac_formation_determinations'
+  ) then
+    alter publication supabase_realtime add table bbpac_formation_determinations;
+  end if;
+end $$;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Bongo Beach Master Due-Diligence Matrix (bbpac_formation_matrix_items)
+-- ─────────────────────────────────────────────────────────────────────────
+-- The full cross-department due-diligence register for splitting Bongo
+-- Beach (63rd Street Beach) off as its own distinct CPD park: every place
+-- a decision, record change, system change, approval, transfer,
+-- notification, or new policy could be required. Sixth member of the
+-- bbpac_formation_* family (see bbpac_formation_determinations/boundary/
+-- documents/resolutions/history above) -- same fully-public-read, staff-
+-- write-only, versioned-by-the-shared-trigger pattern.
+--
+-- item_no is a clean sequential integer assigned at data-entry time, NOT
+-- a transcription of the original source numbering -- the source document
+-- numbers sections I-XXV as 1-633, leaves section XXVI (Policy Library)
+-- entirely unnumbered, then restarts section XXVII (Tiny Things) at 650,
+-- which does not chain cleanly. source_ref preserves the original
+-- section-letter/number label (e.g. "I.1", "XXVI.policy-07", "XXVII.650")
+-- for traceability back to the source matrix without inheriting its
+-- numbering gaps.
+create table if not exists bbpac_formation_matrix_items (
+  id uuid primary key default gen_random_uuid(),
+  item_no int not null unique,
+  source_ref text,
+  section_no int not null,
+  section_title text not null,
+  domain text not null,
+  item_label text not null,
+  investigation text not null,
+  classification text not null check (classification in ('VERIFY', 'CHANGE', 'CREATE', 'TRANSFER', 'COORDINATE', 'NO_CHANGE')),
+  department text,
+  system_name text,
+  current_state text,
+  jackson_park_reference text,
+  proposed_state text,
+  responsible_office text,
+  approval_required boolean,
+  dependency text,
+  legal_policy_basis text,
+  cost_estimate text,
+  funding_source text,
+  priority text check (priority in ('critical', 'high', 'medium', 'low')),
+  target_date date,
+  progress_status text not null default 'not_started' check (progress_status in ('not_started', 'in_progress', 'complete', 'reviewed_no_change')),
+  evidence text,
+  verification text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- The Transition/Phase Matrix (source section XXVIII) is shaped
+-- differently -- phase/action/deliverable, not area/investigation/action --
+-- so it gets its own small companion table rather than being forced into
+-- the item schema above.
+create table if not exists bbpac_formation_transition_phases (
+  id uuid primary key default gen_random_uuid(),
+  phase_no int not null unique,
+  action text not null,
+  deliverable text not null,
+  progress_status text not null default 'not_started' check (progress_status in ('not_started', 'in_progress', 'complete')),
+  target_date date,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table bbpac_formation_matrix_items enable row level security;
+alter table bbpac_formation_transition_phases enable row level security;
+
+create policy "Allow anon read" on bbpac_formation_matrix_items for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_matrix_items for select to authenticated using (true);
+create policy "Allow anon read" on bbpac_formation_transition_phases for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_transition_phases for select to authenticated using (true);
+
+grant select on bbpac_formation_matrix_items, bbpac_formation_transition_phases to anon, authenticated;
+
+-- Reuse the SAME generic versioning trigger created for the rest of the
+-- bbpac_formation_* family -- this is the whole point of that pattern:
+-- adding version history to a new table is a one-line create trigger.
+drop trigger if exists bbpac_formation_matrix_items_versioned on bbpac_formation_matrix_items;
+create trigger bbpac_formation_matrix_items_versioned
+  after insert or update on bbpac_formation_matrix_items
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_transition_phases_versioned on bbpac_formation_transition_phases;
+create trigger bbpac_formation_transition_phases_versioned
+  after insert or update on bbpac_formation_transition_phases
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_matrix_items_touch on bbpac_formation_matrix_items;
+create trigger bbpac_formation_matrix_items_touch
+  before update on bbpac_formation_matrix_items
+  for each row execute function bbpac_formation_set_updated_at();
+
+drop trigger if exists bbpac_formation_transition_phases_touch on bbpac_formation_transition_phases;
+create trigger bbpac_formation_transition_phases_touch
+  before update on bbpac_formation_transition_phases
+  for each row execute function bbpac_formation_set_updated_at();
+
+create index if not exists bbpac_formation_matrix_items_section_idx on bbpac_formation_matrix_items (section_no);
+create index if not exists bbpac_formation_matrix_items_domain_idx on bbpac_formation_matrix_items (domain);
+create index if not exists bbpac_formation_matrix_items_classification_idx on bbpac_formation_matrix_items (classification);
+create index if not exists bbpac_formation_matrix_items_progress_idx on bbpac_formation_matrix_items (progress_status);
+
+-- Relationship graph for the Master Due-Diligence Matrix: which other items
+-- a given item depends on / relates to. Added after the matrix's first
+-- population made clear that a flat "744 isolated checklist rows" table
+-- was missing the actual point of a matrix -- encoding interconnectivity
+-- between items, not just tracking them individually. Populated so far
+-- only for the Five Governing Questions (item_no 745-749), which are the
+-- synthesis frame the other 744 items answer into; per-item dependencies
+-- for the rest of the matrix are filled in as real research happens.
+alter table bbpac_formation_matrix_items
+  add column if not exists depends_on_item_nos int[] not null default '{}';
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- The Stakeholder/Jurisdiction Matrix (the actual matrix)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Everything built so far (bbpac_formation_matrix_items) is a rich list of
+-- THINGS. It cannot answer "which agency has jurisdiction over this, and
+-- have we actually asked them" -- there is no relationship structure. This
+-- is that structure: a real rows x columns matrix -- rows are due-diligence
+-- items, columns are stakeholders/agencies, cells are the relationship
+-- (jurisdiction type, confidence, and consultation status). Its entire
+-- purpose is to make it structurally impossible to silently skip a
+-- department -- every item either names who has jurisdiction and the
+-- state of contact with them, or explicitly flags "unit not yet
+-- identified," never silence.
+
+create table if not exists bbpac_formation_stakeholders (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  org_type text not null check (org_type in ('cpd_internal', 'city', 'county', 'state', 'federal', 'community', 'other')),
+  jurisdiction_summary text not null,
+  contact_name text,
+  contact_title text,
+  contact_phone text,
+  contact_email text,
+  source_url text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- The matrix itself: item_no x stakeholder_id, with the relationship type,
+-- our honest confidence in that assignment, and the real consultation
+-- status. `confidence = 'unknown_needs_identification'` is a deliberate,
+-- first-class state -- it is how an item gets linked to "someone at CPD"
+-- without fabricating a specific department name we haven't actually
+-- confirmed. That is the honest alternative to leaving the relationship
+-- blank.
+create table if not exists bbpac_formation_item_stakeholders (
+  id uuid primary key default gen_random_uuid(),
+  item_no int not null references bbpac_formation_matrix_items(item_no) on delete cascade,
+  stakeholder_id uuid not null references bbpac_formation_stakeholders(id) on delete cascade,
+  relationship_type text not null check (relationship_type in ('has_jurisdiction', 'must_approve', 'should_be_notified', 'may_have_interest')),
+  confidence text not null default 'inferred' check (confidence in ('confirmed', 'inferred', 'unknown_needs_identification')),
+  consultation_status text not null default 'not_yet_contacted' check (consultation_status in ('not_yet_contacted', 'contacted_awaiting_response', 'responded')),
+  contacted_at date,
+  response_summary text,
+  evidence text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (item_no, stakeholder_id)
+);
+
+alter table bbpac_formation_stakeholders enable row level security;
+alter table bbpac_formation_item_stakeholders enable row level security;
+
+create policy "Allow anon read" on bbpac_formation_stakeholders for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_stakeholders for select to authenticated using (true);
+create policy "Allow anon read" on bbpac_formation_item_stakeholders for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_item_stakeholders for select to authenticated using (true);
+
+grant select on bbpac_formation_stakeholders, bbpac_formation_item_stakeholders to anon, authenticated;
+
+drop trigger if exists bbpac_formation_stakeholders_versioned on bbpac_formation_stakeholders;
+create trigger bbpac_formation_stakeholders_versioned
+  after insert or update on bbpac_formation_stakeholders
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_item_stakeholders_versioned on bbpac_formation_item_stakeholders;
+create trigger bbpac_formation_item_stakeholders_versioned
+  after insert or update on bbpac_formation_item_stakeholders
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_stakeholders_touch on bbpac_formation_stakeholders;
+create trigger bbpac_formation_stakeholders_touch
+  before update on bbpac_formation_stakeholders
+  for each row execute function bbpac_formation_set_updated_at();
+
+drop trigger if exists bbpac_formation_item_stakeholders_touch on bbpac_formation_item_stakeholders;
+create trigger bbpac_formation_item_stakeholders_touch
+  before update on bbpac_formation_item_stakeholders
+  for each row execute function bbpac_formation_set_updated_at();
+
+create index if not exists bbpac_formation_item_stakeholders_item_idx on bbpac_formation_item_stakeholders (item_no);
+create index if not exists bbpac_formation_item_stakeholders_stakeholder_idx on bbpac_formation_item_stakeholders (stakeholder_id);
+create index if not exists bbpac_formation_item_stakeholders_confidence_idx on bbpac_formation_item_stakeholders (confidence);
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Section Ownership & Authenticated Write Access
+-- ─────────────────────────────────────────────────────────────────────────
+-- Real per-person logins, scoped to the section(s) each volunteer owns.
+-- This finally gives section owners a genuine in-app write path (not just
+-- the Table Editor) -- but scoped by RLS so Stanley can only edit items in
+-- the section(s) he actually owns, not the whole matrix.
+
+create table if not exists bbpac_formation_members (
+  id uuid primary key default gen_random_uuid(),
+  auth_user_id uuid unique references auth.users(id) on delete set null,
+  name text not null,
+  email text not null unique,
+  role text not null default 'member' check (role in ('member', 'admin')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists bbpac_formation_section_owners (
+  id uuid primary key default gen_random_uuid(),
+  section_no int not null,
+  member_id uuid not null references bbpac_formation_members(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (section_no, member_id)
+);
+
+alter table bbpac_formation_members enable row level security;
+alter table bbpac_formation_section_owners enable row level security;
+
+-- Members' emails are not public -- expose only name/role through a public
+-- view, matching the game_submissions_public pattern used elsewhere in
+-- this project. Section ownership itself (who controls what) is public on
+-- purpose -- that visibility is the whole point of the feature.
+create or replace view bbpac_formation_members_public as
+select id, name, role from bbpac_formation_members;
+
+grant select on bbpac_formation_members_public to anon, authenticated;
+
+create policy "Allow anon read" on bbpac_formation_section_owners for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_section_owners for select to authenticated using (true);
+grant select on bbpac_formation_section_owners to anon, authenticated;
+
+-- A member can read their own full row (to see their own email/role after
+-- logging in); nobody else can select from the base table directly.
+create policy "members can read their own row" on bbpac_formation_members
+  for select to authenticated
+  using (auth_user_id = auth.uid());
+
+drop trigger if exists bbpac_formation_members_versioned on bbpac_formation_members;
+create trigger bbpac_formation_members_versioned
+  after insert or update on bbpac_formation_members
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_section_owners_versioned on bbpac_formation_section_owners;
+create trigger bbpac_formation_section_owners_versioned
+  after insert or update on bbpac_formation_section_owners
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_members_touch on bbpac_formation_members;
+create trigger bbpac_formation_members_touch
+  before update on bbpac_formation_members
+  for each row execute function bbpac_formation_set_updated_at();
+
+-- Links a real Supabase Auth signup to a pre-created member row by email,
+-- the standard Supabase "profile row already exists, just attach the auth
+-- identity once they actually sign in" pattern. This is what makes "build
+-- the structure now, invite people later" work: create the member row with
+-- their real email today, and the day they actually complete a magic-link
+-- login, this trigger connects the two automatically.
+create or replace function bbpac_formation_link_new_auth_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.bbpac_formation_members
+    set auth_user_id = new.id
+    where lower(email) = lower(new.email) and auth_user_id is null;
+  return new;
+end;
+$$;
+
+drop trigger if exists bbpac_formation_link_new_auth_user_trigger on auth.users;
+create trigger bbpac_formation_link_new_auth_user_trigger
+  after insert on auth.users
+  for each row execute function bbpac_formation_link_new_auth_user();
+
+-- Section-scoped write access. A logged-in member can update
+-- bbpac_formation_matrix_items rows and bbpac_formation_item_stakeholders
+-- rows ONLY for section(s) they actually own -- read access stays fully
+-- public and unchanged.
+create or replace function bbpac_formation_is_section_owner(p_section_no int)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.bbpac_formation_section_owners so
+    join public.bbpac_formation_members m on m.id = so.member_id
+    where so.section_no = p_section_no and m.auth_user_id = auth.uid()
+  );
+$$;
+
+create or replace function bbpac_formation_is_section_owner_of_item(p_item_no int)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.bbpac_formation_matrix_items mi
+    where mi.item_no = p_item_no and public.bbpac_formation_is_section_owner(mi.section_no)
+  );
+$$;
+
+revoke execute on function bbpac_formation_is_section_owner(int) from public, anon;
+revoke execute on function bbpac_formation_is_section_owner_of_item(int) from public, anon;
+
+create policy "section owners can update their own items" on bbpac_formation_matrix_items
+  for update to authenticated
+  using (bbpac_formation_is_section_owner(section_no))
+  with check (bbpac_formation_is_section_owner(section_no));
+
+create policy "section owners can update stakeholder relationships for their items" on bbpac_formation_item_stakeholders
+  for update to authenticated
+  using (bbpac_formation_is_section_owner_of_item(item_no))
+  with check (bbpac_formation_is_section_owner_of_item(item_no));
+
+grant update on bbpac_formation_matrix_items to authenticated;
+grant update on bbpac_formation_item_stakeholders to authenticated;
+
+-- Audit trail for "Stanley is waiting on you" emails sent from My Section.
+-- Fully public read (matches this whole system's transparency stance) --
+-- there is nothing private about who is waiting on whom for a public due-
+-- diligence effort. Only the notify-blocked-owner Edge Function (service
+-- role) can insert -- no anon/authenticated write policy.
+create table if not exists bbpac_formation_notifications (
+  id uuid primary key default gen_random_uuid(),
+  from_member_id uuid not null references bbpac_formation_members(id),
+  to_member_id uuid not null references bbpac_formation_members(id),
+  item_no int not null references bbpac_formation_matrix_items(item_no),
+  blocking_item_no int not null references bbpac_formation_matrix_items(item_no),
+  reason_type text not null check (reason_type in ('internal_dependency')),
+  sent_at timestamptz not null default now()
+);
+
+alter table bbpac_formation_notifications enable row level security;
+
+create policy "Allow anon read" on bbpac_formation_notifications for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_notifications for select to authenticated using (true);
+grant select on bbpac_formation_notifications to anon, authenticated;
+
+create index if not exists bbpac_formation_notifications_lookup_idx
+  on bbpac_formation_notifications (item_no, blocking_item_no, sent_at desc);
