@@ -398,7 +398,7 @@
     var memberResult = await client.from('bbpac_formation_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
     if (memberResult.error || !memberResult.data) {
       document.getElementById('loginArea').style.display = '';
-      document.getElementById('loginErr').textContent = 'No section-owner profile found for this login. Ask an admin to add ' + session.user.email + ' to bbpac_formation_members.';
+      document.getElementById('loginErr').innerHTML = 'No section-owner profile found for ' + escapeHtml(session.user.email) + ' yet. <a href="/bbpac/organization/join-a-section.html">Request a section here</a> and we\'ll follow up.';
       return;
     }
     member = memberResult.data;

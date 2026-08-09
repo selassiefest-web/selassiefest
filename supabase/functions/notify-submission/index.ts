@@ -479,6 +479,25 @@ function formatBbpacPhotoSubmission(record: Record<string, any>) {
   };
 }
 
+// A request to own/co-own one or more Master Due-Diligence Matrix sections
+// via My Section (bbpac/organization/my-section.html) -- NOT auto-granted.
+// Approving it means manually adding a bbpac_formation_members row (if one
+// doesn't already exist for this email) and a bbpac_formation_section_owners
+// row per approved section number, via the Table Editor.
+function formatBbpacSectionSignupRequest(record: Record<string, any>) {
+  const sections = Array.isArray(record.requested_sections) ? record.requested_sections.join(', ') : record.requested_sections;
+  return {
+    subject: `New Section Signup Request — ${record.full_name} (Section ${sections})`,
+    html: `
+      <h2>New Bongo Beach Matrix Section Signup Request</h2>
+      <p><strong>From:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)})</p>
+      <p><strong>Requested section(s):</strong> ${escapeHtml(String(sections))}</p>
+      ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+      <p style="color:#5b6b7a;font-size:0.85rem;">To approve: add a row to bbpac_formation_members for this email if one doesn't exist, then add a bbpac_formation_section_owners row for each approved section number, via the Table Editor. Not auto-granted.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -612,6 +631,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   bbpac_vendor_applications: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacVendorApplication }] },
   bbpac_contact_messages: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacContactMessage }] },
   bbpac_photo_submissions: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacPhotoSubmission }] },
+  bbpac_formation_section_signup_requests: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacSectionSignupRequest }] },
   lease_signatures: {
     notifications: [
       {

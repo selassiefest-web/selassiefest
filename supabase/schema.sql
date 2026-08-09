@@ -3782,3 +3782,44 @@ grant select on bbpac_formation_notifications to anon, authenticated;
 
 create index if not exists bbpac_formation_notifications_lookup_idx
   on bbpac_formation_notifications (item_no, blocking_item_no, sent_at desc);
+
+-- Self-service section-signup requests. Distinct from every read-only
+-- bbpac_formation_* table above -- this one is write-only for anon, exactly
+-- like every other public-facing form on this site (bbpac_volunteer_signups,
+-- bbpac_contact_messages, etc.). It does NOT grant section ownership by
+-- itself. Approving a request is a manual staff action via the Table
+-- Editor: add/find the bbpac_formation_members row for this email, then add
+-- a bbpac_formation_section_owners row per approved section. Section access
+-- is a real write permission (RLS-enforced), not a mailing-list signup, so
+-- it stays staff-reviewed rather than auto-granted.
+create table if not exists bbpac_formation_section_signup_requests (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  requested_sections int[] not null,
+  message text,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'declined')),
+  created_at timestamptz not null default now(),
+  reviewed_at timestamptz,
+  check (array_length(requested_sections, 1) > 0)
+);
+
+alter table bbpac_formation_section_signup_requests enable row level security;
+
+-- Write-only for anon, same as every other public form table -- no select
+-- policy, so a submitter (or anyone else with the public key) can never
+-- read back other people's names/emails/section requests.
+create policy "Allow anon insert" on bbpac_formation_section_signup_requests
+  for insert to anon
+  with check (true);
+
+grant insert on bbpac_formation_section_signup_requests to anon;
+
+-- Reuses the existing notify_submission_webhook() function (see the
+-- Email notifications section above) -- emails staff via the
+-- notify-submission Edge Function, which now has a
+-- formatBbpacSectionSignupRequest formatter for this table.
+drop trigger if exists bbpac_formation_section_signup_requests_after_insert on bbpac_formation_section_signup_requests;
+create trigger bbpac_formation_section_signup_requests_after_insert
+  after insert on bbpac_formation_section_signup_requests
+  for each row execute function notify_submission_webhook();
