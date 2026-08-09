@@ -449,7 +449,8 @@
     var html = ownedSectionNos.map(function (secNo) {
       var items = allItems.filter(function (it) { return it.section_no === secNo; });
       var role = ownedSectionRoles[secNo] || 'worker';
-      return '<h2 class="section-heading">Section ' + secNo + (items[0] ? ': ' + escapeHtml(items[0].section_title) : '') + ' (' + items.length + ' items) <span class="role-badge ' + role + '">' + role + '</span></h2>' +
+      return '<h2 class="section-heading">Section ' + secNo + (items[0] ? ': ' + escapeHtml(items[0].section_title) : '') + ' (' + items.length + ' items) <span class="role-badge ' + role + '">' + role + '</span>' +
+        '<a href="/bbpac/organization/onboarding/section-brief.html?section=' + secNo + '" target="_blank" rel="noopener" style="font-size:0.68rem; font-weight:700; color:var(--lakefront);">What is this section? &rarr;</a></h2>' +
         renderTeamPanel(secNo) +
         items.map(renderOwnedItem).join('');
     }).join('');

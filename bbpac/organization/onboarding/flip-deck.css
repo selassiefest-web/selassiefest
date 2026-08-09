@@ -1,0 +1,52 @@
+/* Shared narrated-flip-deck engine styles. One frame on screen at a time,
+   one idea per frame, an explicit escape hatch to skip ahead, and a
+   "Tell me more" panel for anyone who wants more than the headline --
+   the ADHD-compliant shape: paced, low-clutter, never a wall of text. */
+
+.fd-shell{max-width:640px; margin:0 auto; padding:0 24px 60px;}
+.fd-top{display:flex; justify-content:space-between; align-items:center; margin:18px 0 10px; font-size:0.72rem; color:var(--ink-dim);}
+.fd-skip{background:none; border:none; color:var(--lakefront); font-weight:700; cursor:pointer; font-size:0.72rem; font-family:inherit;}
+.fd-skip:hover{text-decoration:underline;}
+
+.fd-dots{display:flex; gap:6px; justify-content:center; margin-bottom:18px;}
+.fd-dot{width:8px; height:8px; border-radius:50%; background:var(--line); border:none; cursor:pointer; padding:0;}
+.fd-dot.seen{background:var(--sand);}
+.fd-dot.active{background:var(--culture); width:20px; border-radius:5px;}
+
+.fd-frame{display:none; background:#fff; border:1.5px solid var(--line); border-radius:20px; padding:36px 32px; min-height:260px; box-shadow:0 6px 24px rgba(0,38,73,0.06);}
+.fd-frame.active{display:block; animation:fd-in 0.25s ease;}
+@keyframes fd-in{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.fd-batch{display:inline-block; font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--community); background:rgba(71,109,62,0.1); padding:4px 12px; border-radius:12px; margin-bottom:14px;}
+.fd-headline{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.25rem,3vw,1.6rem); line-height:1.3; color:var(--navy); margin:0 0 14px;}
+.fd-stat-row{display:flex; gap:14px; flex-wrap:wrap; margin:14px 0;}
+.fd-stat{background:var(--cream); border-radius:12px; padding:12px 16px; min-width:100px;}
+.fd-stat .n{font-family:Arial,sans-serif; font-weight:900; font-size:1.5rem; color:var(--culture); line-height:1;}
+.fd-stat .l{font-size:0.68rem; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.03em; margin-top:3px;}
+
+.fd-more-toggle{display:inline-flex; align-items:center; gap:6px; background:none; border:1.5px solid var(--line); color:var(--navy); font-weight:700; font-size:0.78rem; padding:7px 14px; border-radius:16px; cursor:pointer; font-family:inherit; margin-top:6px;}
+.fd-more-toggle:hover{border-color:var(--lakefront); color:var(--lakefront);}
+.fd-more-toggle .chev{transition:transform 0.15s;}
+.fd-more-toggle.open .chev{transform:rotate(180deg);}
+.fd-more-panel{margin-top:14px; font-size:0.9rem; color:#374a5c; border-top:1px dashed var(--line); padding-top:14px;}
+.fd-more-panel p{margin:0 0 10px;}
+.fd-more-panel[hidden]{display:none;}
+
+.fd-example{background:#fdf6ec; border-left:4px solid var(--legacy); border-radius:0 12px 12px 0; padding:14px 16px; margin-top:14px; font-size:0.86rem; color:#4a3a1e;}
+.fd-example .fd-ex-label{font-size:0.66rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:#8a5a0d; margin-bottom:4px; display:block;}
+
+.fd-cta-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;}
+.fd-cta-btn{display:inline-block; font-size:0.8rem; font-weight:700; padding:12px 22px; border-radius:22px; text-decoration:none; border:none; cursor:pointer; font-family:inherit;}
+.fd-cta-btn.primary{background:var(--culture); color:#fff;} .fd-cta-btn.primary:hover{background:#8a2a15;}
+.fd-cta-btn.secondary{background:transparent; border:1.5px solid var(--navy); color:var(--navy);} .fd-cta-btn.secondary:hover{background:var(--navy); color:#fff;}
+
+.fd-nav{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:18px;}
+.fd-nav-btns{display:flex; gap:8px;}
+.fd-nav button.fd-navbtn{width:40px; height:40px; border-radius:50%; border:1.5px solid var(--line); background:#fff; color:var(--navy); font-size:1rem; cursor:pointer;}
+.fd-nav button.fd-navbtn:hover{border-color:var(--lakefront); color:var(--lakefront);}
+.fd-nav button.fd-navbtn:disabled{opacity:0.35; cursor:default;}
+.fd-tools{display:flex; gap:8px;}
+.fd-tool-btn{width:38px; height:38px; border-radius:50%; border:1.5px solid var(--line); background:#fff; color:var(--ink-dim); font-size:0.9rem; cursor:pointer;}
+.fd-tool-btn.active{background:var(--lakefront); border-color:var(--lakefront); color:#fff;}
+
+.fd-loading{text-align:center; padding:60px 0; color:var(--ink-dim);}
