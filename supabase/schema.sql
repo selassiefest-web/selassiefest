@@ -3853,3 +3853,24 @@ as $$
 $$;
 
 revoke execute on function bbpac_formation_is_section_head(int) from public, anon;
+
+-- Section signup request decision emails: an AFTER UPDATE trigger on
+-- bbpac_formation_section_signup_requests (fires when status moves from
+-- 'pending' to 'approved' or 'declined') calls the deployed
+-- notify-section-request-decision Edge Function via pg_net, emailing the
+-- requester either way -- closing the gap where approving/declining a
+-- request via the Table Editor previously changed a column with nobody
+-- outside staff ever knowing it happened. The trigger function
+-- (bbpac_formation_notify_section_request_decision) is intentionally NOT
+-- reproduced here: it embeds a shared webhook secret (checked by the Edge
+-- Function to reject unauthenticated calls to its public URL) that must
+-- never be committed to git. It was applied directly against the database
+-- instead. If it ever needs to be recreated: a plpgsql function, security
+-- definer, that does `if OLD.status = 'pending' and NEW.status in
+-- ('approved','declined') then perform net.http_post(url :=
+-- '<function-url>', headers := jsonb_build_object('Content-Type',
+-- 'application/json', 'x-webhook-secret', '<secret>'), body :=
+-- jsonb_build_object('record', row_to_json(NEW))); end if;`, attached as an
+-- AFTER UPDATE trigger on bbpac_formation_section_signup_requests. The
+-- secret is also stored as the Edge Function's SECTION_DECISION_WEBHOOK_SECRET
+-- environment secret (`supabase secrets set`).

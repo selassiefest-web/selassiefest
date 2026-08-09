@@ -44,9 +44,11 @@
   section{padding:40px 32px;}
   @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
 
-  .page-hero{background:linear-gradient(135deg, var(--navy), #013a6b); color:#fff; padding:52px 32px; text-align:center;}
-  .eyebrow2{font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:#f0c98a; margin-bottom:12px;}
-  .page-hero h1{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.7rem,4vw,2.4rem); margin:0 0 10px;}
+  .page-hero{background:linear-gradient(135deg, var(--navy), #013a6b); color:#fff; padding:22px 32px; text-align:center;}
+  .page-hero.logged-in{padding:16px 32px;}
+  .page-hero.logged-in h1{font-size:1.15rem;} .page-hero.logged-in p, .page-hero.logged-in .eyebrow2{display:none;}
+  .eyebrow2{font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:#f0c98a; margin-bottom:8px;}
+  .page-hero h1{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.4rem,3.5vw,1.9rem); margin:0 0 6px;}
   .page-hero p{max-width:700px; margin:0 auto; color:#dbe6f0; font-size:0.96rem;}
 
   .lede{font-size:1rem; color:#374a5c; max-width:820px;}
@@ -61,6 +63,12 @@
   .who-box h3{margin:0 0 6px; font-size:1rem;}
   .who-box .role{font-size:0.78rem; color:var(--ink-dim);}
   .logout-link{font-size:0.78rem; color:var(--culture); cursor:pointer; font-weight:700;}
+
+  .howto-box{background:#fff8ec; border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0; font-size:0.88rem; color:#4a3a1e;}
+  .howto-box h3{margin:0 0 8px; font-size:0.98rem; color:var(--navy);}
+  .howto-box ol{margin:8px 0 10px; padding-left:22px;}
+  .howto-box li{margin-bottom:6px;}
+  .howto-box p{margin:0 0 8px;}
 
   .waiting-box{background:rgba(220,131,17,0.08); border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0;}
   .waiting-box h3{margin:0 0 10px; font-size:1rem; color:#8a5a0d;}
@@ -138,7 +146,7 @@
 <div class="back-bar"><a href="/bbpac/organization/matrix.html">&larr; Back to the Matrix</a></div>
 <div class="breadcrumb"><a href="/bbpac/">Bongo Beach PAC</a> &rsaquo; <a href="/bbpac/organization/">Formation</a> &rsaquo; <b>My Section</b></div>
 
-<div class="page-hero">
+<div class="page-hero" id="pageHero">
   <div class="eyebrow2">Authenticated Workspace</div>
   <h1>My Section</h1>
   <p>Log in to see and update only the section(s) you own — and exactly who or what is blocking your progress, whether that's a teammate or CPD itself.</p>
@@ -169,6 +177,17 @@
         </div>
 
         <div id="waitingBox"></div>
+
+        <div class="howto-box">
+          <h3><i class="fas fa-circle-info"></i> What to actually do on this page</h3>
+          <p>Below is a list of items in your section. For <strong>each item</strong>, you're answering three questions in the boxes underneath it:</p>
+          <ol>
+            <li><strong>Current state</strong> — What's true about this today, while 63rd Street Beach is still part of Jackson Park? (If you don't know yet, that's fine — leave it blank rather than guessing.)</li>
+            <li><strong>Proposed state</strong> — What should happen instead once Bongo Beach is its own separate park?</li>
+            <li><strong>Progress status</strong> — Where this stands: <em>not started</em>, <em>in progress</em>, <em>complete</em>, or <em>reviewed — no change needed</em>.</li>
+          </ol>
+          <p>Fill in whatever you actually know — you don't have to answer everything at once, and you don't have to finish every item today. Click <strong>Save</strong> under an item when you're done with it; that item's history is updated permanently and immediately, and it's visible to everyone on the <a href="/bbpac/organization/version-log.html">Version Log</a>.</p>
+        </div>
 
         <div id="ownedSections"></div>
       </div>
@@ -276,8 +295,8 @@
         '<div class="top"><div><div class="oid">#' + it.item_no + ' &middot; ' + escapeHtml(it.section_title) + '</div>' +
         '<div class="otitle">' + escapeHtml(it.item_label) + '</div></div></div>' +
         '<p class="obody">' + escapeHtml(it.investigation) + '</p>' +
-        '<div class="field-edit"><label>Current state</label><textarea data-field="current_state" data-item="' + it.item_no + '">' + escapeHtml(it.current_state || '') + '</textarea></div>' +
-        '<div class="field-edit"><label>Proposed state</label><textarea data-field="proposed_state" data-item="' + it.item_no + '">' + escapeHtml(it.proposed_state || '') + '</textarea></div>' +
+        '<div class="field-edit"><label>Current state</label><textarea data-field="current_state" data-item="' + it.item_no + '" placeholder="What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.">' + escapeHtml(it.current_state || '') + '</textarea></div>' +
+        '<div class="field-edit"><label>Proposed state</label><textarea data-field="proposed_state" data-item="' + it.item_no + '" placeholder="What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?">' + escapeHtml(it.proposed_state || '') + '</textarea></div>' +
         '<div class="field-edit"><label>Progress status</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
           ['not_started', 'in_progress', 'complete', 'reviewed_no_change'].map(function (s) {
             return '<option value="' + s + '"' + (it.progress_status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
@@ -478,6 +497,14 @@
   });
 
   async function loadDataAndRender(session) {
+    // getSession() on load and onAuthStateChange's initial fire can both
+    // invoke this for the same session -- reset every accumulator so a
+    // second call replaces state instead of appending to it (this is what
+    // was causing team members and items to show up doubled).
+    ownersBySection = {};
+    itemsByNo = {};
+    stakesByItemNo = {};
+
     var memberResult = await client.from('bbpac_formation_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
     if (memberResult.error || !memberResult.data) {
       document.getElementById('loginArea').style.display = '';
@@ -517,17 +544,31 @@
 
     document.getElementById('loginArea').style.display = 'none';
     document.getElementById('appArea').style.display = '';
+    document.getElementById('pageHero').classList.add('logged-in');
     await renderApp();
+  }
+
+  var loadInFlight = false;
+  var loadedForUserId = null;
+  async function loadDataAndRenderOnce(session) {
+    if (loadInFlight || loadedForUserId === session.user.id) return;
+    loadInFlight = true;
+    try {
+      await loadDataAndRender(session);
+      loadedForUserId = session.user.id;
+    } finally {
+      loadInFlight = false;
+    }
   }
 
   (async function init() {
     client = await window.sfSupabaseReady;
     var sessionResult = await client.auth.getSession();
     if (sessionResult.data.session) {
-      await loadDataAndRender(sessionResult.data.session);
+      await loadDataAndRenderOnce(sessionResult.data.session);
     }
     client.auth.onAuthStateChange(function (event, session) {
-      if (session) loadDataAndRender(session);
+      if (session) loadDataAndRenderOnce(session);
     });
   })();
 })();
