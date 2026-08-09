@@ -3823,3 +3823,33 @@ drop trigger if exists bbpac_formation_section_signup_requests_after_insert on b
 create trigger bbpac_formation_section_signup_requests_after_insert
   after insert on bbpac_formation_section_signup_requests
   for each row execute function notify_submission_webhook();
+
+-- Section head vs. worker. Both can still edit items in their section --
+-- the existing bbpac_formation_is_section_owner() RLS check already allows
+-- any listed owner regardless of role, and that's correct: workers need to
+-- actually do the work. What role adds is delegation: a head can bring on
+-- workers for their own section directly, via the manage-section-worker
+-- Edge Function below, without a Table Editor round-trip through staff for
+-- every single addition. Promoting/removing a HEAD stays staff-only.
+alter table bbpac_formation_section_owners
+  add column if not exists role text not null default 'worker' check (role in ('head', 'worker'));
+
+-- Backfill: the 3 rows that exist today were each the sole/original
+-- assignment for their section -- correctly heads, not workers.
+update bbpac_formation_section_owners set role = 'head';
+
+create or replace function bbpac_formation_is_section_head(p_section_no int)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.bbpac_formation_section_owners so
+    join public.bbpac_formation_members m on m.id = so.member_id
+    where so.section_no = p_section_no and so.role = 'head' and m.auth_user_id = auth.uid()
+  );
+$$;
+
+revoke execute on function bbpac_formation_is_section_head(int) from public, anon;

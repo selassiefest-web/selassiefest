@@ -87,7 +87,20 @@
   .block-line .who{font-weight:700;}
   .block-line .why{color:var(--ink-dim); font-style:italic;}
 
-  .section-heading{font-family:Arial,sans-serif; font-weight:900; font-size:1.2rem; margin:34px 0 6px;}
+  .section-heading{font-family:Arial,sans-serif; font-weight:900; font-size:1.2rem; margin:34px 0 6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .role-badge{font-size:0.62rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; padding:3px 10px; border-radius:10px;}
+  .role-badge.head{background:rgba(166,51,26,0.12); color:var(--culture);}
+  .role-badge.worker{background:rgba(47,129,180,0.1); color:var(--lakefront);}
+
+  .team-panel{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin-bottom:16px;}
+  .team-panel h3{margin:0 0 10px; font-size:0.9rem; font-family:Arial,sans-serif;}
+  .team-row{display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-top:1px solid var(--line); font-size:0.84rem;}
+  .team-row:first-of-type{border-top:none;}
+  .team-row .remove-worker{font-size:0.7rem; font-weight:700; color:var(--culture); cursor:pointer; background:none; border:none; padding:2px 8px;}
+  .add-worker-form{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .add-worker-form input{flex:1; min-width:140px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.82rem;}
+  .add-worker-form button{font-size:0.72rem; padding:8px 14px;}
+  .team-msg{font-size:0.78rem; margin-top:8px; display:none;}
 </style>
 </head>
 <body>
@@ -215,7 +228,7 @@
   var itemsByNo = {};
   var stakesByItemNo = {}; // item_no -> [{stakeholder_name, relationship_type, consultation_status}, ...]
   var ownersBySection = {}; // section_no -> [{id, name}, ...]
-  var client, member, ownedSectionNos = [];
+  var client, member, ownedSectionNos = [], ownedSectionRoles = {};
 
   function blockingStatusFor(itemNo, depth, originItemNo) {
     depth = depth || 0;
@@ -298,17 +311,40 @@
       }).join('') + '</div>';
   }
 
+  function renderTeamPanel(secNo) {
+    var team = ownersBySection[secNo] || [];
+    var isHead = ownedSectionRoles[secNo] === 'head';
+    var rows = team.map(function (t) {
+      var removeBtn = (isHead && t.role === 'worker')
+        ? '<button class="remove-worker" data-remove-worker-section="' + secNo + '" data-remove-worker-id="' + t.id + '">Remove</button>'
+        : '';
+      return '<div class="team-row"><span>' + escapeHtml(t.name) + ' <span class="role-badge ' + t.role + '">' + t.role + '</span></span>' + removeBtn + '</div>';
+    }).join('');
+
+    var addForm = isHead
+      ? '<div class="add-worker-form">' +
+          '<input type="text" placeholder="Worker name" data-add-worker-name="' + secNo + '">' +
+          '<input type="email" placeholder="Worker email" data-add-worker-email="' + secNo + '">' +
+          '<button class="btn primary" data-add-worker-section="' + secNo + '">Add Worker</button>' +
+        '</div><div class="team-msg" data-team-msg="' + secNo + '"></div>'
+      : '';
+
+    return '<div class="team-panel"><h3><i class="fas fa-people-group"></i> Section ' + secNo + ' Team' + (isHead ? ' (you are head)' : '') + '</h3>' + rows + addForm + '</div>';
+  }
+
   async function renderApp() {
     document.getElementById('whoName').textContent = member.name;
     document.getElementById('whoSections').textContent = ownedSectionNos.length
-      ? 'Owns section(s): ' + ownedSectionNos.join(', ')
+      ? 'Owns section(s): ' + ownedSectionNos.map(function (n) { return n + ' (' + (ownedSectionRoles[n] || 'worker') + ')'; }).join(', ')
       : 'No sections assigned yet — ask an admin to add you in bbpac_formation_section_owners.';
 
     renderWaitingOnMe();
 
     var html = ownedSectionNos.map(function (secNo) {
       var items = allItems.filter(function (it) { return it.section_no === secNo; });
-      return '<h2 class="section-heading">Section ' + secNo + (items[0] ? ': ' + escapeHtml(items[0].section_title) : '') + ' (' + items.length + ' items)</h2>' +
+      var role = ownedSectionRoles[secNo] || 'worker';
+      return '<h2 class="section-heading">Section ' + secNo + (items[0] ? ': ' + escapeHtml(items[0].section_title) : '') + ' (' + items.length + ' items) <span class="role-badge ' + role + '">' + role + '</span></h2>' +
+        renderTeamPanel(secNo) +
         items.map(renderOwnedItem).join('');
     }).join('');
 
@@ -378,6 +414,53 @@
     setTimeout(function () { btn.textContent = originalText; btn.disabled = false; }, 4000);
   });
 
+  document.addEventListener('click', async function (e) {
+    var addBtn = e.target.closest('[data-add-worker-section]');
+    if (addBtn) {
+      var secNo = addBtn.getAttribute('data-add-worker-section');
+      var nameEl = document.querySelector('[data-add-worker-name="' + secNo + '"]');
+      var emailEl = document.querySelector('[data-add-worker-email="' + secNo + '"]');
+      var msgEl = document.querySelector('[data-team-msg="' + secNo + '"]');
+      var name = nameEl.value.trim(), email = emailEl.value.trim();
+      if (!email) { msgEl.textContent = 'Enter an email.'; msgEl.style.color = 'var(--culture)'; msgEl.style.display = 'block'; return; }
+      addBtn.disabled = true; addBtn.textContent = 'Adding...';
+      var result = await client.functions.invoke('manage-section-worker', { body: { action: 'add', section_no: Number(secNo), email: email, name: name } });
+      addBtn.disabled = false; addBtn.textContent = 'Add Worker';
+      if (result.error) {
+        msgEl.textContent = 'Failed: ' + result.error.message;
+        msgEl.style.color = 'var(--culture)';
+      } else {
+        msgEl.textContent = 'Added. They can log in at My Section with that email now.';
+        msgEl.style.color = 'var(--community)';
+        nameEl.value = ''; emailEl.value = '';
+        var sessionResult = await client.auth.getSession();
+        await loadDataAndRender(sessionResult.data.session);
+      }
+      msgEl.style.display = 'block';
+      return;
+    }
+
+    var removeBtn = e.target.closest('[data-remove-worker-id]');
+    if (removeBtn) {
+      var rSecNo = removeBtn.getAttribute('data-remove-worker-section');
+      var workerId = removeBtn.getAttribute('data-remove-worker-id');
+      var worker = (ownersBySection[rSecNo] || []).find(function (t) { return t.id === workerId; });
+      if (!worker || !confirm('Remove ' + worker.name + ' from Section ' + rSecNo + '?')) return;
+      removeBtn.disabled = true;
+      // Members' emails aren't publicly readable client-side -- pass the
+      // member_id we already have from the public roster instead; the
+      // Edge Function resolves everything else with the service role.
+      var invokeResult = await client.functions.invoke('manage-section-worker', { body: { action: 'remove', section_no: Number(rSecNo), member_id: workerId } });
+      if (invokeResult.error) {
+        alert('Failed to remove: ' + invokeResult.error.message);
+        removeBtn.disabled = false;
+      } else {
+        var sessionResult2 = await client.auth.getSession();
+        await loadDataAndRender(sessionResult2.data.session);
+      }
+    }
+  });
+
   document.getElementById('logoutBtn').addEventListener('click', async function () {
     await client.auth.signOut();
     window.location.reload();
@@ -403,19 +486,22 @@
     }
     member = memberResult.data;
 
-    // Every section's owner names, for showing "owned by X" on cross-section
-    // blocking references -- deliberately ALL owners, not just this member's own.
-    var ownersResult = await client.from('bbpac_formation_section_owners').select('section_no, member_id, bbpac_formation_members_public(name)');
+    // Every section's owner names + roles, for showing "owned by X (head)" on
+    // cross-section blocking references, and the team panel below --
+    // deliberately ALL owners, not just this member's own.
+    var ownersResult = await client.from('bbpac_formation_section_owners').select('section_no, member_id, role, bbpac_formation_members_public(name)');
     (ownersResult.data || []).forEach(function (r) {
       var name = r.bbpac_formation_members_public ? r.bbpac_formation_members_public.name : 'Unknown';
       if (!ownersBySection[r.section_no]) ownersBySection[r.section_no] = [];
-      ownersBySection[r.section_no].push({ id: r.member_id, name: name });
+      ownersBySection[r.section_no].push({ id: r.member_id, name: name, role: r.role });
     });
 
-    // This member's own owned sections, resolved strictly by member_id (not
-    // by name, which could collide between two volunteers).
-    var ownRowsResult = await client.from('bbpac_formation_section_owners').select('section_no').eq('member_id', member.id);
+    // This member's own owned sections + role in each, resolved strictly by
+    // member_id (not by name, which could collide between two volunteers).
+    var ownRowsResult = await client.from('bbpac_formation_section_owners').select('section_no, role').eq('member_id', member.id);
     ownedSectionNos = (ownRowsResult.data || []).map(function (r) { return r.section_no; });
+    ownedSectionRoles = {};
+    (ownRowsResult.data || []).forEach(function (r) { ownedSectionRoles[r.section_no] = r.role; });
 
     var itemsResult = await client.from('bbpac_formation_matrix_items').select('*').order('item_no', { ascending: true });
     allItems = itemsResult.data || [];
