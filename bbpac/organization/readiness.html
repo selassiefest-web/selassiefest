@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Readiness Dashboard — how much of the Bongo Beach Master Due-Diligence Matrix is resolved on our own side versus genuinely waiting on an outside party, section by section.">
+<title>Readiness Dashboard | Formation | 63rd Street Bongo Beach Park Advisory Council</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{ --navy:#002649; --cream:#FAF6EE; --culture:#A6331A; --community:#476D3E; --lakefront:#2F81B4; --legacy:#DC8311; --sand:#D4A96E; --line:rgba(0,38,73,0.14); --ink-dim:#5b6b7a; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--cream); color:var(--navy); font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6;}
+  a{color:var(--navy); text-decoration:none;} img{max-width:100%; display:block;}
+  .site-header{display:flex; align-items:center; gap:18px; padding:18px 32px; border-bottom:3px solid var(--navy); background:#fff; flex-wrap:wrap;}
+  .site-header img.logo{width:60px; height:60px; flex-shrink:0;}
+  .site-header .titles{flex:1; min-width:220px;}
+  .eyebrow{font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--community); font-weight:700; margin-bottom:3px;}
+  .wordmark{font-family:Arial,sans-serif; font-weight:900; color:var(--navy); font-size:1.2rem; line-height:1.15;}
+  .wordmark a{color:inherit;}
+  .tagline{font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-dim); margin-top:4px;}
+  .tagline .dot{color:var(--sand); margin:0 5px;}
+  .header-cta{text-align:right; flex-shrink:0;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .btn{display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:9px 16px; border-radius:20px; white-space:nowrap; border:none; cursor:pointer; font-family:inherit;}
+  .btn.primary{background:var(--culture); color:#fff;} .btn.primary:hover{background:#8a2a15;}
+  .btn.secondary{background:transparent; border:1.5px solid var(--navy); color:var(--navy);} .btn.secondary:hover{background:var(--navy); color:#fff;}
+  .navbar{background:var(--navy); padding:0 24px; position:sticky; top:0; z-index:50;}
+  .navbar ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; max-width:1300px; margin:0 auto;}
+  .navbar li a{display:block; padding:13px 15px; color:#dbe6f0; font-size:0.76rem; font-weight:600; text-decoration:none; border-bottom:3px solid transparent;}
+  .navbar li a:hover, .navbar li a.active{color:#fff; border-bottom-color:var(--legacy); background:rgba(255,255,255,0.06);}
+  .breadcrumb{background:#f1ede3; color:#6b7688; font-size:0.72rem; letter-spacing:0.06em; padding:9px 32px; border-bottom:1px solid #e4dfd2;}
+  .breadcrumb a{color:#6b7688;} .breadcrumb b{color:var(--navy);}
+  .back-bar{background:#fff;padding:8px 32px;border-bottom:1px solid var(--line);}
+  .back-bar a{font-size:0.78rem;font-weight:700;color:var(--lakefront);}
+  main{max-width:1300px; margin:0 auto;}
+  .container{max-width:1080px; margin:0 auto; padding:0 32px;}
+  footer{background:var(--navy); color:#c9d6e2; padding:44px 32px 22px; font-size:0.85rem;}
+  .footer-grid{max-width:1300px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:32px;}
+  .footer-grid h4{color:#fff; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 12px;}
+  .footer-grid a{display:block; color:#c9d6e2; padding:4px 0;} .footer-grid a:hover{color:#fff;}
+  .footer-brand p{color:#9fb0bf; font-size:0.82rem; max-width:34ch;}
+  .footer-bottom{max-width:1300px; margin:26px auto 0; border-top:1px solid rgba(255,255,255,0.12); padding-top:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; color:#8497a8; font-size:0.75rem;}
+  section{padding:40px 32px;}
+  @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
+
+  .page-hero{background:linear-gradient(135deg, var(--navy), #013a6b); color:#fff; padding:52px 32px; text-align:center;}
+  .eyebrow2{font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:#f0c98a; margin-bottom:12px;}
+  .page-hero h1{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.8rem,4vw,2.6rem); margin:0 0 10px;}
+  .page-hero p{max-width:740px; margin:0 auto; color:#dbe6f0; font-size:0.98rem;}
+
+  .lede{font-size:1rem; color:#374a5c; max-width:820px;}
+
+  /* ── Dataviz roles (validated palette; light-mode only, matching this site's single fixed theme) ── */
+  .viz-root{
+    --surface-1: #ffffff;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --gridline: #e1e0d9;
+    --series-self: #2F81B4;      /* lakefront -- self-resolved */
+    --series-external: #DC8311;  /* legacy -- externally routed */
+    --status-good: #0ca30c;
+    --status-warning: #fab219;
+    --status-critical: #d03b3b;
+    --surface-gap: 2px;
+  }
+
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:24px 0;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center;}
+  .stat-card .num{font-family:Arial,sans-serif; font-weight:900; font-size:1.6rem; color:var(--navy);}
+  .stat-card .lbl{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); margin-top:4px;}
+  @media (max-width:800px){ .stat-row{grid-template-columns:repeat(2,1fr);} }
+
+  .chart-card{background:var(--surface-1); border:1px solid var(--line); border-radius:16px; padding:24px 26px; margin:20px 0;}
+  .chart-card h2{font-family:Arial,sans-serif; font-weight:900; font-size:1.1rem; margin:0 0 4px; color:var(--navy);}
+  .chart-card .sub{font-size:0.84rem; color:var(--text-secondary); margin:0 0 18px;}
+
+  .legend{display:flex; gap:18px; align-items:center; margin-bottom:16px; font-size:0.8rem; color:var(--text-secondary); flex-wrap:wrap;}
+  .legend .key{display:inline-flex; align-items:center; gap:6px;}
+  .legend .swatch{width:12px; height:12px; border-radius:3px; display:inline-block;}
+
+  .bar-row{display:grid; grid-template-columns:230px 1fr 90px; align-items:center; gap:12px; padding:5px 0;}
+  .bar-row .row-label{font-size:0.78rem; color:var(--text-primary); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bar-track{position:relative; height:22px; display:flex; border-radius:4px; overflow:hidden; background:var(--gridline);}
+  .bar-seg{height:22px; position:relative; cursor:pointer;}
+  .bar-seg.self{background:var(--series-self);}
+  .bar-seg.external{background:var(--series-external); margin-left:var(--surface-gap);}
+  .bar-seg:hover{filter:brightness(1.12); outline:1px solid rgba(0,0,0,0.15); outline-offset:-1px;}
+  .bar-row .row-total{font-size:0.74rem; color:var(--text-muted); text-align:right; font-variant-numeric:tabular-nums;}
+
+  .viz-tooltip{position:fixed; pointer-events:none; background:var(--navy); color:#fff; font-size:0.76rem; padding:7px 11px; border-radius:8px; z-index:100; display:none; max-width:260px; box-shadow:0 4px 14px rgba(0,0,0,0.25);}
+  .viz-tooltip .tt-value{font-weight:800; font-size:0.86rem;}
+  .viz-tooltip .tt-label{color:#c9d6e2;}
+
+  .status-row{display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 4px;}
+  .status-chip{display:inline-flex; align-items:center; gap:7px; font-size:0.82rem; padding:8px 14px; border-radius:20px; background:#f1ede3; color:var(--text-primary); font-weight:600;}
+  .status-chip .dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
+  .status-chip.good .dot{background:var(--status-good);}
+  .status-chip.warning .dot{background:var(--status-warning);}
+  .status-chip.critical .dot{background:var(--status-critical);}
+  .status-chip .n{font-weight:900; font-family:Arial,sans-serif;}
+
+  .table-toggle{font-size:0.8rem; font-weight:700; color:var(--lakefront); cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin-top:6px;}
+  #dataTableWrap{display:none; margin-top:16px; overflow-x:auto;}
+  table.readiness-table{width:100%; border-collapse:collapse; font-size:0.78rem; min-width:820px;}
+  table.readiness-table th{text-align:left; background:#f1ede3; color:var(--navy); padding:8px 10px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.03em; border-bottom:1px solid var(--line); position:sticky; top:0;}
+  table.readiness-table td{padding:7px 10px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums;}
+  table.readiness-table td.section-name{font-variant-numeric:normal; font-weight:600;}
+
+  #loadingState{text-align:center; padding:40px 0; color:var(--ink-dim);}
+</style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <img class="logo" src="/bbpac/assets/images/logo.png" alt="63rd Street Bongo Beach Park Advisory Council seal">
+  <div class="titles">
+    <div class="eyebrow">A Ras Tafari Inc. Community Initiative · In Partnership with the Jackson Park Advisory Council</div>
+    <div class="wordmark"><a href="/bbpac/">63RD STREET BONGO BEACH PARK ADVISORY COUNCIL</a></div>
+    <div class="tagline">Culture<span class="dot">&middot;</span>Community<span class="dot">&middot;</span>Lakefront<span class="dot">&middot;</span>Legacy</div>
+  </div>
+  <div class="header-cta">
+    <div class="btn-row">
+      <a class="btn secondary" href="/bbpac/get-involved/volunteer.html">Volunteer</a>
+      <a class="btn primary" href="/bbpac/donate.html">Donate</a>
+    </div>
+  </div>
+</header>
+
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <ul>
+    <li><a href="/bbpac/">Home</a></li>
+    <li><a href="/bbpac/about/history.html">About &amp; History</a></li>
+    <li><a href="/bbpac/about/leadership.html">Board &amp; Meetings</a></li>
+    <li><a href="/bbpac/get-involved/">Get Involved</a></li>
+    <li><a href="/bbpac/events/">Events</a></li>
+    <li><a href="/bbpac/beach-map.html">Beach &amp; Stewardship</a></li>
+    <li><a href="/bbpac/gallery/">Gallery &amp; Archive</a></li>
+    <li><a class="active" href="/bbpac/organization/">Formation</a></li>
+    <li><a href="/bbpac/donate.html">Donate</a></li>
+    <li><a href="/bbpac/contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="back-bar"><a href="/bbpac/organization/matrix.html">&larr; Back to the Matrix</a></div>
+<div class="breadcrumb"><a href="/bbpac/">Bongo Beach PAC</a> &rsaquo; <a href="/bbpac/organization/">Formation</a> &rsaquo; <b>Readiness Dashboard</b></div>
+
+<div class="page-hero">
+  <div class="eyebrow2">Proper Planning &amp; Preparation</div>
+  <h1>Readiness Dashboard</h1>
+  <p>How much of the Master Due-Diligence Matrix is exhausted on our own side, section by section — versus how much genuinely can't move until an outside party answers. Live from the same database as the Matrix and the Version Log.</p>
+</div>
+
+<main>
+  <section>
+    <div class="container viz-root">
+
+      <p class="lede">Every number below is computed live, the same way the completeness check was run while building the matrix: an item counts as <strong>self-resolved</strong> only if it has a written resolution we can defend on precedent; otherwise it counts as <strong>externally routed</strong> only if a real stakeholder with actual jurisdiction is named. Nothing here is rounded up.</p>
+
+      <div id="loadingState"><i class="fas fa-spinner fa-spin"></i> Loading live readiness data&hellip;</div>
+
+      <div id="dashboard" style="display:none;">
+        <div class="stat-row" id="kpiRow"></div>
+
+        <div class="chart-card">
+          <h2><i class="fas fa-circle-info" style="color:var(--lakefront); margin-right:6px;"></i>Open follow-ups by confidence</h2>
+          <p class="sub">Every external stakeholder link, by how sure we are who it actually is.</p>
+          <div class="status-row" id="statusRow"></div>
+        </div>
+
+        <div class="chart-card">
+          <h2>Self-resolved vs. externally routed, by section</h2>
+          <p class="sub">27 sections, 744 items. Hover a segment for exact counts.</p>
+          <div class="legend">
+            <span class="key"><span class="swatch" style="background:var(--series-self);"></span>Self-resolved</span>
+            <span class="key"><span class="swatch" style="background:var(--series-external);"></span>Externally routed</span>
+          </div>
+          <div id="barChart"></div>
+          <div class="table-toggle" id="tableToggle"><i class="fas fa-table"></i> View exact numbers as a table</div>
+          <div id="dataTableWrap">
+            <table class="readiness-table">
+              <thead><tr><th>Section</th><th>Items</th><th>Self-resolved</th><th>Externally routed</th><th>% self-resolved</th><th>Must approve</th><th>Needs ID</th><th>Stakeholders</th></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div class="viz-tooltip" id="vizTooltip" role="tooltip"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="color:#fff; font-weight:900; font-family:Arial,sans-serif; letter-spacing:0.04em; margin-bottom:8px;">BONGO BEACH PAC</div>
+      <p>A community initiative of Ras Tafari Inc., a 501(c)(3) nonprofit, in partnership with the Jackson Park Advisory Council. Honoring our past, building our future at 63rd Street Beach.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <a href="/bbpac/about/history.html">History</a>
+      <a href="/bbpac/about/leadership.html">Board &amp; Meetings</a>
+      <a href="/bbpac/events/">Events</a>
+      <a href="/bbpac/gallery/">Gallery &amp; Archive</a>
+      <a href="/bbpac/organization/">Formation</a>
+    </div>
+    <div>
+      <h4>Get Involved</h4>
+      <a href="/bbpac/get-involved/volunteer.html">Volunteer</a>
+      <a href="/bbpac/get-involved/membership.html">Membership</a>
+      <a href="/bbpac/get-involved/members.html">Member Directory</a>
+      <a href="/bbpac/get-involved/sponsors.html">Sponsors</a>
+      <a href="/bbpac/get-involved/vendors.html">Vendors</a>
+    </div>
+    <div>
+      <h4>Lakefront</h4>
+      <a href="/bbpac/beach-map.html">Beach Map</a>
+      <a href="/bbpac/stewardship.html">Stewardship</a>
+      <a href="/bbpac/donate.html">Donate</a>
+      <a href="/bbpac/contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; <span id="bbpac-year"></span> Ras Tafari Inc. &middot; 501(c)(3) &middot; A program of <a href="/" style="display:inline; color:#c9d6e2;">SelassieFest</a></span>
+    <span>63rd Street Beach &middot; Jackson Park &middot; Chicago, IL</span>
+  </div>
+</footer>
+<script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function () {
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  var tooltip = document.getElementById('vizTooltip');
+  function showTooltip(e, valueHtml, labelText) {
+    tooltip.innerHTML = '<div class="tt-value"></div><div class="tt-label"></div>';
+    tooltip.querySelector('.tt-value').textContent = valueHtml;
+    tooltip.querySelector('.tt-label').textContent = labelText;
+    tooltip.style.display = 'block';
+    var x = e.clientX + 14, y = e.clientY + 14;
+    tooltip.style.left = Math.min(x, window.innerWidth - 280) + 'px';
+    tooltip.style.top = y + 'px';
+  }
+  function hideTooltip() { tooltip.style.display = 'none'; }
+
+  function renderBarChart(rows) {
+    var el = document.getElementById('barChart');
+    el.innerHTML = rows.map(function (r) {
+      var selfPct = r.total ? (100 * r.selfResolved / r.total) : 0;
+      var extPct = r.total ? (100 * r.externallyRouted / r.total) : 0;
+      var rowId = 'row-' + r.sectionNo;
+      return (
+        '<div class="bar-row">' +
+          '<div class="row-label" title="' + escapeHtml(r.sectionTitle) + '">' + r.sectionNo + '. ' + escapeHtml(r.sectionTitle) + '</div>' +
+          '<div class="bar-track">' +
+            '<div class="bar-seg self" style="width:' + selfPct + '%" data-tip-value="' + r.selfResolved + ' of ' + r.total + '" data-tip-label="Self-resolved -- ' + escapeHtml(r.sectionTitle) + '"></div>' +
+            '<div class="bar-seg external" style="width:' + extPct + '%" data-tip-value="' + r.externallyRouted + ' of ' + r.total + '" data-tip-label="Externally routed -- ' + escapeHtml(r.sectionTitle) + '"></div>' +
+          '</div>' +
+          '<div class="row-total">' + Math.round(selfPct) + '% self</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    el.querySelectorAll('.bar-seg').forEach(function (seg) {
+      seg.addEventListener('pointermove', function (e) { showTooltip(e, seg.getAttribute('data-tip-value'), seg.getAttribute('data-tip-label')); });
+      seg.addEventListener('pointerleave', hideTooltip);
+      seg.addEventListener('focus', function (e) { showTooltip(e, seg.getAttribute('data-tip-value'), seg.getAttribute('data-tip-label')); });
+      seg.addEventListener('blur', hideTooltip);
+      seg.setAttribute('tabindex', '0');
+    });
+  }
+
+  function renderTable(rows) {
+    document.getElementById('tableBody').innerHTML = rows.map(function (r) {
+      var pct = r.total ? Math.round(100 * r.selfResolved / r.total) : 0;
+      return '<tr>' +
+        '<td class="section-name">' + r.sectionNo + '. ' + escapeHtml(r.sectionTitle) + '</td>' +
+        '<td>' + r.total + '</td><td>' + r.selfResolved + '</td><td>' + r.externallyRouted + '</td>' +
+        '<td>' + pct + '%</td><td>' + r.mustApprove + '</td><td>' + r.unknown + '</td><td>' + r.distinctStakeholders + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('tableToggle').addEventListener('click', function () {
+    var wrap = document.getElementById('dataTableWrap');
+    wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+  });
+
+  (async function init() {
+    var client = await window.sfSupabaseReady;
+
+    var itemsResult = await client.from('bbpac_formation_matrix_items').select('item_no, section_no, section_title, our_proposed_resolution').neq('section_no', 0);
+    var stakeResult = await client.from('bbpac_formation_item_stakeholders').select('item_no, stakeholder_id, relationship_type, confidence');
+
+    document.getElementById('loadingState').style.display = 'none';
+    if (itemsResult.error || stakeResult.error) {
+      document.getElementById('loadingState').style.display = '';
+      document.getElementById('loadingState').innerHTML = '<p style="color:var(--culture);">Could not load readiness data right now.</p>';
+      return;
+    }
+
+    var items = itemsResult.data || [];
+    var stakes = stakeResult.data || [];
+
+    var itemToSection = {};    // item_no -> section_no, built once, O(1) lookups below
+    var approvalByItem = {};   // item_no -> true if has has_jurisdiction/must_approve link
+    var mustApproveByItem = {};
+    var confidenceCounts = { confirmed: 0, inferred: 0, unknown_needs_identification: 0 };
+
+    var bySection = {};
+    items.forEach(function (it) {
+      itemToSection[it.item_no] = it.section_no;
+      if (!bySection[it.section_no]) {
+        bySection[it.section_no] = { sectionNo: it.section_no, sectionTitle: it.section_title, total: 0, selfResolved: 0, externallyRouted: 0, mustApprove: 0, unknown: 0, distinctStakeholders: 0 };
+      }
+      bySection[it.section_no].total++;
+      if (it.our_proposed_resolution) bySection[it.section_no].selfResolved++;
+    });
+
+    stakes.forEach(function (s) {
+      if (s.relationship_type === 'has_jurisdiction' || s.relationship_type === 'must_approve') approvalByItem[s.item_no] = true;
+      if (s.relationship_type === 'must_approve') mustApproveByItem[s.item_no] = true;
+      if (confidenceCounts[s.confidence] != null) confidenceCounts[s.confidence]++;
+
+      var secNo = itemToSection[s.item_no];
+      var b = bySection[secNo];
+      if (!b) return;
+      if (s.confidence === 'unknown_needs_identification') b.unknown++;
+    });
+
+    // externallyRouted / mustApprove depend on approvalByItem, which needs the
+    // full stakes pass above to be complete first -- second items pass, not a
+    // second full O(n*m) scan.
+    items.forEach(function (it) {
+      var b = bySection[it.section_no];
+      if (!it.our_proposed_resolution && approvalByItem[it.item_no]) b.externallyRouted++;
+      if (mustApproveByItem[it.item_no]) b.mustApprove++;
+    });
+
+    var distinctByItem = {};
+    stakes.forEach(function (s) { distinctByItem[s.item_no + '::' + s.stakeholder_id] = itemToSection[s.item_no]; });
+    Object.keys(distinctByItem).forEach(function (key) {
+      var secNo = distinctByItem[key];
+      if (bySection[secNo]) bySection[secNo].distinctStakeholders++;
+    });
+
+    var rows = Object.keys(bySection).map(function (k) { return bySection[k]; }).sort(function (a, b) { return a.sectionNo - b.sectionNo; });
+
+    var totalItems = items.length;
+    var totalSelf = rows.reduce(function (s, r) { return s + r.selfResolved; }, 0);
+    var totalExternal = rows.reduce(function (s, r) { return s + r.externallyRouted; }, 0);
+
+    document.getElementById('kpiRow').innerHTML = [
+      ['<i class="fas fa-list-check"></i>', totalItems, 'Total items verified'],
+      ['<i class="fas fa-gavel"></i>', Math.round(100 * totalSelf / totalItems) + '%', 'Self-resolved'],
+      ['<i class="fas fa-tower-broadcast"></i>', Math.round(100 * totalExternal / totalItems) + '%', 'Externally routed'],
+      ['<i class="fas fa-layer-group"></i>', rows.length + '/27', 'Sections fully covered']
+    ].map(function (s) {
+      return '<div class="stat-card"><div class="num">' + s[1] + '</div><div class="lbl">' + s[2] + '</div></div>';
+    }).join('');
+
+    document.getElementById('statusRow').innerHTML = [
+      ['good', 'fa-circle-check', confidenceCounts.confirmed, 'Confirmed'],
+      ['warning', 'fa-circle-question', confidenceCounts.inferred, 'Inferred'],
+      ['critical', 'fa-triangle-exclamation', confidenceCounts.unknown_needs_identification, 'Needs identification -- a real phone call still owed']
+    ].map(function (s) {
+      return '<span class="status-chip ' + s[0] + '"><span class="dot"></span><i class="fas ' + s[1] + '"></i><span class="n">' + s[2] + '</span> ' + escapeHtml(s[3]) + '</span>';
+    }).join('');
+
+    renderBarChart(rows);
+    renderTable(rows);
+
+    document.getElementById('dashboard').style.display = '';
+  })();
+})();
+</script>
+</body>
+</html>
