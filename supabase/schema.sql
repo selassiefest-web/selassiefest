@@ -3537,6 +3537,15 @@ create index if not exists bbpac_formation_matrix_items_progress_idx on bbpac_fo
 alter table bbpac_formation_matrix_items
   add column if not exists depends_on_item_nos int[] not null default '{}';
 
+-- Retroactive documentation catch-up: these two columns were applied
+-- directly to the live project during the matrix's stakeholder-routing
+-- pass and never made it back into this file (schema drift). Adding them
+-- here now, guarded by if not exists, is a no-op on the live project but
+-- keeps this file an accurate reference going forward.
+alter table bbpac_formation_matrix_items
+  add column if not exists our_proposed_resolution text,
+  add column if not exists precedent_basis text;
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- The Stakeholder/Jurisdiction Matrix (the actual matrix)
 -- ─────────────────────────────────────────────────────────────────────────
@@ -3853,6 +3862,88 @@ as $$
 $$;
 
 revoke execute on function bbpac_formation_is_section_head(int) from public, anon;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Review/approval workflow for Matrix items
+-- ─────────────────────────────────────────────────────────────────────────
+-- A worker/head's "done" isn't done until a team leader approves it --
+-- Save is a draft; Submit for Review moves review_status to
+-- pending_review; only the review-item-submission Edge Function (running
+-- as service_role) may ever move review_status to approved/rejected, or
+-- progress_status to complete/reviewed_no_change. Approvers are an
+-- opt-in, section-agnostic pool (bbpac_formation_members.is_approver) --
+-- any current section head can opt in to approve ANY section's
+-- submissions, not just their own, so one person's absence never
+-- bottlenecks the whole matrix. Self-review is blocked in the Edge
+-- Function, not here.
+alter table bbpac_formation_matrix_items
+  add column if not exists review_status text not null default 'not_submitted'
+    check (review_status in ('not_submitted', 'pending_review', 'approved', 'rejected')),
+  add column if not exists proposed_status text
+    check (proposed_status in ('complete', 'reviewed_no_change')),
+  add column if not exists submitted_by uuid references bbpac_formation_members(id),
+  add column if not exists submitted_at timestamptz,
+  add column if not exists reviewed_by uuid references bbpac_formation_members(id),
+  add column if not exists reviewed_at timestamptz,
+  add column if not exists review_note text;
+
+create index if not exists bbpac_formation_matrix_items_review_status_idx
+  on bbpac_formation_matrix_items (review_status);
+
+alter table bbpac_formation_members
+  add column if not exists is_approver boolean not null default false;
+
+-- Enforces the approval gate at the database level, not just in the UI:
+-- a client can freely move an item into pending_review (and must submit
+-- as themselves), but only a service_role-authenticated request (i.e.
+-- review-item-submission) may ever set review_status to approved/
+-- rejected, or progress_status to complete/reviewed_no_change. Verified
+-- live: a simulated authenticated (non-service) request attempting
+-- review_status = 'approved' directly raises this exception.
+create or replace function bbpac_formation_guard_item_review_transition()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if NEW.review_status is distinct from OLD.review_status
+     and NEW.review_status in ('approved', 'rejected')
+     and auth.role() <> 'service_role' then
+    raise exception 'review_status can only move to approved/rejected through a real review.';
+  end if;
+
+  if NEW.progress_status is distinct from OLD.progress_status
+     and NEW.progress_status in ('complete', 'reviewed_no_change')
+     and auth.role() <> 'service_role' then
+    raise exception 'progress_status can only reach complete/reviewed_no_change through an approved review.';
+  end if;
+
+  if NEW.review_status = 'pending_review' and OLD.review_status is distinct from NEW.review_status then
+    if NEW.submitted_by is null or not exists (
+      select 1 from public.bbpac_formation_members m
+      where m.id = NEW.submitted_by and m.auth_user_id = auth.uid()
+    ) then
+      raise exception 'submitted_by must be your own member record.';
+    end if;
+  end if;
+
+  return NEW;
+end;
+$$;
+
+drop trigger if exists bbpac_formation_matrix_items_guard_review on bbpac_formation_matrix_items;
+create trigger bbpac_formation_matrix_items_guard_review
+  before update on bbpac_formation_matrix_items
+  for each row execute function bbpac_formation_guard_item_review_transition();
+
+-- One-time backfill: self-resolved items (our_proposed_resolution
+-- written from precedent) previously left proposed_state blank, forcing
+-- a volunteer to retype what the team already knew. Only touches rows
+-- that were actually still blank -- never stomps a volunteer's own edit.
+update bbpac_formation_matrix_items
+set proposed_state = our_proposed_resolution
+where proposed_state is null and our_proposed_resolution is not null;
 
 -- Section signup request decision emails: an AFTER UPDATE trigger on
 -- bbpac_formation_section_signup_requests (fires when status moves from

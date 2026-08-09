@@ -130,6 +130,34 @@
   .block-line .who{font-weight:700;}
   .block-line .why{color:var(--ink-dim); font-style:italic;}
 
+  .action-row{background:#fff; border:1px solid var(--line); border-radius:12px; margin-bottom:8px; overflow:hidden;}
+  .action-row-toggle{display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:none; cursor:pointer; padding:12px 16px; font-family:inherit;}
+  .action-row-toggle .a-id{font-size:0.68rem; font-weight:800; color:var(--ink-dim); flex-shrink:0; width:38px;}
+  .action-row-toggle .a-label{font-weight:700; font-size:0.86rem; flex:1 1 180px; min-width:0;}
+  .action-row-toggle .a-next{font-size:0.8rem; color:#374a5c; flex:2 1 260px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .action-row-toggle .a-chev{color:var(--ink-dim); transition:transform 0.15s; flex-shrink:0;}
+  .action-row-toggle .a-chev.open{transform:rotate(180deg);}
+  .action-row-toggle:hover{background:rgba(0,38,73,0.02);}
+  .action-row-body{border-top:1px solid var(--line); padding:14px 16px;}
+  .action-row-body[hidden]{display:none;}
+  .a-chip{font-size:0.62rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; padding:3px 10px; border-radius:10px; flex-shrink:0; white-space:nowrap;}
+  .a-chip.not_started{background:rgba(91,107,122,0.12); color:var(--ink-dim);}
+  .a-chip.in_progress{background:rgba(47,129,180,0.12); color:var(--lakefront);}
+  .a-chip.pending_review{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+  .a-chip.rejected{background:rgba(166,51,26,0.12); color:var(--culture);}
+  .a-chip.done{background:rgba(71,109,62,0.14); color:var(--community);}
+
+  .review-note-box{background:rgba(166,51,26,0.06); border-left:4px solid var(--culture); border-radius:0 10px 10px 0; padding:12px 14px; margin-bottom:12px; font-size:0.84rem; color:#5a2418;}
+  .review-note-box b{color:var(--culture);}
+  .review-pending-box{background:rgba(220,131,17,0.08); border-left:4px solid var(--legacy); border-radius:0 10px 10px 0; padding:12px 14px; margin-bottom:12px; font-size:0.84rem; color:#4a3a1e;}
+  .review-approved-box{background:rgba(71,109,62,0.08); border-left:4px solid var(--community); border-radius:0 10px 10px 0; padding:12px 14px; margin-bottom:12px; font-size:0.84rem; color:#2f4a2a;}
+
+  .submit-block{border-top:1.5px dashed var(--line); margin-top:14px; padding-top:14px;}
+  .submit-block select{padding:6px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.83rem; margin-right:8px;}
+
+  .approver-toggle{font-size:0.8rem; display:flex; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+  .approver-toggle input{width:16px; height:16px;}
+
   .section-heading{font-family:Arial,sans-serif; font-weight:900; font-size:1.2rem; margin:34px 0 6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
   .role-badge{font-size:0.62rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; padding:3px 10px; border-radius:10px;}
   .role-badge.head{background:rgba(166,51,26,0.12); color:var(--culture);}
@@ -209,19 +237,19 @@
             </div>
             <span class="logout-link" id="logoutBtn">Log out</span>
           </div>
+          <div id="approverArea"></div>
         </div>
 
         <div id="waitingBox"></div>
 
         <div class="howto-box">
           <h3><i class="fas fa-circle-info"></i> What to actually do on this page</h3>
-          <p>Below is a list of items in your section. For <strong>each item</strong>, you're answering three questions in the boxes underneath it:</p>
+          <p>Below is your section's list — one row per item. Each row already tells you the <strong>next action</strong>: exactly what to do right now, in plain language, before you even open it.</p>
           <ol>
-            <li><strong>Current state</strong> — What's true about this today, while 63rd Street Beach is still part of Jackson Park? (If you don't know yet, that's fine — leave it blank rather than guessing.)</li>
-            <li><strong>Proposed state</strong> — What should happen instead once Bongo Beach is its own separate park?</li>
-            <li><strong>Progress status</strong> — Where this stands: <em>not started</em>, <em>in progress</em>, <em>complete</em>, or <em>reviewed — no change needed</em>.</li>
+            <li>Click a row to open it. Read the guidance, then fill in <strong>Current state</strong> (already pre-filled where we already know the answer) and <strong>Proposed state</strong>.</li>
+            <li><strong>Save</strong> any time — that's just a draft, updated permanently on the <a href="/bbpac/organization/version-log.html">Version Log</a>, but it doesn't count as done yet.</li>
+            <li>When you're actually finished, pick <em>Complete</em> or <em>Reviewed — no change needed</em> and click <strong>Submit for Review</strong>. A team leader has to approve it before it's crossed off — you'll get an email either way, with a note attached if it's sent back.</li>
           </ol>
-          <p>Fill in whatever you actually know — you don't have to answer everything at once, and you don't have to finish every item today. Click <strong>Save</strong> under an item when you're done with it; that item's history is updated permanently and immediately, and it's visible to everyone on the <a href="/bbpac/organization/version-log.html">Version Log</a>.</p>
         </div>
 
         <div id="ownedSections"></div>
@@ -319,32 +347,75 @@
     return { blocked: blocked, lines: lines };
   }
 
+  // Shared classification an item's real state falls into -- used by both
+  // the guidance box and the plain-language next action, so the two never
+  // disagree with each other.
+  function classifyItem(it) {
+    if (it.our_proposed_resolution) return { kind: 'already' };
+    var stakes = (stakesByItemNo[it.item_no] || []).filter(function (s) { return s.relationship_type === 'has_jurisdiction' || s.relationship_type === 'must_approve'; });
+    var fieldwork = stakes.filter(function (s) { return s.stakeholder_name === 'Bongo Beach Founding Committee'; });
+    var external = stakes.filter(function (s) { return s.stakeholder_name !== 'Bongo Beach Founding Committee'; });
+    if (external.length) return { kind: 'external', names: external.map(function (s) { return s.stakeholder_name; }) };
+    if (fieldwork.length) return { kind: 'fieldwork' };
+    return { kind: 'unknown' };
+  }
+
   // Answers, right on the item, the three questions a first-time volunteer
   // actually has: what kind of work is this, is there a document behind it,
   // and what does "done" mean here. Computed from the item's own real
   // state (a written resolution vs. a named stakeholder vs. neither) --
   // not generic boilerplate repeated on every card.
   function renderGuidance(it) {
-    if (it.our_proposed_resolution) {
+    var c = classifyItem(it);
+    if (c.kind === 'already') {
       return '<div class="guidance-box already"><i class="fas fa-check"></i> <strong>Already answered.</strong> ' + escapeHtml(it.our_proposed_resolution) +
-        '<div class="done-line">To finish: read this, confirm it still looks right to you, and set Progress status to Complete below. If you disagree or know more, add it to Current state / Proposed state first.</div></div>';
+        '<div class="done-line">To finish: read the Proposed state below (already filled in), confirm it still looks right, then Submit for Review. If you disagree or know more, edit it first.</div></div>';
     }
-
-    var stakes = (stakesByItemNo[it.item_no] || []).filter(function (s) { return s.relationship_type === 'has_jurisdiction' || s.relationship_type === 'must_approve'; });
-    var fieldwork = stakes.filter(function (s) { return s.stakeholder_name === 'Bongo Beach Founding Committee'; });
-    var external = stakes.filter(function (s) { return s.stakeholder_name !== 'Bongo Beach Founding Committee'; });
-
-    if (external.length) {
-      var names = external.map(function (s) { return escapeHtml(s.stakeholder_name); }).join(', ');
+    if (c.kind === 'external') {
+      var names = c.names.map(escapeHtml).join(', ');
       return '<div class="guidance-box external"><i class="fas fa-phone"></i> <strong>There is no separate document for this.</strong> The two boxes below are the entire record. To move it forward: find out from <strong>' + names + '</strong> how this actually works today (a call, an email, or their public website), then write what you learn into Current state, and what should change into Proposed state.' +
-        '<div class="done-line">To finish: set Progress status to Complete once you have written a real, checked answer in both boxes -- or to Reviewed, no change needed if you check and nothing actually needs to change (say why in Proposed state).</div></div>';
+        '<div class="done-line">To finish: Submit for Review once you have written a real, checked answer -- Complete, or Reviewed, no change needed if nothing actually needs to change (say why in Proposed state).</div></div>';
     }
-    if (fieldwork.length) {
+    if (c.kind === 'fieldwork') {
       return '<div class="guidance-box fieldwork"><i class="fas fa-magnifying-glass"></i> <strong>This is fieldwork, not a phone call.</strong> Nobody outside our own group needs to answer this one -- go check it yourself (walk the site, look at a public record online), then write what you find into Current state and Proposed state.' +
-        '<div class="done-line">To finish: set Progress status to Complete once you have written down what you actually found.</div></div>';
+        '<div class="done-line">To finish: Submit for Review once you have written down what you actually found.</div></div>';
     }
     return '<div class="guidance-box unknown"><i class="fas fa-question"></i> <strong>Nobody has figured out who to ask about this yet.</strong> If you have a guess who would know at CPD or the city, that is itself a useful first step -- note it in Current state, then follow up.' +
       '<div class="done-line">This one is not expected to reach Complete yet -- Not started or In progress is the honest state until a real contact is identified.</div></div>';
+  }
+
+  // The single, plain-language "what do I do right now" line the row list
+  // is built around. Distinct from the guidance box: this is one sentence,
+  // not a paragraph, and it changes as review_status changes.
+  function nextActionFor(it) {
+    if (it.review_status === 'pending_review') return 'Submitted -- awaiting a team leader’s approval. Nothing to do right now.';
+    if (it.review_status === 'rejected') return 'Sent back: “' + (it.review_note || '') + '” -- revise and resubmit.';
+    if (it.review_status === 'approved' && RESOLVED_STATUSES.indexOf(it.progress_status) !== -1) return 'Done -- approved.';
+    var c = classifyItem(it);
+    if (c.kind === 'already') return 'Review the proposed answer below, confirm it still holds, then submit for review.';
+    if (c.kind === 'external') return 'Contact ' + c.names.map(escapeHtml).join(', ') + ' about “' + escapeHtml(it.item_label) + '”, then submit for review.';
+    if (c.kind === 'fieldwork') return 'Go check this yourself, then submit for review.';
+    return 'Figure out who at CPD or the city would know about this.';
+  }
+
+  function statusChipFor(it) {
+    if (it.review_status === 'pending_review') return { label: 'Awaiting approval', cls: 'pending_review' };
+    if (it.review_status === 'rejected') return { label: 'Sent back', cls: 'rejected' };
+    if (RESOLVED_STATUSES.indexOf(it.progress_status) !== -1) return { label: it.progress_status === 'complete' ? 'Complete' : 'Reviewed', cls: 'done' };
+    return { label: it.progress_status === 'in_progress' ? 'In progress' : 'Not started', cls: it.progress_status === 'in_progress' ? 'in_progress' : 'not_started' };
+  }
+
+  function renderReviewStatusBox(it) {
+    if (it.review_status === 'pending_review') {
+      return '<div class="review-pending-box"><i class="fas fa-hourglass-half"></i> <b>Submitted for review</b> -- proposed as ' + escapeHtml((it.proposed_status || 'complete').replace(/_/g, ' ')) + '. Awaiting a team leader’s approval.</div>';
+    }
+    if (it.review_status === 'rejected') {
+      return '<div class="review-note-box"><b>Sent back for revision:</b> ' + escapeHtml(it.review_note || '') + '</div>';
+    }
+    if (it.review_status === 'approved') {
+      return '<div class="review-approved-box"><i class="fas fa-circle-check"></i> <b>Approved</b> -- marked ' + escapeHtml((it.progress_status || '').replace(/_/g, ' ')) + '.</div>';
+    }
+    return '';
   }
 
   var STT_SUPPORTED = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
@@ -373,26 +444,75 @@
       ? '<div class="block-panel"><span class="block-tag blocked"><i class="fas fa-hand"></i>Blocked</span>' + status.lines.join('') + '</div>'
       : '<div class="block-panel"><span class="block-tag clear"><i class="fas fa-circle-check"></i>Nothing blocking this right now</span></div>';
 
+    var reviewBox = renderReviewStatusBox(it);
+    var submitDisabled = it.review_status === 'pending_review';
+
     return (
       '<div class="owned-item" id="owned-item-' + it.item_no + '">' +
         '<div class="top"><div><div class="oid">#' + it.item_no + ' &middot; ' + escapeHtml(it.section_title) + '</div>' +
         '<div class="otitle">' + escapeHtml(it.item_label) + '</div></div></div>' +
+        (reviewBox ? reviewBox : '') +
         '<p class="obody">' + escapeHtml(it.investigation) + '</p>' +
         '<div class="answer-block">' +
           renderGuidance(it) +
           '<div class="pointer-arrow"><i class="fas fa-arrow-down"></i>Type your answer in the two boxes below</div>' +
           renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.') +
           renderTextField(it, 'proposed_state', 'Proposed state', 'What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?') +
-          '<div class="field-edit"><label>Progress status</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
-            ['not_started', 'in_progress', 'complete', 'reviewed_no_change'].map(function (s) {
+          '<div class="field-edit"><label>Progress status (draft)</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
+            ['not_started', 'in_progress'].map(function (s) {
               return '<option value="' + s + '"' + (it.progress_status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
             }).join('') +
           '</select></div>' +
-          '<div class="save-row"><button class="btn primary" data-save="' + it.item_no + '">Save</button><span class="saved-msg" data-saved="' + it.item_no + '">Saved &amp; versioned.</span></div>' +
+          '<div class="save-row"><button class="btn secondary" data-save="' + it.item_no + '">Save draft</button><span class="saved-msg" data-saved="' + it.item_no + '">Saved &amp; versioned.</span></div>' +
+          '<div class="submit-block">' +
+            '<label style="font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); display:block; margin-bottom:6px;">Ready to submit?</label>' +
+            '<select data-proposed-status="' + it.item_no + '">' +
+              '<option value="complete"' + (it.proposed_status === 'complete' ? ' selected' : '') + '>Mark Complete</option>' +
+              '<option value="reviewed_no_change"' + (it.proposed_status === 'reviewed_no_change' ? ' selected' : '') + '>Reviewed &mdash; no change needed</option>' +
+            '</select>' +
+            '<button class="btn primary" data-submit-review="' + it.item_no + '"' + (submitDisabled ? ' disabled' : '') + '>' + (it.review_status === 'rejected' ? 'Resubmit for Review' : 'Submit for Review') + '</button>' +
+            '<span class="saved-msg" data-submit-msg="' + it.item_no + '"></span>' +
+          '</div>' +
         '</div>' +
         blockHtml +
       '</div>'
     );
+  }
+
+  // The compact, ADHD-friendly default: one row per item showing only the
+  // item, its single next action, and a status chip -- expands to the
+  // full editing card (renderOwnedItem) on click instead of showing all
+  // of a section's items fully expanded at once.
+  function renderActionRow(it) {
+    var chip = statusChipFor(it);
+    return (
+      '<div class="action-row" data-action-row="' + it.item_no + '">' +
+        '<button type="button" class="action-row-toggle" data-toggle-item="' + it.item_no + '">' +
+          '<span class="a-id">#' + it.item_no + '</span>' +
+          '<span class="a-label">' + escapeHtml(it.item_label) + '</span>' +
+          '<span class="a-next">' + escapeHtml(nextActionFor(it)) + '</span>' +
+          '<span class="a-chip ' + chip.cls + '">' + escapeHtml(chip.label) + '</span>' +
+          '<i class="fas fa-chevron-down a-chev"></i>' +
+        '</button>' +
+        '<div class="action-row-body" data-item-body="' + it.item_no + '" hidden>' +
+          renderOwnedItem(it) +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function reRenderActionRow(itemNo) {
+    var row = document.querySelector('[data-action-row="' + itemNo + '"]');
+    if (!row) return;
+    var bodyEl = row.querySelector('[data-item-body]');
+    var wasExpanded = bodyEl && !bodyEl.hidden;
+    row.outerHTML = renderActionRow(itemsByNo[itemNo]);
+    if (wasExpanded) {
+      var newBody = document.querySelector('[data-item-body="' + itemNo + '"]');
+      if (newBody) newBody.hidden = false;
+      var chev = document.querySelector('[data-toggle-item="' + itemNo + '"] .a-chev');
+      if (chev) chev.classList.add('open');
+    }
   }
 
   function renderWaitingOnMe() {
@@ -438,12 +558,39 @@
     return '<div class="team-panel"><h3><i class="fas fa-people-group"></i> Section ' + secNo + ' Team' + (isHead ? ' (you are head)' : '') + '</h3>' + rows + addForm + '</div>';
   }
 
+  function renderApproverArea() {
+    var isAnyHead = Object.keys(ownedSectionRoles).some(function (n) { return ownedSectionRoles[n] === 'head'; });
+    var el = document.getElementById('approverArea');
+    if (!isAnyHead) { el.innerHTML = ''; return; }
+    el.innerHTML = '<label class="approver-toggle"><input type="checkbox" id="approverOptIn"' + (member.is_approver ? ' checked' : '') + '> I’m available to review and approve submissions from <em>any</em> section, not just my own</label>' +
+      (member.is_approver ? '<div style="margin-top:6px;"><a href="/bbpac/organization/review-queue.html" style="font-size:0.8rem; font-weight:700; color:var(--lakefront);">Open the Review Queue &rarr;</a></div>' : '') +
+      '<span class="saved-msg" id="approverMsg" style="display:block; margin-top:4px;"></span>';
+    document.getElementById('approverOptIn').addEventListener('change', async function (e) {
+      var checked = e.target.checked;
+      e.target.disabled = true;
+      var result = await client.functions.invoke('set-approver-optin', { body: { optIn: checked } });
+      e.target.disabled = false;
+      var msgEl = document.getElementById('approverMsg');
+      if (result.error) {
+        e.target.checked = !checked;
+        msgEl.textContent = 'Failed: ' + result.error.message;
+        msgEl.style.color = 'var(--culture)';
+      } else {
+        member.is_approver = checked;
+        renderApproverArea();
+        return;
+      }
+      msgEl.style.display = 'block';
+    });
+  }
+
   async function renderApp() {
     document.getElementById('whoName').textContent = member.name;
     document.getElementById('whoSections').textContent = ownedSectionNos.length
       ? 'Owns section(s): ' + ownedSectionNos.map(function (n) { return n + ' (' + (ownedSectionRoles[n] || 'worker') + ')'; }).join(', ')
       : 'No sections assigned yet — ask an admin to add you in bbpac_formation_section_owners.';
 
+    renderApproverArea();
     renderWaitingOnMe();
 
     var html = ownedSectionNos.map(function (secNo) {
@@ -452,7 +599,7 @@
       return '<h2 class="section-heading">Section ' + secNo + (items[0] ? ': ' + escapeHtml(items[0].section_title) : '') + ' (' + items.length + ' items) <span class="role-badge ' + role + '">' + role + '</span>' +
         '<a href="/bbpac/organization/onboarding/section-brief.html?section=' + secNo + '" target="_blank" rel="noopener" style="font-size:0.68rem; font-weight:700; color:var(--lakefront);">What is this section? &rarr;</a></h2>' +
         renderTeamPanel(secNo) +
-        items.map(renderOwnedItem).join('');
+        items.map(renderActionRow).join('');
     }).join('');
 
     document.getElementById('ownedSections').innerHTML = html || '<p style="color:var(--ink-dim);">No items found for your section(s).</p>';
@@ -548,6 +695,46 @@
     panel.style.display = 'block';
     btn.disabled = false;
     btn.textContent = original;
+  });
+
+  document.addEventListener('click', function (e) {
+    var toggleBtn = e.target.closest('[data-toggle-item]');
+    if (!toggleBtn) return;
+    var itemNo = toggleBtn.getAttribute('data-toggle-item');
+    var body = document.querySelector('[data-item-body="' + itemNo + '"]');
+    var chev = toggleBtn.querySelector('.a-chev');
+    body.hidden = !body.hidden;
+    if (chev) chev.classList.toggle('open', !body.hidden);
+  });
+
+  document.addEventListener('click', async function (e) {
+    var btn = e.target.closest('[data-submit-review]');
+    if (!btn) return;
+    var itemNo = btn.getAttribute('data-submit-review');
+    var card = document.getElementById('owned-item-' + itemNo);
+    var update = {};
+    card.querySelectorAll('[data-field]').forEach(function (el) { update[el.getAttribute('data-field')] = el.value; });
+    update.proposed_status = card.querySelector('[data-proposed-status="' + itemNo + '"]').value;
+    update.review_status = 'pending_review';
+    update.submitted_by = member.id;
+    update.submitted_at = new Date().toISOString();
+
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = 'Submitting...';
+    var result = await client.from('bbpac_formation_matrix_items').update(update).eq('item_no', itemNo);
+    if (result.error) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      var msgEl = card.querySelector('[data-submit-msg="' + itemNo + '"]');
+      msgEl.textContent = 'Submit failed: ' + result.error.message;
+      msgEl.style.color = 'var(--culture)';
+      msgEl.style.display = 'inline';
+      return;
+    }
+    Object.assign(itemsByNo[itemNo], update);
+    renderWaitingOnMe();
+    reRenderActionRow(itemNo);
   });
 
   document.addEventListener('click', async function (e) {
