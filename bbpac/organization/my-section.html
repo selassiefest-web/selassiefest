@@ -105,6 +105,24 @@
   .answer-block .field-edit{margin:0; padding:10px 14px 0;}
   .answer-block .save-row{margin:10px 14px 14px;}
 
+  /* Current/Proposed state read as a known record -- what's true, what
+     we're aiming for -- not an empty box inviting a guess. */
+  .record-label{font-size:0.62rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--community); background:rgba(71,109,62,0.08); padding:4px 14px; border-bottom:1.5px dashed rgba(31,58,77,0.18);}
+
+  .action-checklist{padding:10px 14px 14px;}
+  .action-checklist-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  .action-checklist-head .count{font-size:0.72rem; font-weight:700; color:var(--ink-dim);}
+  .action-item{display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-top:1px dashed var(--line);}
+  .action-item:first-child{border-top:none;}
+  .action-item input[type="checkbox"]{width:18px; height:18px; margin-top:1px; flex-shrink:0; cursor:pointer;}
+  .action-item .a-desc{font-size:0.86rem; color:#33404c; flex:1;}
+  .action-item.is-done .a-desc{color:var(--ink-dim); text-decoration:line-through;}
+  .action-item .a-meta{font-size:0.68rem; color:var(--ink-dim); display:block; margin-top:2px;}
+  .add-action-row{display:flex; gap:8px; margin-top:10px;}
+  .add-action-row input{flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.82rem;}
+  .add-action-row button{font-size:0.7rem; padding:7px 14px;}
+  .gate-note{font-size:0.78rem; color:var(--culture); margin-top:8px; display:block;}
+
   .waiting-box{background:rgba(220,131,17,0.08); border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0;}
   .waiting-box h3{margin:0 0 10px; font-size:1rem; color:#8a5a0d;}
   .waiting-row{font-size:0.86rem; color:#374a5c; padding:6px 0; border-top:1px solid rgba(220,131,17,0.2);}
@@ -244,11 +262,11 @@
 
         <div class="howto-box">
           <h3><i class="fas fa-circle-info"></i> What to actually do on this page</h3>
-          <p>Below is your section's list — one row per item. Each row already tells you the <strong>next action</strong>: exactly what to do right now, in plain language, before you even open it.</p>
+          <p>Below is your section's list — one row per item. Each row already shows the <strong>next action</strong>: the actual next unchecked step, not a guess you have to come up with.</p>
           <ol>
-            <li>Click a row to open it. Read the guidance, then fill in <strong>Current state</strong> (already pre-filled where we already know the answer) and <strong>Proposed state</strong>.</li>
-            <li><strong>Save</strong> any time — that's just a draft, updated permanently on the <a href="/bbpac/organization/version-log.html">Version Log</a>, but it doesn't count as done yet.</li>
-            <li>When you're actually finished, pick <em>Complete</em> or <em>Reviewed — no change needed</em> and click <strong>Submit for Review</strong>. A team leader has to approve it before it's crossed off — you'll get an email either way, with a note attached if it's sent back.</li>
+            <li>Click a row to open it. <strong>Current state</strong> and <strong>Proposed state</strong> are the known record — what's true, and what we're aiming for — already filled in wherever we know it. They're not a blank box for you to fill; if one still says "not yet determined," that's honest, not a mistake.</li>
+            <li>Work through the <strong>action items</strong> checklist — check off each real step as you do it, and add your own if you find more are needed. Update Current state / Proposed state as you learn more.</li>
+            <li>Once every action item is checked, pick <em>Complete</em> or <em>Reviewed — no change needed</em> and click <strong>Submit for Review</strong>. A team leader has to approve it before it's crossed off — you'll get an email either way, with a note attached if it's sent back.</li>
           </ol>
         </div>
 
@@ -309,6 +327,7 @@
   var allItems = [];       // every matrix item, fetched once
   var itemsByNo = {};
   var stakesByItemNo = {}; // item_no -> [{stakeholder_name, relationship_type, consultation_status}, ...]
+  var actionsByItemNo = {}; // item_no -> [{id, seq, description, status, done_by, done_at}, ...]
   var ownersBySection = {}; // section_no -> [{id, name}, ...]
   var client, member, ownedSectionNos = [], ownedSectionRoles = {};
 
@@ -369,33 +388,40 @@
     var c = classifyItem(it);
     if (c.kind === 'already') {
       return '<div class="guidance-box already"><i class="fas fa-check"></i> <strong>Already answered.</strong> ' + escapeHtml(it.our_proposed_resolution) +
-        '<div class="done-line">To finish: read the Proposed state below (already filled in), confirm it still looks right, then Submit for Review. If you disagree or know more, edit it first.</div></div>';
+        '<div class="done-line">To finish: check off the action item below, then Submit for Review. If you disagree or know more, update Proposed state first.</div></div>';
     }
     if (c.kind === 'external') {
       var names = c.names.map(escapeHtml).join(', ');
-      return '<div class="guidance-box external"><i class="fas fa-phone"></i> <strong>There is no separate document for this.</strong> The two boxes below are the entire record. To move it forward: find out from <strong>' + names + '</strong> how this actually works today (a call, an email, or their public website), then write what you learn into Current state, and what should change into Proposed state.' +
-        '<div class="done-line">To finish: Submit for Review once you have written a real, checked answer -- Complete, or Reviewed, no change needed if nothing actually needs to change (say why in Proposed state).</div></div>';
+      return '<div class="guidance-box external"><i class="fas fa-phone"></i> <strong>There is no separate document for this.</strong> The record below is the entire answer. Work through the action items to find out from <strong>' + names + '</strong> how this actually works today, updating Current state and Proposed state as you learn more.' +
+        '<div class="done-line">To finish: complete every action item below, then Submit for Review -- Complete, or Reviewed, no change needed if nothing actually needs to change.</div></div>';
     }
     if (c.kind === 'fieldwork') {
-      return '<div class="guidance-box fieldwork"><i class="fas fa-magnifying-glass"></i> <strong>This is fieldwork, not a phone call.</strong> Nobody outside our own group needs to answer this one -- go check it yourself (walk the site, look at a public record online), then write what you find into Current state and Proposed state.' +
-        '<div class="done-line">To finish: Submit for Review once you have written down what you actually found.</div></div>';
+      return '<div class="guidance-box fieldwork"><i class="fas fa-magnifying-glass"></i> <strong>This is fieldwork, not a phone call.</strong> Nobody outside our own group needs to answer this one -- work through the action items below (walk the site, look at a public record online), updating the record as you go.' +
+        '<div class="done-line">To finish: complete every action item below, then Submit for Review.</div></div>';
     }
-    return '<div class="guidance-box unknown"><i class="fas fa-question"></i> <strong>Nobody has figured out who to ask about this yet.</strong> If you have a guess who would know at CPD or the city, that is itself a useful first step -- note it in Current state, then follow up.' +
-      '<div class="done-line">This one is not expected to reach Complete yet -- Not started or In progress is the honest state until a real contact is identified.</div></div>';
+    return '<div class="guidance-box unknown"><i class="fas fa-question"></i> <strong>Nobody has figured out who to ask about this yet.</strong> The action item below is exactly that -- even a real guess at who would know at CPD or the city is a useful start.' +
+      '<div class="done-line">This one is not expected to reach Complete yet -- work the action items until a real contact is identified.</div></div>';
+  }
+
+  function actionsSummary(it) {
+    var actions = actionsByItemNo[it.item_no] || [];
+    var done = actions.filter(function (a) { return a.status === 'done'; }).length;
+    return { actions: actions, done: done, total: actions.length, allDone: actions.length > 0 && done === actions.length };
   }
 
   // The single, plain-language "what do I do right now" line the row list
-  // is built around. Distinct from the guidance box: this is one sentence,
-  // not a paragraph, and it changes as review_status changes.
+  // is built around: the next unchecked action item's own description --
+  // not a separately-authored sentence that could drift from the real
+  // checklist.
   function nextActionFor(it) {
     if (it.review_status === 'pending_review') return 'Submitted -- awaiting a team leader’s approval. Nothing to do right now.';
     if (it.review_status === 'rejected') return 'Sent back: “' + (it.review_note || '') + '” -- revise and resubmit.';
     if (it.review_status === 'approved' && RESOLVED_STATUSES.indexOf(it.progress_status) !== -1) return 'Done -- approved.';
-    var c = classifyItem(it);
-    if (c.kind === 'already') return 'Review the proposed answer below, confirm it still holds, then submit for review.';
-    if (c.kind === 'external') return 'Contact ' + c.names.map(escapeHtml).join(', ') + ' about “' + escapeHtml(it.item_label) + '”, then submit for review.';
-    if (c.kind === 'fieldwork') return 'Go check this yourself, then submit for review.';
-    return 'Figure out who at CPD or the city would know about this.';
+    var s = actionsSummary(it);
+    if (!s.total) return 'No action items yet -- add one to get started.';
+    if (s.allDone) return 'All action items done -- ready to submit for review.';
+    var next = s.actions.filter(function (a) { return a.status !== 'done'; })[0];
+    return next.description;
   }
 
   function statusChipFor(it) {
@@ -416,6 +442,27 @@
       return '<div class="review-approved-box"><i class="fas fa-circle-check"></i> <b>Approved</b> -- marked ' + escapeHtml((it.progress_status || '').replace(/_/g, ' ')) + '.</div>';
     }
     return '';
+  }
+
+  // The actual work: a real, checkable list of steps that closes the gap
+  // between Current state and Proposed state. Current/Proposed state are
+  // the known record, not a fill-in-the-blank task -- this checklist is.
+  function renderActionChecklist(it) {
+    var s = actionsSummary(it);
+    var rows = s.actions.map(function (a) {
+      var doneMeta = a.status === 'done' ? '<span class="a-meta">Done' + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>' : '';
+      return '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
+        '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + '>' +
+        '<span class="a-desc">' + escapeHtml(a.description) + doneMeta + '</span>' +
+      '</label>';
+    }).join('');
+    return (
+      '<div class="action-checklist">' +
+        '<div class="action-checklist-head"><label style="font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim);">Action items</label><span class="count">' + s.done + ' / ' + s.total + ' done</span></div>' +
+        (rows || '<p style="font-size:0.82rem; color:var(--ink-dim);">No action items yet.</p>') +
+        '<div class="add-action-row"><input type="text" placeholder="Add a step, e.g. &quot;Email CPD Records for X&quot;" data-new-action-text="' + it.item_no + '"><button class="btn secondary" data-add-action="' + it.item_no + '">Add</button></div>' +
+      '</div>'
+    );
   }
 
   var STT_SUPPORTED = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
@@ -445,7 +492,10 @@
       : '<div class="block-panel"><span class="block-tag clear"><i class="fas fa-circle-check"></i>Nothing blocking this right now</span></div>';
 
     var reviewBox = renderReviewStatusBox(it);
-    var submitDisabled = it.review_status === 'pending_review';
+    var actionState = actionsSummary(it);
+    var submitDisabled = it.review_status === 'pending_review' || !actionState.allDone;
+    var gateNote = (!actionState.allDone && it.review_status !== 'pending_review')
+      ? '<span class="gate-note">Finish all action items above before submitting.</span>' : '';
 
     return (
       '<div class="owned-item" id="owned-item-' + it.item_no + '">' +
@@ -455,9 +505,11 @@
         '<p class="obody">' + escapeHtml(it.investigation) + '</p>' +
         '<div class="answer-block">' +
           renderGuidance(it) +
-          '<div class="pointer-arrow"><i class="fas fa-arrow-down"></i>Type your answer in the two boxes below</div>' +
-          renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today, under Jackson Park? Leave blank if you do not know yet.') +
+          '<div class="record-label">Known record &mdash; what is true, and what we are aiming for</div>' +
+          renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today?') +
           renderTextField(it, 'proposed_state', 'Proposed state', 'What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?') +
+          '<div class="pointer-arrow"><i class="fas fa-list-check"></i>Work through the action items below</div>' +
+          renderActionChecklist(it) +
           '<div class="field-edit"><label>Progress status (draft)</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
             ['not_started', 'in_progress'].map(function (s) {
               return '<option value="' + s + '"' + (it.progress_status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
@@ -472,6 +524,7 @@
             '</select>' +
             '<button class="btn primary" data-submit-review="' + it.item_no + '"' + (submitDisabled ? ' disabled' : '') + '>' + (it.review_status === 'rejected' ? 'Resubmit for Review' : 'Submit for Review') + '</button>' +
             '<span class="saved-msg" data-submit-msg="' + it.item_no + '"></span>' +
+            gateNote +
           '</div>' +
         '</div>' +
         blockHtml +
@@ -697,6 +750,47 @@
     btn.textContent = original;
   });
 
+  document.addEventListener('change', async function (e) {
+    var cb = e.target.closest('[data-toggle-action]');
+    if (!cb) return;
+    var actionId = cb.getAttribute('data-toggle-action');
+    var itemNo = cb.getAttribute('data-action-item');
+    var newStatus = cb.checked ? 'done' : 'todo';
+    cb.disabled = true;
+    var update = { status: newStatus, done_by: newStatus === 'done' ? member.id : null, done_at: newStatus === 'done' ? new Date().toISOString() : null };
+    var result = await client.from('bbpac_formation_item_actions').update(update).eq('id', actionId);
+    if (result.error) {
+      cb.checked = !cb.checked;
+      cb.disabled = false;
+      alert('Failed to update: ' + result.error.message);
+      return;
+    }
+    var list = actionsByItemNo[itemNo] || [];
+    var action = list.filter(function (a) { return a.id === actionId; })[0];
+    if (action) Object.assign(action, update);
+    reRenderActionRow(itemNo);
+  });
+
+  document.addEventListener('click', async function (e) {
+    var btn = e.target.closest('[data-add-action]');
+    if (!btn) return;
+    var itemNo = btn.getAttribute('data-add-action');
+    var input = document.querySelector('[data-new-action-text="' + itemNo + '"]');
+    var text = input.value.trim();
+    if (!text) return;
+    btn.disabled = true;
+    var seq = ((actionsByItemNo[itemNo] || []).length) + 1;
+    var result = await client.from('bbpac_formation_item_actions').insert({ item_no: Number(itemNo), seq: seq, description: text }).select('*').single();
+    btn.disabled = false;
+    if (result.error) {
+      alert('Failed to add action item: ' + result.error.message);
+      return;
+    }
+    if (!actionsByItemNo[itemNo]) actionsByItemNo[itemNo] = [];
+    actionsByItemNo[itemNo].push(result.data);
+    reRenderActionRow(itemNo);
+  });
+
   document.addEventListener('click', function (e) {
     var toggleBtn = e.target.closest('[data-toggle-item]');
     if (!toggleBtn) return;
@@ -887,6 +981,7 @@
     ownersBySection = {};
     itemsByNo = {};
     stakesByItemNo = {};
+    actionsByItemNo = {};
 
     var memberResult = await client.from('bbpac_formation_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
     if (memberResult.error || !memberResult.data) {
@@ -923,6 +1018,12 @@
       var name = r.bbpac_formation_stakeholders ? r.bbpac_formation_stakeholders.name : 'Unknown';
       if (!stakesByItemNo[r.item_no]) stakesByItemNo[r.item_no] = [];
       stakesByItemNo[r.item_no].push({ stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status });
+    });
+
+    var actionsResult = await client.from('bbpac_formation_item_actions').select('*').order('seq', { ascending: true });
+    (actionsResult.data || []).forEach(function (a) {
+      if (!actionsByItemNo[a.item_no]) actionsByItemNo[a.item_no] = [];
+      actionsByItemNo[a.item_no].push(a);
     });
 
     document.getElementById('loginArea').style.display = 'none';

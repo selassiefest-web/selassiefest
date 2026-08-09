@@ -187,6 +187,13 @@
   .bb-saved-msg{font-size:0.68rem; font-weight:700; color:var(--community); background:rgba(71,109,62,0.1); padding:4px 10px; border-radius:10px;}
   .bb-version{margin-top:12px; font-size:0.68rem; color:var(--ink-dim); border-top:1px dashed var(--line); padding-top:10px;}
   .bb-version .who{color:var(--navy); font-weight:700;}
+  .bb-record-label{font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--community); background:rgba(71,109,62,0.08); padding:4px 13px; border-bottom:1.5px dashed rgba(31,58,77,0.18);}
+  .bb-record-val{font-size:0.76rem; color:#33404c; padding:9px 13px 0;}
+  .bb-checklist{padding:9px 13px 12px;}
+  .bb-check-head{display:flex; justify-content:space-between; font-size:0.62rem; font-weight:800; text-transform:uppercase; color:var(--ink-dim); margin-bottom:6px;}
+  .bb-check-row{display:flex; gap:8px; align-items:flex-start; font-size:0.76rem; color:#33404c; padding:4px 0;}
+  .bb-check-row input{margin-top:2px;}
+  .bb-check-row.checked span{color:var(--ink-dim); text-decoration:line-through;}
 
   @media (prefers-reduced-motion: reduce){
     *{scroll-behavior:auto !important;}
@@ -338,7 +345,7 @@
       title: 'Open a Real Item',
       url: 'selassiefest.com/bbpac/organization/my-section.html#owned-item-342',
       tag: { text: 'STEP 6 · DO THE WORK', bg: 'rgba(220,131,17,0.16)', color: '#8a5a0d' },
-      caption: 'Guidance is computed per item, not generic boilerplate — this one already names the real contact (OEMC). The arrow bar exists because a real volunteer said the old layout didn’t make clear where to actually type.',
+      caption: 'Current state and Proposed state are the known record — never a blank box to guess into. The real work is the action checklist: concrete, checkable steps that close the gap between them.',
       render: function(el){
         el.innerHTML =
           '<div class="bb"><div class="bb-body">' +
@@ -347,11 +354,14 @@
               '<div class="bb-otitle">311 complaints</div>' +
               '<p class="bb-obody">Investigation: Routing — do 311 complaints tagged to Jackson Park route correctly once the beach is its own park?</p>' +
               '<div class="bb-answer-block">' +
-                '<div class="bb-guidance"><b>There is no separate document for this.</b> Find out from <b>Office of Emergency Management and Communications (OEMC)</b> how this works today, then write what you learn into Current state, and what should change into Proposed state.</div>' +
-                '<div class="bb-pointer">&#8595; Type your answer in the two boxes below</div>' +
-                '<div class="bb-field"><label>Current state</label><div class="bb-ta"><textarea disabled placeholder="What is true today?"></textarea><span class="bb-mic">&#127908;</span></div><span class="bb-grammar">Check writing</span></div>' +
-                '<div class="bb-field"><label>Proposed state</label><div class="bb-ta"><textarea disabled placeholder="What should happen once independent?"></textarea><span class="bb-mic">&#127908;</span></div><span class="bb-grammar">Check writing</span></div>' +
-                '<div class="bb-save-row"><span class="bb-btn primary" style="margin:0;">Save</span></div>' +
+                '<div class="bb-guidance"><b>There is no separate document for this.</b> Work through the action items below to find out from <b>Office of Emergency Management and Communications (OEMC)</b> how this works today, updating the record as you learn more.</div>' +
+                '<div class="bb-record-label">Known record</div>' +
+                '<div class="bb-record-val"><b>Current state:</b> Not yet determined — this is your 1st action item, see below.</div>' +
+                '<div class="bb-record-val" style="padding-bottom:9px;"><b>Proposed state:</b> Not yet drafted — the target outcome will be defined by the planning team.</div>' +
+                '<div class="bb-checklist">' +
+                  '<div class="bb-check-head"><span>Action items</span><span>0 / 1 done</span></div>' +
+                  '<label class="bb-check-row"><input type="checkbox" disabled><span>Contact OEMC and find out how this actually works today, then update Current state and Proposed state above.</span></label>' +
+                '</div>' +
               '</div>' +
             '</div>' +
           '</div></div>';
@@ -370,8 +380,13 @@
               '<div class="bb-otitle">311 complaints</div>' +
               '<div class="bb-answer-block">' +
                 '<div class="bb-guidance done"><b>Approved.</b> Called OEMC 311 dispatch on 8/9 — complaints route by street address, not park name, so the split does not require a re-tag.</div>' +
-                '<div class="bb-field"><label>Progress status</label><div class="bb-input" style="max-width:160px;">Reviewed &mdash; no change needed</div></div>' +
-                '<div class="bb-save-row"><span class="bb-btn primary" style="margin:0;">Submit for Review</span><span class="bb-saved-msg">&#10003; Approved &amp; versioned.</span></div>' +
+                '<div class="bb-record-label">Known record &mdash; updated with what was learned</div>' +
+                '<div class="bb-record-val"><b>Current state:</b> 311 complaints route by street address citywide, regardless of park name.</div>' +
+                '<div class="bb-record-val" style="padding-bottom:9px;"><b>Proposed state:</b> No change needed — routing already works correctly for a standalone park.</div>' +
+                '<div class="bb-checklist">' +
+                  '<div class="bb-check-head"><span>Action items</span><span>1 / 1 done</span></div>' +
+                  '<label class="bb-check-row checked"><input type="checkbox" checked disabled><span>Contact OEMC and find out how this actually works today, then update Current state and Proposed state above.</span></label>' +
+                '</div>' +
               '</div>' +
               '<div class="bb-version"><span class="who">Jamaican Stevie</span> submitted; approved by a team leader &mdash; Aug 9, 2026, 2:41 PM. Permanent, never edited in place.</div>' +
             '</div>' +

@@ -3945,6 +3945,99 @@ update bbpac_formation_matrix_items
 set proposed_state = our_proposed_resolution
 where proposed_state is null and our_proposed_resolution is not null;
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- Per-item action checklist
+-- ─────────────────────────────────────────────────────────────────────────
+-- Current state / Proposed state are the known record -- what's true,
+-- what we're aiming for -- not a volunteer's fill-in-the-blank task. The
+-- actual work is this checklist: concrete, checkable steps that close the
+-- gap between the two. "Complete" means every action item here is done.
+create table if not exists bbpac_formation_item_actions (
+  id uuid primary key default gen_random_uuid(),
+  item_no int not null references bbpac_formation_matrix_items(item_no) on delete cascade,
+  seq int not null default 0,
+  description text not null,
+  status text not null default 'todo' check (status in ('todo', 'doing', 'done')),
+  done_by uuid references bbpac_formation_members(id),
+  done_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table bbpac_formation_item_actions enable row level security;
+
+create policy "Allow anon read" on bbpac_formation_item_actions for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_item_actions for select to authenticated using (true);
+
+-- Same scoping as item_stakeholders: only owners of the section that item
+-- belongs to may add/check off/edit its action items.
+create policy "section owners can manage action items for their items" on bbpac_formation_item_actions
+  for all to authenticated
+  using (bbpac_formation_is_section_owner_of_item(item_no))
+  with check (bbpac_formation_is_section_owner_of_item(item_no));
+
+grant select on bbpac_formation_item_actions to anon, authenticated;
+grant insert, update, delete on bbpac_formation_item_actions to authenticated;
+
+drop trigger if exists bbpac_formation_item_actions_versioned on bbpac_formation_item_actions;
+create trigger bbpac_formation_item_actions_versioned
+  after insert or update on bbpac_formation_item_actions
+  for each row execute function bbpac_formation_record_version();
+
+drop trigger if exists bbpac_formation_item_actions_touch on bbpac_formation_item_actions;
+create trigger bbpac_formation_item_actions_touch
+  before update on bbpac_formation_item_actions
+  for each row execute function bbpac_formation_set_updated_at();
+
+create index if not exists bbpac_formation_item_actions_item_idx on bbpac_formation_item_actions (item_no);
+
+-- Seed exactly one starting action item per matrix item, classified the
+-- same way the guidance box already is (self-resolved / external /
+-- fieldwork / unknown) -- so nobody ever opens an item to an empty
+-- checklist. Idempotent: skips any item that already has an action.
+insert into bbpac_formation_item_actions (item_no, seq, description)
+select
+  mi.item_no,
+  1,
+  case
+    when mi.our_proposed_resolution is not null then
+      'Review the proposed answer above, confirm it still holds, then submit for review.'
+    when ext.names is not null then
+      'Contact ' || ext.names || ' and find out how this actually works today, then update Current state and Proposed state above.'
+    when field.item_no is not null then
+      'Go check this yourself (walk the site, look at a public record), then update Current state and Proposed state above.'
+    else
+      'Identify who at CPD or the city would know about this.'
+  end
+from bbpac_formation_matrix_items mi
+left join (
+  select ios.item_no, string_agg(distinct s.name, ', ') as names
+  from bbpac_formation_item_stakeholders ios
+  join bbpac_formation_stakeholders s on s.id = ios.stakeholder_id
+  where ios.relationship_type in ('has_jurisdiction', 'must_approve') and s.name <> 'Bongo Beach Founding Committee'
+  group by ios.item_no
+) ext on ext.item_no = mi.item_no
+left join (
+  select distinct ios.item_no
+  from bbpac_formation_item_stakeholders ios
+  join bbpac_formation_stakeholders s on s.id = ios.stakeholder_id
+  where ios.relationship_type in ('has_jurisdiction', 'must_approve') and s.name = 'Bongo Beach Founding Committee'
+) field on field.item_no = mi.item_no
+where not exists (select 1 from bbpac_formation_item_actions a where a.item_no = mi.item_no);
+
+-- Current state / Proposed state must never read as an empty invitation to
+-- guess -- an honest, database-backed statement instead, for items that
+-- are not already self-resolved (those already carry our_proposed_resolution
+-- and its backfilled proposed_state from the prior pass). Only fills what
+-- was actually null; never overwrites real content.
+update bbpac_formation_matrix_items
+set current_state = 'Not yet determined — this is your 1st action item - see below.'
+where current_state is null and our_proposed_resolution is null;
+
+update bbpac_formation_matrix_items
+set proposed_state = 'Not yet drafted — the target outcome for this item will be defined by the planning team.'
+where proposed_state is null and our_proposed_resolution is null;
+
 -- Section signup request decision emails: an AFTER UPDATE trigger on
 -- bbpac_formation_section_signup_requests (fires when status moves from
 -- 'pending' to 'approved' or 'declined') calls the deployed
