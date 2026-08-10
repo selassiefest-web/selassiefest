@@ -969,9 +969,30 @@
     var email = document.getElementById('loginEmail').value.trim();
     var msgEl = document.getElementById('loginMsg');
     var errEl = document.getElementById('loginErr');
-    msgEl.textContent = ''; errEl.textContent = '';
+    msgEl.textContent = ''; errEl.innerHTML = '';
     if (!email) { errEl.textContent = 'Enter an email first.'; return; }
+
+    var btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+
+    // Check first so an unregistered email gets pointed at Register right
+    // away, instead of silently emailing a magic link and only finding out
+    // after they click through it. If the check itself errors, fail open
+    // and fall through to the normal send -- same "hiccup shouldn't block
+    // you" convention used elsewhere on this site.
+    var checkResult = await client.rpc('bbpac_formation_email_has_member', { p_email: email });
+    if (!checkResult.error && checkResult.data === false) {
+      btn.disabled = false;
+      btn.textContent = 'Send Login Link';
+      errEl.innerHTML = 'We don\'t have a section-owner account for <strong>' + escapeHtml(email) + '</strong> yet. Double-check you typed the right email, or <a href="/bbpac/organization/join-a-section.html">register for section access here</a>.';
+      return;
+    }
+
+    btn.textContent = 'Sending...';
     var result = await client.auth.signInWithOtp({ email: email, options: { emailRedirectTo: window.location.href } });
+    btn.disabled = false;
+    btn.textContent = 'Send Login Link';
     if (result.error) errEl.textContent = result.error.message;
     else msgEl.textContent = 'Check your email for a login link.';
   });

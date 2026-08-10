@@ -3671,6 +3671,25 @@ select id, name, role from bbpac_formation_members;
 
 grant select on bbpac_formation_members_public to anon, authenticated;
 
+-- Lets the My Section login form tell "email not registered yet" from
+-- "registered, check your inbox" BEFORE sending a magic link, without
+-- exposing which emails exist via a direct select (email is not in the
+-- public view above). Returns only a boolean -- no row data leaks.
+create or replace function public.bbpac_formation_email_has_member(p_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists(
+    select 1 from public.bbpac_formation_members
+    where lower(email) = lower(p_email)
+  );
+$$;
+
+grant execute on function public.bbpac_formation_email_has_member(text) to anon, authenticated;
+
 create policy "Allow anon read" on bbpac_formation_section_owners for select to anon using (true);
 create policy "authenticated read" on bbpac_formation_section_owners for select to authenticated using (true);
 grant select on bbpac_formation_section_owners to anon, authenticated;
