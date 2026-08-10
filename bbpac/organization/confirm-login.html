@@ -57,7 +57,14 @@
 
   var params = new URLSearchParams(location.search);
   var tokenHash = params.get('token_hash');
-  var redirectTo = params.get('redirect_to') || 'https://selassiefest.com/bbpac/organization/my-section.html';
+  // If the email template's {{ .RedirectTo }} variable doesn't resolve for
+  // any reason, this shows up as missing, empty, or Go's literal "<no
+  // value>" placeholder -- treat all three as "no value" so a template
+  // hiccup lands someone on a sensible default instead of a broken link.
+  var redirectToRaw = params.get('redirect_to');
+  var redirectTo = (redirectToRaw && redirectToRaw !== '<no value>')
+    ? redirectToRaw
+    : 'https://selassiefest.com/bbpac/organization/my-section.html';
 
   var msgEl = document.getElementById('msg');
   var stateArea = document.getElementById('stateArea');
