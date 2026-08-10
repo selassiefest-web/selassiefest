@@ -508,7 +508,9 @@
           renderGuidance(it) +
           '<div class="record-label">Known record &mdash; what is true, and what we are aiming for</div>' +
           renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today?') +
+          renderTextField(it, 'jackson_park_reference', 'Jackson Park reference', 'The specific record, policy, or system that governs this today &mdash; e.g. a CPD Code section, GIS layer name, or document title. Leave blank if you have not found one yet.') +
           renderTextField(it, 'proposed_state', 'Proposed state', 'What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?') +
+          renderTextField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'What CPD action or document actually severs the old arrangement and attaches the new one &mdash; e.g. a Board resolution, a Superintendent determination, an adopted BBPAC policy.') +
           '<div class="pointer-arrow"><i class="fas fa-list-check"></i>Work through the action items below</div>' +
           renderActionChecklist(it) +
           '<div class="field-edit"><label>Progress status (draft)</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
@@ -843,7 +845,7 @@
     // Grammar check runs at submission time, but never blocks the save --
     // a slow or unreachable third-party API should never stop a real
     // contribution from being recorded.
-    ['current_state', 'proposed_state'].forEach(function (field) {
+    ['current_state', 'jackson_park_reference', 'proposed_state', 'legal_policy_basis'].forEach(function (field) {
       var val = update[field];
       var panel = card.querySelector('[data-grammar-suggestions="' + field + '-' + itemNo + '"]');
       if (!panel || !val || !val.trim()) return;

@@ -202,7 +202,9 @@
         '<div class="qmeta">Submitted by <strong>' + escapeHtml(submitterName) + '</strong>' + (it.submitted_at ? ' on ' + new Date(it.submitted_at).toLocaleString() : '') + '</div>' +
         '<span class="qproposed">Proposing: ' + escapeHtml((it.proposed_status || 'complete').replace(/_/g, ' ')) + '</span>' +
         '<div class="qfield"><label>Current state</label><div class="val">' + (it.current_state ? escapeHtml(it.current_state) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Jackson Park reference</label><div class="val">' + (it.jackson_park_reference ? escapeHtml(it.jackson_park_reference) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qfield"><label>Proposed state</label><div class="val">' + (it.proposed_state ? escapeHtml(it.proposed_state) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Legal/policy basis</label><div class="val">' + (it.legal_policy_basis ? escapeHtml(it.legal_policy_basis) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qactions">' +
           '<button class="btn primary" data-approve="' + it.item_no + '">Approve</button>' +
           '<textarea class="qnote" data-reject-note="' + it.item_no + '" placeholder="Required note if sending back..."></textarea>' +
@@ -217,7 +219,7 @@
     var el = document.getElementById('queueArea');
     el.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading queue&hellip;</div>';
     var result = await client.from('bbpac_formation_matrix_items')
-      .select('item_no, item_label, section_no, section_title, current_state, proposed_state, proposed_status, submitted_at, submitter:bbpac_formation_members_public!submitted_by(name)')
+      .select('item_no, item_label, section_no, section_title, current_state, jackson_park_reference, proposed_state, legal_policy_basis, proposed_status, submitted_at, submitter:bbpac_formation_members_public!submitted_by(name)')
       .eq('review_status', 'pending_review')
       .order('submitted_at', { ascending: true });
     var items = result.data || [];
