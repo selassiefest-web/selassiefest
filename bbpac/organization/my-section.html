@@ -332,12 +332,22 @@
   // Real contact info (a URL, an email, a phone number) shows up in
   // Current/Proposed state and action items now that they're researched,
   // not guessed -- turn each into something actually clickable/callable
-  // instead of dead text.
+  // instead of dead text. Markdown-style [label](url) is checked first so
+  // a written reference like "the CPD Guidelines" can be the clickable
+  // text instead of a raw URL sitting in the middle of a sentence; plain
+  // http(s)/email/phone still auto-linkify on their own either way.
   function linkifyText(s) {
-    return escapeHtml(s)
+    var text = String(s == null ? '' : s);
+    var placeholders = [];
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, function (m, label, url) {
+      placeholders.push('<a href="' + url + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>');
+      return '~~LNK~~' + (placeholders.length - 1) + '~~LNK~~';
+    });
+    var html = escapeHtml(text)
       .replace(/(https?:\/\/[^\s<]+)/g, function (url) { return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>'; })
       .replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, function (email) { return '<a href="mailto:' + email + '">' + email + '</a>'; })
       .replace(/(\(\d{3}\)\s?\d{3}-\d{4})/g, function (phone) { return '<a href="tel:+1' + phone.replace(/\D/g, '') + '">' + phone + '</a>'; });
+    return html.replace(/~~LNK~~(\d+)~~LNK~~/g, function (m, i) { return placeholders[Number(i)]; });
   }
 
   var RESOLVED_STATUSES = ['complete', 'reviewed_no_change'];

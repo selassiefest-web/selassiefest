@@ -300,11 +300,20 @@
 
   // Any raw http(s) URL typed into an answer field (e.g. a link straight
   // to the CPD office/page that owns this record) becomes clickable
-  // instead of sitting there as dead text.
+  // instead of sitting there as dead text. Markdown-style [label](url) is
+  // checked first so a written reference can show its plain-language name
+  // instead of a bare URL sitting in the middle of a sentence.
   function linkifyUrls(text) {
-    return escapeHtml(text).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+    var s = String(text == null ? '' : text);
+    var placeholders = [];
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, function (m, label, url) {
+      placeholders.push('<a href="' + url + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>');
+      return '~~LNK~~' + (placeholders.length - 1) + '~~LNK~~';
+    });
+    var html = escapeHtml(s).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
       return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
     });
+    return html.replace(/~~LNK~~(\d+)~~LNK~~/g, function (m, i) { return placeholders[Number(i)]; });
   }
 
   function answerField(label, value) {
