@@ -103,6 +103,7 @@
   .answer-block .pointer-arrow{text-align:center; font-weight:800; font-size:0.68rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--navy); background:#f4f7f9; padding:6px 0; border-bottom:1.5px dashed rgba(31,58,77,0.18);}
   .answer-block .pointer-arrow i{margin-right:5px;}
   .answer-block .field-edit{margin:0; padding:10px 14px 0;}
+  .answer-block .known-field{margin:0; padding:10px 14px 0;}
   .answer-block .save-row{margin:10px 14px 14px;}
 
   /* Current/Proposed state read as a known record -- what's true, what
@@ -137,6 +138,11 @@
   .field-edit label{font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); display:block; margin-bottom:3px;}
   .field-edit textarea{width:100%; min-height:52px; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-family:inherit; font-size:0.83rem; resize:vertical;}
   .field-edit select{padding:6px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.83rem;}
+  .known-field{margin-top:8px;}
+  .known-field label{font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); display:block; margin-bottom:3px;}
+  .known-value{background:#f1ede3; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:0.83rem; color:#33404c; white-space:pre-wrap;}
+  .known-value.unanswered{color:var(--ink-dim); font-style:italic;}
+  .known-value a{color:var(--lakefront); text-decoration:underline;}
   .save-row{margin-top:10px; display:flex; align-items:center; gap:10px;}
   .save-row .saved-msg{font-size:0.78rem; color:var(--community); display:none;}
 
@@ -323,6 +329,17 @@
     });
   }
 
+  // Real contact info (a URL, an email, a phone number) shows up in
+  // Current/Proposed state and action items now that they're researched,
+  // not guessed -- turn each into something actually clickable/callable
+  // instead of dead text.
+  function linkifyText(s) {
+    return escapeHtml(s)
+      .replace(/(https?:\/\/[^\s<]+)/g, function (url) { return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>'; })
+      .replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, function (email) { return '<a href="mailto:' + email + '">' + email + '</a>'; })
+      .replace(/(\(\d{3}\)\s?\d{3}-\d{4})/g, function (phone) { return '<a href="tel:+1' + phone.replace(/\D/g, '') + '">' + phone + '</a>'; });
+  }
+
   var RESOLVED_STATUSES = ['complete', 'reviewed_no_change'];
 
   var allItems = [];       // every matrix item, fetched once
@@ -454,7 +471,7 @@
       var doneMeta = a.status === 'done' ? '<span class="a-meta">Done' + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>' : '';
       return '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
         '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + '>' +
-        '<span class="a-desc">' + escapeHtml(a.description) + doneMeta + '</span>' +
+        '<span class="a-desc">' + linkifyText(a.description) + doneMeta + '</span>' +
       '</label>';
     }).join('');
     return (
@@ -486,6 +503,23 @@
     );
   }
 
+  // Current state and Proposed state are the known record -- the factual
+  // pre-state and the post-state we're aiming for -- established through
+  // real research and verified by a team leader before it's written in,
+  // the same way item #6's boundary answer was. They are NOT a fill-in-
+  // the-blank for whoever happens to open this page; the action checklist
+  // below is the actual editable work surface.
+  function renderKnownField(it, field, label, emptyText) {
+    var value = it[field];
+    var has = value != null && String(value).trim() !== '';
+    return (
+      '<div class="known-field">' +
+        '<label>' + label + '</label>' +
+        '<div class="known-value' + (has ? '' : ' unanswered') + '">' + (has ? linkifyText(value) : emptyText) + '</div>' +
+      '</div>'
+    );
+  }
+
   function renderOwnedItem(it) {
     var status = blockingStatusFor(it.item_no);
     var blockHtml = status.blocked
@@ -507,9 +541,9 @@
         '<div class="answer-block">' +
           renderGuidance(it) +
           '<div class="record-label">Known record &mdash; what is true, and what we are aiming for</div>' +
-          renderTextField(it, 'current_state', 'Current state', 'What is true about &quot;' + escapeHtml(it.item_label) + '&quot; today?') +
+          renderKnownField(it, 'current_state', 'Current state', 'Not yet determined &mdash; this is the first action item below.') +
           renderTextField(it, 'jackson_park_reference', 'Jackson Park reference', 'The specific record, policy, or system that governs this today &mdash; e.g. a CPD Code section, GIS layer name, or document title. Leave blank if you have not found one yet.') +
-          renderTextField(it, 'proposed_state', 'Proposed state', 'What should happen with &quot;' + escapeHtml(it.item_label) + '&quot; once Bongo Beach is its own park?') +
+          renderKnownField(it, 'proposed_state', 'Proposed state', 'Not yet decided &mdash; see the action items below.') +
           renderTextField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'What CPD action or document actually severs the old arrangement and attaches the new one &mdash; e.g. a Board resolution, a Superintendent determination, an adopted BBPAC policy.') +
           '<div class="pointer-arrow"><i class="fas fa-list-check"></i>Work through the action items below</div>' +
           renderActionChecklist(it) +
@@ -845,7 +879,7 @@
     // Grammar check runs at submission time, but never blocks the save --
     // a slow or unreachable third-party API should never stop a real
     // contribution from being recorded.
-    ['current_state', 'jackson_park_reference', 'proposed_state', 'legal_policy_basis'].forEach(function (field) {
+    ['jackson_park_reference', 'legal_policy_basis'].forEach(function (field) {
       var val = update[field];
       var panel = card.querySelector('[data-grammar-suggestions="' + field + '-' + itemNo + '"]');
       if (!panel || !val || !val.trim()) return;
