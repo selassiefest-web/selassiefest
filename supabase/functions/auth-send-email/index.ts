@@ -36,7 +36,12 @@ type EmailData = {
 // custom click-through confirm page of its own.
 function classicVerifyLink(d: EmailData) {
   const base = d.site_url || SUPABASE_URL;
-  return `${SUPABASE_URL}/auth/v1/verify?token_hash=${encodeURIComponent(d.token_hash)}&type=${encodeURIComponent(d.email_action_type)}&redirect_to=${encodeURIComponent(d.redirect_to || base)}`;
+  // GoTrue's GET /verify endpoint takes this value under the query param
+  // named "token" (a legacy-naming holdover) -- NOT "token_hash", which is
+  // only the correct param name for the POST-based verifyOtp() call that
+  // confirm-login.html uses. Confirmed against the native action_link
+  // Supabase itself generated earlier this session, which used "token=".
+  return `${SUPABASE_URL}/auth/v1/verify?token=${encodeURIComponent(d.token_hash)}&type=${encodeURIComponent(d.email_action_type)}&redirect_to=${encodeURIComponent(d.redirect_to || base)}`;
 }
 
 const VENTURES: Array<{ key: string; matches: (redirectTo: string) => boolean; senderName: string; buildLink: (d: EmailData) => string }> = [
