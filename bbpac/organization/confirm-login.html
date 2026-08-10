@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Confirm Login | 63rd Street Bongo Beach Park Advisory Council</title>
+<style>
+  :root{ --navy:#002649; --cream:#FAF6EE; --culture:#A6331A; --community:#476D3E; --lakefront:#2F81B4; --legacy:#DC8311; --line:rgba(0,38,73,0.14); --ink-dim:#5b6b7a; }
+  *{box-sizing:border-box;}
+  body{margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--cream); color:var(--navy); font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6; padding:24px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:36px 32px; max-width:420px; width:100%; text-align:center;}
+  .card img{width:56px; height:56px; margin:0 auto 14px; display:block;}
+  h1{font-family:Arial,sans-serif; font-weight:900; font-size:1.25rem; margin:0 0 8px;}
+  p{font-size:0.9rem; color:var(--ink-dim); margin:0 0 22px;}
+  .btn{display:inline-block; width:100%; font-size:0.85rem; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; padding:14px 20px; border-radius:24px; border:none; cursor:pointer; font-family:inherit; background:var(--culture); color:#fff;}
+  .btn:hover{background:#8a2a15;}
+  .btn:disabled{opacity:0.55; cursor:default;}
+  #msg{font-size:0.85rem; margin-top:16px; min-height:1.2em;}
+  #msg.error{color:var(--culture);}
+  #msg.success{color:var(--community);}
+  .spinner{display:inline-block; width:14px; height:14px; border:2px solid rgba(0,38,73,0.25); border-top-color:var(--navy); border-radius:50%; animation:spin 0.7s linear infinite; margin-right:8px; vertical-align:-2px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <img src="/bbpac/assets/images/logo.png" alt="">
+  <div id="stateArea">
+    <h1>Confirm It's You</h1>
+    <p>One more click finishes logging you in. This extra step keeps your login link safe from being used by anything other than you.</p>
+    <button class="btn" id="confirmBtn">Confirm Login</button>
+  </div>
+  <div id="msg"></div>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function () {
+  // Only ever navigate to a destination that Supabase's own Redirect URLs
+  // allow-list already covers (see Authentication -> URL Configuration).
+  // verifyOtp() below bypasses GoTrue's native GET /verify redirect step
+  // entirely -- that step is what normally enforces this allow-list -- so
+  // this page has to enforce it itself, or redirect_to becomes an open
+  // redirect (and, for cross-origin destinations, a token leak) once a
+  // token_hash is valid.
+  var ALLOWED_PREFIXES = [
+    'https://selassiefest.com/',
+    'https://trcevent.com/charly-black/comp-admin/',
+    'http://localhost:8000/',
+  ];
+
+  function isAllowedRedirect(url) {
+    return ALLOWED_PREFIXES.some(function (p) { return url.indexOf(p) === 0; });
+  }
+
+  var params = new URLSearchParams(location.search);
+  var tokenHash = params.get('token_hash');
+  var redirectTo = params.get('redirect_to') || 'https://selassiefest.com/bbpac/organization/my-section.html';
+
+  var msgEl = document.getElementById('msg');
+  var stateArea = document.getElementById('stateArea');
+
+  function showError(text) {
+    stateArea.innerHTML = '<h1>Link Not Valid</h1><p>' + text + '</p>';
+  }
+
+  if (!tokenHash) {
+    showError('This login link is missing its confirmation code. Go back to the page you logged in from and request a fresh link.');
+    return;
+  }
+  if (!isAllowedRedirect(redirectTo)) {
+    showError('This link is not valid for that destination.');
+    return;
+  }
+
+  document.getElementById('confirmBtn').addEventListener('click', async function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Confirming...';
+    msgEl.textContent = '';
+    msgEl.className = '';
+
+    var client = await window.sfSupabaseReady;
+
+    // Supabase's email-OTP templates have used a couple of different type
+    // strings across versions ("email" is current, "magiclink" is the
+    // older equivalent) -- try both rather than gamble on one.
+    var result = await client.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
+    if (result.error) {
+      result = await client.auth.verifyOtp({ token_hash: tokenHash, type: 'magiclink' });
+    }
+
+    if (result.error || !result.data.session) {
+      btn.disabled = false;
+      btn.textContent = 'Confirm Login';
+      msgEl.textContent = 'This link has expired or was already used. Go back and request a fresh one.';
+      msgEl.className = 'error';
+      return;
+    }
+
+    msgEl.textContent = 'Logged in — redirecting...';
+    msgEl.className = 'success';
+
+    var isSameOrigin = redirectTo.indexOf(location.origin + '/') === 0;
+    if (isSameOrigin) {
+      // Same origin: verifyOtp() already persisted the session to this
+      // origin's localStorage, so the destination page's own client picks
+      // it up automatically on load -- no token hand-off needed.
+      window.location.href = redirectTo;
+    } else {
+      // Cross-origin (e.g. trcevent.com): localStorage doesn't cross
+      // origins, so hand the session off the same way GoTrue's native
+      // verify redirect does -- as a URL hash fragment.
+      var s = result.data.session;
+      var hash = 'access_token=' + encodeURIComponent(s.access_token) +
+        '&refresh_token=' + encodeURIComponent(s.refresh_token) +
+        '&expires_at=' + s.expires_at +
+        '&expires_in=' + s.expires_in +
+        '&token_type=' + encodeURIComponent(s.token_type) +
+        '&type=magiclink';
+      window.location.href = redirectTo + '#' + hash;
+    }
+  });
+})();
+</script>
+</body>
+</html>
