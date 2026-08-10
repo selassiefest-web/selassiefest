@@ -203,6 +203,12 @@
     });
   }
 
+  function linkifyUrls(s) {
+    return escapeHtml(s).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
+    });
+  }
+
   var client, member;
 
   function renderQueueItem(it) {
@@ -213,10 +219,10 @@
         '<div class="qtitle">' + escapeHtml(it.item_label) + '</div>' +
         '<div class="qmeta">Submitted by <strong>' + escapeHtml(submitterName) + '</strong>' + (it.submitted_at ? ' on ' + new Date(it.submitted_at).toLocaleString() : '') + '</div>' +
         '<span class="qproposed">Proposing: ' + escapeHtml((it.proposed_status || 'complete').replace(/_/g, ' ')) + '</span>' +
-        '<div class="qfield"><label>Current state</label><div class="val">' + (it.current_state ? escapeHtml(it.current_state) : '<em>(left blank)</em>') + '</div></div>' +
-        '<div class="qfield"><label>Jackson Park reference</label><div class="val">' + (it.jackson_park_reference ? escapeHtml(it.jackson_park_reference) : '<em>(left blank)</em>') + '</div></div>' +
-        '<div class="qfield"><label>Proposed state</label><div class="val">' + (it.proposed_state ? escapeHtml(it.proposed_state) : '<em>(left blank)</em>') + '</div></div>' +
-        '<div class="qfield"><label>Legal/policy basis</label><div class="val">' + (it.legal_policy_basis ? escapeHtml(it.legal_policy_basis) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Current state</label><div class="val">' + (it.current_state ? linkifyUrls(it.current_state) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Jackson Park reference</label><div class="val">' + (it.jackson_park_reference ? linkifyUrls(it.jackson_park_reference) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Proposed state</label><div class="val">' + (it.proposed_state ? linkifyUrls(it.proposed_state) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Legal/policy basis</label><div class="val">' + (it.legal_policy_basis ? linkifyUrls(it.legal_policy_basis) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qactions">' +
           '<button class="btn primary" data-approve="' + it.item_no + '">Approve</button>' +
           '<textarea class="qnote" data-reject-note="' + it.item_no + '" placeholder="Required note if sending back..."></textarea>' +

@@ -298,10 +298,19 @@
 
   function clsBadgeClass(c) { return 'cls-' + String(c || 'verify').toLowerCase(); }
 
+  // Any raw http(s) URL typed into an answer field (e.g. a link straight
+  // to the CPD office/page that owns this record) becomes clickable
+  // instead of sitting there as dead text.
+  function linkifyUrls(text) {
+    return escapeHtml(text).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
+    });
+  }
+
   function answerField(label, value) {
     var has = value != null && String(value).trim() !== '';
     return '<div class="answer-field"><span class="k">' + label + '</span><span class="v' + (has ? '' : ' unanswered') + '">' +
-      (has ? escapeHtml(value) : 'Not yet answered') + '</span></div>';
+      (has ? linkifyUrls(value) : 'Not yet answered') + '</span></div>';
   }
 
   function depsHtml(deps, byItemNo) {
