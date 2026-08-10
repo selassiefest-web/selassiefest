@@ -3815,11 +3815,13 @@ create index if not exists bbpac_formation_notifications_lookup_idx
 -- bbpac_formation_* table above -- this one is write-only for anon, exactly
 -- like every other public-facing form on this site (bbpac_volunteer_signups,
 -- bbpac_contact_messages, etc.). It does NOT grant section ownership by
--- itself. Approving a request is a manual staff action via the Table
--- Editor: add/find the bbpac_formation_members row for this email, then add
--- a bbpac_formation_section_owners row per approved section. Section access
--- is a real write permission (RLS-enforced), not a mailing-list signup, so
--- it stays staff-reviewed rather than auto-granted.
+-- itself. Approving a request goes through the approve-section-signup Edge
+-- Function (see below and the Review Queue's "Section Access Requests"
+-- section) -- it finds/creates the bbpac_formation_members row for this
+-- email and adds a bbpac_formation_section_owners row per granted section.
+-- Section access is a real write permission (RLS-enforced), not a
+-- mailing-list signup, so it stays approver-reviewed rather than
+-- auto-granted.
 create table if not exists bbpac_formation_section_signup_requests (
   id uuid primary key default gen_random_uuid(),
   full_name text not null,
@@ -3842,6 +3844,27 @@ create policy "Allow anon insert" on bbpac_formation_section_signup_requests
   with check (true);
 
 grant insert on bbpac_formation_section_signup_requests to anon;
+
+-- Review trail for the approve-section-signup Edge Function, mirroring
+-- reviewed_by/review_note on bbpac_formation_matrix_items.
+alter table bbpac_formation_section_signup_requests
+  add column if not exists reviewed_by uuid references bbpac_formation_members(id),
+  add column if not exists review_note text;
+
+-- Only opted-in approvers can read pending requests (they contain an
+-- applicant's name/email) -- NOT every authenticated member, unlike
+-- bbpac_formation_section_owners' public read above. Lets the Review
+-- Queue's "Section Access Requests" panel query this table directly from
+-- the client instead of needing a service-role round trip just to list
+-- what's pending.
+create policy "approvers can read signup requests" on bbpac_formation_section_signup_requests
+  for select to authenticated
+  using (
+    exists (
+      select 1 from bbpac_formation_members m
+      where m.auth_user_id = auth.uid() and m.is_approver = true
+    )
+  );
 
 -- Reuses the existing notify_submission_webhook() function (see the
 -- Email notifications section above) -- emails staff via the
@@ -3911,6 +3934,10 @@ create index if not exists bbpac_formation_matrix_items_review_status_idx
 
 alter table bbpac_formation_members
   add column if not exists is_approver boolean not null default false;
+
+-- The same is_approver pool above also gates the approve-section-signup
+-- Edge Function (Join a Section requests) -- one opt-in flag covers both
+-- "approve an item update" and "approve a new section owner."
 
 -- Enforces the approval gate at the database level, not just in the UI:
 -- a client can freely move an item into pending_review (and must submit

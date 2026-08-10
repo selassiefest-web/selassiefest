@@ -77,6 +77,12 @@
   .qmsg{font-size:0.8rem; margin-top:6px; display:block;}
 
   .empty-state{text-align:center; padding:40px 0; color:var(--ink-dim);}
+
+  .queue-heading{font-family:Arial,sans-serif; font-weight:900; font-size:1.05rem; margin:30px 0 4px;}
+  .queue-subhead{font-size:0.84rem; color:var(--ink-dim); margin:0 0 14px;}
+  .section-pick{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0;}
+  .section-pick label{display:flex; align-items:center; gap:6px; font-size:0.82rem; background:#f9f7f2; border:1px solid var(--line); border-radius:20px; padding:6px 12px; cursor:pointer;}
+  .section-pick input{width:15px; height:15px;}
 </style>
 </head>
 <body>
@@ -139,7 +145,13 @@
           <div><h3 id="whoName"></h3><div class="role">Opted-in approver</div></div>
           <span class="logout-link" id="logoutBtn">Log out</span>
         </div>
+        <h2 class="queue-heading">Item Submissions</h2>
+        <p class="queue-subhead">Matrix items submitted for review, sitewide.</p>
         <div id="queueArea"></div>
+
+        <h2 class="queue-heading">Section Access Requests</h2>
+        <p class="queue-subhead">People asking to own or co-own a Matrix section. Approving creates their account and grants exactly the section(s) you check below.</p>
+        <div id="signupQueueArea"></div>
       </div>
 
     </div>
@@ -228,6 +240,42 @@
       : '<div class="empty-state"><i class="fas fa-circle-check" style="font-size:1.4rem; margin-bottom:8px; display:block;"></i>Nothing waiting on review right now.</div>';
   }
 
+  function renderSignupRequest(it) {
+    var sections = it.requested_sections || [];
+    return (
+      '<div class="queue-item" data-signup-item="' + it.id + '">' +
+        '<div class="qid">Requested ' + (new Date(it.created_at)).toLocaleString() + '</div>' +
+        '<div class="qtitle">' + escapeHtml(it.full_name) + ' &middot; ' + escapeHtml(it.email) + '</div>' +
+        '<div class="qmeta">Requested section(s): ' + sections.join(', ') + '</div>' +
+        (it.message ? '<div class="qfield"><label>Message</label><div class="val">' + escapeHtml(it.message) + '</div></div>' : '') +
+        '<div class="qfield"><label>Grant which section(s)?</label><div class="section-pick">' +
+          sections.map(function (s) {
+            return '<label><input type="checkbox" checked data-signup-section="' + it.id + '" value="' + s + '"> Section ' + s + '</label>';
+          }).join('') +
+        '</div></div>' +
+        '<div class="qactions">' +
+          '<button class="btn primary" data-approve-signup="' + it.id + '">Approve</button>' +
+          '<textarea class="qnote" data-decline-note="' + it.id + '" placeholder="Required note if declining..."></textarea>' +
+          '<button class="btn secondary" data-decline-signup="' + it.id + '">Decline</button>' +
+        '</div>' +
+        '<span class="qmsg" data-signup-msg="' + it.id + '"></span>' +
+      '</div>'
+    );
+  }
+
+  async function loadSignupQueue() {
+    var el = document.getElementById('signupQueueArea');
+    el.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading requests&hellip;</div>';
+    var result = await client.from('bbpac_formation_section_signup_requests')
+      .select('id, full_name, email, requested_sections, message, created_at')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true });
+    var items = result.data || [];
+    el.innerHTML = items.length
+      ? items.map(renderSignupRequest).join('')
+      : '<div class="empty-state"><i class="fas fa-circle-check" style="font-size:1.4rem; margin-bottom:8px; display:block;"></i>No pending section requests right now.</div>';
+  }
+
   document.addEventListener('click', async function (e) {
     var approveBtn = e.target.closest('[data-approve]');
     var rejectBtn = e.target.closest('[data-reject]');
@@ -267,6 +315,55 @@
     setTimeout(function () { card.remove(); }, 900);
   });
 
+  document.addEventListener('click', async function (e) {
+    var approveBtn = e.target.closest('[data-approve-signup]');
+    var declineBtn = e.target.closest('[data-decline-signup]');
+    if (!approveBtn && !declineBtn) return;
+
+    var requestId = (approveBtn || declineBtn).getAttribute(approveBtn ? 'data-approve-signup' : 'data-decline-signup');
+    var card = document.querySelector('[data-signup-item="' + requestId + '"]');
+    var msgEl = card.querySelector('[data-signup-msg="' + requestId + '"]');
+    var note = card.querySelector('[data-decline-note="' + requestId + '"]').value.trim();
+
+    if (declineBtn && !note) {
+      msgEl.textContent = 'A note is required when declining.';
+      msgEl.style.color = 'var(--culture)';
+      return;
+    }
+
+    var sections = Array.prototype.map.call(
+      card.querySelectorAll('[data-signup-section="' + requestId + '"]:checked'),
+      function (cb) { return Number(cb.value); }
+    );
+    if (approveBtn && !sections.length) {
+      msgEl.textContent = 'Check at least one section to grant.';
+      msgEl.style.color = 'var(--culture)';
+      return;
+    }
+
+    approveBtn && (approveBtn.disabled = true);
+    declineBtn && (declineBtn.disabled = true);
+    msgEl.textContent = approveBtn ? 'Approving...' : 'Declining...';
+    msgEl.style.color = 'var(--ink-dim)';
+
+    var result = await client.functions.invoke('approve-section-signup', {
+      body: { request_id: requestId, action: approveBtn ? 'approve' : 'decline', sections: sections, note: note },
+    });
+
+    if (result.error) {
+      msgEl.textContent = 'Failed: ' + (result.error.context ? await result.error.context.text().then(function (t) { try { return JSON.parse(t).error; } catch (e2) { return t; } }) : result.error.message);
+      msgEl.style.color = 'var(--culture)';
+      approveBtn && (approveBtn.disabled = false);
+      declineBtn && (declineBtn.disabled = false);
+      return;
+    }
+
+    card.style.opacity = '0.4';
+    msgEl.textContent = approveBtn ? 'Approved.' : 'Declined.';
+    msgEl.style.color = 'var(--community)';
+    setTimeout(function () { card.remove(); }, 900);
+  });
+
   document.getElementById('logoutBtn').addEventListener('click', async function () {
     await client.auth.signOut();
     window.location.reload();
@@ -299,10 +396,12 @@
       document.getElementById('whoName').textContent = member.name;
 
       if (!member.is_approver) {
-        document.getElementById('queueArea').innerHTML = '<div class="not-approver"><i class="fas fa-circle-info" style="color:var(--legacy); margin-right:6px;"></i>You are not currently opted in as an approver. If you are a section head, opt in from the who-box at the top of <a href="/bbpac/organization/my-section.html">My Section</a>.</div>';
+        var notApproverMsg = '<div class="not-approver"><i class="fas fa-circle-info" style="color:var(--legacy); margin-right:6px;"></i>You are not currently opted in as an approver. If you are a section head, opt in from the who-box at the top of <a href="/bbpac/organization/my-section.html">My Section</a>.</div>';
+        document.getElementById('queueArea').innerHTML = notApproverMsg;
+        document.getElementById('signupQueueArea').innerHTML = '';
         return;
       }
-      await loadQueue();
+      await Promise.all([loadQueue(), loadSignupQueue()]);
       loadedForUserId = session.user.id;
     } finally {
       loadInFlight = false;
