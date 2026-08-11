@@ -289,6 +289,7 @@
   </div>
 </footer>
 <script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
+<script src="/bbpac/organization/documents/data.js"></script>
 <script src="/assets/js/supabase-client.js"></script>
 <script>
 (function () {
@@ -316,6 +317,15 @@
       .replace(/(https?:\/\/[^\s<]+)/g, function (url) { return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>'; })
       .replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, function (email) { return '<a href="mailto:' + email + '"><i class="fas fa-envelope"></i>' + email + '</a>'; })
       .replace(/(\(\d{3}\)\s?\d{3}-\d{4})/g, function (phone) { return '<a href="tel:+1' + phone.replace(/\D/g, '') + '"><i class="fas fa-phone"></i>' + phone + '</a>'; });
+    if (docRefPattern) {
+      html = html.replace(docRefPattern, function (match) {
+        var doc = docsByDocId[match];
+        if (!doc) return match;
+        var cls = DOC_STATUS_CLASS[doc.status] || 'cls-verify';
+        placeholders.push('<a class="badge ' + cls + '" href="' + escapeHtml(doc.source_page_url || '#') + '" title="' + escapeHtml(doc.title) + ' &mdash; ' + escapeHtml(doc.status) + '" style="text-decoration:none;">' + match + '</a>');
+        return '~~LNK~~' + (placeholders.length - 1) + '~~LNK~~';
+      });
+    }
     return html.replace(/~~LNK~~(\d+)~~LNK~~/g, function (m, i) { return placeholders[Number(i)]; });
   }
 
@@ -626,6 +636,18 @@
 
     var docsResult = await client.from('bbpac_formation_documents').select('doc_id, title, status, source_page_url');
     (docsResult.data || []).forEach(function (d) { docsByDocId[d.doc_id] = d; });
+
+    // The Gate 0 / New Park set above (bbpac_formation_documents, ~27
+    // rows) is a real-time-status-tracked SUBSET -- the other ~510
+    // documents (the full 12-phase library: 1-01 through 11-xx, e.g.
+    // "2-06" for Bylaws Article 4) live in the static phase library
+    // instead, loaded via data.js just before this script tag.
+    var PHASE_SLUGS = {0:'phase-00-gate.html',1:'phase-01-formation.html',2:'phase-02-governance-bylaws.html',3:'phase-03-board-officers.html',4:'phase-04-finance.html',5:'phase-05-legal-compliance.html',6:'phase-06-operations.html',7:'phase-07-stewardship.html',8:'phase-08-programming.html',9:'phase-09-communications.html',10:'phase-10-strategic-planning.html',11:'phase-11-templates.html'};
+    (window.BBPAC_ORG_DOCS || []).forEach(function (d) {
+      if (docsByDocId[d.id]) return; // Gate/New Park set takes priority on any overlap
+      docsByDocId[d.id] = { doc_id: d.id, title: d.t, status: d.full ? 'drafted' : 'registered', source_page_url: '/bbpac/organization/documents/' + PHASE_SLUGS[d.ph] + '#doc-' + d.id };
+    });
+
     var docIds = Object.keys(docsByDocId).sort(function (a, b) { return b.length - a.length; });
     if (docIds.length) {
       var escaped = docIds.map(function (id) { return id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
