@@ -97,14 +97,18 @@
   .action-checklist{padding:10px 14px 14px;}
   .action-checklist-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
   .action-checklist-head .count{font-size:0.72rem; font-weight:700; color:var(--ink-dim);}
-  .action-item{display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-top:1px dashed var(--line);}
-  .action-item:first-child{border-top:none;}
+  .action-item-row{padding:8px 0; border-top:1px dashed var(--line);}
+  .action-item-row:first-child{border-top:none;}
+  .action-item{display:flex; align-items:flex-start; gap:10px;}
   .action-item input[type="checkbox"]{width:18px; height:18px; margin-top:1px; flex-shrink:0; cursor:pointer;}
   .action-item .a-desc{font-size:0.86rem; color:#33404c; flex:1;}
   .action-item .a-desc a, .known-value a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
   .action-item .a-desc a i, .known-value a i{margin-right:3px;}
   .action-item.is-done .a-desc{color:var(--ink-dim); text-decoration:line-through;}
   .action-item .a-meta{font-size:0.68rem; color:var(--ink-dim); display:block; margin-top:2px;}
+  .a-note-input{display:block; width:100%; margin:6px 0 0 28px; padding:6px 9px; border:1px solid var(--line); border-radius:7px; font-size:0.78rem; font-family:inherit; color:#374a5c; background:#fff;}
+  .a-note-input::placeholder{color:var(--ink-dim); font-style:italic;}
+  .a-note-saved{font-size:0.68rem; color:var(--community); margin:3px 0 0 28px; display:none;}
   .add-action-row{display:flex; gap:8px; margin-top:10px;}
   .add-action-row input{flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.82rem;}
   .add-action-row button{font-size:0.7rem; padding:7px 14px;}
@@ -462,11 +466,19 @@
   function renderActionChecklist(it) {
     var s = actionsSummary(it);
     var rows = s.actions.map(function (a) {
-      var doneMeta = a.status === 'done' ? '<span class="a-meta">Done' + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>' : '';
-      return '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
-        '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + '>' +
-        '<span class="a-desc">' + linkifyText(a.description) + doneMeta + '</span>' +
-      '</label>';
+      var doneMeta = a.status === 'done'
+        ? '<span class="a-meta">Done by ' + escapeHtml(a.doer ? a.doer.name : 'someone') + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>'
+        : '';
+      return (
+        '<div class="action-item-row">' +
+          '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
+            '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + '>' +
+            '<span class="a-desc">' + linkifyText(a.description) + doneMeta + '</span>' +
+          '</label>' +
+          '<input type="text" class="a-note-input" data-note-action="' + a.id + '" placeholder="Note -- what happened, what you learned (e.g. left voicemail, or: spoke with Maria, she said...)" value="' + escapeHtml(a.note || '') + '">' +
+          '<span class="a-note-saved" data-note-saved="' + a.id + '">Saved</span>' +
+        '</div>'
+      );
     }).join('');
     return (
       '<div class="action-checklist">' +
@@ -687,9 +699,32 @@
     }
     var list = actionsByItemNo[itemNo] || [];
     var action = list.filter(function (a) { return a.id === actionId; })[0];
-    if (action) Object.assign(action, update);
+    if (action) {
+      Object.assign(action, update);
+      action.doer = newStatus === 'done' ? { name: member.name } : null;
+    }
     reRenderActionRow(itemNo);
   });
+
+  document.addEventListener('blur', async function (e) {
+    var input = e.target.closest('[data-note-action]');
+    if (!input) return;
+    var actionId = input.getAttribute('data-note-action');
+    var note = input.value.trim();
+    var savedTag = document.querySelector('[data-note-saved="' + actionId + '"]');
+    var result = await client.from('bbpac_formation_item_actions').update({ note: note || null }).eq('id', actionId);
+    if (result.error) {
+      alert('Failed to save note: ' + result.error.message);
+      return;
+    }
+    var list = Object.values(actionsByItemNo).reduce(function (a, b) { return a.concat(b); }, []);
+    var action = list.filter(function (a) { return a.id === actionId; })[0];
+    if (action) action.note = note || null;
+    if (savedTag) {
+      savedTag.style.display = 'inline';
+      setTimeout(function () { savedTag.style.display = 'none'; }, 1500);
+    }
+  }, true);
 
   document.addEventListener('click', async function (e) {
     var btn = e.target.closest('[data-add-action]');
@@ -946,7 +981,7 @@
       stakesByItemNo[r.item_no].push({ stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status });
     });
 
-    var actionsResult = await client.from('bbpac_formation_item_actions').select('*').order('seq', { ascending: true });
+    var actionsResult = await client.from('bbpac_formation_item_actions').select('*, doer:bbpac_formation_members_public!done_by(name)').order('seq', { ascending: true });
     (actionsResult.data || []).forEach(function (a) {
       if (!actionsByItemNo[a.item_no]) actionsByItemNo[a.item_no] = [];
       actionsByItemNo[a.item_no].push(a);

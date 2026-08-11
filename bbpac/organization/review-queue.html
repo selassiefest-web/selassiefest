@@ -74,6 +74,17 @@
   .qfield .val a i{margin-right:3px;}
   .qproposed{display:inline-block; font-size:0.7rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:10px; background:rgba(220,131,17,0.16); color:#8a5a0d; margin-bottom:10px;}
 
+  .a-trail{background:#f9f7f2; border-radius:8px; padding:4px 10px;}
+  .a-trail-item{padding:7px 0; border-top:1px dashed var(--line);}
+  .a-trail-item:first-child{border-top:none;}
+  .a-trail-desc{font-size:0.82rem; color:#33404c;}
+  .a-trail-desc.is-done{color:var(--ink-dim);}
+  .a-trail-desc a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
+  .a-trail-desc a i{margin-right:3px;}
+  .a-trail-meta{font-size:0.7rem; color:var(--ink-dim); margin-top:2px;}
+  .a-trail-note{font-size:0.8rem; color:#4a3a1e; font-style:italic; margin-top:3px;}
+  .a-trail-empty{font-size:0.82rem; color:var(--ink-dim); font-style:italic; margin:0;}
+
   .qactions{display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-top:12px; border-top:1px dashed var(--line); padding-top:12px;}
   .qnote{flex:1 1 220px; min-width:200px; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-family:inherit; font-size:0.82rem; min-height:38px; resize:vertical;}
   .qmsg{font-size:0.8rem; margin-top:6px; display:block;}
@@ -224,6 +235,18 @@
 
   var client, member;
 
+  function renderActionTrail(actions) {
+    if (!actions || !actions.length) return '<p class="a-trail-empty">No action items were recorded for this item.</p>';
+    return '<div class="a-trail">' + actions.map(function (a) {
+      var who = a.status === 'done' ? ('Done by ' + escapeHtml(a.doer ? a.doer.name : 'someone') + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '')) : 'Not done';
+      return '<div class="a-trail-item">' +
+        '<div class="a-trail-desc' + (a.status === 'done' ? ' is-done' : '') + '">' + linkifyUrls(a.description) + '</div>' +
+        '<div class="a-trail-meta">' + who + '</div>' +
+        (a.note ? '<div class="a-trail-note">&ldquo;' + linkifyUrls(a.note) + '&rdquo;</div>' : '') +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
   function renderQueueItem(it) {
     var submitterName = it.submitter ? it.submitter.name : 'Unknown';
     return (
@@ -236,6 +259,7 @@
         '<div class="qfield"><label>Jackson Park reference</label><div class="val">' + (it.jackson_park_reference ? linkifyUrls(it.jackson_park_reference) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qfield"><label>Proposed state</label><div class="val">' + (it.proposed_state ? linkifyUrls(it.proposed_state) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qfield"><label>Legal/policy basis</label><div class="val">' + (it.legal_policy_basis ? linkifyUrls(it.legal_policy_basis) : '<em>(left blank)</em>') + '</div></div>' +
+        '<div class="qfield"><label>Action item trail &mdash; how this was actually worked</label>' + renderActionTrail(it.actions) + '</div>' +
         '<div class="qactions">' +
           '<button class="btn primary" data-approve="' + it.item_no + '">Approve</button>' +
           '<textarea class="qnote" data-reject-note="' + it.item_no + '" placeholder="Required note if sending back..."></textarea>' +
@@ -254,6 +278,21 @@
       .eq('review_status', 'pending_review')
       .order('submitted_at', { ascending: true });
     var items = result.data || [];
+
+    if (items.length) {
+      var itemNos = items.map(function (it) { return it.item_no; });
+      var actionsResult = await client.from('bbpac_formation_item_actions')
+        .select('*, doer:bbpac_formation_members_public!done_by(name)')
+        .in('item_no', itemNos)
+        .order('seq', { ascending: true });
+      var actionsByItemNo = {};
+      (actionsResult.data || []).forEach(function (a) {
+        if (!actionsByItemNo[a.item_no]) actionsByItemNo[a.item_no] = [];
+        actionsByItemNo[a.item_no].push(a);
+      });
+      items.forEach(function (it) { it.actions = actionsByItemNo[it.item_no] || []; });
+    }
+
     el.innerHTML = items.length
       ? items.map(renderQueueItem).join('')
       : '<div class="empty-state"><i class="fas fa-circle-check" style="font-size:1.4rem; margin-bottom:8px; display:block;"></i>Nothing waiting on review right now.</div>';

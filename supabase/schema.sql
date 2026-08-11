@@ -4012,6 +4012,15 @@ create table if not exists bbpac_formation_item_actions (
 
 alter table bbpac_formation_item_actions enable row level security;
 
+-- Free-text record of what actually happened when an action item was
+-- worked (e.g. "left voicemail 8/11" or "spoke with Maria, she said...")
+-- -- done_by/done_at alone only says who checked the box and when, not
+-- what was learned. Shown in both My Section and the Review Queue's
+-- action-item trail, so a team leader reviewing a submission can see the
+-- real fact-finding, not just the final answer.
+alter table bbpac_formation_item_actions
+  add column if not exists note text;
+
 create policy "Allow anon read" on bbpac_formation_item_actions for select to anon using (true);
 create policy "authenticated read" on bbpac_formation_item_actions for select to authenticated using (true);
 
