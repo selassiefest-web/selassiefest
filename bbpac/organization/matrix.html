@@ -105,6 +105,8 @@
   .answer-field .k{font-size:0.64rem; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:3px; display:block;}
   .answer-field .v{font-size:0.82rem; color:#374a5c;}
   .answer-field .v.unanswered{color:var(--legacy); font-style:italic;}
+  .answer-field .v a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
+  .answer-field .v a i{margin-right:3px;}
   @media (max-width:640px){ .answer-grid{grid-template-columns:1fr;} }
 
   .depends-row{margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;}
@@ -310,9 +312,10 @@
       placeholders.push('<a href="' + url + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>');
       return '~~LNK~~' + (placeholders.length - 1) + '~~LNK~~';
     });
-    var html = escapeHtml(s).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
-      return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
-    });
+    var html = escapeHtml(s)
+      .replace(/(https?:\/\/[^\s<]+)/g, function (url) { return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>'; })
+      .replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, function (email) { return '<a href="mailto:' + email + '"><i class="fas fa-envelope"></i>' + email + '</a>'; })
+      .replace(/(\(\d{3}\)\s?\d{3}-\d{4})/g, function (phone) { return '<a href="tel:+1' + phone.replace(/\D/g, '') + '"><i class="fas fa-phone"></i>' + phone + '</a>'; });
     return html.replace(/~~LNK~~(\d+)~~LNK~~/g, function (m, i) { return placeholders[Number(i)]; });
   }
 

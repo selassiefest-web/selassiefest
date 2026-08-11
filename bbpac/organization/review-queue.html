@@ -70,6 +70,8 @@
   .qfield{margin-bottom:10px;}
   .qfield label{font-size:0.62rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); display:block; margin-bottom:3px;}
   .qfield .val{font-size:0.86rem; color:#33404c; background:#f9f7f2; border-radius:8px; padding:8px 10px; white-space:pre-wrap;}
+  .qfield .val a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
+  .qfield .val a i{margin-right:3px;}
   .qproposed{display:inline-block; font-size:0.7rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:10px; background:rgba(220,131,17,0.16); color:#8a5a0d; margin-bottom:10px;}
 
   .qactions{display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-top:12px; border-top:1px dashed var(--line); padding-top:12px;}
@@ -213,9 +215,10 @@
       placeholders.push('<a href="' + url + '" target="_blank" rel="noopener">' + escapeHtml(label) + '</a>');
       return '~~LNK~~' + (placeholders.length - 1) + '~~LNK~~';
     });
-    var html = escapeHtml(s).replace(/(https?:\/\/[^\s<]+)/g, function (url) {
-      return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>';
-    });
+    var html = escapeHtml(s)
+      .replace(/(https?:\/\/[^\s<]+)/g, function (url) { return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>'; })
+      .replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, function (email) { return '<a href="mailto:' + email + '"><i class="fas fa-envelope"></i>' + email + '</a>'; })
+      .replace(/(\(\d{3}\)\s?\d{3}-\d{4})/g, function (phone) { return '<a href="tel:+1' + phone.replace(/\D/g, '') + '"><i class="fas fa-phone"></i>' + phone + '</a>'; });
     return html.replace(/~~LNK~~(\d+)~~LNK~~/g, function (m, i) { return placeholders[Number(i)]; });
   }
 
