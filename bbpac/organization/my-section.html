@@ -106,6 +106,11 @@
   .action-item .a-desc a i, .known-value a i{margin-right:3px;}
   .action-item.is-done .a-desc{color:var(--ink-dim); text-decoration:line-through;}
   .action-item .a-meta{font-size:0.8rem; color:var(--ink-dim); display:block; margin-top:2px;}
+  .action-item .a-meta.a-locked{color:var(--legacy); font-weight:700;}
+  .action-item-row.is-locked{opacity:0.55;}
+  .action-item-row.is-locked .a-desc{color:var(--ink-dim);}
+  .action-item input[type="checkbox"]:disabled{cursor:not-allowed;}
+  .a-note-input:disabled{background:#f1ede3; cursor:not-allowed;}
   .a-note-input{display:block; width:100%; margin:6px 0 0 28px; padding:8px 10px; border:1px solid var(--line); border-radius:7px; font-size:0.92rem; font-family:inherit; color:#374a5c; background:#fff;}
   .a-note-input::placeholder{color:var(--ink-dim); font-style:italic;}
   .a-note-saved{font-size:0.8rem; color:var(--community); margin:3px 0 0 28px; display:none;}
@@ -480,17 +485,26 @@
   // the known record, not a fill-in-the-blank task -- this checklist is.
   function renderActionChecklist(it) {
     var s = actionsSummary(it);
+    // Steps are written in order (seq) on purpose -- 1st/2nd/3rd escalation
+    // steps especially only make sense done in sequence. A step can't be
+    // checked until every earlier step is done; already-done steps stay
+    // checked and editable (so a mistaken check can still be undone)
+    // regardless of what's above them.
+    var allPriorDone = true;
     var rows = s.actions.map(function (a) {
+      var locked = !allPriorDone && a.status !== 'done';
+      if (a.status !== 'done') allPriorDone = false;
       var doneMeta = a.status === 'done'
         ? '<span class="a-meta">Done by ' + escapeHtml(a.doer ? a.doer.name : 'someone') + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>'
         : '';
+      var lockMeta = locked ? '<span class="a-meta a-locked"><i class="fas fa-lock"></i> Finish the step(s) above first</span>' : '';
       return (
-        '<div class="action-item-row">' +
+        '<div class="action-item-row' + (locked ? ' is-locked' : '') + '">' +
           '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
-            '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + '>' +
-            '<span class="a-desc">' + linkifyText(a.description) + doneMeta + '</span>' +
+            '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + (locked ? ' disabled' : '') + '>' +
+            '<span class="a-desc">' + linkifyText(a.description) + doneMeta + lockMeta + '</span>' +
           '</label>' +
-          '<input type="text" class="a-note-input" data-note-action="' + a.id + '" placeholder="Note -- what happened, what you learned (e.g. left voicemail, or: spoke with Maria, she said...)" value="' + escapeHtml(a.note || '') + '">' +
+          '<input type="text" class="a-note-input" data-note-action="' + a.id + '" placeholder="Note -- what happened, what you learned (e.g. left voicemail, or: spoke with Maria, she said...)" value="' + escapeHtml(a.note || '') + '"' + (locked ? ' disabled' : '') + '>' +
           '<span class="a-note-saved" data-note-saved="' + a.id + '">Saved</span>' +
         '</div>'
       );
