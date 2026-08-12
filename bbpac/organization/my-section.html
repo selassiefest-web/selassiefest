@@ -512,6 +512,7 @@
     return (
       '<div class="action-checklist">' +
         '<div class="action-checklist-head"><label style="font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim);">Action items</label><span class="count">' + s.done + ' / ' + s.total + ' done</span></div>' +
+        '<p style="font-size:0.8rem; color:var(--ink-dim); margin:0 0 8px;"><i class="fas fa-circle-info"></i> Checked something by mistake? Uncheck it -- you\'ll be asked to add a note saying why first, so nobody downstream wonders what happened.</p>' +
         (rows || '<p style="font-size:0.94rem; color:var(--ink-dim);">No action items yet.</p>') +
         '<div class="add-action-row"><input type="text" placeholder="Add a step, e.g. &quot;Email CPD Records for X&quot;" data-new-action-text="' + it.item_no + '"><button class="btn secondary" data-add-action="' + it.item_no + '">Add</button></div>' +
       '</div>'
@@ -717,8 +718,29 @@
     var actionId = cb.getAttribute('data-toggle-action');
     var itemNo = cb.getAttribute('data-action-item');
     var newStatus = cb.checked ? 'done' : 'todo';
+    var noteInput = document.querySelector('[data-note-action="' + actionId + '"]');
+
+    // Unchecking a step -- almost always a "that was checked by mistake"
+    // correction -- requires a note explaining why first, the same way
+    // sending an item back for review or declining a signup requires a
+    // note elsewhere in this system. Without this, a wrongly-checked step
+    // could be silently un-checked with zero trace of what actually
+    // happened, which is worse than leaving the mistake checked.
+    if (newStatus === 'todo') {
+      var uncheckNote = noteInput ? noteInput.value.trim() : '';
+      if (!uncheckNote) {
+        cb.checked = true;
+        if (noteInput) {
+          noteInput.placeholder = 'Say why you’re unchecking this, then try again (required)';
+          noteInput.focus();
+        }
+        return;
+      }
+    }
+
     cb.disabled = true;
     var update = { status: newStatus, done_by: newStatus === 'done' ? member.id : null, done_at: newStatus === 'done' ? new Date().toISOString() : null };
+    if (newStatus === 'todo') update.note = noteInput.value.trim();
     var result = await client.from('bbpac_formation_item_actions').update(update).eq('id', actionId);
     if (result.error) {
       cb.checked = !cb.checked;
