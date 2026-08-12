@@ -3740,6 +3740,42 @@ create trigger bbpac_formation_link_new_auth_user_trigger
   after insert on auth.users
   for each row execute function bbpac_formation_link_new_auth_user();
 
+-- The trigger above only fires on INSERT into auth.users -- it links a
+-- pre-created member row the moment someone's auth.users row is FIRST ever
+-- created. But this site has several other independent OTP/verification
+-- flows (volunteer/sponsor/contract verification, etc.) -- if someone used
+-- ANY of those with the same email before ever touching BBPAC, their
+-- auth.users row already exists, so the trigger never fires for their BBPAC
+-- login and auth_user_id stays null forever: an actually-approved volunteer
+-- would see "No section-owner profile found" on their first real login,
+-- a dead end for someone who did everything right. My Section calls this on
+-- login as a fallback when the by-auth_user_id lookup comes up empty, to
+-- self-heal the link at login time instead of only at auth.users-insert time.
+create or replace function public.bbpac_formation_link_my_auth_user()
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid;
+begin
+  update public.bbpac_formation_members
+    set auth_user_id = auth.uid()
+    where lower(email) = lower(coalesce(auth.email(), ''))
+      and auth_user_id is null
+    returning id into v_id;
+  return v_id;
+end;
+$$;
+
+-- Safe for any logged-in user to call: it can only ever link the caller's
+-- OWN verified email/auth pair (auth.uid()/auth.email() come from their own
+-- JWT, not client input), and only when no link exists yet -- it can never
+-- take over or move an already-linked account.
+grant execute on function public.bbpac_formation_link_my_auth_user() to authenticated;
+revoke execute on function public.bbpac_formation_link_my_auth_user() from public, anon;
+
 -- Section-scoped write access. A logged-in member can update
 -- bbpac_formation_matrix_items rows and bbpac_formation_item_stakeholders
 -- rows ONLY for section(s) they actually own -- read access stays fully

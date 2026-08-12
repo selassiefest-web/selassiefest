@@ -1253,6 +1253,19 @@
     actionsByItemNo = {};
 
     var memberResult = await client.from('bbpac_formation_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
+    if (!memberResult.data) {
+      // The normal path (bbpac_formation_link_new_auth_user_trigger) only
+      // links a pre-created member row the moment someone's auth.users row
+      // is FIRST inserted -- but this site has other independent OTP flows
+      // (volunteer/sponsor/contract verification, etc.), so someone approved
+      // for a section can already have an auth.users row from using one of
+      // those first. Self-heal that link here instead of telling an actually-
+      // approved volunteer "no profile found" on their first real login.
+      var linkResult = await client.rpc('bbpac_formation_link_my_auth_user');
+      if (!linkResult.error && linkResult.data) {
+        memberResult = await client.from('bbpac_formation_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
+      }
+    }
     if (memberResult.error || !memberResult.data) {
       document.getElementById('loginArea').style.display = '';
       document.getElementById('loginErr').innerHTML = 'No section-owner profile found for ' + escapeHtml(session.user.email) + ' yet. <a href="/bbpac/organization/join-a-section.html">Request a section here</a> and we\'ll follow up.';
