@@ -4015,9 +4015,12 @@ alter table bbpac_formation_item_actions enable row level security;
 -- Free-text record of what actually happened when an action item was
 -- worked (e.g. "left voicemail 8/11" or "spoke with Maria, she said...")
 -- -- done_by/done_at alone only says who checked the box and when, not
--- what was learned. Shown in both My Section and the Review Queue's
--- action-item trail, so a team leader reviewing a submission can see the
--- real fact-finding, not just the final answer.
+-- what was learned. SUPERSEDED by bbpac_formation_item_action_logs below:
+-- a single column that gets overwritten on every save can't hold a running
+-- history across the hundreds of contact attempts a single action item can
+-- accumulate over years. Column kept (not dropped) only so the two legacy
+-- notes that existed before the log table aren't orphaned; the app no
+-- longer reads or writes it.
 alter table bbpac_formation_item_actions
   add column if not exists note text;
 
@@ -4045,6 +4048,81 @@ create trigger bbpac_formation_item_actions_touch
   for each row execute function bbpac_formation_set_updated_at();
 
 create index if not exists bbpac_formation_item_actions_item_idx on bbpac_formation_item_actions (item_no);
+
+-- Turns each action item's single overwritable note (above) into a real,
+-- append-only running log: one row per entry, timestamped, attributed to
+-- whoever wrote it, kept forever. A single action item on a long-running
+-- civic process (calls, FOIA follow-ups, escalations) can accumulate
+-- dozens to hundreds of entries over years -- shown in My Section and the
+-- Review Queue's action-item trail as a scrollable/searchable history,
+-- not a single blob that loses everything on the next save.
+create table if not exists bbpac_formation_item_action_logs (
+  id uuid primary key default gen_random_uuid(),
+  action_id uuid not null references bbpac_formation_item_actions(id) on delete cascade,
+  member_id uuid references bbpac_formation_members(id),
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table bbpac_formation_item_action_logs enable row level security;
+
+-- Same public-transparency stance as every other bbpac_formation_* table --
+-- the log itself is not sensitive, and matrix.html/review-queue.html read
+-- action-item history the same way anon visitors can.
+create policy "Allow anon read" on bbpac_formation_item_action_logs for select to anon using (true);
+create policy "authenticated read" on bbpac_formation_item_action_logs for select to authenticated using (true);
+grant select on bbpac_formation_item_action_logs to anon, authenticated;
+
+-- Only an owner of the section that this action's item belongs to may add
+-- an entry -- same scoping as bbpac_formation_item_actions itself, just
+-- resolved through the action row to its item_no.
+create or replace function bbpac_formation_is_section_owner_of_action(p_action_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.bbpac_formation_item_actions a
+    where a.id = p_action_id and public.bbpac_formation_is_section_owner_of_item(a.item_no)
+  );
+$$;
+
+revoke execute on function bbpac_formation_is_section_owner_of_action(uuid) from public, anon;
+
+-- Deliberately INSERT-only -- no update/delete policy. This is a log, not
+-- a note: a mistaken entry gets corrected by adding a new entry that says
+-- so, not by editing history, so nobody reading this three years later has
+-- to wonder whether an entry was quietly altered after the fact.
+create policy "section owners can add log entries for their items" on bbpac_formation_item_action_logs
+  for insert to authenticated
+  with check (bbpac_formation_is_section_owner_of_action(action_id));
+
+grant insert on bbpac_formation_item_action_logs to authenticated;
+
+create index if not exists bbpac_formation_item_action_logs_action_idx
+  on bbpac_formation_item_action_logs (action_id, created_at desc);
+
+-- Full-text search over the log body -- once a single action item has
+-- accumulated 50-100+ entries, someone needs to be able to find "the time
+-- we discussed the FOIA fee waiver" without reading the whole history top
+-- to bottom.
+create index if not exists bbpac_formation_item_action_logs_body_search_idx
+  on bbpac_formation_item_action_logs using gin (to_tsvector('english', body));
+
+-- Backfill: the only two notes that existed under the old single-note
+-- model, preserved as the first log entry for their action rather than
+-- lost. Author is unknown for these two (the old note-save path never
+-- recorded who wrote it -- exactly the gap this table closes going
+-- forward). Guarded so re-running schema.sql never double-inserts.
+insert into bbpac_formation_item_action_logs (action_id, member_id, body, created_at)
+select a.id, null, a.note, a.updated_at
+from bbpac_formation_item_actions a
+where a.note is not null and a.note != ''
+  and not exists (
+    select 1 from bbpac_formation_item_action_logs l where l.action_id = a.id
+  );
 
 -- Seed exactly one starting action item per matrix item, classified the
 -- same way the guidance box already is (self-resolved / external /

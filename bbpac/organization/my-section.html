@@ -110,14 +110,45 @@
   .action-item-row.is-locked{opacity:0.55;}
   .action-item-row.is-locked .a-desc{color:var(--ink-dim);}
   .action-item input[type="checkbox"]:disabled{cursor:not-allowed;}
-  .a-note-input:disabled{background:#f1ede3; cursor:not-allowed;}
-  .a-note-input{display:block; width:100%; margin:6px 0 0 28px; padding:8px 10px; border:1px solid var(--line); border-radius:7px; font-size:0.92rem; font-family:inherit; color:#374a5c; background:#fff;}
-  .a-note-input::placeholder{color:var(--ink-dim); font-style:italic;}
-  .a-note-saved{font-size:0.8rem; color:var(--community); margin:3px 0 0 28px;}
   .add-action-row{display:flex; gap:8px; margin-top:10px;}
   .add-action-row input{flex:1; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.94rem;}
   .add-action-row button{font-size:0.8rem; padding:9px 16px;}
   .gate-note{font-size:0.88rem; color:var(--culture); margin-top:8px; display:block;}
+
+  /* Running log per action item -- replaces a single overwritable note.
+     Built to stay legible after years and hundreds of entries: newest
+     first, capped display with an explicit "show all", and a search box
+     that survives log re-renders (it lives outside data-log-list). */
+  .action-log-wrap{margin:6px 0 0 28px;}
+  .log-search-input{width:100%; max-width:320px; padding:6px 10px; margin-bottom:6px; border:1px solid var(--line); border-radius:14px; font-size:0.82rem; font-family:inherit; color:#374a5c;}
+  .log-search-input::placeholder{color:var(--ink-dim); font-style:italic;}
+  .action-log{border-left:2px solid var(--line); padding-left:10px; margin-bottom:6px;}
+  .log-entry{padding:6px 0; border-top:1px dashed var(--line);}
+  .log-entry:first-child{border-top:none;}
+  .log-meta{font-size:0.74rem; color:var(--ink-dim); font-weight:700;}
+  .log-body{font-size:0.9rem; line-height:1.4; color:#374a5c; white-space:pre-wrap; margin-top:2px;}
+  .log-empty{font-size:0.86rem; color:var(--ink-dim); font-style:italic; margin:2px 0;}
+  .log-more-btn{background:none; border:none; color:var(--lakefront); font-weight:700; font-size:0.8rem; cursor:pointer; padding:4px 0; font-family:inherit;}
+  .log-search-meta{font-size:0.78rem; color:var(--ink-dim); margin:4px 0;}
+  .log-add-row textarea{display:block; width:100%; min-height:44px; padding:8px 10px; border:1px solid var(--line); border-radius:7px; font-size:0.92rem; font-family:inherit; color:#374a5c; background:#fff; resize:vertical;}
+  .log-add-row textarea::placeholder{color:var(--ink-dim); font-style:italic;}
+  .log-add-row button{margin-top:6px; font-size:0.76rem; padding:7px 14px;}
+
+  /* Stakeholder consultation-status editor -- the one write that other
+     pages (Review Queue's blocking panel, matrix.html, readiness.html)
+     already read live, so recording a real answer here is what actually
+     clears "Blocked" everywhere else, not just a note buried in prose. */
+  .stake-panel{margin-top:12px; padding-top:10px; border-top:1px dashed var(--line);}
+  .stake-panel-head{font-size:0.84rem; font-weight:700; color:var(--ink-dim); margin-bottom:8px;}
+  .stake-panel-head i{margin-right:5px;}
+  .stake-row{background:#f9f7f2; border-radius:10px; padding:10px 12px; margin-bottom:8px;}
+  .stake-head{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
+  .stake-name{font-weight:700; font-size:0.9rem; color:var(--navy);}
+  .stake-rel-tag{font-size:0.64rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; padding:2px 9px; border-radius:9px; background:rgba(0,38,73,0.08); color:var(--ink-dim);}
+  .stake-fields{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .stake-status-select{padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.86rem;}
+  .stake-summary-input{flex:1 1 220px; min-width:180px; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.86rem;}
+  .stake-summary-input::placeholder{color:var(--ink-dim); font-style:italic;}
 
   .waiting-box{background:rgba(220,131,17,0.08); border:1.5px solid var(--legacy); border-radius:14px; padding:20px 24px; margin:16px 0;}
   .waiting-box h3{margin:0 0 10px; font-size:1rem; color:#8a5a0d;}
@@ -359,6 +390,83 @@
 
   var RESOLVED_STATUSES = ['complete', 'reviewed_no_change'];
 
+  // Running log per action item, fetched lazily. Not fetched upfront for
+  // every action in the section -- a single action item can accumulate
+  // hundreds of entries over years, so eagerly loading all of them for
+  // every item on login doesn't scale. Fetched once, the first time an
+  // item's card is expanded (loadLogsForItem), for every action on that
+  // item at once, capped generously (2000) -- comfortably covers "8
+  // actions x hundreds of entries each" without a second round trip. If a
+  // single item ever blows past that cap, search should move server-side
+  // (the GIN index already exists for that) instead of raising it further.
+  var logsByActionId = {};   // action_id -> [{id, member_id, body, created_at, member:{name}}, ...] newest first
+  var loadedLogsForItem = {};
+  var logExpandedActionIds = {};
+
+  async function loadLogsForItem(itemNo, containerEl) {
+    if (loadedLogsForItem[itemNo]) return;
+    var actionIds = (actionsByItemNo[itemNo] || []).map(function (a) { return a.id; });
+    loadedLogsForItem[itemNo] = true;
+    if (!actionIds.length) return;
+    var result = await client.from('bbpac_formation_item_action_logs')
+      .select('id, action_id, member_id, body, created_at, member:bbpac_formation_members_public!member_id(name)')
+      .in('action_id', actionIds)
+      .order('created_at', { ascending: false })
+      .limit(2000);
+    (result.data || []).forEach(function (e) {
+      if (!logsByActionId[e.action_id]) logsByActionId[e.action_id] = [];
+      logsByActionId[e.action_id].push(e);
+    });
+    actionIds.forEach(function (actionId) {
+      var listEl = containerEl.querySelector('[data-log-list="' + actionId + '"]');
+      if (listEl) listEl.outerHTML = renderActionLog(actionId, logsByActionId[actionId] || []);
+    });
+  }
+
+  async function addLogEntry(actionId, body) {
+    var result = await client.from('bbpac_formation_item_action_logs')
+      .insert({ action_id: actionId, member_id: member.id, body: body })
+      .select('id, created_at')
+      .single();
+    if (result.error) {
+      alert('Failed to save log entry: ' + result.error.message);
+      return null;
+    }
+    var entry = { id: result.data.id, action_id: actionId, member_id: member.id, body: body, created_at: result.data.created_at, member: { name: member.name } };
+    if (!logsByActionId[actionId]) logsByActionId[actionId] = [];
+    logsByActionId[actionId].unshift(entry);
+    return entry;
+  }
+
+  function renderActionLog(actionId, entries, opts) {
+    opts = opts || {};
+    var searching = !!opts.searching;
+    var totalCount = opts.totalCount != null ? opts.totalCount : entries.length;
+    var expanded = opts.expanded || searching || !!logExpandedActionIds[actionId];
+    var visible = expanded ? entries : entries.slice(0, 5);
+    var rows = visible.map(function (e) {
+      var who = e.member ? e.member.name : 'Unknown';
+      return (
+        '<div class="log-entry">' +
+          '<div class="log-meta">' + escapeHtml(who) + ' &middot; ' + new Date(e.created_at).toLocaleString() + '</div>' +
+          '<div class="log-body">' + linkifyText(e.body) + '</div>' +
+        '</div>'
+      );
+    }).join('');
+    var footer = '';
+    if (searching) {
+      footer = '<p class="log-search-meta">' + entries.length + ' of ' + totalCount + ' match' + (entries.length === 1 ? '' : 'es') + '</p>';
+    } else if (!expanded && entries.length > 5) {
+      footer = '<button type="button" class="log-more-btn" data-log-expand="' + actionId + '">Show all ' + entries.length + ' entries &rarr;</button>';
+    }
+    return (
+      '<div class="action-log" data-log-list="' + actionId + '">' +
+        (entries.length ? rows : '<p class="log-empty">' + (searching ? 'No matches.' : 'No log entries yet.') + '</p>') +
+        footer +
+      '</div>'
+    );
+  }
+
   // Current/Proposed state etc. must never hide text behind an internal
   // scrollbar -- several of the people typing into these boxes are
   // elderly or not otherwise comfortable with computers, and a scrollbar
@@ -381,7 +489,7 @@
 
   var allItems = [];       // every matrix item, fetched once
   var itemsByNo = {};
-  var stakesByItemNo = {}; // item_no -> [{stakeholder_name, relationship_type, consultation_status}, ...]
+  var stakesByItemNo = {}; // item_no -> [{id, stakeholder_name, relationship_type, consultation_status, response_summary, contacted_at}, ...]
   var actionsByItemNo = {}; // item_no -> [{id, seq, description, status, done_by, done_at}, ...]
   var ownersBySection = {}; // section_no -> [{id, name}, ...]
   var client, member, ownedSectionNos = [], ownedSectionRoles = {};
@@ -519,27 +627,29 @@
         ? '<span class="a-meta">Done by ' + escapeHtml(a.doer ? a.doer.name : 'someone') + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '') + '</span>'
         : '';
       var lockMeta = locked ? '<span class="a-meta a-locked"><i class="fas fa-lock"></i> Finish the step(s) above first</span>' : '';
-      // A persistent "Saved <exact timestamp>" under the note, not a toast
-      // that vanishes in 1.5s -- if the first call gets no answer, the
-      // person following up needs to know exactly when that note was
-      // written to judge whether it's time to call again. Sourced from
-      // the row's real updated_at (server-stamped), not a client guess.
-      var noteSavedText = (a.note && a.updated_at) ? ('Saved ' + new Date(a.updated_at).toLocaleString()) : '';
       return (
         '<div class="action-item-row' + (locked ? ' is-locked' : '') + '">' +
           '<label class="action-item' + (a.status === 'done' ? ' is-done' : '') + '">' +
             '<input type="checkbox" data-toggle-action="' + a.id + '" data-action-item="' + it.item_no + '"' + (a.status === 'done' ? ' checked' : '') + (locked ? ' disabled' : '') + '>' +
             '<span class="a-desc">' + linkifyText(a.description) + doneMeta + lockMeta + '</span>' +
           '</label>' +
-          '<input type="text" class="a-note-input" data-note-action="' + a.id + '" placeholder="Note -- what happened, what you learned (e.g. left voicemail, or: spoke with Maria, she said...)" value="' + escapeHtml(a.note || '') + '"' + (locked ? ' disabled' : '') + '>' +
-          '<span class="a-note-saved" data-note-saved="' + a.id + '"' + (noteSavedText ? '' : ' hidden') + '>' + escapeHtml(noteSavedText) + '</span>' +
+          '<div class="action-log-wrap">' +
+            '<input type="search" class="log-search-input" data-log-search="' + a.id + '" placeholder="Search this log...">' +
+            renderActionLog(a.id, logsByActionId[a.id] || []) +
+            (locked ? '' :
+              '<div class="log-add-row">' +
+                '<textarea data-log-add="' + a.id + '" placeholder="Log what happened -- e.g. left voicemail, or: spoke with Maria, she said..."></textarea>' +
+                '<button type="button" class="btn secondary" data-log-add-btn="' + a.id + '">Add to log</button>' +
+              '</div>'
+            ) +
+          '</div>' +
         '</div>'
       );
     }).join('');
     return (
       '<div class="action-checklist">' +
         '<div class="action-checklist-head"><label style="font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim);">Action items</label><span class="count">' + s.done + ' / ' + s.total + ' done</span></div>' +
-        '<p style="font-size:0.8rem; color:var(--ink-dim); margin:0 0 8px;"><i class="fas fa-circle-info"></i> Checked something by mistake? Uncheck it -- you\'ll be asked to add a note saying why first, so nobody downstream wonders what happened.</p>' +
+        '<p style="font-size:0.8rem; color:var(--ink-dim); margin:0 0 8px;"><i class="fas fa-circle-info"></i> Checked something by mistake? Uncheck it -- you\'ll be asked to log why first, so nobody downstream wonders what happened.</p>' +
         (rows || '<p style="font-size:0.94rem; color:var(--ink-dim);">No action items yet.</p>') +
         '<div class="add-action-row"><input type="text" placeholder="Add a step, e.g. &quot;Email CPD Records for X&quot;" data-new-action-text="' + it.item_no + '"><button class="btn secondary" data-add-action="' + it.item_no + '">Add</button></div>' +
       '</div>'
@@ -565,6 +675,45 @@
       '<div class="known-field">' +
         '<label>' + label + '</label>' +
         '<textarea class="known-value" data-field="' + field + '" data-item="' + it.item_no + '" placeholder="' + escapeHtml(emptyText) + '">' + (has ? escapeHtml(value) : '') + '</textarea>' +
+      '</div>'
+    );
+  }
+
+  var CONSULT_LABEL = { not_yet_contacted: 'Not yet contacted', contacted_awaiting_response: 'Contacted -- awaiting response', responded: 'Responded' };
+  var RELATIONSHIP_LABEL = { has_jurisdiction: 'Has jurisdiction', must_approve: 'Must approve', should_be_notified: 'Should be notified', may_have_interest: 'May have interest' };
+
+  // The actual "database action" that reports to every other field
+  // waiting on this information: Review Queue's blocking panel,
+  // matrix.html, and readiness.html all already read consultation_status
+  // live -- this is just the one write path that was missing. Deliberately
+  // separate from the free-text log above: the log is history, this is the
+  // one structured fact ("did they actually respond") everything else
+  // downstream depends on.
+  function renderStakeholderPanel(it) {
+    var stakes = stakesByItemNo[it.item_no] || [];
+    if (!stakes.length) return '';
+    var rows = stakes.map(function (s) {
+      return (
+        '<div class="stake-row">' +
+          '<div class="stake-head"><span class="stake-name">' + escapeHtml(s.stakeholder_name) + '</span>' +
+            '<span class="stake-rel-tag">' + escapeHtml(RELATIONSHIP_LABEL[s.relationship_type] || s.relationship_type) + '</span></div>' +
+          '<div class="stake-fields">' +
+            '<select class="stake-status-select" data-stake-status="' + s.id + '">' +
+              Object.keys(CONSULT_LABEL).map(function (k) {
+                return '<option value="' + k + '"' + (s.consultation_status === k ? ' selected' : '') + '>' + CONSULT_LABEL[k] + '</option>';
+              }).join('') +
+            '</select>' +
+            '<input type="text" class="stake-summary-input" data-stake-summary="' + s.id + '" placeholder="What did they actually say? (optional)" value="' + escapeHtml(s.response_summary || '') + '">' +
+            '<button type="button" class="btn secondary" data-stake-save="' + s.id + '" data-stake-item="' + it.item_no + '">Save</button>' +
+            '<span class="saved-msg" data-stake-saved="' + s.id + '"></span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+    return (
+      '<div class="stake-panel">' +
+        '<div class="stake-panel-head"><i class="fas fa-address-book"></i> Stakeholders on this item &mdash; update this when one actually responds, and Blocked/Clear updates everywhere it\'s shown, not just here</div>' +
+        rows +
       '</div>'
     );
   }
@@ -614,6 +763,7 @@
           '</div>' +
         '</div>' +
         blockHtml +
+        renderStakeholderPanel(it) +
       '</div>'
     );
   }
@@ -750,21 +900,22 @@
     var actionId = cb.getAttribute('data-toggle-action');
     var itemNo = cb.getAttribute('data-action-item');
     var newStatus = cb.checked ? 'done' : 'todo';
-    var noteInput = document.querySelector('[data-note-action="' + actionId + '"]');
+    var logInput = document.querySelector('[data-log-add="' + actionId + '"]');
 
     // Unchecking a step -- almost always a "that was checked by mistake"
-    // correction -- requires a note explaining why first, the same way
-    // sending an item back for review or declining a signup requires a
-    // note elsewhere in this system. Without this, a wrongly-checked step
-    // could be silently un-checked with zero trace of what actually
+    // correction -- requires a log entry explaining why first, the same
+    // way sending an item back for review or declining a signup requires
+    // a note elsewhere in this system. Without this, a wrongly-checked
+    // step could be silently un-checked with zero trace of what actually
     // happened, which is worse than leaving the mistake checked.
+    var uncheckReason = '';
     if (newStatus === 'todo') {
-      var uncheckNote = noteInput ? noteInput.value.trim() : '';
-      if (!uncheckNote) {
+      uncheckReason = logInput ? logInput.value.trim() : '';
+      if (!uncheckReason) {
         cb.checked = true;
-        if (noteInput) {
-          noteInput.placeholder = 'Say why you’re unchecking this, then try again (required)';
-          noteInput.focus();
+        if (logInput) {
+          logInput.placeholder = 'Say why you’re unchecking this, then try again (required)';
+          logInput.focus();
         }
         return;
       }
@@ -772,7 +923,6 @@
 
     cb.disabled = true;
     var update = { status: newStatus, done_by: newStatus === 'done' ? member.id : null, done_at: newStatus === 'done' ? new Date().toISOString() : null };
-    if (newStatus === 'todo') update.note = noteInput.value.trim();
     var result = await client.from('bbpac_formation_item_actions').update(update).eq('id', actionId);
     if (result.error) {
       cb.checked = !cb.checked;
@@ -786,36 +936,55 @@
       Object.assign(action, update);
       action.doer = newStatus === 'done' ? { name: member.name } : null;
     }
+    if (newStatus === 'todo') await addLogEntry(actionId, uncheckReason);
     reRenderActionRow(itemNo);
   });
 
-  document.addEventListener('blur', async function (e) {
-    var input = e.target.closest('[data-note-action]');
+  document.addEventListener('click', async function (e) {
+    var btn = e.target.closest('[data-log-add-btn]');
+    if (!btn) return;
+    var actionId = btn.getAttribute('data-log-add-btn');
+    var input = document.querySelector('[data-log-add="' + actionId + '"]');
+    var text = input.value.trim();
+    if (!text) return;
+    btn.disabled = true;
+    var entry = await addLogEntry(actionId, text);
+    btn.disabled = false;
+    if (!entry) return;
+    input.value = '';
+    input.placeholder = 'Log what happened -- e.g. left voicemail, or: spoke with Maria, she said...';
+    var listEl = document.querySelector('[data-log-list="' + actionId + '"]');
+    if (listEl) listEl.outerHTML = renderActionLog(actionId, logsByActionId[actionId] || []);
+  });
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-log-expand]');
+    if (!btn) return;
+    var actionId = btn.getAttribute('data-log-expand');
+    logExpandedActionIds[actionId] = true;
+    var listEl = document.querySelector('[data-log-list="' + actionId + '"]');
+    if (listEl) listEl.outerHTML = renderActionLog(actionId, logsByActionId[actionId] || []);
+  });
+
+  // Search runs against whatever's already been fetched for this action
+  // (up to 2000 entries -- see loadLogsForItem) rather than a fresh query
+  // per keystroke: instant, and enough headroom for the "hundreds of
+  // entries over years" scale this was built for.
+  document.addEventListener('input', function (e) {
+    var input = e.target.closest('[data-log-search]');
     if (!input) return;
-    var actionId = input.getAttribute('data-note-action');
-    var note = input.value.trim();
-    var savedTag = document.querySelector('[data-note-saved="' + actionId + '"]');
-    // .select('updated_at') gets back the real, server-stamped save time
-    // (set by the row's own before-update trigger) rather than trusting
-    // the browser's clock -- this is the exact timestamp someone would
-    // use to judge "has it been long enough to call back yet."
-    var result = await client.from('bbpac_formation_item_actions').update({ note: note || null }).eq('id', actionId).select('updated_at').single();
-    if (result.error) {
-      alert('Failed to save note: ' + result.error.message);
+    var actionId = input.getAttribute('data-log-search');
+    var term = input.value.trim().toLowerCase();
+    var all = logsByActionId[actionId] || [];
+    var listEl = document.querySelector('[data-log-list="' + actionId + '"]');
+    if (!listEl) return;
+    if (!term) {
+      listEl.outerHTML = renderActionLog(actionId, all);
       return;
     }
-    var list = Object.values(actionsByItemNo).reduce(function (a, b) { return a.concat(b); }, []);
-    var action = list.filter(function (a) { return a.id === actionId; })[0];
-    if (action) { action.note = note || null; action.updated_at = result.data.updated_at; }
-    if (savedTag) {
-      if (note) {
-        savedTag.textContent = 'Saved ' + new Date(result.data.updated_at).toLocaleString();
-        savedTag.hidden = false;
-      } else {
-        savedTag.hidden = true;
-      }
-    }
-  }, true);
+    var filtered = all.filter(function (entry) { return entry.body.toLowerCase().indexOf(term) !== -1; });
+    listEl.outerHTML = renderActionLog(actionId, filtered, { searching: true, totalCount: all.length });
+  });
 
   document.addEventListener('click', async function (e) {
     var btn = e.target.closest('[data-add-action]');
@@ -845,7 +1014,10 @@
     var chev = toggleBtn.querySelector('.a-chev');
     body.hidden = !body.hidden;
     if (chev) chev.classList.toggle('open', !body.hidden);
-    if (!body.hidden) autosizeKnownFields(body);
+    if (!body.hidden) {
+      autosizeKnownFields(body);
+      loadLogsForItem(itemNo, body);
+    }
   });
 
   document.addEventListener('click', async function (e) {
@@ -900,22 +1072,66 @@
       // ever rendered once, on page load, so they need to be told to
       // re-render now. Without this, resolving an item here would silently
       // leave stale "still waiting" rows displayed above.
-      var it = itemsByNo[itemNo];
-      Object.assign(it, update);
+      Object.assign(itemsByNo[itemNo], update);
       renderWaitingOnMe();
-      var card = document.getElementById('owned-item-' + itemNo);
-      if (card) {
-        var status = blockingStatusFor(it.item_no);
-        var panel = card.querySelector('.block-panel');
-        if (panel) {
-          panel.outerHTML = status.blocked
-            ? '<div class="block-panel"><span class="block-tag blocked"><i class="fas fa-hand"></i>Blocked</span>' + status.lines.join('') + '</div>'
-            : '<div class="block-panel"><span class="block-tag clear"><i class="fas fa-circle-check"></i>Nothing blocking this right now</span></div>';
-        }
-      }
+      refreshBlockPanel(itemNo);
     }
     msg.style.display = 'inline';
     setTimeout(function () { msg.style.display = 'none'; }, 3000);
+  });
+
+  function refreshBlockPanel(itemNo) {
+    var card = document.getElementById('owned-item-' + itemNo);
+    if (!card) return;
+    var status = blockingStatusFor(Number(itemNo));
+    var panel = card.querySelector('.block-panel');
+    if (panel) {
+      panel.outerHTML = status.blocked
+        ? '<div class="block-panel"><span class="block-tag blocked"><i class="fas fa-hand"></i>Blocked</span>' + status.lines.join('') + '</div>'
+        : '<div class="block-panel"><span class="block-tag clear"><i class="fas fa-circle-check"></i>Nothing blocking this right now</span></div>';
+    }
+  }
+
+  document.addEventListener('click', async function (e) {
+    var btn = e.target.closest('[data-stake-save]');
+    if (!btn) return;
+    var stakeId = btn.getAttribute('data-stake-save');
+    var itemNo = btn.getAttribute('data-stake-item');
+    var statusEl = document.querySelector('[data-stake-status="' + stakeId + '"]');
+    var summaryEl = document.querySelector('[data-stake-summary="' + stakeId + '"]');
+    var msgEl = document.querySelector('[data-stake-saved="' + stakeId + '"]');
+    var newStatus = statusEl.value;
+    var newSummary = summaryEl.value.trim();
+
+    var stakes = stakesByItemNo[itemNo] || [];
+    var stake = stakes.filter(function (s) { return s.id === stakeId; })[0];
+
+    var update = { consultation_status: newStatus, response_summary: newSummary || null };
+    // First time this moves off "not yet contacted," stamp today as the
+    // contact date -- nothing tracked this before, so this is the honest
+    // best available answer rather than leaving it blank forever.
+    if (newStatus !== 'not_yet_contacted' && stake && !stake.contacted_at) {
+      update.contacted_at = new Date().toISOString().slice(0, 10);
+    }
+
+    btn.disabled = true;
+    var result = await client.from('bbpac_formation_item_stakeholders').update(update).eq('id', stakeId);
+    btn.disabled = false;
+    if (result.error) {
+      msgEl.textContent = 'Failed: ' + result.error.message;
+      msgEl.style.color = 'var(--culture)';
+    } else {
+      if (stake) Object.assign(stake, update);
+      msgEl.textContent = 'Saved.';
+      msgEl.style.color = 'var(--community)';
+      // The actual point of this control: everywhere else that reads
+      // consultation_status (Review Queue, matrix.html, readiness.html)
+      // picks this up on its own next load automatically -- this page's
+      // own blocking panel is the one place that needs telling right now.
+      refreshBlockPanel(itemNo);
+    }
+    msgEl.style.display = 'inline';
+    setTimeout(function () { msgEl.style.display = 'none'; }, 3000);
   });
 
   document.addEventListener('click', async function (e) {
@@ -1093,11 +1309,11 @@
     }
 
     var stakeResult = await client.from('bbpac_formation_item_stakeholders')
-      .select('item_no, relationship_type, consultation_status, bbpac_formation_stakeholders(name)');
+      .select('id, item_no, relationship_type, consultation_status, response_summary, contacted_at, bbpac_formation_stakeholders(name)');
     (stakeResult.data || []).forEach(function (r) {
       var name = r.bbpac_formation_stakeholders ? r.bbpac_formation_stakeholders.name : 'Unknown';
       if (!stakesByItemNo[r.item_no]) stakesByItemNo[r.item_no] = [];
-      stakesByItemNo[r.item_no].push({ stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status });
+      stakesByItemNo[r.item_no].push({ id: r.id, stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status, response_summary: r.response_summary, contacted_at: r.contacted_at });
     });
 
     var actionsResult = await client.from('bbpac_formation_item_actions').select('*, doer:bbpac_formation_members_public!done_by(name)').order('seq', { ascending: true });

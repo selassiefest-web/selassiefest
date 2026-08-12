@@ -91,6 +91,7 @@
   .a-trail-desc a i{margin-right:3px;}
   .a-trail-meta{font-size:0.7rem; color:var(--ink-dim); margin-top:2px;}
   .a-trail-note{font-size:0.8rem; color:#4a3a1e; font-style:italic; margin-top:3px;}
+  .a-trail-note-meta{display:block; font-size:0.68rem; font-weight:700; font-style:normal; color:var(--ink-dim); margin-bottom:1px;}
   .a-trail-empty{font-size:0.82rem; color:var(--ink-dim); font-style:italic; margin:0;}
 
   .qactions{display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-top:12px; border-top:1px dashed var(--line); padding-top:12px;}
@@ -309,10 +310,17 @@
     if (!actions || !actions.length) return '<p class="a-trail-empty">No action items were recorded for this item.</p>';
     return '<div class="a-trail">' + actions.map(function (a) {
       var who = a.status === 'done' ? ('Done by ' + escapeHtml(a.doer ? a.doer.name : 'someone') + (a.done_at ? ' &middot; ' + new Date(a.done_at).toLocaleDateString() : '')) : 'Not done';
+      var logs = a.logs || [];
+      var logHtml = logs.length
+        ? logs.map(function (l) {
+            var logWho = l.member ? l.member.name : 'Unknown';
+            return '<div class="a-trail-note"><span class="a-trail-note-meta">' + escapeHtml(logWho) + ' &middot; ' + new Date(l.created_at).toLocaleString() + '</span>&ldquo;' + linkifyUrls(l.body) + '&rdquo;</div>';
+          }).join('')
+        : '';
       return '<div class="a-trail-item">' +
         '<div class="a-trail-desc' + (a.status === 'done' ? ' is-done' : '') + '">' + linkifyUrls(a.description) + '</div>' +
         '<div class="a-trail-meta">' + who + '</div>' +
-        (a.note ? '<div class="a-trail-note">&ldquo;' + linkifyUrls(a.note) + '&rdquo;</div>' : '') +
+        logHtml +
       '</div>';
     }).join('') + '</div>';
   }
@@ -366,6 +374,23 @@
         actionsByItemNo[a.item_no].push(a);
       });
       items.forEach(function (it) { it.actions = actionsByItemNo[it.item_no] || []; });
+
+      // The running log (see my-section.html) is now the real record of
+      // how each action item was actually worked -- an approver deciding
+      // Approve vs. Send Back needs to see it, not just a checked box.
+      var actionIds = (actionsResult.data || []).map(function (a) { return a.id; });
+      if (actionIds.length) {
+        var logsResult = await client.from('bbpac_formation_item_action_logs')
+          .select('action_id, body, created_at, member:bbpac_formation_members_public!member_id(name)')
+          .in('action_id', actionIds)
+          .order('created_at', { ascending: true });
+        var logsByActionId = {};
+        (logsResult.data || []).forEach(function (l) {
+          if (!logsByActionId[l.action_id]) logsByActionId[l.action_id] = [];
+          logsByActionId[l.action_id].push(l);
+        });
+        (actionsResult.data || []).forEach(function (a) { a.logs = logsByActionId[a.id] || []; });
+      }
 
       var stakeResult = await client.from('bbpac_formation_item_stakeholders')
         .select('item_no, relationship_type, consultation_status, bbpac_formation_stakeholders(name)')
