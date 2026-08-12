@@ -102,8 +102,8 @@
   .action-item{display:flex; align-items:flex-start; gap:10px;}
   .action-item input[type="checkbox"]{width:24px; height:24px; margin-top:1px; flex-shrink:0; cursor:pointer;}
   .action-item .a-desc{font-size:1.02rem; line-height:1.45; color:#33404c; flex:1;}
-  .action-item .a-desc a, .known-value a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
-  .action-item .a-desc a i, .known-value a i{margin-right:3px;}
+  .action-item .a-desc a{color:var(--lakefront); text-decoration:underline; font-weight:700; white-space:nowrap;}
+  .action-item .a-desc a i{margin-right:3px;}
   .action-item.is-done .a-desc{color:var(--ink-dim); text-decoration:line-through;}
   .action-item .a-meta{font-size:0.8rem; color:var(--ink-dim); display:block; margin-top:2px;}
   .action-item .a-meta.a-locked{color:var(--legacy); font-weight:700;}
@@ -134,8 +134,9 @@
   .field-edit select{padding:8px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.95rem;}
   .known-field{margin-top:8px;}
   .known-field label{font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); display:block; margin-bottom:3px;}
-  .known-value{background:#f1ede3; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:1.02rem; line-height:1.45; color:#33404c; white-space:pre-wrap;}
-  .known-value.unanswered{color:var(--ink-dim); font-style:italic;}
+  .known-value{display:block; width:100%; min-height:60px; background:#f1ede3; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:1.02rem; line-height:1.45; color:#33404c; white-space:pre-wrap; font-family:inherit; resize:vertical;}
+  .known-value:focus{outline:none; border-color:var(--lakefront); background:#fff;}
+  .known-value::placeholder{color:var(--ink-dim); font-style:italic;}
   .save-row{margin-top:10px; display:flex; align-items:center; gap:10px;}
   .save-row .saved-msg{font-size:0.88rem; color:var(--community); display:none;}
 
@@ -521,18 +522,23 @@
 
 
   // Current state and Proposed state are the known record -- the factual
-  // pre-state and the post-state we're aiming for -- established through
-  // real research and verified by a team leader before it's written in,
-  // the same way item #6's boundary answer was. They are NOT a fill-in-
-  // the-blank for whoever happens to open this page; the action checklist
-  // below is the actual editable work surface.
+  // pre-state and the post-state we're aiming for. They're genuinely
+  // editable by whoever owns the section (matches bbpac_formation_matrix_
+  // items' RLS, which already grants section owners UPDATE on these exact
+  // columns) -- the guidance boxes above literally instruct "update
+  // Current state / Proposed state as you learn more," so the field has to
+  // actually let you. Nothing here is final until Submit for Review is
+  // approved: the same "Save draft" button that persists progress_status
+  // persists these too (both just collect every [data-field] on the
+  // card), so an edit here is a draft like any other until a team leader
+  // signs off.
   function renderKnownField(it, field, label, emptyText) {
     var value = it[field];
     var has = value != null && String(value).trim() !== '';
     return (
       '<div class="known-field">' +
         '<label>' + label + '</label>' +
-        '<div class="known-value' + (has ? '' : ' unanswered') + '">' + (has ? linkifyText(value) : emptyText) + '</div>' +
+        '<textarea class="known-value" data-field="' + field + '" data-item="' + it.item_no + '" placeholder="' + escapeHtml(emptyText) + '">' + (has ? escapeHtml(value) : '') + '</textarea>' +
       '</div>'
     );
   }
@@ -558,10 +564,10 @@
         '<div class="answer-block">' +
           renderGuidance(it) +
           '<div class="record-label">Known record &mdash; what is true, and what we are aiming for</div>' +
-          renderKnownField(it, 'current_state', 'Current state', 'Not yet determined &mdash; this is the first action item below.') +
-          renderKnownField(it, 'jackson_park_reference', 'Jackson Park reference', 'Not yet found &mdash; see the action items below.') +
-          renderKnownField(it, 'proposed_state', 'Proposed state', 'Not yet decided &mdash; see the action items below.') +
-          renderKnownField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'Not yet determined &mdash; see the action items below.') +
+          renderKnownField(it, 'current_state', 'Current state', 'Not yet determined — this is the first action item below.') +
+          renderKnownField(it, 'jackson_park_reference', 'Jackson Park reference', 'Not yet found — see the action items below.') +
+          renderKnownField(it, 'proposed_state', 'Proposed state', 'Not yet decided — see the action items below.') +
+          renderKnownField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'Not yet determined — see the action items below.') +
           '<div class="pointer-arrow"><i class="fas fa-list-check"></i>Work through the action items below</div>' +
           renderActionChecklist(it) +
           '<div class="field-edit"><label>Progress status (draft)</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
