@@ -74,6 +74,14 @@
   .qfield .val a i{margin-right:3px;}
   .qproposed{display:inline-block; font-size:0.7rem; font-weight:800; text-transform:uppercase; padding:3px 10px; border-radius:10px; background:rgba(220,131,17,0.16); color:#8a5a0d; margin-bottom:10px;}
 
+  .block-panel{margin-bottom:12px;}
+  .block-tag{display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; font-weight:800; padding:4px 12px; border-radius:10px; text-transform:uppercase; margin-bottom:6px;}
+  .block-tag.clear{background:rgba(71,109,62,0.14); color:var(--community);}
+  .block-tag.blocked{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+  .block-line{font-size:0.86rem; line-height:1.4; color:#374a5c; padding:4px 0 4px 8px; border-left:3px solid var(--legacy); margin:4px 0 4px 4px;}
+  .block-line .who{font-weight:700;}
+  .block-line .why{color:var(--ink-dim); font-style:italic;}
+
   .a-trail{background:#f9f7f2; border-radius:8px; padding:4px 10px;}
   .a-trail-item{padding:7px 0; border-top:1px dashed var(--line);}
   .a-trail-item:first-child{border-top:none;}
@@ -267,6 +275,35 @@
   }
 
   var client, member;
+  var RESOLVED_STATUSES = ['complete', 'reviewed_no_change'];
+
+  // Read-only counterpart to my-section.html's blockingStatusFor -- same
+  // two checks (an external stakeholder who hasn't actually responded, or
+  // a cross-item dependency that isn't resolved), computed once per queue
+  // load. An approver deciding Approve vs. Send Back needs to see this
+  // without having to separately open matrix.html first.
+  function blockingStatusFor(it, stakesByItemNo, depItemsByNo, ownersBySection) {
+    var lines = [];
+    var blocked = false;
+
+    var stakes = stakesByItemNo[it.item_no] || [];
+    stakes.filter(function (s) { return (s.relationship_type === 'has_jurisdiction' || s.relationship_type === 'must_approve') && s.consultation_status !== 'responded'; })
+      .forEach(function (s) {
+        blocked = true;
+        lines.push('<div class="block-line"><span class="who">' + escapeHtml(s.stakeholder_name) + '</span> (external) &mdash; <span class="why">' + escapeHtml((s.consultation_status || 'not_yet_contacted').replace(/_/g, ' ')) + '</span></div>');
+      });
+
+    (it.depends_on_item_nos || []).forEach(function (depNo) {
+      var dep = depItemsByNo[depNo];
+      if (!dep || RESOLVED_STATUSES.indexOf(dep.progress_status) !== -1) return;
+      blocked = true;
+      var owners = ownersBySection[dep.section_no] || [];
+      var ownerText = owners.length ? owners.join(', ') : 'nobody currently';
+      lines.push('<div class="block-line">#' + depNo + ' ' + escapeHtml(dep.item_label) + ' &mdash; owned by <span class="who">' + escapeHtml(ownerText) + '</span></div>');
+    });
+
+    return { blocked: blocked, lines: lines };
+  }
 
   function renderActionTrail(actions) {
     if (!actions || !actions.length) return '<p class="a-trail-empty">No action items were recorded for this item.</p>';
@@ -282,11 +319,16 @@
 
   function renderQueueItem(it) {
     var submitterName = it.submitter ? it.submitter.name : 'Unknown';
+    var status = it.blockStatus || { blocked: false, lines: [] };
+    var blockHtml = '<div class="block-panel">' + (status.blocked
+      ? '<span class="block-tag blocked"><i class="fas fa-hand"></i>Still blocked</span>' + status.lines.join('')
+      : '<span class="block-tag clear"><i class="fas fa-circle-check"></i>Nothing blocking this right now</span>') + '</div>';
     return (
       '<div class="queue-item" data-queue-item="' + it.item_no + '">' +
         '<div class="qid">#' + it.item_no + ' &middot; Section ' + it.section_no + ': ' + escapeHtml(it.section_title) + '</div>' +
         '<div class="qtitle">' + escapeHtml(it.item_label) + '</div>' +
         '<div class="qmeta">Submitted by <strong>' + escapeHtml(submitterName) + '</strong>' + (it.submitted_at ? ' on ' + new Date(it.submitted_at).toLocaleString() : '') + '</div>' +
+        blockHtml +
         '<span class="qproposed">Proposing: ' + escapeHtml((it.proposed_status || 'complete').replace(/_/g, ' ')) + '</span>' +
         '<div class="qfield"><label>Current state</label><div class="val">' + (it.current_state ? linkifyUrls(it.current_state) : '<em>(left blank)</em>') + '</div></div>' +
         '<div class="qfield"><label>Jackson Park reference</label><div class="val">' + (it.jackson_park_reference ? linkifyUrls(it.jackson_park_reference) : '<em>(left blank)</em>') + '</div></div>' +
@@ -307,7 +349,7 @@
     var el = document.getElementById('queueArea');
     el.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading queue&hellip;</div>';
     var result = await client.from('bbpac_formation_matrix_items')
-      .select('item_no, item_label, section_no, section_title, current_state, jackson_park_reference, proposed_state, legal_policy_basis, proposed_status, submitted_at, submitter:bbpac_formation_members_public!submitted_by(name)')
+      .select('item_no, item_label, section_no, section_title, current_state, jackson_park_reference, proposed_state, legal_policy_basis, proposed_status, submitted_at, depends_on_item_nos, submitter:bbpac_formation_members_public!submitted_by(name)')
       .eq('review_status', 'pending_review')
       .order('submitted_at', { ascending: true });
     var items = result.data || [];
@@ -324,6 +366,39 @@
         actionsByItemNo[a.item_no].push(a);
       });
       items.forEach(function (it) { it.actions = actionsByItemNo[it.item_no] || []; });
+
+      var stakeResult = await client.from('bbpac_formation_item_stakeholders')
+        .select('item_no, relationship_type, consultation_status, bbpac_formation_stakeholders(name)')
+        .in('item_no', itemNos);
+      var stakesByItemNo = {};
+      (stakeResult.data || []).forEach(function (r) {
+        var name = r.bbpac_formation_stakeholders ? r.bbpac_formation_stakeholders.name : 'Unknown';
+        if (!stakesByItemNo[r.item_no]) stakesByItemNo[r.item_no] = [];
+        stakesByItemNo[r.item_no].push({ stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status });
+      });
+
+      var depNos = Array.from(new Set([].concat.apply([], items.map(function (it) { return it.depends_on_item_nos || []; }))));
+      var depItemsByNo = {}, ownersBySection = {};
+      if (depNos.length) {
+        var depItemsResult = await client.from('bbpac_formation_matrix_items')
+          .select('item_no, item_label, section_no, progress_status')
+          .in('item_no', depNos);
+        (depItemsResult.data || []).forEach(function (d) { depItemsByNo[d.item_no] = d; });
+
+        var depSectionNos = Array.from(new Set(Object.keys(depItemsByNo).map(function (n) { return depItemsByNo[n].section_no; })));
+        if (depSectionNos.length) {
+          var depOwnersResult = await client.from('bbpac_formation_section_owners')
+            .select('section_no, bbpac_formation_members_public(name)')
+            .in('section_no', depSectionNos);
+          (depOwnersResult.data || []).forEach(function (r) {
+            var name = r.bbpac_formation_members_public ? r.bbpac_formation_members_public.name : 'Unknown';
+            if (!ownersBySection[r.section_no]) ownersBySection[r.section_no] = [];
+            ownersBySection[r.section_no].push(name);
+          });
+        }
+      }
+
+      items.forEach(function (it) { it.blockStatus = blockingStatusFor(it, stakesByItemNo, depItemsByNo, ownersBySection); });
     }
 
     el.innerHTML = items.length

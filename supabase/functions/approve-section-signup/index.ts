@@ -1,10 +1,18 @@
 // Approve or decline a Join a Section request (bbpac_formation_section_signup_requests).
 // Approving creates the bbpac_formation_members row for this email if one
-// doesn't exist yet, adds a bbpac_formation_section_owners row for each
-// granted section, and emails the applicant. This used to be a manual
-// "add rows via the Table Editor" step (see notify-submission's formatter);
-// this function is now the only path that does it, running as service_role
-// since neither table grants authenticated clients direct insert.
+// doesn't exist yet, and adds a bbpac_formation_section_owners row for each
+// granted section. This used to be a manual "add rows via the Table Editor"
+// step (see notify-submission's formatter); this function is now the only
+// path that does it, running as service_role since neither table grants
+// authenticated clients direct insert.
+//
+// Deliberately does NOT send the decision email itself -- that's the job of
+// the bbpac_formation_notify_section_request_decision AFTER UPDATE trigger
+// (see notify-section-request-decision), which fires on this function's own
+// status write same as it would on a manual Table Editor edit. Sending it
+// here too would double-email the applicant on every approve/decline; one
+// path (the trigger) that fires no matter how status changed is simpler and
+// more robust than two paths that have to be kept in sync.
 //
 // Approver pool is the same sitewide, section-agnostic one used for item
 // review (any member with is_approver = true, set via set-approver-optin).
@@ -13,9 +21,6 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const FROM = "SelassieFest <hello@selassiefest.com>";
-const REPLY_TO = "stephen@selassiefest.com";
 
 const ALLOWED_ORIGINS = ["https://selassiefest.com", "http://localhost:8000"];
 
@@ -26,10 +31,6 @@ function corsHeaders(req: Request) {
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
-}
-
-function escapeHtml(s: unknown) {
-  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 }
 
 Deno.serve(async (req) => {
@@ -72,7 +73,7 @@ Deno.serve(async (req) => {
 
   const { data: caller } = await admin
     .from("bbpac_formation_members")
-    .select("id, name, is_approver")
+    .select("id, is_approver")
     .eq("auth_user_id", userData.user.id)
     .maybeSingle();
   if (!caller) {
@@ -104,15 +105,6 @@ Deno.serve(async (req) => {
       .eq("id", request_id);
     if (updateErr) {
       return new Response(JSON.stringify({ error: updateErr.message }), { status: 500, headers: jsonHeaders });
-    }
-    if (RESEND_API_KEY) {
-      const subject = "Update on your Bongo Beach section request";
-      const html = `<p>Hi ${escapeHtml(reqRow.full_name)},</p><p>We reviewed your request for Section ${escapeHtml(reqRow.requested_sections.join(", "))} of the Master Due-Diligence Matrix. It wasn't approved this time:</p><blockquote style="border-left:3px solid #DC8311; margin:10px 0; padding:6px 14px; color:#4a3a1e;">${escapeHtml(note)}</blockquote><p>You're welcome to <a href="https://selassiefest.com/bbpac/organization/join-a-section.html">submit another request</a> any time.</p>`;
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: FROM, to: reqRow.email, reply_to: REPLY_TO, subject, html }),
-      }).catch(() => {});
     }
     return new Response(JSON.stringify({ ok: true, action }), { status: 200, headers: jsonHeaders });
   }
@@ -151,16 +143,6 @@ Deno.serve(async (req) => {
     .eq("id", request_id);
   if (updateErr) {
     return new Response(JSON.stringify({ error: updateErr.message }), { status: 500, headers: jsonHeaders });
-  }
-
-  if (RESEND_API_KEY) {
-    const subject = "You're approved -- welcome to the Bongo Beach team";
-    const html = `<p>Hi ${escapeHtml(reqRow.full_name)},</p><p><strong>${escapeHtml(caller.name)}</strong> approved your request. You now have write access to Section${sections.length > 1 ? "s" : ""} <strong>${escapeHtml(sections.join(", "))}</strong> of the Master Due-Diligence Matrix.</p><p>Log in with this same email (${escapeHtml(reqRow.email)}) at <a href="https://selassiefest.com/bbpac/organization/my-section.html">My Section</a> -- no password, just a one-time link sent to your inbox.</p>`;
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: FROM, to: reqRow.email, reply_to: REPLY_TO, subject, html }),
-    }).catch(() => {});
   }
 
   return new Response(JSON.stringify({ ok: true, action, granted_sections: sections }), { status: 200, headers: jsonHeaders });
