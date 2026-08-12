@@ -145,6 +145,11 @@
   .stake-head{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
   .stake-name{font-weight:700; font-size:0.9rem; color:var(--navy);}
   .stake-rel-tag{font-size:0.64rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; padding:2px 9px; border-radius:9px; background:rgba(0,38,73,0.08); color:var(--ink-dim);}
+  .stake-jurisdiction{font-size:0.8rem; color:var(--ink-dim); margin-bottom:6px;}
+  .stake-contact{font-size:0.86rem; color:#374a5c; margin-bottom:8px;}
+  .stake-contact a{color:var(--lakefront); text-decoration:underline; font-weight:700;}
+  .stake-contact a i{margin-right:3px;}
+  .stake-contact.stake-contact-unknown{color:var(--ink-dim); font-style:italic;}
   .stake-fields{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
   .stake-status-select{padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.86rem;}
   .stake-summary-input{flex:1 1 220px; min-width:180px; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:0.86rem;}
@@ -693,10 +698,25 @@
     var stakes = stakesByItemNo[it.item_no] || [];
     if (!stakes.length) return '';
     var rows = stakes.map(function (s) {
+      var contactParts = [];
+      if (s.contact_name || s.contact_title) contactParts.push(escapeHtml([s.contact_name, s.contact_title].filter(Boolean).join(', ')));
+      if (s.contact_phone) contactParts.push('<a href="tel:+1' + s.contact_phone.replace(/\D/g, '') + '"><i class="fas fa-phone"></i> ' + escapeHtml(s.contact_phone) + '</a>');
+      if (s.contact_email) contactParts.push('<a href="mailto:' + escapeHtml(s.contact_email) + '"><i class="fas fa-envelope"></i> ' + escapeHtml(s.contact_email) + '</a>');
+      if (s.source_url) contactParts.push('<a href="' + escapeHtml(s.source_url) + '" target="_blank" rel="noopener">source</a>');
+      // Contact info lives on the shared stakeholder, so this is often
+      // already known from a DIFFERENT item's research -- surface it here
+      // instead of leaving every item to look like nobody's ever called
+      // this office before.
+      var contactLine = contactParts.length
+        ? '<div class="stake-contact">' + contactParts.join(' &middot; ') + '</div>'
+        : '<div class="stake-contact stake-contact-unknown"><i class="fas fa-circle-question"></i> No contact info on file yet for this office -- once you find one, add it so every other item naming them benefits too.</div>';
+      var jurisdictionLine = s.jurisdiction_summary ? '<div class="stake-jurisdiction">' + escapeHtml(s.jurisdiction_summary) + '</div>' : '';
       return (
         '<div class="stake-row">' +
           '<div class="stake-head"><span class="stake-name">' + escapeHtml(s.stakeholder_name) + '</span>' +
             '<span class="stake-rel-tag">' + escapeHtml(RELATIONSHIP_LABEL[s.relationship_type] || s.relationship_type) + '</span></div>' +
+          jurisdictionLine +
+          contactLine +
           '<div class="stake-fields">' +
             '<select class="stake-status-select" data-stake-status="' + s.id + '">' +
               Object.keys(CONSULT_LABEL).map(function (k) {
@@ -1321,12 +1341,24 @@
       docRefPattern = new RegExp('\\b(' + escapedIds.join('|') + ')\\b', 'g');
     }
 
+    // Contact info lives on the shared stakeholder row, not per-item -- the
+    // same CPD office is often named on dozens of items (CPD Legislative &
+    // Community Affairs alone is referenced by 28 items just in Section 1).
+    // Once one item's action-item research finds a real phone/email, every
+    // OTHER item pointing at that same stakeholder should see it here too,
+    // instead of each volunteer re-discovering the same contact from scratch.
     var stakeResult = await client.from('bbpac_formation_item_stakeholders')
-      .select('id, item_no, relationship_type, consultation_status, response_summary, contacted_at, bbpac_formation_stakeholders(name)');
+      .select('id, item_no, relationship_type, consultation_status, response_summary, contacted_at, bbpac_formation_stakeholders(name, jurisdiction_summary, contact_name, contact_title, contact_phone, contact_email, source_url)');
     (stakeResult.data || []).forEach(function (r) {
-      var name = r.bbpac_formation_stakeholders ? r.bbpac_formation_stakeholders.name : 'Unknown';
+      var sh = r.bbpac_formation_stakeholders || {};
       if (!stakesByItemNo[r.item_no]) stakesByItemNo[r.item_no] = [];
-      stakesByItemNo[r.item_no].push({ id: r.id, stakeholder_name: name, relationship_type: r.relationship_type, consultation_status: r.consultation_status, response_summary: r.response_summary, contacted_at: r.contacted_at });
+      stakesByItemNo[r.item_no].push({
+        id: r.id, stakeholder_name: sh.name || 'Unknown', jurisdiction_summary: sh.jurisdiction_summary,
+        contact_name: sh.contact_name, contact_title: sh.contact_title, contact_phone: sh.contact_phone,
+        contact_email: sh.contact_email, source_url: sh.source_url,
+        relationship_type: r.relationship_type, consultation_status: r.consultation_status,
+        response_summary: r.response_summary, contacted_at: r.contacted_at,
+      });
     });
 
     var actionsResult = await client.from('bbpac_formation_item_actions').select('*, doer:bbpac_formation_members_public!done_by(name)').order('seq', { ascending: true });
