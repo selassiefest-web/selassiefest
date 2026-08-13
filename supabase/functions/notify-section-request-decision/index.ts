@@ -27,7 +27,15 @@ Deno.serve(async (req) => {
   }
 
   const { record } = await req.json();
-  const sections = Array.isArray(record.requested_sections) ? record.requested_sections.join(", ") : record.requested_sections;
+  // Approved rows email off granted_sections (what the approver actually
+  // checked) so a partial approval is never reported as a full one --
+  // requested_sections stays the original ask, used only for declines
+  // (which are always all-or-nothing) and as a defensive fallback for any
+  // older row approved before granted_sections existed.
+  const grantedList = Array.isArray(record.granted_sections) && record.granted_sections.length
+    ? record.granted_sections
+    : record.requested_sections;
+  const sections = Array.isArray(grantedList) ? grantedList.join(", ") : grantedList;
 
   let subject: string, html: string;
   if (record.status === "approved") {

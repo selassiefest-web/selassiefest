@@ -69,6 +69,9 @@
   .owner-badge{font-size:0.68rem; font-weight:800; padding:3px 10px; border-radius:10px; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap;}
   .owner-badge.open{background:rgba(71,109,62,0.14); color:var(--community);}
   .owner-badge.claimed{background:rgba(220,131,17,0.14); color:#8a5a0d;}
+  .owner-badge .role-tag{font-size:0.62rem; font-weight:800; text-transform:uppercase; margin-left:4px;}
+  .owner-badge .role-tag.head{color:var(--culture);}
+  .owner-badge .role-tag.worker{color:var(--lakefront);}
 
   .form-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 30px; margin:20px 0;}
   .form-card label{display:block; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); margin:14px 0 5px;}
@@ -325,8 +328,11 @@
     lastSections = sections;
     var html = sections.map(function (s) {
       var owners = ownersBySection[s.sectionNo] || [];
+      var ownerNames = owners.map(function (o) {
+        return escapeHtml(o.name) + '<span class="role-tag ' + (o.role === 'head' ? 'head' : 'worker') + '">' + (o.role === 'head' ? 'Head' : 'Worker') + '</span>';
+      }).join(', ');
       var badge = owners.length
-        ? '<span class="owner-badge claimed">Owned by ' + escapeHtml(owners.join(', ')) + '</span>'
+        ? '<span class="owner-badge claimed">Owned by ' + ownerNames + '</span>'
         : '<span class="owner-badge open">Open</span>';
       return (
         '<label class="section-row' + (owners.length ? ' claimed' : '') + '">' +
@@ -419,7 +425,7 @@
     var client = await window.sfSupabaseReady;
 
     var itemsResult = await client.from('bbpac_formation_matrix_items').select('section_no, section_title').neq('section_no', 0);
-    var ownersResult = await client.from('bbpac_formation_section_owners').select('section_no, bbpac_formation_members_public(name)');
+    var ownersResult = await client.from('bbpac_formation_section_owners').select('section_no, role, bbpac_formation_members_public(name)');
 
     document.getElementById('loadingState').style.display = 'none';
     if (itemsResult.error) {
@@ -440,7 +446,7 @@
     (ownersResult.data || []).forEach(function (r) {
       var name = r.bbpac_formation_members_public ? r.bbpac_formation_members_public.name : 'Unknown';
       if (!ownersBySection[r.section_no]) ownersBySection[r.section_no] = [];
-      ownersBySection[r.section_no].push(name);
+      ownersBySection[r.section_no].push({ name: name, role: r.role });
     });
 
     renderSections(sections, ownersBySection);

@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
 
   const { data: reqRow } = await admin
     .from("bbpac_formation_section_signup_requests")
-    .select("id, full_name, email, requested_sections, status")
+    .select("id, full_name, email, requested_sections, message, status")
     .eq("id", request_id)
     .maybeSingle();
   if (!reqRow) {
@@ -137,13 +137,38 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ error: `Could not grant sections: ${ownerErr.message}` }), { status: 500, headers: jsonHeaders });
   }
 
+  // granted_sections records exactly what was checked here -- requested_sections
+  // stays the original ask. notify-section-request-decision emails off
+  // granted_sections for 'approved' rows so a partial grant (an approver
+  // unchecking a section below) is never reported to the applicant as a
+  // full approval.
   const { error: updateErr } = await admin
     .from("bbpac_formation_section_signup_requests")
-    .update({ status: "approved", reviewed_by: caller.id, reviewed_at: new Date().toISOString() })
+    .update({ status: "approved", granted_sections: sections, reviewed_by: caller.id, reviewed_at: new Date().toISOString() })
     .eq("id", request_id);
   if (updateErr) {
     return new Response(JSON.stringify({ error: updateErr.message }), { status: 500, headers: jsonHeaders });
   }
 
-  return new Response(JSON.stringify({ ok: true, action, granted_sections: sections }), { status: 200, headers: jsonHeaders });
+  // Any requested section NOT checked/granted just now doesn't silently
+  // vanish -- it goes back into the queue as its own fresh pending request,
+  // so a future approve/decline pass can still reach it instead of the
+  // applicant having to notice and re-submit from scratch.
+  const leftover = reqRow.requested_sections.filter((s: number) => !sections.includes(s));
+  let requeuedSections: number[] = [];
+  if (leftover.length) {
+    const splitNote = `[Continued from a request approved for section(s) ${sections.join(", ")} -- the remaining section(s) below were not granted in that round.]`;
+    const { error: requeueErr } = await admin.from("bbpac_formation_section_signup_requests").insert({
+      full_name: reqRow.full_name,
+      email: reqRow.email,
+      requested_sections: leftover,
+      message: reqRow.message ? `${splitNote}\n\n${reqRow.message}` : splitNote,
+    });
+    // A requeue failure (e.g. every leftover section got claimed elsewhere
+    // in the moment between requests) shouldn't turn a successful approval
+    // into an error response -- surface it in the response instead.
+    if (!requeueErr) requeuedSections = leftover;
+  }
+
+  return new Response(JSON.stringify({ ok: true, action, granted_sections: sections, requeued_sections: requeuedSections }), { status: 200, headers: jsonHeaders });
 });

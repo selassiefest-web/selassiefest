@@ -4227,3 +4227,63 @@ where proposed_state is null and our_proposed_resolution is null;
 -- AFTER UPDATE trigger on bbpac_formation_section_signup_requests. The
 -- secret is also stored as the Edge Function's SECTION_DECISION_WEBHOOK_SECRET
 -- environment secret (`supabase secrets set`).
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Section signup gaps: partial-approval accuracy + duplicate-request guard
+-- ─────────────────────────────────────────────────────────────────────────
+-- requested_sections is (and stays) the original ask. granted_sections is
+-- what an approver actually checked in the Review Queue (see
+-- approve-section-signup) -- can be a real subset when an approver
+-- unchecks a section. notify-section-request-decision reads
+-- granted_sections for 'approved' rows so the confirmation email never
+-- tells an applicant they got a section that wasn't actually granted.
+alter table bbpac_formation_section_signup_requests
+  add column if not exists granted_sections int[];
+
+-- Refuses (or trims) a signup request that duplicates something already
+-- true: a section the same email already owns, or a section the same
+-- email already has a *pending* request for. Trims rather than
+-- blanket-rejects on partial overlap -- requesting sections 6 and 9 when
+-- you already own 6 still submits a real request for 9 alone. Runs as
+-- the table owner (security definer), not the anon submitter, so it can
+-- read bbpac_formation_members / bbpac_formation_section_owners even
+-- though anon has no select grant on either -- same "guard trigger with
+-- elevated read" pattern as bbpac_formation_guard_item_review_transition
+-- above.
+create or replace function bbpac_formation_guard_section_signup_duplicate()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_owned int[];
+  v_pending int[];
+  v_remaining int[];
+begin
+  select coalesce(array_agg(so.section_no), '{}') into v_owned
+  from public.bbpac_formation_section_owners so
+  join public.bbpac_formation_members m on m.id = so.member_id
+  where lower(m.email) = lower(NEW.email) and so.section_no = any(NEW.requested_sections);
+
+  select coalesce(array_agg(distinct s), '{}') into v_pending
+  from public.bbpac_formation_section_signup_requests r, unnest(r.requested_sections) s
+  where lower(r.email) = lower(NEW.email) and r.status = 'pending' and s = any(NEW.requested_sections);
+
+  select coalesce(array_agg(s), '{}') into v_remaining
+  from unnest(NEW.requested_sections) s
+  where s <> all(v_owned) and s <> all(v_pending);
+
+  if array_length(v_remaining, 1) is null then
+    raise exception 'You already own or have a pending request for every section you selected.';
+  end if;
+
+  NEW.requested_sections := v_remaining;
+  return NEW;
+end;
+$$;
+
+drop trigger if exists bbpac_formation_section_signup_requests_guard_duplicate on bbpac_formation_section_signup_requests;
+create trigger bbpac_formation_section_signup_requests_guard_duplicate
+  before insert on bbpac_formation_section_signup_requests
+  for each row execute function bbpac_formation_guard_section_signup_duplicate();

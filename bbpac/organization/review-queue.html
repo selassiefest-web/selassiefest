@@ -550,9 +550,12 @@
     }
 
     card.style.opacity = '0.4';
-    msgEl.textContent = approveBtn ? 'Approved.' : 'Declined.';
+    var requeued = result.data && result.data.requeued_sections;
+    msgEl.textContent = approveBtn
+      ? ('Approved.' + (requeued && requeued.length ? ' Section(s) ' + requeued.join(', ') + ' were not checked, so they were re-queued as a new pending request.' : ''))
+      : 'Declined.';
     msgEl.style.color = 'var(--community)';
-    setTimeout(function () { card.remove(); }, 900);
+    setTimeout(function () { card.remove(); }, requeued && requeued.length ? 3200 : 900);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async function () {
