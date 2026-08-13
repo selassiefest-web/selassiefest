@@ -681,13 +681,23 @@
   // persists these too (both just collect every [data-field] on the
   // card), so an edit here is a draft like any other until a team leader
   // signs off.
-  function renderKnownField(it, field, label, emptyText) {
+  function renderKnownField(it, field, label, emptyText, alreadyAnsweredEmptyText) {
     var value = it[field];
     var has = value != null && String(value).trim() !== '';
+    // The generic emptyText ("not yet found/determined -- see the action
+    // items below") assumes there's still open investigation happening --
+    // true for a genuinely unresolved item, false and actively misleading
+    // for an "already answered" one (our_proposed_resolution set), where
+    // the single action item is just "confirm this still holds," not "go
+    // determine this." Route already-answered items to their own honest
+    // placeholder instead of quietly reusing the "still open" one.
+    var placeholderText = (!has && classifyItem(it).kind === 'already')
+      ? (alreadyAnsweredEmptyText || 'Not separately recorded -- the citation above already answers this.')
+      : emptyText;
     return (
       '<div class="known-field">' +
         '<label>' + label + '</label>' +
-        '<textarea class="known-value" data-field="' + field + '" data-item="' + it.item_no + '" placeholder="' + escapeHtml(emptyText) + '">' + (has ? escapeHtml(value) : '') + '</textarea>' +
+        '<textarea class="known-value" data-field="' + field + '" data-item="' + it.item_no + '" placeholder="' + escapeHtml(placeholderText) + '">' + (has ? escapeHtml(value) : '') + '</textarea>' +
       '</div>'
     );
   }
@@ -767,10 +777,10 @@
         '<div class="answer-block">' +
           renderGuidance(it) +
           '<div class="record-label">Known record &mdash; what is true, and what we are aiming for</div>' +
-          renderKnownField(it, 'current_state', 'Current state', 'Not yet determined — this is the first action item below.') +
-          renderKnownField(it, 'jackson_park_reference', 'Jackson Park reference', 'Not yet found — see the action items below.') +
+          renderKnownField(it, 'current_state', 'Current state', 'Not yet determined — this is the first action item below.', 'Not separately recorded — this item was answered directly from precedent; there is no open "current state" investigation.') +
+          renderKnownField(it, 'jackson_park_reference', 'Jackson Park reference', 'Not yet found — see the action items below.', 'Not separately recorded — see the citation above.') +
           renderKnownField(it, 'proposed_state', 'Proposed state', 'Not yet decided — see the action items below.') +
-          renderKnownField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'Not yet determined — see the action items below.') +
+          renderKnownField(it, 'legal_policy_basis', 'Legal/policy basis for the transition', 'Not yet determined — see the action items below.', 'Not separately recorded — see the citation above.') +
           '<div class="pointer-arrow"><i class="fas fa-list-check"></i>Work through the action items below</div>' +
           renderActionChecklist(it) +
           '<div class="field-edit"><label>Progress status (draft)</label><select data-field="progress_status" data-item="' + it.item_no + '">' +
