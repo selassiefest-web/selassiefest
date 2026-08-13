@@ -557,8 +557,16 @@
   function renderGuidance(it) {
     var c = classifyItem(it);
     if (c.kind === 'already') {
+      // Most "already answered" items really are a single confirm-and-submit
+      // step -- but a handful (the foundational Section 1 items especially,
+      // e.g. #6) carry a real multi-step escalation plan (calls, a FOIA
+      // filing, a Board vote) under this same "already answered" banner.
+      // Naming the actual count here keeps the reassuring green checkmark
+      // from undercutting how much real work is still below it.
+      var stepCount = actionsSummary(it).total;
+      var stepPhrase = stepCount > 1 ? 'all ' + stepCount + ' action items' : 'the action item';
       return '<div class="guidance-box already"><i class="fas fa-check"></i> <strong>Already answered.</strong> ' + escapeHtml(it.our_proposed_resolution) +
-        '<div class="done-line">To finish: check off the action item below, then Submit for Review. If you disagree or know more, update Proposed state first.</div></div>';
+        '<div class="done-line">To finish: check off ' + stepPhrase + ' below, then Submit for Review. If you disagree or know more, update Proposed state first.</div></div>';
     }
     if (c.kind === 'external') {
       var names = c.names.map(escapeHtml).join(', ');
