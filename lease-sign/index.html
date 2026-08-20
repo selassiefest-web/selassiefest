@@ -792,12 +792,17 @@
       el("p_sigTenant1Name").textContent = typedName + "  —  " + signedAtStr;
 
       try {
+        // html2canvas captures based on the page's current scroll position.
+        // The tenant has just scrolled through the entire multi-page lease to
+        // reach this button, so the page is essentially always scrolled down
+        // at this point -- without this compensation that produces one or
+        // more blank leading pages in the signed PDF that gets emailed out.
         const pdfBlob = await html2pdf()
           .from(el("letter"))
           .set({
             margin: 0,
             filename: "lease.pdf",
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: -window.scrollY },
             jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"] },
           })
