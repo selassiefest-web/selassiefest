@@ -395,13 +395,36 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
+  // Uploads recorded voice-note blobs (see clrwf/assets/voice-input.js) to
+  // the private clrwf-voice-notes bucket, one file per blob. Extension is
+  // derived from the blob's own recorded mimeType rather than hardcoded,
+  // since MediaRecorder's output format varies by browser (webm/opus in
+  // Chrome, mp4 in Safari) -- notify-submission's attachment filenames
+  // reuse whatever extension lands in the path, same convention as photos.
+  async _uploadClrwfVoiceNotes(voiceNotes, stamp) {
+    const paths = [];
+    for (let i = 0; i < (voiceNotes || []).length; i++) {
+      const note = voiceNotes[i];
+      if (!note || !note.blob) continue;
+      const ext = (note.mimeType || '').includes('mp4') ? 'mp4' : (note.mimeType || '').includes('ogg') ? 'ogg' : 'webm';
+      const path = `${stamp}-voice-${i + 1}.${ext}`;
+      const client = await window.sfSupabaseReady;
+      const { error } = await client.storage.from('clrwf-voice-notes').upload(path, note.blob, {
+        contentType: note.mimeType || 'audio/webm',
+      });
+      if (error) throw error;
+      paths.push(path);
+    }
+    return paths;
+  },
+
   // C. L. Rainford Welding & Fabrication (clrwf/) -- unrelated business,
   // same shared-project pattern as bbpac/ above. Photos go to the private
   // clrwf-job-photos bucket (see schema.sql) -- anon can insert but never
   // read back, same as every other write-only form here. The DB trigger on
   // clrwf_quote_requests auto-creates the client + job row in Intake; no
   // approval step, unlike bbpac's section-signup flow.
-  async submitClrwfQuoteRequest({ fullName, email, phone, category, description, budgetRange, timeline, photoFiles, pitConfiguration }) {
+  async submitClrwfQuoteRequest({ fullName, email, phone, category, description, budgetRange, timeline, photoFiles, pitConfiguration, voiceNotes }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 
@@ -416,6 +439,8 @@ window.sfSupabase = {
       photoPaths.push(path);
     }
 
+    const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
+
     const { error } = await client.from('clrwf_quote_requests').insert({
       full_name: fullName,
       email,
@@ -426,6 +451,7 @@ window.sfSupabase = {
       timeline: timeline || null,
       photo_paths: photoPaths,
       pit_configuration: pitConfiguration || null,
+      voice_note_paths: voiceNotePaths,
     });
     if (error) throw error;
   },
@@ -433,8 +459,10 @@ window.sfSupabase = {
   // Distinct from submitClrwfQuoteRequest -- see schema.sql's
   // clrwf_maintenance_agreement_requests comment for why recurring
   // commercial leads are tracked separately from one-off quotes.
-  async submitClrwfMaintenanceAgreementRequest({ businessName, contactName, email, phone, propertyDescription, serviceNeeds, message }) {
+  async submitClrwfMaintenanceAgreementRequest({ businessName, contactName, email, phone, propertyDescription, serviceNeeds, message, voiceNotes }) {
     const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
     const { error } = await client.from('clrwf_maintenance_agreement_requests').insert({
       business_name: businessName,
       contact_name: contactName || null,
@@ -443,13 +471,16 @@ window.sfSupabase = {
       property_description: propertyDescription || null,
       service_needs: serviceNeeds || null,
       message: message || null,
+      voice_note_paths: voiceNotePaths,
     });
     if (error) throw error;
   },
 
-  async submitClrwfContactMessage({ name, email, message }) {
+  async submitClrwfContactMessage({ name, email, message, voiceNotes }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('clrwf_contact_messages').insert({ name, email, message });
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
+    const { error } = await client.from('clrwf_contact_messages').insert({ name, email, message, voice_note_paths: voiceNotePaths });
     if (error) throw error;
   },
 };

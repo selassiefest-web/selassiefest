@@ -507,6 +507,25 @@ function formatBbpacSectionSignupRequest(record: Record<string, any>) {
 // straight into the shop's Intake column (see clrwf_quote_request_to_job in
 // supabase/schema.sql) by the time this email goes out -- this is a
 // heads-up, not an approval step, so the copy says so explicitly.
+// Shared across all three CLRWF form tables below: voice_note_paths (see
+// clrwf/assets/voice-input.js) live in the private clrwf-voice-notes
+// bucket, fetched and attached as real audio files -- the whole point is
+// that staff can tap and listen while driving instead of having to read,
+// so a "Voice note attached" line plus the file itself, not just the
+// transcript already sitting in the text field, is what this needs to do.
+function voiceNoteLine(record: Record<string, any>): string {
+  const count = Array.isArray(record.voice_note_paths) ? record.voice_note_paths.length : 0;
+  return count ? `<p><strong>Voice note:</strong> ${count > 1 ? `${count} recordings` : 'attached'} below — tap to listen.</p>` : '';
+}
+
+async function fetchClrwfVoiceNoteAttachments(record: Record<string, any>, labelPrefix: string) {
+  const paths: string[] = Array.isArray(record.voice_note_paths) ? record.voice_note_paths : [];
+  return Promise.all(paths.map(async (p, i) => ({
+    filename: `${labelPrefix}-Voice-Note-${i + 1}.${p.split('.').pop() || 'webm'}`,
+    content: await fetchStorageObjectAsBase64('clrwf-voice-notes', p),
+  })));
+}
+
 function formatClrwfQuoteRequest(record: Record<string, any>) {
   const categoryLabel: Record<string, string> = {
     residential: 'Residential',
@@ -526,6 +545,7 @@ function formatClrwfQuoteRequest(record: Record<string, any>) {
       ${record.budget_range ? `<p><strong>Budget range:</strong> ${escapeHtml(record.budget_range)}</p>` : ''}
       ${record.timeline ? `<p><strong>Timeline:</strong> ${escapeHtml(record.timeline)}</p>` : ''}
       ${photoCount ? `<p><strong>Photos:</strong> ${photoCount} attached below.</p>` : ''}
+      ${voiceNoteLine(record)}
       <p style="color:#5b6b7a;font-size:0.85rem;">Already added to the shop board's Intake column automatically — no approval step needed.</p>
     `,
   };
@@ -544,6 +564,7 @@ function formatClrwfMaintenanceAgreementRequest(record: Record<string, any>) {
       ${record.property_description ? `<p><strong>Property/equipment:</strong><br>${escapeHtml(record.property_description)}</p>` : ''}
       ${record.service_needs ? `<p><strong>Service needs:</strong><br>${escapeHtml(record.service_needs)}</p>` : ''}
       ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+      ${voiceNoteLine(record)}
       <p style="color:#5b6b7a;font-size:0.85rem;">Recurring commercial lead — track separately from one-off quote requests.</p>
     `,
   };
@@ -556,6 +577,7 @@ function formatClrwfContactMessage(record: Record<string, any>) {
       <h2>New Contact Message — C. L. Rainford Welding &amp; Fabrication</h2>
       <p><strong>From:</strong> ${escapeHtml(record.name)} (${escapeHtml(record.email)})</p>
       <p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>
+      ${voiceNoteLine(record)}
     `,
   };
 }
@@ -700,15 +722,18 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: () => CLRWF_NOTIFY_TO,
         format: formatClrwfQuoteRequest,
         from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
-        // clrwf-job-photos is a private bucket (see schema.sql) -- base64
-        // attachments, same pattern as security_guard_contracts/lease PDFs,
-        // rather than a public link that would 403.
+        // clrwf-job-photos and clrwf-voice-notes are both private buckets
+        // (see schema.sql) -- base64 attachments, same pattern as
+        // security_guard_contracts/lease PDFs, rather than a public link
+        // that would 403.
         attachments: async (record) => {
           const paths: string[] = Array.isArray(record.photo_paths) ? record.photo_paths : [];
-          return Promise.all(paths.map(async (p, i) => ({
+          const photos = await Promise.all(paths.map(async (p, i) => ({
             filename: `CLRWF-Quote-Photo-${i + 1}.${p.split('.').pop() || 'jpg'}`,
             content: await fetchStorageObjectAsBase64('clrwf-job-photos', p),
           })));
+          const voiceNotes = await fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Quote');
+          return [...photos, ...voiceNotes];
         },
       },
     ],
@@ -719,6 +744,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: () => CLRWF_NOTIFY_TO,
         format: formatClrwfMaintenanceAgreementRequest,
         from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
+        attachments: (record) => fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Maintenance'),
       },
     ],
   },
@@ -728,6 +754,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: () => CLRWF_NOTIFY_TO,
         format: formatClrwfContactMessage,
         from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
+        attachments: (record) => fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Contact'),
       },
     ],
   },

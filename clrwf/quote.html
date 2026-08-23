@@ -104,6 +104,18 @@
   .form-msg.error{color:#FF9A73;}
   .form-msg.success{color:var(--good);}
 
+  .voice-mount{margin-top:10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .voice-btn{
+    display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1.5px solid var(--spark);
+    color:var(--spark); font-family:"Oswald",sans-serif; font-weight:600; font-size:0.74rem; letter-spacing:0.03em;
+    text-transform:uppercase; padding:9px 16px; border-radius:20px; cursor:pointer;
+  }
+  .voice-btn:hover{background:var(--spark-soft, rgba(143,227,239,0.12));}
+  .voice-btn.recording{background:#E0685A; border-color:#E0685A; color:#fff;}
+  .voice-status{font-size:0.8rem; color:var(--ink-soft);}
+  .rec-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:#E0685A; animation:voice-pulse 1s infinite;}
+  @keyframes voice-pulse{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+
   .side-card{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:26px; margin-bottom:20px;}
   .side-card h3{font-size:1rem; margin-bottom:10px;}
   .side-card p{color:var(--ink-soft); font-size:0.88rem; margin:0;}
@@ -176,6 +188,7 @@
 
         <label for="description">Tell Us About the Job</label>
         <textarea id="description" placeholder="What needs fixing, building, or fabricating? Dimensions, materials, location, anything that helps us scope it."></textarea>
+        <div class="voice-mount" id="description-voice-mount"></div>
 
         <div class="form-row">
           <div>
@@ -251,8 +264,10 @@
 
 <script>document.getElementById('clrwf-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/clrwf/assets/voice-input.js"></script>
 <script>
 (function () {
+  var descriptionVoice = window.ClrwfVoiceInput.attach('description', 'description-voice-mount');
   var selectedFiles = [];
   var MAX_FILES = 5;
 
@@ -338,10 +353,12 @@
     btn.textContent = 'Submitting...';
 
     try {
+      var descBlob = descriptionVoice ? descriptionVoice.getBlob() : null;
       await window.sfSupabase.submitClrwfQuoteRequest({
         fullName: fullName, email: email, phone: phone, category: category,
         description: description, budgetRange: budgetRange, timeline: timeline,
         photoFiles: selectedFiles, pitConfiguration: pitConfiguration,
+        voiceNotes: descBlob ? [{ blob: descBlob, mimeType: descriptionVoice.getMimeType() }] : [],
       });
       msgEl.textContent = 'Request sent — we\'ll follow up at ' + email + ' soon.';
       msgEl.className = 'form-msg success';
@@ -351,6 +368,7 @@
       document.getElementById('timeline').selectedIndex = 0;
       selectedFiles = [];
       renderFileList();
+      if (descriptionVoice) descriptionVoice.reset();
       try { sessionStorage.removeItem('clrwf_pit_configuration'); } catch (e) {}
       pitConfiguration = null;
       document.getElementById('pitConfigNotice').style.display = 'none';

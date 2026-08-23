@@ -84,6 +84,18 @@
   .form-msg.error{color:#FF9A73;}
   .form-msg.success{color:var(--good);}
 
+  .voice-mount{margin-top:10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .voice-btn{
+    display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1.5px solid var(--spark);
+    color:var(--spark); font-family:"Oswald",sans-serif; font-weight:600; font-size:0.74rem; letter-spacing:0.03em;
+    text-transform:uppercase; padding:9px 16px; border-radius:20px; cursor:pointer;
+  }
+  .voice-btn:hover{background:var(--spark-soft, rgba(143,227,239,0.12));}
+  .voice-btn.recording{background:#E0685A; border-color:#E0685A; color:#fff;}
+  .voice-status{font-size:0.8rem; color:var(--ink-soft);}
+  .rec-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:#E0685A; animation:voice-pulse 1s infinite;}
+  @keyframes voice-pulse{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+
   footer{border-top:1px solid var(--line); padding:40px 32px 26px; margin-top:20px;}
   .footer-bottom{max-width:1180px; margin:0 auto; color:var(--ink-faint); font-size:0.78rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 </style>
@@ -183,8 +195,10 @@
           <input type="email" id="maintEmail" required>
           <label for="propertyDescription">Property / Equipment <span class="opt">(optional)</span></label>
           <textarea id="propertyDescription" placeholder="What property, site, or equipment needs coverage?"></textarea>
+          <div class="voice-mount" id="propertyDescription-voice-mount"></div>
           <label for="serviceNeeds">Service Needs <span class="opt">(optional)</span></label>
           <textarea id="serviceNeeds" placeholder="What kind of recurring support are you looking for, and how often?"></textarea>
+          <div class="voice-mount" id="serviceNeeds-voice-mount"></div>
           <div class="submit-row">
             <button class="btn primary" id="maintSubmitBtn" type="button">Request an Agreement</button>
           </div>
@@ -204,9 +218,12 @@
 
 <script>document.getElementById('clrwf-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/clrwf/assets/voice-input.js"></script>
 <script>
 (function () {
   var GALLERY_STORAGE_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/clrwf-gallery-photos';
+  var propertyDescriptionVoice = window.ClrwfVoiceInput.attach('propertyDescription', 'propertyDescription-voice-mount');
+  var serviceNeedsVoice = window.ClrwfVoiceInput.attach('serviceNeeds', 'serviceNeeds-voice-mount');
 
   (async function loadGallery() {
     var el = document.getElementById('galleryContent');
@@ -252,13 +269,19 @@
     btn.textContent = 'Submitting...';
 
     try {
+      var voiceNotes = [];
+      if (propertyDescriptionVoice && propertyDescriptionVoice.getBlob()) voiceNotes.push({ blob: propertyDescriptionVoice.getBlob(), mimeType: propertyDescriptionVoice.getMimeType() });
+      if (serviceNeedsVoice && serviceNeedsVoice.getBlob()) voiceNotes.push({ blob: serviceNeedsVoice.getBlob(), mimeType: serviceNeedsVoice.getMimeType() });
+
       await window.sfSupabase.submitClrwfMaintenanceAgreementRequest({
         businessName: businessName, contactName: contactName, email: email, phone: phone,
-        propertyDescription: propertyDescription, serviceNeeds: serviceNeeds,
+        propertyDescription: propertyDescription, serviceNeeds: serviceNeeds, voiceNotes: voiceNotes,
       });
       msgEl.textContent = 'Request sent — we\'ll follow up at ' + email + ' soon.';
       msgEl.className = 'form-msg success';
       document.getElementById('maintFormArea').querySelectorAll('input, textarea').forEach(function (el) { el.value = ''; });
+      if (propertyDescriptionVoice) propertyDescriptionVoice.reset();
+      if (serviceNeedsVoice) serviceNeedsVoice.reset();
       btn.textContent = 'Request an Agreement';
       btn.disabled = false;
     } catch (err) {

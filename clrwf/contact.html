@@ -69,6 +69,18 @@
   .form-msg.error{color:#FF9A73;}
   .form-msg.success{color:var(--good);}
 
+  .voice-mount{margin-top:10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .voice-btn{
+    display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1.5px solid var(--spark);
+    color:var(--spark); font-family:"Oswald",sans-serif; font-weight:600; font-size:0.74rem; letter-spacing:0.03em;
+    text-transform:uppercase; padding:9px 16px; border-radius:20px; cursor:pointer;
+  }
+  .voice-btn:hover{background:var(--spark-soft, rgba(143,227,239,0.12));}
+  .voice-btn.recording{background:#E0685A; border-color:#E0685A; color:#fff;}
+  .voice-status{font-size:0.8rem; color:var(--ink-soft);}
+  .rec-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:#E0685A; animation:voice-pulse 1s infinite;}
+  @keyframes voice-pulse{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+
   footer{border-top:1px solid var(--line); padding:40px 32px 26px; margin-top:20px;}
   .footer-bottom{max-width:1180px; margin:0 auto; color:var(--ink-faint); font-size:0.78rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 </style>
@@ -131,6 +143,7 @@
           <input type="email" id="contactEmail" required>
           <label for="contactMessage">Message</label>
           <textarea id="contactMessage" placeholder="What can we help with?" required></textarea>
+          <div class="voice-mount" id="contactMessage-voice-mount"></div>
           <div class="submit-row">
             <button class="btn primary" id="contactSubmitBtn" type="button">Send Message</button>
           </div>
@@ -150,8 +163,11 @@
 
 <script>document.getElementById('clrwf-year').textContent = new Date().getFullYear();</script>
 <script src="/assets/js/supabase-client.js"></script>
+<script src="/clrwf/assets/voice-input.js"></script>
 <script>
 (function () {
+  var messageVoice = window.ClrwfVoiceInput.attach('contactMessage', 'contactMessage-voice-mount');
+
   document.getElementById('contactSubmitBtn').addEventListener('click', async function () {
     var msgEl = document.getElementById('contactFormMsg');
     msgEl.textContent = '';
@@ -172,10 +188,15 @@
     btn.textContent = 'Sending...';
 
     try {
-      await window.sfSupabase.submitClrwfContactMessage({ name: name, email: email, message: message });
+      var messageBlob = messageVoice ? messageVoice.getBlob() : null;
+      await window.sfSupabase.submitClrwfContactMessage({
+        name: name, email: email, message: message,
+        voiceNotes: messageBlob ? [{ blob: messageBlob, mimeType: messageVoice.getMimeType() }] : [],
+      });
       msgEl.textContent = 'Message sent — we\'ll follow up at ' + email + ' soon.';
       msgEl.className = 'form-msg success';
       document.getElementById('contactFormArea').querySelectorAll('input, textarea').forEach(function (el) { el.value = ''; });
+      if (messageVoice) messageVoice.reset();
       btn.textContent = 'Send Message';
       btn.disabled = false;
     } catch (err) {

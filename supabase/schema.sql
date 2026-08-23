@@ -5590,3 +5590,34 @@ insert into clrwf_capabilities (category, category_order, item_order, name, slug
  'Certified fabrication of pressure vessels or piping under ASME code — tanks, pressure piping systems.',
  'An ASME-stamped steel pressure vessel/tank.',
  '{ASME tank,pressure vessel,certified pressure piping}');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- CLRWF voice notes (speech-to-text description fields)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Customers describe the problem by talking instead of typing (Site
+-- request: "anti-typing as much as possible"). The browser transcribes
+-- live into the description/message textarea AND records the actual
+-- audio -- both are kept, not just the transcript, so staff can listen
+-- to the raw recording while driving instead of reading. voice_note_paths
+-- holds Storage paths in the private clrwf-voice-notes bucket; each path's
+-- extension reflects whatever MediaRecorder produced (webm/mp4/etc), same
+-- "extension travels with the path" convention as photo_paths.
+alter table clrwf_quote_requests add column if not exists voice_note_paths text[];
+alter table clrwf_contact_messages add column if not exists voice_note_paths text[];
+alter table clrwf_maintenance_agreement_requests add column if not exists voice_note_paths text[];
+
+insert into storage.buckets (id, name, public)
+values ('clrwf-voice-notes', 'clrwf-voice-notes', false)
+on conflict (id) do nothing;
+
+-- Same split as clrwf-job-photos: anon can upload their own recording but
+-- never list or read anyone else's back (no anon select policy) -- only
+-- staff, and the notify-submission Edge Function (service role), can
+-- actually listen to what was recorded.
+create policy "Allow anon insert to clrwf-voice-notes" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'clrwf-voice-notes');
+
+create policy "Staff can read clrwf-voice-notes" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'clrwf-voice-notes' and public.clrwf_is_staff());
