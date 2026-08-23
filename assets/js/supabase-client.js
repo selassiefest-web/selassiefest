@@ -394,4 +394,38 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  // C. L. Rainford Welding & Fabrication (clrwf/) -- unrelated business,
+  // same shared-project pattern as bbpac/ above. Photos go to the private
+  // clrwf-job-photos bucket (see schema.sql) -- anon can insert but never
+  // read back, same as every other write-only form here. The DB trigger on
+  // clrwf_quote_requests auto-creates the client + job row in Intake; no
+  // approval step, unlike bbpac's section-signup flow.
+  async submitClrwfQuoteRequest({ fullName, email, phone, category, description, budgetRange, timeline, photoFiles }) {
+    const client = await window.sfSupabaseReady;
+    const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+
+    const photoPaths = [];
+    for (let i = 0; i < (photoFiles || []).length; i++) {
+      const compressed = await this._compressImage(photoFiles[i]);
+      const path = `${stamp}-photo-${i + 1}.jpg`;
+      const { error } = await client.storage.from('clrwf-job-photos').upload(path, compressed, {
+        contentType: 'image/jpeg',
+      });
+      if (error) throw error;
+      photoPaths.push(path);
+    }
+
+    const { error } = await client.from('clrwf_quote_requests').insert({
+      full_name: fullName,
+      email,
+      phone: phone || null,
+      category,
+      description: description || null,
+      budget_range: budgetRange || null,
+      timeline: timeline || null,
+      photo_paths: photoPaths,
+    });
+    if (error) throw error;
+  },
 };
