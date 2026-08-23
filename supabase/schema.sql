@@ -5014,3 +5014,24 @@ drop trigger if exists clrwf_contact_messages_after_insert on clrwf_contact_mess
 create trigger clrwf_contact_messages_after_insert
   after insert on clrwf_contact_messages
   for each row execute function notify_submission_webhook();
+
+-- Lets /clrwf/portal.html tell "no job on file for that email" from
+-- "we have you, check your inbox" BEFORE sending a magic link -- same
+-- reasoning and shape as bbpac_formation_email_has_member. A clrwf_clients
+-- row is created automatically the moment someone submits their first
+-- quote request (see clrwf_quote_request_to_job), so any past requester
+-- can log into the portal with no separate signup step.
+create or replace function public.clrwf_email_has_client(p_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists(
+    select 1 from public.clrwf_clients
+    where lower(email) = lower(p_email)
+  );
+$$;
+
+grant execute on function public.clrwf_email_has_client(text) to anon, authenticated;

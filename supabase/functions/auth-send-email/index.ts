@@ -59,6 +59,12 @@ const VENTURES: Array<{ key: string; matches: (redirectTo: string) => boolean; s
     senderName: "TRC Events",
     buildLink: classicVerifyLink,
   },
+  {
+    key: "clrwf",
+    matches: (redirectTo) => redirectTo.startsWith("https://selassiefest.com/clrwf/"),
+    senderName: "C. L. Rainford Welding & Fabrication",
+    buildLink: (d) => `https://selassiefest.com/clrwf/confirm-login.html?token_hash=${encodeURIComponent(d.token_hash)}&redirect_to=${encodeURIComponent(d.redirect_to)}`,
+  },
 ];
 
 const DEFAULT_VENTURE = { key: "default", senderName: "SelassieFest", buildLink: classicVerifyLink };
