@@ -446,4 +446,10 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  async submitClrwfContactMessage({ name, email, message }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('clrwf_contact_messages').insert({ name, email, message });
+    if (error) throw error;
+  },
 };

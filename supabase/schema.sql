@@ -4988,3 +4988,29 @@ drop trigger if exists clrwf_maintenance_agreement_requests_after_insert on clrw
 create trigger clrwf_maintenance_agreement_requests_after_insert
   after insert on clrwf_maintenance_agreement_requests
   for each row execute function notify_submission_webhook();
+
+-- General contact messages from /clrwf/contact.html -- deliberately
+-- separate from clrwf_quote_requests, same reasoning as bbpac_contact_messages:
+-- a general "reach us" message isn't a job lead and shouldn't feed the
+-- Kanban intake trigger.
+create table if not exists clrwf_contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table clrwf_contact_messages enable row level security;
+
+create policy "Allow anon insert" on clrwf_contact_messages for insert to anon with check (true);
+grant insert on clrwf_contact_messages to anon;
+
+create policy "staff can read contact messages" on clrwf_contact_messages
+  for select to authenticated
+  using (public.clrwf_is_staff());
+
+drop trigger if exists clrwf_contact_messages_after_insert on clrwf_contact_messages;
+create trigger clrwf_contact_messages_after_insert
+  after insert on clrwf_contact_messages
+  for each row execute function notify_submission_webhook();

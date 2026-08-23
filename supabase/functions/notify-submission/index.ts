@@ -549,6 +549,17 @@ function formatClrwfMaintenanceAgreementRequest(record: Record<string, any>) {
   };
 }
 
+function formatClrwfContactMessage(record: Record<string, any>) {
+  return {
+    subject: `New CLRWF Contact Message — ${record.name}`,
+    html: `
+      <h2>New Contact Message — C. L. Rainford Welding &amp; Fabrication</h2>
+      <p><strong>From:</strong> ${escapeHtml(record.name)} (${escapeHtml(record.email)})</p>
+      <p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -707,6 +718,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       {
         to: () => CLRWF_NOTIFY_TO,
         format: formatClrwfMaintenanceAgreementRequest,
+        from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
+      },
+    ],
+  },
+  clrwf_contact_messages: {
+    notifications: [
+      {
+        to: () => CLRWF_NOTIFY_TO,
+        format: formatClrwfContactMessage,
         from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
       },
     ],
