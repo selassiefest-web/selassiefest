@@ -128,6 +128,7 @@
       <li><a href="/clrwf/">Home</a></li>
       <li><a href="/clrwf/residential.html">Residential</a></li>
       <li><a href="/clrwf/commercial.html">Commercial</a></li>
+      <li><a href="/clrwf/custom/">Custom</a></li>
     </ul>
   </nav>
   <div class="header-cta">
@@ -203,6 +204,11 @@
         <input type="file" id="photos" accept="image/*" multiple style="display:none;">
         <ul class="file-list" id="fileList"></ul>
 
+        <div id="pitConfigNotice" style="display:none; margin-top:18px; background:var(--surface-2); border:1px solid var(--line-strong); border-left:3px solid var(--spark); border-radius:6px; padding:14px 16px; font-size:0.86rem; color:var(--ink-soft);">
+          <i class="fas fa-check-circle" style="color:var(--spark); margin-right:8px;"></i>
+          Your Jerk Pit configuration from the builder is attached to this request.
+        </div>
+
         <div class="submit-row">
           <button class="btn primary" id="submitBtn" type="button">Submit Request</button>
         </div>
@@ -258,6 +264,18 @@
     }
   }
 
+  // Picked up from the Jerk Pit configurator (see custom/jerk-pits.html) --
+  // read once, shown as a notice, and attached on submit; cleared only
+  // after a successful submit so a failed/retried submit doesn't lose it.
+  var pitConfiguration = null;
+  try {
+    var stored = sessionStorage.getItem('clrwf_pit_configuration');
+    if (stored) {
+      pitConfiguration = JSON.parse(stored);
+      document.getElementById('pitConfigNotice').style.display = '';
+    }
+  } catch (e) { /* sessionStorage unavailable or corrupt -- submit still works without it */ }
+
   var dropZone = document.getElementById('fileDropZone');
   var fileInput = document.getElementById('photos');
   var fileListEl = document.getElementById('fileList');
@@ -311,7 +329,7 @@
       await window.sfSupabase.submitClrwfQuoteRequest({
         fullName: fullName, email: email, phone: phone, category: category,
         description: description, budgetRange: budgetRange, timeline: timeline,
-        photoFiles: selectedFiles,
+        photoFiles: selectedFiles, pitConfiguration: pitConfiguration,
       });
       msgEl.textContent = 'Request sent — we\'ll follow up at ' + email + ' soon.';
       msgEl.className = 'form-msg success';
@@ -321,6 +339,9 @@
       document.getElementById('timeline').selectedIndex = 0;
       selectedFiles = [];
       renderFileList();
+      try { sessionStorage.removeItem('clrwf_pit_configuration'); } catch (e) {}
+      pitConfiguration = null;
+      document.getElementById('pitConfigNotice').style.display = 'none';
       btn.textContent = 'Submit Request';
       btn.disabled = false;
     } catch (err) {

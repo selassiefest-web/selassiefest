@@ -401,7 +401,7 @@ window.sfSupabase = {
   // read back, same as every other write-only form here. The DB trigger on
   // clrwf_quote_requests auto-creates the client + job row in Intake; no
   // approval step, unlike bbpac's section-signup flow.
-  async submitClrwfQuoteRequest({ fullName, email, phone, category, description, budgetRange, timeline, photoFiles }) {
+  async submitClrwfQuoteRequest({ fullName, email, phone, category, description, budgetRange, timeline, photoFiles, pitConfiguration }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 
@@ -425,6 +425,7 @@ window.sfSupabase = {
       budget_range: budgetRange || null,
       timeline: timeline || null,
       photo_paths: photoPaths,
+      pit_configuration: pitConfiguration || null,
     });
     if (error) throw error;
   },
