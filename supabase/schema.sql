@@ -4528,10 +4528,21 @@ create table if not exists clrwf_jobs (
   -- Feeds /clrwf/gallery and the landing page's rotating feature slot once
   -- a job is Delivered and staff mark it public -- see the Site Spec.
   public_gallery boolean not null default false,
+  -- Explicit sign-off, not an inferred default: a job with zero materials-
+  -- checklist rows or zero equipment requirements must NOT read as
+  -- "nothing to check, therefore ready" (that vacuous-truth reading would
+  -- let a job nobody bothered to check skip the gate entirely -- exactly
+  -- the failure mode the gate exists to prevent). Set only by
+  -- clrwf_confirm_materials_ready()/clrwf_confirm_equipment_ready() below,
+  -- which re-verify the checklist/equipment tables themselves before
+  -- allowing the confirmation, matching the spec's "not 'probably fine,'
+  -- confirmed" language.
+  materials_confirmed_by uuid references clrwf_staff(id),
+  materials_confirmed_at timestamptz,
+  equipment_confirmed_by uuid references clrwf_staff(id),
+  equipment_confirmed_at timestamptz,
   -- Informational only, set by clrwf_enforce_gate_and_wip() the first time
   -- it allows Skilled-Lane entry -- NOT the enforcement mechanism itself.
-  -- Enforcement is computed live from clrwf_materials_checklist and
-  -- clrwf_equipment on every attempted transition, so it can never go stale.
   gate_cleared_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -4705,10 +4716,12 @@ create trigger clrwf_jobs_track_stage_history
   after insert or update of stage on clrwf_jobs
   for each row execute function clrwf_track_job_stage_history();
 
--- Whether every material this job needs is staged AND every piece of
--- equipment it requires is confirmed operational -- the actual definition
--- of "the gate," computed live rather than trusted from a stored flag, so
--- it can never go stale relative to the real checklist/equipment state.
+-- Whether both halves of the gate have been explicitly confirmed -- the
+-- actual definition of "the gate." Deliberately NOT inferred from checklist/
+-- equipment emptiness (a job with zero checklist rows is not "nothing to
+-- stage, therefore ready" -- it's "nobody has checked yet"). The two
+-- confirm functions below are the only way these flags get set, and each
+-- re-verifies the real checklist/equipment state before allowing it.
 create or replace function clrwf_job_gate_ready(p_job_id uuid)
 returns boolean
 language sql
@@ -4716,20 +4729,115 @@ security definer
 set search_path = ''
 stable
 as $$
-  select
-    not exists (
-      select 1 from public.clrwf_materials_checklist
-      where job_id = p_job_id and status <> 'staged'
-    )
-    and not exists (
-      select 1 from public.clrwf_job_equipment_requirements jer
-      join public.clrwf_equipment e on e.id = jer.equipment_id
-      where jer.job_id = p_job_id and e.status <> 'operational'
-    );
+  select materials_confirmed_at is not null and equipment_confirmed_at is not null
+  from public.clrwf_jobs where id = p_job_id;
 $$;
 
 revoke execute on function clrwf_job_gate_ready(uuid) from public, anon;
 grant execute on function clrwf_job_gate_ready(uuid) to authenticated;
+
+-- Materials/Prep staff call this once every checklist item for the job is
+-- genuinely staged -- re-checked here, not just trusted, so a stale UI
+-- can't confirm a job that quietly regressed. Raises rather than silently
+-- no-ops if called too early, since a confirm button that fails silently
+-- would be worse than no button at all.
+create or replace function clrwf_confirm_materials_ready(p_job_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.clrwf_is_staff() then
+    raise exception 'Only staff can confirm materials readiness.';
+  end if;
+  if exists (select 1 from public.clrwf_materials_checklist where job_id = p_job_id and status <> 'staged') then
+    raise exception 'Job % still has materials that are not staged.', p_job_id;
+  end if;
+  update public.clrwf_jobs
+    set materials_confirmed_by = public.clrwf_current_staff_id(), materials_confirmed_at = now()
+    where id = p_job_id;
+end;
+$$;
+
+-- Maintenance staff call this once every piece of equipment the job needs
+-- is confirmed operational -- same re-check-don't-trust reasoning as above.
+create or replace function clrwf_confirm_equipment_ready(p_job_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.clrwf_is_staff() then
+    raise exception 'Only staff can confirm equipment readiness.';
+  end if;
+  if exists (
+    select 1 from public.clrwf_job_equipment_requirements jer
+    join public.clrwf_equipment e on e.id = jer.equipment_id
+    where jer.job_id = p_job_id and e.status <> 'operational'
+  ) then
+    raise exception 'Job % still has required equipment that is not operational.', p_job_id;
+  end if;
+  update public.clrwf_jobs
+    set equipment_confirmed_by = public.clrwf_current_staff_id(), equipment_confirmed_at = now()
+    where id = p_job_id;
+end;
+$$;
+
+revoke execute on function clrwf_confirm_materials_ready(uuid) from public, anon;
+revoke execute on function clrwf_confirm_equipment_ready(uuid) from public, anon;
+grant execute on function clrwf_confirm_materials_ready(uuid) to authenticated;
+grant execute on function clrwf_confirm_equipment_ready(uuid) to authenticated;
+
+-- Un-confirming: if the checklist or equipment status changes after
+-- confirmation (e.g. a staged item gets bumped back to "ordered", or a
+-- machine goes down), the stale confirmation must not silently survive --
+-- otherwise the gate could still read "ready" against a checklist/equipment
+-- state that's no longer true.
+create or replace function clrwf_unconfirm_materials_on_checklist_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.clrwf_jobs
+    set materials_confirmed_by = null, materials_confirmed_at = null
+    where id = coalesce(new.job_id, old.job_id) and materials_confirmed_at is not null;
+  return coalesce(new, old);
+end;
+$$;
+
+drop trigger if exists clrwf_materials_checklist_unconfirm on clrwf_materials_checklist;
+create trigger clrwf_materials_checklist_unconfirm
+  after insert or update or delete on clrwf_materials_checklist
+  for each row execute function clrwf_unconfirm_materials_on_checklist_change();
+
+create or replace function clrwf_unconfirm_equipment_on_status_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.status <> 'operational' then
+    update public.clrwf_jobs j
+      set equipment_confirmed_by = null, equipment_confirmed_at = null
+      where equipment_confirmed_at is not null
+        and exists (
+          select 1 from public.clrwf_job_equipment_requirements jer
+          where jer.job_id = j.id and jer.equipment_id = new.id
+        );
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_equipment_unconfirm on clrwf_equipment;
+create trigger clrwf_equipment_unconfirm
+  after update of status on clrwf_equipment
+  for each row execute function clrwf_unconfirm_equipment_on_status_change();
 
 -- The hard gate (Kanban spec section 1/3: "not a suggestion, it's a hard
 -- stage the board enforces") plus the WIP limit (section 7). Both are
