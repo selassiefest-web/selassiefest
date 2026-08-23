@@ -4411,6 +4411,14 @@ grant execute on function clrwf_is_staff() to authenticated;
 grant execute on function clrwf_is_admin() to authenticated;
 grant execute on function clrwf_current_staff_id() to authenticated;
 
+-- Staff need this to see whose job is whose on the Shop board (client name
+-- embedded via clrwf_jobs' client_id FK) and to actually contact clients --
+-- without it, PostgREST's embedded select silently returns nothing for the
+-- join, since embedding still respects the joined table's own RLS.
+create policy "staff can read all clients" on clrwf_clients
+  for select to authenticated
+  using (public.clrwf_is_staff());
+
 -- Links a real Supabase Auth signup to a pre-created staff or client row by
 -- email -- same "build the structure now, invite people later" pattern as
 -- bbpac_formation_link_new_auth_user. Handles both tables in one trigger
