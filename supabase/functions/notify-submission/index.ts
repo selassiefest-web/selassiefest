@@ -16,6 +16,11 @@ const NOTIFY_TO = 'selassiefest@gmail.com';
 // the festival itself -- its forms go to Stephen directly rather than the
 // shared festival inbox above.
 const BBPAC_NOTIFY_TO = 'stephen@selassiefest.com';
+// C. L. Rainford Welding & Fabrication (clrwf/) is an unrelated business,
+// same shared-Supabase-project pattern as bbpac/ above. Routed to Stephen
+// for now, same reasoning as BBPAC_NOTIFY_TO -- update to Rainford's own
+// inbox once he's onboarded to receive leads directly.
+const CLRWF_NOTIFY_TO = 'stephen@selassiefest.com';
 // selassiefest.com is verified with Resend, so mail now sends from a real
 // address instead of the onboarding@resend.dev sandbox (which could only
 // ever deliver to the account's own inbox). reply_to keeps replies landing
@@ -498,6 +503,34 @@ function formatBbpacSectionSignupRequest(record: Record<string, any>) {
   };
 }
 
+// New /clrwf/quote submission. The DB trigger has already dropped this
+// straight into the shop's Intake column (see clrwf_quote_request_to_job in
+// supabase/schema.sql) by the time this email goes out -- this is a
+// heads-up, not an approval step, so the copy says so explicitly.
+function formatClrwfQuoteRequest(record: Record<string, any>) {
+  const categoryLabel: Record<string, string> = {
+    residential: 'Residential',
+    commercial: 'Commercial',
+    'custom-jerk-pit': 'Custom — Jerk Pit',
+    'custom-other': 'Custom — Other',
+  };
+  const photoCount = Array.isArray(record.photo_paths) ? record.photo_paths.length : 0;
+  return {
+    subject: `New CLRWF Quote Request — ${record.full_name} (${categoryLabel[record.category] || record.category})`,
+    html: `
+      <h2>New Quote Request — C. L. Rainford Welding &amp; Fabrication</h2>
+      <p><strong>From:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)}${record.phone ? ', ' + escapeHtml(record.phone) : ''})</p>
+      <p><strong>Job type:</strong> ${escapeHtml(categoryLabel[record.category] || record.category)}</p>
+      ${record.description ? `<p><strong>Description:</strong><br>${escapeHtml(record.description)}</p>` : ''}
+      ${record.pit_configuration ? `<p><strong>Pit configuration:</strong><br>${escapeHtml(JSON.stringify(record.pit_configuration))}</p>` : ''}
+      ${record.budget_range ? `<p><strong>Budget range:</strong> ${escapeHtml(record.budget_range)}</p>` : ''}
+      ${record.timeline ? `<p><strong>Timeline:</strong> ${escapeHtml(record.timeline)}</p>` : ''}
+      ${photoCount ? `<p><strong>Photos:</strong> ${photoCount} attached below.</p>` : ''}
+      <p style="color:#5b6b7a;font-size:0.85rem;">Already added to the shop board's Intake column automatically — no approval step needed.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -632,6 +665,25 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   bbpac_contact_messages: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacContactMessage }] },
   bbpac_photo_submissions: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacPhotoSubmission }] },
   bbpac_formation_section_signup_requests: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacSectionSignupRequest }] },
+  clrwf_quote_requests: {
+    notifications: [
+      {
+        to: () => CLRWF_NOTIFY_TO,
+        format: formatClrwfQuoteRequest,
+        from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
+        // clrwf-job-photos is a private bucket (see schema.sql) -- base64
+        // attachments, same pattern as security_guard_contracts/lease PDFs,
+        // rather than a public link that would 403.
+        attachments: async (record) => {
+          const paths: string[] = Array.isArray(record.photo_paths) ? record.photo_paths : [];
+          return Promise.all(paths.map(async (p, i) => ({
+            filename: `CLRWF-Quote-Photo-${i + 1}.${p.split('.').pop() || 'jpg'}`,
+            content: await fetchStorageObjectAsBase64('clrwf-job-photos', p),
+          })));
+        },
+      },
+    ],
+  },
   lease_signatures: {
     notifications: [
       {

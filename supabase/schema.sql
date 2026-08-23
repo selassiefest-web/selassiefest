@@ -4287,3 +4287,563 @@ drop trigger if exists bbpac_formation_section_signup_requests_guard_duplicate o
 create trigger bbpac_formation_section_signup_requests_guard_duplicate
   before insert on bbpac_formation_section_signup_requests
   for each row execute function bbpac_formation_guard_section_signup_duplicate();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- C. L. Rainford Welding & Fabrication (clrwf/)
+-- ─────────────────────────────────────────────────────────────────────────
+-- A separate, unrelated business (an Illinois corp, active since 2015) given
+-- a site at selassiefest.com/clrwf, same pattern as bbpac/ and
+-- JamaicaVillageGH -- shares this Supabase project, kept off the festival
+-- nav. Public marketing pages exist to bring work in the door; the real
+-- product is the shop-floor Kanban at /clrwf/shop (staff-only) and the
+-- plain-language status view at /clrwf/portal (client-only).
+--
+-- Core design, from the Cradle-to-Grave spec: two lanes, one hard gate.
+-- Support Lane (office/materials/maintenance/QC) does everything that has
+-- to happen before a torch gets lit; Skilled Lane (welders) only fabricates.
+-- A job cannot enter the Skilled Lane (cutting/welding_assembly/finishing)
+-- until every required material is staged AND every piece of equipment the
+-- job needs is confirmed operational -- enforced below as a real trigger on
+-- clrwf_jobs, not just a UI convention, exactly as the spec asks for.
+
+create table if not exists clrwf_clients (
+  id uuid primary key default gen_random_uuid(),
+  auth_user_id uuid unique references auth.users(id) on delete set null,
+  name text not null,
+  email text not null,
+  phone text,
+  address text,
+  created_at timestamptz not null default now()
+);
+
+-- Clients are found-or-created by email (see clrwf_quote_request_to_job
+-- below) -- this has to be unique for "find" to mean anything.
+create unique index if not exists clrwf_clients_email_uidx on clrwf_clients (lower(email));
+
+create table if not exists clrwf_staff (
+  id uuid primary key default gen_random_uuid(),
+  auth_user_id uuid unique references auth.users(id) on delete set null,
+  name text not null,
+  email text not null unique,
+  role text not null check (role in ('admin', 'office', 'materials', 'maintenance', 'welder', 'qc')),
+  -- Only meaningful for welders (see the WIP-limit trigger below), but
+  -- harmless to default on every role rather than making it nullable.
+  wip_limit int not null default 2,
+  active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table clrwf_clients enable row level security;
+alter table clrwf_staff enable row level security;
+
+-- A client or staff member can read their own row (to see their own
+-- profile after logging in); nobody selects another person's row directly
+-- through these base tables.
+create policy "clients can read their own row" on clrwf_clients
+  for select to authenticated
+  using (auth_user_id = auth.uid());
+
+create policy "staff can read their own row" on clrwf_staff
+  for select to authenticated
+  using (auth_user_id = auth.uid());
+
+create or replace function clrwf_set_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_staff_touch on clrwf_staff;
+create trigger clrwf_staff_touch
+  before update on clrwf_staff
+  for each row execute function clrwf_set_updated_at();
+
+-- Staff-check helpers, same shape as bbpac_formation_is_section_owner:
+-- security definer, read-only, callable only by authenticated users, so RLS
+-- policies elsewhere can reference them without every table needing its own
+-- copy of the "is this caller an active staff member / admin" logic.
+create or replace function clrwf_is_staff()
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.clrwf_staff
+    where auth_user_id = auth.uid() and active = true
+  );
+$$;
+
+create or replace function clrwf_is_admin()
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1 from public.clrwf_staff
+    where auth_user_id = auth.uid() and active = true and role = 'admin'
+  );
+$$;
+
+create or replace function clrwf_current_staff_id()
+returns uuid
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select id from public.clrwf_staff where auth_user_id = auth.uid() and active = true;
+$$;
+
+revoke execute on function clrwf_is_staff() from public, anon;
+revoke execute on function clrwf_is_admin() from public, anon;
+revoke execute on function clrwf_current_staff_id() from public, anon;
+grant execute on function clrwf_is_staff() to authenticated;
+grant execute on function clrwf_is_admin() to authenticated;
+grant execute on function clrwf_current_staff_id() to authenticated;
+
+-- Links a real Supabase Auth signup to a pre-created staff or client row by
+-- email -- same "build the structure now, invite people later" pattern as
+-- bbpac_formation_link_new_auth_user. Handles both tables in one trigger
+-- since both can be pre-created by admin before the person ever logs in.
+create or replace function clrwf_link_new_auth_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.clrwf_staff
+    set auth_user_id = new.id
+    where lower(email) = lower(new.email) and auth_user_id is null;
+  update public.clrwf_clients
+    set auth_user_id = new.id
+    where lower(email) = lower(new.email) and auth_user_id is null;
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_link_new_auth_user_trigger on auth.users;
+create trigger clrwf_link_new_auth_user_trigger
+  after insert on auth.users
+  for each row execute function clrwf_link_new_auth_user();
+
+-- On-demand fallback for the same reason bbpac_formation_link_my_auth_user
+-- exists: this site has other independent auth flows sharing the same
+-- Supabase Auth users table, so someone's auth.users row may already exist
+-- from an unrelated form before they ever log into /clrwf/portal or /shop --
+-- the INSERT trigger above only fires once, at that unrelated row's
+-- creation. Call this at login time as a self-heal when the by-auth_user_id
+-- lookup comes up empty.
+create or replace function public.clrwf_link_my_auth_user()
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.clrwf_staff
+    set auth_user_id = auth.uid()
+    where lower(email) = lower(coalesce(auth.email(), '')) and auth_user_id is null;
+  update public.clrwf_clients
+    set auth_user_id = auth.uid()
+    where lower(email) = lower(coalesce(auth.email(), '')) and auth_user_id is null;
+end;
+$$;
+
+grant execute on function public.clrwf_link_my_auth_user() to authenticated;
+revoke execute on function public.clrwf_link_my_auth_user() from public, anon;
+
+-- Self-service quote requests from /clrwf/quote. Write-only for anon, same
+-- as every public form table in this file -- an applicant can never read
+-- back other applicants' names/emails/photos. pit_configuration holds the
+-- structured "Build Your Pit" component selections once that configurator
+-- ships on /clrwf/custom/jerk-pits; null for standard jobs or a plain
+-- free-text custom request.
+create table if not exists clrwf_quote_requests (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  category text not null check (category in ('residential', 'commercial', 'custom-jerk-pit', 'custom-other')),
+  description text,
+  pit_configuration jsonb,
+  budget_range text,
+  timeline text,
+  photo_paths text[],
+  created_at timestamptz not null default now()
+);
+
+alter table clrwf_quote_requests enable row level security;
+
+create policy "Allow anon insert" on clrwf_quote_requests for insert to anon with check (true);
+grant insert on clrwf_quote_requests to anon;
+
+-- Staff need to see the request that generated a job (photos, budget,
+-- timeline, raw description) -- the job row itself only carries what
+-- clrwf_quote_request_to_job() below copies over.
+create policy "staff can read quote requests" on clrwf_quote_requests
+  for select to authenticated
+  using (public.clrwf_is_staff());
+
+-- Reuses the existing notify_submission_webhook() function (see the Email
+-- notifications section above) -- emails staff via the notify-submission
+-- Edge Function once it has a formatter for this table, same as every
+-- other public form here.
+drop trigger if exists clrwf_quote_requests_after_insert on clrwf_quote_requests;
+create trigger clrwf_quote_requests_after_insert
+  after insert on clrwf_quote_requests
+  for each row execute function notify_submission_webhook();
+
+create table if not exists clrwf_jobs (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid not null references clrwf_clients(id),
+  quote_request_id uuid references clrwf_quote_requests(id),
+  job_type text not null check (job_type in ('standard', 'custom')),
+  category text not null check (category in ('residential', 'commercial', 'custom-jerk-pit', 'custom-other')),
+  -- 13 resting stages. The spec's stage 7 ("READY TO FABRICATE gate") is
+  -- not a place a job sits -- it's the enforcement point between
+  -- equipment_readiness_check and cutting, implemented as a trigger below,
+  -- not a stage value.
+  stage text not null default 'intake' check (stage in (
+    'intake', 'quoted', 'design_signoff', 'materials_sourcing', 'materials_staged',
+    'equipment_readiness_check', 'cutting', 'welding_assembly', 'finishing',
+    'quality_check', 'ready_for_pickup', 'delivered_invoiced', 'archived'
+  )),
+  priority text not null default 'standard' check (priority in ('rush', 'standard')),
+  materials text,
+  pit_configuration jsonb,
+  photo_paths text[],
+  assigned_to uuid references clrwf_staff(id),
+  due_date date,
+  -- Feeds /clrwf/gallery and the landing page's rotating feature slot once
+  -- a job is Delivered and staff mark it public -- see the Site Spec.
+  public_gallery boolean not null default false,
+  -- Informational only, set by clrwf_enforce_gate_and_wip() the first time
+  -- it allows Skilled-Lane entry -- NOT the enforcement mechanism itself.
+  -- Enforcement is computed live from clrwf_materials_checklist and
+  -- clrwf_equipment on every attempted transition, so it can never go stale.
+  gate_cleared_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Which equipment a given job actually needs -- what
+-- clrwf_job_gate_ready() below checks "all required equipment operational"
+-- against. Without this join table "required equipment" has no definition.
+create table if not exists clrwf_job_equipment_requirements (
+  job_id uuid not null references clrwf_jobs(id) on delete cascade,
+  equipment_id uuid not null,
+  primary key (job_id, equipment_id)
+);
+
+create table if not exists clrwf_job_stage_history (
+  id uuid primary key default gen_random_uuid(),
+  job_id uuid not null references clrwf_jobs(id) on delete cascade,
+  stage text not null,
+  entered_at timestamptz not null default now(),
+  exited_at timestamptz
+);
+
+create table if not exists clrwf_materials_checklist (
+  id uuid primary key default gen_random_uuid(),
+  job_id uuid not null references clrwf_jobs(id) on delete cascade,
+  item text not null,
+  status text not null default 'needed' check (status in ('needed', 'ordered', 'in_stock', 'staged')),
+  staged_by uuid references clrwf_staff(id),
+  staged_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists clrwf_equipment (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  status text not null default 'operational' check (status in ('operational', 'scheduled_maintenance', 'down')),
+  last_maintenance date,
+  next_maintenance_due date,
+  hours_since_service numeric not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table clrwf_job_equipment_requirements
+  add constraint clrwf_job_equipment_requirements_equipment_fkey
+  foreign key (equipment_id) references clrwf_equipment(id) on delete cascade;
+
+create table if not exists clrwf_equipment_maintenance_log (
+  id uuid primary key default gen_random_uuid(),
+  equipment_id uuid not null references clrwf_equipment(id) on delete cascade,
+  performed_by uuid references clrwf_staff(id),
+  performed_at timestamptz not null default now(),
+  notes text,
+  next_due date
+);
+
+alter table clrwf_jobs enable row level security;
+alter table clrwf_job_equipment_requirements enable row level security;
+alter table clrwf_job_stage_history enable row level security;
+alter table clrwf_materials_checklist enable row level security;
+alter table clrwf_equipment enable row level security;
+alter table clrwf_equipment_maintenance_log enable row level security;
+
+-- The whole point of one shared board (per the Kanban spec: "standard and
+-- custom work compete for the same welders and floor space") is that every
+-- role sees the full floor, not just their own lane -- so read access is
+-- any active staff member, full stop. Write access on clrwf_jobs is any
+-- active staff member too; the two triggers below (gate + WIP) are what
+-- actually enforce the hard rules, not row-level fencing by role, since the
+-- spec doesn't ask for per-role column ownership beyond those two gates.
+create policy "staff can read all jobs" on clrwf_jobs for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can update jobs" on clrwf_jobs for update to authenticated using (public.clrwf_is_staff());
+create policy "staff can insert jobs" on clrwf_jobs for insert to authenticated with check (public.clrwf_is_staff());
+
+create policy "staff can read job equipment requirements" on clrwf_job_equipment_requirements for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can manage job equipment requirements" on clrwf_job_equipment_requirements for all to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create policy "staff can read job stage history" on clrwf_job_stage_history for select to authenticated using (public.clrwf_is_staff());
+
+create policy "staff can read materials checklist" on clrwf_materials_checklist for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can manage materials checklist" on clrwf_materials_checklist for all to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create policy "staff can read equipment" on clrwf_equipment for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can manage equipment" on clrwf_equipment for all to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create policy "staff can read equipment maintenance log" on clrwf_equipment_maintenance_log for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can insert equipment maintenance log" on clrwf_equipment_maintenance_log for insert to authenticated with check (public.clrwf_is_staff());
+
+create index if not exists clrwf_jobs_stage_idx on clrwf_jobs (stage);
+create index if not exists clrwf_jobs_assigned_to_idx on clrwf_jobs (assigned_to);
+create index if not exists clrwf_job_stage_history_job_idx on clrwf_job_stage_history (job_id, entered_at desc);
+create index if not exists clrwf_materials_checklist_job_idx on clrwf_materials_checklist (job_id);
+
+drop trigger if exists clrwf_jobs_touch on clrwf_jobs;
+create trigger clrwf_jobs_touch
+  before update on clrwf_jobs
+  for each row execute function clrwf_set_updated_at();
+
+drop trigger if exists clrwf_equipment_touch on clrwf_equipment;
+create trigger clrwf_equipment_touch
+  before update on clrwf_equipment
+  for each row execute function clrwf_set_updated_at();
+
+-- Finds or creates the client by email, then drops the new job straight
+-- into Intake -- this is what makes "/quote submission -> row auto-created
+-- in Intake" (Site Spec) true without a staff approval step in between; a
+-- quote request isn't a privileged grant like bbpac's section signups are,
+-- it's just an inbound lead.
+create or replace function clrwf_quote_request_to_job()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_client_id uuid;
+begin
+  insert into public.clrwf_clients (name, email)
+    values (new.full_name, new.email)
+    on conflict (lower(email)) do nothing;
+
+  select id into v_client_id from public.clrwf_clients where lower(email) = lower(new.email);
+
+  insert into public.clrwf_jobs (
+    client_id, quote_request_id, job_type, category, stage,
+    materials, pit_configuration, photo_paths
+  ) values (
+    v_client_id, new.id,
+    case when new.category like 'custom%' then 'custom' else 'standard' end,
+    new.category, 'intake',
+    new.description, new.pit_configuration, new.photo_paths
+  );
+
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_quote_requests_to_job on clrwf_quote_requests;
+create trigger clrwf_quote_requests_to_job
+  after insert on clrwf_quote_requests
+  for each row execute function clrwf_quote_request_to_job();
+
+-- Keeps clrwf_job_stage_history accurate with zero client-side bookkeeping:
+-- closes out the previous open row (if any) and opens a new one every time
+-- a job is created or its stage actually changes. This is what lets a
+-- later dashboard answer "where is time-to-completion actually being lost"
+-- (Kanban spec, section 6) instead of guessing.
+create or replace function clrwf_track_job_stage_history()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if TG_OP = 'UPDATE' and new.stage is distinct from old.stage then
+    update public.clrwf_job_stage_history
+      set exited_at = now()
+      where job_id = new.id and exited_at is null;
+  end if;
+
+  if TG_OP = 'INSERT' or new.stage is distinct from old.stage then
+    insert into public.clrwf_job_stage_history (job_id, stage) values (new.id, new.stage);
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_jobs_track_stage_history on clrwf_jobs;
+create trigger clrwf_jobs_track_stage_history
+  after insert or update of stage on clrwf_jobs
+  for each row execute function clrwf_track_job_stage_history();
+
+-- Whether every material this job needs is staged AND every piece of
+-- equipment it requires is confirmed operational -- the actual definition
+-- of "the gate," computed live rather than trusted from a stored flag, so
+-- it can never go stale relative to the real checklist/equipment state.
+create or replace function clrwf_job_gate_ready(p_job_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select
+    not exists (
+      select 1 from public.clrwf_materials_checklist
+      where job_id = p_job_id and status <> 'staged'
+    )
+    and not exists (
+      select 1 from public.clrwf_job_equipment_requirements jer
+      join public.clrwf_equipment e on e.id = jer.equipment_id
+      where jer.job_id = p_job_id and e.status <> 'operational'
+    );
+$$;
+
+revoke execute on function clrwf_job_gate_ready(uuid) from public, anon;
+grant execute on function clrwf_job_gate_ready(uuid) to authenticated;
+
+-- The hard gate (Kanban spec section 1/3: "not a suggestion, it's a hard
+-- stage the board enforces") plus the WIP limit (section 7). Both are
+-- enforced here, at the database layer, exactly like
+-- bbpac_formation_guard_item_review_transition -- a client bug or a direct
+-- Table Editor drag can't bypass either rule.
+create or replace function clrwf_enforce_gate_and_wip()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_skilled_stages text[] := array['cutting', 'welding_assembly', 'finishing'];
+  v_in_progress_count int;
+begin
+  -- Gate: only checked on the one transition that matters -- entering the
+  -- Skilled Lane from outside it. Bouncing backward (QC fail -> Finishing/
+  -- Welding) or moving laterally within the Skilled Lane never re-checks
+  -- the gate, since the job already cleared it once.
+  if new.stage = any(v_skilled_stages) and not (old.stage = any(v_skilled_stages)) then
+    if not public.clrwf_job_gate_ready(new.id) then
+      raise exception 'Job % cannot enter the Skilled Lane: materials are not fully staged or required equipment is not operational.', new.id;
+    end if;
+    if new.gate_cleared_at is null then
+      new.gate_cleared_at = now();
+    end if;
+  end if;
+
+  -- WIP limit: only checked when a job is being placed into the Skilled
+  -- Lane with an assignee -- protects a welder from self-inflicted
+  -- context-switching across too many half-finished jobs at once.
+  if new.stage = any(v_skilled_stages) and new.assigned_to is not null
+     and not (old.stage = any(v_skilled_stages) and old.assigned_to = new.assigned_to) then
+    select count(*) into v_in_progress_count
+    from public.clrwf_jobs
+    where assigned_to = new.assigned_to and stage = any(v_skilled_stages) and id <> new.id;
+
+    if v_in_progress_count >= (select wip_limit from public.clrwf_staff where id = new.assigned_to) then
+      raise exception 'Staff member % is already at their work-in-progress limit.', new.assigned_to;
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_jobs_guard_gate_and_wip on clrwf_jobs;
+create trigger clrwf_jobs_guard_gate_and_wip
+  before update of stage on clrwf_jobs
+  for each row execute function clrwf_enforce_gate_and_wip();
+
+-- Client-facing, plain-language status view for /clrwf/portal. Filters to
+-- the caller's own jobs via auth.uid() (safe regardless of view ownership,
+-- since auth.uid() reads the querying role's own JWT) and exposes only
+-- what a client should see -- no assigned welder, no internal materials
+-- notes, no pricing. The five plain-language milestones map from these 13
+-- internal stages entirely in the /portal frontend (Site Spec), not here.
+create or replace view clrwf_jobs_portal as
+select j.id, j.category, j.stage, j.priority, j.due_date, j.created_at, j.public_gallery
+from clrwf_jobs j
+join clrwf_clients c on c.id = j.client_id
+where c.auth_user_id = auth.uid();
+
+grant select on clrwf_jobs_portal to authenticated;
+
+-- Public gallery feed for /clrwf/gallery and the landing page's rotating
+-- feature slot -- pre-filtered to delivered + explicitly-public jobs only,
+-- same "narrow, already-filtered, definer-mode view" pattern as
+-- game_submissions_public. Do not add security_invoker to this view; that
+-- would break the filtering by re-applying clrwf_jobs' staff-only RLS to
+-- anon callers.
+create or replace view clrwf_gallery_public as
+select id, category, photo_paths, created_at
+from clrwf_jobs
+where stage = 'delivered_invoiced' and public_gallery = true;
+
+grant select on clrwf_gallery_public to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- CLRWF Storage buckets
+-- ─────────────────────────────────────────────────────────────────────────
+-- Two buckets, not one, because job photos can include the inside of a
+-- client's home (security bars, railings) -- genuinely private -- while
+-- gallery photos are meant to be shown off. Keeping them separate means
+-- flipping a job to public_gallery can never accidentally expose a
+-- different client's private intake photos just because the whole bucket
+-- got made public.
+insert into storage.buckets (id, name, public)
+values ('clrwf-job-photos', 'clrwf-job-photos', false)
+on conflict (id) do nothing;
+
+insert into storage.buckets (id, name, public)
+values ('clrwf-gallery-photos', 'clrwf-gallery-photos', true)
+on conflict (id) do nothing;
+
+-- Quote-form uploads: anon can attach photos when submitting a quote, but
+-- can never list or read back anyone's uploads (no anon select policy) --
+-- same reasoning as game_submissions' storage split.
+create policy "Allow anon insert to clrwf-job-photos" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'clrwf-job-photos');
+
+create policy "Staff can read clrwf-job-photos" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'clrwf-job-photos' and public.clrwf_is_staff());
+
+-- Gallery bucket only ever receives what staff explicitly choose to
+-- publish (curated in the /shop UI, copied across from clrwf-job-photos) --
+-- anon never writes to it, only reads.
+create policy "Staff can insert clrwf-gallery-photos" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'clrwf-gallery-photos' and public.clrwf_is_staff());
+
+create policy "Public can read clrwf-gallery-photos" on storage.objects
+  for select to anon, authenticated
+  using (bucket_id = 'clrwf-gallery-photos');
