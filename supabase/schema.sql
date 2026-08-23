@@ -5043,3 +5043,550 @@ as $$
 $$;
 
 grant execute on function public.clrwf_email_has_client(text) to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- CLRWF Capabilities catalog (searchable "do you do X?" reference data)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Pure public reference content -- no RLS-worthy sensitivity, so unlike
+-- every other clrwf_* table above this one is a plain anon-readable table,
+-- not a write-only form or a staff-gated one. keywords holds realistic
+-- customer problem-phrasing ("rusted fire escape", "cattle gate") rather
+-- than repeating the item name, so a natural-language search actually
+-- finds the right capability instead of requiring the customer to already
+-- know the shop's own category vocabulary.
+create table if not exists clrwf_capabilities (
+  id uuid primary key default gen_random_uuid(),
+  category text not null,
+  category_order int not null,
+  item_order int not null,
+  name text not null,
+  slug text not null,
+  description text not null,
+  prototype_note text,
+  keywords text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  unique (slug)
+);
+
+-- Not a GENERATED column: array_to_string() is classified STABLE (not
+-- IMMUTABLE) on this Postgres build, which a generated column's expression
+-- must be. Maintained by a trigger instead -- the standard workaround, and
+-- arguably the more common pattern for tsvector maintenance regardless.
+alter table clrwf_capabilities add column if not exists search_vector tsvector;
+
+create or replace function clrwf_capabilities_update_search_vector()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.search_vector :=
+    setweight(to_tsvector('english'::regconfig, coalesce(new.name, '')), 'A') ||
+    setweight(to_tsvector('english'::regconfig, array_to_string(coalesce(new.keywords, '{}'), ' ')), 'A') ||
+    setweight(to_tsvector('english'::regconfig, coalesce(new.description, '')), 'B') ||
+    setweight(to_tsvector('english'::regconfig, coalesce(new.category, '')), 'C');
+  return new;
+end;
+$$;
+
+drop trigger if exists clrwf_capabilities_search_vector_trigger on clrwf_capabilities;
+create trigger clrwf_capabilities_search_vector_trigger
+  before insert or update on clrwf_capabilities
+  for each row execute function clrwf_capabilities_update_search_vector();
+
+create index if not exists clrwf_capabilities_search_idx on clrwf_capabilities using gin(search_vector);
+create index if not exists clrwf_capabilities_category_idx on clrwf_capabilities (category_order, item_order);
+
+alter table clrwf_capabilities enable row level security;
+
+create policy "Allow public read" on clrwf_capabilities for select to anon, authenticated using (true);
+grant select on clrwf_capabilities to anon, authenticated;
+
+-- Staff-only write access -- this is curated catalog content, not a public
+-- form; edits happen via the Table Editor or a future admin tool, not from
+-- the public site.
+create policy "staff can manage capabilities" on clrwf_capabilities
+  for all to authenticated
+  using (public.clrwf_is_staff())
+  with check (public.clrwf_is_staff());
+
+-- Ranked full-text search when q is given; falls back to the catalog's own
+-- category/item order for a plain browse-everything call (q null/blank) --
+-- one function serves both the search box and the default "browse all"
+-- view on /clrwf/capabilities.html, rather than needing two code paths.
+--
+-- Deliberately OR, not AND: a real customer describes their problem as a
+-- sentence ("need a gate for my driveway", "my truck bumper is rusted"),
+-- and websearch_to_tsquery's default AND-of-terms requires every word
+-- (including filler like "need"/"my" that never appears in the catalog)
+-- to match the SAME row -- which returns zero rows for almost any real
+-- sentence. Reusing plainto_tsquery's own tokenizing/stemming/stopword
+-- handling but swapping its `&` for `|` keeps proper lexeme normalization
+-- while turning "must match everything" into "match anything relevant,
+-- rank the closest match highest" -- verified against real query phrasing
+-- before this shipped (see commit history).
+create or replace function clrwf_search_capabilities(q text default null)
+returns setof clrwf_capabilities
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  with parsed as (
+    select nullif(replace(plainto_tsquery('english'::regconfig, q)::text, ' & ', ' | '), '') as query_text
+  )
+  select c.*
+  from public.clrwf_capabilities c, parsed
+  where q is null or btrim(q) = '' or parsed.query_text is null
+     or c.search_vector @@ to_tsquery('english'::regconfig, parsed.query_text)
+  order by
+    case when q is null or btrim(q) = '' or parsed.query_text is null then 0
+         else ts_rank(c.search_vector, to_tsquery('english'::regconfig, parsed.query_text)) end desc,
+    c.category_order, c.item_order;
+$$;
+
+grant execute on function clrwf_search_capabilities(text) to anon, authenticated;
+
+-- ── 1. Structural & Architectural ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Structural & Architectural', 1, 1, 'Structural steel framing (beams, columns, mezzanines)', 'structural-steel-framing',
+ 'Load-bearing steel frameworks for additions, mezzanine levels inside warehouses/lofts, or reinforcing an existing building. Typically I-beams, W-beams, or HSS columns, welded or bolted per AWS D1.1 structural code.',
+ 'A steel mezzanine platform with columns and cross-bracing inside a warehouse.',
+ '{mezzanine,warehouse addition,steel beams,i-beam,building addition,loft mezzanine,column bracing,AWS D1.1,load bearing steel}'),
+('Structural & Architectural', 1, 2, 'Fire escape fabrication & repair', 'fire-escape-repair',
+ 'Exterior emergency egress stairs bolted or welded to masonry buildings — ladders, landings, and stair runs in steel angle and plate. Chicago has a large stock of older 2-4 flat buildings with fire escapes subject to city inspection ordinances, so repair/recertification work is steady.',
+ 'A classic zig-zag exterior fire escape on a brick two-flat, painted black.',
+ '{fire escape repair,rusted fire escape,egress stairs,emergency stairs,fire escape inspection,city ordinance,two-flat fire escape,exterior stairs,fire escape recertification}'),
+('Structural & Architectural', 1, 3, 'Stairs, spiral stairs, railings, handrails', 'stairs-railings-handrails',
+ 'Interior or exterior stairs, from straight-run industrial stairs to curved spiral units, plus code-compliant handrails (34-38" height, baluster spacing under 4").',
+ 'A steel spiral staircase with pipe railing and open metal treads.',
+ '{spiral staircase,interior stairs,handrail,baluster,stair railing,metal stairs,industrial stairs,code compliant railing}'),
+('Structural & Architectural', 1, 4, 'Balconies, catwalks, platforms', 'balconies-catwalks-platforms',
+ 'Elevated walking/standing surfaces — apartment balconies, industrial catwalks connecting equipment, inspection platforms. Chicago''s balcony ordinance has pushed a lot of replacement/reinforcement work.',
+ 'A cantilevered steel-framed apartment balcony with a simple picket railing.',
+ '{apartment balcony,balcony repair,balcony ordinance,catwalk,inspection platform,elevated platform,balcony replacement,balcony reinforcement}'),
+('Structural & Architectural', 1, 5, 'Custom gates (driveway, pedestrian, security)', 'custom-gates',
+ 'Swing or slide gates for driveways, alley entries, or pedestrian walk-throughs, in plain steel, ornamental iron, or aluminum.',
+ 'A black double-swing driveway gate with simple vertical pickets and a center latch.',
+ '{driveway gate,swing gate,slide gate,security gate,alley gate,pedestrian gate,iron gate,gate repair}'),
+('Structural & Architectural', 1, 6, 'Wrought-iron fencing', 'wrought-iron-fencing',
+ 'Ornamental fence panels and posts, often matching Chicago''s classic greystone/two-flat aesthetic — pickets, finials, scrollwork.',
+ 'A low black iron picket fence in front of a Chicago greystone, with decorative finial tops.',
+ '{iron fence,greystone fence,picket fence,ornamental fence,fence repair,decorative fencing,scrollwork fence}'),
+('Structural & Architectural', 1, 7, 'Awnings, canopies, carports', 'awnings-canopies-carports',
+ 'Freestanding or wall-mounted steel-framed shade structures, from a simple entry canopy to a full carport.',
+ 'A flat steel-framed carport with a single support row, open sides.',
+ '{carport,entry canopy,steel awning,car shelter,shade structure}'),
+('Structural & Architectural', 1, 8, 'Architectural facades / decorative panels', 'architectural-facades-panels',
+ 'Custom metal cladding or screen panels for building exteriors — often laser or plasma-cut patterns for a modern look.',
+ 'A perforated/cut steel screen panel mounted as a building facade accent.',
+ '{facade panel,metal cladding,screen panel,perforated panel,building accent,laser cut facade}'),
+('Structural & Architectural', 1, 9, 'Structural repair (sistering beams, reinforcing)', 'structural-repair-sistering',
+ 'Reinforcing an existing weakened or damaged structural member by welding a new piece alongside it ("sistering"), or adding bracing/plates to restore load capacity.',
+ 'A steel I-beam with a welded reinforcing plate/sister beam alongside it in a basement or warehouse ceiling.',
+ '{sistering beam,sagging beam,cracked beam,basement beam repair,reinforce joist,structural crack,weak beam}'),
+('Structural & Architectural', 1, 10, 'Rooftop deck & pergola structural supports', 'rooftop-deck-pergola-supports',
+ 'Steel sub-framing that supports rooftop decks, pergolas, or green roof structures — critical in Chicago''s dense multi-unit buildings where rooftop amenity space is common.',
+ 'A steel support frame under a wood-decked rooftop patio, with a pergola frame above.',
+ '{rooftop deck,roof deck support,pergola frame,green roof structure,rooftop patio,rooftop amenity space}');
+
+-- ── 2. Agricultural & Ranch ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Agricultural & Ranch', 2, 1, 'Livestock gates, panels, chutes, headgates', 'livestock-gates-chutes',
+ 'Heavy-duty tube-steel gates and panels for moving/containing cattle or other livestock, including squeeze chutes and headgates for handling.',
+ 'A galvanized tube-steel cattle gate, 12-16 ft, with a slide latch.',
+ '{cattle gate,squeeze chute,headgate,livestock panel,farm gate,tube gate}'),
+('Agricultural & Ranch', 2, 2, 'Hay feeders, bale spears, feed bunks', 'hay-feeders-bale-spears',
+ 'Feeding equipment — round bale feeders (ring style), bale spears that mount to tractor/skid-steer, and long feed bunks/troughs.',
+ 'A round tube-steel hay feeder ring for round bales.',
+ '{round bale feeder,bale spear,feed bunk,hay ring,cattle feeder}'),
+('Agricultural & Ranch', 2, 3, 'Equipment attachments (grapples, forks, buckets)', 'ag-equipment-attachments',
+ 'Custom or repaired attachments for tractors, skid steers, and loaders — grapple buckets, pallet forks, brush grapples.',
+ 'A skid-steer grapple bucket attachment.',
+ '{skid steer grapple,pallet forks,bucket attachment,loader attachment,brush grapple,tractor attachment}'),
+('Agricultural & Ranch', 2, 4, 'Corral and pen systems', 'corral-pen-systems',
+ 'Modular pen/corral panel systems for sorting and holding livestock.',
+ 'A modular pipe corral panel, freestanding, connected in a ring.',
+ '{corral panel,livestock pen,sorting pen,pipe corral}'),
+('Agricultural & Ranch', 2, 5, 'Equipment repair (implements, hitches, PTO shafts)', 'farm-implement-repair',
+ 'General repair welding on farm implements — broken hitches, cracked frames, worn PTO shaft guards.',
+ 'A cracked disc-harrow frame being repaired with a welded patch/gusset.',
+ '{broken hitch,cracked frame,PTO shaft,implement repair,disc harrow repair,farm equipment welding}'),
+('Agricultural & Ranch', 2, 6, 'Custom trailers (livestock, flatbed, utility)', 'ag-livestock-trailers',
+ 'The ag-specific application of custom trailer builds — stock trailers with slatted sides, etc. (see Trailers & Towing for the general trailer build process).',
+ 'A gooseneck livestock trailer with slatted steel sides.',
+ '{stock trailer,gooseneck trailer,livestock hauler,slatted trailer}');
+
+-- ── 3. Trailers & Towing ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Trailers & Towing', 3, 1, 'Utility trailers', 'utility-trailers',
+ 'Small open trailers for hauling equipment, lawn gear, or general cargo — steel frame, wood or steel deck, single or tandem axle.',
+ 'A 5x8 single-axle open utility trailer with mesh sides.',
+ '{small trailer,lawn equipment trailer,cargo trailer,mesh trailer,open trailer}'),
+('Trailers & Towing', 3, 2, 'Flatbed / equipment trailers', 'flatbed-equipment-trailers',
+ 'Larger flat-deck trailers rated for hauling heavy equipment (skid steers, tractors, vehicles), typically tandem or triple axle.',
+ 'A 20 ft tandem-axle flatbed equipment trailer with ramps.',
+ '{equipment hauler,skid steer trailer,tandem axle trailer,flat deck trailer}'),
+('Trailers & Towing', 3, 3, 'Enclosed cargo trailers', 'enclosed-cargo-trailers',
+ 'Fully enclosed box trailers for hauling tools, goods, or serving as mobile workshops.',
+ 'A 6x12 enclosed V-nose cargo trailer, single axle.',
+ '{cargo trailer,mobile workshop,v-nose trailer,box trailer}'),
+('Trailers & Towing', 3, 4, 'Car haulers', 'car-haulers',
+ 'Trailers specifically built/reinforced for hauling one or more vehicles, often with tie-down rails and a beavertail ramp.',
+ 'A tandem-axle car hauler with a beavertail and stake pockets.',
+ '{vehicle trailer,beavertail trailer,car trailer,tow trailer}'),
+('Trailers & Towing', 3, 5, 'Custom hitches, receivers, tow bars', 'custom-hitches-receivers',
+ 'Fabricated or repaired hitch components — receiver hitches for trucks, custom tow bars, pintle hitch mounts.',
+ 'A rear receiver hitch welded to a truck frame.',
+ '{receiver hitch,tow bar,pintle hitch,truck hitch install}'),
+('Trailers & Towing', 3, 6, 'Trailer repair & axle replacement', 'trailer-repair-axle',
+ 'General trailer maintenance welding — frame cracks, axle swaps, deck replacement.',
+ 'A trailer frame with a cracked cross-member being repaired.',
+ '{trailer axle,cracked trailer frame,trailer deck replacement,trailer maintenance,trailer axle swap}'),
+('Trailers & Towing', 3, 7, 'Ramps and loading equipment', 'ramps-loading-equipment',
+ 'Loading ramps for trailers or docks, fixed or fold-up, plate or expanded-metal deck.',
+ 'A fold-up steel loading ramp pair for a flatbed trailer.',
+ '{loading ramp,dock ramp,fold up ramp,trailer ramp}');
+
+-- ── 4. Automotive & Performance ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Automotive & Performance', 4, 1, 'Roll cages', 'roll-cages',
+ 'Tube-steel safety cages welded into a vehicle''s interior for racing or off-road use, built to sanctioning body spec (NHRA, SCCA, etc. where applicable).',
+ 'A DOM tube roll cage inside a stripped race car interior.',
+ '{race car cage,safety cage,tube cage,NHRA cage,SCCA cage,roll cage install}'),
+('Automotive & Performance', 4, 2, 'Custom exhaust systems / headers', 'custom-exhaust-headers',
+ 'Fabricated exhaust piping and headers, mandrel-bent tube welded to fit specific engine/chassis combos.',
+ 'A stainless mandrel-bent exhaust system under a car.',
+ '{header fabrication,exhaust piping,mandrel bend,custom exhaust}'),
+('Automotive & Performance', 4, 3, 'Chassis fabrication & modification', 'chassis-fabrication',
+ 'Building or modifying a vehicle''s chassis/frame — stretching, narrowing, reinforcing, or full custom builds.',
+ 'A tube-frame chassis for a custom or race vehicle, bare metal.',
+ '{custom chassis,frame stretch,frame narrow,race car frame}'),
+('Automotive & Performance', 4, 4, 'Suspension components (control arms, brackets)', 'suspension-components',
+ 'Fabricated suspension parts — control arms, subframe connectors, mounting brackets.',
+ 'A tubular steel control arm with rod-end joints.',
+ '{control arm,subframe connector,suspension bracket,tubular control arm}'),
+('Automotive & Performance', 4, 5, 'Frame repair / rust repair', 'frame-rust-repair',
+ 'Cutting out rusted or damaged frame/body sections and welding in new steel.',
+ 'A truck frame section with a rusted-out area cut and patched with new steel plate.',
+ '{rusted frame,truck frame repair,rust hole,frame patch,rusted out truck}'),
+('Automotive & Performance', 4, 6, 'Custom bumpers, brush guards, skid plates', 'custom-bumpers-brush-guards',
+ 'Heavy-duty steel bumpers and underbody protection for trucks/off-road vehicles.',
+ 'A tube-steel front bumper with integrated brush guard on a pickup truck.',
+ '{truck bumper,brush guard,skid plate,off-road bumper}'),
+('Automotive & Performance', 4, 7, 'Off-road racing components', 'off-road-racing-components',
+ 'Specialized fabrication for off-road race trucks/buggies — trophy truck arms, chassis reinforcement, skid systems.',
+ 'A tube-chassis off-road race truck under construction.',
+ '{trophy truck,off-road buggy,race truck arms,chassis reinforcement}');
+
+-- ── 5. Industrial & Manufacturing Support ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Industrial & Manufacturing Support', 5, 1, 'Custom jigs & fixtures', 'custom-jigs-fixtures',
+ 'Precision welding/assembly fixtures that hold parts in place for a repeatable manufacturing process.',
+ 'A steel welding jig/fixture table holding a part in position with toggle clamps.',
+ '{welding fixture,assembly jig,production fixture,toggle clamp table}'),
+('Industrial & Manufacturing Support', 5, 2, 'Machine guards & safety enclosures', 'machine-guards-enclosures',
+ 'OSHA-compliant guarding around moving machinery — wire mesh panels, framed enclosures, interlocked doors.',
+ 'A wire-mesh panel machine guard enclosure around an industrial machine.',
+ '{OSHA guard,machine enclosure,wire mesh guard,safety fencing,machine safety}'),
+('Industrial & Manufacturing Support', 5, 3, 'Conveyor frames & supports', 'conveyor-frames-supports',
+ 'Structural steel framing that supports conveyor belts/rollers in a production or warehouse line.',
+ 'A steel conveyor support frame with roller mounts.',
+ '{conveyor frame,roller support,conveyor line}'),
+('Industrial & Manufacturing Support', 5, 4, 'Equipment stands, racks, carts', 'equipment-stands-racks-carts',
+ 'Custom stands for holding equipment at working height, storage racks, or mobile shop carts.',
+ 'A steel equipment stand/cart with casters and a tool tray.',
+ '{shop cart,tool stand,storage rack,mobile cart,equipment stand}'),
+('Industrial & Manufacturing Support', 5, 5, 'Tanks, hoppers, chutes (non-pressure)', 'tanks-hoppers-chutes',
+ 'Non-pressure-rated containers for holding or directing bulk material — hoppers, chutes, mixing tanks.',
+ 'A sheet-steel hopper with a conical bottom and outlet chute.',
+ '{hopper,mixing tank,bulk material chute,sheet metal tank}'),
+('Industrial & Manufacturing Support', 5, 6, 'Custom brackets & mounts', 'custom-brackets-mounts',
+ 'General-purpose fabricated brackets for mounting equipment, piping, or machinery.',
+ 'An L-shaped steel mounting bracket bolted to a wall.',
+ '{mounting bracket,equipment mount,pipe bracket,wall bracket}'),
+('Industrial & Manufacturing Support', 5, 7, 'Production line repair/retrofit', 'production-line-repair',
+ 'On-site welding repair or modification of existing production line equipment to extend life or add capability.',
+ 'A technician welding a repair on an in-place conveyor/production line component.',
+ '{line repair,retrofit,on-site welding,production downtime}');
+
+-- ── 6. Oilfield / Energy / Mining ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Oilfield / Energy / Mining', 6, 1, 'Wellhead structures & supports', 'wellhead-structures-supports',
+ 'Structural steel supports and platforms around wellhead equipment.',
+ 'A steel support platform around a wellhead assembly.',
+ '{wellhead platform,wellhead support}'),
+('Oilfield / Energy / Mining', 6, 2, 'Pipe racks & skids', 'pipe-racks-skids',
+ 'Elevated steel racks that carry piping runs across a facility, or skid-mounted equipment bases.',
+ 'An elevated steel pipe rack carrying multiple parallel pipe runs.',
+ '{pipe rack,equipment skid base,skid mounted}'),
+('Oilfield / Energy / Mining', 6, 3, 'Equipment skids', 'equipment-skids',
+ 'Steel base frames that equipment (pumps, generators, compressors) is mounted to for portability.',
+ 'A steel skid base with a pump/generator mounted on top.',
+ '{pump skid,generator skid,compressor skid}'),
+('Oilfield / Energy / Mining', 6, 4, 'Tank batteries (structural work)', 'tank-batteries-structural',
+ 'Structural steel work supporting tank battery installations (walkways, stairs, containment structure) — not the pressure tanks themselves unless separately certified.',
+ 'A steel stair/walkway structure connecting a row of storage tanks.',
+ '{tank battery walkway,tank stairs,containment structure}'),
+('Oilfield / Energy / Mining', 6, 5, 'Mining equipment repair & fabrication', 'mining-equipment-repair',
+ 'Heavy repair welding on mining equipment — buckets, frames, wear plates.',
+ 'A large excavator bucket with wear-plate reinforcement welds.',
+ '{excavator bucket repair,wear plate,mining fabrication}'),
+('Oilfield / Energy / Mining', 6, 6, 'Heavy equipment attachments', 'heavy-equipment-attachments',
+ 'Custom attachments for excavators, loaders, and other heavy equipment.',
+ 'A custom excavator thumb attachment.',
+ '{excavator thumb,loader attachment,heavy equipment custom}');
+
+-- ── 6a. Municipal, Transit & Rail (Chicago-specific) ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Municipal, Transit & Rail', 7, 1, 'CTA/Metra-adjacent contract fabrication', 'transit-contract-fabrication',
+ 'Fabrication work performed as a subcontractor on transit projects — platform components, fencing, structural brackets — typically won through bid processes with prime contractors.',
+ 'A steel platform edge railing section matching CTA station standards.',
+ '{CTA fabrication,Metra contract,transit platform,subcontractor fabrication}'),
+('Municipal, Transit & Rail', 7, 2, 'Streetscape furniture', 'streetscape-furniture',
+ 'City/ward beautification hardware — bike racks, planters, bollards — often procured through municipal or aldermanic contracts.',
+ 'A steel loop-style bike rack, the type common on Chicago sidewalks.',
+ '{bike rack,planter,bollard,aldermanic contract,city beautification}'),
+('Municipal, Transit & Rail', 7, 3, 'Loop/downtown scaffolding and shoring components', 'scaffolding-shoring-components',
+ 'Structural components supporting temporary scaffolding or shoring systems for downtown construction/maintenance.',
+ 'A steel shoring frame section used in a sidewalk/building scaffold system.',
+ '{shoring frame,scaffold component,downtown construction}'),
+('Municipal, Transit & Rail', 7, 4, 'Snow/ice fleet attachments', 'snow-ice-fleet-attachments',
+ 'Plow mounts, salt spreader frames, and other winter fleet attachments for city or private fleet vehicles.',
+ 'A steel plow mount frame on the front of a city truck.',
+ '{plow mount,salt spreader frame,winter fleet}'),
+('Municipal, Transit & Rail', 7, 5, 'Public works equipment repair', 'public-works-equipment-repair',
+ 'General repair welding for public works department equipment — plows, mowers, loaders.',
+ 'A public works truck with a repaired plow frame.',
+ '{plow repair,mower repair,city fleet repair}');
+
+-- ── 7. Marine & Dock ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Marine & Dock', 8, 1, 'Boat trailers', 'boat-trailers',
+ 'Trailers built specifically to cradle and launch boats, with bunks or rollers, often galvanized for water exposure.',
+ 'A tandem-axle galvanized boat trailer with roller supports.',
+ '{galvanized trailer,boat launch trailer,roller trailer}'),
+('Marine & Dock', 8, 2, 'Dock frameworks, ladders, cleats', 'dock-frameworks-ladders-cleats',
+ 'Structural steel or aluminum framing for docks, plus ladders and cleats for tie-off.',
+ 'An aluminum dock frame section with an integrated ladder.',
+ '{dock frame,dock ladder,cleat,aluminum dock}'),
+('Marine & Dock', 8, 3, 'Boat lifts (structural components)', 'boat-lift-structural',
+ 'Structural steel framing for boat lift systems (the lift mechanism itself is often a purchased component; the frame/mounting is fabricated).',
+ 'A steel boat lift frame at a dock, boat suspended above water.',
+ '{boat lift frame,dock lift mount}'),
+('Marine & Dock', 8, 4, 'Marine railings & hardware', 'marine-railings-hardware',
+ 'Corrosion-resistant railings and hardware for boats or dockside structures, often stainless or aluminum.',
+ 'A stainless tube railing along a boat deck edge.',
+ '{stainless railing,boat deck railing,dock railing}'),
+('Marine & Dock', 8, 5, 'Prop guards, brackets', 'prop-guards-brackets',
+ 'Protective guards around boat propellers, or mounting brackets for marine equipment.',
+ 'A steel prop guard cage around an outboard motor.',
+ '{propeller guard,outboard motor guard,marine bracket}');
+
+-- ── 8. Furniture & Home ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Furniture & Home', 9, 1, 'Custom tables (dining, coffee, console)', 'custom-tables',
+ 'Steel-base or steel/wood-combo tables — a very popular category for showing off clean weld work and design sense.',
+ 'A steel-framed dining table with a live-edge wood top.',
+ '{steel base table,dining table,coffee table,live edge table,console table}'),
+('Furniture & Home', 9, 2, 'Bed frames', 'bed-frames',
+ 'Custom steel bed frames, from minimalist platform frames to industrial four-poster styles.',
+ 'A black steel platform bed frame with a simple headboard.',
+ '{steel bed frame,platform bed,industrial bed}'),
+('Furniture & Home', 9, 3, 'Shelving units', 'shelving-units',
+ 'Freestanding or wall-mounted steel shelving, often paired with wood shelves for a modern industrial look.',
+ 'A steel-framed shelving unit with wood plank shelves.',
+ '{steel shelving,industrial shelf,wall shelving}'),
+('Furniture & Home', 9, 4, 'Fire pits & fireplace screens', 'fire-pits-fireplace-screens',
+ 'Steel fire pits (bowl or box style) for patios, plus decorative fireplace screens for indoor fireplaces.',
+ 'A round steel bowl fire pit with a laser-cut decorative band.',
+ '{patio fire pit,fire bowl,fireplace screen,laser cut fire pit}'),
+('Furniture & Home', 9, 5, 'Wine racks', 'wine-racks',
+ 'Custom steel wine storage racks/frames, freestanding or built-in.',
+ 'A steel modular wine rack holding bottles at an angle.',
+ '{wine storage,steel wine rack,built-in wine rack}'),
+('Furniture & Home', 9, 6, 'Bar stools & seating frames', 'bar-stools-seating-frames',
+ 'Steel-framed stools and chairs, often paired with wood or upholstered seats.',
+ 'A steel-legged bar stool with a wood seat.',
+ '{steel bar stool,chair frame,seating frame}'),
+('Furniture & Home', 9, 7, 'Kitchen islands / commercial kitchen equipment frames', 'kitchen-islands-commercial-equipment',
+ 'Custom kitchen island frames (residential) or stainless equipment stands/tables (commercial kitchens).',
+ 'A stainless steel commercial kitchen prep table on wheels.',
+ '{kitchen island frame,stainless prep table,commercial kitchen stand}');
+
+-- ── 9. Outdoor Living & Recreation ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Outdoor Living & Recreation', 10, 1, 'Pergolas & patio structures', 'pergolas-patio-structures',
+ 'Freestanding steel-framed pergolas or patio cover structures.',
+ 'A black steel pergola frame over a backyard patio.',
+ '{backyard pergola,patio cover,steel pergola}'),
+('Outdoor Living & Recreation', 10, 2, 'BBQ grills & smokers (custom)', 'custom-bbq-grills-smokers',
+ 'Custom-built grills and offset smokers, often made from steel pipe or plate.',
+ 'An offset steel smoker with a firebox and rolling cart.',
+ '{offset smoker,custom grill,bbq pit,smoker cart,jerk pan,jerk drum}'),
+('Outdoor Living & Recreation', 10, 3, 'Playground equipment', 'playground-equipment',
+ 'Steel-framed playground structures — climbing frames, swing sets, slides support structures.',
+ 'A steel-framed swing set with a climbing structure attached.',
+ '{swing set,climbing frame,slide structure}'),
+('Outdoor Living & Recreation', 10, 4, 'Outdoor exercise/gym equipment', 'outdoor-exercise-gym-equipment',
+ 'Steel fitness equipment for outdoor gyms or parks — pull-up bars, parallel bars, functional training rigs.',
+ 'A steel outdoor pull-up/dip station.',
+ '{pull-up bar,outdoor gym,fitness rig,parallel bars}'),
+('Outdoor Living & Recreation', 10, 5, 'Sculptures & yard art', 'sculptures-yard-art',
+ 'Decorative metal sculptures or yard art, often custom-commissioned pieces.',
+ 'An abstract steel sculpture on a garden plinth.',
+ '{yard sculpture,garden art,metal sculpture commission}'),
+('Outdoor Living & Recreation', 10, 6, 'Planters & garden structures', 'planters-garden-structures',
+ 'Steel planter boxes, trellises, and other garden structures.',
+ 'A raised steel planter box, corten or painted steel.',
+ '{steel planter,corten planter,trellis,garden structure}'),
+('Outdoor Living & Recreation', 10, 7, 'Swing sets, custom jungle gyms', 'swing-sets-jungle-gyms',
+ 'Larger custom playground/jungle gym structures beyond basic playground equipment.',
+ 'A multi-level steel jungle gym with slide and climbing net.',
+ '{jungle gym,custom playset,climbing net structure}');
+
+-- ── 10. Security & Storage ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Security & Storage', 11, 1, 'Security bars & window guards', 'security-bars-window-guards',
+ 'Steel bars or grilles mounted over windows/doors for security, often on ground-floor commercial or residential units.',
+ 'A welded steel window security grille, vertical bar style.',
+ '{window bars,security grille,window guard,burglar bars}'),
+('Security & Storage', 11, 2, 'Storage racks (warehouse/garage)', 'storage-racks-warehouse-garage',
+ 'Heavy-duty pallet racking or garage storage racks.',
+ 'A steel pallet rack system in a warehouse.',
+ '{pallet rack,garage storage rack,warehouse racking}'),
+('Security & Storage', 11, 3, 'Lockers & cages', 'lockers-cages',
+ 'Steel storage lockers or security cages for tools/equipment/personal items.',
+ 'A row of steel mesh storage cages/lockers in a warehouse.',
+ '{storage cage,tool locker,mesh locker,security cage}'),
+('Security & Storage', 11, 4, 'Safe rooms / vault doors (structural)', 'safe-rooms-vault-doors',
+ 'Structural steel work for safe rooms or vault enclosures — framing and door structure (not necessarily the locking mechanism, which may be a purchased component).',
+ 'A heavy steel vault-style door on a reinforced frame.',
+ '{vault door,safe room framing,panic room}'),
+('Security & Storage', 11, 5, 'Bike racks', 'bike-racks',
+ 'Standalone bike racks for commercial or residential use.',
+ 'A steel loop or grid-style bike rack.',
+ '{bike rack,bicycle parking}'),
+('Security & Storage', 11, 6, 'Dumpster enclosures', 'dumpster-enclosures',
+ 'Steel-framed enclosures that screen dumpsters from view, often with gates.',
+ 'A steel-framed dumpster enclosure with slatted gates.',
+ '{dumpster screen,trash enclosure,dumpster gate}');
+
+-- ── 11. Signage & Display ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Signage & Display', 12, 1, 'Custom metal signs', 'custom-metal-signs',
+ 'Cut, engraved, or raised-letter metal signage for businesses or residences.',
+ 'A plasma-cut steel business sign with raised standoff lettering.',
+ '{business sign,plasma cut sign,raised letter sign}'),
+('Signage & Display', 12, 2, 'Sign frames & mounting structures', 'sign-frames-mounting-structures',
+ 'Structural frames that hold signage — pole signs, wall-mount frames, monument sign structures.',
+ 'A steel pole-mounted sign frame.',
+ '{pole sign,monument sign,sign structure}'),
+('Signage & Display', 12, 3, 'Retail display fixtures', 'retail-display-fixtures',
+ 'Custom steel display racks/fixtures for retail stores.',
+ 'A steel garment/display rack for a retail shop.',
+ '{display rack,garment rack,store fixture}'),
+('Signage & Display', 12, 4, 'Trade show/booth frames', 'trade-show-booth-frames',
+ 'Portable or semi-permanent steel/aluminum frames for trade show booths.',
+ 'A modular aluminum trade show booth frame.',
+ '{booth frame,trade show display,portable frame}');
+
+-- ── 12. Art & Custom Fabrication ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Art & Custom Fabrication', 13, 1, 'Metal sculptures', 'metal-sculptures',
+ 'Larger-scale artistic metalwork, often one-off commissions for public or private display.',
+ 'A large abstract steel sculpture, public plaza scale.',
+ '{public art,sculpture commission,large scale metalwork}'),
+('Art & Custom Fabrication', 13, 2, 'Custom emblems & logos', 'custom-emblems-logos',
+ 'Cut or fabricated metal versions of a company logo or personal emblem, often used as signage or wall art.',
+ 'A laser/plasma-cut steel company logo mounted on a wall.',
+ '{metal logo,company emblem,wall logo}'),
+('Art & Custom Fabrication', 13, 3, 'Memorial/monument work', 'memorial-monument-work',
+ 'Metal components of memorials or monuments — plaques, structural elements, decorative accents.',
+ 'A bronze or steel memorial plaque mounted on a stone base.',
+ '{memorial plaque,monument metalwork,commemorative piece}'),
+('Art & Custom Fabrication', 13, 4, 'Decorative wall art', 'decorative-wall-art',
+ 'Cut-metal wall art pieces for homes or businesses.',
+ 'A laser-cut steel wall art panel, nature or geometric pattern.',
+ '{metal wall art,laser cut art,geometric panel}'),
+('Art & Custom Fabrication', 13, 5, 'Custom furniture-art hybrids', 'furniture-art-hybrids',
+ 'Pieces that blur the line between furniture and sculpture — an artistic table base, a sculptural bench.',
+ 'A sculptural steel bench that doubles as an art piece.',
+ '{sculptural bench,artistic table,art furniture}'),
+('Art & Custom Fabrication', 13, 6, 'One-off client commissions', 'one-off-commissions',
+ 'Catch-all for bespoke projects that don''t fit a standard category — this is really a "contact us" category more than a product.',
+ 'N/A — represented by a portfolio gallery rather than a single image.',
+ '{custom commission,bespoke project,not sure what I need,something custom,one of a kind}');
+
+-- ── 13. Repair & Restoration ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Repair & Restoration', 14, 1, 'Antique/vintage equipment restoration', 'antique-vintage-restoration',
+ 'Restoring old machinery, vehicles, or ironwork to original or working condition.',
+ 'A restored vintage tractor or piece of antique farm equipment.',
+ '{vintage tractor restoration,antique ironwork,restore old machinery}'),
+('Repair & Restoration', 14, 2, 'Farm equipment repair', 'farm-equipment-repair-restoration',
+ 'General welding repair on farm machinery (overlaps with the Agricultural & Ranch section, listed here as a repair-specific service).',
+ 'A welder repairing a cracked plow or cultivator frame.',
+ '{plow repair,cultivator repair,farm machinery welding}'),
+('Repair & Restoration', 14, 3, 'Fabrication of obsolete/discontinued parts', 'obsolete-parts-fabrication',
+ 'Custom-making a replacement part that''s no longer manufactured or available.',
+ 'A hand-fabricated replica of an obsolete machine part next to the original.',
+ '{discontinued part,replacement part,part no longer made,reverse engineer part}'),
+('Repair & Restoration', 14, 4, 'Emergency/mobile welding repair', 'emergency-mobile-welding',
+ 'On-site emergency welding response via mobile welding rig, for breakdowns that can''t wait for shop transport.',
+ 'A mobile welding truck rig set up on-site at a job.',
+ '{mobile welder,on-site welding,emergency repair,welding truck,same day welding}'),
+('Repair & Restoration', 14, 5, 'Fleet vehicle repair', 'fleet-vehicle-repair',
+ 'Ongoing repair contracts for company or municipal vehicle fleets — racks, bumpers, structural repair.',
+ 'A fleet service van with a repaired rear bumper/step.',
+ '{fleet repair contract,company van repair,municipal fleet}');
+
+-- ── 14. Pipe, Tube & Handrail Systems ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Pipe, Tube & Handrail Systems', 15, 1, 'Handrail systems (ADA compliant)', 'ada-handrail-systems',
+ 'Railings built to ADA/code specifications for ramps, stairs, and accessible routes.',
+ 'A steel ADA-compliant handrail along a ramp.',
+ '{ADA handrail,ramp railing,code compliant railing,accessibility railing}'),
+('Pipe, Tube & Handrail Systems', 15, 2, 'Pipe bollards', 'pipe-bollards',
+ 'Steel pipe posts set in concrete to protect structures/pedestrians from vehicle impact.',
+ 'A row of yellow steel pipe bollards in front of a storefront.',
+ '{bollard,storefront protection,vehicle barrier post}'),
+('Pipe, Tube & Handrail Systems', 15, 3, 'Custom tube bending projects', 'custom-tube-bending',
+ 'General tube-bending fabrication work — anything requiring curved tube/pipe shapes.',
+ 'A bent-tube frame or handrail curve.',
+ '{tube bending,pipe bending,curved handrail}'),
+('Pipe, Tube & Handrail Systems', 15, 4, 'HVAC ductwork supports', 'hvac-ductwork-supports',
+ 'Steel hangers and supports for ductwork runs.',
+ 'A steel strut support cradling a rectangular duct run.',
+ '{duct hanger,duct support,strut support}'),
+('Pipe, Tube & Handrail Systems', 15, 5, 'Plumbing/process piping supports (non-pressure)', 'piping-supports-non-pressure',
+ 'Support structures for non-pressure piping runs (pressure piping would fall under a certified process).',
+ 'A pipe support rack under a run of process piping.',
+ '{pipe support rack,process piping support}');
+
+-- ── 15. Specialty / Niche ──
+insert into clrwf_capabilities (category, category_order, item_order, name, slug, description, prototype_note, keywords) values
+('Specialty / Niche', 16, 1, 'CNC plasma-cut decorative panels', 'cnc-plasma-cut-panels',
+ 'Precision plasma-cut steel panels for decorative or functional use, driven by CAD files.',
+ 'A CNC plasma-cut decorative panel with an intricate pattern.',
+ '{plasma cut panel,CNC cut steel,decorative panel}'),
+('Specialty / Niche', 16, 2, 'Laser-cut precision parts', 'laser-cut-precision-parts',
+ 'High-precision laser-cut steel or aluminum parts (if the shop has laser capability).',
+ 'A laser-cut sheet metal part with tight tolerances.',
+ '{laser cut part,precision sheet metal,tight tolerance part}'),
+('Specialty / Niche', 16, 3, 'Powder-coat-ready fabrication', 'powder-coat-ready-fabrication',
+ 'Fabrication finished to a standard ready for powder coating (paired with a local coating partner).',
+ 'A bare-metal fabricated part, cleaned and prepped, ready for the powder coat booth.',
+ '{powder coat prep,painted finish fabrication}'),
+('Specialty / Niche', 16, 4, 'Stainless/food-grade fabrication', 'stainless-food-grade-fabrication',
+ 'Fabrication meeting food-service sanitary standards — commercial kitchen equipment, food truck builds.',
+ 'A stainless steel food truck service window/counter.',
+ '{food truck fabrication,sanitary stainless,commercial kitchen build}'),
+('Specialty / Niche', 16, 5, 'Aluminum-specific fabrication', 'aluminum-fabrication',
+ 'Fabrication work specifically in aluminum — boats, trailers, trim pieces, lightweight structures.',
+ 'An aluminum boat hull or trailer component.',
+ '{aluminum welding,aluminum boat,aluminum trailer,lightweight fabrication}'),
+('Specialty / Niche', 16, 6, 'Pressure vessel / ASME code work', 'pressure-vessel-asme',
+ 'Certified fabrication of pressure vessels or piping under ASME code — tanks, pressure piping systems.',
+ 'An ASME-stamped steel pressure vessel/tank.',
+ '{ASME tank,pressure vessel,certified pressure piping}');

@@ -126,6 +126,7 @@
   <nav class="main-nav" role="navigation" aria-label="Main navigation">
     <ul>
       <li><a href="/clrwf/">Home</a></li>
+      <li><a href="/clrwf/capabilities.html">What We Do</a></li>
       <li><a href="/clrwf/residential.html">Residential</a></li>
       <li><a href="/clrwf/commercial.html">Commercial</a></li>
       <li><a href="/clrwf/custom/">Custom</a></li>
@@ -265,6 +266,14 @@
     if (Array.prototype.some.call(categorySelect.options, function (o) { return o.value === presetType; })) {
       categorySelect.value = presetType;
     }
+  }
+
+  // Picked up from a capabilities-search result (see capabilities.html) --
+  // pre-fills the description so staff see exactly which listed capability
+  // the customer matched to, without needing a second DB round-trip here.
+  var presetNeed = new URLSearchParams(location.search).get('need');
+  if (presetNeed) {
+    document.getElementById('description').value = 'Interested in: ' + presetNeed;
   }
 
   // Picked up from the Jerk Pit configurator (see custom/jerk-pits.html) --
