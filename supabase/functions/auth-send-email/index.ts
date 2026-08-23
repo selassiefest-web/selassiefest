@@ -110,8 +110,17 @@ const NOTIFICATION_SUBJECTS: Record<string, string> = {
 };
 
 Deno.serve(async (req) => {
-  const payload = await req.text();
-  const headers = Object.fromEntries(req.headers);
+  var payload: string, headers: Record<string, string>;
+  try {
+    payload = await req.text();
+    headers = Object.fromEntries(req.headers);
+  } catch (err) {
+    console.error("auth-send-email: failed to read request", err instanceof Error ? err.stack || err.message : String(err));
+    return new Response(JSON.stringify({ error: { http_code: 500, message: "Failed to read request" } }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   let user: { email: string }, email_data: EmailData;
   try {
@@ -119,7 +128,8 @@ Deno.serve(async (req) => {
     const verified = wh.verify(payload, headers) as { user: { email: string }; email_data: EmailData };
     user = verified.user;
     email_data = verified.email_data;
-  } catch {
+  } catch (err) {
+    console.error("auth-send-email: webhook signature verification failed", err instanceof Error ? err.message : String(err), "HOOK_SECRET set:", !!HOOK_SECRET);
     return new Response(JSON.stringify({ error: { http_code: 401, message: "Invalid webhook signature" } }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -148,6 +158,7 @@ Deno.serve(async (req) => {
 
     if (!resendRes.ok) {
       const errText = await resendRes.text();
+      console.error("auth-send-email: Resend API rejected the send", resendRes.status, errText);
       return new Response(JSON.stringify({ error: { http_code: 500, message: `Email send failed: ${errText}` } }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
@@ -156,6 +167,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({}), { status: 200, headers: { "Content-Type": "application/json" } });
   } catch (err) {
+    console.error("auth-send-email: uncaught error in handler", err instanceof Error ? err.stack || err.message : String(err));
     return new Response(JSON.stringify({ error: { http_code: 500, message: (err as Error).message || "Unknown error" } }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
