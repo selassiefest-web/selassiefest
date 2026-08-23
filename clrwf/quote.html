@@ -243,6 +243,18 @@
   var selectedFiles = [];
   var MAX_FILES = 5;
 
+  // Pre-selects the job-type dropdown from ?type=residential|commercial|
+  // custom-jerk-pit|custom-other, matching the Site Spec's "Quote form
+  // pre-filtered to 'Custom — Jerk Pit'" requirement for the Jerk Pit page
+  // (and equally useful from Residential/Commercial's own quote links).
+  var presetType = new URLSearchParams(location.search).get('type');
+  if (presetType) {
+    var categorySelect = document.getElementById('category');
+    if (Array.prototype.some.call(categorySelect.options, function (o) { return o.value === presetType; })) {
+      categorySelect.value = presetType;
+    }
+  }
+
   var dropZone = document.getElementById('fileDropZone');
   var fileInput = document.getElementById('photos');
   var fileListEl = document.getElementById('fileList');

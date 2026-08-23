@@ -531,6 +531,24 @@ function formatClrwfQuoteRequest(record: Record<string, any>) {
   };
 }
 
+// Commercial "Request a Maintenance Agreement" -- a separate lead type
+// from clrwf_quote_requests (see schema.sql), so it's flagged distinctly
+// here too rather than reusing the quote-request formatter.
+function formatClrwfMaintenanceAgreementRequest(record: Record<string, any>) {
+  return {
+    subject: `New Maintenance Agreement Inquiry — ${record.business_name}`,
+    html: `
+      <h2>New Maintenance Agreement Inquiry — C. L. Rainford Welding &amp; Fabrication</h2>
+      <p><strong>Business:</strong> ${escapeHtml(record.business_name)}</p>
+      <p><strong>Contact:</strong> ${escapeHtml(record.contact_name)} (${escapeHtml(record.email)}${record.phone ? ', ' + escapeHtml(record.phone) : ''})</p>
+      ${record.property_description ? `<p><strong>Property/equipment:</strong><br>${escapeHtml(record.property_description)}</p>` : ''}
+      ${record.service_needs ? `<p><strong>Service needs:</strong><br>${escapeHtml(record.service_needs)}</p>` : ''}
+      ${record.message ? `<p><strong>Message:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+      <p style="color:#5b6b7a;font-size:0.85rem;">Recurring commercial lead — track separately from one-off quote requests.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -681,6 +699,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
             content: await fetchStorageObjectAsBase64('clrwf-job-photos', p),
           })));
         },
+      },
+    ],
+  },
+  clrwf_maintenance_agreement_requests: {
+    notifications: [
+      {
+        to: () => CLRWF_NOTIFY_TO,
+        format: formatClrwfMaintenanceAgreementRequest,
+        from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
       },
     ],
   },

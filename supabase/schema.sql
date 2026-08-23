@@ -4955,3 +4955,36 @@ create policy "Staff can insert clrwf-gallery-photos" on storage.objects
 create policy "Public can read clrwf-gallery-photos" on storage.objects
   for select to anon, authenticated
   using (bucket_id = 'clrwf-gallery-photos');
+
+-- Commercial maintenance agreement inquiries -- deliberately a separate
+-- table from clrwf_quote_requests (Site Spec: "distinct from one-off
+-- quotes, since recurring commercial revenue is the growth lever"), so
+-- these leads are trackable/reportable on their own rather than mixed into
+-- the general intake funnel. Write-only for anon, same convention as every
+-- other public form here; not wired into clrwf_jobs since a maintenance
+-- agreement is a contract to negotiate, not a fabrication job to schedule.
+create table if not exists clrwf_maintenance_agreement_requests (
+  id uuid primary key default gen_random_uuid(),
+  business_name text not null,
+  contact_name text,
+  email text not null,
+  phone text,
+  property_description text,
+  service_needs text,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+alter table clrwf_maintenance_agreement_requests enable row level security;
+
+create policy "Allow anon insert" on clrwf_maintenance_agreement_requests for insert to anon with check (true);
+grant insert on clrwf_maintenance_agreement_requests to anon;
+
+create policy "staff can read maintenance agreement requests" on clrwf_maintenance_agreement_requests
+  for select to authenticated
+  using (public.clrwf_is_staff());
+
+drop trigger if exists clrwf_maintenance_agreement_requests_after_insert on clrwf_maintenance_agreement_requests;
+create trigger clrwf_maintenance_agreement_requests_after_insert
+  after insert on clrwf_maintenance_agreement_requests
+  for each row execute function notify_submission_webhook();

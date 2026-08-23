@@ -428,4 +428,21 @@ window.sfSupabase = {
     });
     if (error) throw error;
   },
+
+  // Distinct from submitClrwfQuoteRequest -- see schema.sql's
+  // clrwf_maintenance_agreement_requests comment for why recurring
+  // commercial leads are tracked separately from one-off quotes.
+  async submitClrwfMaintenanceAgreementRequest({ businessName, contactName, email, phone, propertyDescription, serviceNeeds, message }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('clrwf_maintenance_agreement_requests').insert({
+      business_name: businessName,
+      contact_name: contactName || null,
+      email,
+      phone: phone || null,
+      property_description: propertyDescription || null,
+      service_needs: serviceNeeds || null,
+      message: message || null,
+    });
+    if (error) throw error;
+  },
 };
