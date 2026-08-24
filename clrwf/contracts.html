@@ -1018,7 +1018,8 @@
       return (
         '<tr>' +
           '<td>' + escapeHtml(a.full_name) + '<div style="color:var(--ink-faint); font-size:0.78rem; margin-top:2px;">' + escapeHtml(a.email) + (a.phone ? ' &middot; ' + escapeHtml(a.phone) : '') + '</div></td>' +
-          '<td style="max-width:280px; white-space:normal;">' + (a.cover_letter ? escapeHtml(a.cover_letter).slice(0, 160) + (a.cover_letter.length > 160 ? '&hellip;' : '') : '<span style="color:var(--ink-faint);">&mdash;</span>') + '</td>' +
+          '<td><span class="channel-pill">' + escapeHtml(a.position) + '</span></td>' +
+          '<td style="max-width:260px; white-space:normal;">' + (a.cover_letter ? escapeHtml(a.cover_letter).slice(0, 160) + (a.cover_letter.length > 160 ? '&hellip;' : '') : '<span style="color:var(--ink-faint);">&mdash;</span>') + '</td>' +
           '<td>' +
             (a.resume_path ? '<a href="#" class="file-link" data-bucket="clrwf-resumes" data-path="' + escapeHtml(a.resume_path) + '" style="color:var(--spark);"><i class="fas fa-file-pdf"></i> Resume</a>' : '<span style="color:var(--ink-faint);">No resume</span>') +
             ((a.voice_note_paths || []).length ? '<br><a href="#" class="file-link" data-bucket="clrwf-voice-notes" data-path="' + escapeHtml(a.voice_note_paths[0]) + '" style="color:var(--spark);"><i class="fas fa-microphone"></i> Voice note</a>' : '') +
@@ -1030,7 +1031,7 @@
       );
     }).join('');
     document.getElementById('appsTableWrap').innerHTML =
-      '<table class="opp-table"><thead><tr><th>Applicant</th><th>Why Interested</th><th>Files</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      '<table class="opp-table"><thead><tr><th>Applicant</th><th>Position</th><th>Why Interested</th><th>Files</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>';
 
     document.querySelectorAll('#appsTableWrap select[data-app-id]').forEach(function (sel) {
       sel.addEventListener('change', async function () {

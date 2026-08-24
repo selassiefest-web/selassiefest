@@ -484,10 +484,12 @@ window.sfSupabase = {
     if (error) throw error;
   },
 
-  // Careers application for clrwf/careers.html. Resume goes to the private
-  // clrwf-resumes bucket -- same write-only-from-anon pattern as photos and
-  // voice notes (never readable back except by staff).
-  async submitClrwfJobApplication({ fullName, email, phone, coverLetter, resumeFile, voiceNotes }) {
+  // Careers application, shared by every posting under clrwf/careers/
+  // (position is passed explicitly since there's more than one opening).
+  // Resume goes to the private clrwf-resumes bucket -- same
+  // write-only-from-anon pattern as photos and voice notes (never readable
+  // back except by staff).
+  async submitClrwfJobApplication({ position, fullName, email, phone, coverLetter, resumeFile, voiceNotes }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 
@@ -504,6 +506,7 @@ window.sfSupabase = {
     const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
 
     const { error } = await client.from('clrwf_job_applications').insert({
+      position,
       full_name: fullName,
       email,
       phone: phone || null,
