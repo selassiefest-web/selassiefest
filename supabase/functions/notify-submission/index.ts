@@ -582,6 +582,21 @@ function formatClrwfContactMessage(record: Record<string, any>) {
   };
 }
 
+function formatClrwfJobApplication(record: Record<string, any>) {
+  return {
+    subject: `New Job Application — ${record.full_name} (${record.position})`,
+    html: `
+      <h2>New Job Application — C. L. Rainford Welding &amp; Fabrication</h2>
+      <p><strong>Position:</strong> ${escapeHtml(record.position)}</p>
+      <p><strong>From:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)}${record.phone ? ', ' + escapeHtml(record.phone) : ''})</p>
+      ${record.cover_letter ? `<p><strong>Why they're interested:</strong><br>${escapeHtml(record.cover_letter)}</p>` : ''}
+      ${record.resume_path ? `<p><strong>Resume:</strong> attached below.</p>` : '<p><strong>Resume:</strong> not provided.</p>'}
+      ${voiceNoteLine(record)}
+      <p style="color:#5b6b7a;font-size:0.85rem;">Review and update status from the Contracts CRM tab.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -755,6 +770,25 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         format: formatClrwfContactMessage,
         from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
         attachments: (record) => fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Contact'),
+      },
+    ],
+  },
+  clrwf_job_applications: {
+    notifications: [
+      {
+        to: () => CLRWF_NOTIFY_TO,
+        format: formatClrwfJobApplication,
+        from: () => 'C. L. Rainford Welding & Fabrication <hello@selassiefest.com>',
+        attachments: async (record) => {
+          const resume = record.resume_path
+            ? [{
+                filename: `CLRWF-Application-Resume-${record.full_name || record.id}.${String(record.resume_path).split('.').pop() || 'pdf'}`,
+                content: await fetchStorageObjectAsBase64('clrwf-resumes', record.resume_path),
+              }]
+            : [];
+          const voiceNotes = await fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Application');
+          return [...resume, ...voiceNotes];
+        },
       },
     ],
   },

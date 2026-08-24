@@ -5699,3 +5699,54 @@ values
   ('Illinois BEP (Fast-Track Reciprocal)', 'state', 'not_started', 'Fast-track "Be Enrolled" reciprocal application via CEI, referencing the existing City certification -- ~7 business days once filed.'),
   ('NMSDC MBE Certification', 'corporate', 'not_started', 'Separate paid certification via Chicago Minority Supplier Development Council ($270-$1,700/yr, scaled by revenue). Owner has not yet decided whether to pursue this.')
 on conflict (name) do nothing;
+
+-- ===================================================================
+-- CAREERS: public job posting + application intake (currently just the
+-- Government & Corporate Contracts Specialist role from the playbook).
+-- Write-only from anon (never select), same pattern as clrwf_quote_requests
+-- etc -- only staff can read applications back, via the Contracts CRM tab.
+-- ===================================================================
+
+create table if not exists clrwf_job_applications (
+  id uuid primary key default gen_random_uuid(),
+  position text not null default 'Government & Corporate Contracts Specialist',
+  full_name text not null,
+  email text not null,
+  phone text,
+  cover_letter text,
+  resume_path text,
+  voice_note_paths text[],
+  status text not null default 'new' check (status in ('new', 'reviewing', 'interviewing', 'hired', 'rejected')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table clrwf_job_applications enable row level security;
+
+create policy "anon can submit job application" on clrwf_job_applications for insert to anon with check (true);
+create policy "staff can read job applications" on clrwf_job_applications for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can update job applications" on clrwf_job_applications for update to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create index if not exists clrwf_job_applications_status_idx on clrwf_job_applications (status);
+
+drop trigger if exists clrwf_job_applications_touch on clrwf_job_applications;
+create trigger clrwf_job_applications_touch
+  before update on clrwf_job_applications
+  for each row execute function clrwf_set_updated_at();
+
+drop trigger if exists clrwf_job_applications_notify on clrwf_job_applications;
+create trigger clrwf_job_applications_notify
+  after insert on clrwf_job_applications
+  for each row execute function notify_submission_webhook();
+
+insert into storage.buckets (id, name, public)
+values ('clrwf-resumes', 'clrwf-resumes', false)
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to clrwf-resumes" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'clrwf-resumes');
+
+create policy "Staff can read clrwf-resumes" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'clrwf-resumes' and public.clrwf_is_staff());

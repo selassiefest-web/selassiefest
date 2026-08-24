@@ -673,6 +673,13 @@
       </div>
       <div id="oppTableWrap"></div>
     </div>
+
+    <div class="crm-section">
+      <div class="crm-section-head">
+        <h2>Job Applications</h2>
+      </div>
+      <div id="appsTableWrap"></div>
+    </div>
   </div>
 </div>
 
@@ -994,13 +1001,66 @@
     showToast._timer = setTimeout(function () { t.style.display = 'none'; }, 4000);
   }
 
+  // ---------- CRM: Job Applications ----------
+  var APP_STATUS_LABELS = { new: 'New', reviewing: 'Reviewing', interviewing: 'Interviewing', hired: 'Hired', rejected: 'Rejected' };
+
+  async function loadApplications() {
+    var r = await client.from('clrwf_job_applications').select('*').order('created_at', { ascending: false });
+    renderApplications(r.data || []);
+  }
+
+  function renderApplications(apps) {
+    if (!apps.length) {
+      document.getElementById('appsTableWrap').innerHTML = '<p class="empty-note">No applications yet.</p>';
+      return;
+    }
+    var rows = apps.map(function (a) {
+      return (
+        '<tr>' +
+          '<td>' + escapeHtml(a.full_name) + '<div style="color:var(--ink-faint); font-size:0.78rem; margin-top:2px;">' + escapeHtml(a.email) + (a.phone ? ' &middot; ' + escapeHtml(a.phone) : '') + '</div></td>' +
+          '<td style="max-width:280px; white-space:normal;">' + (a.cover_letter ? escapeHtml(a.cover_letter).slice(0, 160) + (a.cover_letter.length > 160 ? '&hellip;' : '') : '<span style="color:var(--ink-faint);">&mdash;</span>') + '</td>' +
+          '<td>' +
+            (a.resume_path ? '<a href="#" class="file-link" data-bucket="clrwf-resumes" data-path="' + escapeHtml(a.resume_path) + '" style="color:var(--spark);"><i class="fas fa-file-pdf"></i> Resume</a>' : '<span style="color:var(--ink-faint);">No resume</span>') +
+            ((a.voice_note_paths || []).length ? '<br><a href="#" class="file-link" data-bucket="clrwf-voice-notes" data-path="' + escapeHtml(a.voice_note_paths[0]) + '" style="color:var(--spark);"><i class="fas fa-microphone"></i> Voice note</a>' : '') +
+          '</td>' +
+          '<td><select class="crm-input" data-app-id="' + a.id + '">' +
+            Object.keys(APP_STATUS_LABELS).map(function (s) { return '<option value="' + s + '"' + (a.status === s ? ' selected' : '') + '>' + APP_STATUS_LABELS[s] + '</option>'; }).join('') +
+          '</select></td>' +
+        '</tr>'
+      );
+    }).join('');
+    document.getElementById('appsTableWrap').innerHTML =
+      '<table class="opp-table"><thead><tr><th>Applicant</th><th>Why Interested</th><th>Files</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>';
+
+    document.querySelectorAll('#appsTableWrap select[data-app-id]').forEach(function (sel) {
+      sel.addEventListener('change', async function () {
+        var r = await client.from('clrwf_job_applications').update({ status: sel.value }).eq('id', sel.getAttribute('data-app-id'));
+        if (r.error) { showToast(r.error.message.replace(/^.*?: /, '')); return; }
+        showToast('Application status updated.');
+      });
+    });
+
+    document.querySelectorAll('#appsTableWrap .file-link').forEach(function (a) {
+      a.addEventListener('click', async function (e) {
+        e.preventDefault();
+        var bucket = a.getAttribute('data-bucket');
+        var path = a.getAttribute('data-path');
+        var r = await client.storage.from(bucket).createSignedUrl(path, 300);
+        if (r.error || !r.data) { showToast('Could not open file: ' + (r.error ? r.error.message : 'unknown error')); return; }
+        window.open(r.data.signedUrl, '_blank');
+      });
+    });
+  }
+
   async function loadCrm() {
     await loadCertifications();
     await loadOpportunities();
+    await loadApplications();
 
     client.channel('clrwf-contracts-crm')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'clrwf_certifications' }, loadCertifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'clrwf_contract_opportunities' }, loadOpportunities)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clrwf_job_applications' }, loadApplications)
       .subscribe();
   }
 
