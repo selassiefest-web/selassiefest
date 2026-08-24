@@ -5115,34 +5115,70 @@ create policy "staff can manage capabilities" on clrwf_capabilities
 -- one function serves both the search box and the default "browse all"
 -- view on /clrwf/capabilities.html, rather than needing two code paths.
 --
--- Deliberately OR, not AND: a real customer describes their problem as a
--- sentence ("need a gate for my driveway", "my truck bumper is rusted"),
--- and websearch_to_tsquery's default AND-of-terms requires every word
--- (including filler like "need"/"my" that never appears in the catalog)
--- to match the SAME row -- which returns zero rows for almost any real
--- sentence. Reusing plainto_tsquery's own tokenizing/stemming/stopword
--- handling but swapping its `&` for `|` keeps proper lexeme normalization
--- while turning "must match everything" into "match anything relevant,
--- rank the closest match highest" -- verified against real query phrasing
--- before this shipped (see commit history).
+-- Tiered, not flat OR: a customer sentence ("my porch handle broke") often
+-- has only one word that happens to appear anywhere in the catalog at all
+-- (e.g. "handle" inside an unrelated row's description) -- a flat OR search
+-- (the original design here) surfaces that single incidental word-match as
+-- the #1 "Best Match" with total confidence, which is actively misleading,
+-- not just unhelpful (caught via real testing: "my porch handle broke" ->
+-- top hit "Livestock gates, panels, chutes, headgates", matched only on the
+-- stemmed word "handling" inside its description). Fix: try AND first (every
+-- significant word matching the SAME row -- a genuinely strong signal) and
+-- only fall back to the OR-relaxed search when AND finds nothing, matching
+-- how real search engines relax progressively rather than jumping straight
+-- to "any single word, anywhere" and calling it a confident answer.
+-- match_tier tells the caller which happened: 1 = strong (AND) match,
+-- 2 = weak (OR fallback) match, 0 = no query / browse-all. The UI uses this
+-- to withhold the "Best Match" star and keep the "Ask Us Directly" CTA
+-- visible whenever every result came from the weak tier.
 create or replace function clrwf_search_capabilities(q text default null)
-returns setof clrwf_capabilities
+returns table (
+  id uuid, category text, category_order int, item_order int, name text, slug text,
+  description text, prototype_note text, keywords text[], created_at timestamptz,
+  search_vector tsvector, match_tier int
+)
 language sql
 stable
 security definer
 set search_path = ''
 as $$
   with parsed as (
-    select nullif(replace(plainto_tsquery('english'::regconfig, q)::text, ' & ', ' | '), '') as query_text
+    select
+      plainto_tsquery('english'::regconfig, q) as and_query,
+      nullif(replace(plainto_tsquery('english'::regconfig, q)::text, ' & ', ' | '), '') as or_query_text
+  ),
+  blank as (
+    select (q is null or btrim(q) = '' or parsed.and_query::text = '') as is_blank
+    from parsed
+  ),
+  and_hits as (
+    select c.*, 1 as match_tier, ts_rank(c.search_vector, parsed.and_query) as rnk
+    from public.clrwf_capabilities c, parsed, blank
+    where not blank.is_blank
+      and c.search_vector @@ parsed.and_query
+  ),
+  or_hits as (
+    select c.*, 2 as match_tier, ts_rank(c.search_vector, to_tsquery('english'::regconfig, parsed.or_query_text)) as rnk
+    from public.clrwf_capabilities c, parsed, blank
+    where not blank.is_blank
+      and parsed.or_query_text is not null
+      and c.search_vector @@ to_tsquery('english'::regconfig, parsed.or_query_text)
+      and not exists (select 1 from and_hits)
+  ),
+  browse_all as (
+    select c.*, 0 as match_tier, 0::real as rnk
+    from public.clrwf_capabilities c, blank
+    where blank.is_blank
   )
-  select c.*
-  from public.clrwf_capabilities c, parsed
-  where q is null or btrim(q) = '' or parsed.query_text is null
-     or c.search_vector @@ to_tsquery('english'::regconfig, parsed.query_text)
-  order by
-    case when q is null or btrim(q) = '' or parsed.query_text is null then 0
-         else ts_rank(c.search_vector, to_tsquery('english'::regconfig, parsed.query_text)) end desc,
-    c.category_order, c.item_order;
+  select id, category, category_order, item_order, name, slug, description, prototype_note, keywords, created_at, search_vector, match_tier
+  from (
+    select * from and_hits
+    union all
+    select * from or_hits
+    union all
+    select * from browse_all
+  ) combined
+  order by match_tier, rnk desc, category_order, item_order;
 $$;
 
 grant execute on function clrwf_search_capabilities(text) to anon, authenticated;

@@ -88,6 +88,10 @@
   .no-results i{font-size:1.8rem; color:var(--accent); margin-bottom:16px; display:block;}
   .no-results .btn{margin-top:18px;}
 
+  .weak-match-banner{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--warn, #E0B84A); border-radius:8px; padding:14px 18px; margin-bottom:22px; font-size:0.88rem; color:var(--ink-soft);}
+  .weak-match-banner i{color:var(--warn, #E0B84A);}
+  .weak-match-banner a{color:var(--spark); font-weight:700; white-space:nowrap;}
+
   .cta-band{background:linear-gradient(120deg, var(--accent-deep), var(--accent)); color:#1a1204; padding:48px 32px; text-align:center; border-radius:12px; margin:20px 32px 0; max-width:1116px; margin-left:auto; margin-right:auto;}
   .cta-band h2{color:#1a1204; font-size:clamp(1.3rem,3vw,1.8rem);}
   .cta-band p{color:rgba(26,18,4,0.78); margin:10px 0 22px; font-size:0.94rem;}
@@ -230,7 +234,22 @@
         '<div><a class="btn primary" href="/clrwf/quote.html"><i class="fas fa-file-lines"></i> Ask Us Directly</a></div></div>';
       return;
     }
-    area.innerHTML = '<div class="results-grid">' + items.map(function (item, i) { return renderCard(item, i === 0); }).join('') + '</div>';
+    // match_tier: 1 = every significant word matched the same result (strong,
+    // confident hit) -- 2 = only reached via the relaxed any-word-matches
+    // fallback (weak; the top row might just share one incidental word with
+    // the query, not actually be a good answer). Only tier 1 earns the
+    // confident "Best Match" star -- a tier-2-only result set gets a plain
+    // list plus a visible reminder that these are closest guesses, not a
+    // confirmed match, so staff/customers don't take a coincidental match
+    // as a definitive answer.
+    var hasStrongMatch = items.some(function (item) { return item.match_tier === 1; });
+    var banner = hasStrongMatch ? '' :
+      '<div class="weak-match-banner"><i class="fas fa-circle-info"></i>' +
+      '<span>These are the closest things we could find, not an exact match on &ldquo;' + escapeHtml(query) + '&rdquo;.</span>' +
+      '<a href="/clrwf/quote.html">Ask Us Directly instead &rarr;</a></div>';
+    area.innerHTML = banner + '<div class="results-grid">' + items.map(function (item, i) {
+      return renderCard(item, hasStrongMatch && i === 0);
+    }).join('') + '</div>';
   }
 
   function renderBrowseAll(items) {
