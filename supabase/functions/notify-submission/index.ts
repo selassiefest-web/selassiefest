@@ -526,6 +526,28 @@ async function fetchClrwfVoiceNoteAttachments(record: Record<string, any>, label
   })));
 }
 
+// The Jerk Pit builder (custom/jerk-pits.html) stores its picks as a flat
+// object of labeled strings/arrays (pitBody, size, cookingSurface,
+// fireSystem, doors, airflow[], addOns[]) -- render that shape as a real
+// list. Anything else (or an older/unrecognized shape) falls back to a
+// raw JSON dump so this never silently drops data it doesn't recognize.
+function formatPitConfiguration(config: Record<string, any>): string {
+  const KNOWN_SINGLE: [string, string][] = [
+    ['pitBody', 'Pit Body'], ['size', 'Size'], ['cookingSurface', 'Cooking Surface'],
+    ['fireSystem', 'Fire System'], ['doors', 'Doors'],
+  ];
+  const KNOWN_MULTI: [string, string][] = [['airflow', 'Airflow'], ['addOns', 'Add-Ons']];
+  const isKnownShape = KNOWN_SINGLE.some(([k]) => typeof config[k] === 'string');
+  if (!isKnownShape) return `<p><strong>Pit configuration:</strong><br>${escapeHtml(JSON.stringify(config))}</p>`;
+
+  const rows = [
+    ...KNOWN_SINGLE.filter(([k]) => config[k]).map(([k, label]) => `<strong>${label}:</strong> ${escapeHtml(config[k])}`),
+    ...KNOWN_MULTI.filter(([k]) => Array.isArray(config[k]) && config[k].length)
+      .map(([k, label]) => `<strong>${label}:</strong> ${escapeHtml(config[k].join(', '))}`),
+  ];
+  return `<p><strong>Pit configuration:</strong><br>${rows.join('<br>')}</p>`;
+}
+
 function formatClrwfQuoteRequest(record: Record<string, any>) {
   const categoryLabel: Record<string, string> = {
     residential: 'Residential',
@@ -541,7 +563,7 @@ function formatClrwfQuoteRequest(record: Record<string, any>) {
       <p><strong>From:</strong> ${escapeHtml(record.full_name)} (${escapeHtml(record.email)}${record.phone ? ', ' + escapeHtml(record.phone) : ''})</p>
       <p><strong>Job type:</strong> ${escapeHtml(categoryLabel[record.category] || record.category)}</p>
       ${record.description ? `<p><strong>Description:</strong><br>${escapeHtml(record.description)}</p>` : ''}
-      ${record.pit_configuration ? `<p><strong>Pit configuration:</strong><br>${escapeHtml(JSON.stringify(record.pit_configuration))}</p>` : ''}
+      ${record.pit_configuration ? formatPitConfiguration(record.pit_configuration) : ''}
       ${record.budget_range ? `<p><strong>Budget range:</strong> ${escapeHtml(record.budget_range)}</p>` : ''}
       ${record.timeline ? `<p><strong>Timeline:</strong> ${escapeHtml(record.timeline)}</p>` : ''}
       ${photoCount ? `<p><strong>Photos:</strong> ${photoCount} attached below.</p>` : ''}

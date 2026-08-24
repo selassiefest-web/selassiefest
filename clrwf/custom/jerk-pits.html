@@ -79,19 +79,25 @@
 
   .preview-pane{position:sticky; top:96px;}
   @media (max-width:940px){ .preview-pane{position:static;} }
-  .preview-card{background:var(--surface-2); border:1px solid var(--line-strong); border-radius:10px; padding:20px;}
-  .preview-card svg{width:100%; height:auto; display:block;}
-  .preview-meta{display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:0.8rem; color:var(--ink-soft);}
+  .preview-card{background:var(--surface-2); border:1px solid var(--line-strong); border-radius:10px; padding:16px; text-align:center;}
+  .preview-card .hero-img{width:100%; aspect-ratio:1/1; background:#fff; border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center;}
+  .preview-card .hero-img img{width:100%; height:100%; object-fit:contain; padding:14px;}
+  .preview-card .hero-label{margin-top:10px; font-family:"Oswald",sans-serif; font-weight:700; font-size:0.94rem;}
+  .preview-meta{display:flex; justify-content:center; align-items:center; margin-top:8px; font-size:0.8rem; color:var(--ink-soft);}
   .size-badge{font-family:"Oswald",sans-serif; font-weight:700; color:var(--spark); background:rgba(143,227,239,0.12); padding:4px 12px; border-radius:12px; font-size:0.78rem;}
 
-  .summary-card{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:20px; margin-top:16px; font-size:0.86rem;}
-  .summary-card .row{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); color:var(--ink-soft);}
+  .summary-card{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-top:16px; font-size:0.86rem;}
+  .summary-card .row{display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); color:var(--ink-soft);}
   .summary-card .row:last-child{border-bottom:none;}
-  .summary-card .row span.v{color:var(--ink); font-weight:600; text-align:right;}
+  .summary-card .row .thumb{width:30px; height:30px; border-radius:4px; background:#fff; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center;}
+  .summary-card .row .thumb img{width:100%; height:100%; object-fit:contain;}
+  .summary-card .row .label{font-family:"Oswald",sans-serif; font-size:0.62rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); display:block;}
+  .summary-card .row .v{color:var(--ink); font-weight:600; font-size:0.82rem;}
 
   .step{margin-bottom:34px;}
   .step-num{display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--spark); color:#0c2b31; font-family:"Oswald",sans-serif; font-weight:700; font-size:0.82rem; margin-right:10px;}
-  .step-title{display:flex; align-items:center; font-size:1.02rem; margin-bottom:14px;}
+  .step-title{display:flex; align-items:center; font-size:1.02rem; margin-bottom:6px;}
+  .step-sub{color:var(--ink-faint); font-size:0.8rem; margin:0 0 14px 36px;}
   .option-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
   @media (max-width:700px){ .option-grid{grid-template-columns:repeat(2,1fr);} }
   .option-btn{
@@ -102,6 +108,20 @@
   .option-btn:hover{border-color:var(--spark);}
   .option-btn.selected{border-color:var(--spark); background:rgba(143,227,239,0.1); color:var(--ink);}
   .option-btn.selected i{color:var(--spark);}
+
+  .photo-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media (max-width:820px){ .photo-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:600px){ .photo-grid{grid-template-columns:repeat(2,1fr);} }
+  .photo-option{background:var(--surface); border:1.5px solid var(--line-strong); border-radius:8px; overflow:hidden; cursor:pointer; text-align:center;}
+  .photo-option:hover{border-color:var(--spark);}
+  .photo-option.selected{border-color:var(--spark); box-shadow:0 0 0 1px var(--spark);}
+  .photo-option .thumb{aspect-ratio:1/1; background:#fff; display:flex; align-items:center; justify-content:center; position:relative;}
+  .photo-option .thumb img{width:100%; height:100%; object-fit:contain; padding:8px;}
+  .photo-option .check-badge{position:absolute; top:6px; right:6px; width:20px; height:20px; border-radius:50%; background:var(--spark); color:#0c2b31; display:none; align-items:center; justify-content:center; font-size:0.7rem;}
+  .photo-option.selected .check-badge{display:flex;}
+  .photo-option .name{font-size:0.76rem; font-weight:600; color:var(--ink-soft); padding:8px 6px; background:var(--surface-2); line-height:1.25;}
+  .photo-option.selected .name{color:var(--ink);}
+  .photo-grid.scrollable{max-height:420px; overflow-y:auto; padding-right:4px;}
 
   .feature-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
   @media (max-width:600px){ .feature-grid{grid-template-columns:1fr;} }
@@ -215,113 +235,10 @@
     <div class="configurator-inner">
       <div class="preview-pane">
         <div class="preview-card">
-          <svg id="pitSvg" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="steelGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#3a3f45"/>
-                <stop offset="100%" stop-color="#25282c"/>
-              </linearGradient>
-            </defs>
-
-            <line x1="20" y1="260" x2="460" y2="260" stroke="#3a3f45" stroke-width="2" stroke-dasharray="4 4"/>
-
-            <g id="scaleGroup">
-              <!-- legs (default) -->
-              <g id="grp-legs">
-                <line x1="150" y1="220" x2="140" y2="260" stroke="#8a8f95" stroke-width="4"/>
-                <line x1="180" y1="220" x2="175" y2="260" stroke="#8a8f95" stroke-width="4"/>
-                <line x1="300" y1="220" x2="305" y2="260" stroke="#8a8f95" stroke-width="4"/>
-                <line x1="330" y1="220" x2="340" y2="260" stroke="#8a8f95" stroke-width="4"/>
-              </g>
-              <!-- wheels -->
-              <g id="grp-wheels" style="display:none;">
-                <circle cx="160" cy="252" r="14" fill="#17191C" stroke="#8a8f95" stroke-width="3"/>
-                <circle cx="320" cy="252" r="14" fill="#17191C" stroke="#8a8f95" stroke-width="3"/>
-              </g>
-              <!-- trailer -->
-              <g id="grp-trailer" style="display:none;">
-                <circle cx="180" cy="252" r="16" fill="#17191C" stroke="#8a8f95" stroke-width="3"/>
-                <circle cx="300" cy="252" r="16" fill="#17191C" stroke="#8a8f95" stroke-width="3"/>
-                <line x1="120" y1="230" x2="20" y2="230" stroke="#8a8f95" stroke-width="5" stroke-linecap="round"/>
-                <circle cx="16" cy="230" r="5" fill="#8a8f95"/>
-              </g>
-
-              <!-- side table -->
-              <g id="grp-sidetable" style="display:none;">
-                <rect x="55" y="150" width="65" height="10" rx="2" fill="#3a3f45" stroke="#8a8f95" stroke-width="1.5"/>
-                <line x1="62" y1="160" x2="62" y2="210" stroke="#8a8f95" stroke-width="3"/>
-                <line x1="113" y1="160" x2="113" y2="210" stroke="#8a8f95" stroke-width="3"/>
-              </g>
-
-              <!-- firebox -->
-              <g id="grp-firebox" style="display:none;">
-                <line x1="360" y1="160" x2="380" y2="160" stroke="#8a8f95" stroke-width="6"/>
-                <rect x="380" y="130" width="60" height="80" rx="8" fill="url(#steelGrad)" stroke="#E8571F" stroke-width="2.5"/>
-                <rect x="392" y="150" width="36" height="40" rx="4" fill="none" stroke="#A9ACB1" stroke-width="1.5" stroke-dasharray="3 3"/>
-                <circle cx="410" cy="205" r="3" fill="#A9ACB1"/>
-              </g>
-
-              <!-- chimney -->
-              <g id="grp-chimney" style="display:none;">
-                <rect x="330" y="45" width="16" height="55" fill="#3a3f45" stroke="#8a8f95" stroke-width="2"/>
-                <ellipse cx="338" cy="45" rx="12" ry="4" fill="#25282c" stroke="#8a8f95" stroke-width="2"/>
-              </g>
-
-              <!-- body -->
-              <rect x="120" y="90" width="240" height="130" rx="12" fill="url(#steelGrad)" stroke="#E8571F" stroke-width="3"/>
-              <line x1="120" y1="115" x2="360" y2="115" stroke="#3a3f45" stroke-width="1"/>
-
-              <!-- door (semi-transparent so cooking config shows through, like an x-ray/cutaway) -->
-              <rect x="145" y="112" width="190" height="98" rx="8" fill="#17191C" fill-opacity="0.35" stroke="#A9ACB1" stroke-width="1.5" stroke-dasharray="5 4"/>
-
-              <!-- cooking configurations -->
-              <g id="grp-cook-single">
-                <line x1="160" y1="175" x2="320" y2="175" stroke="#E8571F" stroke-width="3"/>
-                <line x1="160" y1="185" x2="320" y2="185" stroke="#E8571F" stroke-width="3"/>
-                <line x1="160" y1="195" x2="320" y2="195" stroke="#E8571F" stroke-width="3"/>
-              </g>
-              <g id="grp-cook-multi" style="display:none;">
-                <line x1="160" y1="135" x2="320" y2="135" stroke="#E8571F" stroke-width="2.5"/>
-                <line x1="160" y1="144" x2="320" y2="144" stroke="#E8571F" stroke-width="2.5"/>
-                <line x1="150" y1="155" x2="330" y2="155" stroke="#8a8f95" stroke-width="2"/>
-                <line x1="160" y1="180" x2="320" y2="180" stroke="#E8571F" stroke-width="2.5"/>
-                <line x1="160" y1="189" x2="320" y2="189" stroke="#E8571F" stroke-width="2.5"/>
-              </g>
-              <g id="grp-cook-rotisserie" style="display:none;">
-                <circle cx="160" cy="160" r="6" fill="none" stroke="#A9ACB1" stroke-width="2"/>
-                <circle cx="320" cy="160" r="6" fill="none" stroke="#A9ACB1" stroke-width="2"/>
-                <line x1="160" y1="160" x2="320" y2="160" stroke="#E8571F" stroke-width="3"/>
-                <line x1="190" y1="160" x2="185" y2="148" stroke="#E8571F" stroke-width="2"/>
-                <line x1="230" y1="160" x2="225" y2="172" stroke="#E8571F" stroke-width="2"/>
-                <line x1="270" y1="160" x2="265" y2="148" stroke="#E8571F" stroke-width="2"/>
-              </g>
-              <g id="grp-cook-jerkrack" style="display:none;">
-                <line x1="160" y1="130" x2="320" y2="130" stroke="#8a8f95" stroke-width="3"/>
-                <path d="M185 130 v25 q0 8 8 8" fill="none" stroke="#E8571F" stroke-width="2.5"/>
-                <path d="M225 130 v30 q0 8 8 8" fill="none" stroke="#E8571F" stroke-width="2.5"/>
-                <path d="M265 130 v22 q0 8 8 8" fill="none" stroke="#E8571F" stroke-width="2.5"/>
-                <path d="M300 130 v28 q0 8 8 8" fill="none" stroke="#E8571F" stroke-width="2.5"/>
-              </g>
-
-              <!-- door handle -->
-              <rect x="322" y="155" width="6" height="24" rx="3" fill="#A9ACB1"/>
-
-              <!-- thermometer -->
-              <g id="grp-thermometer" style="display:none;">
-                <circle cx="175" cy="123" r="11" fill="#25282c" stroke="#8FE3EF" stroke-width="2"/>
-                <line x1="175" y1="123" x2="180" y2="117" stroke="#8FE3EF" stroke-width="1.5"/>
-              </g>
-
-              <!-- logo badge -->
-              <g id="grp-logo" style="display:none;">
-                <rect x="270" y="113" width="52" height="20" rx="4" fill="none" stroke="#8FE3EF" stroke-width="1.5" stroke-dasharray="2 2"/>
-                <text x="296" y="126" font-family="Oswald, sans-serif" font-size="9" fill="#8FE3EF" text-anchor="middle">LOGO</text>
-              </g>
-            </g>
-          </svg>
+          <div class="hero-img"><img id="heroImg" src="" alt=""></div>
+          <div class="hero-label" id="heroLabel"></div>
         </div>
         <div class="preview-meta">
-          <span id="baseLabel">Jerk Pit</span>
           <span class="size-badge" id="sizeBadge">48"</span>
         </div>
         <div class="summary-card" id="summaryCard"></div>
@@ -329,13 +246,9 @@
 
       <div class="steps-pane">
         <div class="step">
-          <div class="step-title"><span class="step-num">1</span>Choose Your Base</div>
-          <div class="option-grid" id="stepBase">
-            <div class="option-btn" data-value="jerk-pit"><i class="fas fa-fire-flame-curved"></i>Jerk Pit</div>
-            <div class="option-btn" data-value="smoker"><i class="fas fa-smog"></i>Smoker</div>
-            <div class="option-btn" data-value="grill"><i class="fas fa-utensils"></i>Grill</div>
-            <div class="option-btn" data-value="combination"><i class="fas fa-fire"></i>Combination</div>
-          </div>
+          <div class="step-title"><span class="step-num">1</span>Choose Your Pit Body</div>
+          <p class="step-sub">Real photos &mdash; this is what your pit's base will actually look like.</p>
+          <div class="photo-grid" id="stepPitBody"></div>
         </div>
 
         <div class="step">
@@ -350,26 +263,30 @@
         </div>
 
         <div class="step">
-          <div class="step-title"><span class="step-num">3</span>Cooking Configuration</div>
-          <div class="option-grid" id="stepCooking">
-            <div class="option-btn" data-value="single"><i class="fas fa-grip-lines"></i>Single Grate</div>
-            <div class="option-btn" data-value="multi"><i class="fas fa-bars"></i>Multi-Level</div>
-            <div class="option-btn" data-value="rotisserie"><i class="fas fa-rotate"></i>Rotisserie</div>
-            <div class="option-btn" data-value="jerkrack"><i class="fas fa-link"></i>Jerk Rack</div>
-          </div>
+          <div class="step-title"><span class="step-num">3</span>Cooking Surface</div>
+          <div class="photo-grid" id="stepCookingSurface"></div>
         </div>
 
         <div class="step">
-          <div class="step-title"><span class="step-num">4</span>Add Features</div>
-          <div class="feature-grid" id="stepFeatures">
-            <label class="feature-check"><input type="checkbox" data-feature="sidetable"><i class="fas fa-table-cells" style="margin-right:2px;"></i>Side Table</label>
-            <label class="feature-check"><input type="checkbox" data-feature="firebox"><i class="fas fa-fire" style="margin-right:2px;"></i>Offset Firebox</label>
-            <label class="feature-check"><input type="checkbox" data-feature="chimney"><i class="fas fa-wind" style="margin-right:2px;"></i>Chimney</label>
-            <label class="feature-check"><input type="checkbox" data-feature="wheels"><i class="fas fa-circle-dot" style="margin-right:2px;"></i>Wheels</label>
-            <label class="feature-check"><input type="checkbox" data-feature="thermometer"><i class="fas fa-temperature-half" style="margin-right:2px;"></i>Digital Thermometer</label>
-            <label class="feature-check"><input type="checkbox" data-feature="logo"><i class="fas fa-stamp" style="margin-right:2px;"></i>Custom Logo</label>
-            <label class="feature-check"><input type="checkbox" data-feature="trailer"><i class="fas fa-trailer" style="margin-right:2px;"></i>Trailer Mount</label>
-          </div>
+          <div class="step-title"><span class="step-num">4</span>Fire System</div>
+          <div class="photo-grid" id="stepFireSystem"></div>
+        </div>
+
+        <div class="step">
+          <div class="step-title"><span class="step-num">5</span>Doors &amp; Access</div>
+          <div class="photo-grid" id="stepDoors"></div>
+        </div>
+
+        <div class="step">
+          <div class="step-title"><span class="step-num">6</span>Airflow</div>
+          <p class="step-sub">Pick as many as apply.</p>
+          <div class="photo-grid" id="stepAirflow"></div>
+        </div>
+
+        <div class="step">
+          <div class="step-title"><span class="step-num">7</span>Add-Ons &amp; Custom Features</div>
+          <p class="step-sub">Pick as many as apply &mdash; shelves, hardware, mobility, lighting, and more.</p>
+          <div class="photo-grid scrollable" id="stepAddOns"></div>
         </div>
 
         <div class="configurator-cta">
@@ -446,92 +363,206 @@
   })();
 
   // ---- Configurator ----
-  var state = { base: 'jerk-pit', size: '48', cooking: 'jerkrack', features: {} };
-  var FEATURE_LABELS = {
-    sidetable: 'Side Table', firebox: 'Offset Firebox', chimney: 'Chimney', wheels: 'Wheels',
-    thermometer: 'Digital Thermometer', logo: 'Custom Logo', trailer: 'Trailer Mount',
-  };
-  var BASE_LABELS = { 'jerk-pit': 'Jerk Pit', smoker: 'Smoker', grill: 'Grill', combination: 'Combination' };
-  var COOKING_LABELS = { single: 'Single Grate', multi: 'Multi-Level', rotisserie: 'Rotisserie', jerkrack: 'Jerk Rack' };
-  var SIZE_SCALE = { '36': 0.85, '48': 1, '60': 1.12, '72': 1.25, custom: 1 };
+  // Real photos, not a live-composited illustration -- these are
+  // independent photorealistic renders (own camera angle, own lighting),
+  // not flat layers sharing one coordinate system, so they can't overlay
+  // into a single evolving image the way the old SVG did. Instead: pick
+  // one per required step (pit body, cooking surface, fire system, doors),
+  // any number for the optional multi-select steps (airflow, add-ons),
+  // and the sticky pane shows a live "build sheet" -- big photo of the
+  // pit body plus a thumbnail list of every other choice -- rather than
+  // one impossible composite shot.
+  var IMG_BASE = '/clrwf/custom/img/components/';
 
-  function selectOption(groupEl, value, key) {
-    groupEl.querySelectorAll('.option-btn').forEach(function (b) {
-      b.classList.toggle('selected', b.getAttribute('data-value') === value);
-    });
-    state[key] = value;
-    render();
+  var PIT_BODY_OPTIONS = [
+    ['06_open_jerk_pit', 'Open Jerk Pit'],
+    ['07_enclosed_jerk_pit', 'Enclosed Jerk Pit'],
+    ['08_combination_smoker_grill', 'Combination Smoker/Grill'],
+    ['09_commercial_double_pit', 'Commercial Double Pit'],
+    ['04_barrel_pit', 'Barrel Pit'],
+    ['05_box_pit', 'Box Pit'],
+    ['01_offset_smoker_trailer', 'Offset Smoker (Trailer)'],
+    ['02_offset_smoker_backyard', 'Offset Smoker (Backyard)'],
+    ['03_vertical_smoker', 'Vertical Smoker'],
+    ['10_kamado_style_grill', 'Kamado-Style Grill'],
+  ];
+  var COOKING_SURFACE_OPTIONS = [
+    ['18_jerk_rack', 'Jerk Rack'],
+    ['11_expanded_metal_grate', 'Expanded-Metal Grate'],
+    ['12_stainless_steel_grate', 'Stainless-Steel Grate'],
+    ['13_cast_iron_grate', 'Cast-Iron Grate'],
+    ['14_adjustable_height_grate', 'Adjustable-Height Grate'],
+    ['15_sliding_grate', 'Sliding Grate'],
+    ['16_multi_level_grate_rack', 'Multi-Level Grate Rack'],
+    ['17_rotisserie_assembly', 'Rotisserie Assembly'],
+    ['19_spit_rod', 'Spit Rod'],
+    ['20_hanging_hooks', 'Hanging Hooks'],
+  ];
+  var FIRE_SYSTEM_OPTIONS = [
+    ['21_offset_firebox', 'Offset Firebox'],
+    ['22_internal_firebox', 'Internal Firebox'],
+    ['23_removable_firebox', 'Removable Firebox'],
+    ['24_charcoal_basket', 'Charcoal Basket'],
+    ['25_wood_rack', 'Wood Rack'],
+    ['26_adjustable_air_intake', 'Adjustable Air Intake'],
+    ['27_ash_pan', 'Ash Pan'],
+    ['28_firebrick_liner', 'Firebrick Liner'],
+    ['29_baffle_plate', 'Baffle Plate'],
+    ['30_tuning_plate', 'Tuning Plate'],
+  ];
+  var DOORS_OPTIONS = [
+    ['31_main_cooking_door', 'Main Cooking Door'],
+    ['32_firebox_door', 'Firebox Door'],
+    ['33_ash_door', 'Ash Door'],
+    ['34_double_doors', 'Double Doors'],
+    ['35_lift_up_lid', 'Lift-Up Lid'],
+    ['36_sliding_access_door', 'Sliding Access Door'],
+    ['37_inspection_door', 'Inspection Door'],
+    ['38_roll_top_lid', 'Roll-Top Lid'],
+    ['39_glass_view_door', 'Glass View Door'],
+    ['40_high_temperature_door_gasket', 'High-Temperature Door Gasket'],
+  ];
+  var AIRFLOW_OPTIONS = [
+    ['67_intake_vent', 'Intake Vent'],
+    ['68_adjustable_damper', 'Adjustable Damper'],
+    ['69_chimney_pipe', 'Chimney Pipe'],
+    ['70_adjustable_chimney_cap', 'Adjustable Chimney Cap'],
+    ['71_dual_chimney_assembly', 'Dual Chimney Assembly'],
+    ['72_chimney_elbow', 'Chimney Elbow'],
+  ];
+  var ADD_ON_OPTIONS = [
+    ['41_prep_table', 'Prep Table'],
+    ['42_side_shelf', 'Side Shelf'],
+    ['43_front_shelf', 'Front Shelf'],
+    ['44_stainless_utility_shelf', 'Stainless Utility Shelf'],
+    ['45_cutting_board', 'Cutting Board'],
+    ['46_bottle_opener', 'Bottle Opener'],
+    ['47_tool_hooks', 'Tool Hooks'],
+    ['48_clamp_on_utensil_holder', 'Clamp-On Utensil Holder'],
+    ['49_grease_drain_valve', 'Grease Drain Valve'],
+    ['50_drip_pan', 'Drip Pan'],
+    ['51_grease_catch_tray', 'Grease Catch Tray'],
+    ['64_grease_drain_plug', 'Grease Drain Plug'],
+    ['52_heavy_duty_wheel', 'Heavy-Duty Wheel'],
+    ['53_swivel_caster', 'Swivel Caster'],
+    ['54_locking_caster', 'Locking Caster'],
+    ['55_trailer_hitch_ball', 'Trailer Hitch Ball'],
+    ['56_trailer_safety_chains', 'Trailer Safety Chains'],
+    ['57_trailer_tongue_jack', 'Trailer Tongue Jack'],
+    ['58_locking_door_latch', 'Locking Door Latch'],
+    ['59_custom_logo_plate', 'Custom Logo Plate'],
+    ['60_propane_tank_mount', 'Propane Tank Mount'],
+    ['61_mesh_storage_basket', 'Mesh Storage Basket'],
+    ['62_slide_out_storage_drawer', 'Slide-Out Storage Drawer'],
+    ['63_slide_out_utility_tray', 'Slide-Out Utility Tray'],
+    ['65_accessory_mount_arm', 'Accessory Mount Arm'],
+    ['66_led_work_light', 'LED Work Light'],
+    ['73_analog_thermometer', 'Analog Thermometer'],
+    ['74_digital_temperature_controller', 'Digital Temperature Controller'],
+  ];
+
+  var state = {
+    pitBody: PIT_BODY_OPTIONS[0],
+    size: '48',
+    cookingSurface: COOKING_SURFACE_OPTIONS[0],
+    fireSystem: FIRE_SYSTEM_OPTIONS[0],
+    doors: DOORS_OPTIONS[0],
+    airflow: [],
+    addOns: [],
+  };
+
+  function photoCard(slug, name, selected) {
+    return (
+      '<div class="photo-option' + (selected ? ' selected' : '') + '" data-slug="' + slug + '" data-name="' + name + '">' +
+        '<div class="thumb"><img src="' + IMG_BASE + slug + '.webp" alt="' + name + '" loading="lazy"><span class="check-badge"><i class="fas fa-check"></i></span></div>' +
+        '<div class="name">' + name + '</div>' +
+      '</div>'
+    );
   }
 
-  document.getElementById('stepBase').addEventListener('click', function (e) {
-    var btn = e.target.closest('.option-btn');
-    if (btn) selectOption(this, btn.getAttribute('data-value'), 'base');
-  });
+  function renderSingleSelectGrid(containerId, options, stateKey) {
+    var grid = document.getElementById(containerId);
+    grid.innerHTML = options.map(function (o) { return photoCard(o[0], o[1], state[stateKey][0] === o[0]); }).join('');
+    grid.addEventListener('click', function (e) {
+      var card = e.target.closest('.photo-option');
+      if (!card) return;
+      var slug = card.getAttribute('data-slug');
+      var match = options.find(function (o) { return o[0] === slug; });
+      state[stateKey] = match;
+      grid.querySelectorAll('.photo-option').forEach(function (c) { c.classList.toggle('selected', c.getAttribute('data-slug') === slug); });
+      render();
+    });
+  }
+
+  function renderMultiSelectGrid(containerId, options, stateKey) {
+    var grid = document.getElementById(containerId);
+    grid.innerHTML = options.map(function (o) { return photoCard(o[0], o[1], state[stateKey].some(function (s) { return s[0] === o[0]; })); }).join('');
+    grid.addEventListener('click', function (e) {
+      var card = e.target.closest('.photo-option');
+      if (!card) return;
+      var slug = card.getAttribute('data-slug');
+      var match = options.find(function (o) { return o[0] === slug; });
+      var idx = state[stateKey].findIndex(function (s) { return s[0] === slug; });
+      if (idx === -1) state[stateKey].push(match); else state[stateKey].splice(idx, 1);
+      card.classList.toggle('selected');
+      render();
+    });
+  }
+
+  renderSingleSelectGrid('stepPitBody', PIT_BODY_OPTIONS, 'pitBody');
+  renderSingleSelectGrid('stepCookingSurface', COOKING_SURFACE_OPTIONS, 'cookingSurface');
+  renderSingleSelectGrid('stepFireSystem', FIRE_SYSTEM_OPTIONS, 'fireSystem');
+  renderSingleSelectGrid('stepDoors', DOORS_OPTIONS, 'doors');
+  renderMultiSelectGrid('stepAirflow', AIRFLOW_OPTIONS, 'airflow');
+  renderMultiSelectGrid('stepAddOns', ADD_ON_OPTIONS, 'addOns');
+
   document.getElementById('stepSize').addEventListener('click', function (e) {
     var btn = e.target.closest('.option-btn');
-    if (btn) selectOption(this, btn.getAttribute('data-value'), 'size');
-  });
-  document.getElementById('stepCooking').addEventListener('click', function (e) {
-    var btn = e.target.closest('.option-btn');
-    if (btn) selectOption(this, btn.getAttribute('data-value'), 'cooking');
-  });
-  document.getElementById('stepFeatures').addEventListener('change', function (e) {
-    var cb = e.target;
-    if (cb.tagName !== 'INPUT') return;
-    state.features[cb.getAttribute('data-feature')] = cb.checked;
-    cb.closest('.feature-check').classList.toggle('checked', cb.checked);
+    if (!btn) return;
+    this.querySelectorAll('.option-btn').forEach(function (b) { b.classList.toggle('selected', b === btn); });
+    state.size = btn.getAttribute('data-value');
     render();
   });
-
-  function setVisible(id, visible) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = visible ? '' : 'none';
-  }
+  document.querySelector('#stepSize .option-btn[data-value="48"]').classList.add('selected');
 
   function render() {
-    // legs / wheels / trailer are mutually exclusive
-    setVisible('grp-legs', !state.features.wheels && !state.features.trailer);
-    setVisible('grp-wheels', !!state.features.wheels && !state.features.trailer);
-    setVisible('grp-trailer', !!state.features.trailer);
+    document.getElementById('heroImg').src = IMG_BASE + state.pitBody[0] + '.webp';
+    document.getElementById('heroImg').alt = state.pitBody[1];
+    document.getElementById('heroLabel').textContent = state.pitBody[1];
+    document.getElementById('sizeBadge').textContent = state.size === 'custom' ? 'Custom Size' : state.size + '"';
 
-    setVisible('grp-sidetable', !!state.features.sidetable);
-    setVisible('grp-firebox', !!state.features.firebox);
-    setVisible('grp-chimney', !!state.features.chimney);
-    setVisible('grp-thermometer', !!state.features.thermometer);
-    setVisible('grp-logo', !!state.features.logo);
-
-    ['single', 'multi', 'rotisserie', 'jerkrack'].forEach(function (c) {
-      setVisible('grp-cook-' + c, state.cooking === c);
+    var rows = [
+      ['Pit Body', state.pitBody],
+      ['Cooking Surface', state.cookingSurface],
+      ['Fire System', state.fireSystem],
+      ['Doors', state.doors],
+    ].map(function (r) {
+      return '<div class="row"><span class="thumb"><img src="' + IMG_BASE + r[1][0] + '.webp" alt=""></span><span><span class="label">' + r[0] + '</span><span class="v">' + r[1][1] + '</span></span></div>';
     });
-
-    var scale = SIZE_SCALE[state.size] || 1;
-    document.getElementById('scaleGroup').setAttribute('transform', 'translate(240,180) scale(' + scale + ') translate(-240,-180)');
-
-    document.getElementById('baseLabel').textContent = BASE_LABELS[state.base];
-    document.getElementById('sizeBadge').textContent = state.size === 'custom' ? 'Custom' : state.size + '"';
-
-    var activeFeatures = Object.keys(state.features).filter(function (k) { return state.features[k]; }).map(function (k) { return FEATURE_LABELS[k]; });
-    document.getElementById('summaryCard').innerHTML = [
-      ['Base', BASE_LABELS[state.base]],
-      ['Size', state.size === 'custom' ? 'Custom' : state.size + '"'],
-      ['Cooking Config', COOKING_LABELS[state.cooking]],
-      ['Features', activeFeatures.length ? activeFeatures.join(', ') : 'None selected'],
-    ].map(function (row) {
-      return '<div class="row"><span>' + row[0] + '</span><span class="v">' + row[1] + '</span></div>';
-    }).join('');
+    if (state.airflow.length) {
+      rows.push('<div class="row"><span class="thumb"><img src="' + IMG_BASE + state.airflow[0][0] + '.webp" alt=""></span><span><span class="label">Airflow (' + state.airflow.length + ')</span><span class="v">' + state.airflow.map(function (a) { return a[1]; }).join(', ') + '</span></span></div>');
+    }
+    if (state.addOns.length) {
+      rows.push('<div class="row"><span class="thumb"><img src="' + IMG_BASE + state.addOns[0][0] + '.webp" alt=""></span><span><span class="label">Add-Ons (' + state.addOns.length + ')</span><span class="v">' + state.addOns.map(function (a) { return a[1]; }).join(', ') + '</span></span></div>');
+    }
+    document.getElementById('summaryCard').innerHTML = rows.join('');
   }
 
-  // Initialize default selections visually.
-  document.querySelector('#stepBase .option-btn[data-value="jerk-pit"]').classList.add('selected');
-  document.querySelector('#stepSize .option-btn[data-value="48"]').classList.add('selected');
-  document.querySelector('#stepCooking .option-btn[data-value="jerkrack"]').classList.add('selected');
   render();
 
   // Carries the configuration to the quote form via sessionStorage --
   // read back by quote.html and attached as pit_configuration on submit.
   document.getElementById('requestBuildBtn').addEventListener('click', function () {
     try {
-      sessionStorage.setItem('clrwf_pit_configuration', JSON.stringify(state));
+      sessionStorage.setItem('clrwf_pit_configuration', JSON.stringify({
+        pitBody: state.pitBody[1],
+        size: state.size === 'custom' ? 'Custom' : state.size + '"',
+        cookingSurface: state.cookingSurface[1],
+        fireSystem: state.fireSystem[1],
+        doors: state.doors[1],
+        airflow: state.airflow.map(function (a) { return a[1]; }),
+        addOns: state.addOns.map(function (a) { return a[1]; }),
+      }));
     } catch (e) { /* sessionStorage unavailable -- quote form still works without prefill */ }
   });
 })();
