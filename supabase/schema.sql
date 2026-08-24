@@ -5621,3 +5621,81 @@ create policy "Allow anon insert to clrwf-voice-notes" on storage.objects
 create policy "Staff can read clrwf-voice-notes" on storage.objects
   for select to authenticated
   using (bucket_id = 'clrwf-voice-notes' and public.clrwf_is_staff());
+
+-- ===================================================================
+-- CONTRACTS CRM (Job Acquisition Playbook) -- staff-only internal tool,
+-- no anon access at all. Two tables: opportunities (the pipeline the
+-- playbook's "Contracts CRM ownership" responsibility refers to -- source,
+-- deadline, status, outcome, follow-up date) and certifications (the
+-- annual/multi-year renewal cadence called out throughout the playbook --
+-- SAM.gov, City MBE/WBE/DBE, Illinois BEP, NMSDC, etc).
+-- ===================================================================
+
+create table if not exists clrwf_contract_opportunities (
+  id uuid primary key default gen_random_uuid(),
+  channel text not null check (channel in ('federal', 'state', 'city', 'corporate', 'industrial')),
+  title text not null,
+  agency_or_buyer text,
+  source text,
+  description text,
+  estimated_value numeric,
+  deadline date,
+  status text not null default 'identified' check (status in ('identified', 'qualifying', 'bid_submitted', 'awarded', 'lost', 'declined', 'no_bid')),
+  outcome_notes text,
+  submitted_at timestamptz,
+  decided_at timestamptz,
+  created_by uuid references clrwf_staff(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists clrwf_certifications (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  channel text not null check (channel in ('federal', 'state', 'city', 'corporate', 'industrial')),
+  status text not null default 'not_started' check (status in ('not_started', 'in_progress', 'active', 'expiring_soon', 'expired')),
+  issued_at date,
+  expires_at date,
+  notes text,
+  updated_by uuid references clrwf_staff(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table clrwf_contract_opportunities enable row level security;
+alter table clrwf_certifications enable row level security;
+
+create policy "staff can read opportunities" on clrwf_contract_opportunities for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can manage opportunities" on clrwf_contract_opportunities for all to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create policy "staff can read certifications" on clrwf_certifications for select to authenticated using (public.clrwf_is_staff());
+create policy "staff can manage certifications" on clrwf_certifications for all to authenticated using (public.clrwf_is_staff()) with check (public.clrwf_is_staff());
+
+create index if not exists clrwf_contract_opportunities_channel_idx on clrwf_contract_opportunities (channel);
+create index if not exists clrwf_contract_opportunities_status_idx on clrwf_contract_opportunities (status);
+create index if not exists clrwf_contract_opportunities_deadline_idx on clrwf_contract_opportunities (deadline);
+create index if not exists clrwf_certifications_channel_idx on clrwf_certifications (channel);
+
+drop trigger if exists clrwf_contract_opportunities_touch on clrwf_contract_opportunities;
+create trigger clrwf_contract_opportunities_touch
+  before update on clrwf_contract_opportunities
+  for each row execute function clrwf_set_updated_at();
+
+drop trigger if exists clrwf_certifications_touch on clrwf_certifications;
+create trigger clrwf_certifications_touch
+  before update on clrwf_certifications
+  for each row execute function clrwf_set_updated_at();
+
+-- Seed the certifications the playbook names explicitly. MBE/WBE/DBE is
+-- seeded 'active' because the playbook states this is already held; every
+-- other row is seeded 'not_started' since actual status isn't something
+-- to assume -- the owner action items on the Playbook page ask the owner
+-- to confirm real status directly, matching the "no one's assigned/started
+-- until confirmed" convention used elsewhere on this site.
+insert into clrwf_certifications (name, channel, status, notes)
+values
+  ('City of Chicago MBE/WBE/DBE Certification', 'city', 'active', 'Already held per the Job Acquisition Playbook -- confirm area-of-specialty listing (welding/metal fabrication) is accurate in the DPS directory.'),
+  ('SAM.gov Registration', 'federal', 'not_started', 'Mandatory and free -- required before any federal award or payment. Renews every 365 days.'),
+  ('Illinois BEP (Fast-Track Reciprocal)', 'state', 'not_started', 'Fast-track "Be Enrolled" reciprocal application via CEI, referencing the existing City certification -- ~7 business days once filed.'),
+  ('NMSDC MBE Certification', 'corporate', 'not_started', 'Separate paid certification via Chicago Minority Supplier Development Council ($270-$1,700/yr, scaled by revenue). Owner has not yet decided whether to pursue this.')
+on conflict (name) do nothing;

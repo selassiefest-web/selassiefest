@@ -32,6 +32,12 @@
   }
   .wordmark{font-family:"Oswald",sans-serif; font-weight:700; font-size:1.05rem;}
   .wordmark span{color:var(--accent);}
+  .shop-tabs{display:flex; gap:6px;}
+  .shop-tab{
+    font-family:"Oswald",sans-serif; font-weight:600; font-size:0.78rem; letter-spacing:0.03em; text-transform:uppercase;
+    padding:9px 16px; border-radius:5px; border:1px solid transparent; background:transparent; color:var(--ink-soft); cursor:pointer;
+  }
+  .shop-tab.active{background:var(--accent-soft); color:var(--accent); border-color:rgba(232,87,31,0.3);}
   .header-links{display:flex; align-items:center; gap:18px;}
   .header-links a.nav-link{font-size:0.82rem; font-weight:600; color:var(--ink-soft);}
   .header-links a.nav-link:hover{color:var(--accent);}
@@ -131,6 +137,60 @@
 
   .to-top{position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--surface-3); border:1px solid var(--line-strong); color:var(--ink-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:60;}
   .to-top:hover{color:var(--accent); border-color:var(--accent);}
+
+  /* ---- CRM pane ---- */
+  #crmPane{padding:32px 40px 90px; max-width:1180px; margin:0 auto;}
+  .crm-section{margin-bottom:48px;}
+  .crm-section-head{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
+  .crm-section-head h2{font-size:1.15rem;}
+  select.crm-input, input.crm-input, textarea.crm-input{
+    background:var(--surface-2); border:1.5px solid var(--line-strong); border-radius:5px; color:var(--ink); padding:9px 12px; font-size:0.84rem; font-family:inherit;
+  }
+  select.crm-input:focus, input.crm-input:focus, textarea.crm-input:focus{outline:none; border-color:var(--accent);}
+  .filters-row{display:flex; gap:10px; flex-wrap:wrap;}
+
+  .channel-pill{font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; padding:3px 9px; border-radius:8px; background:var(--surface-3); color:var(--ink-soft);}
+  .status-pill{font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; padding:3px 10px; border-radius:8px;}
+  .status-pill.identified, .status-pill.not_started{background:var(--surface-3); color:var(--ink-soft);}
+  .status-pill.qualifying, .status-pill.in_progress{background:var(--spark-soft); color:var(--spark);}
+  .status-pill.bid_submitted{background:var(--warn-soft); color:var(--warn);}
+  .status-pill.awarded, .status-pill.active{background:var(--good-soft); color:var(--good);}
+  .status-pill.lost, .status-pill.declined, .status-pill.expired{background:var(--danger-soft); color:var(--danger);}
+  .status-pill.no_bid{background:var(--surface-3); color:var(--ink-faint);}
+  .status-pill.expiring_soon{background:var(--warn-soft); color:var(--warn);}
+
+  .cert-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px;}
+  .cert-card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+  .cert-card .top-row{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px;}
+  .cert-card h3{font-size:0.9rem; text-transform:none; letter-spacing:0; font-weight:700;}
+  .cert-card .expiry-line{font-size:0.8rem; color:var(--ink-soft); margin-bottom:10px;}
+  .cert-card .expiry-line.warn{color:var(--warn);}
+  .cert-card .expiry-line.danger{color:var(--danger);}
+  .cert-card .notes{font-size:0.8rem; color:var(--ink-faint); margin-bottom:12px;}
+  .cert-edit-form{display:none; flex-direction:column; gap:8px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
+  .cert-edit-form.open{display:flex;}
+  .cert-edit-form label{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint);}
+
+  .opp-table{width:100%; border-collapse:collapse; font-size:0.86rem;}
+  .opp-table th{text-align:left; font-family:"Oswald",sans-serif; font-size:0.68rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); padding:10px 12px; border-bottom:1px solid var(--line-strong);}
+  .opp-table td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .opp-table tr.opp-row{cursor:pointer;}
+  .opp-table tr.opp-row:hover{background:var(--surface);}
+  .deadline-cell.overdue{color:var(--danger); font-weight:700;}
+  .deadline-cell.soon{color:var(--warn); font-weight:700;}
+  .empty-note{color:var(--ink-faint); font-size:0.88rem; padding:24px 0;}
+
+  #oppOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; z-index:100;}
+  #oppPanel{position:fixed; top:0; right:0; bottom:0; width:440px; max-width:92vw; background:var(--surface); border-left:1px solid var(--line); z-index:101; display:none; overflow-y:auto; padding:26px;}
+  #oppPanel .close-btn{position:absolute; top:20px; right:20px; background:none; border:none; color:var(--ink-soft); font-size:1.1rem; cursor:pointer;}
+  #oppPanel h2{font-size:1.05rem; margin-bottom:20px; text-transform:none;}
+  .opp-field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
+  .opp-field label{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint);}
+  .opp-field input, .opp-field select, .opp-field textarea{width:100%;}
+  .opp-field textarea{min-height:70px; resize:vertical;}
+  .crm-msg{font-size:0.84rem; margin-top:12px;}
+  .crm-msg.error{color:var(--danger);}
+  .crm-msg.success{color:var(--good);}
 </style>
 </head>
 <body>
@@ -151,6 +211,10 @@
 <div id="playbookApp">
   <header class="shop-header">
     <div class="wordmark">C.L. RAINFORD <span>CONTRACTS</span></div>
+    <div class="shop-tabs">
+      <button class="shop-tab active" data-tab="playbook">Playbook</button>
+      <button class="shop-tab" data-tab="crm">CRM</button>
+    </div>
     <div class="header-links">
       <a class="nav-link" href="/clrwf/shop.html"><i class="fas fa-diagram-project"></i> Shop Board</a>
       <div class="staff-badge">
@@ -161,7 +225,7 @@
     </div>
   </header>
 
-  <div class="pb-shell">
+  <div class="pb-shell" id="playbookPane">
     <nav class="pb-nav" id="pbNav">
       <span class="eyebrow">Playbook</span>
       <ul>
@@ -573,7 +637,47 @@
       </section>
     </main>
   </div>
+
+  <div id="crmPane" style="display:none;">
+    <div class="crm-section">
+      <div class="crm-section-head">
+        <h2>Certifications &amp; Registrations</h2>
+      </div>
+      <div class="cert-grid" id="certGrid"></div>
+    </div>
+
+    <div class="crm-section">
+      <div class="crm-section-head">
+        <h2>Opportunities Pipeline</h2>
+        <div class="filters-row">
+          <select class="crm-input" id="oppChannelFilter">
+            <option value="">All Channels</option>
+            <option value="federal">Federal</option>
+            <option value="state">State</option>
+            <option value="city">City</option>
+            <option value="corporate">Corporate</option>
+            <option value="industrial">Industrial</option>
+          </select>
+          <select class="crm-input" id="oppStatusFilter">
+            <option value="">All Statuses</option>
+            <option value="identified">Identified</option>
+            <option value="qualifying">Qualifying</option>
+            <option value="bid_submitted">Bid Submitted</option>
+            <option value="awarded">Awarded</option>
+            <option value="lost">Lost</option>
+            <option value="declined">Declined</option>
+            <option value="no_bid">No Bid</option>
+          </select>
+          <button class="btn primary" id="newOppBtn"><i class="fas fa-plus"></i> New Opportunity</button>
+        </div>
+      </div>
+      <div id="oppTableWrap"></div>
+    </div>
+  </div>
 </div>
+
+<div id="oppOverlay"></div>
+<div id="oppPanel"></div>
 
 <button class="to-top" id="toTopBtn" title="Back to top"><i class="fas fa-arrow-up"></i></button>
 
@@ -581,6 +685,16 @@
 <script>
 (function () {
   var client = null;
+  var currentStaff = null;
+  var allCertifications = [];
+  var allOpportunities = [];
+  var oppsById = {};
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
 
   function showLoginGate() {
     document.getElementById('loadingGate').style.display = 'none';
@@ -646,10 +760,248 @@
       document.getElementById('staffLoginMsg').className = 'form-msg error';
       return;
     }
-    document.getElementById('staffName').textContent = staffRes.data.name;
-    document.getElementById('staffRole').textContent = staffRes.data.role;
+    currentStaff = staffRes.data;
+    document.getElementById('staffName').textContent = currentStaff.name;
+    document.getElementById('staffRole').textContent = currentStaff.role;
 
     wireScrollSpy();
+    wireTabs();
+  }
+
+  function wireTabs() {
+    document.querySelectorAll('.shop-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.shop-tab').forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var name = tab.getAttribute('data-tab');
+        document.getElementById('playbookPane').style.display = name === 'playbook' ? '' : 'none';
+        document.getElementById('crmPane').style.display = name === 'crm' ? '' : 'none';
+        if (name === 'crm' && !wireTabs._loaded) { wireTabs._loaded = true; loadCrm(); }
+      });
+    });
+  }
+
+  // ---------- CRM: Certifications ----------
+  var CHANNEL_LABELS = { federal: 'Federal', state: 'State', city: 'City', corporate: 'Corporate', industrial: 'Industrial' };
+  var CERT_STATUS_LABELS = { not_started: 'Not Started', in_progress: 'In Progress', active: 'Active', expiring_soon: 'Expiring Soon', expired: 'Expired' };
+  var OPP_STATUS_LABELS = { identified: 'Identified', qualifying: 'Qualifying', bid_submitted: 'Bid Submitted', awarded: 'Awarded', lost: 'Lost', declined: 'Declined', no_bid: 'No Bid' };
+
+  function daysUntil(dateStr) {
+    if (!dateStr) return null;
+    var ms = new Date(dateStr + 'T00:00:00').getTime() - new Date(new Date().toDateString()).getTime();
+    return Math.round(ms / 86400000);
+  }
+
+  async function loadCertifications() {
+    var r = await client.from('clrwf_certifications').select('*').order('channel');
+    allCertifications = r.data || [];
+    renderCertifications();
+  }
+
+  function renderCertifications() {
+    document.getElementById('certGrid').innerHTML = allCertifications.map(renderCertCard).join('') ||
+      '<p class="empty-note">No certifications on file yet.</p>';
+  }
+
+  function renderCertCard(cert) {
+    var expiryLine = '';
+    if (cert.expires_at) {
+      var days = daysUntil(cert.expires_at);
+      var cls = days < 0 ? 'danger' : (days <= 60 ? 'warn' : '');
+      expiryLine = '<div class="expiry-line ' + cls + '">' +
+        (days < 0 ? 'Expired ' + Math.abs(days) + ' days ago' : 'Expires in ' + days + ' days (' + cert.expires_at + ')') +
+        '</div>';
+    }
+    return (
+      '<div class="cert-card" data-cert-id="' + cert.id + '">' +
+        '<div class="top-row">' +
+          '<h3>' + escapeHtml(cert.name) + '</h3>' +
+          '<span class="channel-pill">' + (CHANNEL_LABELS[cert.channel] || cert.channel) + '</span>' +
+        '</div>' +
+        '<span class="status-pill ' + cert.status + '">' + (CERT_STATUS_LABELS[cert.status] || cert.status) + '</span>' +
+        expiryLine +
+        (cert.notes ? '<div class="notes" style="margin-top:8px;">' + escapeHtml(cert.notes) + '</div>' : '') +
+        '<button class="btn ghost small" style="margin-top:12px;" data-toggle-edit="' + cert.id + '">Update</button>' +
+        '<div class="cert-edit-form" id="certEdit-' + cert.id + '">' +
+          '<label>Status</label>' +
+          '<select class="crm-input" data-field="status">' +
+            Object.keys(CERT_STATUS_LABELS).map(function (s) {
+              return '<option value="' + s + '"' + (cert.status === s ? ' selected' : '') + '>' + CERT_STATUS_LABELS[s] + '</option>';
+            }).join('') +
+          '</select>' +
+          '<label>Issued</label><input class="crm-input" type="date" data-field="issued_at" value="' + (cert.issued_at || '') + '">' +
+          '<label>Expires</label><input class="crm-input" type="date" data-field="expires_at" value="' + (cert.expires_at || '') + '">' +
+          '<label>Notes</label><textarea class="crm-input" data-field="notes">' + escapeHtml(cert.notes || '') + '</textarea>' +
+          '<button class="btn primary small" data-save-cert="' + cert.id + '">Save</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  document.getElementById('certGrid').addEventListener('click', async function (e) {
+    var toggle = e.target.closest('[data-toggle-edit]');
+    if (toggle) {
+      document.getElementById('certEdit-' + toggle.getAttribute('data-toggle-edit')).classList.toggle('open');
+      return;
+    }
+    var save = e.target.closest('[data-save-cert]');
+    if (save) {
+      var certId = save.getAttribute('data-save-cert');
+      var form = document.getElementById('certEdit-' + certId);
+      var updates = {
+        status: form.querySelector('[data-field="status"]').value,
+        issued_at: form.querySelector('[data-field="issued_at"]').value || null,
+        expires_at: form.querySelector('[data-field="expires_at"]').value || null,
+        notes: form.querySelector('[data-field="notes"]').value || null,
+        updated_by: currentStaff.id,
+      };
+      var r = await client.from('clrwf_certifications').update(updates).eq('id', certId);
+      if (r.error) { showToast(r.error.message.replace(/^.*?: /, '')); return; }
+      showToast('Certification updated.');
+      await loadCertifications();
+    }
+  });
+
+  // ---------- CRM: Opportunities ----------
+  async function loadOpportunities() {
+    var channel = document.getElementById('oppChannelFilter').value;
+    var status = document.getElementById('oppStatusFilter').value;
+    var q = client.from('clrwf_contract_opportunities').select('*').order('deadline', { ascending: true, nullsFirst: false });
+    if (channel) q = q.eq('channel', channel);
+    if (status) q = q.eq('status', status);
+    var r = await q;
+    allOpportunities = r.data || [];
+    oppsById = {};
+    allOpportunities.forEach(function (o) { oppsById[o.id] = o; });
+    renderOpportunities();
+  }
+
+  function renderOpportunities() {
+    if (!allOpportunities.length) {
+      document.getElementById('oppTableWrap').innerHTML = '<p class="empty-note">No opportunities logged yet. Click &ldquo;New Opportunity&rdquo; to start tracking the pipeline.</p>';
+      return;
+    }
+    var rows = allOpportunities.map(function (o) {
+      var days = daysUntil(o.deadline);
+      var deadlineCls = days == null ? '' : (days < 0 ? 'overdue' : (days <= 7 ? 'soon' : ''));
+      return (
+        '<tr class="opp-row" data-opp-id="' + o.id + '">' +
+          '<td><span class="channel-pill">' + (CHANNEL_LABELS[o.channel] || o.channel) + '</span></td>' +
+          '<td>' + escapeHtml(o.title) + (o.agency_or_buyer ? '<div style="color:var(--ink-faint); font-size:0.78rem; margin-top:2px;">' + escapeHtml(o.agency_or_buyer) + '</div>' : '') + '</td>' +
+          '<td class="deadline-cell ' + deadlineCls + '">' + (o.deadline || '&mdash;') + '</td>' +
+          '<td><span class="status-pill ' + o.status + '">' + (OPP_STATUS_LABELS[o.status] || o.status) + '</span></td>' +
+          '<td>' + (o.estimated_value != null ? '$' + Number(o.estimated_value).toLocaleString() : '&mdash;') + '</td>' +
+        '</tr>'
+      );
+    }).join('');
+    document.getElementById('oppTableWrap').innerHTML =
+      '<table class="opp-table"><thead><tr><th>Channel</th><th>Opportunity</th><th>Deadline</th><th>Status</th><th>Est. Value</th></tr></thead><tbody>' +
+      rows + '</tbody></table>';
+
+    document.querySelectorAll('.opp-row').forEach(function (row) {
+      row.addEventListener('click', function () { openOppPanel(row.getAttribute('data-opp-id')); });
+    });
+  }
+
+  document.getElementById('oppChannelFilter').addEventListener('change', loadOpportunities);
+  document.getElementById('oppStatusFilter').addEventListener('change', loadOpportunities);
+  document.getElementById('newOppBtn').addEventListener('click', function () { openOppPanel(null); });
+
+  function closeOppPanel() {
+    document.getElementById('oppOverlay').style.display = 'none';
+    document.getElementById('oppPanel').style.display = 'none';
+  }
+
+  function openOppPanel(oppId) {
+    var opp = oppId ? oppsById[oppId] : null;
+    document.getElementById('oppPanel').innerHTML =
+      '<button class="close-btn" id="closeOppBtn"><i class="fas fa-xmark"></i></button>' +
+      '<h2>' + (opp ? 'Edit Opportunity' : 'New Opportunity') + '</h2>' +
+      '<div class="opp-field"><label>Channel</label><select id="oppChannel">' +
+        Object.keys(CHANNEL_LABELS).map(function (c) { return '<option value="' + c + '"' + (opp && opp.channel === c ? ' selected' : '') + '>' + CHANNEL_LABELS[c] + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="opp-field"><label>Title</label><input type="text" id="oppTitle" value="' + escapeHtml(opp ? opp.title : '') + '" placeholder="e.g. O\'Hare structural steel repair RFQ"></div>' +
+      '<div class="opp-field"><label>Agency / Buyer</label><input type="text" id="oppAgency" value="' + escapeHtml(opp ? opp.agency_or_buyer || '' : '') + '"></div>' +
+      '<div class="opp-field"><label>Source</label><input type="text" id="oppSource" value="' + escapeHtml(opp ? opp.source || '' : '') + '" placeholder="e.g. SAM.gov, BidBuy, direct GC outreach"></div>' +
+      '<div class="opp-field"><label>Description</label><textarea id="oppDescription">' + escapeHtml(opp ? opp.description || '' : '') + '</textarea></div>' +
+      '<div class="opp-field"><label>Estimated Value ($)</label><input type="number" id="oppValue" value="' + (opp && opp.estimated_value != null ? opp.estimated_value : '') + '"></div>' +
+      '<div class="opp-field"><label>Deadline</label><input type="date" id="oppDeadline" value="' + (opp ? opp.deadline || '' : '') + '"></div>' +
+      '<div class="opp-field"><label>Status</label><select id="oppStatus">' +
+        Object.keys(OPP_STATUS_LABELS).map(function (s) { return '<option value="' + s + '"' + (opp && opp.status === s ? ' selected' : (!opp && s === 'identified' ? ' selected' : '')) + '>' + OPP_STATUS_LABELS[s] + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="opp-field"><label>Outcome Notes</label><textarea id="oppOutcomeNotes">' + escapeHtml(opp ? opp.outcome_notes || '' : '') + '</textarea></div>' +
+      '<button class="btn primary" id="saveOppBtn" style="width:100%; justify-content:center;">' + (opp ? 'Save Changes' : 'Log Opportunity') + '</button>' +
+      (opp ? '<button class="btn ghost" id="deleteOppBtn" style="width:100%; justify-content:center; margin-top:10px;">Delete</button>' : '') +
+      '<div class="crm-msg" id="oppMsg"></div>';
+
+    document.getElementById('oppOverlay').style.display = 'block';
+    document.getElementById('oppPanel').style.display = 'block';
+    document.getElementById('closeOppBtn').addEventListener('click', closeOppPanel);
+    document.getElementById('oppOverlay').addEventListener('click', closeOppPanel);
+
+    document.getElementById('saveOppBtn').addEventListener('click', async function () {
+      var msgEl = document.getElementById('oppMsg');
+      var title = document.getElementById('oppTitle').value.trim();
+      if (!title) { msgEl.textContent = 'Title is required.'; msgEl.className = 'crm-msg error'; return; }
+      var payload = {
+        channel: document.getElementById('oppChannel').value,
+        title: title,
+        agency_or_buyer: document.getElementById('oppAgency').value.trim() || null,
+        source: document.getElementById('oppSource').value.trim() || null,
+        description: document.getElementById('oppDescription').value.trim() || null,
+        estimated_value: document.getElementById('oppValue').value ? Number(document.getElementById('oppValue').value) : null,
+        deadline: document.getElementById('oppDeadline').value || null,
+        status: document.getElementById('oppStatus').value,
+        outcome_notes: document.getElementById('oppOutcomeNotes').value.trim() || null,
+      };
+      var r;
+      if (opp) {
+        r = await client.from('clrwf_contract_opportunities').update(payload).eq('id', opp.id);
+      } else {
+        payload.created_by = currentStaff.id;
+        r = await client.from('clrwf_contract_opportunities').insert(payload);
+      }
+      if (r.error) { msgEl.textContent = r.error.message.replace(/^.*?: /, ''); msgEl.className = 'crm-msg error'; return; }
+      showToast(opp ? 'Opportunity updated.' : 'Opportunity logged.');
+      closeOppPanel();
+      loadOpportunities();
+    });
+
+    if (opp) {
+      document.getElementById('deleteOppBtn').addEventListener('click', async function () {
+        if (!confirm('Delete this opportunity? This cannot be undone.')) return;
+        var r = await client.from('clrwf_contract_opportunities').delete().eq('id', opp.id);
+        if (r.error) { showToast(r.error.message.replace(/^.*?: /, '')); return; }
+        showToast('Opportunity deleted.');
+        closeOppPanel();
+        loadOpportunities();
+      });
+    }
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('crmToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'crmToast';
+      t.className = 'toast';
+      t.style.cssText = 'position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--surface-3); border:1px solid var(--line-strong); border-left:3px solid var(--accent); color:var(--ink); padding:14px 20px; border-radius:6px; font-size:0.86rem; z-index:200; max-width:440px;';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(function () { t.style.display = 'none'; }, 4000);
+  }
+
+  async function loadCrm() {
+    await loadCertifications();
+    await loadOpportunities();
+
+    client.channel('clrwf-contracts-crm')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clrwf_certifications' }, loadCertifications)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clrwf_contract_opportunities' }, loadOpportunities)
+      .subscribe();
   }
 
   (async function init() {
