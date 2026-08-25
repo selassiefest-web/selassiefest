@@ -4028,6 +4028,203 @@ set proposed_state = our_proposed_resolution
 where proposed_state is null and our_proposed_resolution is not null;
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- Section 28: Track A's New Park (Gate 0 Recognition Dossier) items,
+-- folded into the Matrix
+-- ─────────────────────────────────────────────────────────────────────────
+-- Track A's 17-item recognition dossier (NP-01..NP-17, narrated on
+-- bbpac/organization/new-park/path-to-formation.html) previously existed
+-- only as static HTML -- no volunteer could claim an item, no action-item
+-- checklist, no blocking-dependency detection, and no structured
+-- stakeholder tracking, unlike every Track B section which gets all of
+-- that for free through My Section / Join a Section / matrix.html (all
+-- three are generic and section_no-driven, so this insert alone is the
+-- entire fix -- no app code changed). item_no 750-766, immediately after
+-- the existing 1-749 range. source_ref preserves the original NP-xx ID.
+-- NP-15 stays a pointer (its own our_proposed_resolution says so
+-- explicitly) rather than a duplicate of the Bylaws already tracked at
+-- Item #3; NP-14 finally gets the Matrix item its own card used to say
+-- was missing. bbpac_formation_documents' separate NP-* rows (track='A')
+-- are untouched -- they feed the Version Log and doc-ref linkification,
+-- not volunteer workflow, and this insert doesn't replace them.
+insert into bbpac_formation_matrix_items
+  (item_no, source_ref, section_no, section_title, domain, item_label, investigation, classification, current_state, proposed_state, dependency, depends_on_item_nos, our_proposed_resolution, progress_status)
+values
+  (750, 'NP-01', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Formal Petition for Recognition',
+   'The principal document Track A''s dossier builds toward: a formal petition addressed to CPD''s Legislative & Community Affairs department, the General Superintendent, and the appropriate administrative leadership, asking CPD to recognize 63rd Street Beach as a distinct park/PAC jurisdiction. Everything else in the New Park dossier is either evidence attached to this petition or preparation for what happens once it is answered.',
+   'CREATE',
+   'Not yet drafted.',
+   'A formal petition to CPD, coordinated with Track B''s G0-01 so CPD does not receive two separate, unlinked asks about the same beach from the same committee.',
+   'Coordinate with Track B before drafting: G0-01 (Written CPD PAC Eligibility/Jurisdiction Determination, /bbpac/organization/documents/phase-00-gate.html#doc-G0-01) is a separate letter from the same organizing effort, asking CPD a related PAC-jurisdiction question through the Park Supervisor/Area Manager. Confirm whether G0-01 has already been sent, is being sent alongside NP-01, or is intentionally held, and reference that status in NP-01.',
+   '{}', null, 'not_started'),
+
+  (751, 'NP-02', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Jurisdiction & Boundary Map',
+   'Defines exactly what BBPAC proposes to represent as a distinct unit: the swimming beach, Beach House, courtyards, promenade, dunes/natural area, parking/access areas, adjacent beach-related green space, distance-swim area, non-motorized boat launch, and related public facilities.',
+   'CREATE',
+   'Full GIS/boundary source list and correction log compiled. Two flagged items need resolving first: the Jackson Park acreage figure, and a conflicting OSM ID for the Beach Dunes.',
+   'A drawn jurisdiction/boundary map, requested against the CPD_Parks GIS layer, reconciled with Track B''s G0-02 (PAC Boundary & Asset Scope Map) so both are derived from one shared base map instead of two independently drawn maps that could quietly diverge.',
+   'Reconcile with Track B''s G0-02 (/bbpac/organization/documents/phase-00-gate.html#doc-G0-02) — draw one shared base map for the beach complex and derive both the PAC-scope version and the park-boundary version from it.',
+   '{}', null, 'in_progress'),
+
+  (752, 'NP-03', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Distinct Identity & Operational Independence Brief',
+   'Even JPAC''s own website acknowledges that 63rd Street Beach and Beachhouse is managed separately as a Special Event Venue — a fact central to the case that the site already functions administratively apart from the rest of Jackson Park.',
+   'VERIFY',
+   'The Special Event Venue claim is known from JPAC''s site, but not yet backed by a citable, current JPAC source page.',
+   'A brief citing a confirmed, current JPAC source page for the Special Event Venue designation.',
+   null, '{}', null, 'in_progress'),
+
+  (753, 'NP-04', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Historical and Cultural Significance Report',
+   'The Beach House dates to 1919; CPD describes the site as the product of South Side residents demanding more beaches. This report documents that history plus Bongo Beach''s own drumming tradition, community history, and contemporary cultural identity.',
+   'CREATE',
+   'Olmsted''s original 1895 bathing-beach vision, the 1899 canal completion, and the 1914-17 extension leading to the 1919 pavilion are documented on the History page (§1b) with four illustrative, clearly-disclaimed AI-generated images. The drumming-tradition history is not yet compiled directly from community sources — only from published press coverage so far.',
+   'A full report combining the Olmsted-era history with a drumming-tradition history compiled directly from community sources.',
+   null, '{}', null, 'in_progress'),
+
+  (754, 'NP-05', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Beach-Specific Stewardship Report',
+   'CPD identifies approximately 12 acres of native dune and shoreline habitat around the swimming beach, used by more than 200 bird species with threatened/endangered species sightings — a specialized stewardship responsibility considerably different from managing ordinary interior portions of Jackson Park.',
+   'CREATE',
+   'Headline acreage and species-count figures are known; full species/stewardship documentation beyond that is not yet compiled.',
+   'A full stewardship report documenting species and habitat detail beyond the headline figures.',
+   null, '{}', null, 'in_progress'),
+
+  (755, 'NP-06', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Conditions and Neglect Dossier',
+   'Where the community''s lived experience becomes evidence: dated photographs, unresolved maintenance problems, sanitation, Beach House conditions, lighting, restrooms, accessibility, safety, programming deficiencies, vendor problems, capital deficiencies, complaints, work orders, and prior promises. Every condition needs to be proven, not merely asserted.',
+   'CREATE',
+   'Not yet started.',
+   'A dated, photo-documented conditions dossier, logged as issues are observed rather than reconstructed after the fact.',
+   null, '{}', null, 'not_started'),
+
+  (756, 'NP-07', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Representation Gap Analysis',
+   'A document-by-document review of all 38 publicly posted JPAC meeting minutes (November 2022 - July 2026) against the scale and needs of 63rd Street Beach specifically.',
+   'VERIFY',
+   'All 38 publicly posted JPAC meeting minutes (Nov 2022 - Jul 2026) reviewed document-by-document.',
+   'Completed 2026-08-08. JPAC does engage substantively with the beach — a September 2025 resolution on the drum circle''s parking dispute, a written reply from CPD''s General Superintendent, and annual Earth Day cleanups — but that engagement clusters entirely in a 16-month window; the prior 22 months of minutes reviewed contain no substantive mention of the beach. The honest verdict is structural underrepresentation, not neglect. See the full Representation Gap Analysis: /bbpac-strategy/representation-gap-analysis.html',
+   null, '{}',
+   'Completed 2026-08-08. JPAC does engage substantively with the beach — a September 2025 resolution on the drum circle''s parking dispute, a written reply from CPD''s General Superintendent, and annual Earth Day cleanups — but that engagement clusters entirely in a 16-month window; the prior 22 months of minutes reviewed contain no substantive mention of the beach. The honest verdict is structural underrepresentation, not neglect. See the full Representation Gap Analysis: /bbpac-strategy/representation-gap-analysis.html',
+   'complete'),
+
+  (757, 'NP-08', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'South Shore Cultural Center Comparative Case Study',
+   'Shows CPD what a dedicated lakefront-site PAC can accomplish: cultural programming, fundraising, preservation advocacy, volunteer committees, buildings-and-grounds advocacy, and community participation.',
+   'VERIFY',
+   'Captured.',
+   'Captured in the History page (§5) and the staff site''s South Shore partner deck — used as a comparator for what a dedicated lakefront-site PAC can accomplish, not as a classification precedent (see History §5 for that distinction).',
+   null, '{}',
+   'Captured in the History page (§5) and the staff site''s South Shore partner deck — used as a comparator for what a dedicated lakefront-site PAC can accomplish, not as a classification precedent (see History §5 for that distinction).',
+   'complete'),
+
+  (758, 'NP-09', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Comparable CPD Classification Precedents',
+   'South Park''s division into Jackson Park, Washington Park, and the Midway Plaisance; Maggie Daley Park within Grant Park; Seneca Park #1242; the Rutherford Sayre consolidation; Lane Beach Park #1265; and the voided Chase Avenue Beach #1250.',
+   'VERIFY',
+   'Captured.',
+   'Built out fully on the History page, each precedent labeled with a verification status (confirmed/partial/pending); underlying paper-trail research is in the staff site''s Precedent Library.',
+   null, '{}',
+   'Built out fully on the History page, each precedent labeled with a verification status (confirmed/partial/pending); underlying paper-trail research is in the staff site''s Precedent Library.',
+   'complete'),
+
+  (759, 'NP-10', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Community Support Petition',
+   'Not an internet petition with vague signatures — needs names, ZIP codes/community connection, relationship to the beach, and explicit, verifiable support for independent recognition.',
+   'CREATE',
+   'Not yet started.',
+   'A verifiable, name-and-ZIP-level community support petition.',
+   null, '{}', null, 'not_started'),
+
+  (760, 'NP-11', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Organizational Endorsements',
+   'Block clubs, cultural organizations, environmental groups, historical organizations, youth organizations, beach users, swimmers, nearby institutions, businesses, and other legitimate stakeholders.',
+   'CREATE',
+   'Not yet started.',
+   'A set of organizational endorsement letters from legitimate community stakeholders.',
+   null, '{}', null, 'not_started'),
+
+  (761, 'NP-12', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Elected/Public Official Support Letters',
+   'Political support matters, but the request should be framed as an administrative-governance and community-representation issue rather than a partisan one.',
+   'COORDINATE',
+   'Contingent on the 5th Ward Alderman''s office being briefed and agreeing to champion the effort — briefing has not yet happened.',
+   'Support letters from elected/public officials, obtained after the Alderman''s office is briefed.',
+   null, '{}', null, 'not_started'),
+
+  (762, 'NP-13', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Founders & Community Leadership Roster',
+   'Demonstrates that this is already an organized, credible, broad-based effort rather than one person''s request.',
+   'CREATE',
+   'Not yet started.',
+   'A roster of founders and community leadership.',
+   null, '{}', null, 'not_started'),
+
+  (763, 'NP-14', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Proposed Mission and Scope (One Page)',
+   'A one-page, plain-language statement of what a 63rd Street Beach advisory body would actually stand for: stewardship, safety, historic preservation, cultural programming, accessibility, environmental protection, accountability, and representation — drafted so it can travel with the recognition case itself.',
+   'CREATE',
+   'Draft complete, but three separate, unreconciled phrasings of the same mission/scope idea exist: this one-pager, Bylaws Article 2 / "Name, Purpose & Mission" (Matrix Item #3, doc 2-04), and Track B''s Founding Project Charter (G0-06). NP-14''s eight themes overlap substantially but not exactly with Article 2''s stewardship/programming/safety-culture/accessibility framing, and none of the three has been checked against the other two or adopted by the Founding Committee.',
+   'A single mission/scope formulation reconciled across this one-pager, Bylaws Article 2 (Item #3), and G0-06''s Founding Project Charter — with NP-14''s extra themes (historic preservation, environmental protection, accountability) folded into Article 2''s language rather than left as a second, competing purpose statement — adopted by the Founding Committee and used identically across every CPD-facing letter and public-facing material.',
+   'Reconcile with Bylaws Article 2 / Matrix Item #3 (Bylaws) and Track B''s Founding Project Charter (G0-06, /bbpac/organization/documents/phase-00-gate.html#doc-G0-06) before adoption.',
+   '{3}', null, 'in_progress'),
+
+  (764, 'NP-15', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Draft Bylaws (Reference Pointer)',
+   'Reviewers evaluating a park-classification request reasonably ask whether the community behind it has already organized real internal governance. This entry exists to answer that honestly, without duplicating Track B''s own Bylaws.',
+   'COORDINATE',
+   'A full 30-article draft (Track B doc 2-02) exists, modeled on CPD''s PAC Bylaw Template plus the published bylaws of JPAC, Horner Park Advisory Council, and Welles Park Advisory Council — not yet adopted by the membership or confirmed by CPD. See Matrix Item #3 for the live current/proposed record.',
+   'Pointer only — no independent Track A drafting. The full 30-article draft Bylaws (Track B doc 2-02) live under Track B; see Matrix Item #3 (Bylaws) and Track B Phase 2 for the actual content and current/proposed state. Keep this pointer current if Track B''s Bylaws status or Matrix Item #3 changes; never restate Bylaws content here from memory.',
+   'Mirrors Track B''s Phase 2 exactly — do not draft a separate version here. See /bbpac/organization/documents/phase-02-governance-bylaws.html or Matrix Item #3 for the live record.',
+   '{3}',
+   'Pointer only — no independent Track A drafting. The full 30-article draft Bylaws (Track B doc 2-02) live under Track B; see Matrix Item #3 (Bylaws) and Track B Phase 2 for the actual content and current/proposed state. Keep this pointer current if Track B''s Bylaws status or Matrix Item #3 changes; never restate Bylaws content here from memory.',
+   'complete'),
+
+  (765, 'NP-16', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'Formal Request for Written CPD Determination',
+   'The single most consequential ask in the New Park dossier: get CPD to answer, in writing, six specific questions rather than leave the classification question ambiguous forever — (1) is 63rd Street Beach eligible for independent PAC representation, (2) if not, is inclusion in Jackson Park No. 19 the sole reason, (3) what officer/body can designate a distinct park/administrative unit, (4) what procedure is required, (5) who can approve a facility-specific PAC, and (6) if current policy prohibits it, what process amends that policy.',
+   'CREATE',
+   'Six questions drafted; not yet sent.',
+   'A formal transmittal to CPD, sent alongside NP-01 and coordinated with Track B''s G0-01, converting an amorphous bureaucratic barrier into a specific decision that can be addressed, appealed politically, or presented to the Board.',
+   'Substantial overlap with Track B''s G0-01 (/bbpac/organization/documents/phase-00-gate.html#doc-G0-01) — either fold NP-16''s six questions into a single joint transmittal alongside NP-01 and G0-01, or make sure each letter explicitly names and attaches the other before it goes out.',
+   '{}', null, 'in_progress'),
+
+  (766, 'NP-17', 28, 'New Park Recognition Dossier (Track A)', 'New Park Formation',
+   'CPD Park-Classification Determination Record',
+   'Once CPD responds to NP-01/NP-16, this record captures the determination permanently and in writing: date, CPD department/contact, outcome selected, new park number/administrative unit ID if any, approved boundary, conditions attached, effective date, relationship to G0-04''s outcome, and next required step.',
+   'CREATE',
+   'Template ready. Cannot be completed until CPD responds to NP-01 and NP-16.',
+   'A completed determination record, cross-filed with G0-04 (CPD-Approved Representation Structure Memorandum) in the Corporate Records Book/Minute Book (Phase 5) and the PAC Binder (Phase 6), so both tracks'' outcomes are read side by side.',
+   'Mirrors Track B''s G0-04 (/bbpac/organization/documents/phase-00-gate.html#doc-G0-04) — record here whether this determination resolves, supersedes, or runs independently of G0-01''s PAC-jurisdiction answer.',
+   '{750,765}', null, 'in_progress')
+
+on conflict (item_no) do nothing;
+
+-- Stakeholder links for the Section 28 items, reusing the existing
+-- registry (several rows already named these NP items by number in their
+-- jurisdiction_summary before this fold even happened).
+insert into bbpac_formation_item_stakeholders (item_no, stakeholder_id, relationship_type, confidence)
+select v.item_no, s.id, v.relationship_type, 'inferred'
+from (values
+  (750, 'cpd-lca', 'must_approve'),
+  (750, 'cpd-general-superintendent', 'must_approve'),
+  (751, 'cpd-planning-development', 'has_jurisdiction'),
+  (752, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (753, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (754, 'cpd-natural-areas', 'has_jurisdiction'),
+  (755, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (759, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (760, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (761, 'ald-5th-ward', 'must_approve'),
+  (762, 'bongo-beach-founding-committee', 'has_jurisdiction'),
+  (765, 'cpd-lca', 'must_approve'),
+  (765, 'cpd-general-superintendent', 'must_approve')
+) as v(item_no, slug, relationship_type)
+join bbpac_formation_stakeholders s on s.slug = v.slug
+on conflict (item_no, stakeholder_id) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- Per-item action checklist
 -- ─────────────────────────────────────────────────────────────────────────
 -- Current state / Proposed state are the known record -- what's true,
