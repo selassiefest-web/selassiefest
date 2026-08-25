@@ -101,6 +101,11 @@
   .quick-match-msg{font-size:0.82rem; color:var(--community); margin-top:8px; display:none;}
   .section-row.dimmed{display:none;}
   .brief-link{font-size:0.72rem; margin-top:2px; display:inline-block;}
+
+  .claim-panel{background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:26px 28px; margin:24px 0; font-size:0.94rem; line-height:1.55;}
+  .claim-panel.success{border-color:var(--community); background:rgba(71,109,62,0.06);}
+  .claim-panel.error{border-color:var(--culture); background:rgba(166,51,26,0.05);}
+  .claim-panel i{margin-right:6px;}
 </style>
 </head>
 <body>
@@ -141,7 +146,7 @@
 
 <div class="page-hero">
   <h1>Volunteer With the Matrix</h1>
-  <p>Request the sections of the Master Due-Diligence Matrix you'd like to work on. Every request is reviewed — once approved, you'll be sent access credentials.</p>
+  <p>Request the sections of the Master Due-Diligence Matrix you'd like to work on. Confirm it's really you by email and you're in immediately &mdash; no staff wait.</p>
   <div class="hero-actions">
     <a class="hero-btn login" href="/bbpac/organization/my-section.html"><i class="fas fa-right-to-bracket"></i> Login</a>
     <a class="hero-btn register" id="registerBtn" href="#stepPick"><i class="fas fa-user-plus"></i> <span id="registerBtnLabel">Register</span></a>
@@ -154,6 +159,8 @@
 
       <div class="orient-strip"><span><i class="fas fa-compass" style="margin-right:6px;"></i>New here? Get the whole picture first — what the two tracks are, and what the Matrix is — in about 2 minutes.</span> <a href="/bbpac/organization/onboarding/orientation.html">Watch the overview &rarr;</a></div>
       <div class="orient-strip"><span><i class="fas fa-route" style="margin-right:6px;"></i>Want to see the exact click-through path first, screen by screen, before requesting a section?</span> <a href="/bbpac/organization/onboarding/how-it-works.html">See how it works &rarr;</a></div>
+
+      <div id="claimResult" class="claim-panel" style="display:none;"></div>
 
       <div id="loadingState"><i class="fas fa-spinner fa-spin"></i> Loading section list&hellip;</div>
 
@@ -402,27 +409,90 @@
       full_name: fullName, email: email, requested_sections: sections, message: message || null,
     });
 
+    if (result.error) {
+      btn.disabled = false;
+      btn.textContent = 'Request Section Access';
+      msgEl.textContent = 'Something went wrong: ' + result.error.message;
+      msgEl.className = 'form-msg error';
+      return;
+    }
+
+    // No staff wait -- the same magic-link email everyone gets for My
+    // Section login goes out right now. Clicking it lands back here with
+    // ?claim=1 and a live session, which tryClaimIfRequested() below turns
+    // straight into section access via
+    // bbpac_formation_claim_sections_via_verified_email() -- verifying it's
+    // really you is the only gate now, not a human reading a queue.
+    btn.textContent = 'Sending confirmation email...';
+    var otpResult = await client.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: 'https://selassiefest.com/bbpac/organization/join-a-section.html?claim=1' },
+    });
+
     btn.disabled = false;
     btn.textContent = 'Request Section Access';
 
-    if (result.error) {
-      msgEl.textContent = 'Something went wrong: ' + result.error.message;
+    if (otpResult.error) {
+      msgEl.textContent = 'Request saved, but the confirmation email failed to send (' + otpResult.error.message + '). A staff member can still approve this by hand.';
       msgEl.className = 'form-msg error';
     } else {
-      msgEl.textContent = 'Request sent — we\'ll follow up at ' + email + ' once it\'s been reviewed.';
+      msgEl.textContent = 'Almost there — check ' + email + ' for a confirmation link. One click proves it\'s really you, and you\'re in immediately, no staff wait.';
       msgEl.className = 'form-msg success';
-      document.getElementById('fullName').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('message').value = '';
-      document.querySelectorAll('#sectionList input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
-      selected = {};
-      updateSummary();
-      updatePickedRecap();
     }
+    document.getElementById('fullName').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('message').value = '';
+    document.querySelectorAll('#sectionList input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+    selected = {};
+    updateSummary();
+    updatePickedRecap();
   });
+
+  // A magic link sent from the submit handler above redirects here (via
+  // confirm-login.html, which is fully generic and already handles the
+  // token verification) with ?claim=1 once a live session exists --
+  // verifyOtp() already persisted it before redirecting same-origin. That
+  // verified-email session is the only thing standing between "requested"
+  // and "granted": claim the matching pending request immediately, no staff
+  // round-trip, and skip straight past the normal pick-a-section flow.
+  async function tryClaimIfRequested(client) {
+    if (new URLSearchParams(location.search).get('claim') !== '1') return false;
+
+    var sessionResult = await client.auth.getSession();
+    if (!sessionResult.data.session) return false;
+
+    document.getElementById('loadingState').style.display = 'none';
+    var panel = document.getElementById('claimResult');
+    panel.style.display = '';
+    panel.className = 'claim-panel';
+    panel.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming your access&hellip;';
+
+    var result = await client.rpc('bbpac_formation_claim_sections_via_verified_email');
+
+    if (result.error) {
+      panel.className = 'claim-panel error';
+      panel.innerHTML = '<i class="fas fa-circle-exclamation"></i> ' + escapeHtml(result.error.message) +
+        '<div style="margin-top:14px;"><a href="/bbpac/organization/join-a-section.html" class="btn secondary">Request a section &rarr;</a></div>';
+      return true;
+    }
+
+    var granted = result.data || [];
+    var list = granted.length
+      ? '<ul style="margin:6px 0 0; padding-left:20px;">' + granted.map(function (s) {
+          return '<li>Section ' + s.section_no + ': ' + escapeHtml(s.section_title) + '</li>';
+        }).join('') + '</ul>'
+      : '';
+    panel.className = 'claim-panel success';
+    panel.innerHTML =
+      '<i class="fas fa-circle-check"></i> <strong>You\'re in — no staff wait needed.</strong>' + list +
+      '<div style="margin-top:14px;"><a href="/bbpac/organization/my-section.html" class="btn primary">Go to My Section &rarr;</a></div>';
+    return true;
+  }
 
   (async function init() {
     var client = await window.sfSupabaseReady;
+
+    if (await tryClaimIfRequested(client)) return;
 
     var itemsResult = await client.from('bbpac_formation_matrix_items').select('section_no, section_title').neq('section_no', 0);
     var ownersResult = await client.from('bbpac_formation_section_owners').select('section_no, role, bbpac_formation_members_public(name)');

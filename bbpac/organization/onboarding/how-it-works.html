@@ -273,7 +273,7 @@
       title: 'Choose a Section',
       url: 'selassiefest.com/bbpac/organization/join-a-section.html',
       tag: { text: 'STEP 2 · REQUEST ACCESS', bg: 'rgba(220,131,17,0.16)', color: '#8a5a0d' },
-      caption: 'Real open/claimed status for all 28 sections, a "show open only" filter, and a "pick one for me" button for anyone stalled by too much choice. Submitting inserts one row — staff gets notified automatically.',
+      caption: 'Real open/claimed status for all 28 sections, a "show open only" filter, and a "pick one for me" button for anyone stalled by too much choice. Submitting sends a confirmation email immediately — no staff step in between.',
       render: function(el){
         el.innerHTML =
           '<div class="bb">' +
@@ -293,34 +293,33 @@
       },
     },
     {
-      title: 'Staff Approves It',
-      url: 'Automatic email — no page to visit',
-      tag: { text: 'STEP 3 · APPROVAL', bg: 'rgba(79,122,82,0.16)', color: '#33502f' },
-      caption: 'A staff member flips one status field from pending to approved. That single change fires a database trigger which sends this email — nobody has to remember to tell the volunteer by hand.',
+      title: 'Confirm It\'s You',
+      url: 'selassiefest.com/bbpac/organization/confirm-login.html',
+      tag: { text: 'STEP 3 · VERIFY EMAIL', bg: 'rgba(79,122,82,0.16)', color: '#33502f' },
+      caption: 'No password to create or forget, and no staff member reading a queue in between — the magic-link email goes out the instant the request is submitted. One click here proves the email is real, and that\'s the only gate now.',
       render: function(el){
         el.innerHTML =
-          '<div class="bb"><div class="bb-body" style="padding-top:26px;">' +
-            '<div class="bb-email">' +
-              '<div class="bb-email-head"><b>From:</b> SelassieFest &lt;hello@selassiefest.com&gt;<br><b>Subject:</b> You&#39;re approved &mdash; Section 12, Bongo Beach Formation</div>' +
-              '<div class="bb-email-body">Hi Jamaican Stevie,<br><br>Your request to work on Section 12 of the Bongo Beach Master Due-Diligence Matrix has been <b>approved</b>.<br><br>Log in with this email address at My Section &mdash; you&#39;ll get a one-time login link, no password needed.</div>' +
+          '<div class="bb"><div class="bb-body" style="padding-top:34px; padding-bottom:34px; text-align:center;">' +
+            '<div class="bb-login-box">' +
+              '<h3 style="margin:0 0 8px;">Confirm It&#39;s You</h3>' +
+              '<p style="font-size:0.78rem; color:var(--ink-dim); margin:0 0 14px;">One more click finishes logging you in — this keeps the link safe from anyone but you.</p>' +
+              '<span class="bb-btn primary">Confirm Login</span>' +
             '</div>' +
           '</div></div>';
       },
     },
     {
-      title: 'Log In',
-      url: 'selassiefest.com/bbpac/organization/my-section.html',
-      tag: { text: 'STEP 4 · AUTHENTICATION', bg: 'rgba(58,143,163,0.14)', color: '#1d5a68' },
-      caption: 'No password to create or forget. The email has to match the one that was just approved, or the magic link goes nowhere.',
+      title: 'You\'re In',
+      url: 'selassiefest.com/bbpac/organization/join-a-section.html?claim=1',
+      tag: { text: 'STEP 4 · INSTANT ACCESS', bg: 'rgba(58,143,163,0.14)', color: '#1d5a68' },
+      caption: 'The confirm click redirects straight back here with a live, verified session — the page calls one database function that grants the section(s) on the spot and records it, same as an approval always did, just without anyone waiting on a human to read it first.',
       render: function(el){
         el.innerHTML =
-          '<div class="bb"><div class="bb-body" style="padding-top:34px; padding-bottom:34px;">' +
-            '<div class="bb-login-box">' +
-              '<h3 style="margin:0 0 10px;">My Section</h3>' +
-              '<label style="display:block; font-size:0.62rem; font-weight:800; text-transform:uppercase; color:var(--ink-dim); margin-bottom:5px;">Email</label>' +
-              '<div class="bb-input" style="margin-bottom:10px;">jamaicanstevie87@gmail.com</div>' +
-              '<span class="bb-btn primary">Send Magic Link</span>' +
-              '<p style="font-size:0.74rem; color:var(--community); margin-top:12px;">Check your email for a login link.</p>' +
+          '<div class="bb"><div class="bb-body">' +
+            '<div class="bb-frame" style="text-align:center;">' +
+              '<h3 style="margin:0 0 8px; color:var(--community); font-family:Arial,sans-serif;">You&#39;re in &mdash; no staff wait needed.</h3>' +
+              '<p style="font-size:0.8rem; color:#374a5c; margin:0 0 12px;">Section 12: Maintenance &amp; Operations</p>' +
+              '<span class="bb-btn primary">Go to My Section &rarr;</span>' +
             '</div>' +
           '</div></div>';
       },

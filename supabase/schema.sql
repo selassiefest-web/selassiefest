@@ -3851,13 +3851,25 @@ create index if not exists bbpac_formation_notifications_lookup_idx
 -- bbpac_formation_* table above -- this one is write-only for anon, exactly
 -- like every other public-facing form on this site (bbpac_volunteer_signups,
 -- bbpac_contact_messages, etc.). It does NOT grant section ownership by
--- itself. Approving a request goes through the approve-section-signup Edge
--- Function (see below and the Review Queue's "Section Access Requests"
--- section) -- it finds/creates the bbpac_formation_members row for this
--- email and adds a bbpac_formation_section_owners row per granted section.
--- Section access is a real write permission (RLS-enforced), not a
--- mailing-list signup, so it stays approver-reviewed rather than
--- auto-granted.
+-- itself.
+--
+-- Two paths turn a pending row into real access, both converging on the same
+-- status/granted_sections columns (and so both fire the same "you're
+-- approved" email via the notify-section-request-decision trigger below):
+-- staff can still approve/decline by hand through the approve-section-signup
+-- Edge Function and the Review Queue's "Section Access Requests" panel
+-- (kept as the fallback path -- a stale/failed magic link, or any request
+-- that needs an actual human look); but the default path as of 2026-08-25 is
+-- self-service and instant: join-a-section.html sends a magic link
+-- immediately on submit, and bbpac_formation_claim_sections_via_verified_
+-- email() (see below) grants access the moment that link is clicked --
+-- verified email ownership is the gate now, not staff review. The
+-- ADHD-onboarding audit that prompted this (ye olde staff-approval wait was
+-- the exact obstacle: "the approval email requires an app-switch... no
+-- waiting to jump in, just make sure the email is real") is why this
+-- changed -- section access stays a real, audited write permission (every
+-- grant is still a row in this table, still visible to approvers, still
+-- versioned), it just isn't a bottleneck anymore.
 create table if not exists bbpac_formation_section_signup_requests (
   id uuid primary key default gen_random_uuid(),
   full_name text not null,
@@ -4484,6 +4496,147 @@ drop trigger if exists bbpac_formation_section_signup_requests_guard_duplicate o
 create trigger bbpac_formation_section_signup_requests_guard_duplicate
   before insert on bbpac_formation_section_signup_requests
   for each row execute function bbpac_formation_guard_section_signup_duplicate();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Instant self-serve section join, gated on verified email only
+-- ─────────────────────────────────────────────────────────────────────────
+-- Replaces the staff-approval wait with the same magic-link email everyone
+-- already gets for My Section login -- join-a-section.html sends it
+-- immediately on submit (see the file's own comments), and this is what the
+-- client calls right after that link comes back with a live session. auth.
+-- email()/auth.uid() come from the caller's own verified JWT, never client
+-- input, so this can only ever act on the caller's own pending request --
+-- same trust model as bbpac_formation_link_my_auth_user() above, extended to
+-- also CREATE the member row (that function only links an already-existing
+-- one), since a first-time volunteer won't have one yet. Setting status =
+-- 'approved' + granted_sections here fires the existing
+-- notify-section-request-decision trigger for free -- no separate email
+-- code needed, the requester still gets the same "you're approved" email,
+-- just no longer gated on someone reading it before the access exists.
+create or replace function public.bbpac_formation_claim_sections_via_verified_email()
+returns table (section_no int, section_title text)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_email text := lower(coalesce(auth.email(), ''));
+  v_request record;
+  v_member_id uuid;
+begin
+  if v_email = '' then
+    raise exception 'No verified email on this session.';
+  end if;
+
+  select * into v_request
+  from public.bbpac_formation_section_signup_requests
+  where lower(email) = v_email and status = 'pending'
+  order by created_at desc
+  limit 1;
+
+  if v_request is null then
+    raise exception 'No pending section request found for this email. It may already have been claimed, or you may need to submit a new request.';
+  end if;
+
+  select id into v_member_id from public.bbpac_formation_members where lower(email) = v_email;
+  if v_member_id is null then
+    insert into public.bbpac_formation_members (name, email, auth_user_id)
+    values (v_request.full_name, v_request.email, auth.uid())
+    returning id into v_member_id;
+  else
+    update public.bbpac_formation_members
+      set auth_user_id = coalesce(auth_user_id, auth.uid())
+      where id = v_member_id;
+  end if;
+
+  insert into public.bbpac_formation_section_owners (section_no, member_id, role)
+  select s, v_member_id, 'worker'
+  from unnest(v_request.requested_sections) as s
+  on conflict (section_no, member_id) do nothing;
+
+  update public.bbpac_formation_section_signup_requests
+    set status = 'approved',
+        granted_sections = v_request.requested_sections,
+        reviewed_at = now(),
+        review_note = 'Auto-approved -- email ownership verified via magic link, no staff review'
+    where id = v_request.id;
+
+  return query
+    select distinct mi.section_no, mi.section_title
+    from public.bbpac_formation_matrix_items mi
+    where mi.section_no = any(v_request.requested_sections)
+    order by mi.section_no;
+end;
+$$;
+
+grant execute on function public.bbpac_formation_claim_sections_via_verified_email() to authenticated;
+revoke execute on function public.bbpac_formation_claim_sections_via_verified_email() from public, anon;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Stale open-loop item digest ("come back to this")
+-- ─────────────────────────────────────────────────────────────────────────
+-- Same ADHD-onboarding audit, second finding: a lot of real work here is an
+-- open loop with no session-length ending ("call CPD, wait for a callback")
+-- and nothing ever forces it back into view except the volunteer's own
+-- memory. This isn't a hand-off between two people -- the person who'd know
+-- it's time to follow up is the same one who made the call -- so the fix is
+-- a scheduled reminder to your own future self, computed here and sent by
+-- the notify-stale-items Edge Function (supabase/functions/) on a weekly
+-- pg_cron schedule, same net.http_post-with-shared-secret pattern as
+-- sync-notion-dancehall/sync-notion-oscars above.
+--
+-- "Stale" = progress_status = 'in_progress' (started, not finished) and not
+-- already mid-review (those are already moving), where nothing has touched
+-- it in >= p_stale_days across ANY of the three places real activity
+-- actually lands -- matrix_items.updated_at alone would miss "I checked off
+-- a step" (touches item_actions.done_at only) or "I logged a call" (touches
+-- item_action_logs.created_at only), neither of which touches the item row.
+--
+-- Exposes other members' emails, so this is service_role-only -- no
+-- authenticated/anon grant, unlike almost everything else in this file.
+create or replace function public.bbpac_formation_stale_items_for_digest(p_stale_days int default 7)
+returns table (
+  member_id uuid, member_name text, member_email text,
+  item_no int, item_label text, section_no int, section_title text, days_stale int
+)
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  with last_touch as (
+    select mi.item_no,
+      greatest(
+        mi.updated_at,
+        coalesce((select max(a.done_at) from public.bbpac_formation_item_actions a where a.item_no = mi.item_no), mi.updated_at),
+        coalesce((select max(l.created_at) from public.bbpac_formation_item_action_logs l join public.bbpac_formation_item_actions a2 on a2.id = l.action_id where a2.item_no = mi.item_no), mi.updated_at)
+      ) as touched_at
+    from public.bbpac_formation_matrix_items mi
+    where mi.progress_status = 'in_progress'
+      and mi.review_status not in ('pending_review', 'approved')
+  )
+  select so.member_id, m.name, m.email, mi.item_no, mi.item_label, mi.section_no, mi.section_title,
+    extract(day from now() - lt.touched_at)::int as days_stale
+  from last_touch lt
+  join public.bbpac_formation_matrix_items mi on mi.item_no = lt.item_no
+  join public.bbpac_formation_section_owners so on so.section_no = mi.section_no
+  join public.bbpac_formation_members m on m.id = so.member_id
+  where lt.touched_at < now() - (p_stale_days || ' days')::interval
+  order by so.member_id, days_stale desc;
+$$;
+
+revoke all on function public.bbpac_formation_stale_items_for_digest(int) from public, anon, authenticated;
+grant execute on function public.bbpac_formation_stale_items_for_digest(int) to service_role;
+
+-- The pg_cron schedule that drives the digest weekly (Monday ~10am Chicago)
+-- is applied directly against the live project, same as the sync-notion-*
+-- jobs above -- it embeds the notify-stale-items Edge Function's URL and its
+-- STALE_ITEM_NUDGE_SECRET, neither of which belongs in git. If it ever needs
+-- to be recreated: `select cron.schedule('bbpac-nudge-stale-items',
+-- '0 15 * * 1', $$ select net.http_post(url := '<notify-stale-items URL>',
+-- headers := jsonb_build_object('Content-Type', 'application/json',
+-- 'x-webhook-secret', '<STALE_ITEM_NUDGE_SECRET>'), body := '{}'::jsonb)
+-- $$);`.
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- C. L. Rainford Welding & Fabrication (clrwf/)

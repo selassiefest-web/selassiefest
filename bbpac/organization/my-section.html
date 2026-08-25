@@ -1389,6 +1389,22 @@
     document.getElementById('appArea').style.display = '';
     document.getElementById('pageHero').classList.add('logged-in');
     await renderApp();
+
+    // A stale-item digest email (or any other outside link) points at
+    // #owned-item-342 -- without this, that hash does nothing: the target
+    // row exists inside a [hidden] card that only gets created by the
+    // renderApp() call just above, and browsers only try a hash-scroll once,
+    // immediately on load, well before this async data fetch finishes.
+    // Matches matrix.html's own location.hash handling.
+    var hashMatch = /^#owned-item-(\d+)$/.exec(location.hash);
+    if (hashMatch) {
+      var targetToggle = document.querySelector('[data-toggle-item="' + hashMatch[1] + '"]');
+      if (targetToggle) {
+        targetToggle.click();
+        var targetRow = document.querySelector('[data-action-row="' + hashMatch[1] + '"]');
+        if (targetRow) targetRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   }
 
   var loadInFlight = false;
