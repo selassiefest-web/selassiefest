@@ -195,6 +195,31 @@
   .bb-check-row input{margin-top:2px;}
   .bb-check-row.checked span{color:var(--ink-dim); text-decoration:line-through;}
 
+  .bb-next{font-size:0.68rem; color:var(--ink-dim); display:block; margin-top:2px;}
+  .bb-chip{font-size:0.58rem; font-weight:800; text-transform:uppercase; padding:2px 8px; border-radius:8px; white-space:nowrap; flex-shrink:0;}
+  .bb-chip.not_started{background:rgba(91,107,122,0.12); color:var(--ink-dim);}
+  .bb-chip.in_progress{background:rgba(47,129,180,0.12); color:var(--lakefront);}
+  .bb-chip.pending_review{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+  .bb-chip.rejected{background:rgba(166,51,26,0.12); color:var(--culture);}
+  .bb-chip.done{background:rgba(71,109,62,0.14); color:var(--community);}
+
+  .bb-stake{border-top:1px dashed var(--line); margin-top:12px; padding-top:10px;}
+  .bb-stake-label{font-size:0.62rem; font-weight:800; text-transform:uppercase; color:var(--ink-dim); margin-bottom:6px; display:block;}
+  .bb-stake-row{background:#f9f7f2; border-radius:9px; padding:9px 11px; font-size:0.74rem; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+  .bb-stake-name{font-weight:700; color:var(--navy);}
+  .bb-stake-status{font-size:0.66rem; font-weight:700; color:var(--ink-dim); border:1px solid var(--line); border-radius:8px; padding:3px 9px; background:#fff;}
+
+  .bb-block-tag{display:inline-flex; align-items:center; gap:5px; font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:4px 10px; border-radius:9px; margin-top:12px;}
+  .bb-block-tag.clear{background:rgba(71,109,62,0.14); color:var(--community);}
+  .bb-block-tag.blocked{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+
+  .bb-submit-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:10px; border-top:1px dashed var(--line);}
+  .bb-select-mock{font-size:0.68rem; border:1px solid var(--line); border-radius:8px; padding:5px 9px; color:#374a5c; background:#fff;}
+  .bb-gate-note{font-size:0.66rem; color:var(--culture); font-weight:600;}
+
+  .cta-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px;}
+  a.nav-btn{text-decoration:none; display:inline-flex;}
+
   @media (prefers-reduced-motion: reduce){
     *{scroll-behavior:auto !important;}
     .mock{transition:none !important;}
@@ -238,6 +263,7 @@
         <span class="step-counter mono" id="stepCounterText"></span>
         <button type="button" class="nav-btn primary" id="nextBtn">Next &rarr;</button>
       </div>
+      <div class="cta-row" id="ctaRow" style="display:none;"></div>
     </div>
   </div>
 </div>
@@ -317,7 +343,7 @@
         el.innerHTML =
           '<div class="bb"><div class="bb-body">' +
             '<div class="bb-frame" style="text-align:center;">' +
-              '<h3 style="margin:0 0 8px; color:var(--community); font-family:Arial,sans-serif;">You&#39;re in &mdash;.</h3>' +
+              '<h3 style="margin:0 0 8px; color:var(--community); font-family:Arial,sans-serif;">You&#39;re in.</h3>' +
               '<p style="font-size:0.8rem; color:#374a5c; margin:0 0 12px;">Section 12: Maintenance &amp; Operations</p>' +
               '<span class="bb-btn primary">Go to My Section &rarr;</span>' +
             '</div>' +
@@ -328,14 +354,16 @@
       title: 'Land in My Section',
       url: 'selassiefest.com/bbpac/organization/my-section.html',
       tag: { text: 'STEP 5 · YOUR WORKSPACE', bg: 'rgba(220,131,17,0.16)', color: '#8a5a0d' },
-      caption: 'Section, role, and team all in one place. A head can add or remove workers here directly — no staff round-trip through the Table Editor for every addition.',
+      caption: 'Every item in your section is one compact row: its own next action in plain language, plus a status chip — not a wall of forms to scroll past. Click a row to open the real card. A head can add or remove teammates right here, no staff round-trip.',
       render: function(el){
         el.innerHTML =
           '<div class="bb"><div class="bb-body">' +
             '<div class="bb-who"><h3>Jamaican Stevie</h3><span class="role">Owns section(s): 12 (head)</span></div>' +
+            '<div class="bb-row"><div class="info"><span class="t">#342 &middot; 311 complaints</span><span class="bb-next">Next: Contact OEMC and find out how this actually works today &rarr;</span></div><span class="bb-chip in_progress">In progress</span></div>' +
+            '<div class="bb-row"><div class="info"><span class="t">#298 &middot; Insurance certificate on file</span><span class="bb-next">Next: All action items done &mdash; ready to submit for review</span></div><span class="bb-chip not_started">Not started</span></div>' +
             '<div class="bb-team"><b style="font-size:0.82rem;">Section 12 Team</b> <span class="bb-role-badge">HEAD</span>' +
               '<div style="margin-top:10px; font-size:0.78rem;">Jamaican Stevie <span class="bb-role-badge">HEAD</span></div>' +
-              '<div style="margin-top:8px; display:flex; gap:8px;"><span class="bb-input" style="flex:1;">Worker name</span><span class="bb-input" style="flex:1;">Worker email</span><span class="bb-btn primary" style="margin:0;">Add</span></div>' +
+              '<div style="margin-top:8px; display:flex; gap:8px;"><span class="bb-input" style="flex:1;">Worker name</span><span class="bb-input" style="flex:1;">Worker email</span><span class="bb-btn primary" style="margin:0;">Add Worker</span></div>' +
             '</div>' +
           '</div></div>';
       },
@@ -344,7 +372,7 @@
       title: 'Open a Real Item',
       url: 'selassiefest.com/bbpac/organization/my-section.html#owned-item-342',
       tag: { text: 'STEP 6 · DO THE WORK', bg: 'rgba(220,131,17,0.16)', color: '#8a5a0d' },
-      caption: 'Current state and Proposed state are the known record — never a blank box to guess into. The real work is the action checklist: concrete, checkable steps that close the gap between them.',
+      caption: 'Current state and Proposed state are the known record — never a blank box to guess into. Steps lock in order, each with its own log; a named stakeholder’s contact status is tracked right on the item; and a dependency line shows exactly what — or who — is blocking it, live. Submit for Review only unlocks once every step is checked.',
       render: function(el){
         el.innerHTML =
           '<div class="bb"><div class="bb-body">' +
@@ -353,24 +381,31 @@
               '<div class="bb-otitle">311 complaints</div>' +
               '<p class="bb-obody">Investigation: Routing — do 311 complaints tagged to Jackson Park route correctly once the beach is its own park?</p>' +
               '<div class="bb-answer-block">' +
-                '<div class="bb-guidance"><b>There is no separate document for this.</b> Work through the action items below to find out from <b>Office of Emergency Management and Communications (OEMC)</b> how this works today, updating the record as you learn more.</div>' +
+                '<div class="bb-guidance"><b>There is no separate document for this.</b> The record below is the entire answer. Work through the action items to find out from <b>Office of Emergency Management and Communications (OEMC)</b> how this actually works today, updating Current state and Proposed state as you learn more.</div>' +
                 '<div class="bb-record-label">Known record</div>' +
                 '<div class="bb-record-val"><b>Current state:</b> Not yet determined — this is your 1st action item, see below.</div>' +
                 '<div class="bb-record-val" style="padding-bottom:9px;"><b>Proposed state:</b> Not yet drafted — the target outcome will be defined by the planning team.</div>' +
                 '<div class="bb-checklist">' +
-                  '<div class="bb-check-head"><span>Action items</span><span>0 / 1 done</span></div>' +
+                  '<div class="bb-check-head"><span>Action items</span><span>0 / 2 done</span></div>' +
                   '<label class="bb-check-row"><input type="checkbox" disabled><span>Contact OEMC and find out how this actually works today, then update Current state and Proposed state above.</span></label>' +
+                  '<label class="bb-check-row" style="opacity:0.55;"><input type="checkbox" disabled><span><i class="fas fa-lock" style="margin-right:4px;"></i>Confirm the answer in writing and log it &mdash; finish the step above first</span></label>' +
                 '</div>' +
+                '<div class="bb-stake">' +
+                  '<span class="bb-stake-label"><i class="fas fa-address-book"></i> Stakeholder on this item</span>' +
+                  '<div class="bb-stake-row"><span class="bb-stake-name">Office of Emergency Management &amp; Communications (OEMC)</span><span class="bb-stake-status">Not yet contacted</span></div>' +
+                '</div>' +
+                '<div class="bb-block-tag clear"><i class="fas fa-circle-check"></i> Nothing blocking this right now</div>' +
+                '<div class="bb-submit-row"><span class="bb-select-mock">Mark Complete &#9662;</span><span class="bb-btn primary" style="opacity:0.4; cursor:default;">Submit for Review</span><span class="bb-gate-note">Finish all action items above first</span></div>' +
               '</div>' +
             '</div>' +
           '</div></div>';
       },
     },
     {
-      title: 'Save → Complete',
-      url: 'selassiefest.com/bbpac/organization/my-section.html#owned-item-342',
+      title: 'Submit → Approved',
+      url: 'selassiefest.com/bbpac/organization/review-queue.html',
       tag: { text: 'STEP 7 · DONE, FOR REAL', bg: 'rgba(79,122,82,0.18)', color: '#2f4a2a' },
-      caption: 'Not a checkbox that quietly disappears — a permanent, versioned record submitted for review, then approved by a team leader. This is the auditable trail: who changed what, and when.',
+      caption: 'Submitting doesn’t close the item — it hands it to whichever opted-in team leader is watching the Review Queue (not necessarily your own section head), who approves it or sends it back with a required note. Either way, you get an email. Once approved, this is a permanent, versioned record, never edited in place — the full trail lives in the Version Log.',
       render: function(el){
         el.innerHTML =
           '<div class="bb"><div class="bb-body">' +
@@ -383,14 +418,19 @@
                 '<div class="bb-record-val"><b>Current state:</b> 311 complaints route by street address citywide, regardless of park name.</div>' +
                 '<div class="bb-record-val" style="padding-bottom:9px;"><b>Proposed state:</b> No change needed — routing already works correctly for a standalone park.</div>' +
                 '<div class="bb-checklist">' +
-                  '<div class="bb-check-head"><span>Action items</span><span>1 / 1 done</span></div>' +
+                  '<div class="bb-check-head"><span>Action items</span><span>2 / 2 done</span></div>' +
                   '<label class="bb-check-row checked"><input type="checkbox" checked disabled><span>Contact OEMC and find out how this actually works today, then update Current state and Proposed state above.</span></label>' +
+                  '<label class="bb-check-row checked"><input type="checkbox" checked disabled><span>Confirm the answer in writing and log it.</span></label>' +
                 '</div>' +
               '</div>' +
-              '<div class="bb-version"><span class="who">Jamaican Stevie</span> submitted; approved by a team leader &mdash; Aug 9, 2026, 2:41 PM. Permanent, never edited in place.</div>' +
+              '<div class="bb-version"><span class="who">Jamaican Stevie</span> submitted &rarr; approved by <span class="who">an opted-in team leader</span> via the Review Queue &mdash; Aug 9, 2026, 2:41 PM. Permanent, never edited in place.</div>' +
             '</div>' +
           '</div></div>';
       },
+      cta: [
+        { label: 'Join a Section', href: '/bbpac/organization/join-a-section.html', style: 'primary' },
+        { label: 'Already assigned? Go to My Section', href: '/bbpac/organization/my-section.html', style: 'secondary' },
+      ],
     },
   ];
 
@@ -407,6 +447,7 @@
   var stepCounterText = document.getElementById('stepCounterText');
   var prevBtn = document.getElementById('prevBtn');
   var nextBtn = document.getElementById('nextBtn');
+  var ctaRow = document.getElementById('ctaRow');
 
   function buildRail(){
     railList.innerHTML = STEPS.map(function(s, i){
@@ -442,6 +483,16 @@
     prevBtn.disabled = idx === 0;
     nextBtn.disabled = idx === STEPS.length - 1;
     nextBtn.textContent = idx === STEPS.length - 1 ? 'Complete ✓' : 'Next →';
+
+    if (step.cta && step.cta.length) {
+      ctaRow.style.display = '';
+      ctaRow.innerHTML = step.cta.map(function (c) {
+        return '<a class="nav-btn ' + (c.style || 'primary') + '" href="' + c.href + '">' + c.label + '</a>';
+      }).join('');
+    } else {
+      ctaRow.style.display = 'none';
+      ctaRow.innerHTML = '';
+    }
   }
 
   function goTo(i){
