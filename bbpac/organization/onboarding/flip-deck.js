@@ -16,7 +16,10 @@
   'use strict';
 
   var FRAMES = [];
-  var state = { index: 0, seen: {}, muted: false, autoPlay: false, moreOpen: {}, voices: [], autoTimer: null };
+  var state = {
+    index: 0, seen: {}, muted: false, autoPlay: false, moreOpen: {}, voices: [], autoTimer: null,
+    audioEl: null, usingAudio: false, ttsLines: [], ttsIndex: 0,
+  };
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -129,29 +132,35 @@
   function playFrameAudio(frame, i) {
     if (!state.audioEl) state.audioEl = new Audio();
     var el = state.audioEl;
-    el.onended = function () { scheduleAuto(1200); };
-    el.onerror = function () { speakLinesTTS(frame.voice || [], i); };
+    state.usingAudio = true;
+    el.onended = function () { setPlayPauseUI(false); scheduleAuto(1200); };
+    el.onerror = function () { state.usingAudio = false; speakLinesTTS(frame.voice || [], i); };
     el.src = frame.audio;
-    el.play().catch(function () { scheduleAuto(1200); });
+    setPlayPauseUI(true);
+    el.play().catch(function () { setPlayPauseUI(false); scheduleAuto(1200); });
   }
 
   function speakLinesTTS(lines, i) {
+    state.usingAudio = false;
+    state.ttsLines = lines;
+    state.ttsIndex = 0;
     if (state.muted || !('speechSynthesis' in window) || !lines.length) {
+      setPlayPauseUI(false);
       scheduleAuto(5000);
       return;
     }
     var voice = pickVoice();
     var prefs = ttsPrefs();
     var rate = Number(prefs.rate) || 1;
-    var j = 0;
     function speakNext() {
-      if (j >= lines.length || state.muted || state.index !== i) { scheduleAuto(1200); return; }
-      var utt = new SpeechSynthesisUtterance(lines[j]);
+      if (state.ttsIndex >= state.ttsLines.length || state.muted || state.index !== i) { setPlayPauseUI(false); scheduleAuto(1200); return; }
+      var utt = new SpeechSynthesisUtterance(state.ttsLines[state.ttsIndex]);
       if (voice) utt.voice = voice;
       utt.rate = rate;
-      utt.onend = function () { j++; setTimeout(speakNext, 300); };
+      utt.onend = function () { state.ttsIndex++; setTimeout(speakNext, 300); };
       window.speechSynthesis.speak(utt);
     }
+    setPlayPauseUI(true);
     speakNext();
   }
 
@@ -160,16 +169,52 @@
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     stopFrameAudio();
     var frame = FRAMES[i];
-    if (!frame) return;
+    if (!frame) { setPlayPauseUI(false); return; }
 
     if (frame.audio && !state.moreOpen[i]) {
-      if (state.muted) { scheduleAuto(5000); return; }
+      state.usingAudio = true;
+      if (state.muted) { setPlayPauseUI(false); scheduleAuto(5000); return; }
       playFrameAudio(frame, i);
       return;
     }
 
     var lines = (frame.voice || []).concat(state.moreOpen[i] ? (frame.more || []) : []);
     speakLinesTTS(lines, i);
+  }
+
+  // Rewind restarts the current frame's narration from the top -- for
+  // recorded audio that's just seeking to 0; for TTS there's no seek, so
+  // it re-runs speakFrame from scratch. Play/pause suspends in place
+  // (HTMLMediaElement.pause()/play() for audio, the equivalent
+  // SpeechSynthesis.pause()/resume() for TTS) rather than canceling, so
+  // resuming picks back up instead of starting the frame over.
+  function restartNarration() {
+    clearAutoTimer();
+    if (state.usingAudio && state.audioEl) {
+      state.audioEl.currentTime = 0;
+      if (!state.muted) { state.audioEl.play(); setPlayPauseUI(true); }
+    } else {
+      speakFrame(state.index);
+    }
+  }
+
+  function togglePlayPause() {
+    if (state.usingAudio && state.audioEl && state.audioEl.src) {
+      if (state.audioEl.paused) { state.audioEl.play(); setPlayPauseUI(true); }
+      else { state.audioEl.pause(); setPlayPauseUI(false); }
+      return;
+    }
+    if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+      if (window.speechSynthesis.paused) { window.speechSynthesis.resume(); setPlayPauseUI(true); }
+      else { window.speechSynthesis.pause(); setPlayPauseUI(false); }
+    }
+  }
+
+  function setPlayPauseUI(playing) {
+    var btn = document.getElementById('fdPlayPause');
+    if (!btn) return;
+    btn.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    btn.title = playing ? 'Pause narration' : 'Play narration';
   }
 
   function goTo(i) {
@@ -194,6 +239,7 @@
     btn.classList.toggle('active', m);
     btn.innerHTML = m ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
     if (m && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (m) stopFrameAudio();
     speakFrame(state.index);
   }
 
@@ -212,6 +258,10 @@
     document.getElementById('fdNext').addEventListener('click', function () { goTo(state.index + 1); });
     document.getElementById('fdMute').addEventListener('click', function () { setMuted(!state.muted); });
     document.getElementById('fdAutoplay').addEventListener('click', function () { setAutoPlay(!state.autoPlay); });
+    var restartBtn = document.getElementById('fdRestart');
+    if (restartBtn) restartBtn.addEventListener('click', restartNarration);
+    var playPauseBtn = document.getElementById('fdPlayPause');
+    if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlayPause);
     var skipBtn = document.getElementById('fdSkip');
     if (skipBtn) skipBtn.addEventListener('click', function () { goTo(FRAMES.length - 1); });
 
