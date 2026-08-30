@@ -116,12 +116,26 @@
     state.autoTimer = setTimeout(function () { goTo(state.index + 1); }, delayMs);
   }
 
-  function speakFrame(i) {
-    clearAutoTimer();
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    var frame = FRAMES[i];
-    if (!frame) return;
-    var lines = (frame.voice || []).concat(state.moreOpen[i] ? (frame.more || []) : []);
+  // A recorded human voice track for a frame's main narration, when one
+  // exists (state.audioEl, lazily created, reused across frames rather than
+  // a new Audio() per play). Covers only frame.voice -- there's no recording
+  // for the "Tell me more" expansion, so that still falls through to TTS
+  // below. A missing/broken file (frame added before its audio is recorded)
+  // falls back to TTS too, via onerror, rather than going silent.
+  function stopFrameAudio() {
+    if (state.audioEl) { state.audioEl.pause(); state.audioEl.onended = null; state.audioEl.onerror = null; }
+  }
+
+  function playFrameAudio(frame, i) {
+    if (!state.audioEl) state.audioEl = new Audio();
+    var el = state.audioEl;
+    el.onended = function () { scheduleAuto(1200); };
+    el.onerror = function () { speakLinesTTS(frame.voice || [], i); };
+    el.src = frame.audio;
+    el.play().catch(function () { scheduleAuto(1200); });
+  }
+
+  function speakLinesTTS(lines, i) {
     if (state.muted || !('speechSynthesis' in window) || !lines.length) {
       scheduleAuto(5000);
       return;
@@ -131,7 +145,7 @@
     var rate = Number(prefs.rate) || 1;
     var j = 0;
     function speakNext() {
-      if (j >= lines.length || state.muted) { scheduleAuto(1200); return; }
+      if (j >= lines.length || state.muted || state.index !== i) { scheduleAuto(1200); return; }
       var utt = new SpeechSynthesisUtterance(lines[j]);
       if (voice) utt.voice = voice;
       utt.rate = rate;
@@ -139,6 +153,23 @@
       window.speechSynthesis.speak(utt);
     }
     speakNext();
+  }
+
+  function speakFrame(i) {
+    clearAutoTimer();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    stopFrameAudio();
+    var frame = FRAMES[i];
+    if (!frame) return;
+
+    if (frame.audio && !state.moreOpen[i]) {
+      if (state.muted) { scheduleAuto(5000); return; }
+      playFrameAudio(frame, i);
+      return;
+    }
+
+    var lines = (frame.voice || []).concat(state.moreOpen[i] ? (frame.more || []) : []);
+    speakLinesTTS(lines, i);
   }
 
   function goTo(i) {
