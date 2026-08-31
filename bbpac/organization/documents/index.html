@@ -50,6 +50,8 @@
   .page-hero h1{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.6rem,4vw,2.3rem); margin:0 0 10px;}
   .page-hero p{max-width:700px; margin:0 auto; color:#dbe6f0; font-size:0.95rem;}
 
+  .lede{font-size:1.02rem; color:#374a5c; max-width:820px; margin:0;}
+
   .disclaimer-box{background:#fff8ec; border:1.5px solid var(--legacy); border-radius:12px; padding:18px 22px; margin:26px 0; font-size:0.86rem; color:#4a3a1e; display:flex; gap:14px; align-items:flex-start;}
   .disclaimer-box i{color:var(--legacy); font-size:1.05rem; margin-top:2px; flex-shrink:0;}
   .disclaimer-box strong{color:var(--navy);}
@@ -58,6 +60,17 @@
   .gate-card h2{margin:0 0 10px; font-size:1.15rem;}
   .gate-card p{color:#374a5c; margin:0 0 12px;}
   .gate-card a.btn{margin-top:6px;}
+
+  .phase-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:20px 0 30px;}
+  .phase-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 22px; display:block;}
+  .phase-card:hover{border-color:var(--lakefront);}
+  .phase-card .ph-num{font-family:Arial,sans-serif; font-weight:900; font-size:0.72rem; color:var(--lakefront); letter-spacing:0.05em; text-transform:uppercase;}
+  .phase-card h3{margin:6px 0 6px; font-size:1rem; color:var(--navy);}
+  .phase-card p{margin:0 0 10px; font-size:0.84rem; color:#374a5c;}
+  .phase-card .ph-status{font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:10px;}
+  .phase-card .ph-status.full{background:rgba(71,109,62,0.14); color:var(--community);}
+  .phase-card .ph-status.reg{background:rgba(91,107,122,0.14); color:var(--ink-dim);}
+  @media (max-width:700px){ .phase-grid{grid-template-columns:1fr;} }
 
   .phase-nav{display:flex; gap:8px; flex-wrap:wrap; margin:24px 0 8px; padding-bottom:14px; border-bottom:1px solid var(--line);}
   .phase-nav a{font-size:0.72rem; font-weight:700; letter-spacing:0.03em; padding:7px 13px; border-radius:16px; background:#fff; border:1px solid var(--line); color:var(--ink-dim); white-space:nowrap;}
@@ -151,6 +164,11 @@
         <p>63rd Street Beach sits within Jackson (Andrew) Park, which already has a Chicago Park District-recognized Jackson Park Advisory Council (JPAC). Current CPD Advisory Council Guidelines generally recognize only one registered PAC per park. Before anything below is treated as more than a draft, we've asked CPD in writing whether a separate 63rd Street Beach PAC is possible &mdash; or whether this becomes a sub-council under JPAC, or an independent community organization instead. Until that comes back, every document here reflects a <em>proposed</em> path, not a settled one.</p>
         <a class="btn primary" href="/bbpac/organization/documents/phase-00-gate.html">Read the full Phase 0 record &rarr;</a>
       </div>
+
+      <h2 style="font-family:Arial,sans-serif; font-weight:900; font-size:1.3rem; margin:36px 0 6px;">The 12 formation phases</h2>
+      <p class="lede">All 510 documents across all 12 phases now carry complete original drafted text, including the full 30-article draft Bylaws. Every document is still labeled <strong>Proposed</strong>, not <strong>Adopted</strong> &mdash; this remains a living library, revised as the Board formally acts on each document and as Phase 0 resolves.</p>
+
+      <div class="phase-grid" id="phaseGrid"></div>
 
       <div class="phase-nav">
         <a class="active" href="/bbpac/organization/documents/"><i class="fas fa-magnifying-glass"></i> Search all documents</a>
@@ -247,18 +265,18 @@
 <script>
 (function () {
   var PHASES = [
-    {n:0, slug:'phase-00-gate.html', name:'Pre-Formation Gate'},
-    {n:1, slug:'phase-01-formation.html', name:'Formation & Recognition'},
-    {n:2, slug:'phase-02-governance-bylaws.html', name:'Governance & Bylaws'},
-    {n:3, slug:'phase-03-board-officers.html', name:'Board & Officer Documents'},
-    {n:4, slug:'phase-04-finance.html', name:'Financial Management & Controls'},
-    {n:5, slug:'phase-05-legal-compliance.html', name:'Legal & Compliance'},
-    {n:6, slug:'phase-06-operations.html', name:'Operational & Administrative Manuals'},
-    {n:7, slug:'phase-07-stewardship.html', name:'Beach & Environmental Stewardship'},
-    {n:8, slug:'phase-08-programming.html', name:'Programming, Events & Community Engagement'},
-    {n:9, slug:'phase-09-communications.html', name:'Communications & Public Relations'},
-    {n:10, slug:'phase-10-strategic-planning.html', name:'Strategic Planning & Reporting'},
-    {n:11, slug:'phase-11-templates.html', name:'Templates, Forms & Appendices'}
+    {n:0, slug:'phase-00-gate.html', name:'Pre-Formation Gate', desc:'Jurisdiction, eligibility & scope — resolve CPD recognition before anything else.'},
+    {n:1, slug:'phase-01-formation.html', name:'Formation & Recognition', desc:'Letter of Intent, membership drive, elections, incorporation, CPD registration.'},
+    {n:2, slug:'phase-02-governance-bylaws.html', name:'Governance & Bylaws', desc:'The full 30-article draft Bylaws plus supporting governance policies.'},
+    {n:3, slug:'phase-03-board-officers.html', name:'Board & Officer Documents', desc:'Officer roles, conflicts, orientation, elections, transitions, succession.'},
+    {n:4, slug:'phase-04-finance.html', name:'Financial Management & Controls', desc:'Bank account, budget, internal controls, fundraising, grants, capital projects.'},
+    {n:5, slug:'phase-05-legal-compliance.html', name:'Legal & Compliance', desc:'Records retention, OMA/FOIA status, conflict of interest, data privacy, risk.'},
+    {n:6, slug:'phase-06-operations.html', name:'Operational & Administrative Manuals', desc:'PAC Binder, meeting operations, volunteer handbook, emergency plans.'},
+    {n:7, slug:'phase-07-stewardship.html', name:'Beach & Environmental Stewardship', desc:'Dunes/habitat stewardship, cleanups, water-safety liaison, accessibility audits.'},
+    {n:8, slug:'phase-08-programming.html', name:'Programming, Events & Community Engagement', desc:'CPD activity requests, vendor/permit rules, cultural programming, youth safety.'},
+    {n:9, slug:'phase-09-communications.html', name:'Communications & Public Relations', desc:'Brand standards, social media, crisis communications, public records.'},
+    {n:10, slug:'phase-10-strategic-planning.html', name:'Strategic Planning & Reporting', desc:'Strategic plan, KPIs, annual CPD/state/federal reports, risk assessment.'},
+    {n:11, slug:'phase-11-templates.html', name:'Templates, Forms & Appendices', desc:'The 100-item master template library backing every phase above.'}
   ];
   var phaseBySlug = {};
   PHASES.forEach(function (p) { phaseBySlug[p.n] = p; });
@@ -296,6 +314,21 @@
     ['<i class="fas fa-hourglass-half"></i>', docs.length - fullCount, 'Registered, drafting queued']
   ].map(function (s) {
     return '<div class="stat-card"><div class="num">' + s[1] + '</div><div class="lbl">' + s[2] + '</div></div>';
+  }).join('');
+
+  document.getElementById('phaseGrid').innerHTML = PHASES.map(function (p) {
+    var total = docs.filter(function (d) { return d.ph === p.n; }).length;
+    var full = docs.filter(function (d) { return d.ph === p.n && d.full; }).length;
+    var isFull = full === total && total > 0;
+    var statusHtml = isFull
+      ? '<span class="ph-status full"><i class="fas fa-circle-check"></i> ' + full + '/' + total + ' full text</span>'
+      : '<span class="ph-status reg"><i class="fas fa-clock"></i> ' + full + '/' + total + ' full text</span>';
+    return '<a class="phase-card" href="/bbpac/organization/documents/' + p.slug + '">' +
+      '<div class="ph-num">Phase ' + p.n + '</div>' +
+      '<h3>' + p.name + '</h3>' +
+      '<p>' + p.desc + '</p>' +
+      statusHtml +
+    '</a>';
   }).join('');
 
   var resultsList = document.getElementById('resultsList');
