@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipment Van Comparison | SelassieFest</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-black:#0D0D0D;
+    --text-white:#F5F5F5;
+    --gold-accent:#E5A93C;
+    --red-accent:#C83737;
+    --roots-green:#0E5E36;
+    --card-bg:rgba(255,255,255,0.04);
+    --border-dim:rgba(255,255,255,0.08);
+    --text-dim:rgba(245,245,245,0.62);
+    --transition-default:all 0.25s ease;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg-black);
+    color:var(--text-white);
+    font-family:'Jost',sans-serif;
+    font-size:16px;
+    font-weight:300;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,32px) 72px}
+
+  /* ---- masthead ---- */
+  .eyebrow{
+    font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-accent);margin:0 0 10px;
+  }
+  h1{
+    font-size:clamp(1.8rem,4.6vw,2.6rem);font-weight:200;letter-spacing:.02em;
+    line-height:1.15;margin:0 0 12px;text-wrap:balance;
+  }
+  h1 .highlight-gold{color:var(--gold-accent);font-weight:400}
+  .standfirst{
+    color:var(--text-dim);max-width:62ch;margin:0 0 6px;font-size:1.02rem;
+  }
+  .asof{
+    font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--text-dim);margin:18px 0 0;
+  }
+  .rule{height:1px;background:var(--border-dim);margin:26px 0 34px;border:0}
+
+  /* ---- section headings ---- */
+  h2{
+    font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-accent);margin:0 0 14px;
+  }
+
+  /* ---- comparison table ---- */
+  .table-scroll{
+    overflow-x:auto;
+    border:1px solid var(--border-dim);
+    background:var(--card-bg);
+    -webkit-overflow-scrolling:touch;
+  }
+  table{border-collapse:collapse;width:100%;min-width:720px}
+  caption{
+    caption-side:bottom;text-align:left;color:var(--text-dim);
+    font-size:13px;padding:12px 2px 0;
+  }
+  th,td{
+    padding:14px 16px;text-align:left;vertical-align:top;
+    border-bottom:1px solid var(--border-dim);
+  }
+  thead th{
+    font-weight:500;font-size:13px;letter-spacing:.06em;
+    border-bottom:1px solid rgba(255,255,255,0.16);
+    vertical-align:bottom;
+  }
+  thead th .veh{display:block;font-size:15px;font-weight:400;letter-spacing:0;margin-bottom:2px}
+  thead th .loc{display:block;font-size:12px;color:var(--text-dim);font-weight:300;letter-spacing:0}
+  tbody th{
+    font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-dim);white-space:nowrap;width:150px;
+  }
+  /* keep the row labels visible while the table scrolls sideways on phones */
+  thead th:first-child,tbody th{
+    position:sticky;left:0;z-index:2;
+    background:#131313;
+  }
+  .swipe-hint{
+    display:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-dim);margin:0 0 10px;
+  }
+  @media (max-width:760px){.swipe-hint{display:block}}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+  col.pick{background:rgba(229,169,60,0.07)}
+  th.pick,td.pick{border-left:1px solid rgba(229,169,60,0.28);border-right:1px solid rgba(229,169,60,0.28)}
+  thead th.pick{border-top:2px solid var(--gold-accent)}
+  tbody tr:last-child td.pick{border-bottom:1px solid rgba(229,169,60,0.28)}
+
+  .price{font-size:1.28rem;font-weight:400;letter-spacing:.01em}
+  .price.good{color:var(--gold-accent)}
+  .tag{
+    display:inline-block;font-size:10px;font-weight:500;letter-spacing:.14em;
+    text-transform:uppercase;padding:3px 8px;margin-bottom:8px;
+    background:rgba(229,169,60,0.16);color:var(--gold-accent);
+  }
+  .flag{color:var(--red-accent);font-weight:400}
+  .ok{color:#7FBF9A;font-weight:400}
+  small.note{display:block;color:var(--text-dim);font-size:12.5px;line-height:1.5;margin-top:3px}
+
+  /* ---- callouts ---- */
+  .cards{display:grid;gap:14px;margin-top:14px}
+  @media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+  .card{
+    background:var(--card-bg);border:1px solid var(--border-dim);
+    border-left:3px solid var(--gold-accent);padding:18px 20px;
+  }
+  .card.warn{border-left-color:var(--red-accent)}
+  .card h3{
+    margin:0 0 8px;font-size:15px;font-weight:500;letter-spacing:.02em;color:var(--text-white);
+  }
+  .card p{margin:0 0 10px;font-size:14.5px;color:var(--text-dim);line-height:1.6}
+  .card p:last-child{margin-bottom:0}
+  .card strong{color:var(--text-white);font-weight:400}
+
+  ul.plain{list-style:none;margin:0;padding:0;display:block}
+  ul.plain li{
+    position:relative;padding-left:18px;margin-bottom:9px;
+    font-size:14.5px;color:var(--text-dim);line-height:1.6;
+    overflow-wrap:break-word;
+  }
+  ul.plain li:last-child{margin-bottom:0}
+  ul.plain li::before{
+    content:"";position:absolute;left:0;top:9px;
+    width:5px;height:5px;background:var(--gold-accent);border-radius:50%;
+  }
+  ul.plain strong{color:var(--text-white);font-weight:400}
+
+  section{margin-bottom:42px}
+
+  footer{
+    border-top:1px solid var(--border-dim);margin-top:8px;padding-top:20px;
+    color:var(--text-dim);font-size:12.5px;line-height:1.6;
+  }
+  footer p{margin:0 0 8px;max-width:75ch}
+  footer p:last-child{margin-bottom:0}
+
+  a{color:var(--gold-accent);text-decoration:none;border-bottom:1px solid rgba(229,169,60,0.35);transition:var(--transition-default)}
+  a:hover{border-bottom-color:var(--gold-accent)}
+  a:focus-visible{outline:2px solid var(--gold-accent);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <p class="eyebrow">Ras Tafari Inc. &middot; Equipment Transport</p>
+  <h1>Three vehicles on the table &mdash; <span class="highlight-gold">one clear front-runner</span></h1>
+  <p class="standfirst">Side-by-side on the listings we have in hand. Purpose: hauling sound and cooking equipment to and from the park, and moving festival gear in one trip instead of two.</p>
+  <p class="asof">Listings as of 31 August 2026 &middot; For board discussion</p>
+
+  <hr class="rule">
+
+  <section>
+    <h2>The comparison</h2>
+    <p class="swipe-hint">Swipe the table sideways to compare &rarr;</p>
+    <div class="table-scroll">
+      <table>
+        <caption>Distances measured from the South Holland office. Prices as listed, before negotiation.</caption>
+        <colgroup>
+          <col style="width:150px">
+          <col>
+          <col>
+          <col class="pick">
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">
+              <span class="veh">2008 Sprinter 3500</span>
+              <span class="loc">16 ft box &middot; St Charles, IL</span>
+            </th>
+            <th scope="col">
+              <span class="veh">2011 GMC Savana 3500</span>
+              <span class="loc">Cargo van &middot; Crest Hill, IL</span>
+            </th>
+            <th scope="col" class="pick">
+              <span class="tag">Front-runner</span>
+              <span class="veh">2010 GMC Savana 3500</span>
+              <span class="loc">16 ft box &middot; Woodstock, IL</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Asking price</th>
+            <td><span class="price">$5,500</span></td>
+            <td><span class="price">$9,000</span></td>
+            <td class="pick"><span class="price good">$5,900</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Odometer</th>
+            <td>220,000</td>
+            <td><span class="flag">230,000 &mdash; disputed</span>
+              <small class="note">Listing field says 23,413; seller's own description says 230K.</small></td>
+            <td class="pick"><span class="ok">150,000</span>
+              <small class="note">Lowest of the three by 70,000 miles.</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Engine</th>
+            <td>3.0L V6 diesel
+              <small class="note">Mercedes OM642. Specialist parts and labor.</small></td>
+            <td>6.0L V8 gas</td>
+            <td class="pick">6.0L V8 gas
+              <small class="note">Any local shop can service it. No emissions filter to clog.</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Cargo space</th>
+            <td>16 ft box &middot; 7.5 ft interior height</td>
+            <td>~12 ft van floor</td>
+            <td class="pick">16 ft box</td>
+          </tr>
+          <tr>
+            <th scope="row">Transmission</th>
+            <td>Original</td>
+            <td>Original</td>
+            <td class="pick"><span class="ok">Replaced 5,000 miles ago</span>
+              <small class="note">The most expensive common failure on these vans, already done.</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Known costs<br>coming due</th>
+            <td><span class="flag">$1,500&ndash;$2,600</span>
+              <small class="note">Oil cooler seals &mdash; the signature failure on this engine, and due at this mileage.</small></td>
+            <td><span class="flag">Unknown</span>
+              <small class="note">Cannot assess until the odometer question is resolved.</small></td>
+            <td class="pick">~$400
+              <small class="note">Front brakes, disclosed by the seller up front.</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Seller</th>
+            <td>Konrad &middot; 28 ratings
+              <small class="note">Two reviews report unanswered messages.</small></td>
+            <td><span class="flag">Sanchez &middot; no ratings</span></td>
+            <td class="pick"><span class="ok">Jose &middot; 57 ratings</span>
+              <small class="note">Marked "highly rated." Reviews describe a truck and body shop that fixed issues on the spot.</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Distance</th>
+            <td>~55 miles</td>
+            <td>~40 miles</td>
+            <td class="pick">~75 miles</td>
+          </tr>
+          <tr>
+            <th scope="row">Listed</th>
+            <td>4 days ago</td>
+            <td>3 weeks ago</td>
+            <td class="pick">4 weeks ago</td>
+          </tr>
+          <tr>
+            <th scope="row">Real cost<br>to us</th>
+            <td>$7,000&ndash;$8,100
+              <small class="note">If the oil cooler has not been done.</small></td>
+            <td>$9,000+
+              <small class="note">Roughly double comparable vans in this market.</small></td>
+            <td class="pick"><span class="price good">~$6,300</span>
+              <small class="note">Purchase plus brakes.</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What decides it</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>The Woodstock van wins on nearly every axis</h3>
+        <p>For <strong>$400 more</strong> than the Sprinter we get 70,000 fewer miles, a gas engine instead of a diesel with a multi-thousand-dollar repair already coming due, a fresh transmission, the same 16 ft box, and a seller with a real track record.</p>
+        <p>The only thing it loses on is distance &mdash; Woodstock is the farthest of the three.</p>
+      </div>
+      <div class="card warn">
+        <h3>The Crest Hill van should come off the list</h3>
+        <p>At <strong>$9,000</strong> it is roughly double what comparable vans are selling for in this market right now, and its listing contradicts itself on mileage by a factor of ten.</p>
+        <p>An odometer reading that disagrees with the seller's own description is how vehicles end up with a permanent title brand. Not worth the drive.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Before we commit to the Woodstock van</h2>
+    <ul class="plain">
+      <li><strong>Get the transmission receipt.</strong> Ask whether it was new, remanufactured or used &mdash; the warranty differs enormously &mdash; and why it needed one at 145,000 miles.</li>
+      <li><strong>Confirm whether Jose is a licensed dealer.</strong> The reviews describe a shop, not a private seller. That is mostly good for us, but it changes the paperwork and may add sales tax.</li>
+      <li><strong>Pay for an independent inspection.</strong> About $150 on a lift. On a $5,900 vehicle it is the highest-return money in the process, and it gives the board a documented basis for the purchase.</li>
+      <li><strong>Title it to Ras Tafari Inc.</strong>, not to an individual &mdash; Illinois will only transfer a title into the name on the bill of sale, and this cannot be corrected later without a second transfer.</li>
+      <li><strong>Get the commercial insurance quote first.</strong> A vehicle titled to the organization needs a commercial policy; a personal policy will not cover it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Applies to either box truck</h2>
+    <ul class="plain">
+      <li><strong>Plates.</strong> A 3500 chassis at roughly 11,000 lb gross weight registers as a second-division Class D vehicle in Illinois &mdash; about $238 a year rather than a passenger plate.</li>
+      <li><strong>Height.</strong> Both box trucks stand 10 to 11 feet tall. No parking garages, watch low clearances, and neither will sit in an ordinary parking space.</li>
+      <li><strong>Insurance.</strong> Commercial rates on a box truck run higher than on a cargo van. Worth pricing before we choose.</li>
+      <li><strong>The upside.</strong> A 16 ft box carries the full sound system, tents, tables and the cook setup in a single trip &mdash; and with a rear door at box height, a ramp lets us load the juicing equipment, which ships on pallets.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Listings sourced from Facebook Marketplace on 31 August 2026 and compared against same-market listings gathered the same day. Private listings turn over in days &mdash; confirm availability before anyone drives out.</p>
+    <p>Repair estimates are shop-rate ranges, not quotes. Registration and titling notes are a starting point for the conversation with the Secretary of State and the organization's insurer, not legal or tax advice.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
