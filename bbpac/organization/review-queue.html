@@ -454,6 +454,9 @@
         (it.expertise_tags && it.expertise_tags.length
           ? '<div class="qfield"><label>Self-reported background</label><div class="val">' + it.expertise_tags.map(function (k) { return escapeHtml(EXPERTISE_LABELS[k] || k); }).join(', ') + '</div></div>'
           : '') +
+        (it.expertise_other
+          ? '<div class="qfield"><label>In their own words</label><div class="val">' + escapeHtml(it.expertise_other) + '</div></div>'
+          : '') +
         (it.message ? '<div class="qfield"><label>Message</label><div class="val">' + escapeHtml(it.message) + '</div></div>' : '') +
         '<div class="qfield"><label>Grant which section(s)?</label><div class="section-pick">' +
           sections.map(function (s) {
@@ -474,7 +477,7 @@
     var el = document.getElementById('signupQueueArea');
     el.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading requests&hellip;</div>';
     var result = await client.from('bbpac_formation_section_signup_requests')
-      .select('id, full_name, email, requested_sections, message, expertise_tags, created_at')
+      .select('id, full_name, email, requested_sections, message, expertise_tags, expertise_other, created_at')
       .eq('status', 'pending')
       .order('created_at', { ascending: true });
     var items = result.data || [];

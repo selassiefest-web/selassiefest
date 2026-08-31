@@ -6149,3 +6149,12 @@ create policy "Staff can read clrwf-resumes" on storage.objects
 -- table -- the list is small and edited alongside the page, not from data.
 alter table bbpac_formation_section_signup_requests
   add column if not exists expertise_tags text[];
+
+-- The free-text "something else, in your own words" field. Client-side
+-- keyword matching in join-a-section.html also folds any tags it recognizes
+-- out of this text into expertise_tags above, but the original sentence is
+-- kept here too -- a keyword match can miss real nuance ("used to do this
+-- professionally but not anymore") that only a human reviewer, not a
+-- keyword list, should be the one to weigh.
+alter table bbpac_formation_section_signup_requests
+  add column if not exists expertise_other text;

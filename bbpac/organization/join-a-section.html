@@ -90,9 +90,6 @@
   .back-link{display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:700; color:var(--lakefront); margin-bottom:6px;}
   .picked-recap{background:#f1ede3; border-radius:9px; padding:9px 13px; margin:10px 0 4px; font-size:0.82rem; color:#374a5c;}
 
-  .orient-strip{border:1px dashed var(--line); border-radius:12px; padding:14px 18px; margin:16px 0; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; background:rgba(0,38,73,0.03); font-size:0.86rem; color:var(--ink-dim);}
-  .orient-strip a{font-weight:700; color:var(--lakefront); white-space:nowrap;}
-
   .list-controls{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:14px 0 10px;}
   .open-only-toggle{display:flex; align-items:center; gap:8px; font-size:0.84rem; color:#374a5c; cursor:pointer;}
   .open-only-toggle input{width:16px; height:16px;}
@@ -123,6 +120,10 @@
   .expertise-chip input:focus-visible + .chip-label{outline:2px solid var(--lakefront); outline-offset:2px;}
   .expertise-count{font-size:0.8rem; color:var(--ink-dim); margin-top:12px;}
   .expertise-count b{color:var(--navy);}
+  .expertise-other-label{display:block; font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; color:var(--ink-dim); margin:16px 0 5px;}
+  .expertise-other-input{width:100%; padding:10px 13px; border:1.5px solid var(--line); border-radius:9px; font-size:0.9rem; font-family:inherit;}
+  .expertise-other-input:focus{outline:none; border-color:var(--lakefront);}
+  .expertise-other-feedback{font-size:0.8rem; color:var(--lakefront); margin-top:6px; min-height:1.2em;}
 
   .match-badge{font-size:0.64rem; font-weight:800; text-transform:uppercase; letter-spacing:0.02em; padding:3px 9px; border-radius:9px; background:rgba(47,129,180,0.14); color:var(--lakefront); white-space:normal; margin-top:5px; display:inline-block;}
   .section-row.match-hidden{display:none;}
@@ -177,9 +178,6 @@
   <section>
     <div class="container">
 
-      <div class="orient-strip"><span><i class="fas fa-compass" style="margin-right:6px;"></i>New here? Get the whole picture first — what the two tracks are, and what the Matrix is — in about 2 minutes.</span> <a href="/bbpac/organization/onboarding/orientation.html">See the overview &rarr;</a></div>
-      <div class="orient-strip"><span><i class="fas fa-route" style="margin-right:6px;"></i>Want to see the exact click-through path first, screen by screen, before requesting a section?</span> <a href="/bbpac/organization/onboarding/how-it-works.html">See how it works &rarr;</a></div>
-
       <div id="claimResult" class="claim-panel" style="display:none;"></div>
 
       <div id="loadingState"><i class="fas fa-spinner fa-spin"></i> Loading section list&hellip;</div>
@@ -193,6 +191,9 @@
             <p class="sub">Pick up to 3 — these can be your own experience, or someone you can call on (a friend, parent, mentor). We'll flag which sections could use it below.</p>
             <div class="expertise-grid" id="expertiseGrid"></div>
             <div class="expertise-count" id="expertiseCount"></div>
+            <label for="otherInput" class="expertise-other-label">Something else? Tell us in your own words</label>
+            <input type="text" id="otherInput" class="expertise-other-input" placeholder="e.g. civil engineer, my uncle is a CPA, I have a nursing degree...">
+            <div class="expertise-other-feedback" id="otherFeedback"></div>
           </div>
 
           <h2 style="font-family:Arial,sans-serif; font-weight:900; font-size:1.1rem; margin:28px 0 4px;">All 28 sections</h2>
@@ -293,28 +294,65 @@
   // the picker into two axes would only add clutter. Sourced from the real
   // 28 section titles/item counts, not guessed.
   var EXPERTISE_TAGS = [
-    { key: 'legal', label: 'Legal / Contracts', sections: [10, 1, 26, 28, 25] },
-    { key: 'finance', label: 'Accounting / Finance', sections: [7, 8, 22] },
-    { key: 'nonprofit', label: 'Nonprofit / Grants', sections: [8, 9, 26] },
-    { key: 'gis', label: 'GIS / Mapping / Surveying', sections: [3, 2, 6] },
-    { key: 'urban_planning', label: 'Urban Planning / Parks & Rec', sections: [5, 22, 2] },
-    { key: 'government', label: 'City / Government Employee', sections: [4, 25, 14] },
-    { key: 'insurance', label: 'Insurance / Risk Management', sections: [15, 13, 14] },
-    { key: 'it', label: 'IT / Software / Cybersecurity', sections: [19, 17, 3] },
-    { key: 'design', label: 'Web / Graphic Design', sections: [17, 16, 24] },
-    { key: 'marketing', label: 'Marketing / PR / Communications', sections: [24, 9, 17] },
-    { key: 'construction', label: 'Construction / Facilities', sections: [12, 13, 16] },
-    { key: 'environment', label: 'Environmental Science', sections: [23, 6, 22] },
-    { key: 'emergency', label: 'Emergency Services / First Responder', sections: [14, 21, 13] },
-    { key: 'accessibility', label: 'Disability Rights / ADA', sections: [21, 16, 1] },
-    { key: 'history', label: 'History / Archives / Research', sections: [18, 1, 28] },
-    { key: 'events', label: 'Event Planning', sections: [11, 9, 20] },
-    { key: 'organizing', label: 'Community Organizing', sections: [20, 24, 11] },
-    { key: 'general', label: 'General / Detail-Oriented', sections: [27, 26, 20] },
+    { key: 'legal', label: 'Legal / Contracts', sections: [10, 1, 26, 28, 25],
+      keywords: ['lawyer', 'attorney', 'legal', 'law degree', 'esq', 'counsel', 'paralegal', 'jd', 'law school', 'litigation'] },
+    { key: 'finance', label: 'Accounting / Finance', sections: [7, 8, 22],
+      keywords: ['accountant', 'accounting', 'cpa', 'bookkeeper', 'bookkeeping', 'finance', 'financial', 'auditor', 'budget analyst'] },
+    { key: 'nonprofit', label: 'Nonprofit / Grants', sections: [8, 9, 26],
+      keywords: ['nonprofit', 'non-profit', 'grant writer', 'grant writing', 'fundraising', '501c3', 'development director'] },
+    { key: 'gis', label: 'GIS / Mapping / Surveying', sections: [3, 2, 6],
+      keywords: ['gis', 'mapping', 'cartographer', 'surveyor', 'surveying', 'geospatial', 'geographic information'] },
+    { key: 'urban_planning', label: 'Urban Planning / Parks & Rec', sections: [5, 22, 2],
+      keywords: ['urban planning', 'urban planner', 'city planning', 'city planner', 'parks and rec', 'landscape architect', 'zoning'] },
+    { key: 'government', label: 'City / Government Employee', sections: [4, 25, 14],
+      keywords: ['city hall', 'alderman', 'ward office', 'government employee', 'municipal', 'city of chicago', 'park district employee', 'civil servant'] },
+    { key: 'insurance', label: 'Insurance / Risk Management', sections: [15, 13, 14],
+      keywords: ['insurance', 'underwriter', 'risk management', 'actuary', 'claims adjuster'] },
+    { key: 'it', label: 'IT / Software / Cybersecurity', sections: [19, 17, 3],
+      keywords: ['software engineer', 'software developer', 'programmer', 'cybersecurity', 'network admin', 'sysadmin', 'computer science', 'coding', 'it department', 'it work', 'it support', 'it professional', 'information technology', 'tech support'] },
+    { key: 'design', label: 'Web / Graphic Design', sections: [17, 16, 24],
+      keywords: ['graphic design', 'web design', 'ux designer', 'ui designer', 'illustrator', 'branding'] },
+    { key: 'marketing', label: 'Marketing / PR / Communications', sections: [24, 9, 17],
+      keywords: ['marketing', 'public relations', 'communications', 'social media manager', 'copywriter', 'journalist'] },
+    { key: 'construction', label: 'Construction / Facilities', sections: [12, 13, 16],
+      keywords: ['construction', 'contractor', 'carpenter', 'electrician', 'plumber', 'facilities', 'maintenance worker', 'handyman', 'engineer', 'engineering', 'civil engineer'] },
+    { key: 'environment', label: 'Environmental Science', sections: [23, 6, 22],
+      keywords: ['environmental scientist', 'ecologist', 'biologist', 'conservation', 'sustainability', 'botanist'] },
+    { key: 'emergency', label: 'Emergency Services / First Responder', sections: [14, 21, 13],
+      keywords: ['firefighter', 'paramedic', 'emt', 'police officer', 'first responder', 'emergency management'] },
+    { key: 'accessibility', label: 'Disability Rights / ADA', sections: [21, 16, 1],
+      keywords: ['ada', 'disability rights', 'accessibility', 'occupational therapist', 'accessible design'] },
+    { key: 'history', label: 'History / Archives / Research', sections: [18, 1, 28],
+      keywords: ['historian', 'archivist', 'genealogist', 'museum', 'archives', 'researcher'] },
+    { key: 'events', label: 'Event Planning', sections: [11, 9, 20],
+      keywords: ['event planner', 'event planning', 'wedding planner', 'festival producer', 'stage manager'] },
+    { key: 'organizing', label: 'Community Organizing', sections: [20, 24, 11],
+      keywords: ['community organizer', 'organizing', 'volunteer coordinator', 'outreach'] },
+    { key: 'general', label: 'General / Detail-Oriented', sections: [27, 26, 20], keywords: [] },
   ];
   var EXPERTISE_BY_KEY = {};
   EXPERTISE_TAGS.forEach(function (t) { EXPERTISE_BY_KEY[t.key] = t; });
   var selectedExpertise = [];
+
+  // Client-side keyword matching for the free-text "something else" field --
+  // no backend/LLM call, so it's instant and has no ongoing API cost. Whole-
+  // phrase word-boundary matching (not plain substring) so e.g. "it" doesn't
+  // false-positive inside unrelated words.
+  function textMatchesKeyword(text, keyword) {
+    var esc = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp('\\b' + esc + '\\b', 'i').test(text);
+  }
+  function parseOtherText(text) {
+    var t = String(text || '').toLowerCase();
+    if (!t.trim()) return [];
+    return EXPERTISE_TAGS.filter(function (tag) {
+      return (tag.keywords || []).some(function (kw) { return textMatchesKeyword(t, kw); });
+    }).map(function (tag) { return tag.key; });
+  }
+  function activeExpertiseKeys() {
+    var fromText = parseOtherText(document.getElementById('otherInput') ? document.getElementById('otherInput').value : '');
+    return selectedExpertise.concat(fromText.filter(function (k) { return selectedExpertise.indexOf(k) === -1; }));
+  }
 
   function renderExpertisePanel() {
     var grid = document.getElementById('expertiseGrid');
@@ -337,6 +375,7 @@
       });
     });
     updateExpertiseCount();
+    document.getElementById('otherInput').addEventListener('input', applyExpertiseMatches);
   }
 
   function applyExpertiseCap() {
@@ -353,9 +392,20 @@
       : 'Pick up to <b>3</b> &mdash; none selected yet.';
   }
 
+  function updateOtherFeedback(textMatchedKeys) {
+    var el = document.getElementById('otherFeedback');
+    if (!el) return;
+    var text = document.getElementById('otherInput').value.trim();
+    if (!text) { el.textContent = ''; return; }
+    el.textContent = textMatchedKeys.length
+      ? 'Matches: ' + textMatchedKeys.map(function (k) { return EXPERTISE_BY_KEY[k].label; }).join(', ')
+      : 'No exact match yet — that\'s fine, a team lead will read this when reviewing your request.';
+  }
+
   function resetExpertisePicker() {
     selectedExpertise = [];
     document.querySelectorAll('#expertiseGrid input[data-expertise]').forEach(function (cb) { cb.checked = false; cb.disabled = false; });
+    document.getElementById('otherInput').value = '';
     updateExpertiseCount();
     applyExpertiseMatches();
   }
@@ -365,8 +415,9 @@
   // Content is patched into existing rows rather than re-rendering the list,
   // so nobody's already-checked boxes get reset out from under them.
   function applyExpertiseMatches() {
+    var activeKeys = activeExpertiseKeys();
     var map = {};
-    selectedExpertise.forEach(function (key) {
+    activeKeys.forEach(function (key) {
       var tag = EXPERTISE_BY_KEY[key];
       if (!tag) return;
       tag.sections.forEach(function (secNo) {
@@ -374,7 +425,8 @@
         map[secNo].push(tag.label);
       });
     });
-    var hasAnyTag = selectedExpertise.length > 0;
+    updateOtherFeedback(activeKeys.filter(function (k) { return selectedExpertise.indexOf(k) === -1; }));
+    var hasAnyTag = activeKeys.length > 0;
     var matchesOnlyEl = document.getElementById('matchesOnlyToggle');
     var matchesOnly = hasAnyTag && matchesOnlyEl && matchesOnlyEl.checked;
 
@@ -544,10 +596,14 @@
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
+    var otherText = document.getElementById('otherInput').value.trim();
+    var allExpertiseKeys = activeExpertiseKeys();
+
     var client = await window.sfSupabaseReady;
     var result = await client.from('bbpac_formation_section_signup_requests').insert({
       full_name: fullName, email: email, requested_sections: sections, message: message || null,
-      expertise_tags: selectedExpertise.length ? selectedExpertise : null,
+      expertise_tags: allExpertiseKeys.length ? allExpertiseKeys : null,
+      expertise_other: otherText || null,
     });
 
     if (result.error) {
