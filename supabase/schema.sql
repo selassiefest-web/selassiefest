@@ -6136,3 +6136,16 @@ create policy "Allow anon insert to clrwf-resumes" on storage.objects
 create policy "Staff can read clrwf-resumes" on storage.objects
   for select to authenticated
   using (bucket_id = 'clrwf-resumes' and public.clrwf_is_staff());
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Section signup: self-reported expertise/connections
+-- ─────────────────────────────────────────────────────────────────────────
+-- join-a-section.html lets an applicant pick up to 3 tags describing their
+-- own background OR a connection they can call on (a tag doesn't distinguish
+-- "I am one" from "I know one" -- both are equally useful, and splitting the
+-- picker into two axes would just add UI clutter for no real gain). Stored
+-- as the tag keys (e.g. 'legal', 'gis_mapping') defined client-side in
+-- join-a-section.html's EXPERTISE_TAGS list, not a foreign-keyed lookup
+-- table -- the list is small and edited alongside the page, not from data.
+alter table bbpac_formation_section_signup_requests
+  add column if not exists expertise_tags text[];

@@ -226,6 +226,19 @@
     });
   }
 
+  // Keys match join-a-section.html's EXPERTISE_TAGS -- kept in sync by hand
+  // since it's a small, page-authored list, not a lookup table.
+  var EXPERTISE_LABELS = {
+    legal: 'Legal / Contracts', finance: 'Accounting / Finance', nonprofit: 'Nonprofit / Grants',
+    gis: 'GIS / Mapping / Surveying', urban_planning: 'Urban Planning / Parks & Rec',
+    government: 'City / Government Employee', insurance: 'Insurance / Risk Management',
+    it: 'IT / Software / Cybersecurity', design: 'Web / Graphic Design',
+    marketing: 'Marketing / PR / Communications', construction: 'Construction / Facilities',
+    environment: 'Environmental Science', emergency: 'Emergency Services / First Responder',
+    accessibility: 'Disability Rights / ADA', history: 'History / Archives / Research',
+    events: 'Event Planning', organizing: 'Community Organizing', general: 'General / Detail-Oriented',
+  };
+
   // Markdown-style [label](url) is checked first so a written reference
   // can show its plain-language name instead of a bare URL; matches
   // matrix.html's linkifyUrls.
@@ -438,6 +451,9 @@
         '<div class="qid">Requested ' + (new Date(it.created_at)).toLocaleString() + '</div>' +
         '<div class="qtitle">' + escapeHtml(it.full_name) + ' &middot; ' + escapeHtml(it.email) + '</div>' +
         '<div class="qmeta">Requested section(s): ' + sections.join(', ') + '</div>' +
+        (it.expertise_tags && it.expertise_tags.length
+          ? '<div class="qfield"><label>Self-reported background</label><div class="val">' + it.expertise_tags.map(function (k) { return escapeHtml(EXPERTISE_LABELS[k] || k); }).join(', ') + '</div></div>'
+          : '') +
         (it.message ? '<div class="qfield"><label>Message</label><div class="val">' + escapeHtml(it.message) + '</div></div>' : '') +
         '<div class="qfield"><label>Grant which section(s)?</label><div class="section-pick">' +
           sections.map(function (s) {
@@ -458,7 +474,7 @@
     var el = document.getElementById('signupQueueArea');
     el.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading requests&hellip;</div>';
     var result = await client.from('bbpac_formation_section_signup_requests')
-      .select('id, full_name, email, requested_sections, message, created_at')
+      .select('id, full_name, email, requested_sections, message, expertise_tags, created_at')
       .eq('status', 'pending')
       .order('created_at', { ascending: true });
     var items = result.data || [];

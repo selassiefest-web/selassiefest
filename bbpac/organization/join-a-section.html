@@ -106,6 +106,26 @@
   .claim-panel.success{border-color:var(--community); background:rgba(71,109,62,0.06);}
   .claim-panel.error{border-color:var(--culture); background:rgba(166,51,26,0.05);}
   .claim-panel i{margin-right:6px;}
+
+  .expertise-panel{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .expertise-panel h3{font-family:Arial,sans-serif; font-weight:900; font-size:1rem; margin:0 0 4px;}
+  .expertise-panel .sub{font-size:0.84rem; color:var(--ink-dim); margin:0 0 14px;}
+  .expertise-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .expertise-chip{position:relative; display:inline-flex;}
+  .expertise-chip input{position:absolute; opacity:0; width:100%; height:100%; margin:0; cursor:pointer;}
+  .expertise-chip .chip-label{
+    display:inline-flex; align-items:center; font-size:0.82rem; font-weight:600; color:#374a5c;
+    background:#f1ede3; border:1.5px solid var(--line); border-radius:18px; padding:8px 14px; cursor:pointer;
+    transition:background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .expertise-chip input:checked + .chip-label{background:var(--lakefront); border-color:var(--lakefront); color:#fff;}
+  .expertise-chip input:disabled + .chip-label{opacity:0.4; cursor:not-allowed;}
+  .expertise-chip input:focus-visible + .chip-label{outline:2px solid var(--lakefront); outline-offset:2px;}
+  .expertise-count{font-size:0.8rem; color:var(--ink-dim); margin-top:12px;}
+  .expertise-count b{color:var(--navy);}
+
+  .match-badge{font-size:0.64rem; font-weight:800; text-transform:uppercase; letter-spacing:0.02em; padding:3px 9px; border-radius:9px; background:rgba(47,129,180,0.14); color:var(--lakefront); white-space:normal; margin-top:5px; display:inline-block;}
+  .section-row.match-hidden{display:none;}
 </style>
 </head>
 <body>
@@ -146,7 +166,7 @@
 
 <div class="page-hero">
   <h1>Help Create Bongo Beach</h1>
-  <p>The matrix brings together the questions to answer and the work to complete to help make the new Bongo Beach a reality. Choose a section that matches your interests or expertise, and volunteer to research an issue, find an answer, or move a task forward. Confirm it's really you by email and you're in immediately.</p>
+  <p>The matrix brings together the questions to answer and the work to complete to help make the new Bongo Beach a reality. Choose a section that matches your interests or expertise, and volunteer to research an issue, find an answer, or move a task forward. Confirm it's really you by email and you're in immediately. You don’t have to solve the whole matrix. Start with one item.</p>
   <div class="hero-actions">
     <a class="hero-btn login" href="/bbpac/organization/my-section.html"><i class="fas fa-right-to-bracket"></i> Login</a>
     <a class="hero-btn register" id="registerBtn" href="#stepPick"><i class="fas fa-user-plus"></i> <span id="registerBtnLabel">Register</span></a>
@@ -168,10 +188,18 @@
         <div class="step-indicator" id="stepIndicator">Step 1 of 2 &middot; Pick your section(s)</div>
 
         <div id="stepPick">
+          <div class="expertise-panel">
+            <h3><i class="fas fa-people-arrows" style="margin-right:6px; color:var(--lakefront);"></i>What's your background?</h3>
+            <p class="sub">Pick up to 3 — these can be your own experience, or someone you can call on (a friend, parent, mentor). We'll flag which sections could use it below.</p>
+            <div class="expertise-grid" id="expertiseGrid"></div>
+            <div class="expertise-count" id="expertiseCount"></div>
+          </div>
+
           <h2 style="font-family:Arial,sans-serif; font-weight:900; font-size:1.1rem; margin:28px 0 4px;">All 28 sections</h2>
           <p class="lede" style="margin-bottom:0;">Check any section(s) you'd like to request. You can request an already-claimed section too — sections can have more than one owner.</p>
           <div class="list-controls">
             <label class="open-only-toggle"><input type="checkbox" id="openOnlyToggle">Show open sections only</label>
+            <label class="open-only-toggle" id="matchesOnlyWrap" style="display:none;"><input type="checkbox" id="matchesOnlyToggle">Show matches only</label>
             <button type="button" class="quick-match-btn" id="quickMatchBtn"><i class="fas fa-wand-magic-sparkles"></i> No idea? Pick one for me</button>
           </div>
           <div class="quick-match-msg" id="quickMatchMsg"></div>
@@ -258,6 +286,116 @@
   var selected = {};
   var contentReady = false;
   var pendingRegisterScroll = false;
+
+  // Each tag's `sections` list doesn't distinguish "this is my own
+  // background" from "I know someone with this background" -- both are
+  // equally useful to a section head deciding who to loop in, and splitting
+  // the picker into two axes would only add clutter. Sourced from the real
+  // 28 section titles/item counts, not guessed.
+  var EXPERTISE_TAGS = [
+    { key: 'legal', label: 'Legal / Contracts', sections: [10, 1, 26, 28, 25] },
+    { key: 'finance', label: 'Accounting / Finance', sections: [7, 8, 22] },
+    { key: 'nonprofit', label: 'Nonprofit / Grants', sections: [8, 9, 26] },
+    { key: 'gis', label: 'GIS / Mapping / Surveying', sections: [3, 2, 6] },
+    { key: 'urban_planning', label: 'Urban Planning / Parks & Rec', sections: [5, 22, 2] },
+    { key: 'government', label: 'City / Government Employee', sections: [4, 25, 14] },
+    { key: 'insurance', label: 'Insurance / Risk Management', sections: [15, 13, 14] },
+    { key: 'it', label: 'IT / Software / Cybersecurity', sections: [19, 17, 3] },
+    { key: 'design', label: 'Web / Graphic Design', sections: [17, 16, 24] },
+    { key: 'marketing', label: 'Marketing / PR / Communications', sections: [24, 9, 17] },
+    { key: 'construction', label: 'Construction / Facilities', sections: [12, 13, 16] },
+    { key: 'environment', label: 'Environmental Science', sections: [23, 6, 22] },
+    { key: 'emergency', label: 'Emergency Services / First Responder', sections: [14, 21, 13] },
+    { key: 'accessibility', label: 'Disability Rights / ADA', sections: [21, 16, 1] },
+    { key: 'history', label: 'History / Archives / Research', sections: [18, 1, 28] },
+    { key: 'events', label: 'Event Planning', sections: [11, 9, 20] },
+    { key: 'organizing', label: 'Community Organizing', sections: [20, 24, 11] },
+    { key: 'general', label: 'General / Detail-Oriented', sections: [27, 26, 20] },
+  ];
+  var EXPERTISE_BY_KEY = {};
+  EXPERTISE_TAGS.forEach(function (t) { EXPERTISE_BY_KEY[t.key] = t; });
+  var selectedExpertise = [];
+
+  function renderExpertisePanel() {
+    var grid = document.getElementById('expertiseGrid');
+    grid.innerHTML = EXPERTISE_TAGS.map(function (t) {
+      return '<span class="expertise-chip"><input type="checkbox" id="exp-' + t.key + '" data-expertise="' + t.key + '">' +
+        '<label class="chip-label" for="exp-' + t.key + '">' + escapeHtml(t.label) + '</label></span>';
+    }).join('');
+    grid.querySelectorAll('input[data-expertise]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var key = cb.getAttribute('data-expertise');
+        if (cb.checked) {
+          if (selectedExpertise.length >= 3) { cb.checked = false; return; }
+          selectedExpertise.push(key);
+        } else {
+          selectedExpertise = selectedExpertise.filter(function (k) { return k !== key; });
+        }
+        updateExpertiseCount();
+        applyExpertiseCap();
+        applyExpertiseMatches();
+      });
+    });
+    updateExpertiseCount();
+  }
+
+  function applyExpertiseCap() {
+    var atCap = selectedExpertise.length >= 3;
+    document.querySelectorAll('#expertiseGrid input[data-expertise]').forEach(function (cb) {
+      cb.disabled = atCap && !cb.checked;
+    });
+  }
+
+  function updateExpertiseCount() {
+    var el = document.getElementById('expertiseCount');
+    el.innerHTML = selectedExpertise.length
+      ? '<b>' + selectedExpertise.length + ' of 3</b> selected'
+      : 'Pick up to <b>3</b> &mdash; none selected yet.';
+  }
+
+  function resetExpertisePicker() {
+    selectedExpertise = [];
+    document.querySelectorAll('#expertiseGrid input[data-expertise]').forEach(function (cb) { cb.checked = false; cb.disabled = false; });
+    updateExpertiseCount();
+    applyExpertiseMatches();
+  }
+
+  // Badges name *which* picked tags matched a section, rather than just a
+  // checkmark -- concrete beats abstract for someone scanning 28 rows.
+  // Content is patched into existing rows rather than re-rendering the list,
+  // so nobody's already-checked boxes get reset out from under them.
+  function applyExpertiseMatches() {
+    var map = {};
+    selectedExpertise.forEach(function (key) {
+      var tag = EXPERTISE_BY_KEY[key];
+      if (!tag) return;
+      tag.sections.forEach(function (secNo) {
+        if (!map[secNo]) map[secNo] = [];
+        map[secNo].push(tag.label);
+      });
+    });
+    var hasAnyTag = selectedExpertise.length > 0;
+    var matchesOnlyEl = document.getElementById('matchesOnlyToggle');
+    var matchesOnly = hasAnyTag && matchesOnlyEl && matchesOnlyEl.checked;
+
+    document.querySelectorAll('#sectionList .section-row').forEach(function (row) {
+      var cb = row.querySelector('input[data-section]');
+      var secNo = cb.getAttribute('data-section');
+      var existingBadge = row.querySelector('.match-badge');
+      if (existingBadge) existingBadge.remove();
+      var tags = map[secNo];
+      if (tags && tags.length) {
+        var badge = document.createElement('div');
+        badge.className = 'match-badge';
+        badge.textContent = 'Matches: ' + tags.join(', ');
+        row.querySelector('.info').appendChild(badge);
+      }
+      row.classList.toggle('match-hidden', matchesOnly && !(tags && tags.length));
+    });
+
+    document.getElementById('matchesOnlyWrap').style.display = hasAnyTag ? '' : 'none';
+    if (!hasAnyTag && matchesOnlyEl) matchesOnlyEl.checked = false;
+  }
 
   function goToPickStep() {
     document.getElementById('stepForm').style.display = 'none';
@@ -360,9 +498,11 @@
     });
 
     applyOpenOnlyFilter();
+    applyExpertiseMatches();
   }
 
   document.getElementById('openOnlyToggle').addEventListener('change', applyOpenOnlyFilter);
+  document.getElementById('matchesOnlyToggle').addEventListener('change', applyExpertiseMatches);
 
   document.getElementById('continueBtn').addEventListener('click', function () {
     var pickMsgEl = document.getElementById('pickMsg');
@@ -407,6 +547,7 @@
     var client = await window.sfSupabaseReady;
     var result = await client.from('bbpac_formation_section_signup_requests').insert({
       full_name: fullName, email: email, requested_sections: sections, message: message || null,
+      expertise_tags: selectedExpertise.length ? selectedExpertise : null,
     });
 
     if (result.error) {
@@ -446,6 +587,7 @@
     selected = {};
     updateSummary();
     updatePickedRecap();
+    resetExpertisePicker();
   });
 
   // A magic link sent from the submit handler above redirects here (via
@@ -519,6 +661,7 @@
       ownersBySection[r.section_no].push({ name: name, role: r.role });
     });
 
+    renderExpertisePanel();
     renderSections(sections, ownersBySection);
     document.getElementById('content').style.display = '';
     contentReady = true;
