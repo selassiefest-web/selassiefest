@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dumplin Fry Station &mdash; Burner Spec | SelassieFest</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-black:#0D0D0D;
+    --text-white:#F5F5F5;
+    --gold-accent:#E5A93C;
+    --red-accent:#C83737;
+    --roots-green:#0E5E36;
+    --card-bg:rgba(255,255,255,0.04);
+    --border-dim:rgba(255,255,255,0.08);
+    --text-dim:rgba(245,245,245,0.62);
+    --transition-default:all 0.25s ease;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg-black);color:var(--text-white);
+    font-family:'Jost',sans-serif;font-size:16px;font-weight:300;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,32px) 72px}
+
+  .backlink{
+    display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--text-dim);border-bottom:0;margin-bottom:22px;
+  }
+  .backlink:hover{color:var(--gold-accent)}
+
+  .eyebrow{font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-accent);margin:0 0 10px}
+  h1{font-size:clamp(1.8rem,4.6vw,2.6rem);font-weight:200;letter-spacing:.02em;
+    line-height:1.15;margin:0 0 12px;text-wrap:balance}
+  h1 .highlight-gold{color:var(--gold-accent);font-weight:400}
+  .standfirst{color:var(--text-dim);max-width:62ch;margin:0;font-size:1.02rem}
+  .asof{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin:18px 0 0}
+  .rule{height:1px;background:var(--border-dim);margin:26px 0 34px;border:0}
+
+  h2{font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-accent);margin:0 0 14px}
+  section{margin-bottom:42px}
+
+  /* ---- the pick ---- */
+  .pick{
+    background:var(--card-bg);border:1px solid rgba(229,169,60,0.35);
+    border-top:2px solid var(--gold-accent);padding:24px;
+  }
+  .pick .tag{
+    display:inline-block;font-size:10px;font-weight:500;letter-spacing:.14em;
+    text-transform:uppercase;padding:3px 8px;margin-bottom:12px;
+    background:rgba(229,169,60,0.16);color:var(--gold-accent);
+  }
+  .pick h3{margin:0 0 4px;font-size:1.45rem;font-weight:300;letter-spacing:.01em}
+  .pick .sub{color:var(--text-dim);font-size:14.5px;margin:0 0 18px}
+  .specs{
+    display:grid;gap:14px 26px;margin:0 0 18px;padding:16px 0;
+    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    border-top:1px solid var(--border-dim);border-bottom:1px solid var(--border-dim);
+  }
+  .specs dt{font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim)}
+  .specs dd{margin:3px 0 0;font-size:15px;font-weight:400}
+  .pick p{margin:0 0 10px;font-size:14.5px;color:var(--text-dim)}
+  .pick p:last-child{margin-bottom:0}
+  .pick strong{color:var(--text-white);font-weight:400}
+
+  /* ---- warning ---- */
+  .warn{
+    background:rgba(200,55,55,0.07);border:1px solid rgba(200,55,55,0.4);
+    border-left:3px solid var(--red-accent);padding:20px 22px;
+  }
+  .warn h3{margin:0 0 10px;font-size:1.1rem;font-weight:400;color:var(--red-accent)}
+  .warn p{margin:0 0 10px;font-size:14.5px;color:var(--text-dim)}
+  .warn p:last-child{margin-bottom:0}
+  .warn strong{color:var(--text-white);font-weight:400}
+  .btu-math{
+    display:grid;gap:0;margin:14px 0;border-top:1px solid var(--border-dim);
+    border-bottom:1px solid var(--border-dim);
+  }
+  .btu-math div{
+    display:flex;justify-content:space-between;gap:16px;padding:9px 0;
+    border-bottom:1px solid var(--border-dim);font-size:14px;
+  }
+  .btu-math div:last-child{border-bottom:0;color:var(--red-accent)}
+  .btu-math span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* ---- tables ---- */
+  .table-scroll{overflow-x:auto;border:1px solid var(--border-dim);background:var(--card-bg);
+    -webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;min-width:660px}
+  caption{caption-side:bottom;text-align:left;color:var(--text-dim);font-size:13px;padding:12px 2px 0}
+  th,td{padding:13px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border-dim)}
+  thead th{font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    border-bottom:1px solid rgba(255,255,255,0.16);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.name{font-weight:400}
+  tr.hl td{background:rgba(229,169,60,0.07)}
+  .yes{color:#7FBF9A}
+  .no{color:var(--red-accent)}
+  small.note{display:block;color:var(--text-dim);font-size:12.5px;line-height:1.5;margin-top:3px}
+  .swipe-hint{display:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-dim);margin:0 0 10px}
+  @media (max-width:760px){.swipe-hint{display:block}}
+
+  /* ---- cost stack ---- */
+  .cost{border-top:1px solid var(--border-dim);border-bottom:1px solid var(--border-dim);padding:2px 0}
+  .cost div{display:flex;justify-content:space-between;gap:18px;padding:11px 0;
+    border-bottom:1px solid var(--border-dim);font-size:15px}
+  .cost div:last-child{border-bottom:0;color:var(--gold-accent);font-weight:400}
+  .cost span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cost small{display:block;color:var(--text-dim);font-size:12.5px;margin-top:2px}
+
+  /* ---- lists ---- */
+  ul.plain{list-style:none;margin:0;padding:0;display:block}
+  ul.plain li{position:relative;padding-left:18px;margin-bottom:10px;
+    font-size:14.5px;color:var(--text-dim);line-height:1.6;overflow-wrap:break-word}
+  ul.plain li:last-child{margin-bottom:0}
+  ul.plain li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;
+    background:var(--gold-accent);border-radius:50%}
+  ul.plain strong{color:var(--text-white);font-weight:400}
+  ul.plain.red li::before{background:var(--red-accent)}
+
+  footer{border-top:1px solid var(--border-dim);margin-top:8px;padding-top:20px;
+    color:var(--text-dim);font-size:12.5px;line-height:1.6}
+  footer p{margin:0 0 8px;max-width:75ch}
+  footer p:last-child{margin-bottom:0}
+
+  a{color:var(--gold-accent);text-decoration:none;border-bottom:1px solid rgba(229,169,60,0.35);
+    transition:var(--transition-default)}
+  a:hover{border-bottom-color:var(--gold-accent)}
+  a:focus-visible{outline:2px solid var(--gold-accent);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <a class="backlink" href="/equipment/">&larr; Equipment</a>
+
+  <p class="eyebrow">Ras Tafari Inc. &middot; Ital Marketplace</p>
+  <h1>Dumplin fry station &mdash; <span class="highlight-gold">the burner spec</span></h1>
+  <p class="standfirst">What to buy to fry dumplin at the park, what it costs once the tank and the extinguisher are counted, and the one sizing mistake that would kill the oil temperature mid-service.</p>
+  <p class="asof">Priced 31 August 2026 &middot; For board discussion</p>
+
+  <hr class="rule">
+
+  <section>
+    <h2>The recommendation</h2>
+    <div class="pick">
+      <span class="tag">Buy this</span>
+      <h3>Atosa ACHP-2 &mdash; 12&Prime; two-burner LP hot plate</h3>
+      <p class="sub">Order the <strong>ACHP-2_LP</strong> configuration specifically. Not the natural-gas model with a conversion kit.</p>
+      <dl class="specs">
+        <div><dt>Output</dt><dd>64,000 BTU</dd></div>
+        <div><dt>Per burner</dt><dd>32,000 BTU</dd></div>
+        <div><dt>Grates</dt><dd>Cast iron</dd></div>
+        <div><dt>Listing</dt><dd>cETLus + ETL&#8209;Sanitation</dd></div>
+        <div><dt>Footprint</dt><dd>12&Prime; &times; 27.5&Prime;</dd></div>
+        <div><dt>Price</dt><dd>$481&ndash;$572</dd></div>
+      </dl>
+      <p>Heavy cast-iron top grates are the reason for this one &mdash; they will carry a loaded Dutch pot without flexing, which a stamped-steel grate will not. Independent manual controls on each burner mean we can fry on one and hold oil or a second pot on the other.</p>
+      <p><strong>On certification:</strong> inspectors say "NSF," but the Food Code language is equipment certified by an <strong>ANSI-accredited program</strong>. ETL&#8209;Sanitation is exactly that, and satisfies the same requirement. Worth knowing the phrase if anyone questions it on site.</p>
+      <p><strong>There is no one-burner model in this line.</strong> Atosa's countertop hot plates start at two burners, which suits the operation anyway.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Read this before buying a tank</h2>
+    <div class="warn">
+      <h3>A 20 lb propane tank cannot feed this burner</h3>
+      <p>Propane has to boil inside the cylinder to produce vapour, and the cylinder draws that heat through its own walls. Pull harder than it can vaporize and the tank frosts over, pressure collapses, and the flame starves &mdash; which on a fry station means the oil temperature dies in the middle of a rush.</p>
+      <div class="btu-math">
+        <div><span>Atosa ACHP-2, both burners open</span><span>64,000 BTU/hr</span></div>
+        <div><span>20 lb tank, max continuous at 60&ndash;70&deg;F</span><span>35,000&ndash;42,000 BTU/hr</span></div>
+        <div><span>Shortfall</span><span>Roughly 22,000&ndash;29,000 BTU/hr</span></div>
+      </div>
+      <p><strong>Run a 40 lb or 100 lb cylinder, or manifold two 20s.</strong> This catches people constantly because the burner and the tank are bought separately and nothing in either box warns you. It gets worse as the tank empties and worse again in cold weather &mdash; which matters for any event later in the season.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What else we looked at</h2>
+    <p class="swipe-hint">Swipe the table sideways &rarr;</p>
+    <div class="table-scroll">
+      <table>
+        <caption>Prices as found 31 August 2026, before freight. "Listing" is the sanitation certification a health inspector looks for.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Burner</th>
+            <th scope="col">Output</th>
+            <th scope="col">Listing</th>
+            <th scope="col">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hl">
+            <td class="name">Atosa ACHP-2 (LP)
+              <small class="note">Cast iron grates, standing pilot, ships propane-ready.</small></td>
+            <td class="num">64,000 BTU<small class="note">32,000 per burner</small></td>
+            <td class="yes">ETL-Sanitation</td>
+            <td class="num">$481&ndash;572</td>
+          </tr>
+          <tr>
+            <td class="name">Cooking Performance Group R-CPG-12-NL
+              <small class="note">Two-burner stainless hot plate. Confirm the LP configuration before ordering.</small></td>
+            <td class="num">&mdash;</td>
+            <td class="yes">Commercial</td>
+            <td class="num">$399&ndash;449</td>
+          </tr>
+          <tr>
+            <td class="name">MoTak MHP12
+              <small class="note">Listed as gas-type "convertible" &mdash; ask what ships in the box.</small></td>
+            <td class="num">&mdash;</td>
+            <td class="yes">Commercial</td>
+            <td class="num">$449</td>
+          </tr>
+          <tr>
+            <td class="name">Avantco CAG-R-2-12
+              <small class="note">Cheapest commercial option, but <strong>ships configured for natural gas</strong> &mdash; needs a conversion kit and orifice swap.</small></td>
+            <td class="num">50,000 BTU<small class="note">25,000 per burner</small></td>
+            <td class="yes">Commercial</td>
+            <td class="num">$319</td>
+          </tr>
+          <tr>
+            <td class="name">VEVOR two-burner
+              <small class="note">Propane/natural gas countertop range. No sanitation listing.</small></td>
+            <td class="num">56,000 BTU</td>
+            <td class="no">None</td>
+            <td class="num">$299</td>
+          </tr>
+          <tr>
+            <td class="name">Jet / banjo burner
+              <small class="note">Bayou Classic, Concord and similar. What many Caribbean vendors actually run under a Dutch pot &mdash; see below.</small></td>
+            <td class="num">54,000&ndash;270,000 BTU</td>
+            <td class="no">None</td>
+            <td class="num">$100&ndash;140</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it actually costs</h2>
+    <div class="cost">
+      <div><span>Atosa ACHP-2, LP configuration</span><span>$481</span></div>
+      <div><span>Freight<small>The same machine runs $481 to $572 depending on dealer &mdash; price the delivered total, not the sticker.</small></span><span>$100&ndash;140</span></div>
+      <div><span>40 or 100 lb cylinder<small>Not a 20 lb tank. See the sizing note above.</small></span><span>$100&ndash;200</span></div>
+      <div><span>Low-pressure regulator and hose<small>11&Prime; WC, with the correct cylinder fitting. Not included with the burner.</small></span><span>$40&ndash;70</span></div>
+      <div><span>Class K wet chemical extinguisher<small>Required for fry oil. An ABC extinguisher does not satisfy this.</small></span><span>$150&ndash;250</span></div>
+      <div><span>Realistic total</span><span>$870&ndash;1,140</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Fire code at a temporary food event</h2>
+    <ul class="plain red">
+      <li><strong>Cylinder outside the tent</strong>, roughly five feet clear of the fabric and away from exits.</li>
+      <li><strong>Secured upright</strong> so it cannot tip, and barricaded off from the public and foot traffic.</li>
+      <li><strong>Hose protected</strong> from heat, foot traffic and vehicle paths.</li>
+      <li><strong>Class K wet chemical extinguisher</strong> at the fry station. This is the single most common write-up at fry setups, because crews bring the ABC extinguisher they already own and it does not cover cooking oil.</li>
+      <li><strong>Pot and burner away from public reach</strong>, on a noncombustible surface at working height.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Before we place the order</h2>
+    <ul class="plain">
+      <li><strong>Order the LP model, not natural gas plus a conversion.</strong> The conversion is orifices and a regulator, and on a gas appliance it is work for a qualified tech, not a shortcut to save money.</li>
+      <li><strong>Confirm the delivered price.</strong> Same spread problem as the juicers &mdash; $481 at one dealer, $572 plus $137 freight at another.</li>
+      <li><strong>Plan a wind break.</strong> The ACHP-2 uses a standing pilot, and wind at an open park site will blow it out. A three-sided enclosure solves it; nothing else does.</li>
+      <li><strong>Ask CDPH about the burner and the cane crusher in the same call.</strong> Confirm ETL-Sanitation satisfies them here, and settle the crusher question at the same time rather than making two calls.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The honest alternative</h2>
+    <p style="color:var(--text-dim);font-size:14.5px;max-width:66ch;margin:0 0 12px">
+      A jet or banjo burner &mdash; Bayou Classic, Concord and similar, $100 to $140 &mdash; is what a great many Caribbean vendors actually run under a Dutch pot. Far more heat, far less money, and better behaved in wind than a countertop range with a standing pilot.
+    </p>
+    <p style="color:var(--text-dim);font-size:14.5px;max-width:66ch;margin:0">
+      It carries no sanitation listing, so for a permitted operation selling to the public it is the same gamble as the uncertified cane crusher: it may pass, it may not, and that is the inspector's call rather than ours. If we are calling CDPH anyway, it costs nothing to ask about both.
+    </p>
+  </section>
+
+  <footer>
+    <p>Prices, BTU ratings and certifications verified 31 August 2026 from manufacturer pages (Atosa) and restaurant-supply listings (WebstaurantStore, KaTom, Restaurant Supply, Restaurant Equippers). Foodservice pricing moves with promotions and freight is quoted per shipment &mdash; treat every figure here as the starting point for a phone call, not a checkout total.</p>
+    <p>Fire code notes reflect general NFPA 1 and NFPA 58 practice for temporary cooking operations. The requirements applied to us are the ones the fire marshal and health inspector state on the day &mdash; confirm with CDPH and the fire department before the event, not at it.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
