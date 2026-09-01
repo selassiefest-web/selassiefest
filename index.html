@@ -372,32 +372,39 @@
     .gate-hours i {
       color: var(--roots-green);
     }
-    .villages-strip {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+    .village-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 14px;
-      max-width: 1120px;
+      max-width: 1100px;
       margin: 4px auto 28px;
     }
-    .village-pill {
+    .village-card {
       display: flex;
       flex-direction: column;
-      gap: 4px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(229,169,60,0.25);
-      border-radius: 20px;
-      padding: 10px 18px;
+      border-radius: 14px;
+      overflow: hidden;
       text-align: left;
-      min-width: 168px;
-      max-width: 208px;
       transition: border-color 0.2s ease, transform 0.2s ease;
     }
-    .village-pill:hover {
+    .village-card:hover,
+    .village-card:focus-visible {
       border-color: var(--gold-accent);
       transform: translateY(-3px);
     }
-    .village-pill .vname {
+    .village-card img {
+      display: block;
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      object-position: top;
+    }
+    .village-card .vc-body {
+      padding: 10px 14px 14px;
+    }
+    .village-card .vname {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -406,18 +413,16 @@
       color: var(--gold-accent);
       letter-spacing: 0.01em;
     }
-    .village-pill .vname i {
+    .village-card .vname i {
       font-size: 0.78rem;
       flex-shrink: 0;
     }
-    .village-pill .vsyn {
+    .village-card .vsyn {
+      margin-top: 4px;
       font-weight: 300;
       font-size: 0.72rem;
       color: #aaa;
       line-height: 1.4;
-    }
-    @media (max-width: 780px) {
-      .village-pill { min-width: 140px; max-width: 100%; }
     }
     .villages-map-link {
       position: relative;
@@ -957,14 +962,66 @@
   </div>
 
   <div class="villages-map-link">
-    <img src="/assets/images/seven-villages-map.jpg" width="1536" height="1024" alt="Seven Hills, Seven Gates, Seven Villages — SelassieFest map showing Sound System Yard, Main Stage, Higher Learning Roots, Heritage Village, Marketplace, Empress Empowerment Village, and Pickney Time" loading="lazy">
-    <a href="/sound-system-yard/" target="_blank" class="village-hotspot" style="left:15.6250%; top:24.4141%; width:11.0677%; height:7.3242%;" aria-label="01 · Sound System Yard — opens in a new tab"></a>
-    <a href="/main-stage/" target="_blank" class="village-hotspot" style="left:43.2943%; top:4.8828%; width:9.4401%; height:6.8359%;" aria-label="02 · Main Stage — opens in a new tab"></a>
-    <a href="/higher-learning-roots/" target="_blank" class="village-hotspot" style="left:40.3646%; top:40.0391%; width:12.6953%; height:7.3242%;" aria-label="03 · Higher Learning Roots — opens in a new tab"></a>
-    <a href="/heritage-village/" target="_blank" class="village-hotspot" style="left:62.8255%; top:24.4141%; width:13.9974%; height:7.0313%;" aria-label="04 · Heritage Village — opens in a new tab"></a>
-    <a href="/marketplace/" target="_blank" class="village-hotspot" style="left:72.5911%; top:50.7813%; width:13.0208%; height:7.0313%;" aria-label="05 · Marketplace — opens in a new tab"></a>
-    <a href="/empress-empowerment-village/" target="_blank" class="village-hotspot" style="left:41.9922%; top:60.5469%; width:16.2760%; height:7.3242%;" aria-label="06 · Empress Empowerment Village — opens in a new tab"></a>
-    <a href="/pickney-time/" target="_blank" class="village-hotspot" style="left:12.3698%; top:49.8047%; width:10.0911%; height:7.0313%;" aria-label="07 · Pickney Time — opens in a new tab"></a>
+    <img src="/assets/images/seven-villages-map.png" width="1536" height="1024" alt="Sunken Garden, Seven Gates, Seven Villages — SelassieFest map of Washington Park, Chicago showing Sound System Yard, Main Stage, Higher Learning Roots, Heritage Village, Marketplace, Empress Empowerment Village, and Pickney Time" loading="lazy">
+    <a href="/sound-system-yard/" target="_blank" class="village-hotspot" style="left:36.0000%; top:25.0000%; width:12.5000%; height:7.0000%;" aria-label="01 · Sound System Yard — opens in a new tab"></a>
+    <a href="/main-stage/" target="_blank" class="village-hotspot" style="left:45.5000%; top:6.5000%; width:10.0000%; height:7.0000%;" aria-label="02 · Main Stage — opens in a new tab"></a>
+    <a href="/higher-learning-roots/" target="_blank" class="village-hotspot" style="left:46.0000%; top:38.0000%; width:12.0000%; height:7.0000%;" aria-label="03 · Higher Learning Roots — opens in a new tab"></a>
+    <a href="/heritage-village/" target="_blank" class="village-hotspot" style="left:55.0000%; top:25.0000%; width:13.0000%; height:7.0000%;" aria-label="04 · Heritage Village — opens in a new tab"></a>
+    <a href="/marketplace/" target="_blank" class="village-hotspot" style="left:57.0000%; top:52.5000%; width:13.5000%; height:7.0000%;" aria-label="05 · Marketplace — opens in a new tab"></a>
+    <a href="/empress-empowerment-village/" target="_blank" class="village-hotspot" style="left:44.5000%; top:63.5000%; width:13.5000%; height:7.0000%;" aria-label="06 · Empress Empowerment Village — opens in a new tab"></a>
+    <a href="/pickney-time/" target="_blank" class="village-hotspot" style="left:31.5000%; top:52.5000%; width:12.0000%; height:7.0000%;" aria-label="07 · Pickney Time — opens in a new tab"></a>
+  </div>
+
+  <div class="village-cards">
+    <a href="/sound-system-yard/" class="village-card">
+      <img src="/assets/images/villages/01-yard.jpg" width="640" height="360" alt="Sound System Yard" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-volume-high"></i> 01 · Yard</div>
+        <p class="vsyn">Vintage sound systems, selectors &amp; dubplate sessions.</p>
+      </div>
+    </a>
+    <a href="/main-stage/" class="village-card">
+      <img src="/assets/images/villages/02-stage.jpg" width="640" height="360" alt="Main Stage" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-music"></i> 02 · Stage</div>
+        <p class="vsyn">Live reggae, dance &amp; performance on the Main Stage.</p>
+      </div>
+    </a>
+    <a href="/higher-learning-roots/" class="village-card">
+      <img src="/assets/images/villages/03-roots.jpg" width="640" height="360" alt="Higher Learning Roots" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-seedling"></i> 03 · Roots</div>
+        <p class="vsyn">Cannabis education, farm-to-dispensary &amp; the High-Q Lounge.</p>
+      </div>
+    </a>
+    <a href="/heritage-village/" class="village-card">
+      <img src="/assets/images/villages/04-heritage.jpg" width="640" height="360" alt="Heritage Village" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-scroll"></i> 04 · Heritage</div>
+        <p class="vsyn">History, elder dialogues &amp; Nyabinghi healing space.</p>
+      </div>
+    </a>
+    <a href="/marketplace/" class="village-card">
+      <img src="/assets/images/villages/05-marketplace.jpg" width="640" height="360" alt="Marketplace" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-store"></i> 05 · Marketplace</div>
+        <p class="vsyn">Jamaican &amp; Ital Kitchens, artisans &amp; vendors.</p>
+      </div>
+    </a>
+    <a href="/empress-empowerment-village/" class="village-card">
+      <img src="/assets/images/villages/06-empress.jpg" width="640" height="360" alt="Empress Empowerment Village" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-crown"></i> 06 · Empress</div>
+        <p class="vsyn">Girls leadership, career discovery &amp; the Empress Stage.</p>
+      </div>
+    </a>
+    <a href="/pickney-time/" class="village-card">
+      <img src="/assets/images/villages/07-pickney.jpg" width="640" height="360" alt="Pickney Time" loading="lazy">
+      <div class="vc-body">
+        <div class="vname"><i class="fas fa-child-reaching"></i> 07 · Pickney</div>
+        <p class="vsyn">Youth games, Summer Camp &amp; the family drumming circle.</p>
+      </div>
+    </a>
   </div>
 
   <div class="hero-description" style="display: none;"></div>
