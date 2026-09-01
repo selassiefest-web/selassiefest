@@ -566,6 +566,53 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .trc-featured-event {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(230px, 340px) 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+    @media (max-width: 760px) {
+      .trc-featured-event { grid-template-columns: 1fr; }
+    }
+    .trc-video-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .trc-video-tile {
+      position: relative;
+      display: block;
+      aspect-ratio: 2 / 3;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-dim);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .trc-video-tile:hover {
+      transform: translateY(-6px);
+      border-color: var(--gold-accent);
+    }
+    .trc-video-tile video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+    .trc-video-tile .trc-video-label {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 10px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-accent);
+    }
 
     /* ===== MAIN CONTAINER ===== */
     .container {
@@ -909,28 +956,36 @@
 </section>
 
 <!-- TRC EVENTS STRIP: cross-promotion of upcoming TRC Events shows -->
-<section class="trc-events-section">
+<section class="trc-events-section" id="trc-events">
   <div class="trc-events-title section-title" style="margin-bottom:40px;">
     <span>✦</span> UPCOMING TRC EVENTS
-    <span class="trc-events-sub">Presented by TRC Events — <a href="https://trcevent.com" target="_blank" rel="noopener noreferrer">trcevent.com</a></span>
+    <span class="trc-events-sub">Presented by TRC Events — <a href="https://trcevent.com" target="_blank" rel="noopener noreferrer">trcevent.com</a> — <a href="/past-events/">See past events →</a></span>
   </div>
-  <div class="trc-events-grid">
-    <a href="https://trcevent.com/jamaicaday" target="_blank" rel="noopener noreferrer" class="trc-event-card" aria-label="Jamaica Independence Celebration — Team Lenky presents, Sunday Aug 9 at The Prairie Lawn, details on trcevent.com">
-      <img src="/assets/images/events/jamaica-independence-celebration.webp" alt="Jamaica Independence Celebration — Team Lenky presents, Sunday Aug 9 at The Prairie Lawn" loading="lazy">
-      <span class="trc-event-cta">Details &amp; Tickets →</span>
-    </a>
-    <a href="https://trcevent.com/st-catherine-linkup" target="_blank" rel="noopener noreferrer" class="trc-event-card" aria-label="Bad Like Di 90's — St. Catherine Link-Up, details on trcevent.com">
-      <img src="/assets/images/events/st-catherine-linkup.webp" alt="Bad Like Di 90's — St. Catherine Link-Up, featuring Suge" loading="lazy">
-      <span class="trc-event-cta">Details &amp; Tickets →</span>
-    </a>
-    <a href="https://trcevent.com/charly-black" target="_blank" rel="noopener noreferrer" class="trc-event-card" aria-label="Charly Black live in concert, details on trcevent.com">
-      <img src="/assets/images/events/charly-black.webp" alt="Charly Black — Live in Concert" loading="lazy">
-      <span class="trc-event-cta">Details &amp; Tickets →</span>
-    </a>
+  <div class="trc-featured-event">
     <a href="https://trcevent.com/dancehall-fridays" target="_blank" rel="noopener noreferrer" class="trc-event-card" aria-label="Dancehall Fridays — Ladies Night Out, presented by Dougiefresh &amp; One Draw Crew, DJ Bad Chargie, starting Friday Sept 25 2026 and every Friday night after, 9 PM until late, at Banquet Hall – A Place for You, 12746 South Halsted Street, Chicago. Ladies free opening night, $20 general admission, free parking. Details on trcevent.com">
       <img src="/assets/images/events/dancehall-fridays.webp" alt="Dancehall Fridays — Ladies Night Out, DJ Bad Chargie, Fridays 9 PM at Banquet Hall Chicago" loading="lazy">
       <span class="trc-event-cta">Details &amp; Tickets →</span>
     </a>
+    <div class="trc-video-row">
+      <a class="trc-video-tile" href="https://trcevent.com/dancehall-fridays" target="_blank" rel="noopener noreferrer" aria-label="End of Summer promo video — Dancehall Fridays, details on trcevent.com">
+        <video autoplay muted loop playsinline poster="/assets/video/events/end-of-summer-poster.jpg">
+          <source src="/assets/video/events/end-of-summer.mp4" type="video/mp4">
+        </video>
+        <span class="trc-video-label">End of Summer</span>
+      </a>
+      <a class="trc-video-tile" href="https://trcevent.com/dancehall-fridays" target="_blank" rel="noopener noreferrer" aria-label="Party bus promo video — Dancehall Fridays, details on trcevent.com">
+        <video autoplay muted loop playsinline poster="/assets/video/events/bus-poster.jpg">
+          <source src="/assets/video/events/bus.mp4" type="video/mp4">
+        </video>
+        <span class="trc-video-label">The Bus</span>
+      </a>
+      <a class="trc-video-tile" href="https://trcevent.com/dancehall-fridays" target="_blank" rel="noopener noreferrer" aria-label="Vybez promo video — Dancehall Fridays, details on trcevent.com">
+        <video autoplay muted loop playsinline poster="/assets/video/events/vybez-poster.jpg">
+          <source src="/assets/video/events/vybez.mp4" type="video/mp4">
+        </video>
+        <span class="trc-video-label">Vybez</span>
+      </a>
+    </div>
   </div>
 </section>
 
