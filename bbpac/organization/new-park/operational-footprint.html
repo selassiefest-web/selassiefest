@@ -169,7 +169,7 @@
   <section>
     <div class="container">
 
-      <p class="lede">This page is where <a href="/bbpac/organization/new-park/path-to-formation.html#doc-NP-02">NP-02</a>'s GIS working layers become a decision record. Nothing here is a finished boundary &mdash; the operational-footprint and proposed-boundary polygons stay intentionally undrawn until the sequence below is actually worked through, the same discipline the underlying GIS package itself insists on: <em>&ldquo;No empty layer in this package should be mistaken for an absent feature. It means the geometry has not yet been defensibly established.&rdquo;</em></p>
+      <p class="lede">This page is where <a href="/bbpac/organization/new-park/path-to-formation.html#doc-NP-02">NP-02</a>'s GIS working layers become a decision record. Nothing here is a finished boundary. The formal decision layers stay empty until the sequence below is actually worked through &mdash; the same discipline the underlying GIS package itself insists on: <em>&ldquo;No empty layer in this package should be mistaken for an absent feature. It means the geometry has not yet been defensibly established.&rdquo;</em> A first Candidate 1 draft of the proposed boundary is sketched on the live map below (off by default) purely so the working boundary controls can be tested against what's on the ground &mdash; it is not an adopted decision.</p>
 
       <div class="toc">
         <div>On this page</div>
@@ -224,7 +224,7 @@
           <div>
             <h4>Draw two separate polygons</h4>
             <p>The existing 63rd Street Beach operational footprint, and the proposed Bongo Beach administrative boundary. These may overlap heavily, but they are not automatically identical &mdash; the operational footprint records what CPD already runs today; the proposed boundary is the ask.</p>
-            <span class="status pending">Pending &mdash; both layers remain empty by design</span>
+            <span class="status progress">In progress &mdash; Candidate 1 drafted for both (Exhibit B; live-map boundary overlay), neither adopted</span>
           </div>
         </div>
         <div class="seq-row">
@@ -259,6 +259,7 @@
           <span><span class="swatch" style="background:rgba(220,131,17,0.55); border:2px solid var(--legacy);"></span>Confirmed facilities (Beach House, dunes, parking, beach)</span>
           <span><span class="swatch line" style="background:var(--community);"></span>Boat launch / paths / underpasses</span>
           <span><span class="swatch" style="background:rgba(166,51,26,0.3); border:2px dashed var(--culture);"></span>Candidate / generalized safety positions</span>
+          <span><span class="swatch" style="background:rgba(142,45,226,0.12); border:2px dashed #8E2DE2;"></span>Proposed boundary &ndash; Candidate 1 (draft, unconfirmed; off by default)</span>
         </div>
         <p class="map-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Layer data: Chicago Park District / City of Chicago Data Portal, Illinois State Geological Survey, and OpenStreetMap &mdash; see Sources below.</p>
       </div>
@@ -283,9 +284,9 @@
       </div>
 
       <h2 class="section-h" id="downloads">Downloads</h2>
-      <p class="section-sub">The complete GIS starter package, version 2, and its exhibits.</p>
+      <p class="section-sub">The complete GIS starter package, version 3, and its exhibits.</p>
       <div class="downloads-grid">
-        <div class="dl-card"><i class="fas fa-file-zipper"></i><a href="/bbpac/assets/gis/Bongo_Beach_GIS_Starter_Package.zip">Complete GIS starter package</a><span>GeoPackage, GeoJSON, KML, shapefile exports, exhibits, source register (v2)</span></div>
+        <div class="dl-card"><i class="fas fa-file-zipper"></i><a href="/bbpac/assets/gis/Bongo_Beach_GIS_Starter_Package.zip">Complete GIS starter package</a><span>GeoPackage, GeoJSON, KML, shapefile exports, exhibits, source register (v3) &mdash; now includes the Candidate 1 proposed-boundary draft</span></div>
         <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_A_Existing_Jackson_Park_19.pdf">Exhibit A</a><span>Existing Jackson Park #19 boundary</span></div>
         <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_B_Existing_63rd_Beach_Operational_Geography.pdf">Exhibit B</a><span>Existing 63rd Street Beach operational geography &mdash; Candidate 1 planning envelope (16.85 ac land / 18.51 ac generalized water-safety)</span></div>
         <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_E_63rd_Beach_Facilities_Access_Safety.pdf">Exhibit E</a><span>Facilities, access, and safety geography</span></div>
@@ -296,7 +297,7 @@
 
       <div class="disclaimer-box">
         <i class="fas fa-triangle-exclamation"></i>
-        <div><strong>Not a legal opinion, and not a finished boundary.</strong> The western-boundary position above is a recommended starting point for the committee's own decision-making, grounded in this project's existing research &mdash; it is not a surveyed line, not confirmed with CPD, CDOT, or IDOT, and not yet reflected in any drawn polygon. The operational-footprint and proposed-boundary layers remain empty in the underlying GIS package until steps 1&ndash;4 above are actually completed.</div>
+        <div><strong>Not a legal opinion, and not a finished boundary.</strong> The western-boundary position above is a recommended starting point for the committee's own decision-making, grounded in this project's existing research &mdash; it is not a surveyed line, not confirmed with CPD, CDOT, or IDOT. Exhibit B's operational envelope and the Candidate 1 proposed-boundary sketch on the live map above are both first drafts built from the mapped assets and working boundary controls, not adopted decisions &mdash; the formal decision layers in the underlying GIS package (<code>beach_operational_footprint</code>, <code>bongo_beach_proposed</code>) stay empty by the package's own convention until steps 1&ndash;4 above are actually completed and a candidate is formally adopted.</div>
       </div>
 
       <h2 class="section-h" id="sources">Sources</h2>
@@ -371,6 +372,7 @@
   var lineStyleBlue = { color: '#2F81B4', weight: 2, dashArray: '4,4' };
   var candidateStyle = { color: '#A6331A', weight: 2, dashArray: '5,5', fillColor: '#A6331A', fillOpacity: 0.15 };
   var parkStyle = { color: '#002649', weight: 2, fillColor: '#002649', fillOpacity: 0.12 };
+  var draftBoundaryStyle = { color: '#8E2DE2', weight: 4, dashArray: '10,6', fillColor: '#8E2DE2', fillOpacity: 0.10 };
 
   function popupFromProps(feature, layer) {
     var p = feature.properties || {};
@@ -417,7 +419,8 @@
     loadLayer('asset_paths.geojson', 'Paths / Lakefront Trail', lineStyleGreen, { defaultOn: false }),
     loadLayer('asset_underpasses.geojson', 'Underpasses (full tunnel geometry)', lineStyleGreen),
     loadLayer('asset_safety_buoys.geojson', 'Candidate 64th St. buoy positions', candidateStyle),
-    loadLayer('asset_safety_references.geojson', 'Safety references (lifeguard office, life ring, swim area)', candidateStyle)
+    loadLayer('asset_safety_references.geojson', 'Safety references (lifeguard office, life ring, swim area)', candidateStyle),
+    loadLayer('bongo_beach_proposed_candidate1_draft.geojson', 'Proposed boundary – Candidate 1 (DRAFT, unconfirmed)', draftBoundaryStyle, { defaultOn: false })
   ]).then(function() {
     // On narrow screens the expanded legend is wide enough to swallow the whole
     // map, so start it collapsed there (still position: topright) and expand it
