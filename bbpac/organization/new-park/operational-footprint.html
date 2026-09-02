@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="63rd Street Beach Operational Footprint (NP-02): the methodology, the western-boundary decision, the transfer matrix, and a live map of every verified facility, dune, parking, and access layer against Jackson Park #19.">
+<title>Operational Footprint &amp; the Western Boundary | 63rd Street Bongo Beach Park | Formation | 63rd Street Bongo Beach Park Advisory Council</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root{
+    --navy:#002649; --navy-soft:#245078; --cream:#FAF6EE; --card:#FFFFFF;
+    --culture:#A6331A; --community:#476D3E; --lakefront:#2F81B4; --legacy:#DC8311;
+    --sand:#D4A96E; --line:rgba(0,38,73,0.14); --ink-dim:#5b6b7a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--cream); color:var(--navy); font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6;}
+  a{color:var(--navy); text-decoration:none;} img{max-width:100%; display:block;}
+  .site-header{display:flex; align-items:center; gap:18px; padding:18px 32px; border-bottom:3px solid var(--lakefront); background:#fff; flex-wrap:wrap;}
+  .track-badge{display:inline-block; font-size:0.62rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; padding:2px 9px; border-radius:8px; margin-right:8px; vertical-align:1px;}
+  .track-badge.track-a{background:rgba(47,129,180,0.16); color:var(--lakefront);}
+  .site-header img.logo{width:60px; height:60px; flex-shrink:0;}
+  .site-header .titles{flex:1; min-width:220px;}
+  .eyebrow{font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--community); font-weight:700; margin-bottom:3px;}
+  .wordmark{font-family:Arial,sans-serif; font-weight:900; color:var(--navy); font-size:1.2rem; line-height:1.15;}
+  .wordmark a{color:inherit;}
+  .tagline{font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-dim); margin-top:4px;}
+  .tagline .dot{color:var(--sand); margin:0 5px;}
+  .header-cta{text-align:right; flex-shrink:0;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .btn{display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:9px 16px; border-radius:20px; white-space:nowrap; border:none; cursor:pointer; font-family:inherit;}
+  .btn.primary{background:var(--culture); color:#fff;} .btn.primary:hover{background:#8a2a15;}
+  .btn.secondary{background:transparent; border:1.5px solid var(--navy); color:var(--navy);} .btn.secondary:hover{background:var(--navy); color:#fff;}
+  .navbar{background:var(--navy); padding:0 24px; position:sticky; top:0; z-index:50;}
+  .navbar ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; max-width:1300px; margin:0 auto;}
+  .navbar li a{display:block; padding:13px 15px; color:#dbe6f0; font-size:0.76rem; font-weight:600; letter-spacing:0.02em; text-decoration:none; border-bottom:3px solid transparent;}
+  .navbar li a:hover, .navbar li a.active{color:#fff; border-bottom-color:var(--legacy); background:rgba(255,255,255,0.06);}
+  .breadcrumb{background:#f1ede3; color:#6b7688; font-size:0.72rem; letter-spacing:0.06em; padding:9px 32px; border-bottom:1px solid #e4dfd2;}
+  .breadcrumb a{color:#6b7688;} .breadcrumb b{color:var(--navy);}
+  main{max-width:1300px; margin:0 auto;}
+  .container{max-width:1080px; margin:0 auto; padding:0 32px;}
+  footer{background:var(--navy); color:#c9d6e2; padding:44px 32px 22px; font-size:0.85rem;}
+  .footer-grid{max-width:1300px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:32px;}
+  .footer-grid h4{color:#fff; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 12px;}
+  .footer-grid a{display:block; color:#c9d6e2; padding:4px 0;} .footer-grid a:hover{color:#fff;}
+  .footer-brand p{color:#9fb0bf; font-size:0.82rem; max-width:34ch;}
+  .footer-bottom{max-width:1300px; margin:26px auto 0; border-top:1px solid rgba(255,255,255,0.12); padding-top:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; color:#8497a8; font-size:0.75rem;}
+  section{padding:40px 32px;}
+
+  .page-hero{background:linear-gradient(180deg, rgba(47,129,180,0.55), rgba(0,38,73,0.92)), url('/bbpac/assets/images/pavilion.jpg') center/cover; color:#fff; padding:56px 32px; text-align:center;}
+  .eyebrow2{font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:#f0c98a; margin-bottom:14px;}
+  .page-hero h1{font-family:Arial,sans-serif; font-weight:900; font-size:clamp(1.7rem,4.2vw,2.5rem); margin:0 0 12px;}
+  .page-hero p{max-width:740px; margin:0 auto; font-size:0.96rem; color:#e3edf5;}
+
+  .back-bar{background:#fff; padding:8px 32px; border-bottom:1px solid var(--line);}
+  .back-bar a{font-size:0.78rem; font-weight:700; color:var(--lakefront);}
+
+  h2.section-h{font-family:Arial,sans-serif; font-weight:900; font-size:1.35rem; margin:46px 0 6px; scroll-margin-top:20px;}
+  p.section-sub{color:var(--ink-dim); font-size:0.92rem; margin:0 0 20px; max-width:780px;}
+  .lede{font-size:1.02rem; color:#374a5c;}
+
+  .toc{background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin:24px 0;}
+  .toc div{font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-dim); margin-bottom:8px;}
+  .toc ul{margin:0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:8px 18px;}
+  .toc a{font-size:0.85rem; font-weight:700; color:var(--lakefront);}
+
+  .seq-list{background:#fff; border:1px solid var(--line); border-radius:14px; padding:8px 0; margin:20px 0;}
+  .seq-row{display:grid; grid-template-columns:44px 1fr; gap:16px; padding:16px 22px; border-top:1px solid var(--line);}
+  .seq-row:first-child{border-top:none;}
+  .seq-num{font-family:Arial,sans-serif; font-weight:900; font-size:1.2rem; color:var(--culture); text-align:center;}
+  .seq-row h4{margin:0 0 4px; font-size:0.98rem;}
+  .seq-row p{margin:0; font-size:0.86rem; color:#374a5c;}
+  .seq-row ul{margin:6px 0 0; padding-left:18px; font-size:0.85rem; color:#374a5c;}
+  .seq-row li{margin-bottom:3px;}
+  .seq-row .status{display:inline-block; font-size:0.62rem; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; padding:3px 9px; border-radius:9px; margin-top:8px;}
+  .status.pending{background:rgba(91,107,122,0.14); color:var(--ink-dim);}
+  .status.progress{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+
+  .decision-box{background:#fff; border:2px solid var(--lakefront); border-radius:16px; padding:26px 28px; margin:24px 0;}
+  .decision-box .decision-label{font-size:0.68rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--lakefront); margin-bottom:10px;}
+  .decision-box h3{margin:0 0 12px; font-size:1.15rem;}
+  .decision-box p{margin:0 0 12px; font-size:0.92rem; color:#33404c;}
+  .decision-box p:last-child{margin-bottom:0;}
+  .decision-box .why{background:rgba(47,129,180,0.06); border-left:4px solid var(--lakefront); border-radius:0 10px 10px 0; padding:12px 16px; margin:12px 0; font-size:0.87rem; color:#2c4a5e;}
+  .decision-box .why strong{color:var(--navy);}
+
+  .map-wrap{background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin:24px 0;}
+  #footprintMap{height:560px; border-radius:12px; border:1px solid var(--line);}
+  .map-legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:0.78rem; color:var(--ink-dim);}
+  .map-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .swatch{width:14px; height:14px; border-radius:3px; display:inline-block; flex-shrink:0;}
+  .swatch.line{height:3px; border-radius:0;}
+  .map-note{font-size:0.8rem; color:var(--ink-dim); margin-top:10px;}
+  .map-loading{padding:14px; font-size:0.85rem; color:var(--ink-dim);}
+
+  .matrix-wrap{overflow-x:auto; background:#fff; border:1px solid var(--line); border-radius:12px; margin:20px 0 30px;}
+  table.matrix-table{width:100%; border-collapse:collapse; font-size:0.85rem; min-width:680px;}
+  table.matrix-table th{text-align:left; background:#f1ede3; color:var(--navy); padding:10px 14px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--line);}
+  table.matrix-table td{padding:10px 14px; border-top:1px solid var(--line); vertical-align:top; color:#374a5c;}
+  table.matrix-table tr:first-child td{border-top:none;}
+  table.matrix-table td.asset-name{font-weight:700; color:var(--navy); white-space:nowrap;}
+  .pending-tag{font-size:0.68rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; color:var(--ink-dim); background:rgba(91,107,122,0.14); padding:2px 8px; border-radius:8px;}
+
+  .downloads-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:18px 0;}
+  .dl-card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-size:0.84rem;}
+  .dl-card i{color:var(--lakefront); margin-right:6px;}
+  .dl-card a{font-weight:700; color:var(--navy); text-decoration:underline;}
+  .dl-card span{display:block; color:var(--ink-dim); font-size:0.76rem; margin-top:3px;}
+
+  .disclaimer-box{background:#fff8ec; border:1.5px solid var(--legacy); border-radius:12px; padding:18px 22px; margin:26px 0; font-size:0.86rem; color:#4a3a1e; display:flex; gap:14px; align-items:flex-start;}
+  .disclaimer-box i{color:var(--legacy); font-size:1.05rem; margin-top:2px; flex-shrink:0;}
+  .disclaimer-box strong{color:var(--navy);}
+
+  .cite-list{font-size:0.78rem; color:var(--ink-dim); border-top:1px solid var(--line); padding-top:20px; margin-top:30px;}
+  .cite-list li{margin-bottom:8px;}
+  .cite-list a{color:var(--lakefront); text-decoration:underline;}
+  .cite-list b{color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <img class="logo" src="/bbpac/assets/images/logo.png" alt="63rd Street Bongo Beach Park Advisory Council seal">
+  <div class="titles">
+    <div class="eyebrow">A Ras Tafari Inc. Community Initiative &middot; In Partnership with the Jackson Park Advisory Council</div>
+    <div class="wordmark"><a href="/bbpac/">63RD STREET BONGO BEACH PARK ADVISORY COUNCIL</a></div>
+    <div class="tagline">Culture<span class="dot">&middot;</span>Community<span class="dot">&middot;</span>Lakefront<span class="dot">&middot;</span>Legacy</div>
+  </div>
+  <div class="header-cta">
+    <div class="btn-row">
+      <a class="btn secondary" href="/bbpac/organization/join-a-section.html">Join the Team</a>
+      <a class="btn secondary" href="/bbpac/get-involved/volunteer.html">Volunteer</a>
+      <a class="btn primary" href="/bbpac/donate.html">Donate</a>
+    </div>
+  </div>
+</header>
+
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <ul>
+    <li><a href="/bbpac/">Home</a></li>
+    <li><a href="/bbpac/about/history.html">About &amp; History</a></li>
+    <li><a href="/bbpac/about/leadership.html">Board &amp; Meetings</a></li>
+    <li><a href="/bbpac/get-involved/">Get Involved</a></li>
+    <li><a href="/bbpac/events/">Events</a></li>
+    <li><a href="/bbpac/beach-map.html">Beach &amp; Stewardship</a></li>
+    <li><a href="/bbpac/gallery/">Gallery &amp; Archive</a></li>
+    <li><a class="active" href="/bbpac/organization/">Formation</a></li>
+    <li><a href="/bbpac/organization/new-park/formation-benchmark.html">Formation Process</a></li>
+    <li><a href="/bbpac/organization/new-park/maggie-daley-precedent.html">Maggie Daley Blueprint</a></li>
+    <li><a class="active" href="/bbpac/organization/new-park/operational-footprint.html">Operational Footprint</a></li>
+    <li><a href="/bbpac/donate.html">Donate</a></li>
+    <li><a href="/bbpac/contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="back-bar"><a href="/bbpac/organization/new-park/path-to-formation.html#doc-NP-02">&larr; Back to NP-02 on the Gate 0 Recognition Dossier</a></div>
+<div class="breadcrumb"><span class="track-badge track-a">Track A</span><a href="/bbpac/">Bongo Beach PAC</a> &rsaquo; <a href="/bbpac/organization/">Formation</a> &rsaquo; <a href="/bbpac/organization/new-park/">63rd Street Bongo Beach Park</a> &rsaquo; <a href="/bbpac/organization/new-park/path-to-formation.html">Path to Formation</a> &rsaquo; <b>Operational Footprint</b></div>
+
+<div class="page-hero">
+  <div class="eyebrow2">Track A &middot; NP-02 &middot; GIS Working Record</div>
+  <h1>Operational Footprint &amp; the Western Boundary</h1>
+  <p>Converting the verified facility, dune, parking, and access layers into the existing 63rd Street Beach operational footprint &mdash; and the first real boundary-control decision for the proposed Bongo Beach polygon, laid against Jackson Park #19 on a live map.</p>
+</div>
+
+<main>
+  <section>
+    <div class="container">
+
+      <p class="lede">This page is where <a href="/bbpac/organization/new-park/path-to-formation.html#doc-NP-02">NP-02</a>'s GIS working layers become a decision record. Nothing here is a finished boundary &mdash; the operational-footprint and proposed-boundary polygons stay intentionally undrawn until the sequence below is actually worked through, the same discipline the underlying GIS package itself insists on: <em>&ldquo;No empty layer in this package should be mistaken for an absent feature. It means the geometry has not yet been defensibly established.&rdquo;</em></p>
+
+      <div class="toc">
+        <div>On this page</div>
+        <ul>
+          <li><a href="#sequence">The sequence</a></li>
+          <li><a href="#boundary">The western-boundary decision</a></li>
+          <li><a href="#map">Live map</a></li>
+          <li><a href="#matrix">Transfer matrix</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+          <li><a href="#sources">Sources</a></li>
+        </ul>
+      </div>
+
+      <h2 class="section-h" id="sequence">The sequence</h2>
+      <p class="section-sub">Five steps between the mapped assets sitting in the GIS package today and a boundary CPD could actually be asked to act on.</p>
+
+      <div class="seq-list">
+        <div class="seq-row">
+          <div class="seq-num">1</div>
+          <div>
+            <h4>Verify remaining safety assets</h4>
+            <p>The one category that can't be resolved from open data alone. Still needed, via CPD asset export or field verification:</p>
+            <ul>
+              <li>Exact Life Ring #025 cabinet location</li>
+              <li>Lifeguard chairs and guard stations</li>
+              <li>First and third distance-swimming buoys</li>
+              <li>Swim-zone boundary markers</li>
+              <li>Rescue equipment, AED, and emergency vehicle access</li>
+              <li>Beach wheelchair route and storage point</li>
+            </ul>
+            <span class="status pending">Pending &mdash; blocks a defensible safety-geography boundary</span>
+          </div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-num">2</div>
+          <div>
+            <h4>Set the operational-footprint limits</h4>
+            <p>Determine whether the present beach operation includes the entire Beach House, both dune sections, the entire parking lot, both underpasses or only their lakeward entrances, the boat launch and access route, Lakefront Trail portions, the swimming area extending into Lake Michigan, and the southern buoy/distance-swimming area.</p>
+            <span class="status progress">In progress &mdash; see the western-boundary decision below</span>
+          </div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-num">3</div>
+          <div>
+            <h4>Establish stable boundary controls</h4>
+            <p>The Bongo boundary should follow durable features &mdash; the DuSable Lake Shore Drive right-of-way, Hayes Drive or another western access line, underpass centerlines or portals, parking-lot edges, path centerlines, harbor or pier structures, fixed coordinate lines across the water &mdash; not the moving wet/dry shoreline, which remains evidence, not the permanent boundary.</p>
+            <span class="status progress">In progress &mdash; western line proposed below</span>
+          </div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-num">4</div>
+          <div>
+            <h4>Draw two separate polygons</h4>
+            <p>The existing 63rd Street Beach operational footprint, and the proposed Bongo Beach administrative boundary. These may overlap heavily, but they are not automatically identical &mdash; the operational footprint records what CPD already runs today; the proposed boundary is the ask.</p>
+            <span class="status pending">Pending &mdash; both layers remain empty by design</span>
+          </div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-num">5</div>
+          <div>
+            <h4>Create the transfer matrix, then calculate the result</h4>
+            <p>Once the polygons are settled: Bongo Beach land acreage, water-area acreage (calculated separately), total administrative acreage, boundary perimeter, acres removed from Park #19, remaining Park #19 acreage, a coordinate schedule, and a legal-style metes-and-bounds description.</p>
+            <span class="status pending">Pending &mdash; depends on steps 1&ndash;4</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-h" id="boundary">The western-boundary decision</h2>
+      <p class="section-sub">The one boundary-control choice that can be made now, ahead of the safety-asset verification.</p>
+
+      <div class="decision-box">
+        <div class="decision-label"><i class="fas fa-gavel"></i>&nbsp; Recommended starting position</div>
+        <h3>Use the lakeward edge of DuSable Lake Shore Drive as the principal western boundary</h3>
+        <p>Expanding west only where necessary to capture the Beach House approaches, parking, underpass portals, and operational access. That gives Bongo Beach a coherent lakefront jurisdiction without carving deeply into the interior of Jackson Park.</p>
+        <div class="why"><i class="fas fa-link"></i> <strong>This isn't just administratively tidy &mdash; it's already supported by this project's own research.</strong> Step 10 of the <a href="/bbpac/organization/new-park/formation-benchmark.html#explorer">Formation Process Benchmarking</a> tool states: &ldquo;If the new park boundary simply uses DuSable Lake Shore Drive or Hayes Drive as a line and does not alter transportation facilities, there may be no IDOT/FHWA approval. If the proposal changes roadway ROW, intersections, lanes, underpasses, access, signals or federally aided facilities, transportation review becomes a separate track.&rdquo; Choosing this line isn't only about drawing a clean map &mdash; it's the choice most likely to keep Bongo Beach out of the federal transportation-review track (Steps 8&ndash;15) entirely.</div>
+        <p><strong>One refinement worth deciding now, not later: the underpasses.</strong> Recommend including only the <em>lakeward portals</em> of both pedestrian underpasses in the operational footprint and proposed boundary, not the full tunnel structures. A pedestrian underpass running beneath a state route like DuSable Lake Shore Drive is very likely a CDOT/IDOT-maintained structure. Pulling the entire tunnel into Bongo Beach's boundary risks pulling CDOT/IDOT jurisdiction into what should stay a purely CPD administrative action &mdash; the same reasoning that favors the DuSable Drive line itself, applied one level deeper. This is a proposed working position, not yet confirmed with CDOT/IDOT &mdash; flagged here as a decision to make deliberately rather than default into.</p>
+      </div>
+
+      <h2 class="section-h" id="map">Live map</h2>
+      <p class="section-sub">Every verified layer from the GIS package, plotted together. Toggle layers on the right; each marker and shape is styled by how solid its evidence is &mdash; solid fill and full opacity for CPD-confirmed facilities, dashed outlines and lighter fill for candidate or generalized positions. Use this to test the DuSable Drive line and the underpass-portal call against what's actually on the ground before either gets drawn as a real polygon.</p>
+
+      <div class="map-wrap">
+        <div id="footprintMap"><div class="map-loading">Loading map&hellip;</div></div>
+        <div class="map-legend">
+          <span><span class="swatch" style="background:rgba(0,38,73,0.18); border:2px solid var(--navy);"></span>Jackson Park #19 (official CPD polygon)</span>
+          <span><span class="swatch line" style="background:var(--lakefront);"></span>ISGS shorelines 2021&ndash;2024 (evidence, not a boundary)</span>
+          <span><span class="swatch" style="background:rgba(220,131,17,0.55); border:2px solid var(--legacy);"></span>Confirmed facilities (Beach House, dunes, parking, beach)</span>
+          <span><span class="swatch line" style="background:var(--community);"></span>Boat launch / paths / underpasses</span>
+          <span><span class="swatch" style="background:rgba(166,51,26,0.3); border:2px dashed var(--culture);"></span>Candidate / generalized safety positions</span>
+        </div>
+        <p class="map-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Layer data: Chicago Park District / City of Chicago Data Portal, Illinois State Geological Survey, and OpenStreetMap &mdash; see Sources below.</p>
+      </div>
+
+      <h2 class="section-h" id="matrix">Transfer matrix</h2>
+      <p class="section-sub">Every value below is genuinely pending &mdash; this table exists to make that explicit and trackable, not to imply a decision that hasn't been made.</p>
+
+      <div class="matrix-wrap">
+        <table class="matrix-table">
+          <thead><tr><th>Asset</th><th>Inside proposed boundary?</th><th>Transfer to Bongo?</th><th>Shared access needed?</th></tr></thead>
+          <tbody>
+            <tr><td class="asset-name">Beach House</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Possible</td></tr>
+            <tr><td class="asset-name">Dunes</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Environmental coordination</td></tr>
+            <tr><td class="asset-name">Parking lot</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Likely</td></tr>
+            <tr><td class="asset-name">Underpasses</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Yes</td></tr>
+            <tr><td class="asset-name">Boat launch</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Possible</td></tr>
+            <tr><td class="asset-name">Swimming area</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Aquatics coordination</td></tr>
+            <tr><td class="asset-name">Life rings</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Safety responsibility</td></tr>
+            <tr><td class="asset-name">Paths / Lakefront Trail</td><td><span class="pending-tag">Pending</span></td><td><span class="pending-tag">Pending</span></td><td>Likely shared</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-h" id="downloads">Downloads</h2>
+      <p class="section-sub">The complete GIS starter package, version 1, and its exhibits.</p>
+      <div class="downloads-grid">
+        <div class="dl-card"><i class="fas fa-file-zipper"></i><a href="/bbpac/assets/gis/Bongo_Beach_GIS_Starter_Package.zip">Complete GIS starter package</a><span>GeoPackage, GeoJSON, KML, shapefile exports, exhibits, source register (v1)</span></div>
+        <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_A_Existing_Jackson_Park_19.pdf">Exhibit A</a><span>Existing Jackson Park #19 boundary</span></div>
+        <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_B_ISGS_63rd_Shorelines.pdf">Exhibit B</a><span>ISGS 63rd Street Beach surveyed shorelines, 2021&ndash;2024</span></div>
+        <div class="dl-card"><i class="fas fa-file-pdf"></i><a href="/bbpac/assets/gis/Exhibit_E_63rd_Beach_Facilities_Access_Safety.pdf">Exhibit E</a><span>Facilities, access, and safety geography</span></div>
+        <div class="dl-card"><i class="fas fa-file-csv"></i><a href="/bbpac/assets/gis/63rd_Beach_asset_inventory.csv">Asset inventory (CSV)</a><span>Every mapped feature with authority, confidence, and field-verification flag</span></div>
+      </div>
+      <p style="font-size:0.85rem; color:var(--ink-dim);">Note on naming: the working GIS package's own notes refer to the operational-footprint layer informally as &ldquo;Exhibit B&rdquo; in more recent working notes &mdash; that's a different document from the original, still-current <b>Exhibit B (ISGS Shorelines)</b> linked above. This page uses &ldquo;operational footprint&rdquo; throughout to avoid the collision; a future formal exhibit lettering pass should resolve it before anything goes to CPD.</p>
+
+      <div class="disclaimer-box">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div><strong>Not a legal opinion, and not a finished boundary.</strong> The western-boundary position above is a recommended starting point for the committee's own decision-making, grounded in this project's existing research &mdash; it is not a surveyed line, not confirmed with CPD, CDOT, or IDOT, and not yet reflected in any drawn polygon. The operational-footprint and proposed-boundary layers remain empty in the underlying GIS package until steps 1&ndash;4 above are actually completed.</div>
+      </div>
+
+      <h2 class="section-h" id="sources">Sources</h2>
+      <ul class="cite-list">
+        <li><b>G1</b> &mdash; Chicago Park District property boundaries. City of Chicago Data Portal / Chicago Park District. Published vintage 2016-11-04 (portal metadata). <a href="https://www.chicagoparkdistrict.com/parks-facilities/jackson-andrew-park" target="_blank" rel="noopener">Source link</a></li>
+        <li><b>G2</b> &mdash; 63rd Street Beach shoreline surveys. Illinois State Geological Survey / IDNR Coastal Management Program. Wet/dry lines digitized at 1:250 from UAS drone imagery, 2021&ndash;2024.</li>
+        <li><b>G3</b> &mdash; 63rd Street Beach facility page. Chicago Park District. Beach House, parking, boat launch, ADA beach walk, 64th Street distance-swimming arrangement. <a href="https://www.chicagoparkdistrict.com/parks-facilities/63rd-street-beach" target="_blank" rel="noopener">Source link</a></li>
+        <li><b>G4</b> &mdash; 63rd Street Beach Dunes. Chicago Park District. ~12 acres in two sections, paved paths toward the pier and pedestrian underpass. <a href="https://www.chicagoparkdistrict.com/parks-facilities/jackson-park-63rd-st-beach-dunes" target="_blank" rel="noopener">Source link</a></li>
+        <li><b>G5</b> &mdash; Beaches / Life Ring Locations. Chicago Park District. Life Ring #025, 59th&ndash;63rd Street Beach segment; no published cabinet coordinate. <a href="https://www.chicagoparkdistrict.com/facilities/beaches" target="_blank" rel="noopener">Source link</a></li>
+        <li><b>G6</b> &mdash; OpenStreetMap contributors. Building, natural-area, path, and infrastructure geometry for the mapped facility layers, with Chicago building ID, GNIS, and Wikidata cross-references where present. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Source link</a></li>
+        <li><b>G7</b> &mdash; Formation Process Benchmarking, Step 10 (Transportation: distinguish CDOT, IDOT and FHWA). This project's own research, cited above for the DuSable Lake Shore Drive boundary reasoning. <a href="/bbpac/organization/new-park/formation-benchmark.html#explorer">Source link</a></li>
+      </ul>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="color:#fff; font-weight:900; font-family:Arial,sans-serif; letter-spacing:0.04em; margin-bottom:8px;">BONGO BEACH PAC</div>
+      <p>A community initiative of Ras Tafari Inc., a 501(c)(3) nonprofit, in partnership with the Jackson Park Advisory Council. Honoring our past, building our future at 63rd Street Beach.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <a href="/bbpac/about/history.html">History</a>
+      <a href="/bbpac/about/leadership.html">Board &amp; Meetings</a>
+      <a href="/bbpac/events/">Events</a>
+      <a href="/bbpac/gallery/">Gallery &amp; Archive</a>
+      <a href="/bbpac/organization/">Formation</a>
+    </div>
+    <div>
+      <h4>Get Involved</h4>
+      <a href="/bbpac/get-involved/volunteer.html">Volunteer</a>
+      <a href="/bbpac/get-involved/membership.html">Membership</a>
+      <a href="/bbpac/get-involved/members.html">Member Directory</a>
+      <a href="/bbpac/get-involved/sponsors.html">Sponsors</a>
+      <a href="/bbpac/get-involved/vendors.html">Vendors</a>
+    </div>
+    <div>
+      <h4>Lakefront</h4>
+      <a href="/bbpac/beach-map.html">Beach Map</a>
+      <a href="/bbpac/stewardship.html">Stewardship</a>
+      <a href="/bbpac/donate.html">Donate</a>
+      <a href="/bbpac/contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; <span id="bbpac-year"></span> Ras Tafari Inc. &middot; 501(c)(3) &middot; A program of <a href="/" style="display:inline; color:#c9d6e2;">SelassieFest</a></span>
+    <span>63rd Street Beach &middot; Jackson Park &middot; Chicago, IL</span>
+  </div>
+</footer>
+<script>document.getElementById('bbpac-year').textContent = new Date().getFullYear();</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function() {
+  var GIS_BASE = '/bbpac/assets/gis/';
+
+  var map = L.map('footprintMap', { scrollWheelZoom: false });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  map.setView([41.7795, -87.5735], 16);
+
+  var overlays = {};
+  var confirmedStyle = { color: '#DC8311', weight: 2, fillColor: '#DC8311', fillOpacity: 0.35 };
+  var lineStyleGreen = { color: '#476D3E', weight: 3 };
+  var lineStyleBlue = { color: '#2F81B4', weight: 2, dashArray: '4,4' };
+  var candidateStyle = { color: '#A6331A', weight: 2, dashArray: '5,5', fillColor: '#A6331A', fillOpacity: 0.15 };
+  var parkStyle = { color: '#002649', weight: 2, fillColor: '#002649', fillOpacity: 0.12 };
+
+  function popupFromProps(feature, layer) {
+    var p = feature.properties || {};
+    var name = p.asset_name || p.name || p.label || 'Feature';
+    var lines = ['<strong>' + name + '</strong>'];
+    if (p.confidence) lines.push('Confidence: ' + p.confidence);
+    if (p.spatial_precision) lines.push('Precision: ' + p.spatial_precision);
+    if (p.authority) lines.push(p.authority);
+    if (p.acres) lines.push(p.acres + ' acres (CPD published)');
+    layer.bindPopup(lines.join('<br>'));
+  }
+
+  function loadLayer(file, label, style, options) {
+    options = options || {};
+    return fetch(GIS_BASE + file)
+      .then(function(r) { return r.json(); })
+      .then(function(gj) {
+        var layer = L.geoJSON(gj, {
+          style: function() { return style; },
+          pointToLayer: function(feature, latlng) {
+            return L.circleMarker(latlng, Object.assign({ radius: 7 }, style));
+          },
+          onEachFeature: popupFromProps
+        });
+        overlays[label] = layer;
+        if (options.defaultOn !== false) layer.addTo(map);
+      })
+      .catch(function(err) { console.warn('Could not load', file, err); });
+  }
+
+  Promise.all([
+    loadLayer('jackson_park_19.geojson', 'Jackson Park #19 (official boundary)', parkStyle),
+    loadLayer('isgs_shorelines_2021_2024.geojson', 'ISGS shorelines 2021–2024', lineStyleBlue, { defaultOn: false }),
+    loadLayer('asset_beach_house.geojson', 'Beach House / Pavilion', confirmedStyle),
+    loadLayer('asset_dunes.geojson', 'Dunes (north + south)', confirmedStyle),
+    loadLayer('asset_parking.geojson', 'Parking lot', confirmedStyle),
+    loadLayer('asset_beach.geojson', 'Beach / sand footprint', confirmedStyle),
+    loadLayer('asset_boat_launch.geojson', 'Boat launch', lineStyleGreen),
+    loadLayer('asset_paths.geojson', 'Paths / Lakefront Trail', lineStyleGreen, { defaultOn: false }),
+    loadLayer('asset_underpasses.geojson', 'Underpasses (full tunnel geometry)', lineStyleGreen),
+    loadLayer('asset_safety_buoys.geojson', 'Candidate 64th St. buoy positions', candidateStyle),
+    loadLayer('asset_safety_references.geojson', 'Safety references (lifeguard office, life ring, swim area)', candidateStyle)
+  ]).then(function() {
+    L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+    try {
+      var group = new L.featureGroup(Object.values(overlays));
+      map.fitBounds(group.getBounds(), { padding: [24, 24] });
+    } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
