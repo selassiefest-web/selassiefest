@@ -1,0 +1,3 @@
+# CLAUDE.md
+
+`ventures/` is now just `ventures/history/`, a 99-file SelassieFest history research project (oral history interviews/transcripts with founders, elders, musicians, and vendors; a 1981–1996 timeline; a research bibliography; a book draft; a museum exhibit concept; a podcast series outline; an artifacts catalog with poster images). This is primary-source material feeding `the-legacy/` (the partner-facing history pitch deck) and Heritage Village's history content. The `restaurant/` and `6227-prairie/` business-venture subfolders that used to live here were removed as part of the 2027 rebuild (archived under the `festival-2026` git tag).
