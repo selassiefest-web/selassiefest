@@ -454,7 +454,7 @@
         var layer = L.geoJSON(gj, {
           style: function() { return style; },
           pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng, Object.assign({ radius: options.radius || 7 }, style));
+            return L.circleMarker(latlng, Object.assign({ radius: options.radius || 5 }, style));
           },
           onEachFeature: popupFromProps
         });
@@ -472,11 +472,11 @@
     loadLayer('isgs_shorelines_2021_2024.geojson', 'ISGS shorelines 2021–2024', lineStyleBlue, { defaultOn: false }),
     loadLayer('asset_beach_house.geojson', 'Beach House / Pavilion', confirmedStyle),
     loadLayer('beach_house_subspaces.geojson', 'Beach House subspaces (courtyards, pavilions, balconies)', subspaceStyle),
-    loadLayer('beach_house_entries.geojson', 'Beach House entrances', entryStyle),
-    loadLayer('concessions.geojson', 'Concessions (Reggies On The Beach)', concessionStyle),
-    loadLayer('building_amenities.geojson', 'Building amenities (restrooms, showers, lifeguard office, meeting rooms)', amenityStyle),
-    loadLayer('access_controls.geojson', 'Gates, bollards and access controls', accessControlStyle),
-    loadLayer('asset_public_art.geojson', 'Public art (A Remembrance, Next Wave, Fishing Eagle)', publicArtStyle),
+    loadLayer('beach_house_entries.geojson', 'Beach House entrances', entryStyle, { radius: 4 }),
+    loadLayer('concessions.geojson', 'Concessions (Reggies On The Beach)', concessionStyle, { radius: 4 }),
+    loadLayer('building_amenities.geojson', 'Building amenities (restrooms, showers, lifeguard office, meeting rooms)', amenityStyle, { radius: 4 }),
+    loadLayer('access_controls.geojson', 'Gates, bollards and access controls', accessControlStyle, { radius: 4 }),
+    loadLayer('asset_public_art.geojson', 'Public art (A Remembrance, Next Wave, Fishing Eagle)', publicArtStyle, { radius: 4 }),
     loadLayer('asset_harbor_facilities.geojson', 'Harbor facilities (Jackson Harbor Station)', harborFacilityStyle),
     loadLayer('asset_dunes.geojson', 'Dunes (north + south)', confirmedStyle),
     loadLayer('asset_parking.geojson', 'Parking lot', confirmedStyle),
@@ -487,7 +487,7 @@
     loadLayer('asset_safety_buoys.geojson', 'Candidate 64th St. buoy positions', candidateStyle),
     loadLayer('asset_safety_references.geojson', 'Safety references (lifeguard office, life ring, swim area)', candidateStyle),
     loadLayer('bongo_beach_proposed_candidate1_draft.geojson', 'Proposed boundary – Candidate 1 v6 (DRAFT, unconfirmed)', draftBoundaryStyle, { defaultOn: true }),
-    loadLayer('boundary_control_points.geojson', 'Boundary control points N-01 / S-01 (committee-selected, Google Maps pin)', controlPointStyle, { defaultOn: true, radius: 10 })
+    loadLayer('boundary_control_points.geojson', 'Boundary control points N-01 / S-01 (committee-selected, Google Maps pin)', controlPointStyle, { defaultOn: true, radius: 7 })
   ]).then(function() {
     // On narrow screens the expanded legend is wide enough to swallow the whole
     // map, so start it collapsed there (still position: topright) and expand it
