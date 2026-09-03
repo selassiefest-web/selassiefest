@@ -273,7 +273,7 @@
       </div>
 
       <h2 class="section-h" id="map">Live map</h2>
-      <p class="section-sub">Every verified layer from the GIS package, plotted together. Toggle layers on the right; each marker and shape is styled by how solid its evidence is &mdash; solid fill and full opacity for CPD-confirmed facilities, dashed outlines and lighter fill for candidate or generalized positions. Use this to test the DuSable Drive line and the underpass-portal call against what's actually on the ground before either gets drawn as a real polygon.</p>
+      <p class="section-sub">Every verified layer from the GIS package, plotted together. Toggle layers on the right, including a Street map / Satellite base-map switch; each marker and shape is styled by how solid its evidence is &mdash; solid fill and full opacity for CPD-confirmed facilities, dashed outlines and lighter fill for candidate or generalized positions. Use this to test the DuSable Drive line and the underpass-portal call against what's actually on the ground before either gets drawn as a real polygon.</p>
 
       <div class="map-wrap">
         <div id="footprintMap"><div class="map-loading">Loading map&hellip;</div></div>
@@ -293,7 +293,7 @@
           <span><span class="swatch" style="background:rgba(142,45,226,0.12); border:2px dashed #8E2DE2;"></span>Proposed boundary &ndash; Candidate 1 v6 (draft, unconfirmed; extended to N-01/S-01)</span>
           <span><span class="swatch" style="background:#8E2DE2; border:2px solid #4C1D95;"></span>Boundary control points N-01 / S-01 (committee-selected, pinned on Google Maps)</span>
         </div>
-        <p class="map-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Layer data: Chicago Park District / City of Chicago Data Portal, Illinois State Geological Survey, and OpenStreetMap &mdash; see Sources below.</p>
+        <p class="map-note">Base map &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (Street map) and Esri, Maxar, Earthstar Geographics (Satellite, toggle in the layer control). Layer data: Chicago Park District / City of Chicago Data Portal, Illinois State Geological Survey, and OpenStreetMap &mdash; see Sources below.</p>
       </div>
 
       <h2 class="section-h" id="matrix">Transfer matrix</h2>
@@ -404,10 +404,15 @@
   var GIS_BASE = '/bbpac/assets/gis/';
 
   var map = L.map('footprintMap', { scrollWheelZoom: false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  var streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 20,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
+  var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 20,
+    attribution: 'Tiles &copy; Esri &mdash; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+  });
+  var baseLayers = { 'Street map': streetLayer, 'Satellite': satelliteLayer };
 
   map.setView([41.7795, -87.5735], 16);
 
@@ -488,7 +493,7 @@
     // map, so start it collapsed there (still position: topright) and expand it
     // by default only where the map has room to show both.
     var narrow = map.getSize().x < 560;
-    L.control.layers(null, overlays, { collapsed: narrow, position: 'topright' }).addTo(map);
+    L.control.layers(baseLayers, overlays, { collapsed: narrow, position: 'topright' }).addTo(map);
     try {
       // Fit to the layers that are actually on by default. The hidden-by-default
       // ones (ISGS shorelines, Lakefront Trail) run well beyond the park and were
