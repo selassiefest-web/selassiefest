@@ -258,6 +258,7 @@
         <div class="decision-label" style="color:var(--legacy);"><i class="fas fa-water"></i>&nbsp; Resolved &mdash; the harbor-side stretch, with one caveat</div>
         <h3>The old placeholder is gone; the south stretch is now four real cross-sections, not a continuous trace</h3>
         <p>Jackson Park #19's own boundary in this stretch wraps around the entire Inner and Outer Harbor complex, including the marina docks west of S. Coast Guard Drive &mdash; more than a straightforward reading of Bongo Beach's footprint, so it wasn't used here. Instead both sides of the polygon between the old v4 tie and S-01 now run through four committee-pinned cross-sections (road side and harbor side at each). That's real, verifiable geometry at those four points, but the line connecting them is still a straight interpolation between cross-sections, not a continuous shoreline trace &mdash; more in-between pins would sharpen it further if the committee wants that level of precision before this goes to CPD.</p>
+        <p><strong>Committee decision (2026-09-03):</strong> the corridor stays road-to-waterline &mdash; a narrow sliver from S. Coast Guard Drive to the water's edge, not extended out to capture the Yacht Club or Docks A&ndash;D. An independent OpenStreetMap cross-check (G16) confirms the current v6 polygon already does exactly that: those harbor facilities test outside the boundary, as intended.</p>
       </div>
 
       <h3 style="font-family:Arial,sans-serif; font-weight:900; font-size:1.1rem; margin:30px 0 4px;">The western-boundary decision</h3>
@@ -287,7 +288,8 @@
           <span><span class="swatch" style="background:#BE185D;"></span>Concessions</span>
           <span><span class="swatch" style="background:#475569;"></span>Building amenities</span>
           <span><span class="swatch" style="background:#57534E;"></span>Gates / bollards / access controls</span>
-          <span><span class="swatch" style="background:#C2410C;"></span>Public art (A Remembrance, Next Wave)</span>
+          <span><span class="swatch" style="background:#C2410C;"></span>Public art (A Remembrance, Next Wave, Fishing Eagle)</span>
+          <span><span class="swatch" style="background:#0284C7;"></span>Harbor facilities (Jackson Harbor Station)</span>
           <span><span class="swatch" style="background:rgba(142,45,226,0.12); border:2px dashed #8E2DE2;"></span>Proposed boundary &ndash; Candidate 1 v6 (draft, unconfirmed; extended to N-01/S-01)</span>
           <span><span class="swatch" style="background:#8E2DE2; border:2px solid #4C1D95;"></span>Boundary control points N-01 / S-01 (committee-selected, pinned on Google Maps)</span>
         </div>
@@ -351,7 +353,8 @@
         <li><b>G12</b> &mdash; Pavilion interior asset register (CSV). Project working file, cross-referencing CPD's official Beach House layout (G10), the 63rd Street Beach House Special Event Venue page (G9), and OpenStreetMap points (G6) into the 20 individually mapped Beach House subspace, entrance, concession, amenity, and access-control features. <a href="/bbpac/assets/gis/pavilion_interior_asset_register.csv" target="_blank" rel="noopener">Source link</a></li>
         <li><b>G13</b> &mdash; Boundary control points N-01 and S-01. Committee-selected, pinned directly on Google Maps satellite imagery, 2026-09-03: N-01 at the 59th Street Harbor pier (41.788158, -87.577448); S-01 at the S. Coast Guard Drive bridge/neck by Jackson Park Outer Harbor (41.776037, -87.574900). Pin-drop coordinates, not yet field-verified or confirmed with CPD.</li>
         <li><b>G14</b> &mdash; South-stretch cross-section pins. Committee-selected, pinned directly on Google Maps, 2026-09-03, at four cross-sections between the old v4 tie point and S-01, each with a road-side (S. Coast Guard Drive) and a harbor-side point: (41.776806,-87.575417)/(41.776861,-87.575116); (41.778528,-87.575556)/Fuel Dock at Jackson Park Outer Harbour (41.778403,-87.575117); (41.779611,-87.574806)/(41.779528,-87.574139); plus confirming pins at S-01 itself (41.776011,-87.575073)/(41.776013,-87.574688). Pin-drop coordinates, not yet field-verified or confirmed with CPD; the line between cross-sections is a straight interpolation, not a continuous trace.</li>
-        <li><b>G15</b> &mdash; Public art. Google Maps listings, pinned 2026-09-03: "A Remembrance" (by Carolyn Ottmers), a Chicago Park District sculpture near 6259 S. DuSable Lake Shore Dr. (41.780865, -87.574089); "Next Wave," near the 63rd Street Beach House (41.7815974, -87.5738425). Informational only, not part of the boundary or transfer-matrix questions.</li>
+        <li><b>G15</b> &mdash; Public art. Google Maps listings, pinned 2026-09-03: "A Remembrance" (by Carolyn Ottmers), a Chicago Park District sculpture near 6259 S. DuSable Lake Shore Dr. (41.780865, -87.574089); "Next Wave," near the 63rd Street Beach House (41.7815974, -87.5738425); "Fishing Eagle" (41.7795912, -87.5747614), from G16. Informational only, not part of the boundary or transfer-matrix questions.</li>
+        <li><b>G16</b> &mdash; OpenStreetMap Overpass API query, run 2026-09-03, for all named features in the bounding box around the proposed boundary. Cross-checked against the Candidate 1 v6 polygon: confirmed inside are the Fishing Eagle sculpture and Jackson Harbor Station (boathouse, not previously in this package) plus the already-mapped Beach House/Pavilion, parking, beach, and Reggies On The Beach (agreement with existing layers). Confirmed outside the v6 boundary: the Flock sculpture, Docks A&ndash;D, and Jackson Park Yacht Club &mdash; consistent with the committee's road-to-waterline scope decision (see below).</li>
       </ul>
 
     </div>
@@ -422,6 +425,7 @@
   var amenityStyle = { color: '#475569', weight: 2, fillColor: '#475569', fillOpacity: 0.9 };
   var accessControlStyle = { color: '#57534E', weight: 2, fillColor: '#57534E', fillOpacity: 0.9 };
   var publicArtStyle = { color: '#7C2D12', weight: 2, fillColor: '#C2410C', fillOpacity: 0.9 };
+  var harborFacilityStyle = { color: '#0C4A6E', weight: 2, fillColor: '#0284C7', fillOpacity: 0.9 };
 
   function popupFromProps(feature, layer) {
     var p = feature.properties || {};
@@ -467,7 +471,8 @@
     loadLayer('concessions.geojson', 'Concessions (Reggies On The Beach)', concessionStyle),
     loadLayer('building_amenities.geojson', 'Building amenities (restrooms, showers, lifeguard office, meeting rooms)', amenityStyle),
     loadLayer('access_controls.geojson', 'Gates, bollards and access controls', accessControlStyle),
-    loadLayer('asset_public_art.geojson', 'Public art (A Remembrance, Next Wave)', publicArtStyle),
+    loadLayer('asset_public_art.geojson', 'Public art (A Remembrance, Next Wave, Fishing Eagle)', publicArtStyle),
+    loadLayer('asset_harbor_facilities.geojson', 'Harbor facilities (Jackson Harbor Station)', harborFacilityStyle),
     loadLayer('asset_dunes.geojson', 'Dunes (north + south)', confirmedStyle),
     loadLayer('asset_parking.geojson', 'Parking lot', confirmedStyle),
     loadLayer('asset_beach.geojson', 'Beach / sand footprint', confirmedStyle),
