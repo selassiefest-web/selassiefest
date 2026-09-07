@@ -6290,3 +6290,136 @@ values
   ('2026_total_cost', '2026 total production cost', '$11,325'),
   ('2027_target_attendance', '2027 target attendance', '500 (Event Level 2)')
 on conflict (field_key) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Deadline reminders (2-week / 1-week email nudges to selassiefest@gmail.com)
+-- ─────────────────────────────────────────────────────────────────────────
+-- A calendar of real, dated deadlines across every Ras Tafari Inc program
+-- (SelassieFest permitting/compliance, DCASE grants, TRC Events park
+-- activations) with automatic email reminders, since nothing else in this
+-- codebase currently forces a filing deadline back into view before it's
+-- too late -- same "come back to this" motivation as
+-- bbpac_formation_stale_items_for_digest above, applied to hard dates
+-- instead of stale work items.
+--
+-- confirmed = false marks a date that's an estimate (e.g. inferred from a
+-- prior year's cycle, not yet confirmed for the current one) -- the digest
+-- email flags these distinctly rather than presenting them with the same
+-- confidence as a verified date.
+create table if not exists deadlines (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  due_date date not null,
+  category text not null
+    check (category in ('meeting', 'filing_deadline', 'compliance_deadline', 'permit_window', 'event', 'estimated_window')),
+  source_url text,
+  confirmed boolean not null default true,
+  created_at timestamptz not null default now(),
+  unique (title, due_date)
+);
+
+alter table deadlines enable row level security;
+
+-- Same trust model as proposal_2027_sections/grants_org_profile: an
+-- internal working calendar, not a public form, with no login system on
+-- the static site to gate behind.
+create policy "public full access" on deadlines for all to anon, authenticated using (true) with check (true);
+grant select, insert, update, delete on deadlines to anon, authenticated;
+
+-- Returns every deadline exactly 14 or 7 days from today -- run daily, this
+-- naturally fires each reminder exactly once per deadline (at 14 days out,
+-- then again at 7) with no separate "already sent" tracking needed, so long
+-- as the cron job actually runs every day. Uses the database's current_date
+-- (UTC on Supabase) rather than a Chicago-local date -- acceptable
+-- day-level imprecision for a reminder that's about a date, not a time,
+-- same simplicity tradeoff as bbpac_formation_stale_items_for_digest's use
+-- of now() above.
+create or replace function public.deadlines_due_for_reminder()
+returns table (
+  id uuid, title text, description text, due_date date, category text,
+  source_url text, confirmed boolean, lead_days int
+)
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select d.id, d.title, d.description, d.due_date, d.category, d.source_url, d.confirmed,
+    (d.due_date - current_date)::int as lead_days
+  from public.deadlines d
+  where (d.due_date - current_date) in (14, 7)
+  order by d.due_date;
+$$;
+
+revoke all on function public.deadlines_due_for_reminder() from public, anon, authenticated;
+grant execute on function public.deadlines_due_for_reminder() to service_role;
+
+-- The pg_cron schedule that drives this daily (applied directly against the
+-- live project, same as bbpac-nudge-stale-items above -- it embeds the
+-- send-deadline-reminders Edge Function's URL and its
+-- DEADLINE_REMINDER_SECRET, neither of which belongs in git). If it ever
+-- needs to be recreated: `select cron.schedule('send-deadline-reminders',
+-- '0 13 * * *', $$ select net.http_post(url := '<send-deadline-reminders
+-- URL>', headers := jsonb_build_object('Content-Type', 'application/json',
+-- 'x-webhook-secret', '<DEADLINE_REMINDER_SECRET>'), body := '{}'::jsonb)
+-- $$);` -- runs daily at 13:00 UTC (~7-8am Chicago, depending on DST).
+
+-- Seed with every real, dated deadline known as of this writing. Sourced
+-- from the SelassieFest 2027 permit brief/proposal and the Jay RebL
+-- International Reggae Day proposal (see source_url on each row) --
+-- DCASE's 2027 CityArts/NAP guidelines and NOITP's exact next-cycle dates
+-- are NOT yet published, so no invented dates for those are seeded here;
+-- add them once real dates exist. on conflict do nothing keeps this
+-- re-runnable without duplicating rows.
+insert into deadlines (title, description, due_date, category, source_url, confirmed)
+values
+  (
+    'Ward 5 meeting with Ald. Yancy',
+    'Meeting to present the SelassieFest 2027 permit brief.',
+    '2026-09-14', 'meeting',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', true
+  ),
+  (
+    'DCASE Special Event Permit — earliest submission date opens',
+    '180 days before the July 24, 2027 event date — the first day the Special Event Permit application can be submitted, per DCASE''s Special Event Permit Tutorial.',
+    '2027-01-25', 'permit_window',
+    'https://selassiefest.com/organization/selassiefest-2027-proposal.html', true
+  ),
+  (
+    'Liquor license filing deadline',
+    'At least 20 calendar days before the July 24, 2027 event, per DCASE''s Special Event Permit Tutorial.',
+    '2027-07-04', 'filing_deadline',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', true
+  ),
+  (
+    'Illinois not-for-profit annual report due',
+    'Required to keep Ras Tafari Inc in good standing — the liquor license depends on that standing. Plan is to file in April 2027, well ahead of this hard deadline.',
+    '2027-06-01', 'filing_deadline',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', true
+  ),
+  (
+    'Certificate of good standing expires',
+    'The June 2026 certificate stops authenticating on this date — pull a fresh certificate before this for the liquor license application, which needs one dated close to submission.',
+    '2027-06-15', 'compliance_deadline',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', true
+  ),
+  (
+    'SelassieFest 2027 — event day',
+    'Jackson Park, Hayes Drive section, Chicago. 500 attendance (Event Level 2).',
+    '2027-07-24', 'event',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', true
+  ),
+  (
+    'Night Out in the Parks — call for proposals opens (estimated)',
+    'Based on the prior cycle''s pattern (early November); not independently confirmed for this cycle — verify against Chicago Park District''s current posting before relying on this date.',
+    '2026-11-01', 'estimated_window',
+    'https://trcevent.com/jay-rebl/reggae-day-proposal', false
+  ),
+  (
+    'Night Out in the Parks — call for proposals closes (estimated)',
+    'Based on the prior cycle''s pattern (early December); not independently confirmed for this cycle — verify against Chicago Park District''s current posting before relying on this date.',
+    '2026-12-01', 'estimated_window',
+    'https://trcevent.com/jay-rebl/reggae-day-proposal', false
+  )
+on conflict (title, due_date) do nothing;
