@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chicago Municipal War Room | Ras Tafari Inc</title>
+<meta name="description" content="Ras Tafari Inc's live tracker for every Chicago Park District and DCASE grant, permit, partnership, and talent-booking pathway for the 2027-2028 seasons.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF3EF; --surface:#FFFFFF; --surface-2:#F3F7F3; --ink:#182420; --ink-soft:#48564F; --ink-faint:#7A8A82;
+    --line:#D7E0DA; --accent:#9C6A28; --accent-ink:#6B4A1E; --forest:#1F5C4E; --forest-deep:#123D33;
+    --flag-bg:#FBF0DE; --flag-line:#E4C68C; --flag-ink:#6B4A1E;
+    --risk-bg:#FDECEA; --risk-line:#F1B8AF; --risk-ink:#8A2E20;
+    --good-bg:#E7F2EA; --good-line:#BEDCC7; --good-ink:#1F5C3E;
+    --info-bg:#E9F1FB; --info-line:#BBD3F0; --info-ink:#2A5C99;
+    --shadow: 0 1px 2px rgba(18,40,32,.06), 0 8px 24px -12px rgba(18,40,32,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+      --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+      --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+      --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+      --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+      --info-bg:#152233; --info-line:#2C4A6E; --info-ink:#9CC4EE;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+    --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+    --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+    --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+    --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+    --info-bg:#152233; --info-line:#2C4A6E; --info-ink:#9CC4EE;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size:15px; line-height:1.6;}
+  h1,h2,h3{font-family:'Fraunces', Georgia, serif; font-weight:600; color:var(--ink); margin:0;}
+  a{color:var(--forest-deep);}
+  :root[data-theme="dark"] a{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) a{color:var(--forest);}}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  [hidden]{display:none !important;}
+
+  .layout{display:grid; grid-template-columns:264px minmax(0,1fr); min-height:100vh;}
+  .sidebar{position:sticky; top:0; align-self:start; height:100vh; border-right:1px solid var(--line); background:var(--surface-2); padding:22px 16px 22px 22px; overflow-y:auto;}
+  .brand{display:flex; flex-direction:column; gap:2px; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--line);}
+  .brand-mark{font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem;}
+  .brand-sub{font-size:.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em;}
+  nav.toc{display:flex; flex-direction:column; gap:1px;}
+  .toc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); padding:10px 10px 6px;}
+  .navlink{display:flex; align-items:baseline; gap:8px; padding:6px 10px; border-radius:7px; font-size:.86rem; color:var(--ink-soft); text-decoration:none;}
+  .navlink:hover{background:var(--surface); color:var(--ink);}
+  .navlink.active{background:var(--surface); color:var(--forest-deep); font-weight:600;}
+  :root[data-theme="dark"] .navlink.active{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .navlink.active{color:var(--forest);}}
+  .menu-toggle{display:none;}
+  .scrim{display:none;}
+
+  main{padding:36px 40px 100px; max-width:980px;}
+  section{scroll-margin-top:24px;}
+  section + section{margin-top:52px;}
+  .eyebrow{font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--forest-deep); font-weight:700; margin-bottom:6px;}
+  :root[data-theme="dark"] .eyebrow{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .eyebrow{color:var(--forest);}}
+  h2.title{font-size:1.6rem; margin-bottom:14px;}
+  p{margin:0 0 12px; max-width:76ch; color:var(--ink-soft);}
+  p.lead{font-size:1rem; color:var(--ink); max-width:80ch;}
+
+  .masthead{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px 28px; box-shadow:var(--shadow); margin-bottom:8px;}
+  .masthead h1{font-size:1.8rem;}
+
+  .risk{background:var(--risk-bg); border:1px solid var(--risk-line); border-radius:12px; padding:16px 20px; margin:14px 0; display:flex; gap:12px;}
+  .risk .glyph{font-family:'Fraunces',serif; font-weight:700; color:var(--risk-ink); font-size:1.1rem;}
+  .risk p{color:var(--risk-ink); margin:0; opacity:.95;}
+  .risk p + p{margin-top:8px;}
+  .risk strong{color:var(--risk-ink);}
+
+  .info{background:var(--info-bg); border:1px solid var(--info-line); border-radius:12px; padding:14px 18px; margin:14px 0;}
+  .info p{color:var(--info-ink); margin:0;}
+
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0;}
+  .stat{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px; text-align:center;}
+  .stat .n{font-family:'IBM Plex Mono',monospace; font-size:1.3rem; font-weight:600; color:var(--ink);}
+  .stat .l{font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin-top:2px;}
+
+  .filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+  .filter-btn{font:inherit; font-size:.78rem; font-weight:600; padding:6px 12px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
+  .filter-btn.active{background:var(--forest-deep); border-color:var(--forest-deep); color:#fff;}
+
+  .opp-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:12px;}
+  .opp-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
+  .opp-title{font-weight:600; color:var(--ink); font-size:.98rem;}
+  .opp-summary{font-size:.87rem; color:var(--ink-soft); margin-top:4px; max-width:70ch;}
+  .opp-notes-block{margin-top:8px; font-size:.85rem; color:var(--ink-soft); max-width:72ch;}
+  .opp-notes-block strong{color:var(--ink);}
+  .pill{display:inline-flex; align-items:center; font-size:.66rem; font-weight:700; padding:2px 9px; border-radius:99px; letter-spacing:.03em; white-space:nowrap;}
+  .pill.agency-cpd{background:var(--info-bg); color:var(--info-ink); border:1px solid var(--info-line);}
+  .pill.agency-dcase{background:var(--flag-bg); color:var(--flag-ink); border:1px solid var(--flag-line);}
+  .pill.tier1{background:var(--risk-bg); color:var(--risk-ink); border:1px solid var(--risk-line);}
+  .pill.tier2{background:var(--flag-bg); color:var(--flag-ink); border:1px solid var(--flag-line);}
+  .pill.tier3{background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line);}
+  .pill.tier4{background:var(--surface-2); color:var(--ink-faint); border:1px solid var(--line);}
+  .pill.verified{background:var(--good-bg); color:var(--good-ink); border:1px solid var(--good-line);}
+  .pill.unverified{background:var(--risk-bg); color:var(--risk-ink); border:1px solid var(--risk-line);}
+  .pill.elig-unresolved{background:var(--flag-bg); color:var(--flag-ink); border:1px solid var(--flag-line);}
+  .pill.elig-eligible{background:var(--good-bg); color:var(--good-ink); border:1px solid var(--good-line);}
+  .pill.elig-ineligible{background:var(--risk-bg); color:var(--risk-ink); border:1px solid var(--risk-line);}
+  .pill.elig-not_applicable{background:var(--surface-2); color:var(--ink-faint); border:1px solid var(--line);}
+  .opp-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+
+  .field-row{display:grid; grid-template-columns:140px minmax(0,1fr); gap:2px; margin-top:10px; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--line);}
+  .field-row > div{background:var(--surface); padding:8px 12px; font-size:.82rem; min-width:0; overflow-wrap:anywhere;}
+  .field-row > div.k{background:var(--surface-2); color:var(--ink-faint); font-size:.7rem; text-transform:uppercase; letter-spacing:.04em;}
+  .field-row > div.v{color:var(--ink-soft);}
+  .field-row > div.v a{word-break:break-all;}
+
+  select.status-select, select.elig-select{font:inherit; font-size:.78rem; border:1px solid var(--line); border-radius:6px; padding:4px 8px; background:var(--bg); color:var(--ink);}
+  textarea.notes-edit{width:100%; min-height:50px; margin-top:8px; font:inherit; font-size:.83rem; border:1px solid var(--line); border-radius:8px; padding:8px 10px; background:var(--bg); color:var(--ink); resize:vertical;}
+  .save-tag{font-size:.68rem; color:var(--ink-faint); margin-left:6px;}
+
+  .action-item{display:flex; gap:10px; align-items:flex-start; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:8px;}
+  .action-item.done{opacity:.55;}
+  .action-item.done .action-title{text-decoration:line-through;}
+  .action-title{font-weight:600; font-size:.88rem;}
+  .action-desc{font-size:.8rem; color:var(--ink-soft); margin-top:2px;}
+  .action-due{font-size:.7rem; color:var(--ink-faint); margin-top:4px;}
+
+  .contact-card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:.85rem;}
+  .contact-card .meta{font-size:.72rem; color:var(--ink-faint); margin-top:2px;}
+
+  form.add-form{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; display:grid; gap:10px;}
+  form.add-form .row{display:grid; gap:10px; grid-template-columns:1fr 1fr;}
+  form.add-form label{display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:3px;}
+  form.add-form input, form.add-form textarea, form.add-form select{width:100%; font:inherit; font-size:.85rem; border:1px solid var(--line); border-radius:8px; padding:7px 10px; background:var(--bg); color:var(--ink);}
+  .btn{display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:.82rem; font-weight:600; color:#fff; background:var(--forest-deep); border:1px solid var(--forest-deep); border-radius:8px; padding:8px 14px; cursor:pointer;}
+  .btn.secondary{background:var(--surface); color:var(--ink); border-color:var(--line);}
+
+  @media (max-width: 880px){
+    .layout{grid-template-columns:1fr;}
+    .sidebar{position:fixed; z-index:40; left:0; top:0; width:82vw; max-width:320px; height:100vh; transform:translateX(-100%); transition:transform .2s ease; box-shadow:var(--shadow);}
+    .sidebar.open{transform:translateX(0);}
+    .menu-toggle{display:flex; position:sticky; top:14px; margin:14px 0 0 14px; z-index:30; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:99px; padding:9px 14px; font-size:.82rem; font-weight:600; color:var(--ink); box-shadow:var(--shadow); width:max-content; cursor:pointer;}
+    .scrim{position:fixed; inset:0; background:rgba(10,20,16,.4); z-index:35;}
+    .scrim.show{display:block;}
+    main{padding:20px 18px 80px;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    form.add-form .row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="sidebar">☰ Sections</button>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">Chicago War Room</div>
+      <div class="brand-sub">Ras Tafari Inc · 2027–2028</div>
+    </div>
+    <nav class="toc" id="toc">
+      <a class="navlink" href="#overview">Overview</a>
+      <a class="navlink" href="#eligibility">Eligibility Center</a>
+      <a class="navlink" href="#cpd">CPD Opportunities</a>
+      <a class="navlink" href="#dcase">DCASE Opportunities</a>
+      <a class="navlink" href="#actions">Action Items</a>
+      <a class="navlink" href="#contacts">Contacts Log</a>
+      <a class="navlink" href="#sources">Sources</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="overview">
+      <div class="masthead">
+        <h1>Chicago Municipal War Room</h1>
+        <p style="margin-top:8px;">Every Chicago Park District (CPD) and DCASE grant, permit, partnership, and
+        talent-booking pathway Ras Tafari Inc / SelassieFest / Jay RebL are tracking for the 2027–2028 seasons —
+        in one live, editable place instead of scattered across chat research.</p>
+      </div>
+
+      <div class="info">
+        <p><strong>A note on sourcing:</strong> this tracker was seeded from a large research document (produced by
+        a different AI tool) pasted in by staff. Rows marked <span class="pill verified" style="vertical-align:middle;">Verified</span>
+        were independently re-checked this session against the agency's own current website. Rows marked
+        <span class="pill unverified" style="vertical-align:middle;">Unverified</span> still need that check before
+        anyone relies on the specific dates/figures/eligibility claims to make a real decision.</p>
+      </div>
+
+      <div class="stat-row" id="statRow">
+        <div class="stat"><div class="n" id="statTotal">–</div><div class="l">Opportunities</div></div>
+        <div class="stat"><div class="n" id="statTier1">–</div><div class="l">Tier 1</div></div>
+        <div class="stat"><div class="n" id="statVerified">–</div><div class="l">Verified</div></div>
+        <div class="stat"><div class="n" id="statUnresolved">–</div><div class="l">Unresolved Eligibility</div></div>
+      </div>
+    </section>
+
+    <section id="eligibility">
+      <div class="eyebrow">Resolve Before Submitting Anything</div>
+      <h2 class="title">Eligibility Center</h2>
+      <p>Nearly every high-value opportunity below is gated by <strong>Chicago residency</strong> — of the
+      organization, or of the individual artist applying. Two unresolved facts decide almost the entire strategy:</p>
+
+      <div class="risk">
+        <div class="glyph">!</div>
+        <div>
+          <p><strong>Ras Tafari Inc's registered address (765 E 154th St, South Holland, IL) is outside Chicago
+          city limits.</strong> This is independently verified to disqualify the organization as lead applicant for
+          Night Out in the Parks (CPD's own site: "You must be a Chicago-based organization or individual artist...
+          verified at application, contracting, and payment"), and was already flagged the same way on the DCASE
+          CityArts/NAP grants instrument.</p>
+          <p>This does not block Ras Tafari Inc from participating as a <strong>producing/presenting partner</strong>
+          under an eligible lead — that pathway is explicit in NAP's own guidelines and implicit in NOITP's
+          individual-artist option.</p>
+        </div>
+      </div>
+
+      <div class="risk">
+        <div class="glyph">!</div>
+        <div>
+          <p><strong>Jay RebL's own bio lists him as based in the Evanston/Skokie area</strong> — also outside
+          Chicago. If that's still accurate, he <em>also</em> cannot be the Chicago-resident lead applicant for
+          NOITP, DCASE's Individual Artists Program, Chicago Band Roster, or Chicago Made Music Showcase, all of
+          which require the individual's own Chicago residency, not just the presenting org's.</p>
+          <p><strong>This is the single most important open question in the whole war room.</strong> Two ways to
+          resolve it: (1) confirm whether Jay RebL has a genuine Chicago address we haven't recorded, or (2) identify
+          a real Chicago-resident artist/organization to serve as lead applicant, with Ras Tafari Inc and Jay RebL as
+          partners — exactly the structure already used on the <a href="https://trcevent.com/jay-rebl/nap-idea-submission" target="_blank" rel="noopener">NAP Idea Submission draft</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cpd">
+      <div class="eyebrow">Chicago Park District</div>
+      <h2 class="title">CPD Opportunities</h2>
+      <div class="filter-row" id="cpdFilters"></div>
+      <div id="cpdList"><p>Loading…</p></div>
+    </section>
+
+    <section id="dcase">
+      <div class="eyebrow">Department of Cultural Affairs and Special Events</div>
+      <h2 class="title">DCASE Opportunities</h2>
+      <div class="filter-row" id="dcaseFilters"></div>
+      <div id="dcaseList"><p>Loading…</p></div>
+    </section>
+
+    <section id="actions">
+      <div class="eyebrow">Next Steps</div>
+      <h2 class="title">Action Items</h2>
+      <p>The critical prep window is now through November 2026, when the 2027 NOITP application opens.</p>
+      <button class="btn secondary" id="showActionFormBtn" type="button" style="margin-bottom:12px;">+ Add an action item</button>
+      <form class="add-form" id="actionForm" hidden></form>
+      <div id="actionsList"><p>Loading…</p></div>
+    </section>
+
+    <section id="contacts">
+      <div class="eyebrow">Relationship Tracking</div>
+      <h2 class="title">Contacts Log</h2>
+      <button class="btn secondary" id="showContactFormBtn" type="button" style="margin-bottom:12px;">+ Log a contact</button>
+      <form class="add-form" id="contactForm" hidden></form>
+      <div id="contactsList"><p>Loading…</p></div>
+    </section>
+
+    <section id="sources">
+      <div class="eyebrow">Citations</div>
+      <h2 class="title">Sources</h2>
+      <ul>
+        <li><a href="https://www.chicagoparkdistrict.com/night-out-parks-proposals" target="_blank" rel="noopener">Night Out in the Parks Proposals</a> (verified)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/about-night-out-parks" target="_blank" rel="noopener">About Night Out in the Parks</a> (verified — 2027 opening month)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/arcs" target="_blank" rel="noopener">ARCS Program</a> (verified)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/permits-rentals-101" target="_blank" rel="noopener">Permits & Rentals 101</a> (verified)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/special-event-venues" target="_blank" rel="noopener">Special Event Venues</a> (unverified this session)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/concessions-program" target="_blank" rel="noopener">Concessions Program</a> (unverified this session)</li>
+        <li><a href="https://www.chicagoparkdistrict.com/chicago-onscreen-submissions" target="_blank" rel="noopener">Chicago Onscreen Submissions</a> (unverified this session)</li>
+        <li><a href="https://www.chicago.gov/content/dam/city/depts/dca/Grants/cityarts/cityartsguidelines26.pdf" target="_blank" rel="noopener">DCASE CityArts 2026 Guidelines</a> (verified — see the <a href="/organization/grants/dcase-cityarts-nap.html">grants instrument</a>)</li>
+        <li><a href="https://www.chicago.gov/content/dam/city/depts/dca/Grants/nap/napguidelines26.pdf" target="_blank" rel="noopener">DCASE NAP 2026 Guidelines</a> (verified — see the <a href="/organization/grants/dcase-cityarts-nap.html">grants instrument</a>)</li>
+      </ul>
+      <p style="font-size:.82rem;">Related tools: <a href="/organization/deadlines.html">Deadlines Calendar</a> · <a href="/organization/grants/dcase-cityarts-nap.html">DCASE Grants Instrument</a> · <a href="https://trcevent.com/jay-rebl/nap-idea-submission" target="_blank" rel="noopener">Jay RebL NAP Idea Submission</a></p>
+    </section>
+  </main>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  // ---- mobile sidebar ----
+  var menuToggle = document.getElementById('menuToggle');
+  var sidebar = document.getElementById('sidebar');
+  var scrim = document.getElementById('scrim');
+  function closeSidebar(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+  function openSidebar(){ sidebar.classList.add('open'); scrim.classList.add('show'); }
+  menuToggle.addEventListener('click', function(){ sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+  scrim.addEventListener('click', closeSidebar);
+  document.querySelectorAll('#toc a').forEach(function(a){ a.addEventListener('click', closeSidebar); });
+
+  if ('IntersectionObserver' in window) {
+    var navlinks = Array.prototype.slice.call(document.querySelectorAll('#toc .navlink'));
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) navlinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+      });
+    }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  var STATUS_OPTIONS = ['not_started','researching','preparing','submitted','awarded','declined','monitoring','ineligible'];
+  var ELIG_OPTIONS = ['eligible','ineligible','unresolved','not_applicable'];
+  var opportunitiesCache = [];
+  var cpdFilter = 'all';
+  var dcaseFilter = 'all';
+
+  function tierLabel(t){ return { tier1:'Tier 1', tier2:'Tier 2', tier3:'Tier 3', tier4:'Tier 4' }[t] || t; }
+
+  function oppCardHtml(o) {
+    var statusOptions = STATUS_OPTIONS.map(function(s){ return '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s.replace('_',' ') + '</option>'; }).join('');
+    var eligOptions = ELIG_OPTIONS.map(function(s){ return '<option value="' + s + '"' + (o.eligibility_status === s ? ' selected' : '') + '>' + s.replace('_',' ') + '</option>'; }).join('');
+    return '<div class="opp-card" data-id="' + o.id + '">' +
+      '<div class="opp-top">' +
+        '<div><div class="opp-title">' + escapeHtml(o.name) + '</div>' +
+        (o.summary ? '<div class="opp-summary">' + escapeHtml(o.summary) + '</div>' : '') + '</div>' +
+      '</div>' +
+      '<div class="opp-tags">' +
+        '<span class="pill agency-' + o.agency.toLowerCase() + '">' + o.agency + '</span>' +
+        '<span class="pill ' + o.priority + '">' + tierLabel(o.priority) + '</span>' +
+        '<span class="pill ' + (o.verified ? 'verified' : 'unverified') + '">' + (o.verified ? 'Verified' : 'Unverified') + '</span>' +
+        '<span class="pill elig-' + o.eligibility_status + '">Eligibility: ' + o.eligibility_status.replace('_',' ') + '</span>' +
+      '</div>' +
+      (o.eligibility_notes ? '<div class="opp-notes-block"><strong>Eligibility notes:</strong> ' + escapeHtml(o.eligibility_notes) + '</div>' : '') +
+      (o.requirements ? '<div class="opp-notes-block"><strong>Requirements:</strong> ' + escapeHtml(o.requirements) + '</div>' : '') +
+      '<div class="field-row">' +
+        '<div class="k">Status</div><div class="v"><select class="status-select" data-field="status">' + statusOptions + '</select></div>' +
+        '<div class="k">Eligibility</div><div class="v"><select class="elig-select" data-field="eligibility_status">' + eligOptions + '</select></div>' +
+      '</div>' +
+      (o.source_url ? '<div class="field-row"><div class="k">Source</div><div class="v"><a href="' + escapeHtml(o.source_url) + '" target="_blank" rel="noopener">' + escapeHtml(o.source_url) + '</a></div></div>' : '') +
+      (o.related_page_url ? '<div class="field-row"><div class="k">Related page</div><div class="v"><a href="' + escapeHtml(o.related_page_url) + '" target="_blank" rel="noopener">' + escapeHtml(o.related_page_url) + '</a></div></div>' : '') +
+      '<textarea class="notes-edit" data-field="notes" placeholder="Working notes…">' + escapeHtml(o.notes || '') + '</textarea>' +
+      '<span class="save-tag" data-savetag></span>' +
+    '</div>';
+  }
+
+  async function saveOppField(id, field, value, tagEl) {
+    try {
+      var client = await window.sfSupabaseReady;
+      var patch = {}; patch[field] = value; patch.updated_at = new Date().toISOString();
+      var { error } = await client.from('war_room_opportunities').update(patch).eq('id', id);
+      if (error) throw error;
+      if (tagEl) { tagEl.textContent = 'saved'; setTimeout(function(){ tagEl.textContent = ''; }, 1200); }
+    } catch (err) {
+      console.error(err);
+      if (tagEl) tagEl.textContent = 'save failed';
+    }
+  }
+
+  function wireOppCard(card, o) {
+    card.querySelectorAll('select[data-field]').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        var tag = card.querySelector('[data-savetag]');
+        saveOppField(o.id, sel.getAttribute('data-field'), sel.value, tag);
+        if (sel.getAttribute('data-field') === 'eligibility_status') {
+          sel.className = 'elig-select';
+          card.querySelector('.pill.elig-' + o.eligibility_status)?.classList.remove('elig-' + o.eligibility_status);
+        }
+      });
+    });
+    var notesEl = card.querySelector('textarea[data-field="notes"]');
+    var timer = null;
+    notesEl.addEventListener('input', function(){
+      var tag = card.querySelector('[data-savetag]');
+      tag.textContent = 'editing…';
+      clearTimeout(timer);
+      timer = setTimeout(function(){ saveOppField(o.id, 'notes', notesEl.value, tag); }, 700);
+    });
+  }
+
+  function renderOpportunities() {
+    var cpd = opportunitiesCache.filter(function(o){ return o.agency === 'CPD'; }).sort(function(a,b){ return a.order_index - b.order_index; });
+    var dcase = opportunitiesCache.filter(function(o){ return o.agency === 'DCASE'; }).sort(function(a,b){ return a.order_index - b.order_index; });
+
+    function applyFilter(list, tier) { return tier === 'all' ? list : list.filter(function(o){ return o.priority === tier; }); }
+
+    var cpdList = document.getElementById('cpdList');
+    var dcaseList = document.getElementById('dcaseList');
+    var cpdShown = applyFilter(cpd, cpdFilter);
+    var dcaseShown = applyFilter(dcase, dcaseFilter);
+    cpdList.innerHTML = cpdShown.map(oppCardHtml).join('') || '<p>No matching opportunities.</p>';
+    dcaseList.innerHTML = dcaseShown.map(oppCardHtml).join('') || '<p>No matching opportunities.</p>';
+    cpdShown.forEach(function(o){ wireOppCard(cpdList.querySelector('.opp-card[data-id="' + o.id + '"]'), o); });
+    dcaseShown.forEach(function(o){ wireOppCard(dcaseList.querySelector('.opp-card[data-id="' + o.id + '"]'), o); });
+
+    // stats
+    document.getElementById('statTotal').textContent = opportunitiesCache.length;
+    document.getElementById('statTier1').textContent = opportunitiesCache.filter(function(o){ return o.priority === 'tier1'; }).length;
+    document.getElementById('statVerified').textContent = opportunitiesCache.filter(function(o){ return o.verified; }).length;
+    document.getElementById('statUnresolved').textContent = opportunitiesCache.filter(function(o){ return o.eligibility_status === 'unresolved'; }).length;
+  }
+
+  function renderFilters() {
+    var tiers = ['all','tier1','tier2','tier3','tier4'];
+    function build(container, current, onPick) {
+      container.innerHTML = tiers.map(function(t){
+        return '<button type="button" class="filter-btn' + (current === t ? ' active' : '') + '" data-tier="' + t + '">' + (t === 'all' ? 'All' : tierLabel(t)) + '</button>';
+      }).join('');
+      container.querySelectorAll('button').forEach(function(btn){
+        btn.addEventListener('click', function(){ onPick(btn.getAttribute('data-tier')); });
+      });
+    }
+    build(document.getElementById('cpdFilters'), cpdFilter, function(t){ cpdFilter = t; renderFilters(); renderOpportunities(); });
+    build(document.getElementById('dcaseFilters'), dcaseFilter, function(t){ dcaseFilter = t; renderFilters(); renderOpportunities(); });
+  }
+
+  async function loadOpportunities() {
+    var client = await window.sfSupabaseReady;
+    var { data, error } = await client.from('war_room_opportunities').select('*');
+    if (error) { console.error(error); return; }
+    opportunitiesCache = data || [];
+    renderFilters();
+    renderOpportunities();
+
+    client.channel('war-room-opportunities')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'war_room_opportunities' }, function(payload){
+        var idx = opportunitiesCache.findIndex(function(o){ return o.id === payload.new.id; });
+        if (idx >= 0) opportunitiesCache[idx] = payload.new; else opportunitiesCache.push(payload.new);
+        var active = document.activeElement;
+        if (!active || !active.closest('.opp-card')) renderOpportunities();
+      })
+      .subscribe();
+  }
+
+  // ---- Action items ----
+  var actionsCache = [];
+  var showActionFormBtn = document.getElementById('showActionFormBtn');
+  var actionForm = document.getElementById('actionForm');
+  showActionFormBtn.addEventListener('click', function(){
+    if (!actionForm.hidden) { actionForm.hidden = true; actionForm.innerHTML = ''; return; }
+    actionForm.innerHTML =
+      '<div><label>Title</label><input name="title" required></div>' +
+      '<div><label>Description</label><textarea name="description"></textarea></div>' +
+      '<div class="row">' +
+        '<div><label>Tier</label><select name="tier"><option value="tier1">Tier 1</option><option value="tier2">Tier 2</option><option value="tier3" selected>Tier 3</option><option value="tier4">Tier 4</option></select></div>' +
+        '<div><label>Due / context</label><input name="due_context" placeholder="e.g. Sept 2026"></div>' +
+      '</div>' +
+      '<div><button type="submit" class="btn">Save action item</button></div>';
+    actionForm.hidden = false;
+  });
+  actionForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var fd = new FormData(actionForm);
+    try {
+      var client = await window.sfSupabaseReady;
+      var { error } = await client.from('war_room_action_items').insert({
+        title: fd.get('title'), description: fd.get('description') || null,
+        tier: fd.get('tier'), due_context: fd.get('due_context') || null,
+        order_index: actionsCache.length,
+      });
+      if (error) throw error;
+      actionForm.hidden = true; actionForm.innerHTML = '';
+    } catch (err) { alert('Could not save: ' + (err.message || err)); }
+  });
+
+  function actionItemHtml(a) {
+    return '<div class="action-item' + (a.done ? ' done' : '') + '" data-id="' + a.id + '">' +
+      '<input type="checkbox" ' + (a.done ? 'checked' : '') + ' data-toggle>' +
+      '<div style="flex:1;">' +
+        '<div class="action-title">' + escapeHtml(a.title) + ' <span class="pill ' + a.tier + '">' + tierLabel(a.tier) + '</span></div>' +
+        (a.description ? '<div class="action-desc">' + escapeHtml(a.description) + '</div>' : '') +
+        (a.due_context ? '<div class="action-due">' + escapeHtml(a.due_context) + '</div>' : '') +
+      '</div>' +
+      '<button type="button" class="btn secondary" data-delete style="padding:4px 8px;font-size:.7rem;">Delete</button>' +
+    '</div>';
+  }
+
+  function renderActions() {
+    var list = document.getElementById('actionsList');
+    var sorted = actionsCache.slice().sort(function(a,b){ return (a.done - b.done) || (a.order_index - b.order_index); });
+    list.innerHTML = sorted.length ? sorted.map(actionItemHtml).join('') : '<p>No action items yet.</p>';
+    list.querySelectorAll('.action-item').forEach(function(el){
+      var id = el.getAttribute('data-id');
+      el.querySelector('[data-toggle]').addEventListener('change', async function(e){
+        try {
+          var client = await window.sfSupabaseReady;
+          await client.from('war_room_action_items').update({ done: e.target.checked, updated_at: new Date().toISOString() }).eq('id', id);
+        } catch (err) { console.error(err); }
+      });
+      el.querySelector('[data-delete]').addEventListener('click', async function(){
+        if (!confirm('Delete this action item?')) return;
+        try {
+          var client = await window.sfSupabaseReady;
+          await client.from('war_room_action_items').delete().eq('id', id);
+        } catch (err) { console.error(err); }
+      });
+    });
+  }
+
+  async function loadActions() {
+    var client = await window.sfSupabaseReady;
+    var { data, error } = await client.from('war_room_action_items').select('*');
+    if (error) { console.error(error); return; }
+    actionsCache = data || [];
+    renderActions();
+    client.channel('war-room-actions')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'war_room_action_items' }, function(payload){
+        if (payload.eventType === 'DELETE') {
+          actionsCache = actionsCache.filter(function(a){ return a.id !== payload.old.id; });
+        } else {
+          var idx = actionsCache.findIndex(function(a){ return a.id === payload.new.id; });
+          if (idx >= 0) actionsCache[idx] = payload.new; else actionsCache.push(payload.new);
+        }
+        renderActions();
+      })
+      .subscribe();
+  }
+
+  // ---- Contacts ----
+  var contactsCache = [];
+  var showContactFormBtn = document.getElementById('showContactFormBtn');
+  var contactForm = document.getElementById('contactForm');
+  showContactFormBtn.addEventListener('click', function(){
+    if (!contactForm.hidden) { contactForm.hidden = true; contactForm.innerHTML = ''; return; }
+    contactForm.innerHTML =
+      '<div class="row">' +
+        '<div><label>Agency</label><select name="agency"><option value="CPD">CPD</option><option value="DCASE">DCASE</option></select></div>' +
+        '<div><label>Department</label><input name="department"></div>' +
+      '</div>' +
+      '<div class="row">' +
+        '<div><label>Person</label><input name="person_name"></div>' +
+        '<div><label>Date contacted</label><input type="date" name="date_contacted"></div>' +
+      '</div>' +
+      '<div><label>Purpose</label><input name="purpose" required></div>' +
+      '<div><label>Response</label><textarea name="response"></textarea></div>' +
+      '<div><label>Next action</label><input name="next_action"></div>' +
+      '<div><button type="submit" class="btn">Save contact</button></div>';
+    contactForm.hidden = false;
+  });
+  contactForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var fd = new FormData(contactForm);
+    try {
+      var client = await window.sfSupabaseReady;
+      var { error } = await client.from('war_room_contacts').insert({
+        agency: fd.get('agency'), department: fd.get('department') || null,
+        person_name: fd.get('person_name') || null, date_contacted: fd.get('date_contacted') || null,
+        purpose: fd.get('purpose'), response: fd.get('response') || null, next_action: fd.get('next_action') || null,
+      });
+      if (error) throw error;
+      contactForm.hidden = true; contactForm.innerHTML = '';
+    } catch (err) { alert('Could not save: ' + (err.message || err)); }
+  });
+
+  function contactCardHtml(c) {
+    return '<div class="contact-card" data-id="' + c.id + '">' +
+      '<div><span class="pill agency-' + c.agency.toLowerCase() + '">' + c.agency + '</span> ' + escapeHtml(c.purpose) + '</div>' +
+      '<div class="meta">' + [c.department, c.person_name, c.date_contacted].filter(Boolean).map(escapeHtml).join(' · ') + '</div>' +
+      (c.response ? '<div style="margin-top:6px;">' + escapeHtml(c.response) + '</div>' : '') +
+      (c.next_action ? '<div class="meta" style="margin-top:4px;"><strong>Next:</strong> ' + escapeHtml(c.next_action) + '</div>' : '') +
+    '</div>';
+  }
+
+  function renderContacts() {
+    var list = document.getElementById('contactsList');
+    var sorted = contactsCache.slice().sort(function(a,b){ return (b.date_contacted || '').localeCompare(a.date_contacted || ''); });
+    list.innerHTML = sorted.length ? sorted.map(contactCardHtml).join('') : '<p>No contacts logged yet.</p>';
+  }
+
+  async function loadContacts() {
+    var client = await window.sfSupabaseReady;
+    var { data, error } = await client.from('war_room_contacts').select('*');
+    if (error) { console.error(error); return; }
+    contactsCache = data || [];
+    renderContacts();
+    client.channel('war-room-contacts')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'war_room_contacts' }, function(payload){
+        var idx = contactsCache.findIndex(function(c){ return c.id === payload.new.id; });
+        if (idx >= 0) contactsCache[idx] = payload.new; else contactsCache.push(payload.new);
+        renderContacts();
+      })
+      .subscribe();
+  }
+
+  loadOpportunities();
+  loadActions();
+  loadContacts();
+})();
+</script>
+</body>
+</html>

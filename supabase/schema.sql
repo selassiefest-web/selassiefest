@@ -6498,3 +6498,258 @@ values
     'https://www.southshoreculturalcenteradvisorycouncil.org/events.html', true
   )
 on conflict (title, due_date) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Municipal opportunity "War Room" (Chicago Park District + DCASE)
+-- ─────────────────────────────────────────────────────────────────────────
+-- Tracks every CPD/DCASE grant, permit, partnership, and talent-booking
+-- pathway Ras Tafari Inc is pursuing for the 2027-2028 park/cultural
+-- seasons, in one place instead of scattered across chat research. Seeded
+-- from a large research document a user pasted in (originally produced by
+-- a different AI tool) -- NOT independently verified here row-by-row.
+-- `verified` distinguishes claims this session actually re-confirmed
+-- against an official chicagoparkdistrict.com/chicago.gov source from
+-- ones still carried over from that pasted research unverified. Treat
+-- verified = false as "needs confirmation before relying on it,"
+-- same discipline as `deadlines.confirmed` above -- don't flip it to true
+-- without a real source check.
+create table if not exists war_room_opportunities (
+  id uuid primary key default gen_random_uuid(),
+  agency text not null check (agency in ('CPD', 'DCASE')),
+  category text not null
+    check (category in ('grant', 'permit', 'partnership', 'talent', 'venue', 'concession', 'procurement', 'sponsorship', 'community', 'residency', 'screening')),
+  name text not null,
+  summary text,
+  priority text not null default 'tier3' check (priority in ('tier1', 'tier2', 'tier3', 'tier4')),
+  status text not null default 'not_started'
+    check (status in ('not_started', 'researching', 'preparing', 'submitted', 'awarded', 'declined', 'monitoring', 'ineligible')),
+  eligibility_status text not null default 'unresolved' check (eligibility_status in ('eligible', 'ineligible', 'unresolved', 'not_applicable')),
+  eligibility_notes text,
+  next_deadline date,
+  deadline_note text,
+  verified boolean not null default false,
+  requirements text,
+  required_documents text,
+  contact_info text,
+  source_url text,
+  related_page_url text,
+  notes text,
+  order_index integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists war_room_contacts (
+  id uuid primary key default gen_random_uuid(),
+  agency text not null check (agency in ('CPD', 'DCASE')),
+  department text,
+  person_name text,
+  purpose text not null,
+  date_contacted date,
+  response text,
+  next_action text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists war_room_action_items (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  tier text not null default 'tier3' check (tier in ('tier1', 'tier2', 'tier3', 'tier4')),
+  due_context text,
+  done boolean not null default false,
+  order_index integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table war_room_opportunities enable row level security;
+alter table war_room_contacts enable row level security;
+alter table war_room_action_items enable row level security;
+
+-- Same trust model as deadlines/grants_org_profile: an internal working
+-- tool, not a public form, with no login system on the static site to
+-- gate behind.
+create policy "public full access" on war_room_opportunities for all to anon, authenticated using (true) with check (true);
+create policy "public full access" on war_room_contacts for all to anon, authenticated using (true) with check (true);
+create policy "public full access" on war_room_action_items for all to anon, authenticated using (true) with check (true);
+
+grant select, insert, update, delete on war_room_opportunities to anon, authenticated;
+grant select, insert, update, delete on war_room_contacts to anon, authenticated;
+grant select, insert, update, delete on war_room_action_items to anon, authenticated;
+
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'war_room_opportunities') then
+    alter publication supabase_realtime add table war_room_opportunities;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'war_room_contacts') then
+    alter publication supabase_realtime add table war_room_contacts;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'war_room_action_items') then
+    alter publication supabase_realtime add table war_room_action_items;
+  end if;
+end $$;
+
+-- Seed: every opportunity from the pasted research, unverified by default.
+-- Rows this session actually confirmed against an official source get
+-- verified = true and eligibility_notes/requirements updated accordingly
+-- (see the DCASE CityArts/NAP rows, already independently verified
+-- earlier and cross-referenced here rather than re-seeded).
+insert into war_room_opportunities (agency, category, name, summary, priority, status, eligibility_status, eligibility_notes, verified, requirements, source_url, related_page_url, order_index)
+values
+  (
+    'CPD', 'grant', 'Night Out in the Parks (NOITP)',
+    'Grant-supported free park performance: financial support (not guaranteed to every applicant), permit-fee waiver, marketing (up to 1,000 printed pieces), an assigned NOITP Liaison, limited negotiated production support.',
+    'tier1', 'researching', 'unresolved',
+    'VERIFIED verbatim on chicagoparkdistrict.com/night-out-parks-proposals: "You must be a Chicago-based organization or individual artist. Residency within the city of Chicago is required and must be verified at multiple points throughout the process, including upon application, contracting, and payment." Ras Tafari Inc (South Holland) fails this as lead applicant. Individual-artist pathway may work IF the artist has a real Chicago address -- Jay RebL''s bio says Evanston/Skokie, which is also not Chicago. This must be resolved before submitting anything. 2027 application confirmed opening November 2026 (no deadline published yet).',
+    true,
+    'Chicago-based main applicant (org or individual); main applicant must be 21+; program must be free to the public; $1M general liability naming CPD as additional insured is stated as "strongly recommended" (not phrased as an absolute hard requirement on this page); ability to transport equipment/staff; flexible scheduling/location.',
+    'https://www.chicagoparkdistrict.com/night-out-parks-proposals',
+    null, 10
+  ),
+  (
+    'CPD', 'partnership', 'ARCS (Resident category)',
+    'Ongoing year-round programming partnership on CPD property -- not for a one-time event.',
+    'tier1', 'researching', 'unresolved',
+    'VERIFIED: name, 4 categories (Resident/Contractor/Service Provider/Athletic), 60-90 day lead time, and process steps all confirmed on chicagoparkdistrict.com/arcs. The "one-time events are not eligible" claim is only IMPLIED on that page via the Resident category''s "regular, ongoing programming" language, not stated verbatim there -- may be in the separate ARCS Partnership Proposal PDF, not yet checked. Org-level application; not residency-gated the same explicit way NOITP is, but this specific point (whether South Holland HQ is a problem for ARCS) is still unresolved.',
+    true,
+    'Meet with Park Supervisor first; submit Partnership Proposal + supporting docs + Certificate of Insurance naming CPD as additional insured; framed as recurring programming, not a single event.',
+    'https://www.chicagoparkdistrict.com/arcs',
+    null, 20
+  ),
+  (
+    'CPD', 'permit', 'Special Event Permit (SelassieFest)',
+    'The legal permit pathway to produce SelassieFest itself in a CPD park.',
+    'tier1', 'researching', 'not_applicable',
+    'Not residency-gated the way NOITP/DCASE individual-artist grants are -- Ras Tafari Inc already has permit experience via the 2027 permit brief (see organization/selassiefest-2027-permit-brief.html). VERIFIED: Event Level 1-6 attendance bands confirmed exactly on chicagoparkdistrict.com/permits-rentals-101 (<=200 / 201-500 / 501-1,000 / 1,001-3,000 / 3,001-10,000 / >10,000). Level 6''s $20,805 security deposit is confirmed as CURRENTLY published, but CPD''s own site frames these as 2025/2026 figures -- not guaranteed 2027/2028 rates.',
+    true,
+    'Attendance-based Event Level (1-6) sets fee/insurance/security-deposit tier; $1M general liability minimum; site plan required for all events.',
+    'https://www.chicagoparkdistrict.com/permits-rentals-101',
+    'https://selassiefest.com/organization/selassiefest-2027-permit-brief.html', 30
+  ),
+  (
+    'CPD', 'venue', 'Special Event Venues (e.g. South Shore Cultural Center)',
+    'Indoor/outdoor CPD venues for concerts, screenings, workshops, donor events -- separate application from the outdoor Special Event Permit.',
+    'tier2', 'not_started', 'unresolved', null, false,
+    'Reservation down payment; balance typically due well before the event; insurance ($1M GL, $2M if alcohol served per the pasted research -- unverified).',
+    'https://www.chicagoparkdistrict.com/special-event-venues',
+    null, 40
+  ),
+  (
+    'CPD', 'screening', 'Chicago Onscreen',
+    'Free park screening of a Chicago-focused film + honorarium (claimed up to $500).',
+    'tier2', 'not_started', 'not_applicable', null, false,
+    'Original work, produced within preceding 3 years, significant Chicago connection; submissions historically Oct-Dec annually.',
+    'https://www.chicagoparkdistrict.com/chicago-onscreen-submissions',
+    null, 50
+  ),
+  (
+    'CPD', 'concession', 'Concessions Program',
+    'Food/retail/entertainment concession or pop-up opportunity on CPD property.',
+    'tier2', 'not_started', 'not_applicable', null, false,
+    'Requires a concession permit/written authorization -- CPD/BACP actively enforce this; no informal vendor sales.',
+    'https://www.chicagoparkdistrict.com/concessions-program',
+    null, 60
+  ),
+  (
+    'CPD', 'procurement', 'Purchasing / Vendor Registration',
+    'Register as a CPD supplier to bid on goods/services contracts.',
+    'tier3', 'not_started', 'not_applicable', null, false, null,
+    'https://www.chicagoparkdistrict.com/purchasing',
+    null, 70
+  ),
+  (
+    'CPD', 'sponsorship', 'Sponsorship / Advertising / Promotions',
+    'CPD New Business Development partnership pathway -- not a grant application, a partnership approach.',
+    'tier3', 'not_started', 'not_applicable', null, false, null,
+    'https://www.chicagoparkdistrict.com/advertising-sponsorship-promotions',
+    null, 80
+  ),
+  (
+    'CPD', 'community', 'Volunteer / Community Stewardship',
+    'Organize park cleanups/service days -- builds the community-connectivity case NOITP evaluates.',
+    'tier4', 'not_started', 'not_applicable', null, false,
+    'Application + background check for long-term volunteers.',
+    'https://www.chicagoparkdistrict.com/volunteer',
+    null, 90
+  ),
+  (
+    'CPD', 'community', 'Participatory Budgeting',
+    'Community-led proposals/votes on park improvements -- not a normal organizational grant.',
+    'tier4', 'not_started', 'not_applicable', null, false, null,
+    'https://www.chicagoparkdistrict.com/participatory-budgeting',
+    null, 100
+  ),
+  (
+    'DCASE', 'talent', 'Performing Arts Programming Submissions (formerly "Chicago Band Roster")',
+    'Rolling, apply-online submission for musicians/performing artists DCASE can book for programming; reviewed monthly, no fixed deadline.',
+    'tier1', 'researching', 'unresolved',
+    'CORRECTED after verification: "Chicago Band Roster" (200+ musicians, 400 hired in 2023) is a real historical program, but is NOT the current live application -- the current entry point is DCASE''s "Performing Arts, Music, Dance, and Theater Programming Submissions" (chicago.gov ''DCASE Opportunities'' page), a rolling online submission reviewed monthly; DCASE contacts applicants directly if a partnership arises. Likely still requires Chicago residency per artist -- verify per DJ before assuming eligibility.',
+    true,
+    'Apply online via the DCASE Opportunities page; no fixed deadline, reviewed monthly.',
+    'https://www.chicago.gov/city/en/depts/dca/supp_info/dcase_opportunities.html.html',
+    null, 110
+  ),
+  (
+    'DCASE', 'talent', 'Chicago Made Music Showcase',
+    'Competition/showcase for Chicago-based solo/band artists -- career-development consultations, performance opportunities, or a $10,000 grand prize.',
+    'tier1', 'researching', 'unresolved',
+    'VERIFIED verbatim on chicago.gov: "Chicago Made Music Showcase Finale -- Saturday, October 24, 2026, Chicago Cultural Center... for a chance to win career development consultations, performance opportunities or a $10,000 grand prize." "Both solo artists and bands are invited to audition FREE of charge." The claimed "14 finalists from 140 auditions" figure could NOT be found on the current official page -- do not cite it without a separate source. Chicago residency required per artist -- verify per DJ.',
+    true, 'Free audition, open to Chicago-based solo artists and bands.',
+    'https://www.chicago.gov/city/en/depts/dca/supp_info/chicago_made_music.html',
+    null, 120
+  ),
+  (
+    'DCASE', 'grant', 'Individual Artists Program (IAP)',
+    'Per-artist grant (up to $6,000) for a specific artistic project -- not a Ras Tafari Inc grant, an individual-artist one.',
+    'tier2', 'not_started', 'unresolved',
+    'VERIFIED exactly on chicago.gov and a July 16, 2026 news release: up to $6,000; 2026 deadline was Jan 15, 2026 at noon CT (closed); $1.3M awarded to 250 of 1,239 applicants. Residency proof is STRICTER than the pasted research implied -- verbatim: "must provide a current valid Illinois Driver''s License, State ID or Chicago CityKey with applicant name and Chicago street address. No other proof of Chicago residency will be accepted. No P.O. Boxes." Applicant must also be 18+. 2027 cycle: chicago.gov states applications "will open later this year [2026]" -- no specific date yet.',
+    true,
+    'Chicago residency proven ONLY via IL driver''s license/state ID/CityKey with a Chicago street address (no P.O. boxes); applicant 18+.',
+    'https://www.chicago.gov/city/en/depts/dca/supp_info/iap.html',
+    null, 130
+  ),
+  (
+    'DCASE', 'grant', 'CityArts Program (General Operating + Project)',
+    'Chicago arts/culture nonprofit funding -- already has a full drafting instrument built.',
+    'tier2', 'preparing', 'unresolved',
+    'Requires the org itself to be Chicago-based/incorporated -- Ras Tafari Inc (South Holland) is a likely-fail here, already flagged prominently on the grants instrument page.',
+    true,
+    'See the DCASE grants instrument for the full, independently-verified 2026 guidelines and eligibility criteria.',
+    'https://www.chicago.gov/content/dam/city/depts/dca/Grants/cityarts/cityartsguidelines26.pdf',
+    'https://selassiefest.com/organization/grants/dcase-cityarts-nap.html', 140
+  ),
+  (
+    'DCASE', 'grant', 'Neighborhood Access Program (NAP)',
+    'Place-based community arts grant -- already has a full drafting instrument + Jay RebL Idea Submission draft built.',
+    'tier2', 'preparing', 'unresolved',
+    'Lead applicant must reside in the SAME neighborhood as the project. Ras Tafari Inc and Jay RebL both currently fail this as lead -- NAP explicitly allows applying as a partner under an eligible neighborhood-resident lead instead.',
+    true,
+    'See the DCASE grants instrument and the Jay RebL NAP Idea Submission page for the full, independently-verified 2026 guidelines.',
+    'https://www.chicago.gov/content/dam/city/depts/dca/Grants/nap/napguidelines26.pdf',
+    'https://selassiefest.com/organization/grants/dcase-cityarts-nap.html', 150
+  ),
+  (
+    'DCASE', 'grant', 'Chicago Presents',
+    'Historically funded free cultural programming in neighborhoods -- claimed currently under revision with no 2026 open call.',
+    'tier3', 'monitoring', 'unresolved', null, false, null,
+    'https://www.chicago.gov/city/en/depts/dca/supp_info/chicago_presents.html',
+    null, 160
+  ),
+  (
+    'DCASE', 'residency', 'Millennium Park Residency Program',
+    'Claimed space/time/funding residency for artists/orgs -- claimed up to $150,000 in an inaugural cycle. No open 2027 call identified.',
+    'tier3', 'monitoring', 'unresolved', null, false, null,
+    'https://www.chicago.gov/city/en/depts/dca.html',
+    null, 170
+  ),
+  (
+    'DCASE', 'community', 'Chicago Cultural Center programming / Open House',
+    'Artist professional-development activities (artist statement workshops, pitch workshops, networking) -- not a funding pathway itself.',
+    'tier4', 'not_started', 'not_applicable', null, false, null,
+    'https://www.chicago.gov/city/en/depts/dca.html',
+    null, 180
+  )
+on conflict do nothing;
