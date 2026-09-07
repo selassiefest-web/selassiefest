@@ -6435,3 +6435,66 @@ values
     'https://trcevent.com/jay-rebl/reggae-day-proposal', false
   )
 on conflict (title, due_date) do nothing;
+
+-- Park Advisory Council meetings remaining in 2026, for the two councils
+-- covering parks Ras Tafari Inc actually operates in or has proposed
+-- activations for (Jackson Park hosts SelassieFest; South Shore Cultural
+-- Center is a candidate Night Out in the Parks site). Washington Park
+-- Advisory Council (WPAC) is deliberately NOT included here -- its old
+-- domain no longer resolves, it has no active social page, and no 2026
+-- schedule could be verified anywhere; inventing a "3rd Wednesday" pattern
+-- that surfaced in searches but traced to no live source would be worse
+-- than no reminder at all. Get a real WPAC contact from Chicago Park
+-- District's Community Engagement Dept (312-742-2797,
+-- lca@chicagoparkdistrict.com) before adding it here.
+insert into deadlines (title, description, due_date, category, source_url, confirmed)
+values
+  (
+    'JPAC meeting — Jackson Park Advisory Council',
+    '7:00 PM, Jackson Park Field House.',
+    '2026-09-14', 'meeting',
+    'https://www.jacksonparkadvisorycouncil.org/2025/11/2026-jpac-meeting-calendar/', true
+  ),
+  (
+    'JPAC meeting — Jackson Park Advisory Council',
+    '7:00 PM, Jackson Park Field House.',
+    '2026-10-05', 'meeting',
+    'https://www.jacksonparkadvisorycouncil.org/2025/11/2026-jpac-meeting-calendar/', true
+  ),
+  (
+    'JPAC meeting — Jackson Park Advisory Council',
+    '7:00 PM, Jackson Park Field House.',
+    '2026-11-02', 'meeting',
+    'https://www.jacksonparkadvisorycouncil.org/2025/11/2026-jpac-meeting-calendar/', true
+  ),
+  (
+    'JPAC meeting — Jackson Park Advisory Council',
+    '7:00 PM, Jackson Park Field House.',
+    '2026-12-07', 'meeting',
+    'https://www.jacksonparkadvisorycouncil.org/2025/11/2026-jpac-meeting-calendar/', true
+  ),
+  (
+    'SSCCPAC meeting — South Shore Cultural Center Advisory Council',
+    '10:30 AM – 12:00 PM, Lakeview Room, 3rd floor, South Shore Cultural Center.',
+    '2026-09-12', 'meeting',
+    'https://www.southshoreculturalcenteradvisorycouncil.org/events.html', true
+  ),
+  (
+    'SSCCPAC meeting — South Shore Cultural Center Advisory Council',
+    '10:30 AM – 12:00 PM, Lakeview Room, 3rd floor, South Shore Cultural Center.',
+    '2026-10-10', 'meeting',
+    'https://www.southshoreculturalcenteradvisorycouncil.org/events.html', true
+  ),
+  (
+    'SSCCPAC annual meeting & officer elections',
+    '10:30 AM – 12:00 PM, Lakeview Room, 3rd floor, South Shore Cultural Center. Annual meeting with officer elections, not a regular monthly session.',
+    '2026-11-14', 'meeting',
+    'https://www.southshoreculturalcenteradvisorycouncil.org/events.html', true
+  ),
+  (
+    'SSCCPAC meeting — South Shore Cultural Center Advisory Council',
+    '10:30 AM – 12:00 PM, Lakeview Room, 3rd floor, South Shore Cultural Center.',
+    '2026-12-12', 'meeting',
+    'https://www.southshoreculturalcenteradvisorycouncil.org/events.html', true
+  )
+on conflict (title, due_date) do nothing;
