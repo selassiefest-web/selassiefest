@@ -6158,3 +6158,135 @@ alter table bbpac_formation_section_signup_requests
 -- keyword list, should be the one to weigh.
 alter table bbpac_formation_section_signup_requests
   add column if not exists expertise_other text;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Grant application prep ("the grants instrument")
+-- ─────────────────────────────────────────────────────────────────────────
+-- Ras Tafari Inc. applies to many Chicago grant programs every year, each
+-- with its own portal (DCASE's CyberGrants, others elsewhere). Re-typing
+-- the same organizational facts into every one from scratch invites drift
+-- and missed deadlines, so grants_org_profile holds those facts ONCE, as
+-- key/value fields live-edited the same way as proposal_2027_sections
+-- above. grants_programs / grants_questions define each program's actual
+-- application structure (one row per question, in portal order);
+-- grants_answers holds the drafted answer for a given program+question,
+-- pre-filled from grants_org_profile where a question maps straight to an
+-- org fact (legal name, EIN, address...) and hand-drafted where it's a
+-- narrative prompt the portal itself doesn't have a stable field name for.
+create table if not exists grants_org_profile (
+  field_key text primary key,
+  label text not null,
+  value text not null default '',
+  last_edited_by text,
+  updated_at timestamptz not null default now()
+);
+
+-- status tracks where a program sits in OUR pipeline (not the funder's
+-- decision) -- 'closed_this_cycle' is distinct from 'declined'/'awarded'
+-- so a program can be re-opened cleanly next year without losing history.
+create table if not exists grants_programs (
+  slug text primary key,
+  name text not null,
+  funder text not null,
+  portal text,
+  portal_url text,
+  cycle_note text,
+  next_deadline date,
+  funding_min numeric,
+  funding_max numeric,
+  eligibility_summary text,
+  source_url text,
+  status text not null default 'researching'
+    check (status in ('researching', 'planning', 'drafting', 'ready', 'submitted', 'awarded', 'declined', 'closed_this_cycle')),
+  created_at timestamptz not null default now()
+);
+
+-- field_type 'org_profile' marks a question that's really just restating an
+-- org fact (so the instrument can autofill grants_answers.answer_text from
+-- grants_org_profile and skip prompting a human for it); every other type
+-- is something a person still has to draft, even if a first pass gets
+-- seeded from org_profile_field as a starting point.
+create table if not exists grants_questions (
+  program_slug text not null references grants_programs(slug) on delete cascade,
+  question_key text not null,
+  order_index integer not null,
+  section_label text,
+  prompt text not null,
+  help_text text,
+  field_type text not null default 'long_text'
+    check (field_type in ('short_text', 'long_text', 'number', 'currency', 'date', 'select', 'file', 'org_profile')),
+  char_limit integer,
+  required boolean not null default true,
+  org_profile_field text references grants_org_profile(field_key),
+  primary key (program_slug, question_key)
+);
+
+create table if not exists grants_answers (
+  program_slug text not null,
+  question_key text not null,
+  answer_text text not null default '',
+  status text not null default 'empty' check (status in ('empty', 'draft', 'final')),
+  last_edited_by text,
+  updated_at timestamptz not null default now(),
+  primary key (program_slug, question_key),
+  foreign key (program_slug, question_key) references grants_questions(program_slug, question_key) on delete cascade
+);
+
+alter table grants_org_profile enable row level security;
+alter table grants_programs enable row level security;
+alter table grants_questions enable row level security;
+alter table grants_answers enable row level security;
+
+-- Same trust model as proposal_2027_sections: this is an internal drafting
+-- tool with no login system on the static site to gate behind, so
+-- anon+authenticated both get full read/write.
+create policy "public full access" on grants_org_profile for all to anon, authenticated using (true) with check (true);
+create policy "public full access" on grants_programs for all to anon, authenticated using (true) with check (true);
+create policy "public full access" on grants_questions for all to anon, authenticated using (true) with check (true);
+create policy "public full access" on grants_answers for all to anon, authenticated using (true) with check (true);
+
+grant select, insert, update, delete on grants_org_profile to anon, authenticated;
+grant select, insert, update, delete on grants_programs to anon, authenticated;
+grant select, insert, update, delete on grants_questions to anon, authenticated;
+grant select, insert, update, delete on grants_answers to anon, authenticated;
+
+-- Live multi-editor sync, same as proposal_2027_sections/run_of_show_chapters.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'grants_org_profile'
+  ) then
+    alter publication supabase_realtime add table grants_org_profile;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'grants_answers'
+  ) then
+    alter publication supabase_realtime add table grants_answers;
+  end if;
+end $$;
+
+-- Seed with the org facts already public on the site (permit brief,
+-- 2027 proposal) so a fresh install matches what's already known.
+-- on conflict do nothing keeps this re-runnable without clobbering edits.
+insert into grants_org_profile (field_key, label, value)
+values
+  ('legal_name', 'Legal name', 'RAS TAFARI INC.'),
+  ('ein', 'EIN', '42-3036705'),
+  ('il_file_number', 'Illinois file number', '7559-872-6'),
+  ('address', 'Address', '765 E 154th St, South Holland, IL 60473'),
+  ('incorporated_date', 'Incorporated', 'June 8, 2026, under the Illinois General Not For Profit Corporation Act'),
+  ('federal_status', '501(c)(3) status', '501(c)(3), effective June 9, 2026 · Public charity under 509(a)(2) · Contributions deductible'),
+  ('registered_agent', 'Registered agent', 'Stephen Henry'),
+  ('officers', 'Officers', 'Stephen Henry, President · Paul Kelly, VP/Treasurer · Albert Harris, Corporate Secretary'),
+  ('main_contact_name', 'Main contact', 'Stephen Henry'),
+  ('main_contact_phone', 'Main contact phone', '(262) 344-7075'),
+  ('main_contact_email', 'Main contact email', 'selassiefest@gmail.com'),
+  ('website', 'Public website', 'selassiefest.com'),
+  ('mission_statement', 'Mission statement', ''),
+  ('flagship_program', 'Flagship program', 'SelassieFest — an annual roots reggae & Rastafari cultural festival in Chicago'),
+  ('2026_attendance', '2026 attendance', '150-273 (permit filing vs. peak day-of count)'),
+  ('2026_total_cost', '2026 total production cost', '$11,325'),
+  ('2027_target_attendance', '2027 target attendance', '500 (Event Level 2)')
+on conflict (field_key) do nothing;
