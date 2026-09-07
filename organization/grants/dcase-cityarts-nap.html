@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DCASE CityArts &amp; NAP — Grant Drafting Instrument | Ras Tafari Inc</title>
+<meta name="description" content="Ras Tafari Inc's pre-drafted application instrument for DCASE's CityArts Program and Neighborhood Access Program, pulling from a shared organization profile so the application is ready before the portal opens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF3EF;
+    --surface:#FFFFFF;
+    --surface-2:#F3F7F3;
+    --ink:#182420;
+    --ink-soft:#48564F;
+    --ink-faint:#7A8A82;
+    --line:#D7E0DA;
+    --accent:#9C6A28;
+    --accent-ink:#6B4A1E;
+    --forest:#1F5C4E;
+    --forest-deep:#123D33;
+    --flag-bg:#FBF0DE;
+    --flag-line:#E4C68C;
+    --flag-ink:#6B4A1E;
+    --risk-bg:#FDECEA;
+    --risk-line:#F1B8AF;
+    --risk-ink:#8A2E20;
+    --good-bg:#E7F2EA;
+    --good-line:#BEDCC7;
+    --good-ink:#1F5C3E;
+    --shadow: 0 1px 2px rgba(18,40,32,.06), 0 8px 24px -12px rgba(18,40,32,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+      --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+      --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+      --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+      --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+    --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+    --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+    --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+    --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size:15px; line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces', Georgia, serif; font-weight:600; text-wrap:balance; color:var(--ink); margin:0;}
+  a{color:var(--forest-deep);}
+  :root[data-theme="dark"] a{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) a{color:var(--forest);}}
+  a:focus-visible, button:focus-visible, .navlink:focus-visible, textarea:focus-visible, input:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .mono, .num{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+
+  .layout{display:grid; grid-template-columns:264px minmax(0,1fr); min-height:100vh;}
+
+  .sidebar{
+    position:sticky; top:0; align-self:start; height:100vh;
+    border-right:1px solid var(--line); background:var(--surface-2);
+    padding:22px 16px 22px 22px; overflow-y:auto;
+  }
+  .brand{display:flex; flex-direction:column; gap:2px; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--line);}
+  .brand-mark{font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; letter-spacing:.01em;}
+  .brand-sub{font-size:.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em;}
+  nav.toc{display:flex; flex-direction:column; gap:1px;}
+  .toc-group{margin-top:14px;}
+  .toc-group:first-child{margin-top:0;}
+  .toc-label{font-size:.68rem; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); padding:4px 10px 6px;}
+  .navlink{display:flex; align-items:baseline; gap:8px; padding:6px 10px; border-radius:7px; font-size:.86rem; color:var(--ink-soft); text-decoration:none; transition:background .12s, color .12s;}
+  .navlink:hover{background:var(--surface); color:var(--ink);}
+  .navlink.active{background:var(--surface); color:var(--forest-deep); font-weight:600;}
+  :root[data-theme="dark"] .navlink.active{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .navlink.active{color:var(--forest);}}
+  .navlink .n{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-faint); min-width:1.4em;}
+
+  .menu-toggle{display:none;}
+  .scrim{display:none;}
+
+  main{padding:36px 40px 80px; max-width:960px;}
+  section{scroll-margin-top:24px;}
+  section + section{margin-top:52px;}
+
+  .eyebrow{font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--forest-deep); font-weight:700; display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  :root[data-theme="dark"] .eyebrow{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .eyebrow{color:var(--forest);}}
+  .eyebrow .num{color:var(--ink-faint); font-weight:500;}
+  h2.title{font-size:1.6rem; margin-bottom:14px;}
+  h3.sub{font-size:1.1rem; margin:26px 0 10px; color:var(--ink);}
+  p{margin:0 0 12px; max-width:70ch; color:var(--ink-soft);}
+  p.lead{font-size:1rem; color:var(--ink); max-width:74ch;}
+  ul, ol{margin:0 0 14px; padding-left:1.2em; color:var(--ink-soft); max-width:70ch;}
+  li{margin-bottom:4px;}
+  strong{color:var(--ink); font-weight:600;}
+
+  .masthead{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:28px 30px; box-shadow:var(--shadow); margin-bottom:8px;}
+  .masthead-top{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;}
+  .event-name{font-size:1.9rem; line-height:1.15;}
+  .event-tag{font-size:.95rem; color:var(--ink-soft); margin-top:6px; max-width:60ch;}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:14px;}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:14px 0 18px; background:var(--surface);}
+  table{width:100%; border-collapse:collapse; font-size:.86rem; min-width:480px;}
+  thead th{text-align:left; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+  tbody td{padding:10px 14px; border-bottom:1px solid var(--line); color:var(--ink-soft); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td:first-child{color:var(--ink); font-weight:600; white-space:nowrap;}
+  td.num, th.num{text-align:right; font-family:'IBM Plex Mono',monospace;}
+
+  .kv{display:grid; grid-template-columns:200px 1fr; gap:2px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--line); margin:14px 0 18px;}
+  .kv > div{background:var(--surface); padding:11px 16px; font-size:.87rem;}
+  .kv > div.k{color:var(--ink-faint); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; background:var(--surface-2);}
+  .kv > div.v{color:var(--ink-soft);}
+  .kv > div.v strong{color:var(--ink);}
+  .kv .ed{outline-offset:3px; border-radius:4px; cursor:text;}
+  .kv .ed:hover{background:var(--surface-2);}
+  .kv .ed:focus{background:var(--surface-2); outline:2px solid var(--accent);}
+  .kv .save-tag{font-size:.68rem; color:var(--ink-faint); margin-left:8px; opacity:0; transition:opacity .2s;}
+  .kv .save-tag.show{opacity:1;}
+
+  .flag{background:var(--flag-bg); border:1px solid var(--flag-line); border-radius:12px; padding:16px 20px; margin:18px 0; display:flex; gap:12px;}
+  .flag .glyph{font-family:'Fraunces',serif; font-weight:700; color:var(--flag-ink); font-size:1.1rem; line-height:1.4;}
+  .flag p{color:var(--flag-ink); margin:0; max-width:66ch; opacity:.92;}
+  .flag p + p{margin-top:8px;}
+  .flag strong{color:var(--flag-ink);}
+
+  .risk{background:var(--risk-bg); border:1px solid var(--risk-line); border-radius:12px; padding:16px 20px; margin:18px 0; display:flex; gap:12px;}
+  .risk .glyph{font-family:'Fraunces',serif; font-weight:700; color:var(--risk-ink); font-size:1.1rem; line-height:1.4;}
+  .risk p{color:var(--risk-ink); margin:0; max-width:66ch; opacity:.95;}
+  .risk p + p{margin-top:8px;}
+  .risk strong{color:var(--risk-ink);}
+
+  .good{background:var(--good-bg); border:1px solid var(--good-line); border-radius:12px; padding:14px 18px; margin:14px 0;}
+  .good p{color:var(--good-ink); margin:0; max-width:66ch;}
+
+  .pill{display:inline-flex; align-items:center; font-size:.68rem; font-weight:700; padding:2px 8px; border-radius:99px; letter-spacing:.03em; white-space:nowrap;}
+  .pill.yes{background:var(--good-bg); color:var(--good-ink); border:1px solid var(--good-line);}
+  .pill.no{background:var(--surface-2); color:var(--ink-faint); border:1px solid var(--line);}
+  .pill.risk{background:var(--risk-bg); color:var(--risk-ink); border:1px solid var(--risk-line);}
+  .pill.pending{background:var(--flag-bg); color:var(--flag-ink); border:1px solid var(--flag-line);}
+
+  .timeline{position:relative; margin:16px 0 6px; padding-left:26px;}
+  .timeline::before{content:"";position:absolute; left:7px; top:6px; bottom:6px; width:2px; background:var(--line);}
+  .tl-item{position:relative; padding-bottom:20px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:""; position:absolute; left:-26px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--forest-deep); border:2px solid var(--surface); box-shadow:0 0 0 2px var(--line);}
+  :root[data-theme="dark"] .tl-item::before{background:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tl-item::before{background:var(--forest);}}
+  .tl-when{font-family:'IBM Plex Mono',monospace; font-size:.74rem; color:var(--forest-deep); font-weight:600; margin-bottom:3px;}
+  :root[data-theme="dark"] .tl-when{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tl-when{color:var(--forest);}}
+  .tl-what{font-size:.87rem; color:var(--ink-soft); max-width:66ch;}
+  .tl-what strong{color:var(--ink);}
+
+  /* ---- Instrument (question/answer drafting cards) ---- */
+  .instrument-head{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:6px;}
+  .meter-wrap{display:flex; align-items:center; gap:10px; font-size:.8rem; color:var(--ink-faint);}
+  .meter-bar{width:140px; height:8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden;}
+  .meter-fill{height:100%; background:var(--forest-deep); border-radius:99px; transition:width .25s ease;}
+  :root[data-theme="dark"] .meter-fill{background:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .meter-fill{background:var(--forest);}}
+
+  .q-group-label{font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; color:var(--accent-ink); font-weight:700; margin:22px 0 8px;}
+  .q-group-label:first-child{margin-top:0;}
+  .q-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:12px;}
+  .q-card.is-org{background:var(--surface-2);}
+  .q-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px;}
+  .q-prompt{font-weight:600; color:var(--ink); font-size:.93rem; max-width:60ch;}
+  .q-required{font-size:.66rem; color:var(--risk-ink); font-weight:700; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap;}
+  .q-help{font-size:.8rem; color:var(--ink-faint); margin:4px 0 10px; max-width:64ch;}
+  .q-source-tag{display:inline-flex; align-items:center; gap:5px; font-size:.7rem; color:var(--forest-deep); background:var(--good-bg); border:1px solid var(--good-line); border-radius:99px; padding:2px 9px; margin-top:2px;}
+  :root[data-theme="dark"] .q-source-tag{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .q-source-tag{color:var(--forest);}}
+  .q-org-value{font-size:.9rem; color:var(--ink); padding:8px 0 2px; max-width:64ch;}
+  .q-answer{
+    width:100%; min-height:88px; resize:vertical; border:1px solid var(--line); border-radius:8px;
+    padding:10px 12px; font:inherit; font-size:.9rem; color:var(--ink); background:var(--bg);
+  }
+  .q-answer.short{min-height:40px; resize:none;}
+  .q-meta-row{display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:.72rem; color:var(--ink-faint);}
+  .q-charcount.over{color:var(--risk-ink); font-weight:700;}
+  .q-savestate{font-size:.72rem; color:var(--ink-faint);}
+  .q-savestate.saving{color:var(--accent-ink);}
+  .q-savestate.saved{color:var(--good-ink);}
+
+  .instrument-loading, .instrument-empty{color:var(--ink-faint); font-size:.88rem; padding:14px 0;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font:inherit; font-size:.85rem; font-weight:600;
+    color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:8px 14px; cursor:pointer; text-decoration:none;
+  }
+  .btn:hover{background:var(--surface-2);}
+  .btn.primary{background:var(--forest-deep); color:#fff; border-color:var(--forest-deep);}
+  .btn.primary:hover{opacity:.9;}
+
+  .export-view{display:none;}
+  .export-view.open{display:block;}
+  .export-q{margin-bottom:16px;}
+  .export-q .eq-prompt{font-weight:600; color:var(--ink); font-size:.88rem;}
+  .export-q .eq-answer{color:var(--ink-soft); font-size:.88rem; white-space:pre-wrap; margin-top:3px;}
+  .export-q .eq-empty{color:var(--ink-faint); font-style:italic;}
+
+  footer.credits{margin-top:60px; padding-top:20px; border-top:1px solid var(--line); font-size:.76rem; color:var(--ink-faint); max-width:70ch;}
+  footer.credits ol{padding-left:1.4em;}
+  footer.credits li{margin-bottom:6px;}
+
+  @media print{
+    .sidebar, .menu-toggle, .no-print{display:none !important;}
+    .layout{display:block;}
+    main{max-width:none; padding:0;}
+    .card, .q-card, .masthead{box-shadow:none; break-inside:avoid;}
+  }
+
+  @media (max-width: 880px){
+    .layout{grid-template-columns:1fr;}
+    .sidebar{
+      position:fixed; z-index:40; left:0; top:0; width:82vw; max-width:320px; height:100vh;
+      transform:translateX(-100%); transition:transform .2s ease; box-shadow:var(--shadow);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .menu-toggle{
+      display:flex; position:sticky; top:14px; margin:14px 0 0 14px; z-index:30;
+      align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line);
+      border-radius:99px; padding:9px 14px; font-size:.82rem; font-weight:600; color:var(--ink);
+      box-shadow:var(--shadow); width:max-content; cursor:pointer;
+    }
+    .scrim{position:fixed; inset:0; background:rgba(10,20,16,.4); z-index:35;}
+    .scrim.show{display:block;}
+    main{padding:20px 18px 60px;}
+    .masthead{padding:20px;}
+    .kv{grid-template-columns:150px 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="sidebar">☰ Sections</button>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">DCASE: CityArts &amp; NAP</div>
+      <div class="brand-sub">Ras Tafari Inc · Grants Instrument</div>
+    </div>
+    <nav class="toc" id="toc">
+      <a class="navlink" href="#overview"><span class="n">00</span>Overview</a>
+      <a class="navlink" href="#eligibility"><span class="n">01</span>Eligibility Watch</a>
+      <a class="navlink" href="#comparison"><span class="n">02</span>Program Comparison</a>
+      <a class="navlink" href="#calendar"><span class="n">03</span>Cycle Calendar</a>
+      <a class="navlink" href="#org-profile"><span class="n">04</span>Organization Profile</a>
+      <div class="toc-group">
+        <div class="toc-label">The Instrument</div>
+        <a class="navlink" href="#cityarts-operating"><span class="n">05</span>CityArts — Operating</a>
+        <a class="navlink" href="#cityarts-project"><span class="n">06</span>CityArts — Project</a>
+        <a class="navlink" href="#nap-idea"><span class="n">07</span>NAP — Idea Submission</a>
+      </div>
+      <a class="navlink" href="#export"><span class="n">08</span>Submission View</a>
+      <a class="navlink" href="#sources"><span class="n">09</span>Sources</a>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- OVERVIEW -->
+    <section id="overview">
+      <div class="masthead">
+        <div class="masthead-top">
+          <div>
+            <h1 class="event-name">DCASE: CityArts &amp; the Neighborhood Access Program</h1>
+            <div class="event-tag">Two separate CyberGrants applications, prepared ahead of time so Ras Tafari Inc can submit the moment each portal opens.</div>
+          </div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:20px;">
+        The Department of Cultural Affairs and Special Events (DCASE) administers both the CityArts Program and the
+        Neighborhood Access Program (NAP) through its CyberGrants online portal. While both support Chicago-based
+        cultural production, they serve distinct organizational needs and operate on separate annual timelines.
+      </p>
+      <p>
+        This page is Ras Tafari Inc's working instrument for both programs: one shared <a href="#org-profile">organization
+        profile</a> (Section 04) feeds every application below, so a fact only needs to be entered once. Sections 05–07
+        are the actual application drafts — question by question, pulling in organization-profile facts automatically
+        and leaving narrative answers open to draft directly on this page. Section 08 compiles everything into a clean
+        view for copying into CyberGrants once each portal opens.
+      </p>
+      <p style="font-size:.85rem; color:var(--ink-faint);">
+        Every fact below is sourced from DCASE's published 2026 program guidelines (see <a href="#sources">Sources</a>,
+        Section 09) — the most recent guidelines published as of this writing. DCASE has not yet published 2027
+        guidelines; where the 2027 cycle's exact dates/amounts may differ, that is called out explicitly rather than
+        assumed.
+      </p>
+    </section>
+
+    <!-- ELIGIBILITY WATCH -->
+    <section id="eligibility">
+      <div class="eyebrow"><span class="num">01</span> Before Drafting</div>
+      <h2 class="title">Eligibility Watch</h2>
+      <p>Two open questions could affect whether Ras Tafari Inc qualifies for either program as currently structured.
+      Both are flagged here deliberately rather than assumed away — resolve them before treating either draft below as submission-ready.</p>
+
+      <div class="risk">
+        <div class="glyph">!</div>
+        <div>
+          <p><strong>Registered address is outside Chicago city limits.</strong> Both programs require the lead
+          applicant's primary office address to be inside the city of Chicago. Ras Tafari Inc's address on file is
+          <strong>765 E 154th St, South Holland, IL 60473</strong> — South Holland is a separate south-suburban
+          municipality, not Chicago. CityArts guidelines explicitly disqualify "organizations with primary office
+          addresses located outside of the city of Chicago"; NAP requires the lead applicant to "reside/be located in
+          the city of Chicago" as well as in the specific neighborhood where the project happens.</p>
+          <p>This is confirmed as the org's real registered address, not an error to fix on this page — it needs to be
+          resolved organizationally (a Chicago address for the org, or a structural workaround DCASE accepts) before
+          either application can be submitted as currently eligible.</p>
+        </div>
+      </div>
+
+      <div class="flag">
+        <div class="glyph">!</div>
+        <div>
+          <p><strong>Incorporation-date timing is tight for CityArts.</strong> CityArts requires the applicant to be
+          incorporated in Illinois at least 12 months before applying (the 2026 cycle's cutoff was incorporation by
+          April 2025, for a June 2026 deadline). Ras Tafari Inc incorporated <strong>June 8, 2026</strong>. If the 2027
+          cycle follows the same roughly-14-month lookback pattern, the earliest cycle Ras Tafari Inc could clear that
+          bar is uncertain and should be checked against the 2027 guidelines the moment they're published, rather than
+          assumed to be the 2027 cycle by default.</p>
+          <p>NAP's individual-artist/collective pathway does not carry the same incorporation-history requirement in
+          the same way, but does require the lead applicant to show at least one year of relevant community/creative
+          work — SelassieFest's first year ran in 2026, so this clears by mid-to-late 2027.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON -->
+    <section id="comparison">
+      <div class="eyebrow"><span class="num">02</span> Choosing a Program</div>
+      <h2 class="title">Program Comparison</h2>
+      <p>DCASE's own framing: <strong>CityArts</strong> is ongoing institutional support for organizations that are
+      themselves Chicago-based and already an established 501(c)(3). <strong>NAP</strong> explicitly widens
+      eligibility beyond that — it accepts individual artists, collectives, and fiscally-sponsored applicants, and is
+      place-based rather than citywide, prioritizing neighborhoods with a history of disinvestment. A current NAP
+      grantee with an active project is ineligible for CityArts Project funding in the same cycle; a CityArts general
+      operating grantee remains eligible for NAP.</p>
+
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>CityArts — General Operating</th><th>CityArts — Project</th><th>Neighborhood Access Program</th></tr></thead>
+        <tbody>
+          <tr><td>What it funds</td><td>Unrestricted operating support</td><td>A specific project or program</td><td>A specific, place-based project</td></tr>
+          <tr><td>Who can apply</td><td>Chicago 501(c)(3) arts/culture orgs, ≥12 mo. incorporated</td><td>Same as General Operating</td><td>Orgs (501c3/501c6), SSAs, or individual artists/collectives rooted in one Chicago neighborhood</td></tr>
+          <tr><td>Award range</td><td class="num">Up to $50,000 (tiered by revenue)</td><td class="num">$10,000–$50,000</td><td class="num">$5,000–$50,000</td></tr>
+          <tr><td>2026 deadline</td><td class="num">June 3, 2026, noon CT</td><td class="num">June 3, 2026, noon CT</td><td class="num">Idea due July 1, 2026, noon CT</td></tr>
+          <tr><td>Renewable</td><td>Yes, max 2 consecutive years</td><td>Not applicable (project-based)</td><td>Yes, max 2 consecutive years</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.82rem; color:var(--ink-faint);">Figures shown are the 2026 cycle — the most recent DCASE has published. See Section 03 for the full calendar and Section 09 for sources.</p>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="calendar">
+      <div class="eyebrow"><span class="num">03</span> Timing</div>
+      <h2 class="title">2026 Cycle Calendar</h2>
+      <p>DCASE has not yet published 2027 guidelines as of this writing. The 2026 calendar below is the best available
+      reference for planning purposes — treat every date as provisional until the 2027 guidelines confirm it.</p>
+
+      <h3 class="sub">CityArts (General Operating &amp; Project)</h3>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-when">May 2026</div><div class="tl-what">CyberGrants portal opens</div></div>
+        <div class="tl-item milestone"><div class="tl-when">Jun 3, 2026 — noon CT</div><div class="tl-what"><strong>Application deadline</strong> — no extensions</div></div>
+        <div class="tl-item"><div class="tl-when">Sep 2026</div><div class="tl-what">Notification of awards</div></div>
+        <div class="tl-item"><div class="tl-when">Sep–Oct 2026</div><div class="tl-what">Contracting</div></div>
+        <div class="tl-item"><div class="tl-when">By year-end 2026</div><div class="tl-what">Payment disbursed</div></div>
+        <div class="tl-item"><div class="tl-when">Jan 31, 2027</div><div class="tl-what">Final report due</div></div>
+      </div>
+
+      <h3 class="sub">Neighborhood Access Program</h3>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-when">Jun 2026</div><div class="tl-what">Idea Submission portal opens; application assistance sessions held</div></div>
+        <div class="tl-item milestone"><div class="tl-when">Jul 1, 2026 — noon CT</div><div class="tl-what"><strong>Idea Submission deadline</strong></div></div>
+        <div class="tl-item"><div class="tl-when">Sep 15, 2026</div><div class="tl-what">Finalists notified</div></div>
+        <div class="tl-item"><div class="tl-when">Oct 9, 2026</div><div class="tl-what">Finalists' full-proposal deadline (questions not public until finalist stage)</div></div>
+        <div class="tl-item"><div class="tl-when">Dec 18, 2026</div><div class="tl-what">Award notifications</div></div>
+        <div class="tl-item"><div class="tl-when">Dec 2026 – Mar 2027</div><div class="tl-what">Payments disbursed</div></div>
+        <div class="tl-item"><div class="tl-when">Oct 1, 2026 – Dec 31, 2027</div><div class="tl-what">Grant performance period</div></div>
+      </div>
+    </section>
+
+    <!-- ORG PROFILE -->
+    <section id="org-profile">
+      <div class="eyebrow"><span class="num">04</span> Shared Source of Truth</div>
+      <h2 class="title">Organization Profile</h2>
+      <p>These facts feed every grant application on this site, not just this page — edit a value here once and it
+      updates everywhere it's referenced. Click any value to edit it in place; changes save automatically and sync
+      live to anyone else with this page open.</p>
+      <div class="kv" id="org-profile-kv">
+        <div class="k">Loading…</div><div class="v">—</div>
+      </div>
+    </section>
+
+    <!-- CITYARTS OPERATING -->
+    <section id="cityarts-operating">
+      <div class="eyebrow"><span class="num">05</span> The Instrument</div>
+      <h2 class="title">CityArts — General Operating Draft</h2>
+      <p>Unrestricted operating support, tiered by 3-year average annual revenue. Draft answers below autosave and sync live.</p>
+      <div class="instrument-head">
+        <div></div>
+        <div class="meter-wrap" data-meter="dcase_cityarts_operating">
+          <span>Complete</span><div class="meter-bar"><div class="meter-fill" style="width:0%"></div></div><span class="meter-label">0 / 0</span>
+        </div>
+      </div>
+      <div class="instrument" data-program="dcase_cityarts_operating"><div class="instrument-loading">Loading application questions…</div></div>
+    </section>
+
+    <!-- CITYARTS PROJECT -->
+    <section id="cityarts-project">
+      <div class="eyebrow"><span class="num">06</span> The Instrument</div>
+      <h2 class="title">CityArts — Project Draft</h2>
+      <p>Funding for a specific project or program, $10,000–$50,000. Draft answers below autosave and sync live.</p>
+      <div class="instrument-head">
+        <div></div>
+        <div class="meter-wrap" data-meter="dcase_cityarts_project">
+          <span>Complete</span><div class="meter-bar"><div class="meter-fill" style="width:0%"></div></div><span class="meter-label">0 / 0</span>
+        </div>
+      </div>
+      <div class="instrument" data-program="dcase_cityarts_project"><div class="instrument-loading">Loading application questions…</div></div>
+    </section>
+
+    <!-- NAP IDEA -->
+    <section id="nap-idea">
+      <div class="eyebrow"><span class="num">07</span> The Instrument</div>
+      <h2 class="title">Neighborhood Access Program — Idea Submission Draft</h2>
+      <p>Stage one of NAP's two-part process. Only finalists see the full-proposal question set, so this draft covers
+      the Idea Submission only — revisit Section 06 in this instrument if/when Ras Tafari Inc becomes a finalist.</p>
+      <div class="instrument-head">
+        <div></div>
+        <div class="meter-wrap" data-meter="dcase_nap_idea">
+          <span>Complete</span><div class="meter-bar"><div class="meter-fill" style="width:0%"></div></div><span class="meter-label">0 / 0</span>
+        </div>
+      </div>
+      <div class="instrument" data-program="dcase_nap_idea"><div class="instrument-loading">Loading application questions…</div></div>
+    </section>
+
+    <!-- EXPORT -->
+    <section id="export">
+      <div class="eyebrow"><span class="num">08</span> Output</div>
+      <h2 class="title">Submission View</h2>
+      <p>A clean, copy-ready compilation of every question and its current draft answer — for pasting into CyberGrants
+      once the portal opens, or for printing to PDF for board review.</p>
+      <div class="no-print" style="display:flex; gap:10px; margin-bottom:16px;">
+        <button class="btn primary" id="buildExportBtn" type="button">Build submission view</button>
+        <button class="btn" id="printBtn" type="button">Print / Save as PDF</button>
+      </div>
+      <div class="export-view" id="exportView"></div>
+    </section>
+
+    <!-- SOURCES -->
+    <section id="sources">
+      <div class="eyebrow"><span class="num">09</span> Citations</div>
+      <h2 class="title">Sources</h2>
+      <ol>
+        <li><a href="https://www.chicago.gov/content/dam/city/depts/dca/Grants/cityarts/cityartsguidelines26.pdf" target="_blank" rel="noopener">DCASE CityArts Program Guidelines, 2026 cycle</a> (official PDF)</li>
+        <li><a href="https://www.chicago.gov/content/dam/city/depts/dca/Grants/nap/napguidelines26.pdf" target="_blank" rel="noopener">DCASE Neighborhood Access Program Guidelines, 2026 cycle</a> (official PDF)</li>
+        <li><a href="https://www.chicago.gov/city/en/depts/dca/supp_info/cityarts.html" target="_blank" rel="noopener">City of Chicago — CityArts Program</a> (landing page)</li>
+        <li><a href="https://www.chicago.gov/city/en/depts/dca/supp_info/nap.html" target="_blank" rel="noopener">City of Chicago — Neighborhood Access Program</a> (landing page)</li>
+      </ol>
+      <p style="font-size:.82rem;">Last verified against DCASE's published guidelines: <span id="verifiedDate"></span>. Re-check every figure on this page once 2027 guidelines are published — grant cycles change year to year.</p>
+    </section>
+
+    <footer class="credits">
+      Ras Tafari Inc — internal grants working document. Not a public application; nothing on this page has been
+      submitted to DCASE. Figures reflect the 2026 program cycle, the most recent published as of this writing.
+    </footer>
+  </main>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  document.getElementById('verifiedDate').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  // ---- mobile sidebar ----
+  var menuToggle = document.getElementById('menuToggle');
+  var sidebar = document.getElementById('sidebar');
+  var scrim = document.getElementById('scrim');
+  function closeSidebar(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); menuToggle.setAttribute('aria-expanded','false'); }
+  function openSidebar(){ sidebar.classList.add('open'); scrim.classList.add('show'); menuToggle.setAttribute('aria-expanded','true'); }
+  menuToggle.addEventListener('click', function(){ sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+  scrim.addEventListener('click', closeSidebar);
+  document.querySelectorAll('#toc a').forEach(function(a){ a.addEventListener('click', closeSidebar); });
+
+  // ---- active-section highlight ----
+  var navlinks = Array.prototype.slice.call(document.querySelectorAll('#toc .navlink'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  function setActive(id){ navlinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === '#' + id); }); }
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) setActive(e.target.id); });
+    }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  // ---- org profile field order (labels/values come from the DB; this just controls display order) ----
+  var ORG_FIELD_ORDER = [
+    'legal_name','address','ein','il_file_number','incorporated_date','federal_status',
+    'registered_agent','officers','main_contact_name','main_contact_phone','main_contact_email',
+    'website','mission_statement','flagship_program','2026_attendance','2026_total_cost','2027_target_attendance'
+  ];
+
+  var orgProfileCache = {}; // field_key -> {label, value}
+  var orgProfileReady = null;
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function renderOrgProfileTable() {
+    var wrap = document.getElementById('org-profile-kv');
+    var order = ORG_FIELD_ORDER.filter(function(k){ return orgProfileCache[k]; });
+    Object.keys(orgProfileCache).forEach(function(k){ if (order.indexOf(k) === -1) order.push(k); });
+    wrap.innerHTML = order.map(function(key){
+      var f = orgProfileCache[key];
+      var val = f.value && f.value.trim() ? f.value : '(not yet filled in)';
+      return '<div class="k">' + escapeHtml(f.label) + '</div>' +
+             '<div class="v">' +
+               '<span class="ed" contenteditable="true" data-field-key="' + escapeHtml(key) + '">' + escapeHtml(val) + '</span>' +
+               '<span class="save-tag" data-savetag-for="' + escapeHtml(key) + '"></span>' +
+             '</div>';
+    }).join('');
+
+    wrap.querySelectorAll('.ed').forEach(function(el){
+      var timer = null;
+      el.addEventListener('focus', function(){
+        if (el.textContent.trim() === '(not yet filled in)') el.textContent = '';
+      });
+      el.addEventListener('input', function(){
+        var key = el.getAttribute('data-field-key');
+        var tag = wrap.querySelector('[data-savetag-for="' + key + '"]');
+        if (tag) { tag.textContent = 'editing…'; tag.classList.add('show'); }
+        clearTimeout(timer);
+        timer = setTimeout(function(){ saveOrgField(key, el.textContent, tag); }, 700);
+      });
+      el.addEventListener('blur', function(){
+        if (el.textContent.trim() === '') el.textContent = '(not yet filled in)';
+      });
+    });
+  }
+
+  async function saveOrgField(key, value, tag) {
+    try {
+      var client = await window.sfSupabaseReady;
+      var trimmed = value.trim();
+      orgProfileCache[key].value = trimmed;
+      var { error } = await client.from('grants_org_profile').update({ value: trimmed, updated_at: new Date().toISOString() }).eq('field_key', key);
+      if (error) throw error;
+      if (tag) { tag.textContent = 'saved'; setTimeout(function(){ tag.classList.remove('show'); }, 1200); }
+      refreshAllInstrumentPrefills();
+    } catch (err) {
+      console.error('Failed to save org profile field', key, err);
+      if (tag) tag.textContent = 'save failed';
+    }
+  }
+
+  async function loadOrgProfile() {
+    var client = await window.sfSupabaseReady;
+    var { data, error } = await client.from('grants_org_profile').select('field_key, label, value');
+    if (error) { console.error(error); return; }
+    orgProfileCache = {};
+    (data || []).forEach(function(row){ orgProfileCache[row.field_key] = { label: row.label, value: row.value }; });
+    renderOrgProfileTable();
+
+    client.channel('grants-org-profile')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'grants_org_profile' }, function(payload){
+        var row = payload.new;
+        if (!row) return;
+        orgProfileCache[row.field_key] = { label: row.label, value: row.value };
+        renderOrgProfileTable();
+      })
+      .subscribe();
+  }
+
+  // ---- instrument (per-program question/answer renderer) ----
+  var instrumentRefreshers = [];
+  function refreshAllInstrumentPrefills(){ instrumentRefreshers.forEach(function(fn){ fn(); }); }
+
+  function updateMeter(programSlug, questions, answersByKey) {
+    var wrap = document.querySelector('.meter-wrap[data-meter="' + programSlug + '"]');
+    if (!wrap) return;
+    var required = questions.filter(function(q){ return q.required; });
+    var done = required.filter(function(q){
+      if (q.field_type === 'org_profile') {
+        var f = q.org_profile_field && orgProfileCache[q.org_profile_field];
+        return !!(f && f.value && f.value.trim());
+      }
+      var a = answersByKey[q.question_key];
+      return !!(a && a.answer_text && a.answer_text.trim());
+    });
+    var pct = required.length ? Math.round((done.length / required.length) * 100) : 0;
+    wrap.querySelector('.meter-fill').style.width = pct + '%';
+    wrap.querySelector('.meter-label').textContent = done.length + ' / ' + required.length;
+  }
+
+  async function renderInstrument(programSlug, containerEl) {
+    var client = await window.sfSupabaseReady;
+    var [{ data: questions, error: qErr }, { data: answers, error: aErr }] = await Promise.all([
+      client.from('grants_questions').select('*').eq('program_slug', programSlug).order('order_index', { ascending: true }),
+      client.from('grants_answers').select('*').eq('program_slug', programSlug),
+    ]);
+    if (qErr) { containerEl.innerHTML = '<div class="instrument-empty">Could not load questions.</div>'; console.error(qErr); return; }
+    if (!questions || !questions.length) { containerEl.innerHTML = '<div class="instrument-empty">Questions for this program have not been entered yet.</div>'; return; }
+
+    var answersByKey = {};
+    (answers || []).forEach(function(a){ answersByKey[a.question_key] = a; });
+
+    function draw() {
+      var lastLabel = null;
+      var html = '';
+      questions.forEach(function(q){
+        if (q.section_label && q.section_label !== lastLabel) {
+          html += '<div class="q-group-label">' + escapeHtml(q.section_label) + '</div>';
+          lastLabel = q.section_label;
+        }
+        var reqBadge = q.required ? '<span class="q-required">Required</span>' : '';
+        if (q.field_type === 'org_profile') {
+          var f = q.org_profile_field && orgProfileCache[q.org_profile_field];
+          var val = f && f.value && f.value.trim() ? f.value : '(not yet filled in — see Section 04)';
+          html += '<div class="q-card is-org">' +
+                    '<div class="q-top"><div class="q-prompt">' + escapeHtml(q.prompt) + '</div>' + reqBadge + '</div>' +
+                    (q.help_text ? '<div class="q-help">' + escapeHtml(q.help_text) + '</div>' : '') +
+                    '<div class="q-org-value">' + escapeHtml(val) + '</div>' +
+                    '<span class="q-source-tag">from Organization Profile</span>' +
+                  '</div>';
+        } else {
+          var existing = answersByKey[q.question_key];
+          var text = existing ? existing.answer_text : '';
+          if (!text && q.org_profile_field && orgProfileCache[q.org_profile_field] && orgProfileCache[q.org_profile_field].value) {
+            text = orgProfileCache[q.org_profile_field].value;
+          }
+          var isFile = q.field_type === 'file';
+          var isShort = isFile || q.field_type === 'short_text' || q.field_type === 'number' || q.field_type === 'date' || q.field_type === 'select';
+          var placeholder = isFile ? 'Note the file name/location and status — e.g. "Saved as Board_List_2027.pdf, ready to upload" (upload itself happens in CyberGrants)' : '';
+          html += '<div class="q-card">' +
+                    '<div class="q-top"><div class="q-prompt">' + escapeHtml(q.prompt) + '</div>' + reqBadge + '</div>' +
+                    (q.help_text ? '<div class="q-help">' + escapeHtml(q.help_text) + '</div>' : '') +
+                    '<textarea class="q-answer' + (isShort ? ' short' : '') + '" data-question-key="' + escapeHtml(q.question_key) + '" ' +
+                      (isFile ? 'data-is-file="1" ' : '') +
+                      (placeholder ? 'placeholder="' + escapeHtml(placeholder) + '" ' : '') +
+                      (q.char_limit ? 'data-char-limit="' + q.char_limit + '"' : '') + '>' + escapeHtml(text) + '</textarea>' +
+                    '<div class="q-meta-row">' +
+                      '<span class="q-charcount">' + (isFile ? 'Attachment status note' : (q.char_limit ? text.length + ' / ' + q.char_limit + ' characters' : text.length + ' characters')) + '</span>' +
+                      '<span class="q-savestate"></span>' +
+                    '</div>' +
+                  '</div>';
+        }
+      });
+      containerEl.innerHTML = html;
+
+      containerEl.querySelectorAll('textarea.q-answer').forEach(function(ta){
+        var timer = null;
+        function updateCount(){
+          if (ta.hasAttribute('data-is-file')) return; // static "Attachment status note" label stays as-is
+          var row = ta.closest('.q-card').querySelector('.q-charcount');
+          var limit = ta.getAttribute('data-char-limit');
+          var len = ta.value.length;
+          row.textContent = limit ? (len + ' / ' + limit + ' characters') : (len + ' characters');
+          row.classList.toggle('over', !!limit && len > parseInt(limit, 10));
+        }
+        updateCount();
+        ta.addEventListener('input', function(){
+          updateCount();
+          var stateEl = ta.closest('.q-card').querySelector('.q-savestate');
+          stateEl.textContent = 'editing…'; stateEl.className = 'q-savestate';
+          clearTimeout(timer);
+          timer = setTimeout(function(){ saveAnswer(programSlug, ta.getAttribute('data-question-key'), ta.value, stateEl, answersByKey, questions); }, 700);
+        });
+      });
+
+      updateMeter(programSlug, questions, answersByKey);
+    }
+
+    draw();
+    instrumentRefreshers.push(draw);
+
+    client.channel('grants-answers-' + programSlug)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'grants_answers', filter: 'program_slug=eq.' + programSlug }, function(payload){
+        var row = payload.new;
+        if (!row) return;
+        var active = document.activeElement;
+        var editingThis = active && active.getAttribute && active.getAttribute('data-question-key') === row.question_key;
+        answersByKey[row.question_key] = row;
+        if (!editingThis) draw();
+        else updateMeter(programSlug, questions, answersByKey);
+      })
+      .subscribe();
+  }
+
+  async function saveAnswer(programSlug, questionKey, text, stateEl, answersByKey, questions) {
+    try {
+      var client = await window.sfSupabaseReady;
+      var status = text.trim() ? 'draft' : 'empty';
+      var row = { program_slug: programSlug, question_key: questionKey, answer_text: text, status: status, updated_at: new Date().toISOString() };
+      var { error } = await client.from('grants_answers').upsert(row, { onConflict: 'program_slug,question_key' });
+      if (error) throw error;
+      answersByKey[questionKey] = row;
+      if (stateEl) { stateEl.textContent = 'saved'; stateEl.className = 'q-savestate saved'; }
+      updateMeter(programSlug, questions, answersByKey);
+    } catch (err) {
+      console.error('Failed to save answer', questionKey, err);
+      if (stateEl) { stateEl.textContent = 'save failed'; stateEl.className = 'q-savestate'; }
+    }
+  }
+
+  // ---- export / print view ----
+  async function buildExportView() {
+    var client = await window.sfSupabaseReady;
+    var view = document.getElementById('exportView');
+    view.classList.add('open');
+    view.innerHTML = '<p class="instrument-loading">Building…</p>';
+
+    var PROGRAMS = [
+      { slug: 'dcase_cityarts_operating', name: 'CityArts — General Operating' },
+      { slug: 'dcase_cityarts_project', name: 'CityArts — Project' },
+      { slug: 'dcase_nap_idea', name: 'Neighborhood Access Program — Idea Submission' },
+    ];
+
+    var html = '';
+    for (var i = 0; i < PROGRAMS.length; i++) {
+      var p = PROGRAMS[i];
+      var [{ data: questions }, { data: answers }] = await Promise.all([
+        client.from('grants_questions').select('*').eq('program_slug', p.slug).order('order_index', { ascending: true }),
+        client.from('grants_answers').select('*').eq('program_slug', p.slug),
+      ]);
+      var answersByKey = {};
+      (answers || []).forEach(function(a){ answersByKey[a.question_key] = a; });
+      html += '<h3 class="sub">' + escapeHtml(p.name) + '</h3>';
+      if (!questions || !questions.length) {
+        html += '<p class="instrument-empty">No questions entered yet.</p>';
+        continue;
+      }
+      questions.forEach(function(q){
+        var answerText;
+        if (q.field_type === 'org_profile') {
+          var f = q.org_profile_field && orgProfileCache[q.org_profile_field];
+          answerText = f && f.value ? f.value : '';
+        } else {
+          var a = answersByKey[q.question_key];
+          answerText = a ? a.answer_text : '';
+        }
+        html += '<div class="export-q"><div class="eq-prompt">' + escapeHtml(q.prompt) + '</div>' +
+                '<div class="eq-answer' + (answerText.trim() ? '' : ' eq-empty') + '">' +
+                (answerText.trim() ? escapeHtml(answerText) : '(not yet drafted)') + '</div></div>';
+      });
+    }
+    view.innerHTML = html;
+  }
+
+  document.getElementById('buildExportBtn').addEventListener('click', buildExportView);
+  document.getElementById('printBtn').addEventListener('click', function(){
+    if (!document.getElementById('exportView').classList.contains('open')) {
+      buildExportView().then(function(){ window.print(); });
+    } else {
+      window.print();
+    }
+  });
+
+  // ---- boot ----
+  loadOrgProfile().then(function(){
+    renderInstrument('dcase_cityarts_operating', document.querySelector('.instrument[data-program="dcase_cityarts_operating"]'));
+    renderInstrument('dcase_cityarts_project', document.querySelector('.instrument[data-program="dcase_cityarts_project"]'));
+    renderInstrument('dcase_nap_idea', document.querySelector('.instrument[data-program="dcase_nap_idea"]'));
+  });
+})();
+</script>
+</body>
+</html>
