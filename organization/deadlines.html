@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deadlines Calendar | Ras Tafari Inc</title>
+<meta name="description" content="Live deadlines calendar for Ras Tafari Inc — add, edit, and remove deadlines here; 2-week and 1-week email reminders go out automatically to selassiefest@gmail.com.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF3EF; --surface:#FFFFFF; --surface-2:#F3F7F3; --ink:#182420; --ink-soft:#48564F; --ink-faint:#7A8A82;
+    --line:#D7E0DA; --accent:#9C6A28; --accent-ink:#6B4A1E; --forest:#1F5C4E; --forest-deep:#123D33;
+    --flag-bg:#FBF0DE; --flag-line:#E4C68C; --flag-ink:#6B4A1E;
+    --risk-bg:#FDECEA; --risk-line:#F1B8AF; --risk-ink:#8A2E20;
+    --good-bg:#E7F2EA; --good-line:#BEDCC7; --good-ink:#1F5C3E;
+    --shadow: 0 1px 2px rgba(18,40,32,.06), 0 8px 24px -12px rgba(18,40,32,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+      --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+      --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+      --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+      --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1C17; --surface:#16251F; --surface-2:#1B2C24; --ink:#EAF1EC; --ink-soft:#AEC2B7; --ink-faint:#7D9389;
+    --line:#2A3A32; --accent:#D9A455; --accent-ink:#F0C888; --forest:#7BC9B1; --forest-deep:#9BD9C4;
+    --flag-bg:#2A2416; --flag-line:#4A3B1E; --flag-ink:#E8C27A;
+    --risk-bg:#2E1712; --risk-line:#5A2A20; --risk-ink:#F0A093;
+    --good-bg:#152A1F; --good-line:#2C4A38; --good-ink:#8FD3A8;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size:15px; line-height:1.6;}
+  h1,h2,h3{font-family:'Fraunces', Georgia, serif; font-weight:600; color:var(--ink); margin:0;}
+  a{color:var(--forest-deep);}
+  :root[data-theme="dark"] a{color:var(--forest);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) a{color:var(--forest);}}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  [hidden]{display:none !important;}
+
+  main{max-width:880px; margin:0 auto; padding:40px 20px 100px;}
+
+  .masthead{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px 28px; box-shadow:var(--shadow); margin-bottom:28px;}
+  .masthead h1{font-size:1.7rem;}
+  .masthead p{margin:8px 0 0; color:var(--ink-soft); max-width:64ch;}
+  .masthead .meta{margin-top:12px; font-size:.82rem; color:var(--ink-faint);}
+
+  .toolbar{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+  .toolbar h2{font-size:1.1rem;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font:inherit; font-size:.85rem; font-weight:600;
+    color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:8px 14px; cursor:pointer; text-decoration:none;
+  }
+  .btn:hover{background:var(--surface-2);}
+  .btn.primary{background:var(--forest-deep); color:#fff; border-color:var(--forest-deep);}
+  .btn.primary:hover{opacity:.9;}
+  .btn.danger{color:var(--risk-ink); border-color:var(--risk-line);}
+  .btn.danger:hover{background:var(--risk-bg);}
+  .btn.small{padding:5px 10px; font-size:.78rem;}
+
+  form.deadline-form{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px;
+    margin-bottom:20px; display:grid; gap:12px;
+  }
+  form.deadline-form .row{display:grid; gap:12px; grid-template-columns:1fr 1fr;}
+  form.deadline-form label{display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:4px;}
+  form.deadline-form input, form.deadline-form select, form.deadline-form textarea{
+    width:100%; font:inherit; font-size:.9rem; color:var(--ink); background:var(--bg);
+    border:1px solid var(--line); border-radius:8px; padding:8px 10px;
+  }
+  form.deadline-form textarea{min-height:60px; resize:vertical;}
+  form.deadline-form .checkbox-row{display:flex; align-items:center; gap:8px; font-size:.85rem;}
+  form.deadline-form .actions{display:flex; gap:8px; justify-content:flex-end;}
+  form.deadline-form .error{color:var(--risk-ink); font-size:.82rem;}
+
+  @media (max-width: 520px){
+    form.deadline-form .row{grid-template-columns:1fr;}
+  }
+
+  .list{display:flex; flex-direction:column; gap:10px;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .card.soon{border-color:var(--flag-line); background:var(--flag-bg);}
+  .card.past{opacity:.6;}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
+  .card-title{font-weight:600; color:var(--ink); font-size:.98rem;}
+  .card-date{font-size:.82rem; color:var(--ink-soft); margin-top:2px;}
+  .card-days{font-family:'IBM Plex Mono',monospace; font-size:.78rem; font-weight:600;}
+  .card-desc{margin-top:8px; font-size:.87rem; color:var(--ink-soft); max-width:64ch;}
+  .card-link{margin-top:6px; font-size:.8rem;}
+  .card-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+  .pill{display:inline-flex; align-items:center; font-size:.68rem; font-weight:700; padding:2px 9px; border-radius:99px; letter-spacing:.03em; white-space:nowrap;}
+  .pill.cat{background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line);}
+  .pill.warn{background:var(--risk-bg); color:var(--risk-ink); border:1px solid var(--risk-line);}
+  .card-actions{display:flex; gap:8px; margin-top:12px;}
+
+  .empty{color:var(--ink-faint); font-size:.88rem; padding:20px 0; text-align:center;}
+
+  details.past-section{margin-top:24px;}
+  details.past-section summary{cursor:pointer; font-size:.85rem; color:var(--ink-faint); padding:8px 0;}
+  details.past-section .list{margin-top:10px;}
+
+  .status-msg{font-size:.82rem; color:var(--ink-faint); margin-left:8px;}
+  .status-msg.err{color:var(--risk-ink);}
+</style>
+</head>
+<body>
+
+<main>
+  <div class="masthead">
+    <h1>Deadlines Calendar</h1>
+    <p>Add, edit, or remove deadlines here. Anything exactly 2 weeks or 1 week away automatically emails a
+    reminder to <strong>selassiefest@gmail.com</strong> the next morning — no extra step needed after you save
+    a date here.</p>
+    <p class="meta">Estimated (unconfirmed) dates are flagged distinctly in both this list and the reminder
+    emails — use that for dates inferred from a prior cycle rather than confirmed in writing.</p>
+  </div>
+
+  <div class="toolbar">
+    <h2>Upcoming</h2>
+    <button class="btn primary" id="showAddFormBtn" type="button">+ Add a deadline</button>
+  </div>
+
+  <form class="deadline-form" id="addForm" hidden></form>
+
+  <div class="list" id="upcomingList"><p class="empty">Loading…</p></div>
+
+  <details class="past-section" id="pastSection" hidden>
+    <summary id="pastSummary">Past deadlines</summary>
+    <div class="list" id="pastList"></div>
+  </details>
+</main>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  const CATEGORY_LABELS = {
+    meeting: 'Meeting',
+    filing_deadline: 'Filing Deadline',
+    compliance_deadline: 'Compliance Deadline',
+    permit_window: 'Permit Window',
+    event: 'Event',
+    estimated_window: 'Estimated Window',
+  };
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function todayLocalISO() {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0, 10);
+  }
+
+  function daysAway(dueDateStr) {
+    const today = new Date(todayLocalISO() + 'T00:00:00');
+    const due = new Date(dueDateStr + 'T00:00:00');
+    return Math.round((due - today) / (1000 * 60 * 60 * 24));
+  }
+
+  function formatDate(dueDateStr) {
+    return new Date(dueDateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function daysAwayLabel(n) {
+    if (n === 0) return 'Today';
+    if (n === 1) return 'Tomorrow';
+    if (n > 1) return 'in ' + n + ' days';
+    if (n === -1) return '1 day ago';
+    return Math.abs(n) + ' days ago';
+  }
+
+  const FORM_FIELDS_HTML = function(prefix, values) {
+    values = values || {};
+    return `
+      <div class="row">
+        <div>
+          <label for="${prefix}-title">Title</label>
+          <input id="${prefix}-title" name="title" required value="${escapeHtml(values.title || '')}">
+        </div>
+        <div>
+          <label for="${prefix}-due-date">Due date</label>
+          <input id="${prefix}-due-date" name="due_date" type="date" required value="${escapeHtml(values.due_date || '')}">
+        </div>
+      </div>
+      <div>
+        <label for="${prefix}-description">Description</label>
+        <textarea id="${prefix}-description" name="description">${escapeHtml(values.description || '')}</textarea>
+      </div>
+      <div class="row">
+        <div>
+          <label for="${prefix}-category">Category</label>
+          <select id="${prefix}-category" name="category">
+            ${Object.keys(CATEGORY_LABELS).map(function(k){
+              return '<option value="' + k + '"' + (values.category === k ? ' selected' : '') + '>' + CATEGORY_LABELS[k] + '</option>';
+            }).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="${prefix}-source-url">Source URL</label>
+          <input id="${prefix}-source-url" name="source_url" type="url" placeholder="https://…" value="${escapeHtml(values.source_url || '')}">
+        </div>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" name="confirmed" ${values.confirmed === false ? '' : 'checked'}>
+        This date is confirmed (uncheck if it's an estimate based on a prior cycle)
+      </label>
+      <div class="error" hidden></div>
+      <div class="actions">
+        <span class="status-msg"></span>
+      </div>
+    `;
+  };
+
+  function readForm(formEl) {
+    const fd = new FormData(formEl);
+    return {
+      title: (fd.get('title') || '').toString().trim(),
+      due_date: (fd.get('due_date') || '').toString(),
+      description: (fd.get('description') || '').toString().trim() || null,
+      category: (fd.get('category') || 'meeting').toString(),
+      source_url: (fd.get('source_url') || '').toString().trim() || null,
+      confirmed: fd.get('confirmed') === 'on',
+    };
+  }
+
+  // ---- Add form ----
+  const showAddFormBtn = document.getElementById('showAddFormBtn');
+  const addForm = document.getElementById('addForm');
+  let addFormOpen = false;
+
+  function openAddForm() {
+    addForm.innerHTML = FORM_FIELDS_HTML('add', {}) +
+      '<div class="actions"><button type="button" class="btn" id="cancelAddBtn">Cancel</button><button type="submit" class="btn primary">Save deadline</button></div>';
+    addForm.hidden = false;
+    addFormOpen = true;
+    showAddFormBtn.textContent = 'Hide form';
+    document.getElementById('cancelAddBtn').addEventListener('click', closeAddForm);
+    document.getElementById('add-title').focus();
+  }
+
+  function closeAddForm() {
+    addForm.hidden = true;
+    addForm.innerHTML = '';
+    addFormOpen = false;
+    showAddFormBtn.textContent = '+ Add a deadline';
+  }
+
+  showAddFormBtn.addEventListener('click', function(){
+    addFormOpen ? closeAddForm() : openAddForm();
+  });
+
+  addForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const errorEl = addForm.querySelector('.error');
+    errorEl.hidden = true;
+    const values = readForm(addForm);
+    if (!values.title || !values.due_date) {
+      errorEl.textContent = 'Title and due date are required.';
+      errorEl.hidden = false;
+      return;
+    }
+    try {
+      const client = await window.sfSupabaseReady;
+      const { error } = await client.from('deadlines').insert(values);
+      if (error) throw error;
+      closeAddForm();
+    } catch (err) {
+      errorEl.textContent = err.message && err.message.includes('duplicate') ?
+        'A deadline with that exact title and date already exists.' :
+        ('Could not save: ' + (err.message || err));
+      errorEl.hidden = false;
+    }
+  });
+
+  // ---- List rendering ----
+  let deadlinesCache = [];
+
+  function cardHtml(d) {
+    const days = daysAway(d.due_date);
+    const isPast = days < 0;
+    const isSoon = !isPast && days <= 14;
+    const catLabel = CATEGORY_LABELS[d.category] || d.category;
+    return `
+      <div class="card${isSoon ? ' soon' : ''}${isPast ? ' past' : ''}" data-id="${d.id}">
+        <div class="card-top">
+          <div>
+            <div class="card-title">${escapeHtml(d.title)}</div>
+            <div class="card-date">${formatDate(d.due_date)}</div>
+          </div>
+          <div class="card-days mono">${daysAwayLabel(days)}</div>
+        </div>
+        ${d.description ? '<div class="card-desc">' + escapeHtml(d.description) + '</div>' : ''}
+        ${d.source_url ? '<div class="card-link"><a href="' + escapeHtml(d.source_url) + '" target="_blank" rel="noopener">' + escapeHtml(d.source_url) + '</a></div>' : ''}
+        <div class="card-tags">
+          <span class="pill cat">${escapeHtml(catLabel)}</span>
+          ${!d.confirmed ? '<span class="pill warn">Estimated — unconfirmed</span>' : ''}
+        </div>
+        <div class="card-actions">
+          <button class="btn small" type="button" data-action="edit">Edit</button>
+          <button class="btn small danger" type="button" data-action="delete">Delete</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function render() {
+    const upcomingList = document.getElementById('upcomingList');
+    const pastList = document.getElementById('pastList');
+    const pastSection = document.getElementById('pastSection');
+    const pastSummary = document.getElementById('pastSummary');
+
+    const sorted = deadlinesCache.slice().sort(function(a, b){ return a.due_date.localeCompare(b.due_date); });
+    const upcoming = sorted.filter(function(d){ return daysAway(d.due_date) >= 0; });
+    const past = sorted.filter(function(d){ return daysAway(d.due_date) < 0; }).reverse();
+
+    upcomingList.innerHTML = upcoming.length ? upcoming.map(cardHtml).join('') : '<p class="empty">No upcoming deadlines. Add one above.</p>';
+
+    if (past.length) {
+      pastSection.hidden = false;
+      pastSummary.textContent = past.length + ' past deadline' + (past.length === 1 ? '' : 's');
+      pastList.innerHTML = past.map(cardHtml).join('');
+    } else {
+      pastSection.hidden = true;
+    }
+  }
+
+  function wireCardActions(container) {
+    container.addEventListener('click', function(e){
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const card = btn.closest('.card');
+      const id = card.getAttribute('data-id');
+      const deadline = deadlinesCache.find(function(d){ return d.id === id; });
+      if (!deadline) return;
+      if (btn.getAttribute('data-action') === 'edit') openEditForm(card, deadline);
+      if (btn.getAttribute('data-action') === 'delete') handleDelete(id, deadline.title);
+    });
+  }
+  wireCardActions(document.getElementById('upcomingList'));
+  wireCardActions(document.getElementById('pastList'));
+
+  function openEditForm(card, deadline) {
+    const original = card.innerHTML;
+    const form = document.createElement('form');
+    form.className = 'deadline-form';
+    form.innerHTML = FORM_FIELDS_HTML('edit-' + deadline.id, deadline) +
+      '<div class="actions"><button type="button" class="btn" data-cancel>Cancel</button><button type="submit" class="btn primary">Save</button></div>';
+    card.innerHTML = '';
+    card.appendChild(form);
+
+    form.querySelector('[data-cancel]').addEventListener('click', function(){
+      card.innerHTML = original;
+      wireCardActions(card.parentElement);
+    });
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const errorEl = form.querySelector('.error');
+      errorEl.hidden = true;
+      const values = readForm(form);
+      if (!values.title || !values.due_date) {
+        errorEl.textContent = 'Title and due date are required.';
+        errorEl.hidden = false;
+        return;
+      }
+      try {
+        const client = await window.sfSupabaseReady;
+        const { error } = await client.from('deadlines').update(values).eq('id', deadline.id);
+        if (error) throw error;
+      } catch (err) {
+        errorEl.textContent = 'Could not save: ' + (err.message || err);
+        errorEl.hidden = false;
+      }
+    });
+  }
+
+  async function handleDelete(id, title) {
+    if (!confirm('Delete "' + title + '"? This can\'t be undone.')) return;
+    try {
+      const client = await window.sfSupabaseReady;
+      const { error } = await client.from('deadlines').delete().eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      alert('Could not delete: ' + (err.message || err));
+    }
+  }
+
+  // ---- Load + realtime ----
+  async function load() {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.from('deadlines').select('*');
+    if (error) {
+      document.getElementById('upcomingList').innerHTML = '<p class="empty">Could not load deadlines.</p>';
+      console.error(error);
+      return;
+    }
+    deadlinesCache = data || [];
+    render();
+
+    client.channel('deadlines-calendar')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'deadlines' }, function(payload){
+        if (payload.eventType === 'DELETE') {
+          deadlinesCache = deadlinesCache.filter(function(d){ return d.id !== payload.old.id; });
+        } else {
+          const idx = deadlinesCache.findIndex(function(d){ return d.id === payload.new.id; });
+          if (idx >= 0) deadlinesCache[idx] = payload.new;
+          else deadlinesCache.push(payload.new);
+        }
+        render();
+      })
+      .subscribe();
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>

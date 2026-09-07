@@ -6327,6 +6327,18 @@ alter table deadlines enable row level security;
 create policy "public full access" on deadlines for all to anon, authenticated using (true) with check (true);
 grant select, insert, update, delete on deadlines to anon, authenticated;
 
+-- Live multi-editor sync for the deadlines.html management page, same as
+-- proposal_2027_sections/grants_answers above.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'deadlines'
+  ) then
+    alter publication supabase_realtime add table deadlines;
+  end if;
+end $$;
+
 -- Returns every deadline exactly 14 or 7 days from today -- run daily, this
 -- naturally fires each reminder exactly once per deadline (at 14 days out,
 -- then again at 7) with no separate "already sent" tracking needed, so long
