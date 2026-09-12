@@ -72,7 +72,40 @@ const MENU_ITEMS: Record<string, { name: string; variant?: string; price: number
 const CANCEL_PATHS: Record<string, string> = {
   marketplace: '/marketplace/jamaican-kitchen.html',
   'ital-marketplace': '/marketplace/ital-kitchen.html',
+  'bowl-order': '/bowl-order-system.html',
 };
+
+// Yawd bowl-order-system.html pricing. Server-side only — the client never
+// sends a price. Whether an order is "the Bem Bem Bowl" is derived from the
+// build itself (protein + both finishing touches), not a client-asserted
+// flag, so a tampered request can only ever get the price that build
+// actually corresponds to.
+const BOWL_PRICE = 12.50;
+const BEM_BEM_PRICE = 15.00;
+
+function isBemBemBuild(build: any[]): boolean {
+  if (!Array.isArray(build)) return false;
+  const protein = build.find((s) => s?.key === 'protein')?.value;
+  const extras = build.find((s) => s?.key === 'extras')?.value || '';
+  return (
+    protein === 'Jerk Salmon + Shrimp' &&
+    extras.includes('Toasted Coconut Flakes') &&
+    extras.includes('Mango-Scotch Bonnet Drizzle')
+  );
+}
+
+// Validates the shape of a bowl-order build (array of {key,label,value}
+// steps as produced by bowl-order-system.html's buildSteps()) without
+// trusting any of its content for pricing.
+function resolveBowlOrderBuild(rawBuild: any): { build: any[]; steps: string[] } | null {
+  if (!Array.isArray(rawBuild) || !rawBuild.length) return null;
+  const steps: string[] = [];
+  for (const s of rawBuild) {
+    if (typeof s?.label !== 'string' || typeof s?.value !== 'string') return null;
+    steps.push(`${s.label}: ${s.value}`);
+  }
+  return { build: rawBuild, steps };
+}
 
 type ResolvedItem = { id: string; name: string; variant?: string; qty: number; price: number };
 
@@ -183,6 +216,51 @@ Deno.serve(async (req: Request) => {
           : { payment_intent_data: { metadata } }),
         success_url: `${SITE_URL}/donate/success.html?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${SITE_URL}/donate/`,
+      });
+
+      return json({ url: session.url });
+    }
+
+    if (mode === 'bowl_order') {
+      const resolved = resolveBowlOrderBuild(body.build);
+      if (!resolved) return json({ error: 'Invalid bowl build' }, 400);
+
+      const format = body.format === 'Taco' ? 'Taco' : 'Bowl';
+      const customerName = String(body.customerName || 'Walk-in').slice(0, 200);
+      const isSpecial = isBemBemBuild(resolved.build);
+      const price = isSpecial ? BEM_BEM_PRICE : BOWL_PRICE;
+      const productName = isSpecial ? `Bem Bem ${format}` : `Yawd ${format}`;
+
+      const metadata = {
+        order_type: 'bowl_order',
+        customer_name: customerName,
+        format,
+        // Stripe caps metadata values at 500 chars — a built bowl's step
+        // list comfortably fits; if it ever doesn't, better to truncate
+        // here (a slightly short kitchen ticket) than fail the whole order.
+        build_json: JSON.stringify(resolved.build).slice(0, 500),
+      };
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card', 'cashapp', 'paypal'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: productName,
+                description: resolved.steps.join(' · ').slice(0, 500),
+              },
+              unit_amount: Math.round(price * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        metadata,
+        payment_intent_data: { metadata },
+        success_url: `${SITE_URL}/bowl-order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${SITE_URL}${CANCEL_PATHS['bowl-order']}`,
       });
 
       return json({ url: session.url });

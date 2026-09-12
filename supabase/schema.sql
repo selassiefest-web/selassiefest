@@ -6753,3 +6753,109 @@ values
     null, 180
   )
 on conflict do nothing;
+
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Yawd bowl-order-system (bowl-order-system.html) -- live kitchen queue
+-- ─────────────────────────────────────────────────────────────────────────
+-- A real order (row in this table) is created ONLY by
+-- handle_stripe_bowl_order_payment_succeeded, a trigger on
+-- stripe.payment_intents that fires when status transitions to
+-- 'succeeded' and metadata->>'order_type' = 'bowl_order' (see the SQL
+-- block documented below -- like handle_stripe_payment_succeeded and
+-- notify_submission_webhook elsewhere in this file, it is intentionally
+-- NOT reproduced as executable SQL here, and needs no embedded secret of
+-- its own since it never calls net.http_post; apply it directly against
+-- the database via the Supabase SQL editor).
+--
+-- anon is deliberately NOT granted insert: an order only exists once
+-- Stripe has actually confirmed payment, so there is no path for a
+-- tampered client request to create a free "paid" order. anon IS granted
+-- select + update (but only on the columns a kitchen/server display needs
+-- to change) so the Kitchen Line / Server Pickup tabs in
+-- bowl-order-system.html can run entirely off the public anon key with no
+-- separate staff login -- acceptable for a single-event internal tool, but
+-- worth hardening with real staff auth before this becomes a everyday
+-- operation rather than a 48-hour build.
+create table if not exists bowl_orders (
+  id uuid primary key default gen_random_uuid(),
+  stripe_payment_intent_id text not null unique,
+  ticket_number bigint generated always as identity,
+  customer_name text not null default 'Walk-in',
+  format text not null default 'Bowl' check (format in ('Bowl', 'Taco')),
+  -- Array of {label, value} build steps in kitchen-assembly order, e.g.
+  -- [{"label":"Rice","value":"Coconut Rice & Peas"}, ...] -- see
+  -- buildSteps() in bowl-order-system.html for the exact shape.
+  build jsonb not null,
+  status text not null default 'kitchen' check (status in ('kitchen', 'server', 'done')),
+  created_at timestamptz not null default now(),
+  ready_at timestamptz,
+  delivered_at timestamptz
+);
+
+alter table bowl_orders enable row level security;
+
+create policy "Allow anon read" on bowl_orders
+  for select to anon
+  using (true);
+
+create policy "Allow anon status updates" on bowl_orders
+  for update to anon
+  using (true)
+  with check (true);
+
+grant usage on schema public to anon;
+grant select on bowl_orders to anon;
+-- Column-level grant: anon can move a ticket through the kitchen/server
+-- flow, but can never rewrite what was actually paid for or which Stripe
+-- payment it's tied to.
+grant update (status, build, ready_at, delivered_at) on bowl_orders to anon;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'bowl_orders'
+  ) then
+    alter publication supabase_realtime add table bowl_orders;
+  end if;
+end $$;
+
+-- Apply this directly in the Supabase SQL editor (not run by this file --
+-- see the comment above the table for why). Mirrors
+-- handle_stripe_payment_succeeded's pattern: fires on stripe.payment_intents
+-- transitioning to 'succeeded', reads the Checkout Session metadata set by
+-- create-checkout-session's `mode: 'bowl_order'` branch, and inserts the
+-- real order. on conflict do nothing makes it safe if Stripe Sync Engine
+-- ever re-fires the same succeeded event twice.
+--
+-- create or replace function handle_stripe_bowl_order_payment_succeeded()
+-- returns trigger
+-- language plpgsql
+-- security definer
+-- as $$
+-- begin
+--   if new.status <> 'succeeded' then
+--     return new;
+--   end if;
+--   if new.metadata->>'order_type' <> 'bowl_order' then
+--     return new;
+--   end if;
+--
+--   insert into bowl_orders (stripe_payment_intent_id, customer_name, format, build)
+--   values (
+--     new.id,
+--     coalesce(new.metadata->>'customer_name', 'Walk-in'),
+--     coalesce(new.metadata->>'format', 'Bowl'),
+--     (new.metadata->>'build_json')::jsonb
+--   )
+--   on conflict (stripe_payment_intent_id) do nothing;
+--
+--   return new;
+-- end;
+-- $$;
+--
+-- drop trigger if exists bowl_order_payment_succeeded on stripe.payment_intents;
+-- create trigger bowl_order_payment_succeeded
+--   after insert or update on stripe.payment_intents
+--   for each row execute function handle_stripe_bowl_order_payment_succeeded();

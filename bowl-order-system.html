@@ -187,7 +187,10 @@
     <img src="/assets/images/yawd-logo.png" alt="Yawd" class="brand-logo">
     <span class="sub">Bowl Line &middot; Order System</span>
   </div>
-  <span class="internal-tag"><i>&#9679;</i> Internal Prototype — Not Public</span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button id="enable-alerts" class="reset-btn" style="color:var(--gold);border-color:var(--border-gold);">Enable Kitchen Alerts</button>
+    <span class="internal-tag"><i>&#9679;</i> Live Orders — Real Payments</span>
+  </div>
 </header>
 
 <nav class="tabs">
@@ -202,10 +205,10 @@
   <!-- ============ ORDER / CUSTOMER VIEW ============ -->
   <section class="view active" id="view-order">
     <h2 class="view-title">Build Your Yawd Bowl</h2>
-    <p class="view-sub">Customer-facing build flow. Send fires a ticket straight to the Kitchen Line tab.</p>
+    <p class="view-sub">Pay fi di bowl, and it fires straight to the Kitchen Line tab the moment payment clears.</p>
 
     <div class="flow-note">
-      <span>Flow:</span> <b>Customer builds bowl</b> &rarr; <b>Line chef assembles &amp; checks off</b> &rarr; <b>Server picks up &amp; delivers</b>
+      <span>Flow:</span> <b>Customer builds &amp; pays</b> &rarr; <b>Stripe confirms payment</b> &rarr; <b>Line chef assembles &amp; checks off</b> &rarr; <b>Server picks up &amp; delivers</b>
     </div>
 
     <div class="builder-grid">
@@ -306,7 +309,7 @@
           <input type="text" id="customer-name" placeholder="e.g. Table 4, or guest name">
         </fieldset>
 
-        <button class="send-btn" id="send-order">Send to Kitchen</button>
+        <button class="send-btn" id="send-order">Pay fi di Bowl &amp; Send to Kitchen</button>
       </div>
 
       <div class="card ticket-preview">
@@ -323,7 +326,6 @@
         <h2 class="view-title">Kitchen Line</h2>
         <p class="view-sub" style="margin-bottom:0;">Check off each build step in order. When all steps are checked, send the bowl to the server.</p>
       </div>
-      <button class="reset-btn" id="reset-demo">Reset Demo Queue</button>
     </div>
     <div class="queue" id="kitchen-queue"></div>
   </section>
@@ -344,30 +346,13 @@
 
 </main>
 
+<script src="/assets/js/supabase-client.js"></script>
 <script>
 (function(){
   "use strict";
 
-  var STORAGE_KEY = "yawd_bowl_orders_v1";
-  var TICKET_KEY = "yawd_bowl_ticket_seq_v1";
-
-  var orders = loadOrders();
-  var ticketSeq = parseInt(localStorage.getItem(TICKET_KEY) || "100", 10);
-
-  function loadOrders(){
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch(e){ return []; }
-  }
-  function saveOrders(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-  }
-  function nextTicket(){
-    ticketSeq += 1;
-    localStorage.setItem(TICKET_KEY, String(ticketSeq));
-    return "Y-" + ticketSeq;
-  }
+  var orders = [];
+  var alertsEnabled = false;
 
   var ASSEMBLY_ORDER = ["shell","rice","beans","protein","cheese","toppings","extras","sauce"];
   var STEP_LABEL = {
@@ -509,38 +494,74 @@
     return steps;
   }
 
-  // ---------- SEND ORDER ----------
-  document.getElementById("send-order").addEventListener("click", function(){
+  // ---------- SEND ORDER (pay first — nothing hits the kitchen until Stripe confirms) ----------
+  document.getElementById("send-order").addEventListener("click", async function(){
     var s = readBuilderState();
     var steps = buildSteps(s);
     if (!steps.length) return;
-    var order = {
-      id: nextTicket(),
-      name: s.name || "Walk-in",
-      format: s.format,
-      steps: steps.map(function(st){ return { label: st.label, value: st.value, done:false }; }),
-      status: "kitchen",
-      createdAt: Date.now()
-    };
-    orders.unshift(order);
-    saveOrders();
-    document.getElementById("customer-name").value = "";
-    renderAll();
-
-    var sendBtn = document.getElementById("send-order");
-    var original = sendBtn.textContent;
-    sendBtn.textContent = "Sent — Ticket " + order.id;
-    sendBtn.disabled = true;
-    setTimeout(function(){ sendBtn.textContent = original; sendBtn.disabled = false; }, 1400);
+    var btn = this;
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Redirecting to secure checkout…";
+    try {
+      var client = await window.sfSupabaseReady;
+      var res = await client.functions.invoke("create-checkout-session", {
+        body: {
+          mode: "bowl_order",
+          format: s.format,
+          customerName: s.name || "Walk-in",
+          build: steps.map(function(st){ return { key: st.key, label: st.label, value: st.value }; })
+        }
+      });
+      if (res.error || !res.data || !res.data.url) throw (res.error || new Error("No checkout URL returned"));
+      window.location.href = res.data.url;
+    } catch (e) {
+      console.error(e);
+      alert("Could not start checkout: " + (e && e.message ? e.message : e));
+      btn.disabled = false;
+      btn.textContent = original;
+    }
   });
 
-  // ---------- RESET ----------
-  document.getElementById("reset-demo").addEventListener("click", function(){
-    if (!confirm("Clear all kitchen, server, and history tickets? This does not touch the menu build itself.")) return;
-    orders = [];
-    saveOrders();
-    renderAll();
+  // ---------- KITCHEN ALERTS (sound + Notification — needs a user gesture to unlock) ----------
+  function playBeep(){
+    try {
+      var ctx = window.__yawdAudioCtx || (window.__yawdAudioCtx = new (window.AudioContext || window.webkitAudioContext)());
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = 880;
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      setTimeout(function(){ osc.stop(); }, 220);
+    } catch (e) {}
+  }
+  function notifyKitchen(order){
+    if (!alertsEnabled) return;
+    playBeep();
+    var original = document.title;
+    document.title = "🔔 New Order — " + original;
+    setTimeout(function(){ document.title = original; }, 4000);
+    if (window.Notification && Notification.permission === "granted") {
+      try { new Notification("New Yawd Order — Y-" + order.ticket_number, { body: order.customer_name }); } catch (e) {}
+    }
+  }
+  document.getElementById("enable-alerts").addEventListener("click", function(){
+    alertsEnabled = true;
+    playBeep();
+    if (window.Notification && Notification.permission !== "granted") Notification.requestPermission();
+    this.textContent = "Alerts On ✓";
+    this.disabled = true;
   });
+
+  // ---------- SUPABASE: persist a status/build change ----------
+  async function persistOrder(id, patch){
+    var client = await window.sfSupabaseReady;
+    var { error } = await client.from("bowl_orders").update(patch).eq("id", id);
+    if (error) console.error("bowl_orders update failed:", error);
+  }
 
   // ---------- RENDER QUEUES ----------
   function minutesAgo(ts){
@@ -554,18 +575,19 @@
     document.getElementById("count-kitchen").textContent = list.length;
     if (!list.length){ el.innerHTML = '<div class="empty-state">No bowls waiting on the line.</div>'; return; }
     el.innerHTML = list.map(function(o){
-      var urgent = (Date.now() - o.createdAt) > 8*60000;
-      var stepsHtml = o.steps.map(function(st, i){
+      var createdMs = new Date(o.created_at).getTime();
+      var urgent = (Date.now() - createdMs) > 8*60000;
+      var stepsHtml = o.build.map(function(st, i){
         return '<li class="' + (st.done?"done":"") + '"><label>' +
           '<input type="checkbox" data-order="' + o.id + '" data-step="' + i + '" ' + (st.done?"checked":"") + '>' +
           '<span><b>' + st.label + ':</b> ' + st.value + '</span></label></li>';
       }).join("");
-      var allDone = o.steps.every(function(st){ return st.done; });
+      var allDone = o.build.every(function(st){ return st.done; });
       return '<div class="ticket ' + (urgent?"urgent":"") + '">' +
-        '<div class="ticket-head"><div><div class="ticket-id">Ticket ' + o.id +
+        '<div class="ticket-head"><div><div class="ticket-id">Ticket Y-' + o.ticket_number +
         '<span class="format-tag">' + (o.format || "Bowl") + '</span></div>' +
-        '<div class="ticket-name">' + escapeHtml(o.name) + '</div></div>' +
-        '<div class="ticket-time">' + minutesAgo(o.createdAt) + '</div></div>' +
+        '<div class="ticket-name">' + escapeHtml(o.customer_name) + '</div></div>' +
+        '<div class="ticket-time">' + minutesAgo(createdMs) + '</div></div>' +
         '<ol>' + stepsHtml + '</ol>' +
         '<div class="ticket-actions">' +
         '<button data-action="to-server" data-order="' + o.id + '" class="primary">' +
@@ -576,17 +598,20 @@
     el.querySelectorAll('input[type="checkbox"][data-order]').forEach(function(cb){
       cb.addEventListener("change", function(){
         var order = orders.find(function(o){ return o.id === cb.dataset.order; });
-        if (order) order.steps[parseInt(cb.dataset.step,10)].done = cb.checked;
-        saveOrders();
+        if (!order) return;
+        order.build[parseInt(cb.dataset.step,10)].done = cb.checked;
         renderKitchen();
+        persistOrder(order.id, { build: order.build });
       });
     });
     el.querySelectorAll('button[data-action="to-server"]').forEach(function(btn){
       btn.addEventListener("click", function(){
         var order = orders.find(function(o){ return o.id === btn.dataset.order; });
-        if (order){ order.status = "server"; order.readyAt = Date.now(); }
-        saveOrders();
+        if (!order) return;
+        order.status = "server";
+        order.ready_at = new Date().toISOString();
         renderAll();
+        persistOrder(order.id, { status: "server", ready_at: order.ready_at });
       });
     });
   }
@@ -597,12 +622,13 @@
     document.getElementById("count-server").textContent = list.length;
     if (!list.length){ el.innerHTML = '<div class="empty-state">No bowls staged for pickup.</div>'; return; }
     el.innerHTML = list.map(function(o){
-      var summary = o.steps.map(function(st){ return st.value; }).join(" · ");
+      var summary = o.build.map(function(st){ return st.value; }).join(" · ");
+      var readyMs = o.ready_at ? new Date(o.ready_at).getTime() : new Date(o.created_at).getTime();
       return '<div class="ticket">' +
-        '<div class="ticket-head"><div><div class="ticket-id">Ticket ' + o.id +
+        '<div class="ticket-head"><div><div class="ticket-id">Ticket Y-' + o.ticket_number +
         '<span class="format-tag">' + (o.format || "Bowl") + '</span></div>' +
-        '<div class="ticket-name">' + escapeHtml(o.name) + '</div></div>' +
-        '<div class="ticket-time">ready ' + minutesAgo(o.readyAt || o.createdAt) + '</div></div>' +
+        '<div class="ticket-name">' + escapeHtml(o.customer_name) + '</div></div>' +
+        '<div class="ticket-time">ready ' + minutesAgo(readyMs) + '</div></div>' +
         '<p style="font-size:.82rem;color:var(--dim);">' + summary + '</p>' +
         '<div class="ticket-actions">' +
         '<button data-action="delivered" data-order="' + o.id + '" class="primary">Mark Delivered</button>' +
@@ -611,28 +637,60 @@
     el.querySelectorAll('button[data-action="delivered"]').forEach(function(btn){
       btn.addEventListener("click", function(){
         var order = orders.find(function(o){ return o.id === btn.dataset.order; });
-        if (order){ order.status = "done"; order.deliveredAt = Date.now(); }
-        saveOrders();
+        if (!order) return;
+        order.status = "done";
+        order.delivered_at = new Date().toISOString();
         renderAll();
+        persistOrder(order.id, { status: "done", delivered_at: order.delivered_at });
       });
     });
   }
 
   function renderHistory(){
     var list = orders.filter(function(o){ return o.status === "done"; })
-      .sort(function(a,b){ return (b.deliveredAt||0) - (a.deliveredAt||0); });
+      .sort(function(a,b){ return new Date(b.delivered_at||0) - new Date(a.delivered_at||0); });
     var el = document.getElementById("history-queue");
     if (!list.length){ el.innerHTML = '<div class="empty-state">No delivered tickets yet.</div>'; return; }
     el.innerHTML = list.map(function(o){
-      var summary = o.steps.map(function(st){ return st.value; }).join(" · ");
+      var summary = o.build.map(function(st){ return st.value; }).join(" · ");
       return '<div class="ticket">' +
-        '<div class="ticket-head"><div><div class="ticket-id">Ticket ' + o.id +
+        '<div class="ticket-head"><div><div class="ticket-id">Ticket Y-' + o.ticket_number +
         '<span class="format-tag">' + (o.format || "Bowl") + '</span></div>' +
-        '<div class="ticket-name">' + escapeHtml(o.name) + '</div></div>' +
+        '<div class="ticket-name">' + escapeHtml(o.customer_name) + '</div></div>' +
         '<div class="ticket-time">delivered</div></div>' +
         '<p style="font-size:.82rem;color:var(--dim);">' + summary + '</p></div>';
     }).join("");
   }
+
+  // ---------- SUPABASE INIT: load current queue + subscribe to live changes ----------
+  async function initSupabase(){
+    var client = await window.sfSupabaseReady;
+
+    var openRes = await client.from("bowl_orders").select("*").in("status", ["kitchen", "server"]).order("created_at", { ascending: true });
+    if (!openRes.error && openRes.data) orders = openRes.data;
+
+    var doneRes = await client.from("bowl_orders").select("*").eq("status", "done").order("delivered_at", { ascending: false }).limit(30);
+    if (!doneRes.error && doneRes.data) orders = orders.concat(doneRes.data);
+
+    renderAll();
+
+    client.channel("bowl_orders_changes")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "bowl_orders" }, function(payload){
+        var row = payload.new;
+        if (orders.some(function(o){ return o.id === row.id; })) return;
+        orders.unshift(row);
+        renderAll();
+        if (row.status === "kitchen") notifyKitchen(row);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bowl_orders" }, function(payload){
+        var row = payload.new;
+        var idx = orders.findIndex(function(o){ return o.id === row.id; });
+        if (idx === -1) orders.unshift(row); else orders[idx] = row;
+        renderAll();
+      })
+      .subscribe();
+  }
+  initSupabase();
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, function(c){
