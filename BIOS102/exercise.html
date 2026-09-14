@@ -15,6 +15,7 @@
     <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p>
     <h1 id="ex-title">Loading&hellip;</h1>
     <p class="lede" id="ex-meta"></p>
+    <div id="ex-callout"></div>
 
     <h2 id="ref-heading">Reference: organisms</h2>
     <p class="lede">Check a box to add that organism as a row in your table below. All of its noted characteristics come along automatically &mdash; you decide which columns to actually keep.</p>
@@ -95,6 +96,12 @@
       document.getElementById('ex-title').textContent = pageTitle;
       document.getElementById('ex-meta').textContent = pageMeta;
       document.getElementById('ref-heading').textContent = examParam ? 'Reference: organisms across these exercises' : 'Reference: organisms in this exercise';
+
+      const calloutHost = document.getElementById('ex-callout');
+      const relevantCallouts = includedExercises.map((e) => BIOS.getExerciseCallout(e.number)).filter(Boolean);
+      calloutHost.innerHTML = relevantCallouts.map((text) =>
+        `<div class="callout-banner"><span class="eyebrow">Worth remembering</span>${text}</div>`
+      ).join('');
 
       const allOrganisms = includedExercises.flatMap((e) => e.organisms);
       const allKeys = BIOS.collectCharacteristicKeys({ organisms: allOrganisms });

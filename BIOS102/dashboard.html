@@ -69,11 +69,15 @@
         const badge = rowCount > 0
           ? `<span class="badge">${rowCount} organism${rowCount === 1 ? '' : 's'} in your table</span>`
           : '';
+        const calloutBadge = BIOS.getExerciseCallout(ex.number)
+          ? `<span class="badge badge-amber">Only prokaryotes studied all semester</span>`
+          : '';
         return `
           <div class="ex-card">
             <span class="num">Exercise ${ex.number}</span>
             <h3>${BIOS.escapeHtml(ex.title)}</h3>
             <span class="meta">${ex.organisms.length} organism${ex.organisms.length === 1 ? '' : 's'} &middot; ${BIOS.escapeHtml(ex.kingdom)}</span>
+            ${calloutBadge}
             ${badge}
             <a class="go" href="/BIOS102/exercise.html?ex=${ex.number}">Open &rarr;</a>
           </div>

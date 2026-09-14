@@ -145,10 +145,23 @@ window.BIOS = (() => {
     return !NON_COMPARABLE_KEYS.has(key);
   }
 
+  // Facts worth a prominent callout on an exercise's own page, not just a
+  // quiet meta line -- currently just the one, confirmed by checking
+  // cellType across every organism in data.js: Exercise 1's Oscillatoria
+  // and Anabaena are the ONLY 2 prokaryotic organisms studied all semester
+  // (all 60 others, Exercises 2-12, are eukaryotic).
+  const EXERCISE_CALLOUTS = {
+    1: 'Oscillatoria and Anabaena are the <strong>only 2 prokaryotic organisms you study all semester</strong> &mdash; everything from Exercise 2 onward is eukaryotic. This is your one hands-on shot at what "no membrane-bound nucleus" actually looks like before the rest of the course assumes you already have it down.',
+  };
+
+  function getExerciseCallout(number) {
+    return EXERCISE_CALLOUTS[Number(number)] || null;
+  }
+
   return {
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,
-    getExamRanges, getExamRange, getExercisesForExam, isComparableKey,
+    getExamRanges, getExamRange, getExercisesForExam, isComparableKey, getExerciseCallout,
     collectCharacteristicKeys, formatValue,
   };
 })();
