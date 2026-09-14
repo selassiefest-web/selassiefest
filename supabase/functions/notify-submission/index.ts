@@ -619,6 +619,25 @@ function formatClrwfJobApplication(record: Record<string, any>) {
   };
 }
 
+// BIOS102 (/BIOS102/) magic-link sign-in -- see schema.sql's
+// bios102_login_links section. record.id is the unguessable token; clicking
+// this link is what actually activates it (bios102_verify_login_link only
+// activates a 'pending' row within its expires_at window, or re-confirms an
+// already-'active' one), so this email is the entire login step.
+function formatBios102LoginLink(record: Record<string, any>) {
+  const verifyUrl = `https://selassiefest.com/BIOS102/verify.html?token=${encodeURIComponent(record.id)}`;
+  return {
+    subject: `Your BIOS102 sign-in link`,
+    html: `
+      <h2>Sign in to BIOS102 Lab Companion</h2>
+      <p>Click below to sign in and get back to your organism characteristics tables.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="background:#3fae74;color:#08130d;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Sign in to BIOS102</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${verifyUrl}</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't request this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -708,6 +727,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         format: formatEventNotifyConfirmation,
         from: (record) =>
           record.brand === 'trc' ? 'TRC Events <hello@selassiefest.com>' : 'SelassieFest <hello@selassiefest.com>',
+      },
+    ],
+  },
+  bios102_login_links: {
+    notifications: [
+      {
+        to: (record) => record.email,
+        format: formatBios102LoginLink,
+        from: () => 'BIOS102 Lab Companion <hello@selassiefest.com>',
       },
     ],
   },

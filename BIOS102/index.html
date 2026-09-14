@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Log In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+</head>
+<body>
+  <div class="login-shell">
+    <div class="login-card">
+      <h1>BIOS102</h1>
+      <p class="lede">Lab Companion &mdash; Diversity of Life. Enter your Rangers email and we'll send you a sign-in link.</p>
+
+      <form id="login-form">
+        <label for="email">Rangers email</label>
+        <input type="email" id="email" name="email" placeholder="yourid@rangers.uwp.edu" required autocomplete="email" />
+        <button type="submit" class="btn" id="login-btn">Email me a sign-in link</button>
+      </form>
+      <p class="form-msg" id="login-msg"></p>
+    </div>
+  </div>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (function () {
+      const existing = BIOS.getSession();
+      if (existing && existing.sessionToken) {
+        window.location.href = '/BIOS102/dashboard.html';
+        return;
+      }
+
+      const form = document.getElementById('login-form');
+      const msg = document.getElementById('login-msg');
+      const btn = document.getElementById('login-btn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        msg.textContent = '';
+        msg.className = 'form-msg';
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+          await window.sfSupabase.bios102RequestLoginLink(email);
+          msg.textContent = `Check ${email} for a sign-in link (also check spam). It's good for 30 minutes.`;
+          msg.className = 'form-msg ok';
+          btn.textContent = 'Link sent';
+        } catch (err) {
+          console.error(err);
+          msg.textContent = "That email isn't on the class roster. Double-check it, or ask your instructor to add it.";
+          msg.className = 'form-msg error';
+          btn.disabled = false;
+          btn.textContent = 'Email me a sign-in link';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

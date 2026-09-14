@@ -489,6 +489,59 @@ window.sfSupabase = {
   // Resume goes to the private clrwf-resumes bucket -- same
   // write-only-from-anon pattern as photos and voice notes (never readable
   // back except by staff).
+  // BIOS102 (/BIOS102/) -- unrelated UWP course site sharing this project.
+  // Real magic-link login: this just inserts the request row -- RLS itself
+  // (bios102_is_enrolled, see schema.sql) rejects it for an email that
+  // isn't on the roster, so a rejected insert IS the "not enrolled" signal.
+  // The actual sign-in email is sent by the row's insert trigger
+  // (notify_submission_webhook -> notify-submission's formatBios102LoginLink),
+  // not by this call.
+  async bios102RequestLoginLink(email) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bios102_login_links').insert({ email });
+    if (error) throw error;
+  },
+
+  // Called from /BIOS102/verify.html with the token out of the emailed
+  // link's URL. Returns { session_token, email, display_name } on success
+  // (session_token is just the same token, confirmed valid -- the caller
+  // keeps it as the ongoing session credential) or null for an unknown/
+  // never-activated-and-expired token.
+  async bios102VerifyLoginLink(token) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bios102_verify_login_link', { p_token: token });
+    if (error) throw error;
+    return (data && data[0]) || null;
+  },
+
+  // Loads every comparison table a student has built across all exercises.
+  // sessionToken is resolved back to an email server-side (see
+  // bios102_load_tables in schema.sql) -- this page never sends an email
+  // directly, so it can't be pointed at anyone else's tables.
+  async bios102LoadStudentTables(sessionToken) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bios102_load_tables', { p_session: sessionToken });
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Upsert keyed on (email, exercise_number, table_name) -- see schema.sql's
+  // unique constraint. Table build is entirely student-directed (which
+  // columns/rows to keep); the email it's saved under comes from the
+  // session token server-side, same as bios102LoadStudentTables above.
+  async bios102SaveStudentTable({ sessionToken, exerciseNumber, tableName, columns, rows }) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bios102_save_table', {
+      p_session: sessionToken,
+      p_exercise_number: exerciseNumber,
+      p_table_name: tableName,
+      p_columns: columns,
+      p_rows: rows,
+    });
+    if (error) throw error;
+    return (data && data[0]) || null;
+  },
+
   async submitClrwfJobApplication({ position, fullName, email, phone, coverLetter, resumeFile, voiceNotes }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);

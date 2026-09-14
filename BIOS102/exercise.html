@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Exercise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap">
+    <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p>
+    <h1 id="ex-title">Loading&hellip;</h1>
+    <p class="lede" id="ex-meta"></p>
+
+    <h2>Reference: organisms in this exercise</h2>
+    <p class="lede">Check a box to add that organism as a row in your table below. All of its noted characteristics come along automatically &mdash; you decide which columns to actually keep.</p>
+    <div class="organism-list" id="organism-list"></div>
+
+    <h2 style="margin-top:36px;">My comparison table</h2>
+    <p class="lede">Toggle which characteristics matter to you, add your own columns or rows, and edit any cell directly &mdash; this table is yours to arrange however helps you remember it.</p>
+
+    <div class="builder-toolbar">
+      <strong style="font-size:0.85rem;color:var(--text-dim);">Columns:</strong>
+      <div class="chip-picker" id="col-chips"></div>
+    </div>
+    <div class="builder-toolbar">
+      <input type="text" id="custom-col-input" placeholder="Add a custom column (e.g. Mnemonic)" />
+      <button class="btn btn-ghost" id="add-col-btn" type="button">+ Add column</button>
+      <button class="btn btn-ghost" id="add-row-btn" type="button">+ Add blank row</button>
+    </div>
+
+    <div id="table-area"></div>
+
+    <div class="actions-row">
+      <button class="btn" id="save-btn" type="button">Save my table</button>
+      <button class="btn btn-danger" id="reset-btn" type="button">Reset table</button>
+      <span class="form-msg" id="save-msg"></span>
+    </div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/data.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (async function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      const params = new URLSearchParams(window.location.search);
+      const exNumber = Number(params.get('ex'));
+      const exercise = BIOS.getExercise(exNumber);
+
+      if (!exercise) {
+        document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exercise wasn\'t found.</p>';
+        return;
+      }
+
+      document.getElementById('ex-title').textContent = `Exercise ${exercise.number}: ${exercise.title}`;
+      document.getElementById('ex-meta').textContent = `${exercise.kingdom} · ${exercise.organisms.length} organism${exercise.organisms.length === 1 ? '' : 's'}` + (exercise.notes ? ` — ${exercise.notes}` : '');
+
+      const allKeys = BIOS.collectCharacteristicKeys(exercise);
+      let columns = allKeys.map((key) => ({ key, label: BIOS.humanizeKey(key) }));
+      let rows = [];
+      let savedRowId = null;
+      const TABLE_NAME = 'My Comparison Table';
+
+      // ---- Load any previously saved table for this exercise ----
+      try {
+        const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+        const existing = tables.find((t) => t.exercise_number === exercise.number && t.table_name === TABLE_NAME);
+        if (existing) {
+          savedRowId = existing.id;
+          if (Array.isArray(existing.columns) && existing.columns.length) columns = existing.columns;
+          if (Array.isArray(existing.rows)) rows = existing.rows;
+        }
+      } catch (err) {
+        console.error('Could not load saved table', err);
+      }
+
+      function organismByGenus(genus) {
+        return exercise.organisms.find((o) => o.genus === genus);
+      }
+
+      function renderOrganismCards() {
+        const list = document.getElementById('organism-list');
+        list.innerHTML = exercise.organisms.map((org) => {
+          const rows_ = Object.entries(org.characteristics || {}).map(([k, v]) =>
+            `<dt>${BIOS.escapeHtml(BIOS.humanizeKey(k))}</dt><dd>${BIOS.escapeHtml(BIOS.formatValue(v))}</dd>`
+          ).join('');
+          const checked = rows.some((r) => r.genus === org.genus) ? 'checked' : '';
+          return `
+            <div class="organism-card">
+              <h4>${BIOS.escapeHtml(org.genus)}</h4>
+              <div class="sub">${BIOS.escapeHtml(org.commonName || '')}${org.phylum ? ' &middot; ' + BIOS.escapeHtml(org.phylum) : ''}${org.class ? ' (' + BIOS.escapeHtml(org.class) + ')' : ''}</div>
+              <dl>${rows_}</dl>
+              <div class="add-row">
+                <input type="checkbox" id="chk-${cssId(org.genus)}" data-genus="${BIOS.escapeHtml(org.genus)}" ${checked} />
+                <label for="chk-${cssId(org.genus)}">Add to my table</label>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        list.querySelectorAll('input[type="checkbox"]').forEach((chk) => {
+          chk.addEventListener('change', () => {
+            const genus = chk.dataset.genus;
+            if (chk.checked) {
+              if (!rows.some((r) => r.genus === genus)) {
+                const org = organismByGenus(genus);
+                const values = {};
+                columns.forEach((col) => {
+                  values[col.key] = BIOS.formatValue(org.characteristics ? org.characteristics[col.key] : '');
+                });
+                rows.push({
+                  id: 'org_' + cssId(genus),
+                  label: org.commonName ? `${org.genus} (${org.commonName})` : org.genus,
+                  genus,
+                  values,
+                });
+              }
+            } else {
+              rows = rows.filter((r) => r.genus !== genus);
+            }
+            renderTable();
+          });
+        });
+      }
+
+      function cssId(str) {
+        return String(str).replace(/[^a-z0-9]/gi, '-').toLowerCase();
+      }
+
+      function renderColumnChips() {
+        const wrap = document.getElementById('col-chips');
+        wrap.innerHTML = allKeys.map((key) => {
+          const on = columns.some((c) => c.key === key);
+          return `<span class="chip ${on ? 'on' : ''}" data-key="${BIOS.escapeHtml(key)}">${BIOS.escapeHtml(BIOS.humanizeKey(key))}</span>`;
+        }).join('');
+
+        wrap.querySelectorAll('.chip').forEach((chip) => {
+          chip.addEventListener('click', () => {
+            const key = chip.dataset.key;
+            const idx = columns.findIndex((c) => c.key === key);
+            if (idx >= 0) {
+              columns.splice(idx, 1);
+            } else {
+              columns.push({ key, label: BIOS.humanizeKey(key) });
+              rows.forEach((r) => {
+                if (r.genus && (r.values[key] === undefined || r.values[key] === '')) {
+                  const org = organismByGenus(r.genus);
+                  if (org) r.values[key] = BIOS.formatValue(org.characteristics ? org.characteristics[key] : '');
+                }
+              });
+            }
+            renderColumnChips();
+            renderTable();
+          });
+        });
+      }
+
+      function renderTable() {
+        const area = document.getElementById('table-area');
+        if (!columns.length) {
+          area.innerHTML = '<div class="empty-state">Pick at least one characteristic above to start your table.</div>';
+          return;
+        }
+        if (!rows.length) {
+          area.innerHTML = '<div class="empty-state">No organisms in your table yet &mdash; check one off in the reference list above, or add a blank row.</div>';
+          return;
+        }
+
+        const head = `<tr><th style="width:1%;"></th><th>Organism</th>${columns.map((c) =>
+          `<th data-key="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(c.label)} <button class="col-remove" data-key="${BIOS.escapeHtml(c.key)}" title="Remove column">&times;</button></th>`
+        ).join('')}</tr>`;
+
+        const body = rows.map((r) => {
+          const cells = columns.map((c) =>
+            `<td contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`
+          ).join('');
+          return `<tr>
+            <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button></td>
+            <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
+            ${cells}
+          </tr>`;
+        }).join('');
+
+        area.innerHTML = `<div class="table-scroll"><table class="build-table">${head}${body}</table></div>`;
+
+        area.querySelectorAll('.col-remove').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            columns = columns.filter((c) => c.key !== btn.dataset.key);
+            renderColumnChips();
+            renderTable();
+          });
+        });
+        area.querySelectorAll('.row-remove').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            rows = rows.filter((r) => r.id !== btn.dataset.row);
+            renderOrganismCards();
+            renderTable();
+          });
+        });
+        area.querySelectorAll('td[contenteditable][data-col]').forEach((cell) => {
+          cell.addEventListener('blur', () => {
+            const row = rows.find((r) => r.id === cell.dataset.row);
+            if (row) {
+              row.values = row.values || {};
+              row.values[cell.dataset.col] = cell.textContent.trim();
+            }
+          });
+        });
+        area.querySelectorAll('td[data-row-label]').forEach((cell) => {
+          cell.addEventListener('blur', () => {
+            const row = rows.find((r) => r.id === cell.dataset.rowLabel);
+            if (row) row.label = cell.textContent.trim();
+          });
+        });
+      }
+
+      document.getElementById('add-col-btn').addEventListener('click', () => {
+        const input = document.getElementById('custom-col-input');
+        const label = input.value.trim();
+        if (!label) return;
+        const key = 'custom_' + Date.now();
+        columns.push({ key, label });
+        input.value = '';
+        renderTable();
+      });
+
+      document.getElementById('add-row-btn').addEventListener('click', () => {
+        rows.push({ id: 'blank_' + Date.now(), label: 'New row', genus: null, values: {} });
+        renderTable();
+      });
+
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        if (!window.confirm('Clear this table back to its starting point? This does not undo a previous save until you save again.')) return;
+        columns = allKeys.map((key) => ({ key, label: BIOS.humanizeKey(key) }));
+        rows = [];
+        renderOrganismCards();
+        renderColumnChips();
+        renderTable();
+      });
+
+      document.getElementById('save-btn').addEventListener('click', async () => {
+        const msg = document.getElementById('save-msg');
+        msg.textContent = 'Saving…';
+        msg.className = 'form-msg';
+        try {
+          const result = await window.sfSupabase.bios102SaveStudentTable({
+            sessionToken: session.sessionToken,
+            exerciseNumber: exercise.number,
+            tableName: TABLE_NAME,
+            columns,
+            rows,
+          });
+          if (result) savedRowId = result.id;
+          msg.textContent = 'Saved.';
+          msg.className = 'form-msg ok';
+        } catch (err) {
+          console.error(err);
+          msg.textContent = 'Could not save. Please try again.';
+          msg.className = 'form-msg error';
+        }
+      });
+
+      renderOrganismCards();
+      renderColumnChips();
+      renderTable();
+    })();
+  </script>
+</body>
+</html>

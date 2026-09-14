@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Chapters</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap">
+    <h1>Your Chapters</h1>
+    <p class="lede">Pick an exercise below to review its organisms and build your own comparison table &mdash; choose whichever characteristics help <em>you</em> tell them apart.</p>
+
+    <div class="grid" id="ex-grid"></div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/data.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (async function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      let savedByExercise = {};
+      try {
+        const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+        tables.forEach((t) => { savedByExercise[t.exercise_number] = t; });
+      } catch (err) {
+        console.error('Could not load saved tables', err);
+      }
+
+      const grid = document.getElementById('ex-grid');
+      const exercises = BIOS.getExercises();
+      grid.innerHTML = exercises.map((ex) => {
+        const saved = savedByExercise[ex.number];
+        const rowCount = saved ? (saved.rows || []).length : 0;
+        const badge = rowCount > 0
+          ? `<span class="badge">${rowCount} organism${rowCount === 1 ? '' : 's'} in your table</span>`
+          : '';
+        return `
+          <div class="ex-card">
+            <span class="num">Exercise ${ex.number}</span>
+            <h3>${BIOS.escapeHtml(ex.title)}</h3>
+            <span class="meta">${ex.organisms.length} organism${ex.organisms.length === 1 ? '' : 's'} &middot; ${BIOS.escapeHtml(ex.kingdom)}</span>
+            ${badge}
+            <a class="go" href="/BIOS102/exercise.html?ex=${ex.number}">Open &rarr;</a>
+          </div>
+        `;
+      }).join('');
+    })();
+  </script>
+</body>
+</html>

@@ -6859,3 +6859,208 @@ end $$;
 -- create trigger bowl_order_payment_succeeded
 --   after insert or update on stripe.payment_intents
 --   for each row execute function handle_stripe_bowl_order_payment_succeeded();
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- BIOS102 (/BIOS102/) -- a UWP biology lab manual site, unrelated to the
+-- festival, hosted here only because this Supabase project was already
+-- configured. Login is a real (if lightweight) magic-link flow: a student
+-- requests a link, gets it by email, and clicking it is what actually
+-- proves they control that address -- unlike a bare "type your email"
+-- check, this can't be spoofed by a classmate who merely knows your email.
+-- bios102_students is never readable by anon directly (this repo and site
+-- are public; unlike every "*_public view" pattern used elsewhere, there is
+-- no safe way to expose a roster view without handing out every student's
+-- name and email to anyone who loads the page). The roster rows themselves
+-- are seeded out of band via the SQL editor, not from a migration in this
+-- repo, and never committed here.
+-- ─────────────────────────────────────────────────────────────────────────
+create table if not exists bios102_students (
+  email text primary key,
+  display_name text not null,
+  major text,
+  created_at timestamptz not null default now()
+);
+
+alter table bios102_students enable row level security;
+-- Deliberately zero policies -- not even anon select. This table is
+-- readable only via the SQL editor/service role and through the
+-- security-definer functions below, matching get_lease_signing_request's
+-- "return only what a valid caller needs, never the whole table" pattern.
+
+create or replace function bios102_is_enrolled(p_email text)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from bios102_students where lower(email) = lower(trim(p_email))
+  );
+$$;
+
+grant execute on function bios102_is_enrolled(text) to anon;
+
+-- Each row is both the emailed magic-link token (while status = 'pending')
+-- and, once clicked, the ongoing session token the browser holds onto in
+-- localStorage (status = 'active') -- same "the unguessable link IS the
+-- credential" pattern as lease_signing_requests, just reused past the
+-- first click so a student doesn't get logged out every time they revisit.
+-- anon can only ever INSERT here (to request a link); the enrollment check
+-- happens in the RLS policy itself via bios102_is_enrolled so a non-roster
+-- email can't even create a row (and can't trigger a send). Reading,
+-- activating, and resolving a token to an identity all happen only through
+-- the security-definer functions below -- there is no anon select/update
+-- policy at all.
+create table if not exists bios102_login_links (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  status text not null default 'pending' check (status in ('pending', 'active')),
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null default (now() + interval '30 minutes')
+);
+
+alter table bios102_login_links enable row level security;
+
+create policy "anon can request a bios102 login link if enrolled" on bios102_login_links
+  for insert to anon
+  with check (bios102_is_enrolled(email));
+
+create index if not exists bios102_login_links_email_idx on bios102_login_links (lower(email));
+
+-- Sends the actual email -- see notify-submission/index.ts's
+-- formatBios102LoginLink + TABLE_CONFIG entry for bios102_login_links.
+drop trigger if exists bios102_login_links_notify on bios102_login_links;
+create trigger bios102_login_links_notify
+  after insert on bios102_login_links
+  for each row execute function notify_submission_webhook();
+
+-- Verifies a clicked link (or a still-active one revisited later) and
+-- returns the session token to keep using (the same p_token) plus the
+-- student's identity. A 'pending' row must be clicked within its
+-- expires_at window to activate; once 'active' it keeps working
+-- indefinitely (matches "click the link to enter the site" being normal,
+-- repeatable behavior across devices/sessions, not a one-shot). Returns no
+-- rows for an unknown, never-activated-and-expired token -- the client
+-- treats that as "request a new link".
+create or replace function bios102_verify_login_link(p_token uuid)
+returns table (session_token uuid, email text, display_name text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_email text;
+begin
+  select s.email into v_email
+  from bios102_login_links l
+  join bios102_students s on lower(s.email) = lower(l.email)
+  where l.id = p_token
+    and (l.status = 'active' or (l.status = 'pending' and l.expires_at > now()));
+
+  if v_email is null then
+    return;
+  end if;
+
+  update bios102_login_links set status = 'active' where id = p_token and status <> 'active';
+
+  return query
+    select p_token, s.email, s.display_name
+    from bios102_students s
+    where lower(s.email) = lower(v_email);
+end;
+$$;
+
+grant execute on function bios102_verify_login_link(uuid) to anon;
+
+-- Each student's self-built characteristics comparison table for one
+-- exercise of the manual (columns/rows are student-arranged, not fixed --
+-- see BIOS102/js/app.js). No anon policies at all on this table -- every
+-- read/write is mediated by the two session-scoped functions below, which
+-- resolve p_session against bios102_login_links themselves rather than
+-- trusting an email the client hands over, so one student's browser can't
+-- read or overwrite another's table just by guessing their email.
+create table if not exists bios102_student_tables (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  exercise_number int not null,
+  table_name text not null default 'My Comparison Table',
+  columns jsonb not null default '[]'::jsonb,
+  rows jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (email, exercise_number, table_name)
+);
+
+alter table bios102_student_tables enable row level security;
+
+create index if not exists bios102_student_tables_email_idx on bios102_student_tables (lower(email));
+
+create or replace function bios102_set_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists bios102_student_tables_touch on bios102_student_tables;
+create trigger bios102_student_tables_touch
+  before update on bios102_student_tables
+  for each row execute function bios102_set_updated_at();
+
+create or replace function bios102_load_tables(p_session uuid)
+returns table (id uuid, exercise_number int, table_name text, columns jsonb, rows jsonb, updated_at timestamptz)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select st.id, st.exercise_number, st.table_name, st.columns, st.rows, st.updated_at
+  from bios102_student_tables st
+  join bios102_login_links l on l.status = 'active' and l.id = p_session
+  where lower(st.email) = lower(l.email)
+  order by st.exercise_number;
+$$;
+
+grant execute on function bios102_load_tables(uuid) to anon;
+
+create or replace function bios102_save_table(
+  p_session uuid,
+  p_exercise_number int,
+  p_table_name text,
+  p_columns jsonb,
+  p_rows jsonb
+)
+returns table (id uuid, exercise_number int, table_name text, columns jsonb, rows jsonb, updated_at timestamptz)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_email text;
+begin
+  select s.email into v_email
+  from bios102_login_links l
+  join bios102_students s on lower(s.email) = lower(l.email)
+  where l.id = p_session and l.status = 'active';
+
+  if v_email is null then
+    raise exception 'invalid or expired BIOS102 session';
+  end if;
+
+  return query
+    insert into bios102_student_tables (email, exercise_number, table_name, columns, rows)
+    values (v_email, p_exercise_number, p_table_name, p_columns, p_rows)
+    on conflict (email, exercise_number, table_name) do update
+      set columns = excluded.columns, rows = excluded.rows
+    returning
+      bios102_student_tables.id, bios102_student_tables.exercise_number, bios102_student_tables.table_name,
+      bios102_student_tables.columns, bios102_student_tables.rows, bios102_student_tables.updated_at;
+end;
+$$;
+
+grant execute on function bios102_save_table(uuid, int, text, jsonb, jsonb) to anon;
