@@ -542,6 +542,25 @@ window.sfSupabase = {
     return (data && data[0]) || null;
   },
 
+  // Uploads a photo (drawing or specimen snapshot) for one row of a
+  // student's BIOS102 comparison table, compressed the same way as every
+  // other photo upload on this site. Returns the public URL, which the
+  // caller stores directly in that row's own JSON (photoPath) -- no
+  // separate table/column, no session token needed here since the bucket
+  // is public and write-only-by-anyone (see schema.sql), same trust model
+  // as the rest of BIOS102's low-stakes student data.
+  async bios102UploadOrganismPhoto(file) {
+    const client = await window.sfSupabaseReady;
+    const compressed = await this._compressImage(file);
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+    const { error } = await client.storage.from('bios102-organism-photos').upload(path, compressed, {
+      contentType: 'image/jpeg',
+    });
+    if (error) throw error;
+    const { data } = client.storage.from('bios102-organism-photos').getPublicUrl(path);
+    return data.publicUrl;
+  },
+
   async submitClrwfJobApplication({ position, fullName, email, phone, coverLetter, resumeFile, voiceNotes }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);

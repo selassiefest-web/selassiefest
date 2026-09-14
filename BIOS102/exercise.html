@@ -123,6 +123,25 @@
         return String(str).replace(/[^a-z0-9]/gi, '-').toLowerCase();
       }
 
+      // A student's own drawing of the specimen, or a phone photo of it,
+      // attached to one row of their table (see bios102UploadOrganismPhoto
+      // in supabase-client.js). The file input's `capture` attribute is
+      // what makes mobile browsers offer the camera directly instead of
+      // just a file picker; desktop browsers just ignore it and show the
+      // normal picker.
+      function photoControlHtml(row) {
+        const id = 'photo-input-' + cssId(row.id);
+        const hasPhoto = !!row.photoPath;
+        return `
+          <div class="row-photo">
+            ${hasPhoto ? `<a href="${BIOS.escapeHtml(row.photoPath)}" target="_blank" rel="noopener"><img src="${BIOS.escapeHtml(row.photoPath)}" class="row-photo-thumb" alt="Photo for ${BIOS.escapeHtml(row.label)}" /></a>` : ''}
+            <label class="photo-btn" for="${id}">${hasPhoto ? 'Replace photo' : '+ Photo'}</label>
+            <input type="file" accept="image/*" capture="environment" id="${id}" data-row="${BIOS.escapeHtml(row.id)}" class="photo-input" hidden />
+            ${hasPhoto ? `<button type="button" class="photo-remove" data-row="${BIOS.escapeHtml(row.id)}">Remove photo</button>` : ''}
+          </div>
+        `;
+      }
+
       function organismCardHtml(org) {
         const dl = Object.entries(org.characteristics || {}).map(([k, v]) =>
           `<dt>${BIOS.escapeHtml(BIOS.humanizeKey(k))}</dt><dd>${BIOS.escapeHtml(BIOS.formatValue(v))}</dd>`
@@ -245,7 +264,7 @@
       // cell(s) per column flagged (see computeDiffCellKeys above).
       function renderCompareLayout(diffKeys) {
         const [a, b] = rows;
-        const orgHeader = (r) => `<th><span contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</span> <button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove">&times;</button></th>`;
+        const orgHeader = (r) => `<th><span contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</span> <button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove">&times;</button>${photoControlHtml(r)}</th>`;
         const head = `<tr><th></th>${orgHeader(a)}${orgHeader(b)}</tr>`;
         const body = columns.map((c) => {
           const differs = diffKeys.has(a.id + '|' + c.key) || diffKeys.has(b.id + '|' + c.key);
@@ -272,7 +291,7 @@
             return `<td${diffClass} contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`;
           }).join('');
           return `<tr>
-            <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button></td>
+            <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button>${photoControlHtml(r)}</td>
             <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
             ${cells}
           </tr>`;
@@ -325,6 +344,56 @@
             if (row) row.label = cell.textContent.trim();
           });
         });
+        area.querySelectorAll('.photo-input').forEach((input) => {
+          input.addEventListener('change', async () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const row = rows.find((r) => r.id === input.dataset.row);
+            if (!row) return;
+            const msg = document.getElementById('save-msg');
+            msg.textContent = 'Uploading photo…';
+            msg.className = 'form-msg';
+            try {
+              row.photoPath = await window.sfSupabase.bios102UploadOrganismPhoto(file);
+              renderTable();
+              await saveTable();
+            } catch (err) {
+              console.error(err);
+              msg.textContent = 'Could not upload that photo. Please try again.';
+              msg.className = 'form-msg error';
+            }
+          });
+        });
+        area.querySelectorAll('.photo-remove').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const row = rows.find((r) => r.id === btn.dataset.row);
+            if (!row) return;
+            row.photoPath = null;
+            renderTable();
+            await saveTable();
+          });
+        });
+      }
+
+      async function saveTable() {
+        const msg = document.getElementById('save-msg');
+        msg.textContent = 'Saving…';
+        msg.className = 'form-msg';
+        try {
+          await window.sfSupabase.bios102SaveStudentTable({
+            sessionToken: session.sessionToken,
+            exerciseNumber: storageExerciseNumber,
+            tableName: TABLE_NAME,
+            columns,
+            rows,
+          });
+          msg.textContent = 'Saved.';
+          msg.className = 'form-msg ok';
+        } catch (err) {
+          console.error(err);
+          msg.textContent = 'Could not save. Please try again.';
+          msg.className = 'form-msg error';
+        }
       }
 
       document.getElementById('diff-toggle').addEventListener('click', (e) => {
@@ -357,26 +426,7 @@
         renderTable();
       });
 
-      document.getElementById('save-btn').addEventListener('click', async () => {
-        const msg = document.getElementById('save-msg');
-        msg.textContent = 'Saving…';
-        msg.className = 'form-msg';
-        try {
-          await window.sfSupabase.bios102SaveStudentTable({
-            sessionToken: session.sessionToken,
-            exerciseNumber: storageExerciseNumber,
-            tableName: TABLE_NAME,
-            columns,
-            rows,
-          });
-          msg.textContent = 'Saved.';
-          msg.className = 'form-msg ok';
-        } catch (err) {
-          console.error(err);
-          msg.textContent = 'Could not save. Please try again.';
-          msg.className = 'form-msg error';
-        }
-      });
+      document.getElementById('save-btn').addEventListener('click', saveTable);
 
       renderOrganismCards();
       renderColumnChips();

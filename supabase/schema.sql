@@ -7064,3 +7064,25 @@ end;
 $$;
 
 grant execute on function bios102_save_table(uuid, int, text, jsonb, jsonb) to anon;
+
+-- Photos students attach to a row in their own comparison table (their
+-- drawing of the specimen, or a phone photo of it) -- the path/URL lives
+-- in that row's own JSON (bios102_student_tables.rows[].photoPath), not a
+-- separate column, so no table change was needed for this. Public bucket,
+-- same pattern as game-submissions above: these are lab sketches and
+-- microscope photos, not sensitive, and are only ever shown back to the
+-- student who uploaded them (via the URL stored in their own row).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'bios102-organism-photos', 'bios102-organism-photos', true, 10485760,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/heic']
+)
+on conflict (id) do nothing;
+
+create policy "Allow anon insert to bios102-organism-photos" on storage.objects
+  for insert to anon
+  with check (bucket_id = 'bios102-organism-photos');
+
+create policy "Allow public read of bios102-organism-photos" on storage.objects
+  for select to anon
+  using (bucket_id = 'bios102-organism-photos');
