@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+/* Without !important, a same-specificity class rule setting its own
+   `display` (e.g. .btn-block below) wins over the UA default for [hidden]
+   and the element shows up regardless of the hidden attribute. */
+[hidden] { display: none !important; }
+
 :root {
   --bg: #0b1210;
   --bg-panel: rgba(255, 255, 255, 0.04);
