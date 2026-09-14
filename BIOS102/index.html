@@ -20,6 +20,9 @@
         <button type="submit" class="btn" id="login-btn">Email me a sign-in link</button>
       </form>
       <p class="form-msg" id="login-msg"></p>
+      <p class="form-hint" id="wait-hint" hidden>Emails can take a few minutes to show up &mdash; check spam/junk too. No need to keep refreshing; the link stays good for 30 minutes.</p>
+      <button type="button" class="btn btn-block" id="resend-btn" hidden>Send it again</button>
+      <a href="#" class="btn btn-block" id="contact-btn" hidden>Email your instructor to get added</a>
     </div>
   </div>
 
@@ -27,6 +30,8 @@
   <script src="/BIOS102/js/app.js"></script>
   <script>
     (function () {
+      const INSTRUCTOR_EMAIL = 'harria01@uwp.edu';
+
       const existing = BIOS.getSession();
       if (existing && existing.sessionToken) {
         window.location.href = '/BIOS102/dashboard.html';
@@ -36,26 +41,55 @@
       const form = document.getElementById('login-form');
       const msg = document.getElementById('login-msg');
       const btn = document.getElementById('login-btn');
+      const waitHint = document.getElementById('wait-hint');
+      const resendBtn = document.getElementById('resend-btn');
+      const contactBtn = document.getElementById('contact-btn');
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim().toLowerCase();
+      function contactMailto(email) {
+        const subject = 'BIOS102 Lab Companion - please add my email';
+        const body = `Hi Professor Harris,\n\nI tried to sign in to the BIOS102 Lab Companion site but my email wasn't recognized on the roster.\n\nMy email: ${email}\nMy name:\n\nCould you add me? Thanks!`;
+        return `mailto:${INSTRUCTOR_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+
+      async function requestLink(email, { isResend } = {}) {
         msg.textContent = '';
         msg.className = 'form-msg';
+        waitHint.hidden = true;
+        resendBtn.hidden = true;
+        contactBtn.hidden = true;
         btn.disabled = true;
+        resendBtn.disabled = true;
         btn.textContent = 'Sending...';
         try {
           await window.sfSupabase.bios102RequestLoginLink(email);
-          msg.textContent = `Check ${email} for a sign-in link (also check spam). It's good for 30 minutes.`;
+          msg.textContent = isResend
+            ? `Sent again to ${email}.`
+            : `Check ${email} for a sign-in link.`;
           msg.className = 'form-msg ok';
+          waitHint.hidden = false;
+          resendBtn.hidden = false;
+          resendBtn.disabled = false;
           btn.textContent = 'Link sent';
         } catch (err) {
           console.error(err);
-          msg.textContent = "That email isn't on the class roster. Double-check it, or ask your instructor to add it.";
+          msg.textContent = "That email isn't on the class roster. Double-check it, or email your instructor below to get added.";
           msg.className = 'form-msg error';
+          contactBtn.href = contactMailto(email);
+          contactBtn.hidden = false;
           btn.disabled = false;
           btn.textContent = 'Email me a sign-in link';
         }
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        requestLink(email);
+      });
+
+      resendBtn.addEventListener('click', () => {
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        requestLink(email, { isResend: true });
       });
     })();
   </script>
