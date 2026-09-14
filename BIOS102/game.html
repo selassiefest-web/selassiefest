@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Practice Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap">
+    <p><a href="#" id="back-link">&larr; Back</a></p>
+    <h1 id="game-title">Practice Quiz</h1>
+    <p class="lede" id="game-meta"></p>
+
+    <section id="view-levels">
+      <div class="grid" id="level-grid"></div>
+      <p class="form-hint" id="level-note" style="text-align:left;"></p>
+    </section>
+
+    <section id="view-quiz" hidden>
+      <div class="quiz-hud">
+        <span id="quiz-progress"></span>
+        <span>Score: <strong id="quiz-score">0</strong></span>
+        <span id="quiz-streak"></span>
+      </div>
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="timer-fill"></div></div>
+      <div class="quiz-card" id="quiz-card">
+        <div class="quiz-images" id="quiz-images"></div>
+        <p class="quiz-prompt" id="quiz-prompt"></p>
+        <div class="quiz-answers" id="quiz-answers"></div>
+        <p class="quiz-feedback" id="quiz-feedback"></p>
+      </div>
+    </section>
+
+    <section id="view-summary" hidden>
+      <div class="summary-card">
+        <span class="eyebrow" style="display:block;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Round complete</span>
+        <h2 id="summary-heading" style="font-weight:400;"></h2>
+        <div class="big-score" id="summary-score"></div>
+        <p id="summary-stats" class="lede" style="margin:0 auto 6px;"></p>
+        <p class="best-line" id="summary-best" hidden></p>
+        <div class="actions-row" style="justify-content:center;">
+          <button class="btn" id="play-again-btn" type="button" style="width:auto;">Play again</button>
+          <button class="btn btn-ghost" id="change-level-btn" type="button">Change level</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/data.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (async function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      const QUESTIONS_PER_ROUND = 10;
+      const params = new URLSearchParams(window.location.search);
+      const examParam = params.get('exam');
+      const exParam = params.get('ex');
+
+      let scopeExercises, scopeLabel, backHref, storageKey;
+      if (examParam) {
+        const exam = BIOS.getExamRange(examParam);
+        scopeExercises = BIOS.getExercisesForExam(examParam);
+        if (!exam || !scopeExercises.length) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That quiz wasn\'t found.</p>';
+          return;
+        }
+        scopeLabel = exam.label + ' — test yourself across Exercises ' + scopeExercises.map((e) => e.number).join(', ') + '.';
+        backHref = '/BIOS102/exercise.html?exam=' + exam.number;
+        storageKey = 'bios102_quiz_best_exam' + exam.number;
+      } else {
+        const exercise = BIOS.getExercise(exParam);
+        if (!exercise) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exercise wasn\'t found.</p>';
+          return;
+        }
+        scopeExercises = [exercise];
+        scopeLabel = `Exercise ${exercise.number}: ${exercise.title}`;
+        backHref = '/BIOS102/exercise.html?ex=' + exercise.number;
+        storageKey = 'bios102_quiz_best_ex' + exercise.number;
+      }
+
+      document.getElementById('back-link').href = backHref;
+      document.getElementById('game-meta').textContent = scopeLabel;
+
+      const pool = scopeExercises.flatMap((e) => e.organisms);
+
+      // Photos are personal -- pulled from whatever this student has already
+      // uploaded onto their own comparison-table rows (see exercise.html's
+      // photoPaths), across ANY of their saved tables, matched back to this
+      // quiz's organism pool by genus. No shared/stock image library exists
+      // for this site, so an organism the student hasn't photographed yet
+      // just gets a text-only question instead -- never a broken image.
+      const photosByGenus = {};
+      try {
+        const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+        const poolGenera = new Set(pool.map((o) => o.genus));
+        tables.forEach((t) => (t.rows || []).forEach((r) => {
+          if (r.genus && poolGenera.has(r.genus)) {
+            const paths = Array.isArray(r.photoPaths) ? r.photoPaths : (r.photoPath ? [r.photoPath] : []);
+            if (paths.length) photosByGenus[r.genus] = paths;
+          }
+        }));
+      } catch (err) {
+        console.error('Could not load photos for quiz', err);
+      }
+
+      // ---------------- helpers ----------------
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
+      function displayName(org) { return org.commonName || org.genus; }
+      function orgMarkup(org) {
+        const text = BIOS.escapeHtml(org.genus);
+        return org.isScientificName === false ? text : `<em>${text}</em>`;
+      }
+      function comparableEntries(org) {
+        return Object.entries(org.characteristics || {}).filter(([k, v]) => BIOS.isComparableKey(k) && v != null && v !== '');
+      }
+      function checkOrgAnswer(input, org) {
+        const n = norm(input);
+        if (!n) return false;
+        const candidates = [org.genus, org.commonName].filter(Boolean).map(norm);
+        return candidates.some((c) => c === n || (n.length >= 3 && (c.includes(n) || n.includes(c))));
+      }
+      function checkTextAnswer(input, correctText) {
+        const n = norm(input);
+        const c = norm(correctText);
+        if (!n) return false;
+        return n === c || c.includes(n) || n.includes(c);
+      }
+
+      // ---------------- question generators ----------------
+      // Each generator returns { type: 'mc'|'tf'|'text', images, promptHtml,
+      // options?, correct?, matchOrg?, matchText?, points, timeLimit }
+
+      function genTrueFalse(org, points) {
+        const entries = comparableEntries(org);
+        if (!entries.length) return null;
+        const [key, realVal] = pick(entries);
+        let shownVal = realVal;
+        let answer = true;
+        if (Math.random() < 0.5) {
+          const others = pool.filter((o) => o.genus !== org.genus && o.characteristics && o.characteristics[key] != null && norm(o.characteristics[key]) !== norm(realVal));
+          if (others.length) {
+            shownVal = pick(others).characteristics[key];
+            answer = false;
+          }
+        }
+        return {
+          type: 'tf',
+          images: photosByGenus[org.genus] || [],
+          promptHtml: `True or False: ${orgMarkup(org)}'s ${BIOS.humanizeKey(key)} is &ldquo;${BIOS.escapeHtml(BIOS.formatValue(shownVal))}.&rdquo;`,
+          options: [{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }],
+          correct: String(answer),
+          points, timeLimit: 5,
+        };
+      }
+
+      function genLevel1(org) {
+        const roll = Math.random();
+        if (roll < 0.34) {
+          const images = photosByGenus[org.genus] || [];
+          return {
+            type: 'text',
+            images,
+            promptHtml: images.length
+              ? 'Name this organism.'
+              : `One word: what genus has this trait &mdash; ${BIOS.humanizeKey(pick(comparableEntries(org))[0])}: &ldquo;${BIOS.escapeHtml(BIOS.formatValue(pick(comparableEntries(org))[1]))}&rdquo;?`,
+            matchOrg: org,
+            points: 10, timeLimit: 8,
+          };
+        }
+        if (roll < 0.67 && org.characteristics && org.characteristics.cellType) {
+          const correct = org.characteristics.cellType === 'prokaryotic' ? 'Prokaryote' : 'Eukaryote';
+          return {
+            type: 'mc',
+            images: photosByGenus[org.genus] || [],
+            promptHtml: `Pro or Euk: is ${orgMarkup(org)} a prokaryote or a eukaryote?`,
+            options: [{ label: 'Prokaryote', value: 'Prokaryote' }, { label: 'Eukaryote', value: 'Eukaryote' }],
+            correct,
+            points: 10, timeLimit: 5,
+          };
+        }
+        return genTrueFalse(org, 10) || genLevel1(org);
+      }
+
+      function genLevel2(pair) {
+        const [a, b] = pair;
+        const images = [...(photosByGenus[a.genus] || []), ...(photosByGenus[b.genus] || [])];
+        const keysA = comparableEntries(a).map(([k]) => k);
+        const shared = keysA.filter((k) => b.characteristics && b.characteristics[k] != null);
+        const differing = shared.filter((k) => norm(a.characteristics[k]) !== norm(b.characteristics[k]));
+        if (differing.length) {
+          const key = pick(differing);
+          const askAbout = Math.random() < 0.5 ? a : b;
+          return {
+            type: 'mc', images,
+            promptHtml: `Which one is &ldquo;${BIOS.escapeHtml(BIOS.formatValue(askAbout.characteristics[key]))}&rdquo; for ${BIOS.humanizeKey(key)}?`,
+            options: shuffle([{ label: displayName(a), value: a.genus }, { label: displayName(b), value: b.genus }]),
+            correct: askAbout.genus,
+            points: 20, timeLimit: 5,
+          };
+        }
+        const sharedSame = shared.filter((k) => !differing.includes(k));
+        if (sharedSame.length) {
+          const key = pick(sharedSame);
+          return {
+            type: 'tf', images,
+            promptHtml: `True or False: ${orgMarkup(a)} and ${orgMarkup(b)} have the same ${BIOS.humanizeKey(key)}.`,
+            options: [{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }],
+            correct: 'true',
+            points: 20, timeLimit: 5,
+          };
+        }
+        return genLevel1(a); // extremely unlikely fallback
+      }
+
+      function genLevel3() {
+        const multiImageGenera = Object.keys(photosByGenus).filter((g) => photosByGenus[g].length >= 2 && pool.some((o) => o.genus === g));
+        const canDoThree = pool.length >= 3;
+        if (multiImageGenera.length && (!canDoThree || Math.random() < 0.45)) {
+          const genus = pick(multiImageGenera);
+          const org = pool.find((o) => o.genus === genus);
+          return {
+            type: 'text',
+            images: photosByGenus[genus],
+            promptHtml: 'These are your own photos of the same organism. Name it.',
+            matchOrg: org,
+            points: 30, timeLimit: 8,
+          };
+        }
+        if (canDoThree) {
+          const three = shuffle(pool).slice(0, 3);
+          const images = three.flatMap((o) => photosByGenus[o.genus] || []);
+          const commonKeys = comparableEntries(three[0]).map(([k]) => k).filter((k) => three.every((o) => o.characteristics && o.characteristics[k] != null));
+          for (const key of shuffle(commonKeys)) {
+            const vals = three.map((o) => norm(o.characteristics[key]));
+            const counts = {};
+            vals.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
+            const distinctCount = Object.keys(counts).length;
+            const oddIdx = vals.findIndex((v) => counts[v] === 1 && distinctCount === 2);
+            if (oddIdx >= 0) {
+              return {
+                type: 'mc', images,
+                promptHtml: `Which of these three is the odd one out for ${BIOS.humanizeKey(key)}?`,
+                options: three.map((o) => ({ label: displayName(o), value: o.genus })),
+                correct: three[oddIdx].genus,
+                points: 30, timeLimit: 5,
+              };
+            }
+          }
+          const target = pick(three);
+          const shortEntries = comparableEntries(target).filter(([, v]) => String(v).length < 24);
+          const [key, val] = shortEntries.length ? pick(shortEntries) : ['cellType', target.characteristics.cellType];
+          return {
+            type: 'text',
+            images: photosByGenus[target.genus] || [],
+            promptHtml: `One word: what's ${orgMarkup(target)}'s ${BIOS.humanizeKey(key)}?`,
+            matchText: BIOS.formatValue(val),
+            points: 30, timeLimit: 8,
+          };
+        }
+        return genLevel2(shuffle(pool).slice(0, 2)); // guaranteed available per level-select gating
+      }
+
+      const LEVELS = [
+        { number: 1, label: 'Level 1', desc: 'One organism at a time. Name it, call pro/euk, or True/False.', available: () => pool.length >= 1, generate: () => genLevel1(pick(pool)) },
+        { number: 2, label: 'Level 2', desc: 'Two organisms side by side — spot which one fits.', available: () => pool.length >= 2, generate: () => genLevel2(shuffle(pool).slice(0, 2)) },
+        {
+          number: 3, label: 'Level 3', desc: 'Three organisms, or multiple photos of one — short answers count.',
+          available: () => pool.length >= 3 || Object.keys(photosByGenus).some((g) => photosByGenus[g].length >= 2 && pool.some((o) => o.genus === g)),
+          generate: () => genLevel3(),
+        },
+      ];
+
+      // ---------------- level select ----------------
+      function bestScore(levelNumber) {
+        try { return Number(localStorage.getItem(storageKey + '_lvl' + levelNumber)) || 0; } catch (e) { return 0; }
+      }
+      function saveBestScore(levelNumber, score) {
+        try {
+          if (score > bestScore(levelNumber)) localStorage.setItem(storageKey + '_lvl' + levelNumber, String(score));
+        } catch (e) { /* ignore */ }
+      }
+
+      function renderLevelSelect() {
+        const grid = document.getElementById('level-grid');
+        grid.innerHTML = LEVELS.map((lvl) => {
+          const ok = lvl.available();
+          const best = bestScore(lvl.number);
+          return `
+            <div class="ex-card level-card ${ok ? '' : 'disabled'}" data-level="${lvl.number}">
+              <span class="num">${lvl.label}</span>
+              <h3>${lvl.desc}</h3>
+              ${best > 0 ? `<span class="best">Best: ${best} pts</span>` : ''}
+              ${ok ? '<span class="go">Start &rarr;</span>' : '<span class="meta">Not enough organisms in this chapter yet</span>'}
+            </div>
+          `;
+        }).join('');
+        grid.querySelectorAll('.level-card:not(.disabled)').forEach((card) => {
+          card.addEventListener('click', () => startRound(Number(card.dataset.level)));
+        });
+      }
+
+      // ---------------- round runner ----------------
+      let state = null;
+
+      function startRound(levelNumber) {
+        const level = LEVELS.find((l) => l.number === levelNumber);
+        state = { level, score: 0, streak: 0, qIndex: 0, correctCount: 0, timerId: null, timeLeft: 0 };
+        document.getElementById('view-levels').hidden = true;
+        document.getElementById('view-summary').hidden = true;
+        document.getElementById('view-quiz').hidden = false;
+        nextQuestion();
+      }
+
+      function updateHud() {
+        document.getElementById('quiz-progress').textContent = `Question ${state.qIndex} / ${QUESTIONS_PER_ROUND}`;
+        document.getElementById('quiz-score').textContent = state.score;
+        const streakEl = document.getElementById('quiz-streak');
+        streakEl.textContent = state.streak >= 2 ? `${state.streak}-streak` : '';
+        streakEl.className = state.streak >= 2 ? 'streak-on' : '';
+      }
+
+      function nextQuestion() {
+        state.qIndex++;
+        if (state.qIndex > QUESTIONS_PER_ROUND) { finishRound(); return; }
+        clearTimeout(state.timerId);
+        const q = state.level.generate();
+        state.current = q;
+        state.answered = false;
+        updateHud();
+        renderQuestion(q);
+        startTimer(q.timeLimit);
+      }
+
+      function renderQuestion(q) {
+        document.getElementById('quiz-feedback').textContent = '';
+        document.getElementById('quiz-feedback').className = 'quiz-feedback';
+        document.getElementById('quiz-card').classList.remove('shake');
+        document.getElementById('quiz-images').innerHTML = (q.images || []).map((url) =>
+          `<img src="${BIOS.escapeHtml(url)}" alt="" />`
+        ).join('');
+        document.getElementById('quiz-prompt').innerHTML = q.promptHtml;
+
+        const answersEl = document.getElementById('quiz-answers');
+        if (q.type === 'text') {
+          answersEl.innerHTML = `
+            <input type="text" id="text-answer" autocomplete="off" placeholder="Type your answer&hellip;" />
+            <button class="btn" id="text-submit" type="button" style="width:auto;">Submit</button>
+          `;
+          const input = document.getElementById('text-answer');
+          const submit = () => submitAnswer(input.value);
+          document.getElementById('text-submit').addEventListener('click', submit);
+          input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+          input.focus();
+        } else {
+          answersEl.innerHTML = q.options.map((opt, i) =>
+            `<button class="answer-btn" data-value="${BIOS.escapeHtml(String(opt.value))}" data-idx="${i}">${BIOS.escapeHtml(opt.label)}</button>`
+          ).join('');
+          answersEl.querySelectorAll('.answer-btn').forEach((btn) => {
+            btn.addEventListener('click', () => submitAnswer(btn.dataset.value));
+          });
+        }
+      }
+
+      function startTimer(seconds) {
+        state.timeLeft = seconds;
+        const fill = document.getElementById('timer-fill');
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        fill.classList.remove('urgent');
+        // force reflow so the transition re-applies cleanly on the next tick
+        void fill.offsetWidth;
+        fill.style.transition = `width ${seconds}s linear, background 0.3s ease`;
+        requestAnimationFrame(() => { fill.style.width = '0%'; });
+        state.timerId = setTimeout(() => { if (!state.answered) submitAnswer(null); }, seconds * 1000);
+        clearTimeout(state.urgentId);
+        state.urgentId = setTimeout(() => fill.classList.add('urgent'), Math.max(0, seconds - 2) * 1000);
+      }
+
+      function submitAnswer(rawValue) {
+        if (state.answered) return;
+        state.answered = true;
+        clearTimeout(state.timerId);
+        clearTimeout(state.urgentId);
+        const q = state.current;
+        let isCorrect = false;
+        if (q.type === 'text') {
+          isCorrect = q.matchOrg ? checkOrgAnswer(rawValue, q.matchOrg) : checkTextAnswer(rawValue, q.matchText);
+        } else {
+          isCorrect = rawValue === q.correct;
+        }
+
+        const feedback = document.getElementById('quiz-feedback');
+        if (isCorrect) {
+          state.streak++;
+          let pts = q.points + (state.streak > 0 && state.streak % 3 === 0 ? 10 : 0);
+          state.score += pts;
+          state.correctCount++;
+          feedback.textContent = state.streak % 3 === 0 && state.streak >= 3 ? `Correct! +${pts} pts (streak bonus!)` : `Correct! +${pts} pts`;
+          feedback.className = 'quiz-feedback correct';
+        } else {
+          state.streak = 0;
+          const correctText = q.type === 'text'
+            ? (q.matchOrg ? displayName(q.matchOrg) : q.matchText)
+            : (q.options.find((o) => o.value === q.correct) || {}).label;
+          feedback.textContent = rawValue === null ? `Time's up! Answer: ${correctText}` : `Not quite — answer: ${correctText}`;
+          feedback.className = 'quiz-feedback wrong';
+          document.getElementById('quiz-card').classList.add('shake');
+        }
+
+        if (q.type !== 'text') {
+          document.querySelectorAll('.answer-btn').forEach((btn) => {
+            btn.disabled = true;
+            if (btn.dataset.value === q.correct) btn.classList.add('correct');
+            else if (btn.dataset.value === rawValue) btn.classList.add('wrong');
+          });
+        } else {
+          document.getElementById('text-submit').disabled = true;
+          document.getElementById('text-answer').disabled = true;
+        }
+
+        updateHud();
+        setTimeout(nextQuestion, 1400);
+      }
+
+      function finishRound() {
+        document.getElementById('view-quiz').hidden = true;
+        document.getElementById('view-summary').hidden = false;
+        const prevBest = bestScore(state.level.number);
+        saveBestScore(state.level.number, state.score);
+        document.getElementById('summary-heading').textContent = state.level.label + ' complete';
+        document.getElementById('summary-score').textContent = state.score + ' pts';
+        document.getElementById('summary-stats').textContent = `${state.correctCount} / ${QUESTIONS_PER_ROUND} correct`;
+        const bestEl = document.getElementById('summary-best');
+        if (state.score > prevBest) {
+          bestEl.textContent = prevBest > 0 ? `New personal best! (previous: ${prevBest})` : 'New personal best!';
+          bestEl.hidden = false;
+        } else {
+          bestEl.hidden = true;
+        }
+      }
+
+      document.getElementById('play-again-btn').addEventListener('click', () => startRound(state.level.number));
+      document.getElementById('change-level-btn').addEventListener('click', () => {
+        document.getElementById('view-summary').hidden = true;
+        document.getElementById('view-levels').hidden = false;
+        renderLevelSelect();
+      });
+
+      renderLevelSelect();
+    })();
+  </script>
+</body>
+</html>
