@@ -33,8 +33,9 @@
       <button class="btn btn-ghost" id="add-row-btn" type="button">+ Add blank row</button>
     </div>
     <div class="builder-toolbar">
-      <span class="chip on" id="diff-toggle" title="Softly highlights any column where your organisms don't all share the same value">Highlight what differs</span>
+      <span class="chip on" id="diff-toggle" title="Flags the exact cell(s) that break from the rest of the column, not just the whole column">Highlight what differs</span>
     </div>
+    <p class="form-hint" id="compare-hint" style="text-align:left;">With exactly 2 organisms, your table switches to a side-by-side compare view; 3 or more stays a full table with just the outlier cells flagged.</p>
 
     <div id="table-area"></div>
 
@@ -204,21 +205,80 @@
         });
       }
 
-      // Columns where every row's value doesn't already match -- these are
-      // the traits that actually separate the organisms in the table right
-      // now, so they're what's worth a subtle highlight (kept quiet: a soft
-      // tint, not a loud color, and it's toggleable via diff-toggle).
-      function columnsThatDiffer() {
-        const differing = new Set();
+      // Pinpoints exactly which cells are the odd ones out, per column,
+      // rather than just flagging "this whole column has some variance"
+      // (which doesn't say WHICH organism differs). For each column: group
+      // rows by their (trimmed, case-insensitive) value; if one value is
+      // the clear majority, only the minority cell(s) -- the actual
+      // outliers -- get flagged. If there's no clear majority (a tie, or
+      // every organism has its own distinct value), every non-blank cell in
+      // that column is flagged, since nothing there is "the norm" either.
+      // A column where everyone agrees is left alone entirely.
+      // Returns a Set of "rowId|columnKey" strings.
+      function computeDiffCellKeys() {
+        const flagged = new Set();
+        if (!highlightDiffs || rows.length < 2) return flagged;
         columns.forEach((c) => {
-          const seen = new Set();
+          const counts = new Map();
           rows.forEach((r) => {
             const v = (r.values && r.values[c.key] ? r.values[c.key] : '').trim().toLowerCase();
-            if (v) seen.add(v);
+            if (v) counts.set(v, (counts.get(v) || 0) + 1);
           });
-          if (seen.size > 1) differing.add(c.key);
+          if (counts.size < 2) return; // unanimous (or all blank) -- nothing to flag
+          const maxCount = Math.max(...counts.values());
+          const topValues = [...counts.entries()].filter(([, n]) => n === maxCount).map(([v]) => v);
+          const hasClearMajority = topValues.length === 1 && maxCount > 1;
+          rows.forEach((r) => {
+            const v = ((r.values && r.values[c.key]) || '').trim().toLowerCase();
+            if (!v) return;
+            if (!hasClearMajority || v !== topValues[0]) flagged.add(r.id + '|' + c.key);
+          });
         });
-        return differing;
+        return flagged;
+      }
+
+      // Exactly 2 organisms is the common "compare these two" case, and
+      // it's much clearer read as a side-by-side card (trait rows, one
+      // column per organism) than as a 2-row wide table -- a whole row
+      // lighting up IS the difference, no per-cell scanning required. 3+
+      // organisms keeps the standard wide table, with only the outlier
+      // cell(s) per column flagged (see computeDiffCellKeys above).
+      function renderCompareLayout(diffKeys) {
+        const [a, b] = rows;
+        const orgHeader = (r) => `<th><span contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</span> <button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove">&times;</button></th>`;
+        const head = `<tr><th></th>${orgHeader(a)}${orgHeader(b)}</tr>`;
+        const body = columns.map((c) => {
+          const differs = diffKeys.has(a.id + '|' + c.key) || diffKeys.has(b.id + '|' + c.key);
+          const cls = differs ? ' class="diff-cell"' : '';
+          const valA = BIOS.escapeHtml(a.values ? (a.values[c.key] || '') : '');
+          const valB = BIOS.escapeHtml(b.values ? (b.values[c.key] || '') : '');
+          return `<tr>
+            <th${cls}>${BIOS.escapeHtml(c.label)} <button class="col-remove" data-key="${BIOS.escapeHtml(c.key)}" title="Remove trait">&times;</button></th>
+            <td${cls} contenteditable="true" data-row="${BIOS.escapeHtml(a.id)}" data-col="${BIOS.escapeHtml(c.key)}">${valA}</td>
+            <td${cls} contenteditable="true" data-row="${BIOS.escapeHtml(b.id)}" data-col="${BIOS.escapeHtml(c.key)}">${valB}</td>
+          </tr>`;
+        }).join('');
+        return `<table class="build-table compare-table">${head}${body}</table>`;
+      }
+
+      function renderStandardLayout(diffKeys) {
+        const head = `<tr><th style="width:1%;"></th><th>Organism</th>${columns.map((c) =>
+          `<th data-key="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(c.label)} <button class="col-remove" data-key="${BIOS.escapeHtml(c.key)}" title="Remove column">&times;</button></th>`
+        ).join('')}</tr>`;
+
+        const body = rows.map((r) => {
+          const cells = columns.map((c) => {
+            const diffClass = diffKeys.has(r.id + '|' + c.key) ? ' class="diff-cell"' : '';
+            return `<td${diffClass} contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`;
+          }).join('');
+          return `<tr>
+            <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button></td>
+            <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
+            ${cells}
+          </tr>`;
+        }).join('');
+
+        return `<table class="build-table">${head}${body}</table>`;
       }
 
       function renderTable() {
@@ -232,25 +292,9 @@
           return;
         }
 
-        const differing = highlightDiffs && rows.length > 1 ? columnsThatDiffer() : new Set();
-
-        const head = `<tr><th style="width:1%;"></th><th>Organism</th>${columns.map((c) =>
-          `<th data-key="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(c.label)} <button class="col-remove" data-key="${BIOS.escapeHtml(c.key)}" title="Remove column">&times;</button></th>`
-        ).join('')}</tr>`;
-
-        const body = rows.map((r) => {
-          const cells = columns.map((c) => {
-            const diffClass = differing.has(c.key) ? ' class="diff-cell"' : '';
-            return `<td${diffClass} contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`;
-          }).join('');
-          return `<tr>
-            <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button></td>
-            <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
-            ${cells}
-          </tr>`;
-        }).join('');
-
-        area.innerHTML = `<div class="table-scroll"><table class="build-table">${head}${body}</table></div>`;
+        const diffKeys = computeDiffCellKeys();
+        const tableHtml = rows.length === 2 ? renderCompareLayout(diffKeys) : renderStandardLayout(diffKeys);
+        area.innerHTML = `<div class="table-scroll">${tableHtml}</div>`;
 
         area.querySelectorAll('.col-remove').forEach((btn) => {
           btn.addEventListener('click', () => {
@@ -275,7 +319,7 @@
             }
           });
         });
-        area.querySelectorAll('td[data-row-label]').forEach((cell) => {
+        area.querySelectorAll('[data-row-label]').forEach((cell) => {
           cell.addEventListener('blur', () => {
             const row = rows.find((r) => r.id === cell.dataset.rowLabel);
             if (row) row.label = cell.textContent.trim();

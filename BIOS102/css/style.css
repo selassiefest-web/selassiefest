@@ -296,12 +296,21 @@ table.build-table th[contenteditable="true"]:focus {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
-/* A quiet marker for columns where the organisms in the table don't all
-   share the same value -- see #diff-toggle/columnsThatDiffer() in
+/* A quiet marker for the specific cell(s) that break from the rest of
+   their column -- see #diff-toggle/computeDiffCellKeys() in
    exercise.html. Deliberately just a soft tint, not a border or icon, so
-   it reads as "notice this" without shouting. */
-table.build-table td.diff-cell { background: var(--amber-soft); }
+   it reads as "notice this" without shouting. Also applies to <th> since
+   the 2-organism compare layout puts the trait label in a <th> per row. */
+table.build-table td.diff-cell,
+table.build-table th.diff-cell { background: var(--amber-soft); }
 table.build-table td.diff-cell[contenteditable="true"]:focus { background: var(--amber-soft); }
+
+/* Compare layout (exactly 2 organisms): trait rows instead of trait
+   columns, so the two organism columns should read as equal-weight peers
+   rather than one wide "everything else" column. */
+table.compare-table th:nth-child(2),
+table.compare-table th:nth-child(3) { width: 38%; }
+table.compare-table th:first-child { width: auto; white-space: nowrap; }
 table.build-table .row-organism { color: var(--text); font-weight: 500; white-space: nowrap; }
 .col-remove, .row-remove {
   background: none;
