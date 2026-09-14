@@ -63,6 +63,11 @@
       BIOS.mountTopbar(session);
 
       const QUESTIONS_PER_ROUND = 10;
+      // Live speech-to-text for typed-answer questions -- Chrome/Edge/Android
+      // support this natively; Firefox and some Safari versions don't, so
+      // the mic button only ever appears when it will actually work
+      // (checked once here, not per-question).
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       const params = new URLSearchParams(window.location.search);
       const examParam = params.get('exam');
       const exParam = params.get('ex');
@@ -170,7 +175,7 @@
           promptHtml: `True or False: ${orgMarkup(org)}'s ${BIOS.humanizeKey(key)} is &ldquo;${BIOS.escapeHtml(BIOS.formatValue(shownVal))}.&rdquo;`,
           options: [{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }],
           correct: String(answer),
-          points, timeLimit: 5,
+          points,
         };
       }
 
@@ -185,7 +190,7 @@
               ? 'Name this organism.'
               : `One word: what genus has this trait &mdash; ${BIOS.humanizeKey(pick(comparableEntries(org))[0])}: &ldquo;${BIOS.escapeHtml(BIOS.formatValue(pick(comparableEntries(org))[1]))}&rdquo;?`,
             matchOrg: org,
-            points: 10, timeLimit: 8,
+            points: 10,
           };
         }
         if (roll < 0.67 && org.characteristics && org.characteristics.cellType) {
@@ -196,7 +201,7 @@
             promptHtml: `Pro or Euk: is ${orgMarkup(org)} a prokaryote or a eukaryote?`,
             options: [{ label: 'Prokaryote', value: 'Prokaryote' }, { label: 'Eukaryote', value: 'Eukaryote' }],
             correct,
-            points: 10, timeLimit: 5,
+            points: 10,
           };
         }
         return genTrueFalse(org, 10) || genLevel1(org);
@@ -216,7 +221,7 @@
             promptHtml: `Which one is &ldquo;${BIOS.escapeHtml(BIOS.formatValue(askAbout.characteristics[key]))}&rdquo; for ${BIOS.humanizeKey(key)}?`,
             options: shuffle([{ label: displayName(a), value: a.genus }, { label: displayName(b), value: b.genus }]),
             correct: askAbout.genus,
-            points: 20, timeLimit: 5,
+            points: 20,
           };
         }
         const sharedSame = shared.filter((k) => !differing.includes(k));
@@ -227,7 +232,7 @@
             promptHtml: `True or False: ${orgMarkup(a)} and ${orgMarkup(b)} have the same ${BIOS.humanizeKey(key)}.`,
             options: [{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }],
             correct: 'true',
-            points: 20, timeLimit: 5,
+            points: 20,
           };
         }
         return genLevel1(a); // extremely unlikely fallback
@@ -244,7 +249,7 @@
             images: photosByGenus[genus],
             promptHtml: 'These are your own photos of the same organism. Name it.',
             matchOrg: org,
-            points: 30, timeLimit: 8,
+            points: 30,
           };
         }
         if (canDoThree) {
@@ -263,7 +268,7 @@
                 promptHtml: `Which of these three is the odd one out for ${BIOS.humanizeKey(key)}?`,
                 options: three.map((o) => ({ label: displayName(o), value: o.genus })),
                 correct: three[oddIdx].genus,
-                points: 30, timeLimit: 5,
+                points: 30,
               };
             }
           }
@@ -275,7 +280,7 @@
             images: photosByGenus[target.genus] || [],
             promptHtml: `One word: what's ${orgMarkup(target)}'s ${BIOS.humanizeKey(key)}?`,
             matchText: BIOS.formatValue(val),
-            points: 30, timeLimit: 8,
+            points: 30,
           };
         }
         return genLevel2(shuffle(pool).slice(0, 2)); // guaranteed available per level-select gating
@@ -340,11 +345,25 @@
         streakEl.className = state.streak >= 2 ? 'streak-on' : '';
       }
 
+      // 5 flat seconds felt too tight for anything longer than a one-word
+      // click, especially typed/spoken answers -- scale the limit off how
+      // much the student actually has to read, plus a floor per answer
+      // mechanism (clicking a button is faster than typing or speaking a
+      // reply). Capped so an unusually long prompt doesn't drag the round.
+      function computeTimeLimit(q) {
+        const plainPrompt = q.promptHtml.replace(/<[^>]+>/g, '');
+        const readSeconds = plainPrompt.length / 12; // ~12 characters/second reading pace
+        const floor = q.type === 'text' ? 9 : 5;
+        const responseAllowance = q.type === 'text' ? 5 : 2;
+        return Math.min(25, Math.max(floor, Math.round(readSeconds + responseAllowance)));
+      }
+
       function nextQuestion() {
         state.qIndex++;
         if (state.qIndex > QUESTIONS_PER_ROUND) { finishRound(); return; }
         clearTimeout(state.timerId);
         const q = state.level.generate();
+        q.timeLimit = computeTimeLimit(q);
         state.current = q;
         state.answered = false;
         updateHud();
@@ -364,7 +383,8 @@
         const answersEl = document.getElementById('quiz-answers');
         if (q.type === 'text') {
           answersEl.innerHTML = `
-            <input type="text" id="text-answer" autocomplete="off" placeholder="Type your answer&hellip;" />
+            <input type="text" id="text-answer" autocomplete="off" placeholder="Type${SpeechRecognitionCtor ? ' or speak' : ''} your answer&hellip;" />
+            ${SpeechRecognitionCtor ? '<button type="button" class="small-btn" id="mic-btn">Speak answer</button>' : ''}
             <button class="btn" id="text-submit" type="button" style="width:auto;">Submit</button>
           `;
           const input = document.getElementById('text-answer');
@@ -372,6 +392,26 @@
           document.getElementById('text-submit').addEventListener('click', submit);
           input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
           input.focus();
+
+          if (SpeechRecognitionCtor) {
+            const micBtn = document.getElementById('mic-btn');
+            micBtn.addEventListener('click', () => {
+              const recognizer = new SpeechRecognitionCtor();
+              recognizer.lang = 'en-US';
+              recognizer.interimResults = false;
+              recognizer.maxAlternatives = 1;
+              micBtn.textContent = 'Listening…';
+              micBtn.disabled = true;
+              const reset = () => { micBtn.textContent = 'Speak answer'; micBtn.disabled = false; };
+              recognizer.onresult = (e) => {
+                input.value = e.results[0][0].transcript;
+                input.focus();
+              };
+              recognizer.onerror = reset;
+              recognizer.onend = reset;
+              try { recognizer.start(); } catch (e) { reset(); }
+            });
+          }
         } else {
           answersEl.innerHTML = q.options.map((opt, i) =>
             `<button class="answer-btn" data-value="${BIOS.escapeHtml(String(opt.value))}" data-idx="${i}">${BIOS.escapeHtml(opt.label)}</button>`
@@ -437,6 +477,8 @@
         } else {
           document.getElementById('text-submit').disabled = true;
           document.getElementById('text-answer').disabled = true;
+          const micBtn = document.getElementById('mic-btn');
+          if (micBtn) micBtn.disabled = true;
         }
 
         updateHud();
