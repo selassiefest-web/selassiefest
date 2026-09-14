@@ -149,6 +149,18 @@
         `;
       }
 
+      // Binomial nomenclature convention: a genuine genus/species name is
+      // always italicized. Several entries in data.js are class-level or
+      // common-name stand-ins instead (e.g. "Freshwater clam", "Reptile
+      // (unspecified)") for exercises where the manual has students survey
+      // a whole class rather than one demonstration genus -- those are
+      // marked isScientificName: false and must NOT be italicized, since
+      // that would misrepresent them as real Latin names.
+      function genusHtml(org) {
+        const text = BIOS.escapeHtml(org.genus);
+        return org.isScientificName === false ? text : `<em>${text}</em>`;
+      }
+
       function organismCardHtml(org) {
         const dl = Object.entries(org.characteristics || {}).map(([k, v]) =>
           `<dt>${BIOS.escapeHtml(BIOS.humanizeKey(k))}</dt><dd>${BIOS.escapeHtml(BIOS.formatValue(v))}</dd>`
@@ -156,7 +168,7 @@
         const checked = rows.some((r) => r.genus === org.genus) ? 'checked' : '';
         return `
           <div class="organism-card">
-            <h4>${BIOS.escapeHtml(org.genus)}</h4>
+            <h4>${genusHtml(org)}</h4>
             <div class="sub">${BIOS.escapeHtml(org.commonName || '')}${org.phylum ? ' &middot; ' + BIOS.escapeHtml(org.phylum) : ''}${org.class ? ' (' + BIOS.escapeHtml(org.class) + ')' : ''}</div>
             <dl>${dl}</dl>
             <div class="add-row">
@@ -192,6 +204,7 @@
                   id: 'org_' + cssId(genus),
                   label: org.commonName ? `${org.genus} (${org.commonName})` : org.genus,
                   genus,
+                  isScientificName: org.isScientificName !== false,
                   values,
                 });
               }
@@ -272,7 +285,7 @@
       // cell(s) per column flagged (see computeDiffCellKeys above).
       function renderCompareLayout(diffKeys) {
         const [a, b] = rows;
-        const orgHeader = (r) => `<th><span contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</span> <button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove">&times;</button>${photoControlHtml(r)}</th>`;
+        const orgHeader = (r) => `<th><span class="${r.isScientificName !== false ? 'sci-name' : ''}" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</span> <button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove">&times;</button>${photoControlHtml(r)}</th>`;
         const head = `<tr><th></th>${orgHeader(a)}${orgHeader(b)}</tr>`;
         const body = columns.map((c) => {
           const differs = diffKeys.has(a.id + '|' + c.key) || diffKeys.has(b.id + '|' + c.key);
@@ -300,7 +313,7 @@
           }).join('');
           return `<tr>
             <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button>${photoControlHtml(r)}</td>
-            <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
+            <td class="row-organism${r.isScientificName !== false ? ' sci-name' : ''}" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
             ${cells}
           </tr>`;
         }).join('');
@@ -421,7 +434,7 @@
       });
 
       document.getElementById('add-row-btn').addEventListener('click', () => {
-        rows.push({ id: 'blank_' + Date.now(), label: 'New row', genus: null, values: {} });
+        rows.push({ id: 'blank_' + Date.now(), label: 'New row', genus: null, isScientificName: false, values: {} });
         renderTable();
       });
 

@@ -251,6 +251,14 @@ p.lede { color: var(--text-dim); margin-bottom: 28px; max-width: 640px; }
   padding: 16px;
 }
 .organism-card h4 { font-weight: 500; margin-bottom: 2px; }
+/* Binomial nomenclature: a real genus/species name is always italicized.
+   The reference card's <h4> uses a real <em> tag (already italic by
+   default); .sci-name covers the table's contenteditable labels, where
+   embedding an <em> tag directly would make editing unreliable -- see
+   genusHtml() and the isScientificName flag in data.js (class-level/
+   common-name stand-ins like "Freshwater clam" are deliberately excluded
+   from both). */
+.sci-name { font-style: italic; }
 .organism-card .sub { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 10px; font-style: italic; }
 .organism-card dl { font-size: 0.85rem; }
 .organism-card dt { color: var(--accent); margin-top: 8px; font-weight: 500; text-transform: capitalize; }

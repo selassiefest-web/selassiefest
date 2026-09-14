@@ -292,7 +292,8 @@ window.BIOS102_DATA = {
             "sporeType": "homosporous (mostly)",
             "habitat": "wet/damp habitats",
             "distinguishingFeatures": "fronds (megaphylls) that unfurl from coiled 'fiddleheads'; underground rhizome with adventitious roots"
-          }
+          },
+          "isScientificName": false
         }
       ]
     },
@@ -401,7 +402,8 @@ window.BIOS102_DATA = {
             "skeletonType": "silica (glass) spicules",
             "tissueLevel": "no true tissues",
             "distinguishingFeatures": "glasslike skeleton"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Sponge (Class Demospongiae representative)",
@@ -416,7 +418,8 @@ window.BIOS102_DATA = {
             "skeletonType": "spongin protein fibers (some also silica)",
             "tissueLevel": "no true tissues",
             "distinguishingFeatures": "soft, flexible protein skeleton"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Hydra",
@@ -493,7 +496,8 @@ window.BIOS102_DATA = {
             "bodyForm": "polyp only (no medusa)",
             "germLayers": "diploblastic",
             "distinguishingFeatures": "solitary (anemones) or colonial (corals)"
-          }
+          },
+          "isScientificName": false
         }
       ]
     },
@@ -623,7 +627,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (protostome)",
             "shellType": "bivalve (two hinged valves)",
             "distinguishingFeatures": "mantle, umbo, gills, labial palps, incurrent/excurrent siphons, no head, heart in pericardial cavity"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Chiton",
@@ -638,7 +643,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (protostome)",
             "shellType": "eight dorsal calcareous plates",
             "distinguishingFeatures": "oval body, no distinct head visible externally"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Tooth shell",
@@ -653,7 +659,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (protostome)",
             "shellType": "elongated, tapered tube shell",
             "distinguishingFeatures": "elongated body encased in tapered shell"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Snail",
@@ -668,7 +675,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (protostome)",
             "shellType": "usually spiral shell (some lack shell, e.g. slugs)",
             "distinguishingFeatures": "head with tentacles; found in marine, freshwater, and terrestrial habitats"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Squid/Octopus",
@@ -684,7 +692,8 @@ window.BIOS102_DATA = {
             "shellType": "reduced, internal, or absent",
             "cephalization": true,
             "distinguishingFeatures": "most advanced mollusc class; well-developed nervous system, successful predators"
-          }
+          },
+          "isScientificName": false
         }
       ]
     },
@@ -707,7 +716,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous",
             "habitat": "terrestrial",
             "distinguishingFeatures": "head/thorax/abdomen, antennae, compound eyes, ocelli, spiracles, tympanum"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Horseshoe crab",
@@ -723,7 +733,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous, large plate covering cephalothorax and abdomen",
             "habitat": "marine/coastal",
             "distinguishingFeatures": "ancient lineage; long spine-like telson"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Spider/Scorpion",
@@ -739,7 +750,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous",
             "habitat": "terrestrial",
             "distinguishingFeatures": "poison fangs (spiders) or stinger on last abdominal segment (scorpions)"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Centipede",
@@ -755,7 +767,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous",
             "habitat": "soil, under logs/stones",
             "distinguishingFeatures": "dorsoventrally flattened body"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Millipede",
@@ -771,7 +784,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous",
             "habitat": "soil, under logs/stones",
             "distinguishingFeatures": "round body cross-section, fused double segments"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Crayfish / Isopod (Oniscus)",
@@ -787,7 +801,8 @@ window.BIOS102_DATA = {
             "exoskeleton": "chitinous",
             "habitat": "mostly aquatic (crayfish); terrestrial isopods in moist debris/forest floor",
             "distinguishingFeatures": "two pairs of antennae, pair of mandibles"
-          }
+          },
+          "isScientificName": false
         }
       ]
     },
@@ -810,7 +825,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "skeletonType": "calcareous endoskeleton",
             "distinguishingFeatures": "flowerlike appearance; water vascular system with tube feet"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Sea cucumber",
@@ -825,7 +841,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "skeletonType": "tiny embedded calcareous ossicles, no spines/arms",
             "distinguishingFeatures": "flexible elongated body wall"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Sea star",
@@ -840,7 +857,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "skeletonType": "flexible skeleton of calcareous plates",
             "distinguishingFeatures": "typically five arms"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Brittle star",
@@ -855,7 +873,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "skeletonType": "calcareous endoskeleton",
             "distinguishingFeatures": "long arms clearly set off from central disc; usually lack tube feet"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Sea urchin",
@@ -870,7 +889,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "skeletonType": "fused calcareous skeletal plates covered with movable spines",
             "distinguishingFeatures": "globular/flattened body covered in spines"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Tunicate",
@@ -884,7 +904,8 @@ window.BIOS102_DATA = {
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "distinguishingFeatures": "expels water from siphons when disturbed; larva shows chordate features (notochord, gill slits, dorsal nerve cord, post-anal tail) lost in adult"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Lamprey",
@@ -899,7 +920,8 @@ window.BIOS102_DATA = {
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
             "distinguishingFeatures": "seven gill slits near head; jawless"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Shark/skate/ray",
@@ -915,7 +937,8 @@ window.BIOS102_DATA = {
             "vertebrate": true,
             "skeletonType": "cartilaginous",
             "distinguishingFeatures": "cartilage skeleton instead of bone"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Bony fish",
@@ -933,7 +956,8 @@ window.BIOS102_DATA = {
             "circulationType": "single circulation, 2-chambered heart",
             "thermoregulation": "ectothermic",
             "distinguishingFeatures": "most fish species belong to this class"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Rana",
@@ -970,7 +994,8 @@ window.BIOS102_DATA = {
             "skeletonType": "bony",
             "thermoregulation": "ectothermic",
             "distinguishingFeatures": "dry scaly skin; amniotic egg"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Bird (unspecified)",
@@ -988,7 +1013,8 @@ window.BIOS102_DATA = {
             "circulationType": "double circulation, 4-chambered heart",
             "thermoregulation": "endothermic",
             "distinguishingFeatures": "feathers"
-          }
+          },
+          "isScientificName": false
         },
         {
           "genus": "Mammal (unspecified)",
@@ -1006,7 +1032,8 @@ window.BIOS102_DATA = {
             "circulationType": "double circulation, 4-chambered heart",
             "thermoregulation": "endothermic",
             "distinguishingFeatures": "hair/fur, mammary glands; greatest diversity of all vertebrate classes discussed"
-          }
+          },
+          "isScientificName": false
         }
       ]
     }
