@@ -12,7 +12,11 @@
   <div id="topbar" class="topbar"></div>
 
   <div class="wrap">
-    <h1>Your Chapters</h1>
+    <h2>Exam Review</h2>
+    <p class="lede">Master tables pull organisms from several exercises at once, for reviewing them all together before an exam.</p>
+    <div class="grid" id="exam-grid"></div>
+
+    <h2 style="margin-top:40px;">Your Chapters</h2>
     <p class="lede">Pick an exercise below to review its organisms and build your own comparison table &mdash; choose whichever characteristics help <em>you</em> tell them apart.</p>
 
     <div class="grid" id="ex-grid"></div>
@@ -36,6 +40,26 @@
       } catch (err) {
         console.error('Could not load saved tables', err);
       }
+
+      const examGrid = document.getElementById('exam-grid');
+      examGrid.innerHTML = BIOS.getExamRanges().map((exam) => {
+        const exercisesIn = BIOS.getExercisesForExam(exam.number);
+        const totalOrganisms = exercisesIn.reduce((n, e) => n + e.organisms.length, 0);
+        const saved = savedByExercise[exam.storageId];
+        const rowCount = saved ? (saved.rows || []).length : 0;
+        const badge = rowCount > 0
+          ? `<span class="badge">${rowCount} organism${rowCount === 1 ? '' : 's'} in your table</span>`
+          : '';
+        return `
+          <div class="ex-card exam-card">
+            <span class="num">Exam ${exam.number}</span>
+            <h3>Exercises ${exercisesIn.map((e) => e.number).join(', ')}</h3>
+            <span class="meta">${totalOrganisms} organisms total</span>
+            ${badge}
+            <a class="go" href="/BIOS102/exercise.html?exam=${exam.number}">Open &rarr;</a>
+          </div>
+        `;
+      }).join('');
 
       const grid = document.getElementById('ex-grid');
       const exercises = BIOS.getExercises();

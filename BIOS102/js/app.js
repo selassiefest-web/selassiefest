@@ -80,6 +80,34 @@ window.BIOS = (() => {
     return getExercises().find((e) => e.number === Number(number));
   }
 
+  // Exam "master tables" span a range of exercise numbers rather than one
+  // chapter -- used for exam review, spanning whatever's actually in
+  // data.js within that range (so a manual renumbering, like the real
+  // manual's missing Exercise 11, is handled automatically rather than by
+  // hardcoding an exercise list here). storageId is an exercise_number
+  // sentinel, safely out of range of any real exercise (1-12ish), reused
+  // as-is with the existing bios102_student_tables save/load RPCs --
+  // no schema change needed for master tables.
+  const EXAM_RANGES = [
+    { number: 1, label: 'Exam 1 Master Table', range: [1, 6], storageId: 9001 },
+    { number: 2, label: 'Exam 2 Master Table', range: [7, 8], storageId: 9002 },
+    { number: 3, label: 'Exam 3 Master Table', range: [9, 999], storageId: 9003 },
+  ];
+
+  function getExamRanges() {
+    return EXAM_RANGES;
+  }
+
+  function getExamRange(number) {
+    return EXAM_RANGES.find((e) => e.number === Number(number)) || null;
+  }
+
+  function getExercisesForExam(number) {
+    const exam = getExamRange(number);
+    if (!exam) return [];
+    return getExercises().filter((e) => e.number >= exam.range[0] && e.number <= exam.range[1]);
+  }
+
   // Every distinct characteristic key present across an exercise's
   // organisms, in first-seen order -- this drives the column picker.
   function collectCharacteristicKeys(exercise) {
@@ -106,6 +134,7 @@ window.BIOS = (() => {
   return {
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,
+    getExamRanges, getExamRange, getExercisesForExam,
     collectCharacteristicKeys, formatValue,
   };
 })();

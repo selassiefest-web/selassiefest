@@ -16,9 +16,9 @@
     <h1 id="ex-title">Loading&hellip;</h1>
     <p class="lede" id="ex-meta"></p>
 
-    <h2>Reference: organisms in this exercise</h2>
+    <h2 id="ref-heading">Reference: organisms</h2>
     <p class="lede">Check a box to add that organism as a row in your table below. All of its noted characteristics come along automatically &mdash; you decide which columns to actually keep.</p>
-    <div class="organism-list" id="organism-list"></div>
+    <div id="organism-groups"></div>
 
     <h2 style="margin-top:36px;">My comparison table</h2>
     <p class="lede">Toggle which characteristics matter to you, add your own columns or rows, and edit any cell directly &mdash; this table is yours to arrange however helps you remember it.</p>
@@ -31,6 +31,9 @@
       <input type="text" id="custom-col-input" placeholder="Add a custom column (e.g. Mnemonic)" />
       <button class="btn btn-ghost" id="add-col-btn" type="button">+ Add column</button>
       <button class="btn btn-ghost" id="add-row-btn" type="button">+ Add blank row</button>
+    </div>
+    <div class="builder-toolbar">
+      <span class="chip on" id="diff-toggle" title="Softly highlights any column where your organisms don't all share the same value">Highlight what differs</span>
     </div>
 
     <div id="table-area"></div>
@@ -54,29 +57,56 @@
       BIOS.mountTopbar(session);
 
       const params = new URLSearchParams(window.location.search);
-      const exNumber = Number(params.get('ex'));
-      const exercise = BIOS.getExercise(exNumber);
+      const examParam = params.get('exam');
+      const exParam = params.get('ex');
 
-      if (!exercise) {
-        document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exercise wasn\'t found.</p>';
-        return;
+      // ---- Resolve which exercise(s) this page is showing, and where to
+      // save/load the resulting table (a real exercise number, or an exam's
+      // sentinel storageId -- see BIOS.getExamRanges in app.js). ----
+      let includedExercises, storageExerciseNumber, pageTitle, pageMeta, groupByExercise;
+
+      if (examParam) {
+        const exam = BIOS.getExamRange(examParam);
+        includedExercises = BIOS.getExercisesForExam(examParam);
+        if (!exam || !includedExercises.length) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exam table wasn\'t found.</p>';
+          return;
+        }
+        storageExerciseNumber = exam.storageId;
+        pageTitle = exam.label;
+        const exNums = includedExercises.map((e) => e.number).join(', ');
+        const totalOrganisms = includedExercises.reduce((n, e) => n + e.organisms.length, 0);
+        pageMeta = `Covers Exercises ${exNums} · ${totalOrganisms} organisms — pull in whichever ones you want to review together.`;
+        groupByExercise = true;
+      } else {
+        const exercise = BIOS.getExercise(exParam);
+        if (!exercise) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exercise wasn\'t found.</p>';
+          return;
+        }
+        includedExercises = [exercise];
+        storageExerciseNumber = exercise.number;
+        pageTitle = `Exercise ${exercise.number}: ${exercise.title}`;
+        pageMeta = `${exercise.kingdom} · ${exercise.organisms.length} organism${exercise.organisms.length === 1 ? '' : 's'}` + (exercise.notes ? ` — ${exercise.notes}` : '');
+        groupByExercise = false;
       }
 
-      document.getElementById('ex-title').textContent = `Exercise ${exercise.number}: ${exercise.title}`;
-      document.getElementById('ex-meta').textContent = `${exercise.kingdom} · ${exercise.organisms.length} organism${exercise.organisms.length === 1 ? '' : 's'}` + (exercise.notes ? ` — ${exercise.notes}` : '');
+      document.getElementById('ex-title').textContent = pageTitle;
+      document.getElementById('ex-meta').textContent = pageMeta;
+      document.getElementById('ref-heading').textContent = examParam ? 'Reference: organisms across these exercises' : 'Reference: organisms in this exercise';
 
-      const allKeys = BIOS.collectCharacteristicKeys(exercise);
+      const allOrganisms = includedExercises.flatMap((e) => e.organisms);
+      const allKeys = BIOS.collectCharacteristicKeys({ organisms: allOrganisms });
       let columns = allKeys.map((key) => ({ key, label: BIOS.humanizeKey(key) }));
       let rows = [];
-      let savedRowId = null;
+      let highlightDiffs = true;
       const TABLE_NAME = 'My Comparison Table';
 
-      // ---- Load any previously saved table for this exercise ----
+      // ---- Load any previously saved table for this exercise/exam ----
       try {
         const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
-        const existing = tables.find((t) => t.exercise_number === exercise.number && t.table_name === TABLE_NAME);
+        const existing = tables.find((t) => t.exercise_number === storageExerciseNumber && t.table_name === TABLE_NAME);
         if (existing) {
-          savedRowId = existing.id;
           if (Array.isArray(existing.columns) && existing.columns.length) columns = existing.columns;
           if (Array.isArray(existing.rows)) rows = existing.rows;
         }
@@ -85,30 +115,43 @@
       }
 
       function organismByGenus(genus) {
-        return exercise.organisms.find((o) => o.genus === genus);
+        return allOrganisms.find((o) => o.genus === genus);
+      }
+
+      function cssId(str) {
+        return String(str).replace(/[^a-z0-9]/gi, '-').toLowerCase();
+      }
+
+      function organismCardHtml(org) {
+        const dl = Object.entries(org.characteristics || {}).map(([k, v]) =>
+          `<dt>${BIOS.escapeHtml(BIOS.humanizeKey(k))}</dt><dd>${BIOS.escapeHtml(BIOS.formatValue(v))}</dd>`
+        ).join('');
+        const checked = rows.some((r) => r.genus === org.genus) ? 'checked' : '';
+        return `
+          <div class="organism-card">
+            <h4>${BIOS.escapeHtml(org.genus)}</h4>
+            <div class="sub">${BIOS.escapeHtml(org.commonName || '')}${org.phylum ? ' &middot; ' + BIOS.escapeHtml(org.phylum) : ''}${org.class ? ' (' + BIOS.escapeHtml(org.class) + ')' : ''}</div>
+            <dl>${dl}</dl>
+            <div class="add-row">
+              <input type="checkbox" id="chk-${cssId(org.genus)}" data-genus="${BIOS.escapeHtml(org.genus)}" ${checked} />
+              <label for="chk-${cssId(org.genus)}">Add to my table</label>
+            </div>
+          </div>
+        `;
       }
 
       function renderOrganismCards() {
-        const list = document.getElementById('organism-list');
-        list.innerHTML = exercise.organisms.map((org) => {
-          const rows_ = Object.entries(org.characteristics || {}).map(([k, v]) =>
-            `<dt>${BIOS.escapeHtml(BIOS.humanizeKey(k))}</dt><dd>${BIOS.escapeHtml(BIOS.formatValue(v))}</dd>`
-          ).join('');
-          const checked = rows.some((r) => r.genus === org.genus) ? 'checked' : '';
-          return `
-            <div class="organism-card">
-              <h4>${BIOS.escapeHtml(org.genus)}</h4>
-              <div class="sub">${BIOS.escapeHtml(org.commonName || '')}${org.phylum ? ' &middot; ' + BIOS.escapeHtml(org.phylum) : ''}${org.class ? ' (' + BIOS.escapeHtml(org.class) + ')' : ''}</div>
-              <dl>${rows_}</dl>
-              <div class="add-row">
-                <input type="checkbox" id="chk-${cssId(org.genus)}" data-genus="${BIOS.escapeHtml(org.genus)}" ${checked} />
-                <label for="chk-${cssId(org.genus)}">Add to my table</label>
-              </div>
-            </div>
-          `;
-        }).join('');
+        const host = document.getElementById('organism-groups');
+        if (groupByExercise) {
+          host.innerHTML = includedExercises.map((ex) => `
+            <h3 class="group-heading">Exercise ${ex.number}: ${BIOS.escapeHtml(ex.title)}</h3>
+            <div class="organism-list">${ex.organisms.map(organismCardHtml).join('')}</div>
+          `).join('');
+        } else {
+          host.innerHTML = `<div class="organism-list">${includedExercises[0].organisms.map(organismCardHtml).join('')}</div>`;
+        }
 
-        list.querySelectorAll('input[type="checkbox"]').forEach((chk) => {
+        host.querySelectorAll('input[type="checkbox"]').forEach((chk) => {
           chk.addEventListener('change', () => {
             const genus = chk.dataset.genus;
             if (chk.checked) {
@@ -131,10 +174,6 @@
             renderTable();
           });
         });
-      }
-
-      function cssId(str) {
-        return String(str).replace(/[^a-z0-9]/gi, '-').toLowerCase();
       }
 
       function renderColumnChips() {
@@ -165,6 +204,23 @@
         });
       }
 
+      // Columns where every row's value doesn't already match -- these are
+      // the traits that actually separate the organisms in the table right
+      // now, so they're what's worth a subtle highlight (kept quiet: a soft
+      // tint, not a loud color, and it's toggleable via diff-toggle).
+      function columnsThatDiffer() {
+        const differing = new Set();
+        columns.forEach((c) => {
+          const seen = new Set();
+          rows.forEach((r) => {
+            const v = (r.values && r.values[c.key] ? r.values[c.key] : '').trim().toLowerCase();
+            if (v) seen.add(v);
+          });
+          if (seen.size > 1) differing.add(c.key);
+        });
+        return differing;
+      }
+
       function renderTable() {
         const area = document.getElementById('table-area');
         if (!columns.length) {
@@ -176,14 +232,17 @@
           return;
         }
 
+        const differing = highlightDiffs && rows.length > 1 ? columnsThatDiffer() : new Set();
+
         const head = `<tr><th style="width:1%;"></th><th>Organism</th>${columns.map((c) =>
           `<th data-key="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(c.label)} <button class="col-remove" data-key="${BIOS.escapeHtml(c.key)}" title="Remove column">&times;</button></th>`
         ).join('')}</tr>`;
 
         const body = rows.map((r) => {
-          const cells = columns.map((c) =>
-            `<td contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`
-          ).join('');
+          const cells = columns.map((c) => {
+            const diffClass = differing.has(c.key) ? ' class="diff-cell"' : '';
+            return `<td${diffClass} contenteditable="true" data-row="${BIOS.escapeHtml(r.id)}" data-col="${BIOS.escapeHtml(c.key)}">${BIOS.escapeHtml(r.values ? (r.values[c.key] || '') : '')}</td>`;
+          }).join('');
           return `<tr>
             <td><button class="row-remove" data-row="${BIOS.escapeHtml(r.id)}" title="Remove row">&times;</button></td>
             <td class="row-organism" contenteditable="true" data-row-label="${BIOS.escapeHtml(r.id)}">${BIOS.escapeHtml(r.label)}</td>
@@ -224,6 +283,12 @@
         });
       }
 
+      document.getElementById('diff-toggle').addEventListener('click', (e) => {
+        highlightDiffs = !highlightDiffs;
+        e.target.classList.toggle('on', highlightDiffs);
+        renderTable();
+      });
+
       document.getElementById('add-col-btn').addEventListener('click', () => {
         const input = document.getElementById('custom-col-input');
         const label = input.value.trim();
@@ -253,14 +318,13 @@
         msg.textContent = 'Saving…';
         msg.className = 'form-msg';
         try {
-          const result = await window.sfSupabase.bios102SaveStudentTable({
+          await window.sfSupabase.bios102SaveStudentTable({
             sessionToken: session.sessionToken,
-            exerciseNumber: exercise.number,
+            exerciseNumber: storageExerciseNumber,
             tableName: TABLE_NAME,
             columns,
             rows,
           });
-          if (result) savedRowId = result.id;
           msg.textContent = 'Saved.';
           msg.className = 'form-msg ok';
         } catch (err) {
