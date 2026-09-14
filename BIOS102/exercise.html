@@ -33,7 +33,7 @@
       <button class="btn btn-ghost" id="add-row-btn" type="button">+ Add blank row</button>
     </div>
     <div class="builder-toolbar">
-      <span class="chip on" id="diff-toggle" title="Flags the exact cell(s) that break from the rest of the column, not just the whole column">Highlight what differs</span>
+      <span class="chip on" id="diff-toggle" title="Flags the exact cell(s) that break from the rest of the column. Skips free-text columns like Distinguishing Features, since full sentences never really match anyway">Highlight what differs</span>
     </div>
     <p class="form-hint" id="compare-hint" style="text-align:left;">With exactly 2 organisms, your table switches to a side-by-side compare view; 3 or more stays a full table with just the outlier cells flagged.</p>
 
@@ -238,6 +238,7 @@
         const flagged = new Set();
         if (!highlightDiffs || rows.length < 2) return flagged;
         columns.forEach((c) => {
+          if (!BIOS.isComparableKey(c.key)) return; // free-text fields: never a meaningful exact-match signal
           const counts = new Map();
           rows.forEach((r) => {
             const v = (r.values && r.values[c.key] ? r.values[c.key] : '').trim().toLowerCase();

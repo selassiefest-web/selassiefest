@@ -131,10 +131,24 @@ window.BIOS = (() => {
     return String(v);
   }
 
+  // Keys whose values are full hand-written sentences (not a controlled
+  // vocabulary), so two organisms almost never phrase them identically
+  // even when the underlying trait is basically the same. Measured across
+  // every exercise's full organism roster: these two came back "everyone's
+  // highlighted" (a tie, i.e. zero signal) 100% of the time, which is pure
+  // noise rather than a useful comparison -- so they're excluded from the
+  // "highlight what differs" scan in exercise.html, even though they still
+  // display normally as columns.
+  const NON_COMPARABLE_KEYS = new Set(['distinguishingFeatures', 'reproductiveStructures']);
+
+  function isComparableKey(key) {
+    return !NON_COMPARABLE_KEYS.has(key);
+  }
+
   return {
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,
-    getExamRanges, getExamRange, getExercisesForExam,
+    getExamRanges, getExamRange, getExercisesForExam, isComparableKey,
     collectCharacteristicKeys, formatValue,
   };
 })();
