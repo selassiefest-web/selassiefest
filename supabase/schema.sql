@@ -7028,6 +7028,20 @@ $$;
 
 grant execute on function bios102_load_tables(uuid) to anon;
 
+-- returns setof bios102_student_tables, NOT `returns table (id uuid,
+-- exercise_number int, ...)` -- the latter implicitly declares a plpgsql
+-- variable per output column using those exact bare names, which collides
+-- with the real column names referenced below (particularly the `on
+-- conflict (email, exercise_number, table_name)` target list, which parses
+-- as expressions and is therefore subject to plpgsql's ambiguous-name
+-- check same as any WHERE/SELECT expression). That collision made every
+-- single call fail with 'column reference "exercise_number" is ambiguous'
+-- -- returning the whole row instead sidesteps it entirely, since no
+-- output-column variables get declared at all. Callers only ever await
+-- this and never read the returned row, so the extra columns (email,
+-- created_at) it now also returns are harmless.
+drop function if exists bios102_save_table(uuid, int, text, jsonb, jsonb);
+
 create or replace function bios102_save_table(
   p_session uuid,
   p_exercise_number int,
@@ -7035,7 +7049,7 @@ create or replace function bios102_save_table(
   p_columns jsonb,
   p_rows jsonb
 )
-returns table (id uuid, exercise_number int, table_name text, columns jsonb, rows jsonb, updated_at timestamptz)
+returns setof bios102_student_tables
 language plpgsql
 security definer
 set search_path = public
@@ -7057,9 +7071,7 @@ begin
     values (v_email, p_exercise_number, p_table_name, p_columns, p_rows)
     on conflict (email, exercise_number, table_name) do update
       set columns = excluded.columns, rows = excluded.rows
-    returning
-      bios102_student_tables.id, bios102_student_tables.exercise_number, bios102_student_tables.table_name,
-      bios102_student_tables.columns, bios102_student_tables.rows, bios102_student_tables.updated_at;
+    returning *;
 end;
 $$;
 
