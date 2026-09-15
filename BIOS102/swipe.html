@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Swipe Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap">
+    <p><a href="#" id="back-link">&larr; Back</a></p>
+    <h1>Swipe Study</h1>
+    <p class="lede" id="swipe-meta"></p>
+
+    <section id="view-empty" hidden>
+      <div class="empty-state">
+        You haven&rsquo;t added any photos yet. Go add a photo to an organism&rsquo;s row on your comparison table, then come back here to swipe through them.
+      </div>
+    </section>
+
+    <section id="view-deck" hidden>
+      <p class="form-hint" id="swipe-progress" style="text-align:left;"></p>
+      <div class="swipe-stack" id="swipe-stack">
+        <div class="swipe-card-decoy d2"></div>
+        <div class="swipe-card-decoy d1"></div>
+        <div class="swipe-card" id="swipe-card">
+          <div class="swipe-stamp swipe-stamp-know" id="stamp-know">Know it</div>
+          <div class="swipe-stamp swipe-stamp-review" id="stamp-review">Review</div>
+          <div class="swipe-card-photo"><img id="swipe-photo" alt="" /></div>
+          <p class="swipe-prompt" id="swipe-prompt"></p>
+          <p class="swipe-answer" id="swipe-answer" hidden></p>
+          <p class="swipe-hint" id="swipe-hint">Tap the photo to reveal the answer</p>
+        </div>
+      </div>
+      <div class="swipe-actions" id="swipe-actions" hidden>
+        <button class="swipe-btn swipe-btn-review" id="btn-review" type="button">&larr; Review again</button>
+        <button class="swipe-btn swipe-btn-know" id="btn-know" type="button">Knew it &rarr;</button>
+      </div>
+      <p class="form-hint">Drag the photo left or right (or use the buttons / arrow keys) once you&rsquo;ve revealed the answer.</p>
+    </section>
+
+    <section id="view-summary" hidden>
+      <div class="summary-card">
+        <span class="eyebrow" style="display:block;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Deck complete</span>
+        <h2 style="font-weight:400;">Nice work</h2>
+        <div class="big-score" id="summary-score"></div>
+        <p id="summary-stats" class="lede" style="margin:0 auto 6px;"></p>
+        <div class="actions-row" style="justify-content:center;">
+          <button class="btn" id="restudy-missed-btn" type="button" style="width:auto;" hidden>Study missed again</button>
+          <button class="btn btn-ghost" id="restart-btn" type="button">Restart full deck</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/data.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (async function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      const params = new URLSearchParams(window.location.search);
+      const examParam = params.get('exam');
+      const exParam = params.get('ex');
+
+      let scopeExercises, scopeLabel, backHref;
+      if (examParam) {
+        const exam = BIOS.getExamRange(examParam);
+        scopeExercises = BIOS.getExercisesForExam(examParam);
+        if (!exam || !scopeExercises.length) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That deck wasn\'t found.</p>';
+          return;
+        }
+        scopeLabel = exam.label + ' — swipe through your own photos from Exercises ' + scopeExercises.map((e) => e.number).join(', ') + '.';
+        backHref = '/BIOS102/exercise.html?exam=' + exam.number;
+      } else {
+        const exercise = BIOS.getExercise(exParam);
+        if (!exercise) {
+          document.querySelector('.wrap').innerHTML = '<p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p><p class="form-msg error">That exercise wasn\'t found.</p>';
+          return;
+        }
+        scopeExercises = [exercise];
+        scopeLabel = `Exercise ${exercise.number}: ${exercise.title}`;
+        backHref = '/BIOS102/exercise.html?ex=' + exercise.number;
+      }
+
+      document.getElementById('back-link').href = backHref;
+      document.getElementById('swipe-meta').textContent = scopeLabel;
+
+      const pool = scopeExercises.flatMap((e) => e.organisms);
+
+      // Same source of photos as the practice quiz (game.html) -- whatever
+      // this student has already uploaded onto their own comparison-table
+      // rows, across ANY of their saved tables, matched back to this deck's
+      // organism pool by genus.
+      const photosByGenus = {};
+      try {
+        const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+        const poolGenera = new Set(pool.map((o) => o.genus));
+        tables.forEach((t) => (t.rows || []).forEach((r) => {
+          if (r.genus && poolGenera.has(r.genus)) {
+            const paths = Array.isArray(r.photoPaths) ? r.photoPaths : (r.photoPath ? [r.photoPath] : []);
+            if (paths.length) photosByGenus[r.genus] = (photosByGenus[r.genus] || []).concat(paths);
+          }
+        }));
+      } catch (err) {
+        console.error('Could not load photos for swipe study', err);
+      }
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function orgMarkup(org) {
+        const text = BIOS.escapeHtml(org.genus);
+        return org.isScientificName === false ? text : `<em>${text}</em>`;
+      }
+      function comparableEntries(org) {
+        return Object.entries(org.characteristics || {}).filter(([k, v]) => BIOS.isComparableKey(k) && v != null && v !== '');
+      }
+
+      // One card per photo the student has actually taken -- this is
+      // "swipe from photo to photo", not one card per organism, so a
+      // multi-photo genus (e.g. cross-section + longitudinal section)
+      // shows up as separate cards.
+      function buildDeck(sourceOrgs) {
+        const cards = [];
+        sourceOrgs.forEach((org) => {
+          const photos = photosByGenus[org.genus] || [];
+          photos.forEach((photoUrl) => {
+            const entries = comparableEntries(org);
+            if (entries.length) {
+              const [key, val] = pick(entries);
+              cards.push({
+                org, photoUrl,
+                promptHtml: `What is ${orgMarkup(org)}&rsquo;s ${BIOS.escapeHtml(BIOS.humanizeKey(key))}?`,
+                answerHtml: BIOS.escapeHtml(BIOS.formatValue(val)),
+              });
+            } else {
+              cards.push({
+                org, photoUrl,
+                promptHtml: 'Name this organism.',
+                answerHtml: `${orgMarkup(org)}${org.commonName ? ` &mdash; ${BIOS.escapeHtml(org.commonName)}` : ''}`,
+              });
+            }
+          });
+        });
+        return shuffle(cards);
+      }
+
+      const fullDeck = buildDeck(pool);
+      if (!fullDeck.length) {
+        document.getElementById('view-empty').hidden = false;
+        return;
+      }
+
+      // ---------------- runner ----------------
+      let deck, idx, revealed, knowCount, reviewCount, missed, dragging, startX, startY, dragX;
+
+      const stackEl = document.getElementById('swipe-stack');
+      const cardEl = document.getElementById('swipe-card');
+      const photoEl = document.getElementById('swipe-photo');
+      const promptEl = document.getElementById('swipe-prompt');
+      const answerEl = document.getElementById('swipe-answer');
+      const hintEl = document.getElementById('swipe-hint');
+      const actionsEl = document.getElementById('swipe-actions');
+      const stampKnow = document.getElementById('stamp-know');
+      const stampReview = document.getElementById('stamp-review');
+
+      function startDeck(cards) {
+        deck = cards;
+        idx = 0;
+        knowCount = 0;
+        reviewCount = 0;
+        missed = [];
+        document.getElementById('view-summary').hidden = true;
+        document.getElementById('view-deck').hidden = false;
+        renderCard();
+      }
+
+      function renderCard() {
+        const card = deck[idx];
+        revealed = false;
+        cardEl.style.transition = 'none';
+        cardEl.style.transform = '';
+        cardEl.style.opacity = '';
+        cardEl.classList.remove('flying-left', 'flying-right');
+        stampKnow.style.opacity = 0;
+        stampReview.style.opacity = 0;
+        photoEl.src = card.photoUrl;
+        promptEl.innerHTML = card.promptHtml;
+        answerEl.innerHTML = card.answerHtml;
+        answerEl.hidden = true;
+        hintEl.hidden = false;
+        actionsEl.hidden = true;
+        stackEl.classList.toggle('one-left', idx >= deck.length - 1);
+        document.getElementById('swipe-progress').textContent = `Card ${idx + 1} / ${deck.length}`;
+        void cardEl.offsetWidth;
+        cardEl.style.transition = '';
+      }
+
+      function reveal() {
+        if (revealed) return;
+        revealed = true;
+        answerEl.hidden = false;
+        hintEl.hidden = true;
+        actionsEl.hidden = false;
+      }
+
+      function commit(outcome) {
+        if (!revealed) return;
+        if (outcome === 'know') knowCount++;
+        else { reviewCount++; missed.push(deck[idx]); }
+        cardEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        cardEl.classList.add(outcome === 'know' ? 'flying-right' : 'flying-left');
+        setTimeout(() => {
+          idx++;
+          if (idx >= deck.length) finishDeck();
+          else renderCard();
+        }, 280);
+      }
+
+      function finishDeck() {
+        document.getElementById('view-deck').hidden = true;
+        document.getElementById('view-summary').hidden = false;
+        document.getElementById('summary-score').textContent = `${knowCount} / ${deck.length}`;
+        document.getElementById('summary-stats').textContent = `${knowCount} known · ${reviewCount} to review`;
+        document.getElementById('restudy-missed-btn').hidden = missed.length === 0;
+      }
+
+      cardEl.addEventListener('click', () => { if (!revealed) reveal(); });
+
+      cardEl.addEventListener('pointerdown', (e) => {
+        if (!revealed) return;
+        dragging = true;
+        startX = e.clientX; startY = e.clientY; dragX = 0;
+        cardEl.setPointerCapture(e.pointerId);
+        cardEl.style.transition = 'none';
+      });
+      cardEl.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        dragX = e.clientX - startX;
+        const dragY = (e.clientY - startY) * 0.25;
+        cardEl.style.transform = `translate(${dragX}px, ${dragY}px) rotate(${dragX / 18}deg)`;
+        stampKnow.style.opacity = String(Math.max(0, Math.min(1, dragX / 100)));
+        stampReview.style.opacity = String(Math.max(0, Math.min(1, -dragX / 100)));
+      });
+      function endDrag() {
+        if (!dragging) return;
+        dragging = false;
+        cardEl.style.transition = 'transform 0.25s ease';
+        if (Math.abs(dragX) > 90) {
+          commit(dragX > 0 ? 'know' : 'review');
+        } else {
+          cardEl.style.transform = '';
+          stampKnow.style.opacity = 0;
+          stampReview.style.opacity = 0;
+        }
+      }
+      cardEl.addEventListener('pointerup', endDrag);
+      cardEl.addEventListener('pointercancel', endDrag);
+
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('view-deck').hidden) return;
+        if (!revealed) {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); reveal(); }
+          return;
+        }
+        if (e.key === 'ArrowRight') commit('know');
+        else if (e.key === 'ArrowLeft') commit('review');
+      });
+
+      document.getElementById('btn-know').addEventListener('click', () => commit('know'));
+      document.getElementById('btn-review').addEventListener('click', () => commit('review'));
+      document.getElementById('restart-btn').addEventListener('click', () => startDeck(buildDeck(pool)));
+      document.getElementById('restudy-missed-btn').addEventListener('click', () => startDeck(shuffle(missed)));
+
+      startDeck(fullDeck);
+    })();
+  </script>
+</body>
+</html>

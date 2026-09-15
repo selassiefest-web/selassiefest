@@ -361,6 +361,13 @@ table.compare-table th:first-child { width: auto; white-space: nowrap; }
   padding: 0; line-height: 14px; font-size: 0.7rem; border-radius: 50%;
   background: var(--bg); border: 1px solid var(--border); color: var(--text-dim);
 }
+.photo-thumb-wrap .photo-replace {
+  position: absolute; bottom: -6px; left: -6px; width: 16px; height: 16px;
+  line-height: 14px; font-size: 0.75rem; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border); color: var(--text-dim);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.photo-replace:hover { border-color: var(--accent); color: var(--accent); }
 .photo-btn, .row-photo > .photo-remove {
   font-size: 0.74rem; background: none; border: 1px solid var(--border); color: var(--text-dim);
   padding: 3px 9px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-family: inherit;
@@ -475,4 +482,55 @@ footer.site-foot a { color: var(--text-dim); }
   h1 { font-size: 1.6rem; }
   .quiz-card { padding: 20px 16px; }
   .answer-btn { min-width: 100px; padding: 10px 14px; }
+}
+
+/* ===== Swipe study ===== */
+.swipe-stack { position: relative; max-width: 420px; margin: 0 auto 18px; }
+.swipe-card-decoy {
+  position: absolute; inset: 0; border-radius: var(--radius);
+  background: var(--bg-panel); border: 1px solid var(--border);
+}
+.swipe-card-decoy.d1 { transform: scale(0.97) translateY(10px); opacity: 0.7; z-index: 1; }
+.swipe-card-decoy.d2 { transform: scale(0.94) translateY(20px); opacity: 0.4; z-index: 0; }
+.swipe-stack.one-left .swipe-card-decoy { display: none; }
+
+.swipe-card {
+  position: relative; z-index: 2; overflow: hidden;
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 20px 26px; text-align: center; cursor: pointer;
+  touch-action: none; user-select: none;
+}
+.swipe-card.flying-right { transform: translate(160%, -30px) rotate(18deg) !important; opacity: 0; }
+.swipe-card.flying-left { transform: translate(-160%, -30px) rotate(-18deg) !important; opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .swipe-card.flying-right, .swipe-card.flying-left { transition: opacity 0.2s ease !important; transform: none !important; }
+}
+
+.swipe-card-photo img {
+  max-height: 260px; max-width: 100%; border-radius: 8px; border: 1px solid var(--border);
+  object-fit: contain; margin-bottom: 16px; pointer-events: none;
+}
+.swipe-prompt { font-size: 1.1rem; margin-bottom: 10px; }
+.swipe-answer { color: var(--accent); font-weight: 500; font-size: 1.05rem; margin-bottom: 6px; }
+.swipe-hint { color: var(--text-dim); font-size: 0.85rem; }
+
+.swipe-stamp {
+  position: absolute; top: 18px; padding: 6px 14px; border-radius: 6px; border: 3px solid;
+  font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;
+  opacity: 0; pointer-events: none;
+}
+.swipe-stamp-know { right: 16px; color: var(--accent); border-color: var(--accent); transform: rotate(-8deg); }
+.swipe-stamp-review { left: 16px; color: var(--danger); border-color: var(--danger); transform: rotate(8deg); }
+
+.swipe-actions { display: flex; justify-content: center; gap: 14px; margin: 4px 0 14px; }
+.swipe-btn {
+  font-family: inherit; font-size: 0.95rem; padding: 12px 20px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.03); color: var(--text);
+}
+.swipe-btn-know { border-color: var(--accent); color: var(--accent); }
+.swipe-btn-review { border-color: var(--danger); color: var(--danger); }
+.swipe-btn:hover { opacity: 0.85; }
+
+@media (max-width: 480px) {
+  .swipe-stack { max-width: 100%; }
 }

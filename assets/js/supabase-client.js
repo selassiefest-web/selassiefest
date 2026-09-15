@@ -80,16 +80,36 @@ window.sfSupabase = {
   // JPEG q=0.82) before upload. Keeps the free Storage tier's 1GB budget
   // stretching across many more submitted photos than raw phone photos
   // would allow — a single uncompressed phone photo can be 10-20MB.
-  async _compressImage(file) {
+  //
+  // Optional maxBytes gives this a hard target instead of a single fixed
+  // pass: the first pass (1600px/q0.82) already lands well under 1MB for
+  // almost any input, but a handful of phones (very high megapixel counts,
+  // or a raw/near-uncompressed camera photo) can still clear a bucket's
+  // upload cap on that first pass — so when maxBytes is given, it keeps
+  // stepping quality and then resolution down until the result actually
+  // fits, rather than uploading something the bucket will just reject.
+  async _compressImage(file, maxBytes) {
     const bitmap = await createImageBitmap(file);
-    const maxEdge = 1600;
-    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.82));
+    const encode = (edge, quality) => {
+      const scale = Math.min(1, edge / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    };
+
+    let edge = 1600;
+    let quality = 0.82;
+    let blob = await encode(edge, quality);
+
+    while (maxBytes && blob && blob.size > maxBytes && (quality > 0.35 || edge > 500)) {
+      if (quality > 0.35) quality = Math.max(0.35, quality - 0.15);
+      else edge = Math.max(500, Math.round(edge * 0.75));
+      blob = await encode(edge, quality);
+    }
+
     return blob || file;
   },
 
@@ -551,7 +571,10 @@ window.sfSupabase = {
   // as the rest of BIOS102's low-stakes student data.
   async bios102UploadOrganismPhoto(file) {
     const client = await window.sfSupabaseReady;
-    const compressed = await this._compressImage(file);
+    // 9MB target, not the bucket's full 10MB cap -- leaves headroom so the
+    // compressed file still clears the limit after Supabase's own storage
+    // overhead, rather than landing right on the edge.
+    const compressed = await this._compressImage(file, 9 * 1024 * 1024);
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
     const { error } = await client.storage.from('bios102-organism-photos').upload(path, compressed, {
       contentType: 'image/jpeg',

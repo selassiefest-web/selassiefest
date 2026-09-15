@@ -12,7 +12,7 @@
   <div id="topbar" class="topbar"></div>
 
   <div class="wrap">
-    <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a> &middot; <a href="#" id="quiz-link">Practice Quiz &rarr;</a></p>
+    <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a> &middot; <a href="#" id="quiz-link">Practice Quiz &rarr;</a> &middot; <a href="#" id="swipe-link">Swipe Study &rarr;</a></p>
     <h1 id="ex-title">Loading&hellip;</h1>
     <p class="lede" id="ex-meta"></p>
     <div id="ex-callout"></div>
@@ -99,6 +99,9 @@
       document.getElementById('quiz-link').href = examParam
         ? `/BIOS102/game.html?exam=${examParam}`
         : `/BIOS102/game.html?ex=${storageExerciseNumber}`;
+      document.getElementById('swipe-link').href = examParam
+        ? `/BIOS102/swipe.html?exam=${examParam}`
+        : `/BIOS102/swipe.html?ex=${storageExerciseNumber}`;
 
       const calloutHost = document.getElementById('ex-callout');
       const relevantCallouts = includedExercises.map((e) => BIOS.getExerciseCallout(e.number)).filter(Boolean);
@@ -155,12 +158,17 @@
       function photoControlHtml(row) {
         const id = 'photo-input-' + cssId(row.id);
         const photos = rowPhotos(row);
-        const thumbs = photos.map((url, i) => `
+        const thumbs = photos.map((url, i) => {
+          const replaceId = 'photo-replace-' + cssId(row.id) + '-' + i;
+          return `
           <span class="photo-thumb-wrap">
             <a href="${BIOS.escapeHtml(url)}" target="_blank" rel="noopener"><img src="${BIOS.escapeHtml(url)}" class="row-photo-thumb" alt="Photo ${i + 1} for ${BIOS.escapeHtml(row.label)}" /></a>
+            <label class="photo-replace" for="${replaceId}" title="Replace this photo">&#8635;</label>
+            <input type="file" accept="image/*" capture="environment" id="${replaceId}" data-row="${BIOS.escapeHtml(row.id)}" data-url="${BIOS.escapeHtml(url)}" class="photo-replace-input" hidden />
             <button type="button" class="photo-remove" data-row="${BIOS.escapeHtml(row.id)}" data-url="${BIOS.escapeHtml(url)}" title="Remove this photo">&times;</button>
           </span>
-        `).join('');
+        `;
+        }).join('');
         const addControl = photos.length < MAX_PHOTOS_PER_ROW
           ? `<label class="photo-btn" for="${id}">+ Photo</label><input type="file" accept="image/*" capture="environment" id="${id}" data-row="${BIOS.escapeHtml(row.id)}" class="photo-input" hidden />`
           : `<span class="form-hint" style="margin:0;">Up to ${MAX_PHOTOS_PER_ROW} photos</span>`;
@@ -405,7 +413,32 @@
               await saveTable();
             } catch (err) {
               console.error(err);
-              msg.textContent = 'Could not upload that photo. Please try again.';
+              const reason = err && err.message ? ` (${err.message})` : '';
+              msg.textContent = `Could not upload that photo. Please try again.${reason}`;
+              msg.className = 'form-msg error';
+            }
+          });
+        });
+        area.querySelectorAll('.photo-replace-input').forEach((input) => {
+          input.addEventListener('change', async () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const row = rows.find((r) => r.id === input.dataset.row);
+            if (!row) return;
+            const oldUrl = input.dataset.url;
+            const msg = document.getElementById('save-msg');
+            msg.textContent = 'Uploading replacement photo…';
+            msg.className = 'form-msg';
+            try {
+              const url = await window.sfSupabase.bios102UploadOrganismPhoto(file);
+              row.photoPaths = rowPhotos(row).map((u) => (u === oldUrl ? url : u));
+              delete row.photoPath;
+              renderTable();
+              await saveTable();
+            } catch (err) {
+              console.error(err);
+              const reason = err && err.message ? ` (${err.message})` : '';
+              msg.textContent = `Could not upload that photo. Please try again.${reason}`;
               msg.className = 'form-msg error';
             }
           });
@@ -438,7 +471,8 @@
           msg.className = 'form-msg ok';
         } catch (err) {
           console.error(err);
-          msg.textContent = 'Could not save. Please try again.';
+          const reason = err && err.message ? ` (${err.message})` : '';
+          msg.textContent = `Could not save. Please try again.${reason}`;
           msg.className = 'form-msg error';
         }
       }
