@@ -503,7 +503,7 @@ window.BIOS102_DATA = {
     },
     {
       "number": 8,
-      "title": "Phylum Platyhelminthes (8A) and Phylum Nematoda (8B)",
+      "title": "Phylum Platyhelminthes (8A), Phylum Nematoda (8B), and Phylum Annelida (8C)",
       "kingdom": "Animalia",
       "organisms": [
         {
@@ -606,6 +606,75 @@ window.BIOS102_DATA = {
             "coelomStatus": "pseudocoelomate",
             "distinguishingFeatures": "mouth with cutting plates (teeth)"
           }
+        },
+        {
+          "genus": "Trichuris",
+          "commonName": "human whipworm (causes trichuriasis)",
+          "phylum": "Nematoda",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "nutrition": "parasite (feeds on host tissue secretions, not blood)",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "pseudocoelomate",
+            "distinguishingFeatures": "infects the large intestine (tropical disease trichuriasis); slender, whip-like anterior end used to attach to and feed on host tissue; intestine located adjacent to the egg-filled uterus"
+          }
+        },
+        {
+          "genus": "Enterobius",
+          "commonName": "human pinworm",
+          "phylum": "Nematoda",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "nutrition": "parasite",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "pseudocoelomate",
+            "reproductiveStructures": "gravid (egg-carrying) females migrate to the host's rectum to lay eggs, which need atmospheric oxygen to mature",
+            "distinguishingFeatures": "common intestinal roundworm; adult females have a sharply pointed tail"
+          }
+        },
+        {
+          "genus": "Lumbricus",
+          "commonName": "earthworm",
+          "phylum": "Annelida",
+          "class": "Oligochaeta",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "nutrition": "heterotroph (complete digestive tract: mouth, pharynx, esophagus, crop, gizzard, intestine, anus)",
+            "locomotion": "crawling via circular and longitudinal body wall muscles, aided by setae",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "coelomate (protostome)",
+            "reproductiveStructures": "hermaphroditic but cross-fertilizes via copulation; clitellum secretes a cocoon for egg deposition/incubation; seminal vesicles store sperm, seminal receptacles receive sperm from a mate",
+            "distinguishingFeatures": "segmented body divided by septa; 4 pairs of setae per segment (no parapodia); clitellum; closed circulatory system with red blood (hemoglobin) and 5 aortic-arch hearts; paired nephridia per segment; no distinct head"
+          }
+        },
+        {
+          "genus": "Leech (unspecified genus)",
+          "commonName": "leech",
+          "phylum": "Annelida",
+          "class": "Hirudinea",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "nutrition": "heterotroph (holds prey/host with suckers; bites host and secretes a substance called hirudin while feeding)",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "coelomate (protostome)",
+            "distinguishingFeatures": "less distinctly segmented than other annelids; suckers at both anterior and posterior ends for holding prey"
+          },
+          "isScientificName": false
+        },
+        {
+          "genus": "Marine worm (unspecified genus)",
+          "commonName": "polychaete / marine worm",
+          "phylum": "Annelida",
+          "class": "Polychaeta",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "locomotion": "parapodia (paired lateral appendages) on every segment, aided by numerous setae",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "coelomate (protostome)",
+            "habitat": "marine, in burrows or tubes in sand or mud",
+            "distinguishingFeatures": "parapodia present on all segments (absent in Oligochaeta/Hirudinea); numerous setae; easily confused with centipedes/millipedes (Arthropoda)"
+          },
+          "isScientificName": false
         }
       ]
     },
