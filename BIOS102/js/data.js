@@ -267,7 +267,7 @@ window.BIOS102_DATA = {
         {
           "genus": "Psilotum",
           "commonName": "whisk fern",
-          "phylum": "Pterophyta (formerly Psilophyta)",
+          "phylum": "Monilophyta (formerly Psilophyta)",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -282,7 +282,7 @@ window.BIOS102_DATA = {
         {
           "genus": "Fern (unspecified genus)",
           "commonName": "true ferns",
-          "phylum": "Pterophyta",
+          "phylum": "Monilophyta",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -807,10 +807,9 @@ window.BIOS102_DATA = {
       ]
     },
     {
-      "number": 12,
-      "title": "Phylum Echinodermata (12A) and Phylum Chordata (12B)",
+      "number": 11,
+      "title": "Phylum Echinodermata (11A) and Phylum Chordata (11B)",
       "kingdom": "Animalia",
-      "notes": "Manual page headers reference an 'Exercise 11' (fish dissection) but no distinct organism content for it was found separately in the text; content flows directly from Exercise 10 into Exercise 12 covering Echinodermata and the frog dissection.",
       "organisms": [
         {
           "genus": "Sea lily",
