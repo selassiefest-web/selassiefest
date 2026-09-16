@@ -160,11 +160,24 @@ window.BIOS102_DATA = {
       "number": 3,
       "title": "Fungi",
       "kingdom": "Fungi",
+      "organismGroups": [
+        {
+          "id": "specimens",
+          "label": "Peziza & Agaricus: fixed specimens, identified by structure",
+          "note": "Both are studied the same way -- a specimen you look at once and identify by its fixed fruiting-body structure (a cup vs. a cap-gills-stalk). Compare them on shape and where their spores form."
+        },
+        {
+          "id": "investigation",
+          "label": "Pilobolus: an independent investigation, not a specimen ID",
+          "note": "This one is a different KIND of exercise, not just a different genus. Its culture was set up back in Exercise 1 and left to incubate for 10-14 days -- you're not identifying a fixed structure, you're tracking a live behavior (it grows toward light, then fires its spore capsule up to 2 meters to stick to grass). Don't expect it to line up column-for-column against the other two; its \"distinguishing feature\" is something it does, not something it looks like."
+        }
+      ],
       "organisms": [
         {
           "genus": "Peziza",
           "commonName": "cup fungus",
           "phylum": "Ascomycota",
+          "group": "specimens",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "decomposer (saprobe); chitin cell wall",
@@ -178,6 +191,7 @@ window.BIOS102_DATA = {
           "genus": "Agaricus",
           "commonName": "common edible mushroom",
           "phylum": "Basidiomycota",
+          "group": "specimens",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "decomposer (saprobe); chitin cell wall",
@@ -190,6 +204,7 @@ window.BIOS102_DATA = {
           "genus": "Pilobolus",
           "commonName": "shotgun fungus",
           "phylum": "Zygomycota",
+          "group": "investigation",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "decomposer (saprobe, coprophilous -- grows on dung); chitin cell wall",
