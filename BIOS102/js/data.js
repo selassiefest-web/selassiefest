@@ -44,9 +44,8 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
-            "locomotion": "motile (two flagella)",
+            "locomotion": "motile (flagella)",
             "bodyForm": "unicellular",
-            "habitat": "freshwater",
             "distinguishingFeatures": "cell wall, chloroplast; asexual or sexual reproduction depending on conditions"
           }
         },
@@ -59,7 +58,6 @@ window.BIOS102_DATA = {
             "nutrition": "autotroph (photosynthetic)",
             "locomotion": "non-motile",
             "bodyForm": "small colony (usually 4 cells stacked together)",
-            "habitat": "freshwater",
             "distinguishingFeatures": "spines extending from end cells"
           }
         },
@@ -70,9 +68,8 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
-            "locomotion": "motile (flagellated colony)",
+            "locomotion": "motile",
             "bodyForm": "small spherical colony (4-64 cells)",
-            "habitat": "freshwater",
             "distinguishingFeatures": "clear gelatinous envelope surrounding all cells of colony"
           }
         },
@@ -85,7 +82,6 @@ window.BIOS102_DATA = {
             "nutrition": "autotroph (photosynthetic)",
             "locomotion": "motile (synchronized flagella beat)",
             "bodyForm": "large hollow sphere of thousands of Chlamydomonas-like cells",
-            "habitat": "freshwater",
             "distinguishingFeatures": "cellular specialization (somatic vs. reproductive cells); forms daughter colonies inside the mother colony"
           }
         },
@@ -98,7 +94,6 @@ window.BIOS102_DATA = {
             "nutrition": "autotroph (photosynthetic)",
             "locomotion": "non-motile",
             "bodyForm": "unbranched multicellular filament (no true tissues)",
-            "habitat": "freshwater",
             "distinguishingFeatures": "ribbon-like zigzagging chloroplast, pyrenoid bodies (starch storage), cell wall partitions between cells"
           }
         },
@@ -134,10 +129,8 @@ window.BIOS102_DATA = {
           "phylum": "Alveolata / Ciliophora (Chromalveolata)",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph",
             "locomotion": "motile (cilia)",
             "bodyForm": "unicellular",
-            "habitat": "freshwater",
             "distinguishingFeatures": "macronucleus (metabolism/asexual reproduction) and micronucleus (sexual reproduction); covered in cilia"
           }
         }
@@ -170,8 +163,7 @@ window.BIOS102_DATA = {
             "nutrition": "decomposer (saprobe); chitin cell wall",
             "locomotion": "none (sessile)",
             "reproductiveStructures": "fruiting body with cap, gills, and stalk; spores (basidiospores) produced on gills",
-            "habitat": "soil/decaying matter",
-            "distinguishingFeatures": "visible mushroom is only the fruiting body -- most of the organism (mycelium) is hidden underground"
+            "habitat": "soil/decaying matter"
           }
         },
         {
@@ -206,7 +198,7 @@ window.BIOS102_DATA = {
             "bodyForm": "flat thallus (not a true stem or leaf) growing horizontally, anchored by rhizoids",
             "reproductiveStructures": "gemmae cups (asexual); antheridia and archegonia on separate dioecious plants (sexual)",
             "dominantGeneration": "gametophyte (large and long-lived); sporophyte small and dependent",
-            "habitat": "moist habitats (stream banks, forest floor)",
+            "habitat": "moist habitats: stream banks, forest floors, bark of trees",
             "distinguishingFeatures": "waxy cuticle on dorsal surface with pores; rhizoids on ventral surface"
           }
         },
@@ -222,7 +214,7 @@ window.BIOS102_DATA = {
             "bodyForm": "gametophyte begins as filamentous protonema, grows into upright leafy \"stem\" with rhizoids",
             "reproductiveStructures": "dioecious (Polytrichum) with antheridia and archegonia at tips of separate plants; sporophyte (foot, seta, capsule) grows attached to and dependent on the gametophyte",
             "dominantGeneration": "gametophyte (large and long-lived); sporophyte small and dependent",
-            "habitat": "moist habitats (stream banks, forest floor, bark of trees)",
+            "habitat": "moist habitats: stream banks, forest floors, bark of trees",
             "distinguishingFeatures": "protonema resembles filamentous green algae; capsule contains spore mother cells that undergo meiosis"
           }
         }
@@ -273,7 +265,6 @@ window.BIOS102_DATA = {
             "vascularTissue": true,
             "locomotion": "none (sessile)",
             "reproductiveStructures": "sporangia clustered along vertical green stems",
-            "sporeType": "homosporous",
             "habitat": "tropical/subtropical, greenhouses",
             "distinguishingFeatures": "lacks true leaves and roots; branching green stems only; has rhizomes; gametophyte is tiny, subterranean, colorless, associates with fungi"
           }
@@ -345,7 +336,6 @@ window.BIOS102_DATA = {
             "seedBearing": true,
             "seedType": "gymnosperm (naked seed, winged for dispersal)",
             "sporeType": "heterosporous (megaspores and microspores in separate male/female cones)",
-            "habitat": "temperate forests",
             "distinguishingFeatures": "woody stem with resin ducts, xylem/phloem/vascular cambium, needle leaves; monoecious; pollination without water (pollen tube)"
           }
         },
@@ -361,7 +351,6 @@ window.BIOS102_DATA = {
             "seedBearing": true,
             "seedType": "angiosperm (seed enclosed in fruit/ovary)",
             "sporeType": "heterosporous",
-            "monocotOrDicot": "monocot",
             "distinguishingFeatures": "flower parts: pistil (stigma, style, ovary) and stamen (filament, anther); double fertilization forms seed + endosperm"
           }
         }
@@ -513,27 +502,12 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph (carnivore)",
-            "locomotion": "free-living, gliding/muscular movement",
+            "locomotion": "free-living",
             "bodySymmetry": "bilateral",
             "coelomStatus": "acoelomate",
             "germLayers": "triploblastic (ectoderm, mesoderm, endoderm)",
             "cephalization": true,
-            "distinguishingFeatures": "eyespots, auricles (lateral lobes), pharynx used for both ingestion and egestion, branched gastrovascular cavity"
-          }
-        },
-        {
-          "genus": "Clonorchis",
-          "commonName": "liver fluke",
-          "phylum": "Platyhelminthes",
-          "class": "Trematoda",
-          "characteristics": {
-            "cellType": "eukaryotic",
-            "nutrition": "parasite",
-            "locomotion": "none (internal parasite)",
-            "bodySymmetry": "bilateral",
-            "coelomStatus": "acoelomate",
-            "germLayers": "triploblastic",
-            "distinguishingFeatures": "oral and ventral suckers, complex life cycle with intermediate hosts (snails, fish)"
+            "distinguishingFeatures": "eyespots, auricles (lateral lobes), pharynx, branched gastrovascular cavity"
           }
         },
         {
@@ -548,7 +522,8 @@ window.BIOS102_DATA = {
             "bodySymmetry": "bilateral",
             "coelomStatus": "acoelomate",
             "germLayers": "triploblastic",
-            "distinguishingFeatures": "scolex (head with suckers), immature/mature/gravid segments (proglottids)"
+            "habitat": "intestinal parasite of dogs",
+            "distinguishingFeatures": "scolex (head with suckers), immature/mature/gravid segments"
           }
         },
         {
@@ -563,21 +538,8 @@ window.BIOS102_DATA = {
             "bodySymmetry": "bilateral",
             "coelomStatus": "acoelomate",
             "germLayers": "triploblastic",
-            "distinguishingFeatures": "scolex with rostellum and hooks and suckers"
-          }
-        },
-        {
-          "genus": "Ascaris",
-          "commonName": "roundworm",
-          "phylum": "Nematoda",
-          "characteristics": {
-            "cellType": "eukaryotic",
-            "nutrition": "parasite",
-            "locomotion": "thrashing, whip-like motion (only longitudinal muscles)",
-            "bodySymmetry": "bilateral",
-            "coelomStatus": "pseudocoelomate",
-            "digestiveTract": "complete (mouth and anus)",
-            "distinguishingFeatures": "cuticle covering, long threadlike ovaries/oviducts/uteri (female), excretory canals (lateral lines)"
+            "habitat": "intestinal parasite of humans who ingest infected meat",
+            "distinguishingFeatures": "scolex with rostellum (can thrust out and withdraw to burrow into host tissue) and hooks and suckers"
           }
         },
         {
@@ -638,7 +600,7 @@ window.BIOS102_DATA = {
           "class": "Oligochaeta",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (complete digestive tract: mouth, pharynx, esophagus, crop, gizzard, intestine, anus)",
+            "nutrition": "heterotroph (complete digestive tract: mouth, buccal cavity, pharynx, esophagus, crop, gizzard, intestine, anus)",
             "locomotion": "crawling via circular and longitudinal body wall muscles, aided by setae",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
@@ -690,7 +652,7 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph (filter feeder)",
-            "locomotion": "muscular foot for burrowing, limited movement",
+            "locomotion": "muscular foot for burrowing",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "shellType": "bivalve (two hinged valves)",
@@ -705,12 +667,11 @@ window.BIOS102_DATA = {
           "class": "Polyplacophora (Amphineura)",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (grazer)",
-            "locomotion": "muscular foot, clings to rock",
+            "nutrition": "heterotroph",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "shellType": "eight dorsal calcareous plates",
-            "distinguishingFeatures": "oval body, no distinct head visible externally"
+            "distinguishingFeatures": "oval body"
           },
           "isScientificName": false
         },
@@ -722,7 +683,6 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "burrowing foot",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "shellType": "elongated, tapered tube shell",
@@ -741,8 +701,8 @@ window.BIOS102_DATA = {
             "locomotion": "long flat foot",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
-            "shellType": "usually spiral shell (some lack shell, e.g. slugs)",
-            "distinguishingFeatures": "head with tentacles; found in marine, freshwater, and terrestrial habitats"
+            "shellType": "usually spiral shell",
+            "distinguishingFeatures": "head with tentacles"
           },
           "isScientificName": false
         },
@@ -754,10 +714,8 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph (predator)",
-            "locomotion": "jet propulsion / arms and tentacles",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
-            "shellType": "reduced, internal, or absent",
             "cephalization": true,
             "distinguishingFeatures": "most advanced mollusc class; well-developed nervous system, successful predators"
           },
@@ -777,12 +735,11 @@ window.BIOS102_DATA = {
           "class": "Insecta",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (herbivore)",
+            "nutrition": "heterotroph",
             "locomotion": "three pairs of legs, two pairs of wings (flight)",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "exoskeleton": "chitinous",
-            "habitat": "terrestrial",
             "distinguishingFeatures": "head/thorax/abdomen, antennae, compound eyes, ocelli, spiracles, tympanum"
           },
           "isScientificName": false
@@ -795,11 +752,9 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "crawling (aquatic)",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "exoskeleton": "chitinous, large plate covering cephalothorax and abdomen",
-            "habitat": "marine/coastal",
             "distinguishingFeatures": "ancient lineage; long spine-like telson"
           },
           "isScientificName": false
@@ -816,7 +771,6 @@ window.BIOS102_DATA = {
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "exoskeleton": "chitinous",
-            "habitat": "terrestrial",
             "distinguishingFeatures": "poison fangs (spiders) or stinger on last abdominal segment (scorpions)"
           },
           "isScientificName": false
@@ -856,18 +810,33 @@ window.BIOS102_DATA = {
           "isScientificName": false
         },
         {
-          "genus": "Crayfish / Isopod (Oniscus)",
-          "commonName": "crustacean",
+          "genus": "Crayfish",
+          "commonName": "crayfish",
           "phylum": "Arthropoda",
           "class": "Crustacea",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (isopods are scavengers/decomposer-feeders)",
-            "locomotion": "walking legs; aquatic swimming (crayfish)",
+            "nutrition": "heterotroph",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (protostome)",
             "exoskeleton": "chitinous",
-            "habitat": "mostly aquatic (crayfish); terrestrial isopods in moist debris/forest floor",
+            "habitat": "mostly aquatic",
+            "distinguishingFeatures": "two pairs of antennae, pair of mandibles"
+          },
+          "isScientificName": false
+        },
+        {
+          "genus": "Oniscus sp.",
+          "commonName": "isopod (pill bug / sow bug)",
+          "phylum": "Arthropoda",
+          "class": "Crustacea",
+          "characteristics": {
+            "cellType": "eukaryotic",
+            "nutrition": "heterotroph (scavenger/decomposer-feeder; may also eat fresh plants); often burrows with strong jaws that can chew through wood, digesting cellulose with the help of gut microflora",
+            "bodySymmetry": "bilateral",
+            "coelomStatus": "coelomate (protostome)",
+            "exoskeleton": "chitinous",
+            "habitat": "terrestrial, moist decaying debris on the forest floor, little sunlight",
             "distinguishingFeatures": "two pairs of antennae, pair of mandibles"
           },
           "isScientificName": false
@@ -981,8 +950,7 @@ window.BIOS102_DATA = {
           "class": "Agnatha",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (some parasitic)",
-            "locomotion": "swimming",
+            "nutrition": "heterotroph",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
@@ -997,8 +965,7 @@ window.BIOS102_DATA = {
           "class": "Chondrichthyes",
           "characteristics": {
             "cellType": "eukaryotic",
-            "nutrition": "heterotroph (predator)",
-            "locomotion": "swimming",
+            "nutrition": "heterotroph",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
@@ -1015,13 +982,10 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "swimming",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
             "skeletonType": "bony",
-            "circulationType": "single circulation, 2-chambered heart",
-            "thermoregulation": "ectothermic",
             "distinguishingFeatures": "most fish species belong to this class"
           },
           "isScientificName": false
@@ -1034,16 +998,13 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph (carnivore)",
-            "locomotion": "jumping (hind legs), swimming",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
-            "skeletonType": "bony",
             "circulationType": "double circulation (partial mixing), 3-chambered heart (single ventricle, two atria)",
-            "thermoregulation": "ectothermic",
             "respirationType": "lungs, skin, and mouth/pharynx lining",
             "habitat": "moist terrestrial/aquatic; tied to water for reproduction",
-            "distinguishingFeatures": "moist glandular skin (mucus and poison glands), webbed feet, tympanic membrane ears, vomerine and maxillary teeth, three-chambered heart"
+            "distinguishingFeatures": "moist glandular skin (mucus and poison glands), vomerine and maxillary teeth, three-chambered heart, nucleated red blood cells (unlike mammals)"
           }
         },
         {
@@ -1054,13 +1015,9 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "varies (crawling, swimming, limbless)",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
-            "vertebrate": true,
-            "skeletonType": "bony",
-            "thermoregulation": "ectothermic",
-            "distinguishingFeatures": "dry scaly skin; amniotic egg"
+            "vertebrate": true
           },
           "isScientificName": false
         },
@@ -1072,14 +1029,9 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "flight (most); walking, swimming",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
-            "vertebrate": true,
-            "skeletonType": "bony (lightweight)",
-            "circulationType": "double circulation, 4-chambered heart",
-            "thermoregulation": "endothermic",
-            "distinguishingFeatures": "feathers"
+            "vertebrate": true
           },
           "isScientificName": false
         },
@@ -1091,14 +1043,10 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "heterotroph",
-            "locomotion": "varies (great diversity)",
             "bodySymmetry": "bilateral",
             "coelomStatus": "coelomate (deuterostome)",
             "vertebrate": true,
-            "skeletonType": "bony",
-            "circulationType": "double circulation, 4-chambered heart",
-            "thermoregulation": "endothermic",
-            "distinguishingFeatures": "hair/fur, mammary glands; greatest diversity of all vertebrate classes discussed"
+            "distinguishingFeatures": "great diversity"
           },
           "isScientificName": false
         }
