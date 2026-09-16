@@ -14,7 +14,7 @@ window.BIOS102_DATA = {
             "nutrition": "autotroph (photosynthetic, chlorophyll a)",
             "locomotion": "gliding/oscillating (twisting of internal fibrils, no flagella)",
             "reproductiveStructures": "fission; fragmentation of filaments",
-            "habitat": "diverse: lakes, hot springs, polluted water, symbiotic with fungi/sponges/protozoans",
+            "habitat": "diverse, sometimes extreme: frigid lakes, lava rocks, polar bear hairs, tropical seas, polluted waters, hot springs; some symbiotic with protozoans, diatoms, sponges, sea anemones, or fungi (as lichens)",
             "distinguishingFeatures": "no membrane-bound nucleus or organelles; forms hairlike filaments of cells; secretes mucilage"
           }
         },
@@ -25,9 +25,8 @@ window.BIOS102_DATA = {
           "characteristics": {
             "cellType": "prokaryotic",
             "nutrition": "autotroph (photosynthetic, chlorophyll a)",
-            "locomotion": "non-motile",
             "reproductiveStructures": "fragmentation, often at heterocysts; thick-walled resistant cells formed in adverse conditions",
-            "habitat": "diverse aquatic habitats",
+            "habitat": "diverse, sometimes extreme: frigid lakes, lava rocks, polar bear hairs, tropical seas, polluted waters, hot springs; some symbiotic with protozoans, diatoms, sponges, sea anemones, or fungi (as lichens)",
             "distinguishingFeatures": "forms chains of cells; heterocysts (larger cells that fix nitrogen from air)"
           }
         }
