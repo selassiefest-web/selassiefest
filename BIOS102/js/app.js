@@ -158,10 +158,27 @@ window.BIOS = (() => {
     return EXERCISE_CALLOUTS[Number(number)] || null;
   }
 
+  // Optional thematic sub-grouping within one exercise's reference-organism
+  // list (see Exercise 2's organismGroups in data.js) -- lets an
+  // information-dense exercise present its organisms as a few narrated
+  // chunks instead of one flat list, which is what the "why these go
+  // together" note is for. Returns null for the (default) ungrouped case so
+  // callers can fall back to a flat list; organisms with no matching group
+  // (or when organismGroups is absent) are otherwise silently dropped, so
+  // this only changes behavior for exercises that opt in.
+  function getGroupedOrganisms(exercise) {
+    const groups = exercise && exercise.organismGroups;
+    if (!groups || !groups.length) return null;
+    return groups.map((g) => ({
+      ...g,
+      organisms: (exercise.organisms || []).filter((o) => o.group === g.id),
+    }));
+  }
+
   return {
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,
     getExamRanges, getExamRange, getExercisesForExam, isComparableKey, getExerciseCallout,
-    collectCharacteristicKeys, formatValue,
+    collectCharacteristicKeys, formatValue, getGroupedOrganisms,
   };
 })();

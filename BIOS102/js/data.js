@@ -36,11 +36,24 @@ window.BIOS102_DATA = {
       "number": 2,
       "title": "The Protists",
       "kingdom": "Protista",
+      "organismGroups": [
+        {
+          "id": "chlorophytes",
+          "label": "The Chlorophytes: a complexity gradient",
+          "note": "Read these 5 in manual order, not as separate facts to memorize: Chlamydomonas (one cell) → Scenedesmus, Eudorina, Volvox (increasingly organized colonies) → Spirogyra (true multicellular filament). It's the same one story -- unicellular to colonial to multicellular -- told once, in one genus family. Anchor on that order and each organism's own facts fall out as \"where on the ladder is this one.\""
+        },
+        {
+          "id": "heterotrophs",
+          "label": "The heterotrophs: three unrelated protists, three different reasons to know them",
+          "note": "These three don't share ancestry with the algae above, or fully with each other (Trypanosoma is Excavata; Plasmodium and Paramecium are both SAR/Alveolata, but in different subgroups). They're grouped here only because none is photosynthetic. Two are parasites with a distinct transmission story worth pinning to their vector (Trypanosoma → tsetse fly → sleeping sickness; Plasmodium → mosquito → malaria); Paramecium is the odd one out -- free-living, not a parasite -- included to contrast ciliary movement and a two-nucleus system against everything else in this exercise."
+        }
+      ],
       "organisms": [
         {
           "genus": "Chlamydomonas",
           "commonName": "unicellular green alga",
           "phylum": "Chlorophyta (Archaeplastida)",
+          "group": "chlorophytes",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -53,6 +66,7 @@ window.BIOS102_DATA = {
           "genus": "Scenedesmus",
           "commonName": "colonial green alga",
           "phylum": "Chlorophyta (Archaeplastida)",
+          "group": "chlorophytes",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -65,6 +79,7 @@ window.BIOS102_DATA = {
           "genus": "Eudorina",
           "commonName": "colonial green alga",
           "phylum": "Chlorophyta (Archaeplastida)",
+          "group": "chlorophytes",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -77,6 +92,7 @@ window.BIOS102_DATA = {
           "genus": "Volvox",
           "commonName": "colonial green alga",
           "phylum": "Chlorophyta (Archaeplastida)",
+          "group": "chlorophytes",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -89,6 +105,7 @@ window.BIOS102_DATA = {
           "genus": "Spirogyra",
           "commonName": "filamentous green alga",
           "phylum": "Chlorophyta (Archaeplastida)",
+          "group": "chlorophytes",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "autotroph (photosynthetic)",
@@ -101,6 +118,7 @@ window.BIOS102_DATA = {
           "genus": "Trypanosoma",
           "commonName": "causes African sleeping sickness",
           "phylum": "Euglenozoa (Excavata)",
+          "group": "heterotrophs",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "parasite (heterotroph)",
@@ -114,6 +132,7 @@ window.BIOS102_DATA = {
           "genus": "Plasmodium",
           "commonName": "causes malaria",
           "phylum": "Alveolata (Chromalveolata)",
+          "group": "heterotrophs",
           "characteristics": {
             "cellType": "eukaryotic",
             "nutrition": "parasite (heterotroph)",
@@ -127,6 +146,7 @@ window.BIOS102_DATA = {
           "genus": "Paramecium",
           "commonName": "ciliate protist",
           "phylum": "Alveolata / Ciliophora (Chromalveolata)",
+          "group": "heterotrophs",
           "characteristics": {
             "cellType": "eukaryotic",
             "locomotion": "motile (cilia)",

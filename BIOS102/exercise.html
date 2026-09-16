@@ -210,15 +210,36 @@
         `;
       }
 
+      // A sub-group block within one exercise's reference list (see Exercise
+      // 2's organismGroups in data.js) -- a heading plus a short "why these
+      // go together" note, so an information-dense exercise reads as a few
+      // narrated chunks instead of one flat list. headingTag lets exam mode
+      // nest this one level below the per-exercise heading.
+      function organismGroupHtml(group, headingTag) {
+        const note = group.note ? `<p class="group-note">${BIOS.escapeHtml(group.note)}</p>` : '';
+        return `
+          <${headingTag} class="group-heading">${BIOS.escapeHtml(group.label)}</${headingTag}>
+          ${note}
+          <div class="organism-list">${group.organisms.map(organismCardHtml).join('')}</div>
+        `;
+      }
+
       function renderOrganismCards() {
         const host = document.getElementById('organism-groups');
         if (groupByExercise) {
-          host.innerHTML = includedExercises.map((ex) => `
-            <h3 class="group-heading">Exercise ${ex.number}: ${BIOS.escapeHtml(ex.title)}</h3>
-            <div class="organism-list">${ex.organisms.map(organismCardHtml).join('')}</div>
-          `).join('');
+          host.innerHTML = includedExercises.map((ex) => {
+            const grouped = BIOS.getGroupedOrganisms(ex);
+            const heading = `<h3 class="group-heading">Exercise ${ex.number}: ${BIOS.escapeHtml(ex.title)}</h3>`;
+            if (grouped) {
+              return heading + grouped.map((g) => organismGroupHtml(g, 'h4')).join('');
+            }
+            return `${heading}<div class="organism-list">${ex.organisms.map(organismCardHtml).join('')}</div>`;
+          }).join('');
         } else {
-          host.innerHTML = `<div class="organism-list">${includedExercises[0].organisms.map(organismCardHtml).join('')}</div>`;
+          const grouped = BIOS.getGroupedOrganisms(includedExercises[0]);
+          host.innerHTML = grouped
+            ? grouped.map((g) => organismGroupHtml(g, 'h3')).join('')
+            : `<div class="organism-list">${includedExercises[0].organisms.map(organismCardHtml).join('')}</div>`;
         }
 
         host.querySelectorAll('input[type="checkbox"]').forEach((chk) => {
