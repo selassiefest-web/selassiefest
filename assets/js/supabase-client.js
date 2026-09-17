@@ -584,6 +584,65 @@ window.sfSupabase = {
     return data.publicUrl;
   },
 
+  // BBPAC Opportunity Tracker (/bbpac/organization/opportunity-tracker.html)
+  // -- same magic-link pattern as BIOS102 above, applied to a volunteer
+  // roster instead of a class roster. See schema.sql's bbpac_tracker_*
+  // section for why reads are open (anon select policy on the items/updates
+  // tables) but every write goes through a session-validating function.
+  async bbpacTrackerRequestLogin(email) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.from('bbpac_tracker_login_links').insert({ email });
+    if (error) throw error;
+  },
+
+  // Called with the token out of the emailed link's URL (?token=...).
+  // Returns { session_token, email, display_name } on success, or throws if
+  // the token is unknown or an expired 'pending' link -- see
+  // bbpac_tracker_verify_login_link in schema.sql.
+  async bbpacTrackerVerifyLogin(token) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bbpac_tracker_verify_login_link', { p_token: token });
+    if (error) throw error;
+    if (!data || !data.length) throw new Error('That sign-in link is invalid or has expired.');
+    return data[0];
+  },
+
+  async bbpacTrackerLoadItems() {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client
+      .from('bbpac_tracker_items')
+      .select('id, sheet, sort_order, title, link, fields, track_status, updated_at')
+      .order('sheet', { ascending: true })
+      .order('sort_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async bbpacTrackerLoadUpdates() {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client
+      .from('bbpac_tracker_updates')
+      .select('id, item_id, status, note, volunteer_name, created_at')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+
+  // The only write path -- validates sessionToken server-side (see
+  // bbpac_tracker_add_update in schema.sql), so a volunteer can only ever
+  // post under their own verified identity.
+  async bbpacTrackerAddUpdate({ sessionToken, itemId, status, note }) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bbpac_tracker_add_update', {
+      p_session: sessionToken,
+      p_item_id: itemId,
+      p_status: status,
+      p_note: note || null,
+    });
+    if (error) throw error;
+    return data && data[0];
+  },
+
   async submitClrwfJobApplication({ position, fullName, email, phone, coverLetter, resumeFile, voiceNotes }) {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);

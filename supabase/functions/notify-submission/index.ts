@@ -638,6 +638,24 @@ function formatBios102LoginLink(record: Record<string, any>) {
   };
 }
 
+// BBPAC Opportunity Tracker (/bbpac/organization/opportunity-tracker.html)
+// magic-link sign-in -- see schema.sql's bbpac_tracker_login_links section.
+// Same shape as BIOS102's login link above: record.id is the token, and
+// clicking this link is the entire sign-in step.
+function formatBbpacTrackerLoginLink(record: Record<string, any>) {
+  const verifyUrl = `https://selassiefest.com/bbpac/organization/opportunity-tracker.html?token=${encodeURIComponent(record.id)}`;
+  return {
+    subject: `Your Bongo Beach PAC Opportunity Tracker sign-in link`,
+    html: `
+      <h2>Sign in to the Opportunity Tracker</h2>
+      <p>Click below to sign in and log what you've done toward getting an application submitted.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="background:#A6331A;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Sign in to the Tracker</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${verifyUrl}</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't request this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -736,6 +754,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: (record) => record.email,
         format: formatBios102LoginLink,
         from: () => 'BIOS102 Lab Companion <hello@selassiefest.com>',
+      },
+    ],
+  },
+  bbpac_tracker_login_links: {
+    notifications: [
+      {
+        to: (record) => record.email,
+        format: formatBbpacTrackerLoginLink,
+        from: () => 'Bongo Beach PAC <hello@selassiefest.com>',
       },
     ],
   },
