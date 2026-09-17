@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A driving route to hand-deliver a note to each historian/contact's office for the Bongo Beach project.">
+<title>Handwritten Note Route</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F5F1E6; --card:#FFFFFF; --ink:#241C13; --ink-dim:#6E5F4B;
+    --line:rgba(36,28,19,0.15); --accent:#B0472E; --accent-tint:rgba(176,71,46,0.10);
+    --done:#3F6B4A; --done-tint:rgba(63,107,74,0.12);
+    --flag:#9C6B14; --flag-tint:rgba(156,107,20,0.13);
+    --skip:#8A7C64; --skip-tint:rgba(138,124,100,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif; line-height:1.6; font-size:15.5px;}
+  .wrap{max-width:700px; margin:0 auto; padding-inline:20px; padding-block:40px 72px;}
+  .kicker{font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); font-weight:500; margin:0 0 10px;}
+  h1{font-family:"Source Serif 4",Georgia,serif; font-weight:700; font-size:clamp(1.6rem,4.2vw,2.3rem); line-height:1.15; margin:0 0 12px;}
+  .dek{font-size:0.98rem; color:var(--ink-dim); max-width:60ch; margin:0 0 20px;}
+  .origin{font-family:"IBM Plex Mono",monospace; font-size:0.82rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin-bottom:18px;}
+  .origin b{color:var(--ink);}
+  .cta-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px;}
+  a.btn{display:inline-flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:700; letter-spacing:0.02em; padding:11px 18px; border-radius:22px; text-decoration:none;}
+  a.btn.primary{background:var(--accent); color:#fff;}
+  a.btn.secondary{background:transparent; border:1.5px solid var(--line); color:var(--ink);}
+
+  .route{border-left:2px dashed var(--line); margin-left:17px; padding-left:26px;}
+  .stop{position:relative; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:16px;}
+  .stop::before{content:attr(data-num); position:absolute; left:-43px; top:18px; width:32px; height:32px; border-radius:50%; background:var(--accent); color:#fff; font-family:"Source Serif 4",serif; font-weight:700; font-size:0.95rem; display:flex; align-items:center; justify-content:center;}
+  .stop.done::before{background:var(--done);}
+  .stop-h{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .stop-h h3{margin:0; font-family:"Source Serif 4",serif; font-weight:700; font-size:1.05rem;}
+  .role{font-size:0.82rem; color:var(--ink-dim); margin:0 0 10px;}
+  .addr{font-family:"IBM Plex Mono",monospace; font-size:0.84rem; background:var(--paper); border-radius:8px; padding:9px 12px; margin:0 0 10px; white-space:pre-line;}
+  .stop p.note{margin:0 0 10px; font-size:0.88rem;}
+  .stop-actions{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .stop-actions a{font-size:0.78rem; font-weight:700; color:var(--accent); text-decoration:none;}
+  .stop-actions a:hover{text-decoration:underline;}
+  label.chk{display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--ink-dim); cursor:pointer; margin-left:auto;}
+  label.chk input{width:15px; height:15px;}
+
+  .leg-label{font-family:"IBM Plex Mono",monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); margin:28px 0 4px -26px;}
+
+  h2.section{font-family:"Source Serif 4",serif; font-weight:700; font-size:1.15rem; margin:40px 0 6px;}
+  .lede{font-size:0.92rem; color:var(--ink-dim); max-width:64ch; margin:0 0 16px;}
+
+  .flagcard{background:var(--flag-tint); border:1px solid var(--flag); border-radius:12px; padding:16px 18px; margin-bottom:12px;}
+  .flagcard h4{margin:0 0 6px; font-size:0.95rem; font-family:"Source Serif 4",serif;}
+  .flagcard p{margin:0; font-size:0.86rem;}
+  .skipcard{background:var(--skip-tint); border:1px solid var(--skip); border-radius:12px; padding:16px 18px; margin-bottom:12px;}
+  .skipcard h4{margin:0 0 6px; font-size:0.95rem; font-family:"Source Serif 4",serif;}
+  .skipcard p{margin:0; font-size:0.86rem;}
+
+  footer{font-size:0.8rem; color:var(--ink-dim); border-top:1px dashed var(--line); padding-top:18px; margin-top:36px;}
+
+  @media (max-width:560px){
+    .route{margin-left:12px; padding-left:20px;}
+    .stop::before{left:-33px; width:26px; height:26px; font-size:0.82rem;}
+    .leg-label{margin-left:-20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="kicker">Personal Errand &middot; Not for the Team Site</div>
+  <h1>Handwritten Note Route</h1>
+  <p class="dek">The historians &amp; contacts list, turned into an actual driving order &mdash; for dropping off a handwritten note at each office in person.</p>
+
+  <div class="origin">Starting from: <b>Ras Tafari Inc. &middot; 6227 S. Prairie Ave., Chicago, IL 60637</b></div>
+
+  <div class="cta-row">
+    <a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin=6227+S+Prairie+Ave,+Chicago,+IL+60637&destination=1+E+Jackson+Blvd,+Chicago,+IL+60604&waypoints=Social+Science+Research+Building,+1126+E+59th+St,+Chicago,+IL+60637%7CHaskell+Hall,+5848+S+University+Ave,+Chicago,+IL+60637%7CGoodspeed+Hall,+1010+E+59th+St,+Chicago,+IL+60637&travelmode=driving">
+      Open full route in Google Maps &rarr;
+    </a>
+    <a class="btn secondary" href="#flagged">Skip to what I left out &darr;</a>
+  </div>
+
+  <div class="route" id="route"></div>
+
+  <div id="flagged">
+    <h2 class="section">Left off the route</h2>
+    <p class="lede">Same list, different call for these three &mdash; not oversights.</p>
+
+    <div class="skipcard">
+      <h4>Sister Imani &amp; the Bongo Beach Drummers</h4>
+      <p>Already being met in person this weekend at Bongo Beach &mdash; that's its own visit, not a stop on an office-hopping route.</p>
+    </div>
+
+    <div class="flagcard">
+      <h4>William M. Tuttle Jr. &mdash; University of Kansas, Lawrence, KS</h4>
+      <p>~600 miles away. If you want to reach him, that's a mailed letter, not a Chicago drive. Confirm he's even still reachable there before spending a stamp on it.</p>
+    </div>
+
+    <div class="flagcard">
+      <h4>Julia Bachrach &mdash; 6337 N. Hermitage Ave., Chicago, IL 60660</h4>
+      <p>That's her consulting LLC's registered address, in Rogers Park &mdash; almost certainly her home, not a public office. It's also ~17 miles north, the opposite direction from the DePaul leg. Showing up at someone's house unannounced with a note is a different gesture than leaving one at a department office &mdash; worth a mailed letter instead, or confirming she has a public office before treating this as a walk-up stop.</p>
+      <p style="margin-top:8px;"><a href="https://www.google.com/maps/dir/?api=1&destination=6337+N+Hermitage+Ave,+Chicago,+IL+60660" target="_blank" rel="noopener" style="color:var(--flag); font-weight:700; font-size:0.82rem;">Directions anyway &rarr;</a></p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Checkboxes are saved on this device only &mdash; they won't sync anywhere else, so re-check here if you switch phones.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var STOPS = [
+    { id:'green-vargas', leg:null, name:'Adam Green', role:'History &amp; Race, Diaspora and Indigeneity, UChicago',
+      addr:'Social Science Research Building, Rm 204A\n1126 E. 59th St, Chicago, IL 60637',
+      note:'History Dept. main office is Rm 330 in the same building — they can hold a note if he’s not in.',
+      mapAddr:'Social Science Research Building, 1126 E 59th St, Chicago, IL 60637' },
+    { id:'vargas', leg:null, name:'Robert Vargas', role:'Sociology &amp; the Justice Project, UChicago',
+      addr:'Social Science Research Building (same building as Adam Green)\n1126 E. 59th St, Chicago, IL 60637',
+      note:'Room number is listed inconsistently (410 vs. 425) across UChicago’s own directories — check the Sociology Dept. office listing in the lobby.',
+      mapAddr:'Social Science Research Building, 1126 E 59th St, Chicago, IL 60637' },
+    { id:'ewing', leg:null, name:'Eve L. Ewing', role:'Dept. of Race, Diaspora and Indigeneity, UChicago',
+      addr:'Haskell Hall, Rm 119\n5848 S. University Ave, Chicago, IL 60637',
+      note:'Leave with the RDI department office if she’s not in.',
+      mapAddr:'Haskell Hall, 5848 S University Ave, Chicago, IL 60637' },
+    { id:'jackson', leg:null, name:'Travis A. Jackson', role:'Music Dept. (Ethnomusicology / Jazz), UChicago',
+      addr:'Goodspeed Hall, Rm 302\n1010 E. 59th St, Chicago, IL 60637',
+      note:null,
+      mapAddr:'Goodspeed Hall, 1010 E 59th St, Chicago, IL 60637' },
+    { id:'ihs', leg:'Loop leg — about 8 miles / 20+ min from Hyde Park', name:'Geoff Smith &amp; Sarah Duda', role:'Institute for Housing Studies, DePaul University',
+      addr:'1 E. Jackson Blvd, Suite 5400\nChicago, IL 60604',
+      note:'One note can cover both — they’re Executive Director and Deputy Director of the same office.',
+      mapAddr:'1 E Jackson Blvd Suite 5400, Chicago, IL 60604' },
+  ];
+
+  function loadDone() {
+    try { return JSON.parse(localStorage.getItem('noteRouteDone') || '{}'); } catch (e) { return {}; }
+  }
+  function saveDone(d) {
+    try { localStorage.setItem('noteRouteDone', JSON.stringify(d)); } catch (e) {}
+  }
+  var done = loadDone();
+
+  var html = '';
+  STOPS.forEach(function (s, i) {
+    if (s.leg) html += '<div class="leg-label">' + s.leg + '</div>';
+    var mapUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.mapAddr);
+    html += '<div class="stop' + (done[s.id] ? ' done' : '') + '" data-num="' + (i + 1) + '" id="stop-' + s.id + '">' +
+      '<div class="stop-h"><h3>' + s.name + '</h3></div>' +
+      '<p class="role">' + s.role + '</p>' +
+      '<div class="addr">' + s.addr + '</div>' +
+      (s.note ? '<p class="note">' + s.note + '</p>' : '') +
+      '<div class="stop-actions">' +
+        '<a href="' + mapUrl + '" target="_blank" rel="noopener">Directions &rarr;</a>' +
+        '<label class="chk"><input type="checkbox" data-stop="' + s.id + '" ' + (done[s.id] ? 'checked' : '') + '> Delivered</label>' +
+      '</div>' +
+    '</div>';
+  });
+  document.getElementById('route').innerHTML = html;
+
+  document.querySelectorAll('[data-stop]').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var id = this.getAttribute('data-stop');
+      done[id] = this.checked;
+      saveDone(done);
+      document.getElementById('stop-' + id).classList.toggle('done', this.checked);
+    });
+  });
+})();
+</script>
+</body>
+</html>
