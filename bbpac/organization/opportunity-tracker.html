@@ -74,7 +74,15 @@
   .toolbar .count{font-size:0.8rem; color:var(--ink-dim);}
 
   /* item cards */
-  .item{background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:14px;}
+  .item{background:#fff; border:1px solid var(--line); border-left:4px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:14px;}
+  .item.urgency-red{border-left-color:var(--culture);}
+  .item.urgency-amber{border-left-color:var(--legacy);}
+  .item.urgency-green{border-left-color:var(--community);}
+  .urgency-badge{font-size:0.64rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; padding:4px 10px; border-radius:10px; white-space:nowrap;}
+  .urgency-badge.urgency-red{background:rgba(166,51,26,0.14); color:var(--culture);}
+  .urgency-badge.urgency-amber{background:rgba(220,131,17,0.16); color:#8a5a0d;}
+  .urgency-badge.urgency-green{background:rgba(71,109,62,0.16); color:var(--community);}
+  .urgency-badge.urgency-none{background:#eee; color:#999;}
   .item-h{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:8px;}
   .item-h h3{margin:0; font-size:1rem; font-family:Arial,sans-serif; font-weight:800;}
   .item-h h3 a{color:var(--navy); text-decoration:none;} .item-h h3 a:hover{text-decoration:underline;}
@@ -391,6 +399,21 @@
       '<div class="history" id="history-' + itemId + '">' + rows + '</div>';
   }
 
+  // Deadline-calendar urgency, computed client-side from deadline_date --
+  // red at 2 days or less (including overdue), amber inside a week, green
+  // further out, and a neutral tag for rows with no exact date ("ROLLING" /
+  // "2026-10-late" in the source sheet, which parse to null server-side too).
+  function urgencyFor(it) {
+    if (it.sheet !== 'deadline_calendar') return null;
+    if (!it.deadline_date) return { cls: 'urgency-none', label: 'No fixed date' };
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var due = new Date(it.deadline_date + 'T00:00:00');
+    var days = Math.round((due - today) / 86400000);
+    if (days <= 2) return { cls: 'urgency-red', label: days < 0 ? 'Overdue' : (days === 0 ? 'Today' : days + ' day' + (days === 1 ? '' : 's')) };
+    if (days <= 7) return { cls: 'urgency-amber', label: 'In ' + days + ' days' };
+    return { cls: 'urgency-green', label: 'In ' + days + ' days' };
+  }
+
   function renderItems() {
     var list = state.items.filter(function (it) { return it.sheet === state.activeSheet; });
     if (state.statusFilter) list = list.filter(function (it) { return it.track_status === state.statusFilter; });
@@ -415,8 +438,11 @@
           '</div>'
         : '<div class="signin-note">Sign in above to log progress on this item.</div>';
 
-      return '<div class="item" data-item-card="' + it.id + '">' +
-        '<div class="item-h"><h3>' + titleHtml + '</h3><span class="badge ' + it.track_status + '">' + STATUS_LABEL[it.track_status] + '</span></div>' +
+      var urgency = urgencyFor(it);
+      var urgencyHtml = urgency ? '<span class="urgency-badge ' + urgency.cls + '">' + esc(urgency.label) + '</span>' : '';
+
+      return '<div class="item' + (urgency ? ' ' + urgency.cls : '') + '" data-item-card="' + it.id + '">' +
+        '<div class="item-h"><h3>' + titleHtml + '</h3><div style="display:flex; gap:6px;">' + urgencyHtml + '<span class="badge ' + it.track_status + '">' + STATUS_LABEL[it.track_status] + '</span></div></div>' +
         fieldsHtml(it.fields) +
         historyHtml(it.id) +
         updateBlock +

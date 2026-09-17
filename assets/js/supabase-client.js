@@ -611,7 +611,7 @@ window.sfSupabase = {
     const client = await window.sfSupabaseReady;
     const { data, error } = await client
       .from('bbpac_tracker_items')
-      .select('id, sheet, sort_order, title, link, fields, track_status, updated_at')
+      .select('id, sheet, sort_order, title, link, fields, track_status, deadline_date, updated_at')
       .order('sheet', { ascending: true })
       .order('sort_order', { ascending: true });
     if (error) throw error;

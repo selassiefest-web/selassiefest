@@ -118,3 +118,15 @@ insert into bbpac_tracker_items (sheet, sort_order, title, link, fields) values 
 insert into bbpac_tracker_items (sheet, sort_order, title, link, fields) values ('verify_manually', 9, 'Illinois Film Tax Credit applicability', 'https://dceo.illinois.gov/whyillinois/film/filmtaxcredit.html', '[{"label": "What is missing", "value": "Minimum Illinois spend, and whether documentaries qualify"}, {"label": "Why it could not be confirmed", "value": "The DCEO page states neither."}, {"label": "How to close it", "value": "Email filmtaxcredit@illinois.gov. Normally filed BEFORE principal photography and you are already shooting — ask about that too."}]'::jsonb) on conflict (sheet, sort_order) do update set title = excluded.title, link = excluded.link, fields = excluded.fields;
 insert into bbpac_tracker_items (sheet, sort_order, title, link, fields) values ('verify_manually', 10, 'IAC Creative Projects Grant status', 'https://arts.illinois.gov/granting-opportunities/grants-programs/creative-projects-grant.html', '[{"label": "What is missing", "value": "Whether it is open or closed right now"}, {"label": "Why it could not be confirmed", "value": "The IAC organizations index says ''opened July 1, 2026; currently closed''; the program guidelines describe it as open on a rolling basis."}, {"label": "How to close it", "value": "Call your Regional Program Director before writing anything."}]'::jsonb) on conflict (sheet, sort_order) do update set title = excluded.title, link = excluded.link, fields = excluded.fields;
 insert into bbpac_tracker_items (sheet, sort_order, title, link, fields) values ('verify_manually', 11, '2027 CPD board meeting calendar', 'https://chicagoparkdistrict.legistar.com/Calendar.aspx', '[{"label": "What is missing", "value": "Meeting dates for 2027"}, {"label": "Why it could not be confirmed", "value": "Legistar offers only 2014-2026. The calendar is usually adopted late in the prior year."}, {"label": "How to close it", "value": "Check Legistar after the Nov 18 or Dec 9, 2026 board meeting."}]'::jsonb) on conflict (sheet, sort_order) do update set title = excluded.title, link = excluded.link, fields = excluded.fields;
+
+-- Re-extract deadline_date from `fields` for every deadline_calendar row --
+-- keeps the reminder system's dates in sync whenever this seed is re-run
+-- (see bbpac-tracker-deadline-reminders-schema.sql for why this exists).
+update bbpac_tracker_items
+set deadline_date = (
+  select (elem->>'value')::date
+  from jsonb_array_elements(fields) elem
+  where elem->>'label' = 'Date' and elem->>'value' ~ '^\d{4}-\d{2}-\d{2}$'
+  limit 1
+)
+where sheet = 'deadline_calendar';
