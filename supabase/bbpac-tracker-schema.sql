@@ -31,7 +31,7 @@ as $$
   );
 $$;
 
-grant execute on function bbpac_tracker_is_volunteer(text) to anon;
+grant execute on function bbpac_tracker_is_volunteer(text) to anon, authenticated;
 
 -- Each row is both the emailed magic-link token (while status = 'pending')
 -- and, once clicked, the ongoing session token the browser keeps in
@@ -48,8 +48,8 @@ create table if not exists bbpac_tracker_login_links (
 
 alter table bbpac_tracker_login_links enable row level security;
 
-create policy "anon can request a tracker login link if a known volunteer" on bbpac_tracker_login_links
-  for insert to anon
+create policy "known volunteer can request a tracker login link" on bbpac_tracker_login_links
+  for insert to anon, authenticated
   with check (bbpac_tracker_is_volunteer(email));
 
 create index if not exists bbpac_tracker_login_links_email_idx on bbpac_tracker_login_links (lower(email));
@@ -89,7 +89,7 @@ begin
 end;
 $$;
 
-grant execute on function bbpac_tracker_verify_login_link(uuid) to anon;
+grant execute on function bbpac_tracker_verify_login_link(uuid) to anon, authenticated;
 
 -- The register itself, imported from the xlsx (see bbpac-tracker-seed.sql).
 -- `fields` holds the sheet-specific reference columns as an ordered
@@ -116,7 +116,7 @@ create table if not exists bbpac_tracker_items (
 alter table bbpac_tracker_items enable row level security;
 
 create policy "anyone can read tracker items" on bbpac_tracker_items
-  for select to anon
+  for select to anon, authenticated
   using (true);
 
 create index if not exists bbpac_tracker_items_sheet_idx on bbpac_tracker_items (sheet, sort_order);
@@ -138,7 +138,7 @@ create table if not exists bbpac_tracker_updates (
 alter table bbpac_tracker_updates enable row level security;
 
 create policy "anyone can read tracker updates" on bbpac_tracker_updates
-  for select to anon
+  for select to anon, authenticated
   using (true);
 
 create index if not exists bbpac_tracker_updates_item_idx on bbpac_tracker_updates (item_id, created_at desc);
@@ -184,4 +184,4 @@ begin
 end;
 $$;
 
-grant execute on function bbpac_tracker_add_update(uuid, uuid, text, text) to anon;
+grant execute on function bbpac_tracker_add_update(uuid, uuid, text, text) to anon, authenticated;
