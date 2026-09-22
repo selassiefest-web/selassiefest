@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronounce-a-Protist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --bg: #f4efe0;
+    --surface: #ffffff;
+    --surface-2: #ece3cd;
+    --ink: #1c2a20;
+    --muted: #5f6d61;
+    --accent: #2f7d5c;
+    --accent-ink: #ffffff;
+    --accent-dim: #d9ead9;
+    --stress: #b5502e;
+    --line: #ddd2b7;
+    --shadow: rgba(28,42,32,0.10);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #0e1512;
+      --surface: #161f1a;
+      --surface-2: #1c2620;
+      --ink: #eae6d6;
+      --muted: #9caa9d;
+      --accent: #5bc999;
+      --accent-ink: #0b1310;
+      --accent-dim: #203a2d;
+      --stress: #e2895a;
+      --line: #2b3730;
+      --shadow: rgba(0,0,0,0.4);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #0e1512;
+    --surface: #161f1a;
+    --surface-2: #1c2620;
+    --ink: #eae6d6;
+    --muted: #9caa9d;
+    --accent: #5bc999;
+    --accent-ink: #0b1310;
+    --accent-dim: #203a2d;
+    --stress: #e2895a;
+    --line: #2b3730;
+    --shadow: rgba(0,0,0,0.4);
+    color-scheme: dark;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Work Sans", system-ui, sans-serif;
+    padding-inline: 16px;
+  }
+  .wrap{ max-width: 980px; margin: 0 auto; padding-bottom: 64px; }
+
+  header.top{
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    padding-block: 20px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  h1{
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .kicker{
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin: 0 0 16px;
+  }
+  .controls{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items:center;
+  }
+  .search{
+    flex: 1 1 240px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 16px;
+  }
+  .search svg{ flex:none; opacity:0.6; }
+  .search input{
+    border:none;
+    outline:none;
+    background:transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.95rem;
+    width:100%;
+  }
+  .search input::placeholder{ color: var(--muted); }
+
+  .speed-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.88rem;
+    color: var(--muted);
+    user-select:none;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .switch{
+    position:relative;
+    width:38px; height:22px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius:999px;
+    flex:none;
+    transition: background 0.15s ease;
+  }
+  .switch::after{
+    content:"";
+    position:absolute;
+    top:2px; left:2px;
+    width:16px; height:16px;
+    border-radius:50%;
+    background: var(--muted);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .speed-toggle input{ position:absolute; opacity:0; width:0; height:0; }
+  .speed-toggle input:checked + .switch{ background: var(--accent-dim); border-color: var(--accent); }
+  .speed-toggle input:checked + .switch::after{ transform: translateX(16px); background: var(--accent); }
+  .speed-toggle input:focus-visible + .switch{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .voice-note{
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  section.category{ margin-top: 34px; }
+  .cat-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom: 14px;
+  }
+  .cat-dot{
+    width:10px; height:10px;
+    border-radius:50%;
+    background: var(--dot, var(--accent));
+    flex:none;
+  }
+  .cat-head h2{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    font-size: 1.25rem;
+    margin:0;
+  }
+  .cat-count{
+    color: var(--muted);
+    font-size:0.82rem;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 1px 2px var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .term{
+    font-weight:600;
+    font-size: 1.05rem;
+    line-height:1.25;
+  }
+  .term em{
+    font-style: italic;
+    font-weight:500;
+    color: var(--muted);
+    display:block;
+    font-size:0.78rem;
+    margin-top:2px;
+  }
+  .phonetic{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 0.86rem;
+    color: var(--muted);
+    letter-spacing:0.01em;
+    line-height:1.5;
+  }
+  .phonetic b{
+    color: var(--stress);
+    font-weight:600;
+  }
+
+  .hear-btn{
+    margin-top:auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border: 1px solid var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-family: inherit;
+    font-weight:600;
+    font-size: 0.88rem;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: background 0.12s ease, transform 0.08s ease;
+  }
+  .hear-btn:hover{ background: var(--accent); color: var(--accent-ink); }
+  .hear-btn:active{ transform: scale(0.97); }
+  .hear-btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hear-btn.speaking{ background: var(--accent); color: var(--accent-ink); }
+  .hear-btn svg{ flex:none; }
+  .hear-btn .bars{ display:flex; align-items:flex-end; gap:2px; height:12px; }
+  .hear-btn .bars i{
+    display:block; width:2.5px; background: currentColor; border-radius:1px;
+    height:4px;
+  }
+  .hear-btn.speaking .bars i{ animation: bounce 0.9s ease-in-out infinite; }
+  .hear-btn.speaking .bars i:nth-child(2){ animation-delay: 0.15s; }
+  .hear-btn.speaking .bars i:nth-child(3){ animation-delay: 0.3s; }
+  @keyframes bounce{
+    0%, 100% { height:4px; }
+    50% { height:12px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hear-btn.speaking .bars i{ animation: none; height: 8px; }
+  }
+
+  .hidden{ display:none !important; }
+  .empty-msg{
+    color: var(--muted);
+    font-size:0.95rem;
+    padding: 40px 0;
+    text-align:center;
+  }
+  .tts-warning{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    background: var(--surface-2);
+    border:1px solid var(--line);
+    font-size:0.85rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Pronounce-a-Protist</h1>
+    <p class="kicker">BIOS 102 &middot; Protist Lab pronunciation helper &mdash; tap any word to hear it spoken aloud.</p>
+    <div class="controls">
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" type="text" placeholder="Search a term or organism&hellip;" autocomplete="off">
+      </label>
+      <label class="speed-toggle">
+        <input type="checkbox" id="slowToggle">
+        <span class="switch" aria-hidden="true"></span>
+        Speak slowly
+      </label>
+    </div>
+    <p class="voice-note" id="voiceNote"></p>
+  </header>
+
+  <main id="sections"></main>
+  <p class="empty-msg hidden" id="emptyMsg">No terms match your search.</p>
+</div>
+
+<script>
+(function(){
+  const DATA = [
+    { cat: "Core Vocabulary", dot: "#2f7d5c", terms: [
+      ["Protist", "PRO-tist"],
+      ["Protista", "pro-TIS-tuh", "the kingdom these organisms belong to"],
+      ["Eukaryote", "yoo-KAIR-ee-oht"],
+      ["Flagellum / Flagella", "fluh-JEL-um / fluh-JEL-uh", "singular / plural"],
+      ["Cilia / Ciliate", "SIL-ee-uh / SIL-ee-ut"],
+      ["Pseudopodia", "soo-doh-POH-dee-uh"],
+      ["Pellicle", "PEL-ih-kul"],
+      ["Contractile vacuole", "kun-TRAK-tul VAK-yoo-ohl"],
+      ["Binary fission", "BY-nuh-ree FISH-un"],
+      ["Conjugation", "kon-juh-GAY-shun"],
+      ["Osmoregulation", "oz-moh-reg-yuh-LAY-shun"],
+      ["Symbiosis / Endosymbiosis", "sim-by-OH-sis / en-doh-sim-by-OH-sis"],
+      ["Heterotrophic", "het-er-oh-TROH-fik"],
+      ["Autotrophic", "aw-toh-TROH-fik"],
+    ]},
+    { cat: "Classification (Phyla)", dot: "#7a6a2f", terms: [
+      ["Ciliophora", "sil-ee-OFF-or-uh"],
+      ["Sarcodina", "sar-koh-DY-nuh"],
+      ["Mastigophora", "mas-tih-GOFF-or-uh"],
+      ["Apicomplexa", "ay-pih-kum-PLEKS-uh"],
+      ["Rhizopoda", "ry-ZOP-uh-duh"],
+    ]},
+    { cat: "Ciliates & Flagellates", dot: "#2f6a7d", terms: [
+      ["Paramecium", "pair-uh-MEE-see-um"],
+      ["Stentor", "STEN-tor"],
+      ["Vorticella", "vor-tih-SEL-uh"],
+      ["Euglena", "yoo-GLEE-nuh"],
+      ["Trichomonas", "trik-uh-MOH-nus"],
+      ["Trypanosoma", "trih-pan-uh-SOH-muh"],
+      ["Trypanosoma brucei", "trih-pan-uh-SOH-muh BROO-see-eye"],
+    ]},
+    { cat: "Amoeboid Protists & Slime Molds", dot: "#7d4a2f", terms: [
+      ["Amoeba", "uh-MEE-buh"],
+      ["Entamoeba histolytica", "ent-uh-MEE-buh his-tuh-LIT-ih-kuh"],
+      ["Naegleria fowleri", "nay-GLEER-ee-uh FOW-lur-eye"],
+      ["Radiolaria", "ray-dee-oh-LAIR-ee-uh"],
+      ["Foraminifera", "fuh-ram-uh-NIF-er-uh"],
+      ["Physarum", "FY-sair-um"],
+    ]},
+    { cat: "Algae & Photosynthetic Protists", dot: "#3f8f4f", terms: [
+      ["Volvox", "VOL-voks"],
+      ["Spirogyra", "spy-roh-JY-ruh"],
+      ["Chlamydomonas", "kluh-mid-oh-MOH-nus"],
+      ["Dinoflagellate", "dy-noh-FLAJ-uh-lut"],
+      ["Ceratium", "suh-RAY-shee-um"],
+    ]},
+    { cat: "Disease-Causing Protists", dot: "#b5502e", terms: [
+      ["Plasmodium", "plaz-MOH-dee-um"],
+      ["Plasmodium falciparum", "plaz-MOH-dee-um fal-SIP-uh-rum"],
+      ["Giardia", "jee-AR-dee-uh"],
+      ["Toxoplasma gondii", "tok-suh-PLAZ-muh GON-dee-eye"],
+    ]},
+  ];
+
+  function formatPhonetic(p){
+    return p.split(/(\s+|\/)/).map(chunk => {
+      if (chunk === " " || chunk === "/" ) return chunk;
+      return chunk.split("-").map(syl =>
+        /^[A-Z]/.test(syl) ? "<b>" + syl.toLowerCase() + "</b>" : syl
+      ).join("-");
+    }).join("");
+  }
+
+  const speakerIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 9,9 13,5 13,19 9,15 4,15" fill="currentColor" stroke="none"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+  const barsIcon = '<span class="bars"><i></i><i></i><i></i></span>';
+
+  const sectionsEl = document.getElementById("sections");
+  const cards = [];
+
+  DATA.forEach(group => {
+    const section = document.createElement("section");
+    section.className = "category";
+    section.dataset.cat = group.cat;
+
+    const head = document.createElement("div");
+    head.className = "cat-head";
+    head.innerHTML =
+      '<span class="cat-dot" style="--dot:' + group.dot + '"></span>' +
+      '<h2>' + group.cat + '</h2>' +
+      '<span class="cat-count">' + group.terms.length + ' terms</span>';
+    section.appendChild(head);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    group.terms.forEach(([term, phonetic, note]) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const searchText = (term + " " + phonetic).toLowerCase();
+      card.dataset.search = searchText;
+
+      card.innerHTML =
+        '<div class="term">' + term + (note ? '<em>' + note + '</em>' : '') + '</div>' +
+        '<div class="phonetic">' + formatPhonetic(phonetic) + '</div>' +
+        '<button class="hear-btn" type="button" data-term="' + term.replace(/"/g,'&quot;') + '">' +
+          speakerIcon + '<span class="label">Hear it</span>' + barsIcon +
+        '</button>';
+
+      grid.appendChild(card);
+      cards.push(card);
+    });
+
+    section.appendChild(grid);
+    sectionsEl.appendChild(section);
+  });
+
+  // --- Speech ---
+  const synth = window.speechSynthesis;
+  const voiceNote = document.getElementById("voiceNote");
+  let chosenVoice = null;
+  let activeBtn = null;
+
+  function pickVoice(){
+    if (!synth) return;
+    const voices = synth.getVoices();
+    chosenVoice =
+      voices.find(v => /en-US/i.test(v.lang) && /Google/i.test(v.name)) ||
+      voices.find(v => /en-US/i.test(v.lang)) ||
+      voices.find(v => /^en/i.test(v.lang)) ||
+      voices[0] || null;
+  }
+
+  if (!synth){
+    voiceNote.textContent = "Your browser doesn't support spoken pronunciation — try Chrome, Edge, or Safari.";
+  } else {
+    pickVoice();
+    synth.addEventListener("voiceschanged", pickVoice);
+  }
+
+  function setSpeaking(btn, on){
+    btn.classList.toggle("speaking", on);
+    btn.querySelector(".label").textContent = on ? "Speaking…" : "Hear it";
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".hear-btn");
+    if (!btn || !synth) return;
+
+    const wasActive = activeBtn === btn;
+    synth.cancel();
+    if (activeBtn) setSpeaking(activeBtn, false);
+    activeBtn = null;
+    if (wasActive) return;
+
+    const utter = new SpeechSynthesisUtterance(btn.dataset.term);
+    if (chosenVoice) utter.voice = chosenVoice;
+    utter.rate = document.getElementById("slowToggle").checked ? 0.62 : 0.88;
+    utter.pitch = 1;
+    utter.onstart = () => { activeBtn = btn; setSpeaking(btn, true); };
+    utter.onend = () => { if (activeBtn === btn) activeBtn = null; setSpeaking(btn, false); };
+    utter.onerror = () => { if (activeBtn === btn) activeBtn = null; setSpeaking(btn, false); };
+    synth.speak(utter);
+  });
+
+  // --- Search filter ---
+  const searchInput = document.getElementById("search");
+  const emptyMsg = document.getElementById("emptyMsg");
+
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    let anyVisible = false;
+
+    document.querySelectorAll("section.category").forEach(section => {
+      let sectionHasMatch = false;
+      section.querySelectorAll(".card").forEach(card => {
+        const match = !q || card.dataset.search.includes(q);
+        card.classList.toggle("hidden", !match);
+        if (match) sectionHasMatch = true;
+      });
+      section.classList.toggle("hidden", !sectionHasMatch);
+      if (sectionHasMatch) anyVisible = true;
+    });
+
+    emptyMsg.classList.toggle("hidden", anyVisible);
+  });
+})();
+</script>
+</body>
+</html>
