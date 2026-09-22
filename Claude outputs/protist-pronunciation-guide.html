@@ -362,17 +362,6 @@
     ]},
   ];
 
-  // Browser text-to-speech regularly mangles unfamiliar scientific names
-  // (e.g. "Scenedesmus"), so speak the phonetic respelling shown on the
-  // card instead of the literal word -- it reads far more reliably.
-  function buildSpeakText(phonetic){
-    return phonetic
-      .split("/")
-      .map(part => part.trim().replace(/["“”]/g, "").replace(/-/g, " "))
-      .filter(Boolean)
-      .join(", ");
-  }
-
   function formatPhonetic(p){
     return p.split(/(\s+|\/)/).map(chunk => {
       if (chunk === " " || chunk === "/" ) return chunk;
@@ -418,7 +407,6 @@
         '</button>';
 
       const hearBtn = card.querySelector(".hear-btn");
-      hearBtn._speakText = buildSpeakText(phonetic);
       hearBtn._label = term;
 
       grid.appendChild(card);
@@ -467,7 +455,7 @@
     activeBtn = null;
     if (wasActive) return;
 
-    const utter = new SpeechSynthesisUtterance(btn._speakText || btn._label);
+    const utter = new SpeechSynthesisUtterance(btn._label);
     if (chosenVoice) utter.voice = chosenVoice;
     utter.rate = document.getElementById("slowToggle").checked ? 0.62 : 0.88;
     utter.pitch = 1;
