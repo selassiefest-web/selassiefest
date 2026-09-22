@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>BIOS102 Lab Companion | Morpheme Breakdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/BIOS102/css/style.css" />
+<style>
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin: 4px 0 24px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
+
+  .morph-piece {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+  .morph-prefix { background: var(--amber-soft); color: var(--amber); }
+  .morph-root { background: var(--accent-soft); color: var(--accent); }
+  .morph-suffix { background: rgba(111, 184, 214, 0.16); color: #6fb8d6; }
+
+  .term-section { margin-top: 30px; }
+  .term-section-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .term-section-head h3 { font-weight: 400; font-size: 1.05rem; }
+  .term-count { color: var(--text-dim); font-size: 0.78rem; }
+
+  .term-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .morph-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .morph-word { font-size: 1.05rem; letter-spacing: 0.01em; }
+  .morph-word .morph-piece + .morph-piece { margin-left: 1px; }
+  .morph-key {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .morph-key .morph-piece { margin-right: 6px; font-size: 0.78rem; }
+
+  .page-note {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    max-width: 68ch;
+    margin: -10px 0 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <a href="/BIOS102/dashboard.html" style="color:inherit;text-decoration:none;">BIOS102 <span>Lab Companion</span></a>
+      <small>Morpheme Breakdown</small>
+    </div>
+    <div class="session-info">
+      <a href="/BIOS102/index.html">Log in for the full dashboard &rarr;</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>Morpheme Breakdown</h2>
+    <p class="lede">Exercise 2 (The Protists) &amp; Exercise 3 (Fungi) &mdash; only the terms that actually break down into meaningful prefixes, roots, and suffixes. Names like <em>Peziza</em> or <em>Agaricus</em> aren't here because they don't decompose into recognizable word parts.</p>
+    <p class="page-note">These are simplified, classroom-level breakdowns meant to help you remember and guess unfamiliar terms &mdash; not strict linguistic etymology.</p>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--amber)"></span> Prefix</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:var(--accent)"></span> Root</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#6fb8d6"></span> Suffix</span>
+    </div>
+
+    <p class="lede" style="margin-bottom:8px;"><a href="/BIOS102/pronounce.html">&#128266; Pronunciation Guide</a> &mdash; hear these same terms spoken aloud.</p>
+
+    <div id="sections"></div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+<script>
+(function(){
+  // type: "prefix" | "root" | "suffix" -- simplified for teaching, not strict linguistics.
+  const DATA = [
+    { cat: "Core Vocabulary (Exercise 2)", terms: [
+      ["Eukaryotic", [["eu","prefix","true, good"],["kary","root","nucleus, kernel"],["otic","suffix","pertaining to"]]],
+      ["Autotroph", [["auto","prefix","self"],["troph","suffix","feeding, nourishment"]]],
+      ["Heterotroph", [["hetero","prefix","other, different"],["troph","suffix","feeding, nourishment"]]],
+      ["Phytoplankton", [["phyto","prefix","plant"],["plankton","root","wanderer, drifter"]]],
+      ["Protozoans", [["proto","prefix","first"],["zo","root","animal"],["ans","suffix","group of"]]],
+      ["Protista", [["proto","prefix","first"],["ista","suffix","a class of"]]],
+      ["Endosymbiosis", [["endo","prefix","within, inside"],["sym","prefix","together, with"],["bi","root","life"],["osis","suffix","condition, process"]]],
+      ["Macronucleus", [["macro","prefix","large"],["nucleus","root","kernel, nut → cell nucleus"]]],
+      ["Micronucleus", [["micro","prefix","small"],["nucleus","root","kernel, nut → cell nucleus"]]],
+      ["Schizogony", [["schizo","prefix","split, divide"],["gony","suffix","reproduction, generation"]]],
+      ["Sporozoite", [["sporo","root","seed, spore"],["zo","root","animal"],["ite","suffix","a small one, particle"]]],
+      ["Merozoite", [["mero","prefix","a part"],["zo","root","animal"],["ite","suffix","a small one, particle"]]],
+      ["Trophozoite", [["tropho","prefix","feeding, nourishing"],["zo","root","animal"],["ite","suffix","a small one, particle"]]],
+      ["Syngamy", [["syn","prefix","together, with"],["gamy","suffix","union, marriage"]]],
+      ["Pyrenoid", [["pyren","root","fruit stone, kernel"],["oid","suffix","resembling"]]],
+    ]},
+    { cat: "Classification (\"Supergroups\")", terms: [
+      ["Archaeplastida", [["archae","prefix","ancient"],["plast","root","formed, molded"],["ida","suffix","a group of"]]],
+      ["Chlorophytes", [["chloro","prefix","green"],["phyte","suffix","plant"]]],
+      ["Excavata", [["ex","prefix","out"],["cav","root","hollow"],["ata","suffix","having the form of"]]],
+      ["Euglenozoans", [["eu","prefix","true"],["glen","root","eyeball, socket"],["zo","root","animal"],["ans","suffix","group of"]]],
+      ["Alveolata", [["alveol","root","small cavity, hollow"],["ata","suffix","having the form of"]]],
+      ["Unikonta", [["uni","prefix","one"],["konta","root","pole, flagellum"]]],
+    ]},
+    { cat: "Organism Names (Protists)", terms: [
+      ["Chlamydomonas", [["chlamyd","root","cloak, mantle"],["monas","root","single unit, one"]]],
+      ["Volvox", [["volv","root","to roll"],["ox","suffix","one that does"]]],
+      ["Spirogyra", [["spiro","root","coil, spiral"],["gyra","root","a turn, ring"]]],
+      ["Trypanosoma", [["trypano","root","borer, auger"],["soma","root","body"]]],
+      ["Plasmodium", [["plasm","root","a formed, molded thing"],["odium","suffix","a small one"]]],
+      ["Paramecium", [["para","prefix","beside, alongside"],["mec","root","length"],["ium","suffix","(noun ending)"]]],
+      ["Euglena", [["eu","prefix","true, good"],["glena","root","eyeball, socket"]]],
+    ]},
+    { cat: "Fungi (Exercise 3)", terms: [
+      ["Mycelium", [["myc","root","fungus"],["elium","suffix","a growth, mass of"]]],
+      ["Ascomycota", [["asco","root","sac, bag"],["myco","root","fungus"],["ta","suffix","group of"]]],
+      ["Basidiomycota", [["basidio","root","little base, pedestal"],["myco","root","fungus"],["ta","suffix","group of"]]],
+      ["Zygomycota", [["zygo","root","yoke, pair, union"],["myco","root","fungus"],["ta","suffix","group of"]]],
+      ["Ascocarp", [["asco","root","sac, bag"],["carp","suffix","fruit"]]],
+      ["Basidiospores", [["basidio","root","little base, pedestal"],["spores","suffix","seed"]]],
+      ["Sporangium", [["spor","root","seed, spore"],["angium","suffix","vessel, container"]]],
+      ["Sporangiophore", [["sporangio","root","spore vessel"],["phore","suffix","bearer, carrier"]]],
+      ["Coprophilous", [["copro","prefix","dung, feces"],["philous","suffix","loving, having an affinity for"]]],
+      ["Phototropic", [["photo","prefix","light"],["tropic","suffix","turning toward"]]],
+      ["Mycorrhiza", [["myco","root","fungus"],["rhiza","root","root"]]],
+      ["Saprobe", [["sapro","root","rotten, decayed"],["be","suffix","life"]]],
+      ["Pilobolus", [["pilo","root","felt cap"],["bolus","root","a throw"]]],
+    ]},
+  ];
+
+  const sectionsEl = document.getElementById("sections");
+
+  DATA.forEach(group => {
+    const section = document.createElement("section");
+    section.className = "term-section";
+
+    const head = document.createElement("div");
+    head.className = "term-section-head";
+    head.innerHTML = '<h3>' + group.cat + '</h3><span class="term-count">' + group.terms.length + ' terms</span>';
+    section.appendChild(head);
+
+    const grid = document.createElement("div");
+    grid.className = "term-grid";
+
+    group.terms.forEach(([word, parts]) => {
+      const card = document.createElement("div");
+      card.className = "morph-card";
+
+      const wordHtml = parts.map(([text, type]) =>
+        '<span class="morph-piece morph-' + type + '">' + text + '</span>'
+      ).join('');
+
+      const keyHtml = parts.map(([text, type, meaning]) =>
+        '<li><span class="morph-piece morph-' + type + '">' + text + (type === 'suffix' ? '' : '-') + '</span>' + meaning + '</li>'
+      ).join('');
+
+      card.innerHTML =
+        '<div class="morph-word">' + wordHtml + '</div>' +
+        '<ul class="morph-key">' + keyHtml + '</ul>';
+
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    sectionsEl.appendChild(section);
+  });
+})();
+</script>
+</body>
+</html>
