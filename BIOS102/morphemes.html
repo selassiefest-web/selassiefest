@@ -93,6 +93,27 @@
 
     <p class="lede" style="margin-bottom:8px;"><a href="/BIOS102/pronounce.html">&#128266; Pronunciation Guide</a> &mdash; hear these same terms spoken aloud.</p>
 
+    <div class="callout-banner">
+      <span class="eyebrow">Recurring root &mdash; worth learning now</span>
+      <strong>chloro-</strong> = green. This one won't stop showing up: Kingdom Plantae (Exercises 4&ndash;6, coming up) is built almost entirely around photosynthesis, so expect it lab after lab. You've already met it below in <em>Chlorophytes</em> &mdash; here it is again, spelled out:
+      <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:24px;">
+        <div>
+          <div class="morph-word"><span class="morph-piece morph-prefix">chloro</span><span class="morph-piece morph-suffix">phyll</span></div>
+          <ul class="morph-key">
+            <li><span class="morph-piece morph-prefix">chloro-</span> green</li>
+            <li><span class="morph-piece morph-suffix">-phyll</span> leaf &mdash; the light-absorbing pigment itself</li>
+          </ul>
+        </div>
+        <div>
+          <div class="morph-word"><span class="morph-piece morph-prefix">chloro</span><span class="morph-piece morph-suffix">plast</span></div>
+          <ul class="morph-key">
+            <li><span class="morph-piece morph-prefix">chloro-</span> green</li>
+            <li><span class="morph-piece morph-suffix">-plast</span> a formed/molded body &mdash; the organelle that holds the chlorophyll</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <div id="sections"></div>
   </div>
 
@@ -102,7 +123,11 @@
 (function(){
   // type: "prefix" | "root" | "suffix" -- simplified for teaching, not strict linguistics.
   const DATA = [
-    { cat: "Core Vocabulary (Exercise 2)", terms: [
+    { cat: "Core Vocabulary (Exercise 2)",
+      note: "The sym-/bio- family: Symbiosis, Symbiotic, and Endosymbiosis all share sym- (together) + bi (life) — only the ending changes what kind of word it is, and endo- adds \"within.\" (Symbiosis itself is actually said in Exercise 3's lichen section, not Exercise 2 — grouped here so you see the whole family together.)",
+      terms: [
+      ["Symbiosis", [["sym","prefix","together, with"],["bi","root","life"],["osis","suffix","condition, process"]]],
+      ["Symbiotic", [["sym","prefix","together, with"],["bi","root","life"],["otic","suffix","pertaining to"]]],
       ["Eukaryotic", [["eu","prefix","true, good"],["kary","root","nucleus, kernel"],["otic","suffix","pertaining to"]]],
       ["Autotroph", [["auto","prefix","self"],["troph","suffix","feeding, nourishment"]]],
       ["Heterotroph", [["hetero","prefix","other, different"],["troph","suffix","feeding, nourishment"]]],
@@ -163,6 +188,13 @@
     head.className = "term-section-head";
     head.innerHTML = '<h3>' + group.cat + '</h3><span class="term-count">' + group.terms.length + ' terms</span>';
     section.appendChild(head);
+
+    if (group.note) {
+      const noteEl = document.createElement("p");
+      noteEl.className = "group-note";
+      noteEl.textContent = group.note;
+      section.appendChild(noteEl);
+    }
 
     const grid = document.createElement("div");
     grid.className = "term-grid";
