@@ -80,6 +80,19 @@
     }
     .mq-opt input { width: 18px; height: 18px; accent-color: var(--accent); }
     .mq-opt.opt-yes { border-color: var(--accent); }
+    .mq-match { display: grid; gap: 10px; }
+    .mq-match-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 10px; align-items: center; }
+    .mq-match-row b { font-weight: 500; color: var(--accent); }
+    .mq-match-row select {
+      width: 100%; min-width: 0; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-family: inherit; font-size: 0.95rem;
+    }
+    .mq-match-row select:focus { outline: none; border-color: var(--accent); }
+    .mq-match-row select.part-ok { border-color: var(--accent); }
+    .mq-match-row select.part-no { border-color: var(--danger); }
+    .mq-page { color: var(--amber); white-space: nowrap; }
+    @media (max-width: 560px) { .mq-match-row { grid-template-columns: 1fr; gap: 6px; } }
 
     .mq-fb { margin-top: 10px; font-size: 0.9rem; min-height: 1.2em; }
     .mq-fb.ok { color: var(--accent); }
@@ -165,6 +178,9 @@
       // several parts = a shared `prompt` stem plus one blank per part.
       // type 'multi' -> options: [...], answer: [...] (select all that apply;
       // correct only when exactly the answer set is checked).
+      // type 'match' -> items: [{ key, label, answer }], choices: [...]; one
+      // dropdown per item, graded item by item like fill-in parts.
+      // `page` is a number, or a string like '24, 25, 29' for several pages.
       const SECTIONS = [
         {
           id: 'id', eyebrow: 'Exercise 2', title: 'Identify the organism',
@@ -181,7 +197,7 @@
             { id: 'spirogyra', type: 'fill', page: 26,
               prompt: 'An alga made of unbranched filaments, with a ribbon-like chloroplast zigzagging through each cell, is the genus ___.',
               parts: [{ key: 'x', accept: ['Spirogyra', 'spiro gyra', 'spirogira', 'spiral gyra', 'spyrogyra'] }],
-              note: 'Its pyrenoid bodies aid in starch formation and storage during photosynthesis. Its cells are not organized into tissues.' },
+              note: 'Its cells are not organized into tissues like more advanced multicellular organisms. Observe it at 400X on the demonstration microscope.' },
             { id: 'scenedesmus', type: 'tf', page: 24,
               prompt: 'Scenedesmus is a motile colony that swims using flagella.',
               answer: false, note: 'False. Scenedesmus is a small non-motile colony, usually four cells stacked together with spines extending from each end.' },
@@ -200,6 +216,39 @@
               options: ['Chlamydomonas', 'Scenedesmus', 'Eudorina', 'Volvox', 'Spirogyra'],
               answer: ['Chlamydomonas', 'Scenedesmus', 'Eudorina', 'Volvox', 'Spirogyra'],
               note: 'All of them. Chlorophytes possess chloroplasts much like those of plants in ultrastructure and pigment composition, one reason green algae and plants are considered closely related. In Spirogyra you can see the ribbon-like chloroplast zigzagging through each cell (p. 26).' },
+          ],
+        },
+        {
+          id: 'structure', eyebrow: 'Exercise 2', title: 'Structure and function',
+          questions: [
+            { id: 'movement-match', type: 'match', page: '24, 25, 29',
+              prompt: 'Match each organism to how it moves.',
+              choices: ['Flagella', 'Cilia', 'Does not move (non-motile)'],
+              items: [
+                { key: 'a', label: 'Chlamydomonas', answer: 'Flagella' },
+                { key: 'b', label: 'Volvox', answer: 'Flagella' },
+                { key: 'c', label: 'Paramecium', answer: 'Cilia' },
+                { key: 'd', label: 'Scenedesmus', answer: 'Does not move (non-motile)' },
+              ],
+              note: 'Chlamydomonas: label its flagella (p. 24). Volvox: each cell has two flagella, and their synchronized beat moves the colony (p. 25). Paramecium: ciliates use cilia to move (p. 29). Scenedesmus: a small non-motile colony (p. 24).' },
+            { id: 'function-match', type: 'match', page: '25, 26, 29',
+              prompt: 'Match each structure you labeled to its function.',
+              choices: ['Starch formation and storage during photosynthesis', 'A synchronized beat that moves the colony', 'New colonies, eventually released from the mother colony'],
+              items: [
+                { key: 'a', label: 'Pyrenoid bodies of Spirogyra', answer: 'Starch formation and storage during photosynthesis' },
+                { key: 'b', label: 'Flagella of Volvox cells', answer: 'A synchronized beat that moves the colony' },
+                { key: 'c', label: 'Daughter colonies inside a Volvox mother colony', answer: 'New colonies, eventually released from the mother colony' },
+              ],
+              note: 'Pyrenoid bodies aid in starch formation and storage during photosynthesis (p. 26). Volvox possesses a synchronized flagella beat that results in movement, and its large mother colony forms numerous smaller daughter colonies within itself, which are eventually released (p. 25).' },
+            { id: 'pyrenoid', type: 'fill', page: 26,
+              prompt: 'The small bodies you labeled along the chloroplast of Spirogyra, which aid in starch formation and storage during photosynthesis, are called ___.',
+              parts: [{ key: 'x', accept: ['pyrenoid bodies', 'pyrenoids', 'pyrenoid', 'pyrenoid body', 'pyrinoids', 'pyranoids', 'pie renoids', 'pyrenoyds'] }],
+              note: 'Also label the ribbon-like chloroplast zigzagging through each cell, the cell wall partitions between the ends of the cells, and the nucleus (sketch it from the stained slide).' },
+            { id: 'spiro-eukaryote', type: 'multi', page: 26,
+              prompt: 'Which of these structures you labeled on Spirogyra are evidence that its cells are eukaryotic, not prokaryotic?',
+              options: ['Cell wall partitions', 'Chloroplast', 'Nucleus'],
+              answer: ['Chloroplast', 'Nucleus'],
+              note: 'A nucleus and a chloroplast are membrane-bound organelles, which only eukaryotic cells have; prokaryotes such as bacteria also have cell walls. This is review question 7 on p. 27, so check the details in your textbook.' },
           ],
         },
         {
@@ -234,10 +283,9 @@
         {
           id: 'para', eyebrow: 'Exercise 2', title: 'Paramecium',
           questions: [
-            { id: 'cilia', type: 'fill', page: 29,
-              prompt: 'Ciliates such as Paramecium are characterized by their use of ___ to move and feed.',
-              parts: [{ key: 'x', accept: ['cilia', 'cilium', 'silia', 'celia', 'sillia', 'cillia'] }],
-              note: 'Label the cilia on your prepared slide of Paramecium.' },
+            { id: 'cilia-feed', type: 'tf', page: 29,
+              prompt: 'Paramecium uses its cilia only to move.',
+              answer: false, note: 'False. Ciliates are characterized by their use of cilia to move and feed: one structure, two functions.' },
             { id: 'nuclei', type: 'fill', page: 29,
               prompt: 'Ciliates such as Paramecium possess two types of nuclei. Name each one.',
               parts: [
@@ -499,6 +547,10 @@
         }
       }
 
+      function pageRef(q) {
+        return (/[,-]/.test(String(q.page)) ? 'pp. ' : 'p. ') + q.page;
+      }
+
       // ---------------- rendering ----------------
       const esc = BIOS.escapeHtml;
       function richText(text) {
@@ -538,6 +590,17 @@
               <button type="button" class="mq-btn tf" id="${q.id}-t">True</button>
               <button type="button" class="mq-btn tf" id="${q.id}-f">False</button>
             </div>`;
+        } else if (q.type === 'match') {
+          controls = `<div class="mq-match">
+              ${q.items.map((it) => `<label class="mq-match-row" for="${q.id}-${it.key}-sel">
+                <span><b>(${it.key})</b> ${richText(it.label)}</span>
+                <select id="${q.id}-${it.key}-sel">
+                  <option value="">Choose&hellip;</option>
+                  ${q.choices.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+                </select>
+              </label>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         } else if (q.type === 'multi') {
           controls = `<div class="mq-opts">
               ${q.options.map((o, i) => `<label class="mq-opt" id="${q.id}-l${i}">
@@ -556,7 +619,7 @@
             </div>
             <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         }
-        const kind = q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
+        const kind = q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.type === 'match' ? `Match · ${q.items.length} items` : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
         return `
           <article class="mq-q" id="${q.id}-card">
             <div class="mq-num">${num}.</div>
@@ -581,6 +644,8 @@
         if (q.type === 'tf') {
           document.getElementById(`${q.id}-t`).addEventListener('click', () => submitTf(q, true));
           document.getElementById(`${q.id}-f`).addEventListener('click', () => submitTf(q, false));
+        } else if (q.type === 'match') {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitMatch(q));
         } else if (q.type === 'multi') {
           document.getElementById(`${q.id}-go`).addEventListener('click', () => submitMulti(q));
         } else {
@@ -654,6 +719,29 @@
         s.tfLast = value;
         s.lastWrong = value !== q.answer;
         if (!s.lastWrong) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function submitMatch(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const toGrade = q.items.filter((it) => !ps(q.id, it.key).ok &&
+          document.getElementById(`${q.id}-${it.key}-sel`).value);
+        if (!toGrade.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = 'Choose at least one match first.';
+          return;
+        }
+        countAttempt(s);
+        toGrade.forEach((it) => {
+          const st = ps(q.id, it.key);
+          st.last = document.getElementById(`${q.id}-${it.key}-sel`).value;
+          st.ok = st.last === it.answer;
+          st.wrong = !st.ok;
+        });
+        s.lastWrong = toGrade.some((it) => !ps(q.id, it.key).ok);
+        if (q.items.every((it) => ps(q.id, it.key).ok)) s.status = 'correct';
         afterChange(q);
       }
 
@@ -732,6 +820,18 @@
             b.classList.toggle('picked-right', s.status === 'correct' && val === q.answer);
             b.classList.toggle('picked-wrong', s.status === 'open' && !!s.lastWrong && s.tfLast === val);
           });
+        } else if (q.type === 'match') {
+          q.items.forEach((it) => {
+            const st = ps(q.id, it.key);
+            const sel = document.getElementById(`${q.id}-${it.key}-sel`);
+            const locked = done || st.ok;
+            if (s.status === 'revealed' && !st.ok) sel.value = it.answer;
+            else if (st.last && !sel.value) sel.value = st.last;
+            sel.disabled = locked;
+            sel.classList.toggle('part-ok', st.ok);
+            sel.classList.toggle('part-no', !locked && !!st.wrong);
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
         } else if (q.type === 'multi') {
           q.options.forEach((o, i) => {
             const box = document.getElementById(`${q.id}-o${i}`);
@@ -759,10 +859,11 @@
           document.getElementById(`${q.id}-go`).disabled = done;
         }
 
-        fb.innerHTML = feedbackHtml(q, s);
+        fb.innerHTML = feedbackHtml(q, s) + (s.status === 'open' && s.lastWrong
+          ? ` <span class="mq-page">Look it up: lab manual ${pageRef(q)}.</span>` : '');
         fb.className = 'mq-fb' + (s.status === 'correct' ? ' ok' : s.status === 'revealed' ? ' shown' : s.lastWrong ? ' no' : '');
         note.hidden = !done;
-        note.textContent = done ? `${q.note} (Lab manual p. ${q.page})` : '';
+        note.textContent = done ? `${q.note} (Lab manual ${pageRef(q)})` : '';
         revealBtn.hidden = done || s.attempts < REVEAL_AFTER;
       }
 
@@ -771,6 +872,14 @@
           if (s.status === 'correct') return 'Correct.';
           if (s.status === 'revealed') return `Answer: <strong>${q.answer ? 'True' : 'False'}</strong>. Not counted in your score.`;
           return s.lastWrong ? 'Not quite. Try again.' : '';
+        }
+        if (q.type === 'match') {
+          if (s.status === 'correct') return 'All matches correct.';
+          if (s.status === 'revealed') return 'Correct matches are filled in above. Not counted in your score.';
+          const right = q.items.filter((it) => ps(q.id, it.key).ok).map((it) => it.key);
+          const wrong = q.items.filter((it) => ps(q.id, it.key).wrong).map((it) => it.key);
+          return [right.length ? `(${right.join(', ')}) correct.` : '',
+                  wrong.length ? `(${wrong.join(', ')}) not quite, try again.` : ''].filter(Boolean).join(' ');
         }
         if (q.type === 'multi') {
           if (s.status === 'correct') return 'Correct.';
