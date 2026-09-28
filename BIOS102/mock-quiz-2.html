@@ -159,7 +159,7 @@
       // Every fact comes from the lab manual; `page` is the manual's printed
       // page number, shown to the student with each explanation.
       // type 'tf' -> answer: true|false.
-      // type 'fill' -> parts: [{ key, prompt?, accept: [...] }]; the first
+      // type 'fill' -> parts: [{ key, prompt?, accept: [...], reject? }]; the first
       // accept entry is the displayed answer, the rest cover synonyms and
       // common speech-to-text mishearings. One part = one blank in `prompt`;
       // several parts = a shared `prompt` stem plus one blank per part.
@@ -220,6 +220,12 @@
               prompt: 'Inside red blood cells, the adult stage of the malaria parasite takes on a ringlike appearance called the “___ stage.”',
               parts: [{ key: 'x', accept: ['signet-ring', 'signet ring', 'signet', 'cygnet ring', 'cygnet', 'signate ring', 'signet rings'] }],
               note: 'The signet-ring stage (trophozoite) is the stage you observe on the demonstration microscope at 1000X.' },
+            { id: 'plasmo-habitat', type: 'fill', page: 28,
+              prompt: 'On the demonstration slide of infected blood, where are the tiny Plasmodium parasites seen? ___',
+              parts: [{ key: 'x',
+                accept: ['inside red blood cells', 'inside the red blood cells', 'inside certain red blood cells', 'within red blood cells', 'within the red blood cells', 'in red blood cells', 'in the red blood cells', 'inside', 'within', 'intracellular'],
+                reject: ['outside the red blood cells', 'between the red blood cells', 'outside', 'between'] }],
+              note: 'Plasmodium is seen inside certain red blood cells at 1000X. Label uninfected red blood cells and an infected red blood cell with the ring-like trophozoite inside.' },
             { id: 'lifecycle', type: 'tf', page: 28,
               prompt: 'The malaria parasite has a simple life cycle that takes place entirely inside one host.',
               answer: false, note: 'False. Its life cycle is complex, involving the digestive tract of a mosquito and human red blood cells. Sporozoites first penetrate liver cells.' },
@@ -231,10 +237,18 @@
             { id: 'cilia', type: 'fill', page: 29,
               prompt: 'Ciliates such as Paramecium are characterized by their use of ___ to move and feed.',
               parts: [{ key: 'x', accept: ['cilia', 'cilium', 'silia', 'celia', 'sillia', 'cillia'] }],
-              note: 'Label the cilia on your prepared slide, along with both nuclei.' },
-            { id: 'one-nucleus', type: 'tf', page: 29,
-              prompt: 'Paramecium has only one nucleus.',
-              answer: false, note: 'False. Ciliates possess two types of nuclei: a macronucleus and a much smaller micronucleus.' },
+              note: 'Label the cilia on your prepared slide of Paramecium.' },
+            { id: 'nuclei', type: 'fill', page: 29,
+              prompt: 'Ciliates such as Paramecium possess two types of nuclei. Name each one.',
+              parts: [
+                { key: 'a', prompt: 'The larger nucleus: ___',
+                  accept: ['macronucleus', 'macro nucleus', 'macronuclei', 'macronucleous', 'macronucleas', 'macro nucleous'],
+                  reject: ['micronucleus', 'micronuclei', 'micro nucleus', 'micronucleous'] },
+                { key: 'b', prompt: 'The much smaller nucleus: ___',
+                  accept: ['micronucleus', 'micro nucleus', 'micronuclei', 'micronucleous', 'micronucleas', 'micro nucleous'],
+                  reject: ['macronucleus', 'macronuclei', 'macro nucleus', 'macronucleous'] },
+              ],
+              note: 'Label both nuclei, along with the cilia, on your prepared slide of Paramecium.' },
             { id: 'cilia-length', type: 'tf', page: 29,
               prompt: 'Cilia are longer than most flagella.',
               answer: false, note: 'False. In contrast to most flagella, cilia are relatively short.' },
@@ -346,9 +360,16 @@
       // 1 typo up to 7 letters, 2 beyond that.
       function slack(len) { return len <= 4 ? 0 : len <= 7 ? 1 : 2; }
 
+      // `reject` lists wrong answers close enough to pass the typo slack
+      // (macronucleus vs micronucleus); an input nearer to one of those than
+      // to every accepted answer is wrong.
       function matchesPart(input, part) {
         const n = squash(input);
         if (!n) return false;
+        if (part.reject) {
+          const best = Math.min(...part.accept.map((a) => lev(n, squash(a))));
+          if (part.reject.some((r) => lev(n, squash(r)) < best)) return false;
+        }
         return part.accept.some((a) => {
           const c = squash(a);
           return n === c || lev(n, c) <= slack(c.length);
