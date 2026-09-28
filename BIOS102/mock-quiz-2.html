@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Mock Quiz 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+  <style>
+    .mq-wrap { max-width: 760px; }
+    .mq-hud {
+      position: sticky; top: 72px; z-index: 5;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+      padding: 12px 16px; margin: 18px 0 4px;
+      background: rgba(11, 18, 16, 0.94); border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 0.9rem; color: var(--text-dim);
+    }
+    .mq-hud strong { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .mq-meter { flex: 1 1 140px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .mq-meter span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.3s ease; }
+    .mq-hud .btn-ghost { padding: 6px 12px; font-size: 0.82rem; }
+    .mq-sub { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.8rem; color: var(--text-dim); padding: 0 4px; }
+    .mq-sub .err { color: var(--danger); }
+
+    .mq-section { margin-top: 34px; }
+    .mq-section h2 { font-weight: 400; font-size: 1.1rem; letter-spacing: 0.02em; }
+    .mq-section h2 small {
+      display: block; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 2px;
+    }
+    .mq-list { display: grid; gap: 12px; margin-top: 12px; }
+
+    .mq-q {
+      display: grid; grid-template-columns: 2.2em 1fr; gap: 4px 10px;
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px; transition: border-color 0.2s;
+    }
+    .mq-q.is-correct { border-color: var(--accent); }
+    .mq-q.is-wrong { border-color: var(--danger); }
+    .mq-q.is-revealed { border-color: var(--amber); }
+    .mq-num { color: var(--text-dim); font-variant-numeric: tabular-nums; padding-top: 1px; }
+    .mq-body { min-width: 0; }
+    .mq-kind { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+    .mq-prompt { margin: 2px 0 12px; line-height: 1.55; }
+    .mq-prompt .blank { display: inline-block; min-width: 5em; border-bottom: 1px solid var(--text-dim); }
+    .mq-parts { display: grid; gap: 14px; }
+    .mq-part-prompt { margin-bottom: 8px; line-height: 1.55; }
+    .mq-part-prompt b { font-weight: 500; color: var(--accent); margin-right: 4px; }
+
+    .mq-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .mq-row input[type="text"] {
+      flex: 1 1 200px; min-width: 0; padding: 10px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text);
+      font-family: inherit; font-size: 1rem;
+    }
+    .mq-row input[type="text"]:focus { outline: none; border-color: var(--accent); }
+    .mq-row input[type="text"]:disabled { opacity: 0.85; }
+    .mq-row input.part-ok { border-color: var(--accent); }
+    .mq-row input.part-no { border-color: var(--danger); }
+    .mq-btn {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .mq-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .mq-btn:focus-visible, .mq-hud .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .mq-btn:disabled { cursor: default; opacity: 0.6; }
+    .mq-btn.primary { background: var(--accent-soft); border-color: var(--accent); }
+    .mq-btn.tf { min-width: 96px; }
+    .mq-btn.tf.picked-wrong { background: rgba(200,90,90,0.22); border-color: var(--danger); opacity: 1; }
+    .mq-btn.tf.picked-right { background: rgba(63,174,116,0.22); border-color: var(--accent); opacity: 1; }
+    .mq-btn.mic.listening { border-color: var(--amber); color: var(--amber); }
+    .mq-btn.reveal { font-size: 0.82rem; padding: 6px 12px; color: var(--amber); border-color: rgba(224,169,64,0.4); margin-top: 6px; }
+    .mq-check-row { margin-top: 12px; }
+
+    .mq-fb { margin-top: 10px; font-size: 0.9rem; min-height: 1.2em; }
+    .mq-fb.ok { color: var(--accent); }
+    .mq-fb.no { color: var(--danger); }
+    .mq-fb.shown { color: var(--amber); }
+    .mq-note { margin-top: 6px; font-size: 0.86rem; color: var(--text-dim); }
+    .mq-tries { font-size: 0.78rem; color: var(--text-dim); margin-left: 4px; }
+
+    .mq-intro { display: grid; gap: 8px; }
+    .mq-intro ul { padding-left: 1.2em; color: var(--text-dim); font-size: 0.92rem; display: grid; gap: 4px; }
+
+    .mq-done {
+      margin-top: 34px; text-align: center; padding: 26px 20px;
+      background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius);
+    }
+    .mq-done h2 { font-weight: 400; }
+
+    @media (max-width: 560px) {
+      .mq-q { grid-template-columns: 1fr; padding: 14px; }
+      .mq-num { font-size: 0.8rem; }
+      .mq-btn.tf { flex: 1 1 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mq-meter span, .mq-q { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap mq-wrap">
+    <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p>
+    <h1 style="font-weight:400;">Mock Quiz 2: Protists &amp; Fungi</h1>
+    <div class="mq-intro">
+      <p class="lede" style="margin:0;">Practice for Lab Quiz 2 (Exercises 2 and 3). Every fact comes from your lab manual, and each answer shows the page it's on.</p>
+      <ul>
+        <li>Every answer is graded as soon as you submit it. Wrong answers can be retried as many times as you like.</li>
+        <li>For fill-in-the-blank, type your answer or tap <strong>Speak</strong> and say it. Close spellings count.</li>
+        <li>After 3 misses on a question you can choose to see the answer. Revealed answers don't count toward your score.</li>
+        <li>Your work is saved to your BIOS102 account, so you can come back to it on any device all semester. <strong>Start over</strong> begins a new round with shuffled questions and keeps your past scores.</li>
+      </ul>
+    </div>
+
+    <div class="mq-hud" role="status" aria-live="polite">
+      <span>Correct <strong id="hud-correct">0</strong> of <strong id="hud-total">0</strong></span>
+      <div class="mq-meter" aria-hidden="true"><span id="hud-meter"></span></div>
+      <span>Attempts <strong id="hud-attempts">0</strong></span>
+      <button type="button" class="btn-ghost" id="reset-btn">Start over</button>
+    </div>
+    <div class="mq-sub">
+      <span id="save-status">Loading your saved work&hellip;</span>
+      <span id="history-line" hidden></span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div class="mq-done" id="done-box" hidden>
+      <h2 id="done-heading">All questions answered</h2>
+      <p class="lede" id="done-text" style="margin:8px auto 14px;"></p>
+      <button type="button" class="mq-btn primary" id="done-reset">Start over with shuffled questions</button>
+    </div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      // ---------------- question bank ----------------
+      // Same subjects as the real Lab Quiz 2, deliberately different
+      // questions: nothing here asks (or answers) what the real quiz asks.
+      // Every fact comes from the lab manual; `page` is the manual's printed
+      // page number, shown to the student with each explanation.
+      // type 'tf' -> answer: true|false.
+      // type 'fill' -> parts: [{ key, prompt?, accept: [...] }]; the first
+      // accept entry is the displayed answer, the rest cover synonyms and
+      // common speech-to-text mishearings. One part = one blank in `prompt`;
+      // several parts = a shared `prompt` stem plus one blank per part.
+      const SECTIONS = [
+        {
+          id: 'id', eyebrow: 'Exercise 2', title: 'Identify the organism',
+          questions: [
+            { id: 'colonies', type: 'fill', page: 25,
+              prompt: 'Colonial chlorophytes range from four to thousands of cells living together as a colony. Name the genus for each colony below.',
+              parts: [
+                { key: 'a', prompt: 'A small spherical colony of 4 to 64 cells, surrounded by a clear gelatinous envelope: ___',
+                  accept: ['Eudorina', 'eudorena', 'udorina', 'you dorina', 'yudorina', 'eu dorina'] },
+                { key: 'b', prompt: 'A large hollow sphere formed by thousands of cells, with smaller daughter colonies forming inside the mother colony: ___',
+                  accept: ['Volvox', 'vol vox', 'volvocs', 'vulvox'] },
+              ],
+              note: 'Eudorina: reduce the light to see its gelatinous envelope. Volvox: some cells are strictly somatic while others are reproductive.' },
+            { id: 'spirogyra', type: 'fill', page: 26,
+              prompt: 'An alga made of unbranched filaments, with a ribbon-like chloroplast zigzagging through each cell, is the genus ___.',
+              parts: [{ key: 'x', accept: ['Spirogyra', 'spiro gyra', 'spirogira', 'spiral gyra', 'spyrogyra'] }],
+              note: 'Its pyrenoid bodies aid in starch formation and storage during photosynthesis. Its cells are not organized into tissues.' },
+            { id: 'scenedesmus', type: 'tf', page: 24,
+              prompt: 'Scenedesmus is a motile colony that swims using flagella.',
+              answer: false, note: 'False. Scenedesmus is a small non-motile colony, usually four cells stacked together with spines extending from each end.' },
+          ],
+        },
+        {
+          id: 'chlamy', eyebrow: 'Exercise 2', title: 'Chlamydomonas',
+          questions: [
+            { id: 'chlamy-asexual', type: 'tf', page: 26,
+              prompt: 'Chlamydomonas can only reproduce asexually.',
+              answer: false, note: 'False. Chlamydomonas can undergo asexual or sexual reproduction. Know what triggers the sexual kind.' },
+          ],
+        },
+        {
+          id: 'groups', eyebrow: 'Exercise 2', title: 'Protist supergroups',
+          questions: [
+            { id: 'eukaryotic', type: 'tf', page: 23,
+              prompt: 'All members of the protists have eukaryotic cells.',
+              answer: true, note: 'True. Beyond that they are very diverse: single cells, colonies, filaments, or simple multicellular organisms.' },
+            { id: 'excavata', type: 'fill', page: 28,
+              prompt: 'Trypanosoma belongs to the supergroup ___ (the euglenozoans).',
+              parts: [{ key: 'x', accept: ['Excavata', 'excavate', 'ex cavata', 'excavator', 'excavada'] }],
+              note: 'The euglenozoans are characterized by a unique flagella.' },
+            { id: 'sar', type: 'tf', page: 28,
+              prompt: 'Plasmodium and Paramecium are both placed in the “SAR” clade, in the alveolates.',
+              answer: true, note: 'True. Alveolates are characterized by a membrane-bound sac called an alveoli underneath the plasma membrane.' },
+          ],
+        },
+        {
+          id: 'blood', eyebrow: 'Exercise 2', title: 'Parasites of the blood',
+          questions: [
+            { id: 'malaria', type: 'fill', page: 28,
+              prompt: 'The world’s most common serious infectious disease, malaria, is spread by the bite of an infected female mosquito. The parasite that causes it, which you saw inside red blood cells on the demonstration microscope, is the genus ___.',
+              parts: [{ key: 'x', accept: ['Plasmodium', 'plasmodia', 'plas modium', 'plazmodium', 'plasmodiam', 'plasmodeum', 'plasmoidium'] }],
+              note: 'Plasmodium is tiny and seen inside certain red blood cells at 1000X. Label uninfected red blood cells and an infected red blood cell with the ring-like trophozoite inside.' },
+            { id: 'signet', type: 'fill', page: 28,
+              prompt: 'Inside red blood cells, the adult stage of the malaria parasite takes on a ringlike appearance called the “___ stage.”',
+              parts: [{ key: 'x', accept: ['signet-ring', 'signet ring', 'signet', 'cygnet ring', 'cygnet', 'signate ring', 'signet rings'] }],
+              note: 'The signet-ring stage (trophozoite) is the stage you observe on the demonstration microscope at 1000X.' },
+            { id: 'lifecycle', type: 'tf', page: 28,
+              prompt: 'The malaria parasite has a simple life cycle that takes place entirely inside one host.',
+              answer: false, note: 'False. Its life cycle is complex, involving the digestive tract of a mosquito and human red blood cells. Sporozoites first penetrate liver cells.' },
+            { id: 'sleeping', type: 'fill', page: 28,
+              prompt: 'The disease spread to people by the bite of the tsetse fly as it feeds on mammalian blood is ___.',
+              parts: [{ key: 'x', accept: ['African sleeping sickness', 'sleeping sickness', 'african trypanosomiasis', 'trypanosomiasis', 'sleeping sicknes', 'sleepy sickness'] }],
+              note: 'Pin each parasite to its vector and its disease. Know which protist causes this one.' },
+            { id: 'cns', type: 'fill', page: 28,
+              prompt: 'The parasite spread by the tsetse fly attacks the central nervous system, eventually causing death. The one you saw and sketched on the demonstration microscope is the genus ___.',
+              parts: [{ key: 'x', accept: ['Trypanosoma', 'trypanosome', 'trypanosomes', 'trypano soma', 'tripanosoma', 'trypanasoma', 'tripanasoma', 'trypanozoma'] }],
+              note: 'Trypanosoma: the snake-like shapes located between the pale round red blood cells at 1000X. Label its nucleus and flagellum.' },
+          ],
+        },
+        {
+          id: 'para', eyebrow: 'Exercise 2', title: 'Paramecium',
+          questions: [
+            { id: 'cilia', type: 'fill', page: 29,
+              prompt: 'Ciliates such as Paramecium are characterized by their use of ___ to move and feed.',
+              parts: [{ key: 'x', accept: ['cilia', 'cilium', 'silia', 'celia', 'sillia', 'cillia'] }],
+              note: 'Label the cilia on your prepared slide, along with both nuclei.' },
+            { id: 'one-nucleus', type: 'tf', page: 29,
+              prompt: 'Paramecium has only one nucleus.',
+              answer: false, note: 'False. Ciliates possess two types of nuclei. Know what each one does.' },
+            { id: 'cilia-length', type: 'tf', page: 29,
+              prompt: 'Cilia are longer than most flagella.',
+              answer: false, note: 'False. In contrast to most flagella, cilia are relatively short.' },
+          ],
+        },
+        {
+          id: 'fungi', eyebrow: 'Exercise 3', title: 'Fungi',
+          questions: [
+            { id: 'chitin', type: 'fill', page: 33,
+              prompt: 'Fungal cells are enclosed by a cell wall made of ___, the same component as the external skeletons of insects.',
+              parts: [{ key: 'x', accept: ['chitin', 'kitin', 'kite in', 'kiten', 'kyton'] }],
+              note: 'Chitin is resistant to breakdown by microorganisms.' },
+            { id: 'phyla', type: 'fill', page: 33,
+              prompt: 'Fungi are currently classified into ___ phyla.',
+              parts: [{ key: 'x', accept: ['5', 'five'] }],
+              note: 'Three of the five are studied in lab: Ascomycetes (sac fungi), Basidiomycetes (club fungi), and Mucoromycetes, also known as Zygomycetes.' },
+            { id: 'saprobes', type: 'tf', page: 34,
+              prompt: 'Most fungi are decomposers (saprobes).',
+              answer: true, note: 'True. Some are parasitic or mutualistic instead. Know how fungi actually feed and digest their food.' },
+            { id: 'gills', type: 'fill', page: 33,
+              prompt: 'When you sketch Agaricus, the common edible mushroom, you label its fruiting body, cap, stalk, spores, and ___.',
+              parts: [{ key: 'x', accept: ['gills', 'gill'] }],
+              note: 'Agaricus is in phylum Basidiomycetes. Be ready to show where its spores are located.' },
+            { id: 'peziza', type: 'tf', page: 33,
+              prompt: 'The “cup” shaped structure of Peziza is its ascocarp.',
+              answer: true, note: 'True. Its spores are the “dots” seen inside the asci (one ascus, many asci).' },
+            { id: 'size-range', type: 'tf', page: 33,
+              prompt: 'Members of the fungi kingdom range from microscopic molds and mildews to macroscopic mushrooms and morels.',
+              answer: true, note: 'True. Over 100,000 species of fungi are known.' },
+          ],
+        },
+        {
+          id: 'pilo', eyebrow: 'Exercise 3', title: 'Pilobolus',
+          questions: [
+            { id: 'pilobolus', type: 'fill', page: 36,
+              prompt: 'The “shotgun fungus” you grew on rabbit dung agar in your independent investigation is the genus ___.',
+              parts: [{ key: 'x', accept: ['Pilobolus', 'pilo bolus', 'pilobolous', 'pylobolus', 'pillow bolus', 'pilobulus'] }],
+              note: 'Pilobolus crystallinus is in phylum Mucoromycetes (old name: Zygomycetes). Cultures take about ten days to two weeks to grow.' },
+            { id: 'coprophilous', type: 'fill', page: 36,
+              prompt: 'Because it grows on dung, Pilobolus is called ___.',
+              parts: [{ key: 'x', accept: ['coprophilous', 'coprophilic', 'coprophile', 'copro philous', 'coprofilous', 'coprophilus', 'copper filous'] }],
+              note: 'It is also positively phototropic, which is the behavior you tested with foil-covered plates.' },
+            { id: 'shoot', type: 'tf', page: 38,
+              prompt: 'The sticky sporangium of Pilobolus can be propelled as far as 2 meters.',
+              answer: true, note: 'True. It sticks to grass eaten by a horse, cow, or rabbit, passes through the gut, and the spores germinate in the fresh dung.' },
+          ],
+        },
+        {
+          id: 'lichen', eyebrow: 'Exercise 3', title: 'Lichens',
+          questions: [
+            { id: 'independent', type: 'tf', page: 34,
+              prompt: 'The algae and cyanobacteria involved in the lichen symbiosis cannot survive outside a lichen.',
+              answer: false, note: 'False. About 20 different types of algae and cyanobacteria are involved, but they can also live independently. Know what a lichen is.' },
+          ],
+        },
+        {
+          id: 'molds', eyebrow: 'Exercise 3', title: 'Molds',
+          questions: [
+            { id: 'commercial', type: 'tf', page: 35,
+              prompt: 'Molds have no commercial use.',
+              answer: false, note: 'False. Be ready to name the commercial use of molds, and of yeasts.' },
+          ],
+        },
+      ];
+
+      const ALL = SECTIONS.flatMap((s) => s.questions);
+      const BY_ID = Object.fromEntries(ALL.map((q) => [q.id, q]));
+      const REVEAL_AFTER = 3;
+      const GENERA = ['Chlamydomonas', 'Volvox', 'Eudorina', 'Spirogyra', 'Scenedesmus', 'Trypanosoma', 'Plasmodium', 'Paramecium', 'Agaricus', 'Peziza', 'Pilobolus'];
+
+      // Saved to the student's account through the same save/load RPCs as
+      // the comparison tables (bios102_student_tables), under an
+      // exercise_number sentinel well outside any real exercise -- same
+      // trick as the exam master tables in app.js, so no schema change.
+      // The one row carries no `genus`, so the photo lookups in game.html
+      // and swipe.html skip it.
+      const STORAGE_ID = 9102;
+      const TABLE_NAME = 'Mock Quiz 2';
+      const LOCAL_KEY = 'bios102_mock2_' + String(session.email || 'anon').toLowerCase();
+
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      // ---------------- answer matching ----------------
+      function norm(s) {
+        return String(s == null ? '' : s)
+          .toLowerCase()
+          .normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .replace(/[^a-z0-9\s]/g, ' ')
+          .replace(/\b(the|a|an|its|it s|called|genus|stage|disease)\b/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+      function squash(s) { return norm(s).replace(/\s/g, ''); }
+
+      function lev(a, b) {
+        if (a === b) return 0;
+        if (!a.length) return b.length;
+        if (!b.length) return a.length;
+        let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+        for (let i = 1; i <= a.length; i++) {
+          const cur = [i];
+          for (let j = 1; j <= b.length; j++) {
+            cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+          }
+          prev = cur;
+        }
+        return prev[b.length];
+      }
+      // Spelling slack grows with word length: exact for short words,
+      // 1 typo up to 7 letters, 2 beyond that.
+      function slack(len) { return len <= 4 ? 0 : len <= 7 ? 1 : 2; }
+
+      function matchesPart(input, part) {
+        const n = squash(input);
+        if (!n) return false;
+        return part.accept.some((a) => {
+          const c = squash(a);
+          return n === c || lev(n, c) <= slack(c.length);
+        });
+      }
+
+      // ---------------- state ----------------
+      // state = { v, updatedAt, attempts, order: {section: [ids]},
+      //           q: { id: { status: 'open'|'correct'|'revealed', attempts,
+      //                      lastWrong, tfLast, voice, parts: { key: { ok, last, wrong } } } },
+      //           recorded, history: [{ finishedAt, correct, firstTry, total, attempts }] }
+      function shuffledOrder() {
+        const order = {};
+        SECTIONS.forEach((s) => {
+          const ids = s.questions.map((q) => q.id);
+          for (let i = ids.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [ids[i], ids[j]] = [ids[j], ids[i]];
+          }
+          order[s.id] = ids;
+        });
+        return order;
+      }
+      function freshState(history) {
+        return { v: 2, updatedAt: 0, attempts: 0, order: shuffledOrder(), q: {}, recorded: false, history: history || [] };
+      }
+      // A save made before the question bank was edited still loads: removed
+      // questions drop out of the order, new ones are appended to their
+      // section, and the finished-round flag is cleared if anything is new.
+      function valid(s) {
+        if (!(s && s.v === 2 && s.order && s.q)) return false;
+        SECTIONS.forEach((sec) => {
+          const ids = sec.questions.map((q) => q.id);
+          const kept = (Array.isArray(s.order[sec.id]) ? s.order[sec.id] : []).filter((id) => ids.includes(id));
+          const added = ids.filter((id) => !kept.includes(id));
+          if (added.length) s.recorded = false;
+          s.order[sec.id] = kept.concat(added);
+        });
+        Object.keys(s.q).forEach((id) => { if (!BY_ID[id]) delete s.q[id]; });
+        return true;
+      }
+      function loadLocal() {
+        try {
+          const s = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null');
+          return valid(s) ? s : null;
+        } catch (e) { return null; }
+      }
+      let state = loadLocal() || freshState();
+
+      function qs(id) {
+        if (!state.q[id]) state.q[id] = { status: 'open', attempts: 0, parts: {} };
+        return state.q[id];
+      }
+      function ps(id, key) {
+        const s = qs(id);
+        if (!s.parts) s.parts = {};
+        if (!s.parts[key]) s.parts[key] = { ok: false, last: '', wrong: false };
+        return s.parts[key];
+      }
+
+      // ---------------- saving ----------------
+      const saveStatus = document.getElementById('save-status');
+      let serverReady = false;
+      let dirty = false;
+      let saveTimer = null;
+      let saving = false;
+
+      function setStatus(text, isErr) {
+        saveStatus.textContent = text;
+        saveStatus.className = isErr ? 'err' : '';
+      }
+      function persist() {
+        state.updatedAt = Date.now();
+        try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
+        dirty = true;
+        if (!serverReady) return;
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(flush, 700);
+      }
+      async function flush() {
+        if (!dirty || saving || !serverReady) return;
+        saving = true;
+        dirty = false;
+        setStatus('Saving…');
+        try {
+          await window.sfSupabase.bios102SaveStudentTable({
+            sessionToken: session.sessionToken,
+            exerciseNumber: STORAGE_ID,
+            tableName: TABLE_NAME,
+            columns: [],
+            rows: [{ mockQuiz: state }],
+          });
+          setStatus('Saved to your account');
+        } catch (err) {
+          console.error('Could not save mock quiz progress', err);
+          dirty = true;
+          setStatus("Couldn't save to your account. Your work is kept on this device and will retry.", true);
+        } finally {
+          saving = false;
+          if (dirty) { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 5000); }
+        }
+      }
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+
+      async function loadServer() {
+        try {
+          const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+          const row = tables.find((t) => t.exercise_number === STORAGE_ID && t.table_name === TABLE_NAME);
+          const remote = row && Array.isArray(row.rows) && row.rows[0] ? row.rows[0].mockQuiz : null;
+          serverReady = true;
+          if (valid(remote) && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
+            state = remote;
+            try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch (e) {}
+            render();
+            setStatus('Saved to your account');
+          } else if (state.updatedAt && (!valid(remote) || state.updatedAt > (remote.updatedAt || 0))) {
+            dirty = true;
+            flush();
+          } else {
+            setStatus('Saved to your account');
+          }
+        } catch (err) {
+          console.error('Could not load mock quiz progress', err);
+          setStatus("Couldn't reach your account. Your work is kept on this device for now.", true);
+          // keep trying so this session's work still reaches the account
+          setTimeout(loadServer, 15000);
+        }
+      }
+
+      // ---------------- rendering ----------------
+      const esc = BIOS.escapeHtml;
+      function richText(text) {
+        let html = esc(text).replace('___', '<span class="blank"></span>');
+        GENERA.forEach((g) => { html = html.replace(new RegExp('\\b' + g + '\\b', 'g'), '<em>' + g + '</em>'); });
+        return html;
+      }
+
+      function render() {
+        let n = 0;
+        document.getElementById('quiz').innerHTML = SECTIONS.map((sec) => `
+          <section class="mq-section">
+            <h2><small>${esc(sec.eyebrow)}</small>${esc(sec.title)}</h2>
+            <div class="mq-list">
+              ${state.order[sec.id].map((id) => questionHtml(BY_ID[id], ++n)).join('')}
+            </div>
+          </section>
+        `).join('');
+        ALL.forEach((q) => { wire(q); paint(q); });
+        updateHud();
+      }
+
+      function inputRow(q, part, num, withCheck) {
+        const label = q.parts.length > 1 ? ` part ${part.key}` : '';
+        return `<div class="mq-row">
+            <input type="text" id="${q.id}-${part.key}-in" autocomplete="off" autocapitalize="off" spellcheck="false"
+              aria-label="Answer for question ${num}${label}" placeholder="Type${SpeechRecognitionCtor ? ' or speak' : ''} your answer" />
+            ${SpeechRecognitionCtor ? `<button type="button" class="mq-btn mic" id="${q.id}-${part.key}-mic">Speak</button>` : ''}
+            ${withCheck ? `<button type="button" class="mq-btn primary" id="${q.id}-go">Check</button>` : ''}
+          </div>`;
+      }
+
+      function questionHtml(q, num) {
+        let controls;
+        if (q.type === 'tf') {
+          controls = `<div class="mq-row">
+              <button type="button" class="mq-btn tf" id="${q.id}-t">True</button>
+              <button type="button" class="mq-btn tf" id="${q.id}-f">False</button>
+            </div>`;
+        } else if (q.parts.length === 1) {
+          controls = inputRow(q, q.parts[0], num, true);
+        } else {
+          controls = `<div class="mq-parts">
+              ${q.parts.map((p) => `<div>
+                <p class="mq-part-prompt"><b>(${p.key})</b>${richText(p.prompt)}</p>
+                ${inputRow(q, p, num, false)}
+              </div>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
+        }
+        const kind = q.type === 'tf' ? 'True or false' : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
+        return `
+          <article class="mq-q" id="${q.id}-card">
+            <div class="mq-num">${num}.</div>
+            <div class="mq-body">
+              <div class="mq-kind">${kind}<span class="mq-tries" id="${q.id}-tries"></span></div>
+              <p class="mq-prompt">${richText(q.prompt)}</p>
+              ${controls}
+              <p class="mq-fb" id="${q.id}-fb" aria-live="polite"></p>
+              <p class="mq-note" id="${q.id}-note" hidden></p>
+              <button type="button" class="mq-btn reveal" id="${q.id}-reveal" hidden>Show answer</button>
+            </div>
+          </article>`;
+      }
+
+      function readInputs(q) {
+        const out = {};
+        q.parts.forEach((p) => { out[p.key] = document.getElementById(`${q.id}-${p.key}-in`).value; });
+        return out;
+      }
+
+      function wire(q) {
+        if (q.type === 'tf') {
+          document.getElementById(`${q.id}-t`).addEventListener('click', () => submitTf(q, true));
+          document.getElementById(`${q.id}-f`).addEventListener('click', () => submitTf(q, false));
+        } else {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitFill(q, readInputs(q), false));
+          q.parts.forEach((p) => {
+            const input = document.getElementById(`${q.id}-${p.key}-in`);
+            input.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') { e.preventDefault(); submitFill(q, readInputs(q), false); }
+            });
+            const mic = document.getElementById(`${q.id}-${p.key}-mic`);
+            if (mic) mic.addEventListener('click', () => listen(q, p, mic, input));
+          });
+        }
+        document.getElementById(`${q.id}-reveal`).addEventListener('click', () => reveal(q));
+      }
+
+      // ---------------- speech ----------------
+      let activeRecognizer = null;
+      function listen(q, part, mic, input) {
+        if (activeRecognizer) { try { activeRecognizer.abort(); } catch (e) {} }
+        const rec = new SpeechRecognitionCtor();
+        activeRecognizer = rec;
+        rec.lang = 'en-US';
+        rec.interimResults = false;
+        rec.maxAlternatives = 5;
+        const fb = document.getElementById(`${q.id}-fb`);
+        mic.textContent = 'Listening…';
+        mic.classList.add('listening');
+        mic.disabled = true;
+        const reset = () => {
+          mic.textContent = 'Speak';
+          mic.classList.remove('listening');
+          mic.disabled = qs(q.id).status !== 'open' || ps(q.id, part.key).ok;
+          if (activeRecognizer === rec) activeRecognizer = null;
+        };
+        rec.onresult = (e) => {
+          const alts = Array.from(e.results[0]).map((r) => r.transcript.trim()).filter(Boolean);
+          if (!alts.length) return;
+          // Grade on whichever of the recognizer's guesses matches, so a
+          // right answer isn't marked wrong just because the top guess was
+          // a near-homophone. The student sees what was heard.
+          input.value = alts.find((a) => matchesPart(a, part)) || alts[0];
+          const values = readInputs(q);
+          // only grade the part just spoken; other blanks may still be empty
+          submitFill(q, { [part.key]: values[part.key] }, true);
+        };
+        rec.onerror = (e) => {
+          reset();
+          if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+            fb.className = 'mq-fb no';
+            fb.textContent = 'Microphone access is blocked. Allow it in your browser settings, or type your answer.';
+          } else if (e.error === 'no-speech') {
+            fb.className = 'mq-fb';
+            fb.textContent = "Didn't catch that. Tap Speak and try again.";
+          }
+        };
+        rec.onend = reset;
+        try { rec.start(); } catch (e) { reset(); }
+      }
+
+      // ---------------- grading ----------------
+      function countAttempt(s) {
+        s.attempts++;
+        state.attempts = (state.attempts || 0) + 1;
+      }
+
+      function submitTf(q, value) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        countAttempt(s);
+        s.tfLast = value;
+        s.lastWrong = value !== q.answer;
+        if (!s.lastWrong) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function submitFill(q, values, fromVoice) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const toGrade = q.parts.filter((p) => !ps(q.id, p.key).ok && String(values[p.key] || '').trim());
+        if (!toGrade.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = q.parts.length > 1 ? 'Fill in at least one blank first.' : 'Type or speak an answer first.';
+          return;
+        }
+        countAttempt(s);
+        s.voice = !!fromVoice;
+        toGrade.forEach((p) => {
+          const st = ps(q.id, p.key);
+          st.last = String(values[p.key]).trim();
+          st.ok = matchesPart(values[p.key], p);
+          st.wrong = !st.ok;
+        });
+        const allOk = q.parts.every((p) => ps(q.id, p.key).ok);
+        s.lastWrong = toGrade.some((p) => !ps(q.id, p.key).ok);
+        if (allOk) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function reveal(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        s.status = 'revealed';
+        afterChange(q);
+      }
+
+      function afterChange(q) {
+        paint(q);
+        updateHud();
+        persist();
+      }
+
+      function paint(q) {
+        const s = qs(q.id);
+        const card = document.getElementById(`${q.id}-card`);
+        const fb = document.getElementById(`${q.id}-fb`);
+        const note = document.getElementById(`${q.id}-note`);
+        const revealBtn = document.getElementById(`${q.id}-reveal`);
+        const done = s.status !== 'open';
+
+        card.classList.toggle('is-correct', s.status === 'correct');
+        card.classList.toggle('is-revealed', s.status === 'revealed');
+        card.classList.toggle('is-wrong', s.status === 'open' && !!s.lastWrong);
+        document.getElementById(`${q.id}-tries`).textContent =
+          s.attempts ? ` · ${s.attempts} ${s.attempts === 1 ? 'try' : 'tries'}` : '';
+
+        if (q.type === 'tf') {
+          [['t', true], ['f', false]].forEach(([k, val]) => {
+            const b = document.getElementById(`${q.id}-${k}`);
+            b.disabled = done;
+            b.classList.toggle('picked-right', s.status === 'correct' && val === q.answer);
+            b.classList.toggle('picked-wrong', s.status === 'open' && !!s.lastWrong && s.tfLast === val);
+          });
+        } else {
+          q.parts.forEach((p) => {
+            const st = ps(q.id, p.key);
+            const input = document.getElementById(`${q.id}-${p.key}-in`);
+            const mic = document.getElementById(`${q.id}-${p.key}-mic`);
+            const locked = done || st.ok;
+            if (s.status === 'revealed' && !st.ok) input.value = p.accept[0];
+            else if (st.last && !input.value) input.value = st.last;
+            input.disabled = locked;
+            input.classList.toggle('part-ok', st.ok);
+            input.classList.toggle('part-no', !locked && !!st.wrong);
+            if (mic) mic.disabled = locked;
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
+        }
+
+        fb.innerHTML = feedbackHtml(q, s);
+        fb.className = 'mq-fb' + (s.status === 'correct' ? ' ok' : s.status === 'revealed' ? ' shown' : s.lastWrong ? ' no' : '');
+        note.hidden = !done;
+        note.textContent = done ? `${q.note} (Lab manual p. ${q.page})` : '';
+        revealBtn.hidden = done || s.attempts < REVEAL_AFTER;
+      }
+
+      function feedbackHtml(q, s) {
+        if (q.type === 'tf') {
+          if (s.status === 'correct') return 'Correct.';
+          if (s.status === 'revealed') return `Answer: <strong>${q.answer ? 'True' : 'False'}</strong>. Not counted in your score.`;
+          return s.lastWrong ? 'Not quite. Try again.' : '';
+        }
+        const heard = (p) => {
+          const st = ps(q.id, p.key);
+          return s.voice && st.last ? ` (heard “${esc(st.last)}”)` : '';
+        };
+        const spelled = (p) => {
+          const st = ps(q.id, p.key);
+          return st.ok && squash(st.last) !== squash(p.accept[0]) ? ` Spelled: <strong>${esc(p.accept[0])}</strong>.` : '';
+        };
+        if (s.status === 'revealed') {
+          const ans = q.parts.map((p) => (q.parts.length > 1 ? `(${p.key}) ` : '') + `<strong>${esc(p.accept[0])}</strong>`).join(', ');
+          return `Answer: ${ans}. Not counted in your score.`;
+        }
+        if (q.parts.length === 1) {
+          const p = q.parts[0];
+          if (s.status === 'correct') return `Correct${heard(p)}.${spelled(p)}`;
+          return s.lastWrong ? `Not quite${heard(p)}. Try again.` : '';
+        }
+        if (s.status === 'correct') return 'Both parts correct.' + q.parts.map(spelled).join('');
+        return q.parts.map((p) => {
+          const st = ps(q.id, p.key);
+          if (st.ok) return `(${p.key}) correct.`;
+          if (st.wrong) return `(${p.key}) not quite${heard(p)}, try again.`;
+          return '';
+        }).filter(Boolean).join(' ');
+      }
+
+      function updateHud() {
+        const total = ALL.length;
+        const correct = ALL.filter((q) => qs(q.id).status === 'correct').length;
+        const finished = ALL.filter((q) => qs(q.id).status !== 'open').length;
+        const firstTry = ALL.filter((q) => qs(q.id).status === 'correct' && qs(q.id).attempts === 1).length;
+        document.getElementById('hud-correct').textContent = correct;
+        document.getElementById('hud-total').textContent = total;
+        document.getElementById('hud-attempts').textContent = state.attempts || 0;
+        document.getElementById('hud-meter').style.width = (correct / total * 100) + '%';
+
+        if (finished === total && !state.recorded) {
+          state.recorded = true;
+          state.history = (state.history || []).concat({ finishedAt: Date.now(), correct, firstTry, total, attempts: state.attempts || 0 });
+        }
+
+        const box = document.getElementById('done-box');
+        box.hidden = finished < total;
+        if (finished === total) {
+          const revealed = total - correct;
+          document.getElementById('done-heading').textContent =
+            correct === total ? `All ${total} correct` : `${correct} of ${total} correct`;
+          document.getElementById('done-text').textContent =
+            `${firstTry} right on the first try` +
+            (revealed ? `, ${revealed} revealed. Look up the revealed ones in your manual, then start over.` : '. Start over to check it sticks.');
+        }
+
+        const hist = state.history || [];
+        const line = document.getElementById('history-line');
+        line.hidden = !hist.length;
+        if (hist.length) {
+          const best = hist.reduce((b, h) => (h.firstTry > b.firstTry ? h : b), hist[0]);
+          line.textContent = `Rounds finished: ${hist.length} · best first-try score ${best.firstTry} of ${best.total}`;
+        }
+      }
+
+      function resetAll() {
+        state = freshState(state.history);
+        render();
+        persist();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      document.getElementById('reset-btn').addEventListener('click', resetAll);
+      document.getElementById('done-reset').addEventListener('click', resetAll);
+
+      // keep the score bar just under the sticky topbar, whose height
+      // changes when it wraps on phones
+      const hud = document.querySelector('.mq-hud');
+      const topbar = document.getElementById('topbar');
+      const placeHud = () => { hud.style.top = (topbar.offsetHeight + 8) + 'px'; };
+      window.addEventListener('resize', placeHud);
+
+      render();
+      placeHud();
+      loadServer();
+    })();
+  </script>
+</body>
+</html>
