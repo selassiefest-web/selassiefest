@@ -73,6 +73,13 @@
     .mq-btn.mic.listening { border-color: var(--amber); color: var(--amber); }
     .mq-btn.reveal { font-size: 0.82rem; padding: 6px 12px; color: var(--amber); border-color: rgba(224,169,64,0.4); margin-top: 6px; }
     .mq-check-row { margin-top: 12px; }
+    .mq-opts { display: grid; gap: 8px; }
+    .mq-opt {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer;
+      border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.03);
+    }
+    .mq-opt input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .mq-opt.opt-yes { border-color: var(--accent); }
 
     .mq-fb { margin-top: 10px; font-size: 0.9rem; min-height: 1.2em; }
     .mq-fb.ok { color: var(--accent); }
@@ -156,6 +163,8 @@
       // accept entry is the displayed answer, the rest cover synonyms and
       // common speech-to-text mishearings. One part = one blank in `prompt`;
       // several parts = a shared `prompt` stem plus one blank per part.
+      // type 'multi' -> options: [...], answer: [...] (select all that apply;
+      // correct only when exactly the answer set is checked).
       const SECTIONS = [
         {
           id: 'id', eyebrow: 'Exercise 2', title: 'Identify the organism',
@@ -179,11 +188,18 @@
           ],
         },
         {
-          id: 'chlamy', eyebrow: 'Exercise 2', title: 'Chlamydomonas',
+          id: 'chloro', eyebrow: 'Exercise 2', title: 'Chlorophytes (the green algae)',
           questions: [
-            { id: 'chlamy-asexual', type: 'tf', page: 26,
-              prompt: 'Chlamydomonas can only reproduce asexually.',
-              answer: false, note: 'False. Chlamydomonas can undergo asexual or sexual reproduction. Know what triggers the sexual kind.' },
+            { id: 'flagella-multi', type: 'multi', page: 25,
+              prompt: 'Select all of the chlorophytes below that have flagella.',
+              options: ['Chlamydomonas', 'Scenedesmus', 'Eudorina', 'Volvox', 'Spirogyra'],
+              answer: ['Chlamydomonas', 'Eudorina', 'Volvox'],
+              note: 'Chlamydomonas: label its flagella (p. 24). Volvox: each cell has two flagella, and their synchronized beat moves the colony. Eudorina colonies swim too; you watched how they move. Scenedesmus is a non-motile colony with spines (p. 24), and Spirogyra is made of unbranched filaments (p. 26).' },
+            { id: 'chlorophyll-multi', type: 'multi', page: 24,
+              prompt: 'Select all of the chlorophytes below that contain the pigment chlorophyll.',
+              options: ['Chlamydomonas', 'Scenedesmus', 'Eudorina', 'Volvox', 'Spirogyra'],
+              answer: ['Chlamydomonas', 'Scenedesmus', 'Eudorina', 'Volvox', 'Spirogyra'],
+              note: 'All of them. Chlorophytes possess chloroplasts much like those of plants in ultrastructure and pigment composition, one reason green algae and plants are considered closely related. In Spirogyra you can see the ribbon-like chloroplast zigzagging through each cell (p. 26).' },
           ],
         },
         {
@@ -200,10 +216,6 @@
         {
           id: 'blood', eyebrow: 'Exercise 2', title: 'Parasites of the blood',
           questions: [
-            { id: 'malaria', type: 'fill', page: 28,
-              prompt: 'The world’s most common serious infectious disease, malaria, is spread by the bite of an infected female mosquito. The parasite that causes it, which you saw inside red blood cells on the demonstration microscope, is the genus ___.',
-              parts: [{ key: 'x', accept: ['Plasmodium', 'plasmodia', 'plas modium', 'plazmodium', 'plasmodiam', 'plasmodeum', 'plasmoidium'] }],
-              note: 'Plasmodium is tiny and seen inside certain red blood cells at 1000X. Label uninfected red blood cells and an infected red blood cell with the ring-like trophozoite inside.' },
             { id: 'signet', type: 'fill', page: 28,
               prompt: 'Inside red blood cells, the adult stage of the malaria parasite takes on a ringlike appearance called the “___ stage.”',
               parts: [{ key: 'x', accept: ['signet-ring', 'signet ring', 'signet', 'cygnet ring', 'cygnet', 'signate ring', 'signet rings'] }],
@@ -211,18 +223,6 @@
             { id: 'lifecycle', type: 'tf', page: 28,
               prompt: 'The malaria parasite has a simple life cycle that takes place entirely inside one host.',
               answer: false, note: 'False. Its life cycle is complex, involving the digestive tract of a mosquito and human red blood cells. Sporozoites first penetrate liver cells.' },
-            { id: 'sleeping', type: 'fill', page: 28,
-              prompt: 'The disease spread to people by the bite of the tsetse fly as it feeds on mammalian blood is ___.',
-              parts: [{ key: 'x', accept: ['African sleeping sickness', 'sleeping sickness', 'african trypanosomiasis', 'trypanosomiasis', 'sleeping sicknes', 'sleepy sickness'] }],
-              note: 'Pin each parasite to its vector and its disease. Know which protist causes this one.' },
-            { id: 'tryp-habitat', type: 'fill', page: 28,
-              prompt: 'On the demonstration slide of infected blood, where in the blood is Trypanosoma found? ___',
-              parts: [{ key: 'x', accept: ['outside the red blood cells', 'outside the red blood cell', 'outside red blood cells', 'between the red blood cells', 'between red blood cells', 'outside the cells', 'between the cells', 'outside', 'between', 'extracellular'] }],
-              note: 'Trypanosoma is the snake-like shapes located between the pale round red blood cells. Compare Plasmodium, which is seen inside certain red blood cells.' },
-            { id: 'cns', type: 'fill', page: 28,
-              prompt: 'The parasite spread by the tsetse fly attacks the central nervous system, eventually causing death. The one you saw and sketched on the demonstration microscope is the genus ___.',
-              parts: [{ key: 'x', accept: ['Trypanosoma', 'trypanosome', 'trypanosomes', 'trypano soma', 'tripanosoma', 'trypanasoma', 'tripanasoma', 'trypanozoma'] }],
-              note: 'Trypanosoma: the snake-like shapes located between the pale round red blood cells at 1000X. Label its nucleus and flagellum.' },
           ],
         },
         {
@@ -234,7 +234,7 @@
               note: 'Label the cilia on your prepared slide, along with both nuclei.' },
             { id: 'one-nucleus', type: 'tf', page: 29,
               prompt: 'Paramecium has only one nucleus.',
-              answer: false, note: 'False. Ciliates possess two types of nuclei. Know what each one does.' },
+              answer: false, note: 'False. Ciliates possess two types of nuclei: a macronucleus and a much smaller micronucleus.' },
             { id: 'cilia-length', type: 'tf', page: 29,
               prompt: 'Cilia are longer than most flagella.',
               answer: false, note: 'False. In contrast to most flagella, cilia are relatively short.' },
@@ -260,7 +260,7 @@
               note: 'Fungi are currently classified into 5 phyla; three are studied in lab: Ascomycetes (sac fungi), Basidiomycetes (club fungi), and Mucoromycetes, also known as Zygomycetes (shotgun fungi). Pilobolus is on p. 36.' },
             { id: 'saprobes', type: 'tf', page: 34,
               prompt: 'Most fungi are decomposers (saprobes).',
-              answer: true, note: 'True. Some are parasitic or mutualistic instead. Know how fungi actually feed and digest their food.' },
+              answer: true, note: 'True. Some are parasitic or mutualistic instead.' },
             { id: 'gills', type: 'fill', page: 33,
               prompt: 'When you sketch Agaricus, the common edible mushroom, you label its fruiting body, cap, stalk, spores, and ___.',
               parts: [{ key: 'x', accept: ['gills', 'gill'] }],
@@ -294,15 +294,7 @@
           questions: [
             { id: 'independent', type: 'tf', page: 34,
               prompt: 'The algae and cyanobacteria involved in the lichen symbiosis cannot survive outside a lichen.',
-              answer: false, note: 'False. About 20 different types of algae and cyanobacteria are involved, but they can also live independently. Know what a lichen is.' },
-          ],
-        },
-        {
-          id: 'molds', eyebrow: 'Exercise 3', title: 'Molds',
-          questions: [
-            { id: 'commercial', type: 'tf', page: 35,
-              prompt: 'Molds have no commercial use.',
-              answer: false, note: 'False. Be ready to name the commercial use of molds, and of yeasts.' },
+              answer: false, note: 'False. About 20 different types of algae and cyanobacteria are involved, but they can also live independently.' },
           ],
         },
       ];
@@ -525,6 +517,13 @@
               <button type="button" class="mq-btn tf" id="${q.id}-t">True</button>
               <button type="button" class="mq-btn tf" id="${q.id}-f">False</button>
             </div>`;
+        } else if (q.type === 'multi') {
+          controls = `<div class="mq-opts">
+              ${q.options.map((o, i) => `<label class="mq-opt" id="${q.id}-l${i}">
+                <input type="checkbox" id="${q.id}-o${i}" /> ${richText(o)}
+              </label>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         } else if (q.parts.length === 1) {
           controls = inputRow(q, q.parts[0], num, true);
         } else {
@@ -536,7 +535,7 @@
             </div>
             <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         }
-        const kind = q.type === 'tf' ? 'True or false' : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
+        const kind = q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
         return `
           <article class="mq-q" id="${q.id}-card">
             <div class="mq-num">${num}.</div>
@@ -561,6 +560,8 @@
         if (q.type === 'tf') {
           document.getElementById(`${q.id}-t`).addEventListener('click', () => submitTf(q, true));
           document.getElementById(`${q.id}-f`).addEventListener('click', () => submitTf(q, false));
+        } else if (q.type === 'multi') {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitMulti(q));
         } else {
           document.getElementById(`${q.id}-go`).addEventListener('click', () => submitFill(q, readInputs(q), false));
           q.parts.forEach((p) => {
@@ -635,6 +636,23 @@
         afterChange(q);
       }
 
+      function submitMulti(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const picked = q.options.filter((o, i) => document.getElementById(`${q.id}-o${i}`).checked);
+        if (!picked.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = 'Check at least one box first.';
+          return;
+        }
+        countAttempt(s);
+        s.multiLast = picked;
+        s.lastWrong = !(picked.length === q.answer.length && picked.every((o) => q.answer.includes(o)));
+        if (!s.lastWrong) s.status = 'correct';
+        afterChange(q);
+      }
+
       function submitFill(q, values, fromVoice) {
         const s = qs(q.id);
         if (s.status !== 'open') return;
@@ -693,6 +711,17 @@
             b.classList.toggle('picked-right', s.status === 'correct' && val === q.answer);
             b.classList.toggle('picked-wrong', s.status === 'open' && !!s.lastWrong && s.tfLast === val);
           });
+        } else if (q.type === 'multi') {
+          q.options.forEach((o, i) => {
+            const box = document.getElementById(`${q.id}-o${i}`);
+            // restore saved picks once per render; after that the boxes are the student's
+            if (s.status === 'revealed') box.checked = q.answer.includes(o);
+            else if (s.multiLast && !box.dataset.restored) box.checked = s.multiLast.includes(o);
+            box.dataset.restored = '1';
+            box.disabled = done;
+            document.getElementById(`${q.id}-l${i}`).classList.toggle('opt-yes', done && q.answer.includes(o));
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
         } else {
           q.parts.forEach((p) => {
             const st = ps(q.id, p.key);
@@ -721,6 +750,11 @@
           if (s.status === 'correct') return 'Correct.';
           if (s.status === 'revealed') return `Answer: <strong>${q.answer ? 'True' : 'False'}</strong>. Not counted in your score.`;
           return s.lastWrong ? 'Not quite. Try again.' : '';
+        }
+        if (q.type === 'multi') {
+          if (s.status === 'correct') return 'Correct.';
+          if (s.status === 'revealed') return `Answer: <strong>${q.answer.map(esc).join(', ')}</strong>. Not counted in your score.`;
+          return s.lastWrong ? 'Not quite. One or more boxes is wrong or missing. Try again.' : '';
         }
         const heard = (p) => {
           const st = ps(q.id, p.key);
