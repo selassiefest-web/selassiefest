@@ -248,9 +248,16 @@
               parts: [{ key: 'x', accept: ['chitin', 'kitin', 'kite in', 'kiten', 'kyton'] }],
               note: 'Chitin is resistant to breakdown by microorganisms.' },
             { id: 'phyla', type: 'fill', page: 33,
-              prompt: 'Fungi are currently classified into ___ phyla.',
-              parts: [{ key: 'x', accept: ['5', 'five'] }],
-              note: 'Three of the five are studied in lab: Ascomycetes (sac fungi), Basidiomycetes (club fungi), and Mucoromycetes, also known as Zygomycetes.' },
+              prompt: 'Three phyla of fungi are studied in lab. Name the phylum for each organism below.',
+              parts: [
+                { key: 'a', prompt: 'Peziza, the cup fungus: ___',
+                  accept: ['Ascomycetes', 'ascomycota', 'ascomycete', 'asco mycetes', 'ascomysetes', 'ascomicetes'] },
+                { key: 'b', prompt: 'Agaricus, the common edible mushroom: ___',
+                  accept: ['Basidiomycetes', 'basidiomycota', 'basidiomycete', 'basidio mycetes', 'basidiomysetes', 'basidiomicetes'] },
+                { key: 'c', prompt: 'Pilobolus, the shotgun fungus: ___',
+                  accept: ['Mucoromycetes', 'mucoromycota', 'mucoromycete', 'zygomycetes', 'zygomycota', 'zygomycete', 'mucoro mycetes', 'zygo mycetes'] },
+              ],
+              note: 'Fungi are currently classified into 5 phyla; three are studied in lab: Ascomycetes (sac fungi), Basidiomycetes (club fungi), and Mucoromycetes, also known as Zygomycetes (shotgun fungi). Pilobolus is on p. 36.' },
             { id: 'saprobes', type: 'tf', page: 34,
               prompt: 'Most fungi are decomposers (saprobes).',
               answer: true, note: 'True. Some are parasitic or mutualistic instead. Know how fungi actually feed and digest their food.' },
@@ -732,7 +739,7 @@
           if (s.status === 'correct') return `Correct${heard(p)}.${spelled(p)}`;
           return s.lastWrong ? `Not quite${heard(p)}. Try again.` : '';
         }
-        if (s.status === 'correct') return 'Both parts correct.' + q.parts.map(spelled).join('');
+        if (s.status === 'correct') return (q.parts.length === 2 ? 'Both parts' : 'All parts') + ' correct.' + q.parts.map(spelled).join('');
         return q.parts.map((p) => {
           const st = ps(q.id, p.key);
           if (st.ok) return `(${p.key}) correct.`;
