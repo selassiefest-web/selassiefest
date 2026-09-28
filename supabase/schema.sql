@@ -6922,8 +6922,9 @@ create table if not exists bios102_login_links (
 
 alter table bios102_login_links enable row level security;
 
-create policy "anon can request a bios102 login link if enrolled" on bios102_login_links
-  for insert to anon
+-- anon AND authenticated: see bios102-fix-authenticated-role.sql
+create policy "enrolled student can request a bios102 login link" on bios102_login_links
+  for insert to anon, authenticated
   with check (bios102_is_enrolled(email));
 
 create index if not exists bios102_login_links_email_idx on bios102_login_links (lower(email));
@@ -7091,10 +7092,10 @@ values (
 )
 on conflict (id) do nothing;
 
-create policy "Allow anon insert to bios102-organism-photos" on storage.objects
-  for insert to anon
+create policy "Allow insert to bios102-organism-photos" on storage.objects
+  for insert to anon, authenticated
   with check (bucket_id = 'bios102-organism-photos');
 
 create policy "Allow public read of bios102-organism-photos" on storage.objects
-  for select to anon
+  for select to anon, authenticated
   using (bucket_id = 'bios102-organism-photos');
