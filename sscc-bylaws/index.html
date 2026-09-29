@@ -87,7 +87,7 @@
     .field { display: grid; gap: 4px; }
     .field label, .label { font-size: 0.78rem; font-weight: 600; color: var(--ink-2); letter-spacing: 0.02em; }
     .field .hint { font-size: 0.78rem; color: var(--ink-3); }
-    input[type="text"], input[type="email"], select, textarea {
+    input[type="text"], input[type="email"], input[type="date"], select, textarea {
       width: 100%; min-width: 0; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: 6px; background: var(--panel);
     }
     textarea { resize: vertical; line-height: 1.5; }
@@ -220,6 +220,66 @@
     .rule-box { border: 1px solid var(--line-2); border-left: 4px solid var(--black); background: var(--panel); border-radius: 6px; padding: 12px 16px; margin-bottom: 18px; font-size: 0.9rem; }
     @media (max-width: 760px) { .side { grid-template-columns: 1fr; } }
 
+    /* ---------- progress ---------- */
+    .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--line); }
+    .bar span { display: block; height: 100%; }
+    .bar.big { height: 16px; }
+    .bar .seg-settled, .key i.seg-settled { background: var(--ins); } .bar .seg-discussion, .key i.seg-discussion { background: var(--open); } .bar .seg-reviewed, .key i.seg-reviewed { background: var(--gold); }
+    .key { display: inline-flex; align-items: center; gap: 5px; }
+    .key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; background: var(--line); }
+    .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+    .stat .v { font-family: var(--serif); font-size: 1.7rem; font-weight: 600; line-height: 1.1; }
+    .stat .l { font-size: 0.78rem; color: var(--ink-3); }
+    .art-prog { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; scroll-margin-top: 80px; }
+    .art-prog.flash { animation: flash 1.6s ease; }
+    .art-prog > summary { list-style: none; cursor: pointer; padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, 200px) auto; gap: 8px 16px; align-items: center; }
+    .art-prog > summary::-webkit-details-marker { display: none; }
+    .art-prog > summary .t { font-weight: 600; }
+    .art-prog > summary .t .when { font-weight: 400; color: var(--ink-3); font-size: 0.8rem; margin-left: 6px; }
+    .art-prog > summary .c { font-size: 0.8rem; color: var(--ink-3); white-space: nowrap; }
+    .sec-rows { width: 100%; border-collapse: collapse; font-size: 0.88rem; table-layout: fixed; }
+    .sec-rows col.c-st { width: 130px; } .sec-rows col.c-op { width: 80px; } .sec-rows col.c-rd { width: 100px; } .sec-rows col.c-act { width: 210px; }
+    .sec-rows td { padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: middle; }
+    .sec-rows td:first-child { padding-left: 16px; } .sec-rows td:last-child { padding-right: 16px; text-align: right; white-space: nowrap; }
+    .sec-rows .st-note { font-size: 0.78rem; color: var(--ink-3); }
+    .b-settled { background: var(--ins-bg); color: var(--ins); } .b-discussion { background: var(--open-bg); color: var(--open); }
+    .b-reviewed { background: var(--gold-soft); color: var(--gold-2); } .b-not_started { background: var(--line); color: var(--ink-3); }
+    .toc .done { color: var(--ins); font-size: 0.8rem; flex-shrink: 0; }
+    .btn.on { border-color: var(--ins); color: var(--ins); background: var(--ins-bg); }
+    @media (max-width: 760px) {
+      .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .art-prog > summary { grid-template-columns: minmax(0, 1fr) auto; }
+      .art-prog > summary .bar { grid-column: 1 / -1; order: 3; }
+      .sec-rows .hide-sm, .sec-rows colgroup { display: none; }
+      .sec-rows, .sec-rows tbody { display: block; }
+      .sec-rows tr { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 9px 16px; border-top: 1px solid var(--line); }
+      .sec-rows td { border: none; padding: 0; }
+      .sec-rows td:first-child { flex: 1 1 100%; padding-left: 0; }
+      .sec-rows td:last-child { margin-left: auto; padding-right: 0; }
+    }
+
+    /* ---------- meetings ---------- */
+    .mtgs { display: grid; gap: 12px; }
+    .mtg { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 18px; scroll-margin-top: 80px; }
+    .mtg.flash { animation: flash 1.6s ease; }
+    .mtg.next { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--shadow); }
+    .mtg.past { opacity: 0.72; }
+    .mtg.milestone { background: var(--paper); border-style: dashed; box-shadow: none; }
+    .mtg-date { text-align: center; border-right: 1px solid var(--line); padding-right: 14px; }
+    .mtg-date .m { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); }
+    .mtg-date .d { font-family: var(--serif); font-size: 1.9rem; font-weight: 600; line-height: 1; }
+    .mtg-date .w { font-size: 0.74rem; color: var(--ink-3); }
+    .mtg-title { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; }
+    .mtg .focus { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+    .mtg .focus a { font-size: 0.8rem; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 10px; text-decoration: none; color: var(--ink-2); background: var(--panel); }
+    .mtg .focus a:hover { border-color: var(--gold); }
+    .mtg .agenda { font-size: 0.9rem; color: var(--ink-2); margin-top: 8px; }
+    .mtg .agenda p { margin: 0 0 4px; }
+    .check-grid { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.86rem; }
+    .check-grid label { display: inline-flex; gap: 5px; align-items: center; }
+    @media (max-width: 560px) { .mtg { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; padding: 12px 14px; } .mtg-date { padding-right: 10px; } }
+
     /* ---------- members / about ---------- */
     .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 24px; align-items: start; }
     .member-list { list-style: none; margin: 0; padding: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
@@ -307,6 +367,8 @@
     <div class="tabs-inner" role="tablist">
       <button class="tab" role="tab" data-view="draft">Working draft</button>
       <button class="tab" role="tab" data-view="proposals">Proposals<span class="count" id="count-open" hidden></span></button>
+      <button class="tab" role="tab" data-view="progress">Progress</button>
+      <button class="tab" role="tab" data-view="meetings">Meetings</button>
       <button class="tab" role="tab" data-view="adopted">2022 bylaws</button>
       <button class="tab" role="tab" data-view="versions">Versions</button>
       <button class="tab" role="tab" data-view="compare">Compare</button>
@@ -334,6 +396,9 @@
     const S = {
       pub: null,          // { draft, versions, pending_changes }
       member: null,       // { me, proposals, members } when signed in
+      review: null,       // { alerts_enabled, member_count, sections: [{ key, status, note, readers, read_by_me }] }
+      meetings: [],       // public meeting schedule
+      progressOnlyMine: false,
       token: null,
       view: 'draft',
       filter: { status: 'open', article: '', q: '' },
@@ -349,6 +414,7 @@
     const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
     const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const fmtWhen = (d) => new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    const lines = (t) => String(t || '').split(/\n+/).map((p) => p.trim()).filter(Boolean);
     const paras = (body) => String(body || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
     const ADOPT_RULE = 'This revision is adopted under the bylaws currently in force (as amended April 9, 2022): amendments are initiated by a written motion submitted to the Secretary (Article VI), adoption requires a 2/3 majority of eligible voting members with a quorum of 10 eligible voting members (Article III, Section 1), and a copy of all amendments must be provided to the Chicago Park District.';
     const KIND = { amend: 'Amend', add: 'Add section', delete: 'Delete section', issue: 'Issue' };
@@ -434,10 +500,11 @@
       if (error) throw error;
       return data;
     }
-    async function loadPublic() { S.pub = await rpc('sscc_bylaws_public'); }
+    async function loadPublic() { [S.pub, S.meetings] = await Promise.all([rpc('sscc_bylaws_public'), rpc('sscc_bylaws_meetings')]); }
+    async function loadReview() { S.review = await rpc('sscc_bylaws_review_state', { p_token: S.token }); }
     async function loadMember() {
-      if (!S.token) { S.member = null; return; }
-      try { S.member = await rpc('sscc_bylaws_member_state', { p_token: S.token }); }
+      if (!S.token) { S.member = null; S.review = null; return; }
+      try { [S.member] = await Promise.all([rpc('sscc_bylaws_member_state', { p_token: S.token }), loadReview()]); }
       catch (e) {
         if (/not signed in/.test(e.message || '')) { signOut(true); return; }
         throw e;
@@ -478,6 +545,40 @@
     const adopted = () => (S.pub && S.pub.adopted) || [];
     const from2022 = (key) => adopted().filter((a) => (a.to || []).includes(key));
     const draftRef = (key) => { const s = secByKey(draft(), key); return s ? `${s.article_num}.${s.section_num} ${s.title}` : key; };
+    // review progress: settled > in discussion (chair-set, or open proposals) > reviewed by someone > not started
+    const PROGRESS = { settled: 'Settled', discussion: 'In discussion', reviewed: 'Being read', not_started: 'Not started' };
+    const reviewOf = (key) => (S.review && S.review.sections.find((r) => r.key === key)) || { key, status: 'not_started', readers: [], read_by_me: false };
+    function progressOf(key) {
+      const r = reviewOf(key);
+      if (r.status === 'settled') return 'settled';
+      if (r.status === 'in_review' || openCount(key)) return 'discussion';
+      return r.readers.length ? 'reviewed' : 'not_started';
+    }
+    function tally(keys) {
+      const t = { settled: 0, discussion: 0, reviewed: 0, not_started: 0, total: keys.length };
+      keys.forEach((k) => { t[progressOf(k)]++; });
+      return t;
+    }
+    const barHtml = (t, big) => `<div class="bar ${big ? 'big' : ''}" role="img" aria-label="${t.settled} settled, ${t.discussion} in discussion, ${t.reviewed} being read, ${t.not_started} not started">${
+      ['settled', 'discussion', 'reviewed'].map((k) => t[k] ? `<span class="seg-${k}" style="width:${(t[k] / t.total) * 100}%"></span>` : '').join('')}</div>`;
+    const legendHtml = () => `<span class="legend">${['settled', 'discussion', 'reviewed', 'not_started'].map((k) => `<span class="key"><i class="${k === 'not_started' ? '' : 'seg-' + k}"></i>${PROGRESS[k]}</span>`).join('')}</span>`;
+
+    // meetings (dates are plain YYYY-MM-DD, Chicago time)
+    const PAC_DATE = '2026-12-12';
+    const todayStr = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    const dayObj = (d) => new Date(d + 'T12:00:00');
+    const fmtDay = (d, opts) => dayObj(d).toLocaleDateString('en-US', opts || { weekday: 'short', month: 'short', day: 'numeric' });
+    const daysUntil = (d) => Math.round((dayObj(d) - dayObj(todayStr())) / 86400000);
+    const nextMeeting = () => S.meetings.find((m) => m.kind === 'meeting' && m.meets_on >= todayStr());
+    const meetingFor = (art) => S.meetings.find((m) => m.kind === 'meeting' && (m.focus || []).includes(art));
+    function artList(focus) {
+      if (!focus.length) return '';
+      const order = groupByArticle(draft()).map((a) => a.num);
+      const idx = focus.map((a) => order.indexOf(a));
+      const run = focus.length > 2 && idx.every((n, i) => n >= 0 && (i === 0 || n === idx[i - 1] + 1));
+      return run ? `Articles ${focus[0]}–${focus[focus.length - 1]}` : `Article${focus.length > 1 ? 's' : ''} ${focus.join(', ').replace(/, ([^,]+)$/, ' & $1')}`;
+    }
+
     const labelFor = (which) => which === 'draft' ? 'Working draft' : ((versions().find((x) => String(x.num) === String(which)) || {}).label || '');
 
     // ---------------- auth ----------------
@@ -546,7 +647,8 @@
       const pending = S.pub ? S.pub.pending_changes : 0;
       $('#status-line').innerHTML = v
         ? `Current version <b>${esc(v.label)}</b> &middot; ${fmtDate(v.created_at)}` +
-          (pending ? ` &middot; <b>${pending}</b> accepted change${pending === 1 ? '' : 's'} in the draft, not yet in a version` : ' &middot; draft matches this version')
+          (pending ? ` &middot; <b>${pending}</b> accepted change${pending === 1 ? '' : 's'} in the draft, not yet in a version` : ' &middot; draft matches this version') +
+          (nextMeeting() ? ` &middot; next meeting <b>${fmtDay(nextMeeting().meets_on)}</b>` : '')
         : '';
       const who = $('#who');
       if (S.member) {
@@ -568,7 +670,7 @@
       const h = '#' + view + (focus ? '/' + focus : '');
       if (location.hash !== h) history.pushState(null, '', h);
       render(focus);
-      window.scrollTo({ top: 0 });
+      if (!focus) window.scrollTo({ top: 0 });
     }
     function fromHash() {
       const [view, focus] = location.hash.replace(/^#/, '').split('/');
@@ -583,7 +685,8 @@
       renderChrome();
       if (!S.pub) return;
       ({ draft: viewDraft, proposals: viewProposals, versions: viewVersions, compare: viewCompare,
-         packet: viewPacket, members: viewMembers, about: viewAbout, adopted: viewAdopted })[S.view](focus);
+         packet: viewPacket, members: viewMembers, about: viewAbout, adopted: viewAdopted,
+         progress: viewProgress, meetings: viewMeetings })[S.view](focus);
       if (S.member && !/\s/.test(S.member.me.display_name.trim())) {
         const box = document.createElement('form');
         box.className = 'notice no-print'; box.id = 'name-prompt';
@@ -594,7 +697,7 @@
       }
       if (focus) {
         const el = document.getElementById(focus);
-        if (el) { el.scrollIntoView({ block: 'start' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700); }
+        if (el) { if (el.tagName === 'DETAILS') el.open = true; el.scrollIntoView({ block: 'start' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700); }
       }
     }
 
@@ -633,9 +736,12 @@
               : '<div class="new-mark">New in the draft: no counterpart in the 2022 bylaws.</div>'}</div></div>`;
         }
         const n = openCount(s.key);
+        const rv = reviewOf(s.key);
         const tools = signedIn()
           ? `<div class="sec-tools ${n ? 'has-open' : ''} no-print">
                ${n ? `<a class="btn small ghost" href="#proposals" data-sec-filter="${esc(s.key)}">${n} open</a>` : ''}
+               ${rv.status === 'settled' ? '<span class="badge b-settled" title="The chair marked this section settled">Settled</span>' : ''}
+               <button class="btn small ${rv.read_by_me ? 'on' : ''}" data-mark="${esc(s.key)}" aria-pressed="${rv.read_by_me}" title="${rv.read_by_me ? 'You marked this reviewed. Click to undo.' : 'Mark that you have read this section'}">${rv.read_by_me ? '&#10003; Reviewed' : 'Mark reviewed'}</button>
                <button class="btn small" data-propose="${esc(s.key)}">Propose change</button>
              </div>` : '';
         return `<section class="section" id="sec-${esc(s.key)}">
@@ -664,7 +770,7 @@
         <div class="doc-layout">
           <nav class="toc no-print" aria-label="Table of contents">
             ${arts.map((a) => `<div class="art">Article ${esc(a.num)} &middot; ${esc(a.title)}</div>
-              ${a.sections.map((s) => { const n = openCount(s.key); return `<a href="#draft/sec-${esc(s.key)}" data-jump="sec-${esc(s.key)}"><span><span class="n">${s.section_num}.</span>${esc(s.title)}</span>${n ? `<span class="dot" title="${n} open proposal${n === 1 ? '' : 's'}">${n}</span>` : ''}</a>`; }).join('')}`).join('')}
+              ${a.sections.map((s) => { const n = openCount(s.key); return `<a href="#draft/sec-${esc(s.key)}" data-jump="sec-${esc(s.key)}"><span><span class="n">${s.section_num}.</span>${esc(s.title)}</span>${n ? `<span class="dot" title="${n} open proposal${n === 1 ? '' : 's'}">${n}</span>` : reviewOf(s.key).status === 'settled' ? '<span class="done" title="Settled">&#10003;</span>' : ''}</a>`; }).join('')}`).join('')}
           </nav>
           <article class="paper">
             <div class="paper-title"><div class="t1">Bylaws of the</div><div class="t2">South Shore Cultural Center Advisory Council</div>
@@ -681,6 +787,7 @@
         if (el) { el.scrollIntoView({ behavior: 'smooth' }); history.replaceState(null, '', '#draft/' + a.dataset.jump); }
       }));
       $$('[data-propose]').forEach((b) => b.addEventListener('click', () => openProposalEditor({ sectionKey: b.dataset.propose })));
+      bindMarkRead();
       $$('[data-sec-filter]').forEach((a) => a.addEventListener('click', (e) => {
         e.preventDefault(); S.filter = { status: 'open', article: '', q: '', section: a.dataset.secFilter }; go('proposals');
       }));
@@ -1107,6 +1214,184 @@
       $('#k-print').onclick = () => window.print();
     }
 
+    // ---------------- progress ----------------
+    function bindMarkRead() {
+      $$('[data-mark]').forEach((b) => b.addEventListener('click', async () => {
+        const key = b.dataset.mark, on = b.getAttribute('aria-pressed') !== 'true';
+        b.disabled = true;
+        try { await rpc('sscc_bylaws_mark_read', { p_token: S.token, p_section_key: key, p_read: on }); await loadReview(); render(); }
+        catch (e) { toast(errMsg(e), true); b.disabled = false; }
+      }));
+    }
+    function openStatusEditor(key) {
+      const s = secByKey(draft(), key); const r = reviewOf(key); const n = openCount(key);
+      dlg.innerHTML = `<form class="dlg" id="st-form">
+        <div class="dlg-head"><div class="ref">Article ${esc(s.article_num)} &middot; Section ${s.section_num}</div><h3>Review status: ${esc(s.title)}</h3></div>
+        <div class="dlg-body">
+          <div class="kind-pick" role="radiogroup" aria-label="Status" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+            <label><input type="radio" name="st" value="not_started" ${r.status === 'not_started' ? 'checked' : ''} /><b>Not started</b><span>The committee hasn't taken it up</span></label>
+            <label><input type="radio" name="st" value="in_review" ${r.status === 'in_review' ? 'checked' : ''} /><b>In discussion</b><span>On the table at meetings</span></label>
+            <label><input type="radio" name="st" value="settled" ${r.status === 'settled' ? 'checked' : ''} /><b>Settled</b><span>The committee is done with it</span></label>
+          </div>
+          ${n ? `<div class="notice warn" style="margin:0;">${n} open proposal${n === 1 ? '' : 's'} on this section. Decide or defer ${n === 1 ? 'it' : 'them'} before settling.</div>` : ''}
+          <div class="field"><label for="st-note">Note <span class="muted">(optional, e.g. "Agreed Oct 17; keep 2022 quorum of 10")</span></label><input type="text" id="st-note" maxlength="200" value="${esc(r.note || '')}" /></div>
+          <p class="muted" style="margin:0;font-size:0.84rem;">Reviewed by ${r.readers.length} of ${S.review.member_count}${r.readers.length ? `: ${esc(r.readers.join(', '))}` : ''}. A new proposal on a settled section reopens it.</p>
+        </div>
+        <div class="dlg-foot"><span class="err" id="st-err" aria-live="polite"></span><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn primary" id="st-save">Save</button></div>
+      </form>`;
+      bindClose();
+      $('#st-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); const btn = $('#st-save'); btn.disabled = true;
+        try {
+          await rpc('sscc_bylaws_set_section_status', { p_token: S.token, p_section_key: key, p_status: $('input[name="st"]:checked', dlg).value, p_note: $('#st-note').value });
+          dlg.close(); await loadReview(); render();
+        } catch (err) { $('#st-err').textContent = errMsg(err); btn.disabled = false; }
+      });
+      dlg.showModal();
+    }
+    function viewProgress(focus) {
+      if (!signedIn() || !S.review) {
+        main.innerHTML = `<div class="view-head"><div><h2>Review progress</h2><p>Where the committee stands on each section of the draft. Visible to subcommittee members.</p></div></div>
+          <div class="empty">Sign in to see review progress.<br /><br /><button class="btn primary" id="g-signin">Subcommittee sign in</button></div>`;
+        $('#g-signin').onclick = openSignIn; return;
+      }
+      const arts = groupByArticle(draft());
+      const all = tally(draft().map((s) => s.key));
+      const mine = draft().filter((s) => reviewOf(s.key).read_by_me).length;
+      const nm = nextMeeting(); const days = daysUntil(PAC_DATE);
+      const chair = isChair();
+      const onlyMine = S.progressOnlyMine;
+      main.innerHTML = `
+        <div class="view-head"><div><h2>Review progress</h2>
+          <p>Where the committee stands on each of the draft's ${all.total} sections. Mark a section reviewed once you've read it (on the working draft, or here). ${chair ? 'As chair, set each section to In discussion or Settled as the committee works through it.' : 'The chairs mark sections settled as the committee agrees on them.'}</p></div></div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${all.settled}<span class="muted" style="font-size:1rem;"> / ${all.total}</span></div><div class="l">sections settled</div></div>
+          <div class="stat"><div class="v">${all.discussion}</div><div class="l">in discussion or with open proposals</div></div>
+          <div class="stat"><div class="v">${mine}<span class="muted" style="font-size:1rem;"> / ${all.total}</span></div><div class="l">reviewed by you</div></div>
+          <div class="stat"><div class="v">${days >= 0 ? days : '–'}</div><div class="l">days to the Dec 12 PAC meeting${nm ? `; next meeting ${esc(fmtDay(nm.meets_on))}` : ''}</div></div>
+        </div>
+        <div style="margin-bottom:8px;">${barHtml(all, true)}</div>
+        <div class="toolbar" style="justify-content:space-between;">${legendHtml()}
+          <label style="font-size:0.86rem;display:inline-flex;gap:6px;align-items:center;"><input type="checkbox" id="only-mine" ${onlyMine ? 'checked' : ''} /> Only sections I haven't reviewed</label></div>
+        ${arts.map((a) => {
+          const t = tally(a.sections.map((s) => s.key));
+          const m = meetingFor(a.num);
+          const rows = a.sections.filter((s) => !onlyMine || !reviewOf(s.key).read_by_me);
+          const complete = t.settled === t.total;
+          return `<details class="art-prog" id="art-${esc(a.num)}" ${focus === 'art-' + a.num || (!complete && m && nm && m.id === nm.id) ? 'open' : ''}>
+            <summary><span class="t">Article ${esc(a.num)} &middot; ${esc(a.title)}${m ? `<a class="when" href="#meetings/m-${m.id}" data-go-mtg="m-${m.id}">${esc(fmtDay(m.meets_on, { month: 'short', day: 'numeric' }))} meeting</a>` : ''}</span>
+              ${barHtml(t)}<span class="c">${complete ? '&#10003; all settled' : `${t.settled} of ${t.total} settled`}</span></summary>
+            ${rows.length ? `<table class="sec-rows"><colgroup><col /><col class="c-st" /><col class="c-op hide-sm" /><col class="c-rd hide-sm" /><col class="c-act" /></colgroup><tbody>${rows.map((s) => {
+              const r = reviewOf(s.key); const p = progressOf(s.key); const n = openCount(s.key);
+              return `<tr>
+                <td><a href="#draft/sec-${esc(s.key)}">${esc(a.num)}.${s.section_num} ${esc(s.title)}</a>${r.note ? `<div class="st-note">${esc(r.note)}</div>` : ''}</td>
+                <td><span class="badge b-${p}">${PROGRESS[p]}</span></td>
+                <td class="hide-sm">${n ? `<a href="#proposals" data-sec-filter="${esc(s.key)}">${n} open</a>` : '<span class="muted">&mdash;</span>'}</td>
+                <td class="hide-sm" title="${esc(r.readers.join(', ') || 'No one yet')}"><span class="muted">${r.readers.length} of ${S.review.member_count} read</span></td>
+                <td><button class="btn small ${r.read_by_me ? 'on' : ''}" data-mark="${esc(s.key)}" aria-pressed="${r.read_by_me}">${r.read_by_me ? '&#10003; Reviewed' : 'Mark reviewed'}</button>
+                  ${chair ? `<button class="btn small ghost" data-status="${esc(s.key)}">Status</button>` : ''}</td>
+              </tr>`; }).join('')}</tbody></table>` : '<p class="muted" style="margin:0;padding:0 16px 12px;font-size:0.86rem;">You have reviewed every section in this article.</p>'}
+          </details>`; }).join('')}`;
+      $('#only-mine').onchange = (e) => { S.progressOnlyMine = e.target.checked; render(); };
+      bindMarkRead();
+      $$('[data-status]').forEach((b) => b.addEventListener('click', () => openStatusEditor(b.dataset.status)));
+      $$('[data-sec-filter]').forEach((a) => a.addEventListener('click', (e) => {
+        e.preventDefault(); S.filter = { status: 'open', article: '', q: '', section: a.dataset.secFilter }; go('proposals');
+      }));
+      $$('[data-go-mtg]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go('meetings', a.dataset.goMtg); }));
+    }
+
+    // ---------------- meetings ----------------
+    function openMeetingEditor(m) {
+      const editing = !!m;
+      m = m || { kind: 'meeting', meets_on: '', time_label: '', location: '', title: '', focus: [], agenda: '', notes: '', confirmed: false };
+      const arts = groupByArticle(draft());
+      dlg.innerHTML = `<form class="dlg" id="mtg-form">
+        <div class="dlg-head"><h3>${editing ? 'Edit' : 'Add to the schedule'}</h3></div>
+        <div class="dlg-body">
+          <div class="compare-row" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:0;">
+            <div class="field"><label for="mt-kind">Kind</label><select id="mt-kind"><option value="meeting" ${m.kind === 'meeting' ? 'selected' : ''}>Committee meeting</option><option value="milestone" ${m.kind === 'milestone' ? 'selected' : ''}>Milestone or deadline</option></select></div>
+            <div class="field"><label for="mt-date">Date</label><input type="date" id="mt-date" required value="${esc(m.meets_on)}" /></div>
+          </div>
+          <div class="field"><label for="mt-title">Title</label><input type="text" id="mt-title" required maxlength="120" value="${esc(m.title)}" /></div>
+          <div class="compare-row" style="grid-template-columns:repeat(2,minmax(0,1fr));margin:0;" data-mtg-only>
+            <div class="field"><label for="mt-time">Time</label><input type="text" id="mt-time" placeholder="e.g. 6:00–7:30 pm" value="${esc(m.time_label || '')}" /></div>
+            <div class="field"><label for="mt-loc">Place or link</label><input type="text" id="mt-loc" placeholder="e.g. SSCC, or a Zoom link" value="${esc(m.location || '')}" /></div>
+          </div>
+          <div class="field" data-mtg-only><span class="label">Articles to work on</span>
+            <div class="check-grid">${arts.map((a) => `<label title="${esc(a.title)}"><input type="checkbox" name="mt-focus" value="${esc(a.num)}" ${(m.focus || []).includes(a.num) ? 'checked' : ''} /> ${esc(a.num)}</label>`).join('')}</div></div>
+          <div class="field"><label for="mt-agenda">Agenda</label><textarea id="mt-agenda" rows="4">${esc(m.agenda || '')}</textarea><span class="hint">Put each item on its own line.</span></div>
+          <div class="field"><label for="mt-notes">Notes after the meeting <span class="muted">(what was agreed; shown publicly)</span></label><textarea id="mt-notes" rows="3">${esc(m.notes || '')}</textarea></div>
+          <label style="font-size:0.9rem;display:flex;gap:8px;align-items:flex-start;" data-mtg-only><input type="checkbox" id="mt-conf" ${m.confirmed ? 'checked' : ''} style="margin-top:4px;" />
+            <span><b>Confirmed.</b> The date, time and place are set. Every committee member gets an email reminder two days before a confirmed meeting.</span></label>
+        </div>
+        <div class="dlg-foot"><span class="err" id="mt-err" aria-live="polite"></span>
+          ${editing ? '<button type="button" class="btn ghost danger" id="mt-del">Delete</button>' : ''}
+          <button type="button" class="btn ghost" data-close>Cancel</button><button class="btn primary" id="mt-save">Save</button></div>
+      </form>`;
+      bindClose();
+      const syncKind = () => { $$('[data-mtg-only]', dlg).forEach((el) => { el.hidden = $('#mt-kind').value !== 'meeting'; }); };
+      $('#mt-kind').onchange = syncKind; syncKind();
+      if ($('#mt-del')) $('#mt-del').onclick = async () => {
+        if (!confirm(`Delete "${m.title}" from the schedule?`)) return;
+        try { await rpc('sscc_bylaws_delete_meeting', { p_token: S.token, p_id: m.id }); dlg.close(); toast('Removed from the schedule.'); await refresh(); }
+        catch (err) { $('#mt-err').textContent = errMsg(err); }
+      };
+      $('#mtg-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); const btn = $('#mt-save'); btn.disabled = true;
+        const isMtg = $('#mt-kind').value === 'meeting';
+        try {
+          const id = await rpc('sscc_bylaws_save_meeting', { p_token: S.token, p_id: editing ? m.id : null, p_kind: $('#mt-kind').value,
+            p_meets_on: $('#mt-date').value, p_time_label: isMtg ? $('#mt-time').value : '', p_location: isMtg ? $('#mt-loc').value : '',
+            p_title: $('#mt-title').value, p_focus: isMtg ? $$('input[name="mt-focus"]:checked', dlg).map((c) => c.value) : [],
+            p_agenda: $('#mt-agenda').value, p_notes: $('#mt-notes').value, p_confirmed: isMtg && $('#mt-conf').checked });
+          dlg.close(); toast('Schedule saved.'); await refresh(); go('meetings', 'm-' + id);
+        } catch (err) { $('#mt-err').textContent = errMsg(err); btn.disabled = false; }
+      });
+      dlg.showModal(); $('#mt-title').focus();
+    }
+    function viewMeetings() {
+      const ms = S.meetings; const today = todayStr(); const nm = nextMeeting();
+      const days = daysUntil(PAC_DATE); const chair = isChair();
+      const left = ms.filter((m) => m.kind === 'meeting' && m.meets_on >= today).length;
+      main.innerHTML = `
+        <div class="view-head"><div><h2>Meetings</h2>
+          <p>The committee's plan to the December 12 PAC meeting: which articles each meeting takes up, and the deadlines for getting the proposal to the membership under the 2022 bylaws. The schedule is public, since committee meetings must be announced to the general membership (2022 Art. V §1).</p></div>
+          ${chair ? '<button class="btn primary no-print" id="mt-add">Add meeting or deadline</button>' : ''}</div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${days >= 0 ? days : '–'}</div><div class="l">days to the PAC meeting (Sat, Dec 12)</div></div>
+          <div class="stat"><div class="v">${left}</div><div class="l">committee meeting${left === 1 ? '' : 's'} left</div></div>
+          <div class="stat"><div class="v">${nm ? esc(fmtDay(nm.meets_on, { month: 'short', day: 'numeric' })) : '–'}</div><div class="l">next meeting${nm && nm.focus.length ? `: ${esc(artList(nm.focus))}` : ''}</div></div>
+          ${S.review ? (() => { const t = tally(draft().map((s) => s.key)); return `<div class="stat"><div class="v">${t.settled}<span class="muted" style="font-size:1rem;"> / ${t.total}</span></div><div class="l"><a href="#progress" data-go="progress">sections settled</a></div></div>`; })()
+            : `<div class="stat"><div class="v">${draft().length}</div><div class="l">sections in the draft</div></div>`}
+        </div>
+        ${ms.some((m) => m.kind === 'meeting' && !m.confirmed && m.meets_on >= today) ? `<div class="notice">Dates marked <b>Tentative</b> are not final yet.${chair ? ' Edit each one to set the real day, time, and place, and tick Confirmed so members get a reminder.' : ' The chairs will confirm the day, time, and place.'}</div>` : ''}
+        <div class="mtgs">${ms.length ? ms.map((m) => {
+          const d = dayObj(m.meets_on); const past = m.meets_on < today; const isNext = nm && nm.id === m.id;
+          const focus = (m.focus || []).map((a) => {
+            const secs = draft().filter((s) => s.article_num === a);
+            const t = S.review ? tally(secs.map((s) => s.key)) : null;
+            return `<a href="#progress/art-${esc(a)}" data-go-art="${esc(a)}" title="${esc((secs[0] || {}).article_title || '')}">Art. ${esc(a)}${t ? ` &middot; ${t.settled}/${t.total} settled` : ` &middot; ${secs.length} sections`}</a>`;
+          }).join('');
+          return `<article class="mtg ${m.kind} ${past ? 'past' : ''} ${isNext ? 'next' : ''}" id="m-${m.id}">
+            <div class="mtg-date"><div class="m">${d.toLocaleDateString('en-US', { month: 'short' })}</div><div class="d">${d.getDate()}</div><div class="w">${d.toLocaleDateString('en-US', { weekday: 'short' })}</div></div>
+            <div>
+              <div class="card-top">${m.kind === 'milestone' ? '<span class="badge b-kind">Deadline</span>' : ''}${isNext ? '<span class="ver-current">Next</span>' : ''}
+                ${m.kind === 'meeting' && !m.confirmed && !past ? '<span class="badge b-deferred">Tentative</span>' : ''}${past ? '<span class="badge b-withdrawn">Past</span>' : ''}
+                ${chair ? `<span style="flex:1"></span><button class="btn small ghost no-print" data-edit-mtg="${m.id}">Edit</button>` : ''}</div>
+              <div class="mtg-title" style="margin-top:4px;">${esc(m.title)}</div>
+              ${m.kind === 'meeting' ? `<div class="meta">${m.time_label ? esc(m.time_label) : 'Time to be set'} &middot; ${m.location ? esc(m.location) : 'place to be set'}</div>` : ''}
+              ${focus ? `<div class="focus">${focus}</div>` : ''}
+              ${m.agenda ? `<div class="agenda">${lines(m.agenda).map((p) => `<p>${esc(p)}</p>`).join('')}</div>` : ''}
+              ${m.notes ? `<div class="decision" style="margin-top:8px;"><b>Notes</b>${lines(m.notes).map((p) => `<div>${esc(p)}</div>`).join('')}</div>` : ''}
+            </div>
+          </article>`; }).join('') : '<div class="empty">No meetings scheduled yet.</div>'}</div>`;
+      if ($('#mt-add')) $('#mt-add').onclick = () => openMeetingEditor(null);
+      $$('[data-edit-mtg]').forEach((b) => b.addEventListener('click', () => openMeetingEditor(ms.find((m) => m.id === +b.dataset.editMtg))));
+      $$('[data-go-art]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go('progress', 'art-' + a.dataset.goArt); }));
+      $$('[data-go]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.go); }));
+    }
+
     // ---------------- members ----------------
     function viewMembers() {
       if (!signedIn()) {
@@ -1126,6 +1411,10 @@
           <form class="panel" id="my-name"><h3 style="font-family:var(--serif);font-size:1.05rem;">Your name</h3>
             <div class="field"><label for="mn-name">Shown on your proposals and comments</label><input type="text" id="mn-name" value="${esc(S.member.me.display_name)}" required maxlength="80" /></div>
             <button class="btn">Save</button></form>
+          <div class="panel"><h3 style="font-family:var(--serif);font-size:1.05rem;">Email alerts</h3>
+            <p style="margin:0;font-size:0.88rem;">Every member of the committee gets an email when someone submits a proposal or flags an issue, when a chair publishes a version, and two days before each confirmed meeting. You aren't emailed about your own proposals or versions.</p>
+            ${S.review ? `<p style="margin:0;font-size:0.88rem;">Alerts are <b>${S.review.alerts_enabled ? 'on' : 'off'}</b>.</p>` : ''}
+            ${isChair() && S.review ? `<button class="btn" id="alerts-toggle">${S.review.alerts_enabled ? 'Pause alerts for everyone' : 'Turn alerts back on'}</button>` : ''}</div>
           ${isChair() ? `<form class="panel" id="add-member"><h3 style="font-family:var(--serif);font-size:1.05rem;">Add a member</h3>
             <div class="field"><label for="am-name">Name</label><input type="text" id="am-name" required /></div>
             <div class="field"><label for="am-email">Email</label><input type="email" id="am-email" required /></div>
@@ -1135,6 +1424,12 @@
           </div>
         </div>`;
       $('#my-name').addEventListener('submit', (e) => { e.preventDefault(); saveMyName($('#mn-name').value); });
+      if ($('#alerts-toggle')) $('#alerts-toggle').onclick = async () => {
+        const on = !S.review.alerts_enabled;
+        if (!on && !confirm('Pause email alerts for the whole committee?')) return;
+        try { await rpc('sscc_bylaws_set_alerts', { p_token: S.token, p_enabled: on }); toast(on ? 'Email alerts are on.' : 'Email alerts are paused.'); await loadReview(); render(); }
+        catch (err) { toast(errMsg(err), true); }
+      };
       if ($('#add-member')) $('#add-member').addEventListener('submit', async (e) => {
         e.preventDefault();
         try { await rpc('sscc_bylaws_set_member', { p_token: S.token, p_email: $('#am-email').value, p_name: $('#am-name').value, p_role: $('#am-role').value, p_remove: false }); toast('Member added.'); await refresh(); }
@@ -1160,7 +1455,11 @@
             <li><b>Adopt.</b> The adoption packet prints the proposed bylaws for the membership: a crosswalk from each provision of the 2022 bylaws to the new text, then the complete proposed bylaws. The revision is adopted under the bylaws in force, not the draft: a written motion to the Secretary (Art. VI), then a 2/3 majority of eligible voting members with a quorum of 10 (Art. III §1), and a copy to the Park District.</li>
           </ol></div>
           <div class="panel"><h3 style="font-family:var(--serif);font-size:1.05rem;">Who can see what</h3>
-            <p style="margin:0;font-size:0.9rem;">Anyone with the link can read the working draft, the versions, and the adoption packet. Proposals, discussion, and the member list are visible only to signed-in subcommittee members. Email addresses are never shown publicly.</p>
+            <p style="margin:0;font-size:0.9rem;">Anyone with the link can read the working draft, the versions, the meeting schedule, and the adoption packet. Proposals, discussion, and the member list are visible only to signed-in subcommittee members. Email addresses are never shown publicly.</p>
+            <h3 style="font-family:var(--serif);font-size:1.05rem;">Progress and meetings</h3>
+            <p style="margin:0;font-size:0.9rem;">Mark each section <i>reviewed</i> once you've read it. The chairs mark sections <i>in discussion</i> and then <i>settled</i> as the committee agrees; the <i>Progress</i> tab shows where every article stands. The <i>Meetings</i> tab lays out which articles each meeting takes up on the way to the December 12 PAC meeting.</p>
+            <h3 style="font-family:var(--serif);font-size:1.05rem;">Email</h3>
+            <p style="margin:0;font-size:0.9rem;">Everyone on the committee is emailed about new proposals, newly published versions, and upcoming confirmed meetings.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">The 2022 bylaws</h3>
             <p style="margin:0;font-size:0.9rem;">The <i>2022 bylaws</i> tab shows the bylaws in force word for word, with where each provision went in the draft. On the working draft, tick <i>2022 text alongside</i> to read old and new side by side. Notes titled "Comparison with 2022 bylaws" flag each substantive difference.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">Starter review notes</h3>
