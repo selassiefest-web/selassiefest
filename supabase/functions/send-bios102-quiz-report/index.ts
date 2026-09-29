@@ -11,6 +11,7 @@ const WEBHOOK_SECRET = Deno.env.get("BIOS102_REPORT_SECRET");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM = "BIOS102 Lab Companion <hello@selassiefest.com>";
 const TO = "stephen@selassiefest.com";
+const INSTRUCTOR = "harria01@uwp.edu"; // students' replies to the invite go here
 const STORAGE_ID = 9102; // mock-quiz-2.html's exercise_number sentinel
 const TZ = "America/Chicago";
 
@@ -138,6 +139,35 @@ Deno.serve(async (req) => {
         .insert(fresh.map(({ s, r }) => ({ email: s.email, finished_at: r.finishedAt })));
       if (insErr) throw insErr;
       return new Response(JSON.stringify({ ok: true, sent: true, count: fresh.length }), { status: 200 });
+    }
+
+    if (mode === "invite") {
+      // One email per student (not one email with everyone in To), so no
+      // student sees another's address. `test: true` sends a single copy
+      // to Stephen instead, to proof it before the real send.
+      const recipients = body.test ? [{ email: TO, name: "Preview Student" }] : students;
+      const failed: string[] = [];
+      for (const s of recipients) {
+        const first = escapeHtml(String(s.name).split(" ")[0]);
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: FROM,
+            to: s.email,
+            reply_to: INSTRUCTOR,
+            subject: "BIOS102 Mock Quiz 2 is ready",
+            html: `
+              <p>Hi ${first},</p>
+              <p>Mock Quiz 2 (protists &amp; fungi) is up on the Lab Companion dashboard. Every question comes from the lab manual, and you can retry as often as you like.</p>
+              <p><a href="https://selassiefest.com/BIOS102/dashboard.html">Open the dashboard</a></p>
+              <p>Professor Harris</p>`,
+          }),
+        });
+        if (!res.ok) failed.push(`${s.email}: ${await res.text()}`);
+        await new Promise((r) => setTimeout(r, 600)); // stay under Resend's rate limit
+      }
+      return new Response(JSON.stringify({ ok: failed.length === 0, sent: recipients.length - failed.length, failed }), { status: 200 });
     }
 
     const completed = students.filter((s) => s.history.length > 0);
