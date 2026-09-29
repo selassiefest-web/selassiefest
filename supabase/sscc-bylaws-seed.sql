@@ -1,10 +1,12 @@
 -- Seed for the SSCC bylaws workspace: v1.0 = the clean revision draft
 -- (South_Shore_Cultural_Center_Advisory_Council_Clean_Bylaws_Revision.docx).
 -- Run once, after sscc-bylaws-schema.sql. Idempotent: skips if v1.0 exists.
+-- The subcommittee roster (sscc_bylaws_members) is added directly against
+-- the live project, never committed: this repo is public and the roster
+-- is members' personal email addresses (same rule as bios102_students).
 do $seed$
 begin
 if exists (select 1 from sscc_bylaws_versions where num = 1) then return; end if;
-insert into sscc_bylaws_members (email, display_name, role) values ('stephen@selassiefest.com', 'Stephen Henry', 'chair') on conflict (email) do nothing;
 insert into sscc_bylaws_sections (key, article_order, article_num, article_title, section_order, section_num, title, body) values ($q$I-1$q$, 1, $q$I$q$, $q$Name and Purpose$q$, 1, 1, $q$Name$q$, $q$The organization shall be known as the South Shore Cultural Center Advisory Council, hereinafter referred to as the “Council.”$q$);
 insert into sscc_bylaws_sections (key, article_order, article_num, article_title, section_order, section_num, title, body) values ($q$I-2$q$, 1, $q$I$q$, $q$Name and Purpose$q$, 2, 2, $q$Purpose$q$, $q$The Council shall:
 
@@ -164,6 +166,6 @@ insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rati
 insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rationale, author_label) values ('issue', $q$V-2$q$, $q$V$q$, $q$"A Council member for at least one year": continuous, or total?$q$, $q$V.2 requires officer candidates to have been members for at least one year. Clarify whether that means one continuous year immediately before the election, and how lapsed dues affect it.$q$, 'Starter review');
 insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rationale, author_label) values ('issue', $q$V-9$q$, $q$V$q$, $q$Vacancies other than President: the process is left to the Executive Board$q$, $q$V.9 says other vacancies are filled "in accordance with a process approved by the Executive Board." Consider stating the process in the bylaws (who nominates, whether the membership votes, and for what term).$q$, 'Starter review');
 insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rationale, author_label) values ('issue', $q$VII-4$q$, $q$VII$q$, $q$Who appoints the Sergeant-at-Arms, and for how long?$q$, $q$VII.4 says the Sergeant-at-Arms is appointed "by the presiding officer or Executive Board as authorized." Name one appointing authority and a term.$q$, 'Starter review');
-insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rationale, author_label) values ('issue', $q$II-9$q$, $q$II$q$, $q$Confirm CPD body names and current PAC guidelines$q$, $q$II.9 and other sections refer to the "CPD PAC Oversight Committee" and to current CPD policies. Confirm the names and requirements against the Chicago Park District's current Park Advisory Council guidelines before adoption.$q$, 'Starter review');
+insert into sscc_bylaws_proposals (kind, section_key, article_num, summary, rationale, author_label) values ('issue', $q$II-9$q$, $q$II$q$, $q$Confirm CPD body names and current PAC guidelines$q$, $q$II.9 refers to review or appeal by the "CPD PAC Oversight Committee." CPD's current PAC Guidelines do not mention a PAC Oversight Committee: complaints about a PAC or its members go to the Park Supervisor or Area Manager, with a written appeal filed there. Confirm the correct body with CPD and update II.9 (and any other references to CPD bodies) before adoption.$q$, 'Starter review');
 end;
 $seed$;

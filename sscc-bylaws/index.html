@@ -559,6 +559,14 @@
       if (!S.pub) return;
       ({ draft: viewDraft, proposals: viewProposals, versions: viewVersions, compare: viewCompare,
          packet: viewPacket, members: viewMembers, about: viewAbout })[S.view](focus);
+      if (S.member && !/\s/.test(S.member.me.display_name.trim())) {
+        const box = document.createElement('form');
+        box.className = 'notice no-print'; box.id = 'name-prompt';
+        box.innerHTML = `<b>Welcome! Please add your name</b> so the committee knows who wrote each proposal and comment.
+          <div class="toolbar" style="margin:8px 0 0;"><input type="text" id="np-name" class="grow" placeholder="Your full name" required maxlength="80" aria-label="Your full name" /><button class="btn primary">Save my name</button></div>`;
+        main.prepend(box);
+        box.addEventListener('submit', (e) => { e.preventDefault(); saveMyName($('#np-name').value); });
+      }
       if (focus) {
         const el = document.getElementById(focus);
         if (el) { el.scrollIntoView({ block: 'start' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700); }
@@ -989,6 +997,11 @@
       $('#k-print').onclick = () => window.print();
     }
 
+    async function saveMyName(name) {
+      try { await rpc('sscc_bylaws_set_my_name', { p_token: S.token, p_name: name }); toast('Name saved.'); await refresh(); }
+      catch (err) { toast(errMsg(err), true); }
+    }
+
     // ---------------- members ----------------
     function viewMembers() {
       if (!signedIn()) {
@@ -1004,13 +1017,19 @@
           <ul class="member-list">${ms.map((m) => `<li><div class="grow"><div><b>${esc(m.display_name)}</b> ${m.role === 'chair' ? '<span class="badge b-accepted">Chair</span>' : ''}</div>${m.email ? `<div class="email">${esc(m.email)}</div>` : ''}</div>
             <span class="muted" style="font-size:0.8rem;">${tally(m.display_name)} proposal${tally(m.display_name) === 1 ? '' : 's'}</span>
             ${isChair() && m.email && m.email !== S.member.me.email ? `<button class="btn small ghost danger" data-remove="${esc(m.email)}" aria-label="Remove ${esc(m.display_name)}">Remove</button>` : ''}</li>`).join('')}</ul>
+          <div style="display:grid;gap:16px;">
+          <form class="panel" id="my-name"><h3 style="font-family:var(--serif);font-size:1.05rem;">Your name</h3>
+            <div class="field"><label for="mn-name">Shown on your proposals and comments</label><input type="text" id="mn-name" value="${esc(S.member.me.display_name)}" required maxlength="80" /></div>
+            <button class="btn">Save</button></form>
           ${isChair() ? `<form class="panel" id="add-member"><h3 style="font-family:var(--serif);font-size:1.05rem;">Add a member</h3>
             <div class="field"><label for="am-name">Name</label><input type="text" id="am-name" required /></div>
             <div class="field"><label for="am-email">Email</label><input type="email" id="am-email" required /></div>
             <div class="field"><label for="am-role">Role</label><select id="am-role"><option value="member">Member: proposes and comments</option><option value="chair">Chair: also decides and publishes versions</option></select></div>
             <button class="btn primary">Add member</button>
             <p class="muted" style="margin:0;font-size:0.8rem;">Then send them the link to this page: selassiefest.com/sscc-bylaws/</p></form>` : ''}
+          </div>
         </div>`;
+      $('#my-name').addEventListener('submit', (e) => { e.preventDefault(); saveMyName($('#mn-name').value); });
       if ($('#add-member')) $('#add-member').addEventListener('submit', async (e) => {
         e.preventDefault();
         try { await rpc('sscc_bylaws_set_member', { p_token: S.token, p_email: $('#am-email').value, p_name: $('#am-name').value, p_role: $('#am-role').value, p_remove: false }); toast('Member added.'); await refresh(); }
