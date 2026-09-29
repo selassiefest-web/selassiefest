@@ -43,3 +43,19 @@ alter table bios102_quiz_report_sent enable row level security;
 --        select cron.unschedule('bios102-quiz-summary') $$);
 -- pg_cron runs in UTC; the summary job unschedules both jobs after it
 -- fires so neither repeats next year.
+--
+-- Mock Quiz 3 jobs (applied live 2026-09-29): finish emails from Mon Oct 5
+-- 12:00 pm to Tue Oct 6 2:00 pm Central (17:00Z-19:00Z), then the summary
+-- at Tue 2:00 pm, which unschedules both. These read the secret from Vault
+-- (name 'bios102_report_secret', same value as the function's
+-- BIOS102_REPORT_SECRET) instead of embedding it:
+--   select cron.schedule('bios102-quiz3-finishes', '*/5 * 5-6 10 *',
+--     $$ select net.http_post(url := '<function URL>', headers :=
+--        jsonb_build_object('Content-Type', 'application/json',
+--        'x-webhook-secret', (select decrypted_secret from vault.decrypted_secrets
+--        where name = 'bios102_report_secret')), body :=
+--        '{"mode":"finishes","quiz":3,"since":"2026-10-05T17:00:00Z","until":"2026-10-06T19:00:00Z"}'::jsonb) $$);
+--   select cron.schedule('bios102-quiz3-summary', '0 19 6 10 *',
+--     $$ select net.http_post(... body := '{"mode":"summary","quiz":3}'::jsonb);
+--        select cron.unschedule('bios102-quiz3-finishes');
+--        select cron.unschedule('bios102-quiz3-summary') $$);
