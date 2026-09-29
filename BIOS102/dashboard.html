@@ -26,6 +26,15 @@
           <a class="go" href="/BIOS102/mock-quiz-2.html">Take Mock Quiz 2 &rarr;</a>
         </div>
       </div>
+      <div class="ex-card exam-card">
+        <span class="num">Lab Quiz 3</span>
+        <h3>Liverworts &amp; Mosses</h3>
+        <span class="meta">Exercise 4 &middot; true/false, fill-in, and matching</span>
+        <span class="badge" id="mock3-badge" hidden></span>
+        <div class="card-links">
+          <a class="go" href="/BIOS102/mock-quiz-3.html">Take Mock Quiz 3 &rarr;</a>
+        </div>
+      </div>
     </div>
 
     <h2 style="margin-top:40px;">Lab Data</h2>
@@ -70,18 +79,19 @@
         console.error('Could not load saved tables', err);
       }
 
-      // Mock Quiz 2 saves under exercise_number 9102 (see mock-quiz-2.html)
-      const mock2 = savedByExercise[9102];
-      const mock2State = mock2 && Array.isArray(mock2.rows) && mock2.rows[0] ? mock2.rows[0].mockQuiz : null;
-      if (mock2State && mock2State.q) {
-        const hist = mock2State.history || [];
-        const correct = Object.values(mock2State.q).filter((q) => q.status === 'correct').length;
-        const badgeEl = document.getElementById('mock2-badge');
+      // Mock quizzes save under exercise_number 910N (see mock-quiz-N.html)
+      [[9102, 'mock2-badge'], [9103, 'mock3-badge']].forEach(([storageId, badgeId]) => {
+        const saved = savedByExercise[storageId];
+        const mq = saved && Array.isArray(saved.rows) && saved.rows[0] ? saved.rows[0].mockQuiz : null;
+        if (!(mq && mq.q)) return;
+        const hist = mq.history || [];
+        const correct = Object.values(mq.q).filter((q) => q.status === 'correct').length;
+        const badgeEl = document.getElementById(badgeId);
         badgeEl.textContent = hist.length
           ? `${hist.length} round${hist.length === 1 ? '' : 's'} finished`
           : `In progress: ${correct} correct`;
         badgeEl.hidden = !(hist.length || correct);
-      }
+      });
 
       const examGrid = document.getElementById('exam-grid');
       examGrid.innerHTML = BIOS.getExamRanges().map((exam) => {

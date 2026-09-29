@@ -1,4 +1,5 @@
-// BIOS102 Mock Quiz 2 progress emails to Stephen. Not called from any
+// BIOS102 mock quiz progress emails to Stephen (Mock Quiz 2 and 3; the
+// request body's `quiz` picks which, defaulting to 2). Not called from any
 // client-side code -- pg_cron calls it via net.http_post with the
 // x-webhook-secret header, same pattern as
 // send-bbpac-tracker-deadline-reminders. See
@@ -12,7 +13,11 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM = "BIOS102 Lab Companion <hello@selassiefest.com>";
 const TO = "stephen@selassiefest.com";
 const INSTRUCTOR = "harria01@uwp.edu"; // students' replies to the invite go here
-const STORAGE_ID = 9102; // mock-quiz-2.html's exercise_number sentinel
+// exercise_number sentinel each mock-quiz-N.html saves under
+const QUIZZES: Record<number, { storageId: number; name: string; topic: string }> = {
+  2: { storageId: 9102, name: "Mock Quiz 2", topic: "protists &amp; fungi" },
+  3: { storageId: 9103, name: "Mock Quiz 3", topic: "liverworts &amp; mosses" },
+};
 const TZ = "America/Chicago";
 
 type Round = { finishedAt: number; correct: number; firstTry: number; total: number; attempts: number };
@@ -41,12 +46,12 @@ function scoreLine(r: Round) {
   return `${r.correct} of ${r.total} correct (${pct}%) &middot; ${r.firstTry} on the first try &middot; ${r.attempts} attempts`;
 }
 
-async function loadStudents(admin: ReturnType<typeof createClient>): Promise<Student[]> {
+async function loadStudents(admin: ReturnType<typeof createClient>, storageId: number): Promise<Student[]> {
   const { data: roster, error: rErr } = await admin
     .from("bios102_students").select("email, display_name, major");
   if (rErr) throw rErr;
   const { data: tables, error: tErr } = await admin
-    .from("bios102_student_tables").select("email, rows, updated_at").eq("exercise_number", STORAGE_ID);
+    .from("bios102_student_tables").select("email, rows, updated_at").eq("exercise_number", storageId);
   if (tErr) throw tErr;
   const byEmail = new Map((tables ?? []).map((t) => [String(t.email).toLowerCase(), t]));
 
@@ -103,10 +108,13 @@ Deno.serve(async (req) => {
   }
   const body = await req.json().catch(() => ({}));
   const mode = body.mode ?? "readout";
+  const quiz = QUIZZES[Number(body.quiz ?? 2)];
+  if (!quiz) return new Response(JSON.stringify({ error: "unknown quiz" }), { status: 400 });
+  const Q = quiz.name;
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const students = await loadStudents(admin);
+    const students = await loadStudents(admin, quiz.storageId);
 
     if (mode === "finishes") {
       const since = Date.parse(body.since);
@@ -127,10 +135,10 @@ Deno.serve(async (req) => {
       if (!fresh.length) return new Response(JSON.stringify({ ok: true, sent: false }), { status: 200 });
 
       const subject = fresh.length === 1
-        ? `Mock Quiz 2: ${fresh[0].s.name} finished (${fresh[0].r.correct}/${fresh[0].r.total})`
-        : `Mock Quiz 2: ${fresh.length} students finished`;
+        ? `${Q}: ${fresh[0].s.name} finished (${fresh[0].r.correct}/${fresh[0].r.total})`
+        : `${Q}: ${fresh.length} students finished`;
       await send(subject, `
-        <p>Finished Mock Quiz 2:</p>
+        <p>Finished ${Q}:</p>
         ${list(fresh.map(({ s, r }) => `<strong>${escapeHtml(s.name)}</strong> &middot; ${scoreLine(r)}
           <br><span style="color:#5b6b7a;">finished ${when(r.finishedAt)}${s.history.length > 1 ? ` &middot; round ${s.history.indexOf(r) + 1}` : ""}</span>`))}
         <p style="color:#5b6b7a;font-size:0.85rem;">"Correct" counts only questions answered right; answers a student chose to reveal after 3 misses are not counted.</p>
@@ -156,10 +164,10 @@ Deno.serve(async (req) => {
             from: FROM,
             to: s.email,
             reply_to: INSTRUCTOR,
-            subject: "BIOS102 Mock Quiz 2 is ready",
+            subject: `BIOS102 ${Q} is ready`,
             html: `
               <p>Hi ${first},</p>
-              <p>Mock Quiz 2 (protists &amp; fungi) is up on the Lab Companion dashboard. Every question comes from the lab manual, and you can retry as often as you like.</p>
+              <p>${Q} (${quiz.topic}) is up on the Lab Companion dashboard. Every question comes from the lab manual, and you can retry as often as you like.</p>
               <p><a href="https://selassiefest.com/BIOS102/dashboard.html">Open the dashboard</a></p>
               <p>Professor Harris</p>`,
           }),
@@ -175,8 +183,8 @@ Deno.serve(async (req) => {
     const notStarted = students.filter((s) => !attempted(s));
 
     if (mode === "summary") {
-      await send(`Mock Quiz 2 summary: ${completed.length} of ${students.length} completed`, `
-        <p>Mock Quiz 2 status as of ${when(Date.now())}, ${students.length} students on the roster.</p>
+      await send(`${Q} summary: ${completed.length} of ${students.length} completed`, `
+        <p>${Q} status as of ${when(Date.now())}, ${students.length} students on the roster.</p>
         <h3 style="margin:18px 0 0;">Did not attempt (${notStarted.length})</h3>${list(notStarted.map((s) => `<strong>${escapeHtml(s.name)}</strong>`))}
         <h3 style="margin:0;">Attempted but did not finish (${inProgress.length})</h3>${list(inProgress.map(studentLine))}
         <h3 style="margin:0;">Completed (${completed.length})</h3>${list(completed.map(studentLine))}
@@ -186,8 +194,8 @@ Deno.serve(async (req) => {
 
     // readout
     const tried = students.filter(attempted);
-    await send(`Mock Quiz 2: ${tried.length} of ${students.length} students have attempted it`, `
-      <p>Students who have attempted Mock Quiz 2 as of ${when(Date.now())}:</p>
+    await send(`${Q}: ${tried.length} of ${students.length} students have attempted it`, `
+      <p>Students who have attempted ${Q} as of ${when(Date.now())}:</p>
       ${list(tried.map(studentLine))}
       <p>${notStarted.length} of ${students.length} students have not started yet.</p>
       ${footer}`);

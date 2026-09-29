@@ -9,6 +9,11 @@
 --                      once (tracked in the table below); polled by pg_cron
 --   mode 'summary'  -- completed / attempted-not-finished / not attempted
 -- Instructor accounts (major like 'Instructor%') are left out of every mode.
+-- Every mode takes an optional "quiz": 2 (default) or 3 in the JSON body.
+-- Mock Quiz 3 (BIOS102/mock-quiz-3.html) saves under exercise_number 9103
+-- the same way; its cron jobs just add "quiz":3 to each body below.
+-- bios102_quiz_report_sent is shared: finished_at is a millisecond
+-- timestamp, so one student's Quiz 2 and Quiz 3 finishes never collide.
 -- ─────────────────────────────────────────────────────────────────────────
 
 -- One row per finished round already emailed, so the polling job never

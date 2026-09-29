@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Mock Quiz 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+  <style>
+    .mq-wrap { max-width: 760px; }
+    .mq-hud {
+      position: sticky; top: 72px; z-index: 5;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+      padding: 12px 16px; margin: 18px 0 4px;
+      background: rgba(11, 18, 16, 0.94); border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 0.9rem; color: var(--text-dim);
+    }
+    .mq-hud strong { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .mq-meter { flex: 1 1 140px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .mq-meter span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.3s ease; }
+    .mq-hud .btn-ghost { padding: 6px 12px; font-size: 0.82rem; }
+    .mq-sub { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.8rem; color: var(--text-dim); padding: 0 4px; }
+    .mq-sub .err { color: var(--danger); }
+
+    .mq-section { margin-top: 34px; }
+    .mq-section h2 { font-weight: 400; font-size: 1.1rem; letter-spacing: 0.02em; }
+    .mq-section h2 small {
+      display: block; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 2px;
+    }
+    .mq-list { display: grid; gap: 12px; margin-top: 12px; }
+
+    .mq-q {
+      display: grid; grid-template-columns: 2.2em 1fr; gap: 4px 10px;
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 18px; transition: border-color 0.2s;
+    }
+    .mq-q.is-correct { border-color: var(--accent); }
+    .mq-q.is-wrong { border-color: var(--danger); }
+    .mq-q.is-revealed { border-color: var(--amber); }
+    .mq-num { color: var(--text-dim); font-variant-numeric: tabular-nums; padding-top: 1px; }
+    .mq-body { min-width: 0; }
+    .mq-kind { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+    .mq-prompt { margin: 2px 0 12px; line-height: 1.55; }
+    .mq-prompt .blank { display: inline-block; min-width: 5em; border-bottom: 1px solid var(--text-dim); }
+    .mq-parts { display: grid; gap: 14px; }
+    .mq-part-prompt { margin-bottom: 8px; line-height: 1.55; }
+    .mq-part-prompt b { font-weight: 500; color: var(--accent); margin-right: 4px; }
+
+    .mq-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .mq-row input[type="text"] {
+      flex: 1 1 200px; min-width: 0; padding: 10px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text);
+      font-family: inherit; font-size: 1rem;
+    }
+    .mq-row input[type="text"]:focus { outline: none; border-color: var(--accent); }
+    .mq-row input[type="text"]:disabled { opacity: 0.85; }
+    .mq-row input.part-ok { border-color: var(--accent); }
+    .mq-row input.part-no { border-color: var(--danger); }
+    .mq-btn {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .mq-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .mq-btn:focus-visible, .mq-hud .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .mq-btn:disabled { cursor: default; opacity: 0.6; }
+    .mq-btn.primary { background: var(--accent-soft); border-color: var(--accent); }
+    .mq-btn.tf { min-width: 96px; }
+    .mq-btn.tf.picked-wrong { background: rgba(200,90,90,0.22); border-color: var(--danger); opacity: 1; }
+    .mq-btn.tf.picked-right { background: rgba(63,174,116,0.22); border-color: var(--accent); opacity: 1; }
+    .mq-btn.mic.listening { border-color: var(--amber); color: var(--amber); }
+    .mq-btn.reveal { font-size: 0.82rem; padding: 6px 12px; color: var(--amber); border-color: rgba(224,169,64,0.4); margin-top: 6px; }
+    .mq-check-row { margin-top: 12px; }
+    .mq-opts { display: grid; gap: 8px; }
+    .mq-opt {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer;
+      border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.03);
+    }
+    .mq-opt input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .mq-opt.opt-yes { border-color: var(--accent); }
+    .mq-match { display: grid; gap: 10px; }
+    .mq-match-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 10px; align-items: center; }
+    .mq-match-row b { font-weight: 500; color: var(--accent); }
+    .mq-match-row select {
+      width: 100%; min-width: 0; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-family: inherit; font-size: 0.95rem;
+    }
+    .mq-match-row select:focus { outline: none; border-color: var(--accent); }
+    .mq-match-row select.part-ok { border-color: var(--accent); }
+    .mq-match-row select.part-no { border-color: var(--danger); }
+    .mq-page { color: var(--amber); white-space: nowrap; }
+    @media (max-width: 560px) { .mq-match-row { grid-template-columns: 1fr; gap: 6px; } }
+
+    .mq-fb { margin-top: 10px; font-size: 0.9rem; min-height: 1.2em; }
+    .mq-fb.ok { color: var(--accent); }
+    .mq-fb.no { color: var(--danger); }
+    .mq-fb.shown { color: var(--amber); }
+    .mq-note { margin-top: 6px; font-size: 0.86rem; color: var(--text-dim); }
+    .mq-tries { font-size: 0.78rem; color: var(--text-dim); margin-left: 4px; }
+
+    .mq-intro { display: grid; gap: 8px; }
+    .mq-intro ul { padding-left: 1.2em; color: var(--text-dim); font-size: 0.92rem; display: grid; gap: 4px; }
+
+    .mq-done {
+      margin-top: 34px; text-align: center; padding: 26px 20px;
+      background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius);
+    }
+    .mq-done h2 { font-weight: 400; }
+
+    @media (max-width: 560px) {
+      .mq-q { grid-template-columns: 1fr; padding: 14px; }
+      .mq-num { font-size: 0.8rem; }
+      .mq-btn.tf { flex: 1 1 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mq-meter span, .mq-q { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap mq-wrap">
+    <p><a href="/BIOS102/dashboard.html">&larr; All chapters</a></p>
+    <h1 style="font-weight:400;">Mock Quiz 3: Liverworts &amp; Mosses</h1>
+    <div class="mq-intro">
+      <p class="lede" style="margin:0;">Practice for Lab Quiz 3 (Exercise 4, liverworts and mosses). Every fact comes from your lab manual, and each answer shows the page it's on.</p>
+      <ul>
+        <li>Every answer is graded as soon as you submit it. Wrong answers can be retried as many times as you like.</li>
+        <li>For fill-in-the-blank, type your answer or tap <strong>Speak</strong> and say it. Close spellings count.</li>
+        <li>After 3 misses on a question you can choose to see the answer. Revealed answers don't count toward your score.</li>
+        <li>Your work is saved to your BIOS102 account, so you can come back to it on any device all semester. <strong>Start over</strong> begins a new round with shuffled questions and keeps your past scores.</li>
+      </ul>
+    </div>
+
+    <div class="mq-hud" role="status" aria-live="polite">
+      <span>Correct <strong id="hud-correct">0</strong> of <strong id="hud-total">0</strong></span>
+      <div class="mq-meter" aria-hidden="true"><span id="hud-meter"></span></div>
+      <span>Attempts <strong id="hud-attempts">0</strong></span>
+      <button type="button" class="btn-ghost" id="reset-btn">Start over</button>
+    </div>
+    <div class="mq-sub">
+      <span id="save-status">Loading your saved work&hellip;</span>
+      <span id="history-line" hidden></span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div class="mq-done" id="done-box" hidden>
+      <h2 id="done-heading">All questions answered</h2>
+      <p class="lede" id="done-text" style="margin:8px auto 14px;"></p>
+      <button type="button" class="mq-btn primary" id="done-reset">Start over with shuffled questions</button>
+    </div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      // ---------------- question bank ----------------
+      // Same subjects as the real Lab Quiz 3, deliberately different
+      // questions: nothing here asks (or answers) what the real quiz asks.
+      // Every fact comes from the lab manual; `page` is the manual's printed
+      // page number, shown to the student with each explanation.
+      // type 'tf' -> answer: true|false.
+      // type 'fill' -> parts: [{ key, prompt?, accept: [...], reject? }]; the first
+      // accept entry is the displayed answer, the rest cover synonyms and
+      // common speech-to-text mishearings. One part = one blank in `prompt`;
+      // several parts = a shared `prompt` stem plus one blank per part.
+      // type 'multi' -> options: [...], answer: [...] (select all that apply;
+      // correct only when exactly the answer set is checked).
+      // type 'match' -> items: [{ key, label, answer }], choices: [...]; one
+      // dropdown per item, graded item by item like fill-in parts.
+      // `page` is a number, or a string like '24, 25, 29' for several pages.
+      const SECTIONS = [
+        {
+          id: 'id', eyebrow: 'Exercise 4', title: 'Identify the plants',
+          questions: [
+            { id: 'phyla', type: 'fill', page: 41,
+              prompt: 'Exercise 4 studies two phyla of Kingdom Plantae. Name the phylum for each group below.',
+              parts: [
+                { key: 'a', prompt: 'The liverworts: ___',
+                  accept: ['Hepatophyta', 'hepato phyta', 'hepatophytes', 'hepatophite', 'hepatofyta', 'hepatophyte', 'hepa to fighta'],
+                  reject: ['Bryophyta', 'bryophytes', 'bryophyte'] },
+                { key: 'b', prompt: 'The mosses: ___',
+                  accept: ['Bryophyta', 'bryo phyta', 'bryophytes', 'bryophite', 'briophyta', 'bryophyte', 'brio fighta', 'bryofyta'],
+                  reject: ['Hepatophyta', 'hepatophytes', 'hepatophyte'] },
+              ],
+              note: 'Hepatophyta (liverworts) and Bryophyta (mosses) are the two phyla on the Exercise 4 title page (p. 41).' },
+            { id: 'genera', type: 'fill', page: '44, 48',
+              prompt: 'Name the genus for each plant below.',
+              parts: [
+                { key: 'a', prompt: 'The liverwort set up on the demonstration stereomicroscopes, whose thallus you sketch in cross-section: ___',
+                  accept: ['Marchantia', 'marshantia', 'mar chantia', 'marchancia', 'marchanta', 'mark shanti a', 'marchantea'] },
+                { key: 'b', prompt: 'The moss studied alongside Polytrichum, whose female rosette you view as a slide: ___',
+                  accept: ['Mnium', 'mnyum', 'nium', 'mneum', 'nee um', 'knee um'] },
+              ],
+              note: 'Marchantia is the liverwort (phylum Hepatophyta). Polytrichum and Mnium are the two moss genera (phylum Bryophyta). The manual says they are very similar, and both are seen as living specimens or on slides.' },
+          ],
+        },
+        {
+          id: 'land', eyebrow: 'Exercise 4', title: 'Moving onto land',
+          questions: [
+            { id: 'ancestors', type: 'tf', page: 43,
+              prompt: 'Land plants are considered the descendants of the aquatic green algae.',
+              answer: true, note: 'True. Land plants suggest both haploid and diploid algal ancestors.' },
+            { id: 'amphibians', type: 'fill', page: 43,
+              prompt: 'The mosses and liverworts are sometimes called the “___ of the plant world,” since they are the transition group that brought plant life from the water onto land.',
+              parts: [{ key: 'x', accept: ['amphibians', 'amphibian', 'amfibians', 'amphibeans', 'am phibians', 'amphibions'] }],
+              note: 'They made the move onto land, but water is still essential for their reproduction.' },
+            { id: 'adaptations', type: 'multi', page: 43,
+              prompt: 'Select all of the adaptations the manual names as essential to enable survival on land.',
+              options: ['Stomata', 'A waxy cuticle layer', 'A cell wall made of chitin', 'Cilia for moving and feeding'],
+              answer: ['Stomata', 'A waxy cuticle layer'],
+              note: 'On land, plants had to deal with fluctuations in moisture, temperature, and wind, unlike the constant, moist habitats of ponds, lakes, and oceans. Chitin cell walls belong to the fungi (Exercise 3), and cilia to Paramecium (Exercise 2).' },
+            { id: 'water', type: 'tf', page: 43,
+              prompt: 'Water, as rain or dew, is essential for the reproduction of these plants.',
+              answer: true, note: 'True. That is part of why they are restricted to moist habitats.' },
+            { id: 'moisture', type: 'fill', page: 43,
+              prompt: 'The distribution of mosses and liverworts is restricted to habitats where ___ is present at least some of the time, like the banks of streams, forest floors, and the bark of trees.',
+              parts: [{ key: 'x', accept: ['moisture', 'water', 'moister', 'moist', 'moistur'] }],
+              note: 'The manual’s examples: the banks of streams, forest floors, and the bark of trees.' },
+          ],
+        },
+        {
+          id: 'thallus', eyebrow: 'Exercise 4', title: 'The liverwort thallus',
+          questions: [
+            { id: 'thallus', type: 'fill', page: 44,
+              prompt: 'Since liverworts lack vascular tissues, the plant body is not a stem or leaf. It is called a ___.',
+              parts: [{ key: 'x', accept: ['thallus', 'thalus', 'thallis', 'thalli', 'tallus', 'thal us', 'thallous'] }],
+              note: 'Plural: thalli. Over 8,000 species of liverworts have been identified.' },
+            { id: 'horizontal', type: 'tf', page: 44,
+              prompt: 'Like the mosses, liverworts grow vertically, standing upright off the ground.',
+              answer: false, note: 'False. Liverworts are typically flat and grow horizontally along the ground rather than vertically like the mosses.' },
+            { id: 'cuticle', type: 'fill', page: 44,
+              prompt: 'The dorsal side of the Marchantia thallus appears shiny due to the presence of a waxy ___.',
+              parts: [{ key: 'x', accept: ['cuticle', 'cuticle layer', 'cutical', 'cuticul', 'cue tickle', 'cutickle', 'cuticles'] }],
+              note: 'Both sexual and asexual structures form on the dorsal surface of the thallus.' },
+            { id: 'layers-match', type: 'match', page: '45, 46',
+              prompt: 'Match each structure you label on the liverwort slides to its description.',
+              choices: ['An opening in the upper epidermis', 'Large cells that store starch', 'Slender threadlike cells in the capsule that help release spores', 'A small canal that allows sperm to reach the egg', 'Attaches the sporophyte to the gametophyte'],
+              items: [
+                { key: 'a', label: 'Pore', answer: 'An opening in the upper epidermis' },
+                { key: 'b', label: 'Parenchyma cells', answer: 'Large cells that store starch' },
+                { key: 'c', label: 'Elators', answer: 'Slender threadlike cells in the capsule that help release spores' },
+                { key: 'd', label: 'Neck of the archegonium', answer: 'A small canal that allows sperm to reach the egg' },
+              ],
+              note: 'Pore and parenchyma cells are labels on the thallus cross-section (A1e, p. 45). Elators are in the capsule of the sporophyte (p. 45), and the neck of the archegonium is labeled on A1g (p. 46). The leftover choice describes the foot.' },
+            { id: 'stoma', type: 'tf', page: 47,
+              prompt: 'The pore on the dorsal surface of the liverwort thallus is similar to a stoma in higher plants.',
+              answer: true, note: 'True. Review question 4 asks where the pore is located and what its function is. On the magnified dorsal surface (A1a) it is the hole in the center of each cell.' },
+          ],
+        },
+        {
+          id: 'liversex', eyebrow: 'Exercise 4', title: 'Liverwort sexual reproduction',
+          questions: [
+            { id: 'dioecious', type: 'fill', page: 45,
+              prompt: 'Marchantia is a ___ plant, since its male and female sexual reproductive organs form on separate thalli.',
+              parts: [{ key: 'x', accept: ['dioecious', 'diecious', 'dioecius', 'dieoecious', 'die ee shus', 'dyeeshus', 'dioicous', 'dioecous'] }],
+              note: 'The sexual reproductive structures form as vertical shoots with either male or female receptacles (heads) on top.' },
+            { id: 'archegonia', type: 'fill', page: 45,
+              prompt: 'The female reproductive organs, each containing an egg, are called ___.',
+              parts: [{ key: 'x',
+                accept: ['archegonia', 'archegonium', 'archegonias', 'arkegonia', 'archigonia', 'arche gonia', 'ark ee go nia', 'archegonea'],
+                reject: ['antheridia', 'antheridium'] }],
+              note: 'One archegonium, many archegonia. In the moss Mnium, the female rosette is where you find them (B1b, p. 48).' },
+            { id: 'umbrella', type: 'tf', page: 45,
+              prompt: 'The archegonial receptacles of Marchantia resemble umbrellas, with the archegonia pointing downward.',
+              answer: true, note: 'True. Each archegonium holds one egg and points down from the underside of the umbrella.' },
+            { id: 'swim', type: 'tf', page: 45,
+              prompt: 'Sperm reach the eggs by swimming with their flagella, which is why these plants need moisture.',
+              answer: true, note: 'True. Fertilization occurs in the archegonia.' },
+            { id: 'embryo', type: 'fill', page: 45,
+              prompt: 'After fertilization, the zygote develops into the ___, which eventually enlarges into a mature sporophyte.',
+              parts: [{ key: 'x', accept: ['embryo', 'embryos', 'embrio', 'em bryo', 'embreo'] }],
+              note: 'The embryo is labeled in the liverwort life cycle on p. 51.' },
+            { id: 'foot', type: 'fill', page: 45,
+              prompt: 'The ___ attaches the liverwort sporophyte to the gametophyte throughout its entire existence.',
+              parts: [{ key: 'x', accept: ['foot', 'feet', 'foote'] }],
+              note: 'On the mature sporophyte slide (A1h, p. 46), choose a sporophyte that still has its foot attached to the archegonial receptacle.' },
+            { id: 'capsule-open', type: 'tf', page: 45,
+              prompt: 'The liverwort capsule breaks open to release its spores.',
+              answer: true, note: 'True. The capsule breaks open, and the spores are released with the help of slender threadlike elators.' },
+          ],
+        },
+        {
+          id: 'moss', eyebrow: 'Exercise 4', title: 'Mosses',
+          questions: [
+            { id: 'algae-look', type: 'tf', page: 48,
+              prompt: 'The moss protonema looks a lot like filamentous green algae.',
+              answer: true, note: 'True. On the slide (B1a, 40X) you label the protonema: very early filaments that resemble filamentous green algae.' },
+            { id: 'buds', type: 'fill', page: 48,
+              prompt: 'The protonema eventually forms ___ that grow into vertical, radially symmetrical, leafy green gametophyte plants.',
+              parts: [{ key: 'x', accept: ['buds', 'bud', 'budlike structures', 'bud like structures', 'budlike structure'] }],
+              note: 'Small, budlike structures form along the length of the filamentous protonema and grow into mature “leafy” gametophytes.' },
+            { id: 'radial', type: 'tf', page: 48,
+              prompt: 'The leafy green moss gametophyte is radially symmetrical.',
+              answer: true, note: 'True. It grows vertically, unlike the flat liverwort thallus, which grows horizontally.' },
+            { id: 'tips', type: 'fill', page: 48,
+              prompt: 'Polytrichum is a dioecious moss, with the reproductive organs located at the ___ of separate male and female plants.',
+              parts: [{ key: 'x', accept: ['tips', 'tip', 'top', 'tops', 'apex', 'apices'] }],
+              note: 'Examine both male and female plant tips microscopically. The female rosette with archegonia is set up on a demonstration microscope.' },
+            { id: 'nonmotile', type: 'tf', page: 49,
+              prompt: 'The moss egg is nonmotile and is retained within the archegonium.',
+              answer: true, note: 'True. When the archegonium is mature, a canal opens leading to the egg, and the sperm swims through this canal and unites with it.' },
+            { id: 'above', type: 'fill', page: 49,
+              prompt: 'The moss sporophyte grows ___ the gametophyte and remains attached to it for its entire existence.',
+              parts: [{ key: 'x',
+                accept: ['above', 'on top of', 'on top', 'over', 'out of the top of', 'up from'],
+                reject: ['below', 'under', 'beneath', 'underneath', 'beside'] }],
+              note: 'In Polytrichum the sporophyte grows so tall above the gametophyte that you gently move the petri dish to sketch both generations.' },
+            { id: 'plant-match', type: 'match', page: 49,
+              prompt: 'When you sketch the living Polytrichum with its attached sporophyte (B1d), which plant does each part belong to?',
+              choices: ['Gametophyte plant', 'Sporophyte plant'],
+              items: [
+                { key: 'a', label: '“Leafy” blades', answer: 'Gametophyte plant' },
+                { key: 'b', label: 'Capsule', answer: 'Sporophyte plant' },
+                { key: 'c', label: 'Archegonium (where the egg is retained)', answer: 'Gametophyte plant' },
+                { key: 'd', label: 'Foot', answer: 'Sporophyte plant' },
+              ],
+              note: 'B1d labels the “leafy” blades under the gametophyte plant and the capsule under the sporophyte plant. The egg is retained in the archegonium of the female plant, and the embryo differentiates into the sporophyte parts, including the foot.' },
+            { id: 'mother-cells', type: 'tf', page: 49,
+              prompt: 'In the Polytrichum capsule, the spore mother cells are located in the center of the capsule as a long string mass of cells.',
+              answer: true, note: 'True. Label the capsule (use a bracket) and the spore mother cells on the demonstration stereomicroscope (B1e).' },
+          ],
+        },
+        {
+          id: 'cycles', eyebrow: 'Exercise 4', title: 'The life cycle diagrams',
+          questions: [
+            { id: 'sporangium', type: 'fill', page: 52,
+              prompt: 'In the moss life cycle diagram, the capsule is also labeled as the ___.',
+              parts: [{ key: 'x', accept: ['sporangium', 'sporangia', 'spore angium', 'sporangeum', 'spor angium', 'sporangiam'] }],
+              note: 'The diagram labels it “Capsule (sporangium).” The photo beside it shows a capsule with peristome.' },
+            { id: 'gametophore', type: 'fill', page: 52,
+              prompt: 'In the moss life cycle diagram, the upright leafy shoot of the female gametophyte is labeled the ___.',
+              parts: [{ key: 'x', accept: ['gametophore', 'gametophores', 'gamete o fore', 'gametofore', 'gametaphore', 'gameto phore'] }],
+              note: 'Gameto- (gamete) + -phore (bearer): the shoot that bears the reproductive organs.' },
+            { id: 'fert-site', type: 'tf', page: 52,
+              prompt: 'In the moss life cycle, fertilization takes place within the archegonium.',
+              answer: true, note: 'True. The diagram labels it “FERTILIZATION (within archegonium),” followed by the zygote, embryo, and young sporophyte.' },
+            { id: 'arch-head', type: 'tf', page: 51,
+              prompt: 'In the liverwort life cycle diagram, the archegonial head is found on the male gametophyte.',
+              answer: false, note: 'False. The archegonial head, bearing the archegonia, is on the female gametophyte.' },
+          ],
+        },
+      ];
+
+      const ALL = SECTIONS.flatMap((s) => s.questions);
+      const BY_ID = Object.fromEntries(ALL.map((q) => [q.id, q]));
+      const REVEAL_AFTER = 3;
+      const GENERA = ['Marchantia', 'Polytrichum', 'Mnium', 'Paramecium'];
+
+      // Saved to the student's account through the same save/load RPCs as
+      // the comparison tables (bios102_student_tables), under an
+      // exercise_number sentinel well outside any real exercise -- same
+      // trick as the exam master tables in app.js, so no schema change.
+      // The one row carries no `genus`, so the photo lookups in game.html
+      // and swipe.html skip it.
+      const STORAGE_ID = 9103;
+      const TABLE_NAME = 'Mock Quiz 3';
+      const LOCAL_KEY = 'bios102_mock3_' + String(session.email || 'anon').toLowerCase();
+
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      // ---------------- answer matching ----------------
+      function norm(s) {
+        return String(s == null ? '' : s)
+          .toLowerCase()
+          .normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .replace(/[^a-z0-9\s]/g, ' ')
+          .replace(/\b(the|a|an|its|it s|called|genus|stage|disease)\b/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+      function squash(s) { return norm(s).replace(/\s/g, ''); }
+
+      function lev(a, b) {
+        if (a === b) return 0;
+        if (!a.length) return b.length;
+        if (!b.length) return a.length;
+        let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+        for (let i = 1; i <= a.length; i++) {
+          const cur = [i];
+          for (let j = 1; j <= b.length; j++) {
+            cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+          }
+          prev = cur;
+        }
+        return prev[b.length];
+      }
+      // Spelling slack grows with word length: exact for short words,
+      // 1 typo up to 7 letters, 2 beyond that.
+      function slack(len) { return len <= 4 ? 0 : len <= 7 ? 1 : 2; }
+
+      // `reject` lists wrong answers close enough to pass the typo slack
+      // (macronucleus vs micronucleus); an input nearer to one of those than
+      // to every accepted answer is wrong.
+      function matchesPart(input, part) {
+        const n = squash(input);
+        if (!n) return false;
+        if (part.reject) {
+          const best = Math.min(...part.accept.map((a) => lev(n, squash(a))));
+          if (part.reject.some((r) => lev(n, squash(r)) < best)) return false;
+        }
+        return part.accept.some((a) => {
+          const c = squash(a);
+          return n === c || lev(n, c) <= slack(c.length);
+        });
+      }
+
+      // ---------------- state ----------------
+      // state = { v, updatedAt, attempts, order: {section: [ids]},
+      //           q: { id: { status: 'open'|'correct'|'revealed', attempts,
+      //                      lastWrong, tfLast, voice, parts: { key: { ok, last, wrong } } } },
+      //           recorded, history: [{ finishedAt, correct, firstTry, total, attempts }] }
+      function shuffledOrder() {
+        const order = {};
+        SECTIONS.forEach((s) => {
+          const ids = s.questions.map((q) => q.id);
+          for (let i = ids.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [ids[i], ids[j]] = [ids[j], ids[i]];
+          }
+          order[s.id] = ids;
+        });
+        return order;
+      }
+      function freshState(history) {
+        return { v: 2, updatedAt: 0, attempts: 0, order: shuffledOrder(), q: {}, recorded: false, history: history || [] };
+      }
+      // A save made before the question bank was edited still loads: removed
+      // questions drop out of the order, new ones are appended to their
+      // section, and the finished-round flag is cleared if anything is new.
+      function valid(s) {
+        if (!(s && s.v === 2 && s.order && s.q)) return false;
+        SECTIONS.forEach((sec) => {
+          const ids = sec.questions.map((q) => q.id);
+          const kept = (Array.isArray(s.order[sec.id]) ? s.order[sec.id] : []).filter((id) => ids.includes(id));
+          const added = ids.filter((id) => !kept.includes(id));
+          if (added.length) s.recorded = false;
+          s.order[sec.id] = kept.concat(added);
+        });
+        Object.keys(s.q).forEach((id) => { if (!BY_ID[id]) delete s.q[id]; });
+        return true;
+      }
+      function loadLocal() {
+        try {
+          const s = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null');
+          return valid(s) ? s : null;
+        } catch (e) { return null; }
+      }
+      let state = loadLocal() || freshState();
+
+      function qs(id) {
+        if (!state.q[id]) state.q[id] = { status: 'open', attempts: 0, parts: {} };
+        return state.q[id];
+      }
+      function ps(id, key) {
+        const s = qs(id);
+        if (!s.parts) s.parts = {};
+        if (!s.parts[key]) s.parts[key] = { ok: false, last: '', wrong: false };
+        return s.parts[key];
+      }
+
+      // ---------------- saving ----------------
+      const saveStatus = document.getElementById('save-status');
+      let serverReady = false;
+      let dirty = false;
+      let saveTimer = null;
+      let saving = false;
+
+      function setStatus(text, isErr) {
+        saveStatus.textContent = text;
+        saveStatus.className = isErr ? 'err' : '';
+      }
+      function persist() {
+        state.updatedAt = Date.now();
+        try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch (e) { /* private mode */ }
+        dirty = true;
+        if (!serverReady) return;
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(flush, 700);
+      }
+      async function flush() {
+        if (!dirty || saving || !serverReady) return;
+        saving = true;
+        dirty = false;
+        setStatus('Saving…');
+        try {
+          await window.sfSupabase.bios102SaveStudentTable({
+            sessionToken: session.sessionToken,
+            exerciseNumber: STORAGE_ID,
+            tableName: TABLE_NAME,
+            columns: [],
+            rows: [{ mockQuiz: state }],
+          });
+          setStatus('Saved to your account');
+        } catch (err) {
+          console.error('Could not save mock quiz progress', err);
+          dirty = true;
+          setStatus("Couldn't save to your account. Your work is kept on this device and will retry.", true);
+        } finally {
+          saving = false;
+          if (dirty) { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 5000); }
+        }
+      }
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+
+      async function loadServer() {
+        try {
+          const tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+          const row = tables.find((t) => t.exercise_number === STORAGE_ID && t.table_name === TABLE_NAME);
+          const remote = row && Array.isArray(row.rows) && row.rows[0] ? row.rows[0].mockQuiz : null;
+          serverReady = true;
+          if (valid(remote) && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
+            state = remote;
+            try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch (e) {}
+            render();
+            setStatus('Saved to your account');
+          } else if (state.updatedAt && (!valid(remote) || state.updatedAt > (remote.updatedAt || 0))) {
+            dirty = true;
+            flush();
+          } else {
+            setStatus('Saved to your account');
+          }
+        } catch (err) {
+          console.error('Could not load mock quiz progress', err);
+          setStatus("Couldn't reach your account. Your work is kept on this device for now.", true);
+          // keep trying so this session's work still reaches the account
+          setTimeout(loadServer, 15000);
+        }
+      }
+
+      function pageRef(q) {
+        return (/[,-]/.test(String(q.page)) ? 'pp. ' : 'p. ') + q.page;
+      }
+
+      // ---------------- rendering ----------------
+      const esc = BIOS.escapeHtml;
+      function richText(text) {
+        let html = esc(text).replace('___', '<span class="blank"></span>');
+        GENERA.forEach((g) => { html = html.replace(new RegExp('\\b' + g + '\\b', 'g'), '<em>' + g + '</em>'); });
+        return html;
+      }
+
+      function render() {
+        let n = 0;
+        document.getElementById('quiz').innerHTML = SECTIONS.map((sec) => `
+          <section class="mq-section">
+            <h2><small>${esc(sec.eyebrow)}</small>${esc(sec.title)}</h2>
+            <div class="mq-list">
+              ${state.order[sec.id].map((id) => questionHtml(BY_ID[id], ++n)).join('')}
+            </div>
+          </section>
+        `).join('');
+        ALL.forEach((q) => { wire(q); paint(q); });
+        updateHud();
+      }
+
+      function inputRow(q, part, num, withCheck) {
+        const label = q.parts.length > 1 ? ` part ${part.key}` : '';
+        return `<div class="mq-row">
+            <input type="text" id="${q.id}-${part.key}-in" autocomplete="off" autocapitalize="off" spellcheck="false"
+              aria-label="Answer for question ${num}${label}" placeholder="Type${SpeechRecognitionCtor ? ' or speak' : ''} your answer" />
+            ${SpeechRecognitionCtor ? `<button type="button" class="mq-btn mic" id="${q.id}-${part.key}-mic">Speak</button>` : ''}
+            ${withCheck ? `<button type="button" class="mq-btn primary" id="${q.id}-go">Check</button>` : ''}
+          </div>`;
+      }
+
+      function questionHtml(q, num) {
+        let controls;
+        if (q.type === 'tf') {
+          controls = `<div class="mq-row">
+              <button type="button" class="mq-btn tf" id="${q.id}-t">True</button>
+              <button type="button" class="mq-btn tf" id="${q.id}-f">False</button>
+            </div>`;
+        } else if (q.type === 'match') {
+          controls = `<div class="mq-match">
+              ${q.items.map((it) => `<label class="mq-match-row" for="${q.id}-${it.key}-sel">
+                <span><b>(${it.key})</b> ${richText(it.label)}</span>
+                <select id="${q.id}-${it.key}-sel">
+                  <option value="">Choose&hellip;</option>
+                  ${q.choices.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+                </select>
+              </label>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
+        } else if (q.type === 'multi') {
+          controls = `<div class="mq-opts">
+              ${q.options.map((o, i) => `<label class="mq-opt" id="${q.id}-l${i}">
+                <input type="checkbox" id="${q.id}-o${i}" /> ${richText(o)}
+              </label>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
+        } else if (q.parts.length === 1) {
+          controls = inputRow(q, q.parts[0], num, true);
+        } else {
+          controls = `<div class="mq-parts">
+              ${q.parts.map((p) => `<div>
+                <p class="mq-part-prompt"><b>(${p.key})</b>${richText(p.prompt)}</p>
+                ${inputRow(q, p, num, false)}
+              </div>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
+        }
+        const kind = q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.type === 'match' ? `Match · ${q.items.length} items` : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
+        return `
+          <article class="mq-q" id="${q.id}-card">
+            <div class="mq-num">${num}.</div>
+            <div class="mq-body">
+              <div class="mq-kind">${kind}<span class="mq-tries" id="${q.id}-tries"></span></div>
+              <p class="mq-prompt">${richText(q.prompt)}</p>
+              ${controls}
+              <p class="mq-fb" id="${q.id}-fb" aria-live="polite"></p>
+              <p class="mq-note" id="${q.id}-note" hidden></p>
+              <button type="button" class="mq-btn reveal" id="${q.id}-reveal" hidden>Show answer</button>
+            </div>
+          </article>`;
+      }
+
+      function readInputs(q) {
+        const out = {};
+        q.parts.forEach((p) => { out[p.key] = document.getElementById(`${q.id}-${p.key}-in`).value; });
+        return out;
+      }
+
+      function wire(q) {
+        if (q.type === 'tf') {
+          document.getElementById(`${q.id}-t`).addEventListener('click', () => submitTf(q, true));
+          document.getElementById(`${q.id}-f`).addEventListener('click', () => submitTf(q, false));
+        } else if (q.type === 'match') {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitMatch(q));
+        } else if (q.type === 'multi') {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitMulti(q));
+        } else {
+          document.getElementById(`${q.id}-go`).addEventListener('click', () => submitFill(q, readInputs(q), false));
+          q.parts.forEach((p) => {
+            const input = document.getElementById(`${q.id}-${p.key}-in`);
+            input.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') { e.preventDefault(); submitFill(q, readInputs(q), false); }
+            });
+            const mic = document.getElementById(`${q.id}-${p.key}-mic`);
+            if (mic) mic.addEventListener('click', () => listen(q, p, mic, input));
+          });
+        }
+        document.getElementById(`${q.id}-reveal`).addEventListener('click', () => reveal(q));
+      }
+
+      // ---------------- speech ----------------
+      let activeRecognizer = null;
+      function listen(q, part, mic, input) {
+        if (activeRecognizer) { try { activeRecognizer.abort(); } catch (e) {} }
+        const rec = new SpeechRecognitionCtor();
+        activeRecognizer = rec;
+        rec.lang = 'en-US';
+        rec.interimResults = false;
+        rec.maxAlternatives = 5;
+        const fb = document.getElementById(`${q.id}-fb`);
+        mic.textContent = 'Listening…';
+        mic.classList.add('listening');
+        mic.disabled = true;
+        const reset = () => {
+          mic.textContent = 'Speak';
+          mic.classList.remove('listening');
+          mic.disabled = qs(q.id).status !== 'open' || ps(q.id, part.key).ok;
+          if (activeRecognizer === rec) activeRecognizer = null;
+        };
+        rec.onresult = (e) => {
+          const alts = Array.from(e.results[0]).map((r) => r.transcript.trim()).filter(Boolean);
+          if (!alts.length) return;
+          // Grade on whichever of the recognizer's guesses matches, so a
+          // right answer isn't marked wrong just because the top guess was
+          // a near-homophone. The student sees what was heard.
+          input.value = alts.find((a) => matchesPart(a, part)) || alts[0];
+          const values = readInputs(q);
+          // only grade the part just spoken; other blanks may still be empty
+          submitFill(q, { [part.key]: values[part.key] }, true);
+        };
+        rec.onerror = (e) => {
+          reset();
+          if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+            fb.className = 'mq-fb no';
+            fb.textContent = 'Microphone access is blocked. Allow it in your browser settings, or type your answer.';
+          } else if (e.error === 'no-speech') {
+            fb.className = 'mq-fb';
+            fb.textContent = "Didn't catch that. Tap Speak and try again.";
+          }
+        };
+        rec.onend = reset;
+        try { rec.start(); } catch (e) { reset(); }
+      }
+
+      // ---------------- grading ----------------
+      function countAttempt(s) {
+        s.attempts++;
+        state.attempts = (state.attempts || 0) + 1;
+      }
+
+      function submitTf(q, value) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        countAttempt(s);
+        s.tfLast = value;
+        s.lastWrong = value !== q.answer;
+        if (!s.lastWrong) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function submitMatch(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const toGrade = q.items.filter((it) => !ps(q.id, it.key).ok &&
+          document.getElementById(`${q.id}-${it.key}-sel`).value);
+        if (!toGrade.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = 'Choose at least one match first.';
+          return;
+        }
+        countAttempt(s);
+        toGrade.forEach((it) => {
+          const st = ps(q.id, it.key);
+          st.last = document.getElementById(`${q.id}-${it.key}-sel`).value;
+          st.ok = st.last === it.answer;
+          st.wrong = !st.ok;
+        });
+        s.lastWrong = toGrade.some((it) => !ps(q.id, it.key).ok);
+        if (q.items.every((it) => ps(q.id, it.key).ok)) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function submitMulti(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const picked = q.options.filter((o, i) => document.getElementById(`${q.id}-o${i}`).checked);
+        if (!picked.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = 'Check at least one box first.';
+          return;
+        }
+        countAttempt(s);
+        s.multiLast = picked;
+        s.lastWrong = !(picked.length === q.answer.length && picked.every((o) => q.answer.includes(o)));
+        if (!s.lastWrong) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function submitFill(q, values, fromVoice) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        const toGrade = q.parts.filter((p) => !ps(q.id, p.key).ok && String(values[p.key] || '').trim());
+        if (!toGrade.length) {
+          const fb = document.getElementById(`${q.id}-fb`);
+          fb.className = 'mq-fb';
+          fb.textContent = q.parts.length > 1 ? 'Fill in at least one blank first.' : 'Type or speak an answer first.';
+          return;
+        }
+        countAttempt(s);
+        s.voice = !!fromVoice;
+        toGrade.forEach((p) => {
+          const st = ps(q.id, p.key);
+          st.last = String(values[p.key]).trim();
+          st.ok = matchesPart(values[p.key], p);
+          st.wrong = !st.ok;
+        });
+        const allOk = q.parts.every((p) => ps(q.id, p.key).ok);
+        s.lastWrong = toGrade.some((p) => !ps(q.id, p.key).ok);
+        if (allOk) s.status = 'correct';
+        afterChange(q);
+      }
+
+      function reveal(q) {
+        const s = qs(q.id);
+        if (s.status !== 'open') return;
+        s.status = 'revealed';
+        afterChange(q);
+      }
+
+      function afterChange(q) {
+        paint(q);
+        updateHud();
+        persist();
+      }
+
+      function paint(q) {
+        const s = qs(q.id);
+        const card = document.getElementById(`${q.id}-card`);
+        const fb = document.getElementById(`${q.id}-fb`);
+        const note = document.getElementById(`${q.id}-note`);
+        const revealBtn = document.getElementById(`${q.id}-reveal`);
+        const done = s.status !== 'open';
+
+        card.classList.toggle('is-correct', s.status === 'correct');
+        card.classList.toggle('is-revealed', s.status === 'revealed');
+        card.classList.toggle('is-wrong', s.status === 'open' && !!s.lastWrong);
+        document.getElementById(`${q.id}-tries`).textContent =
+          s.attempts ? ` · ${s.attempts} ${s.attempts === 1 ? 'try' : 'tries'}` : '';
+
+        if (q.type === 'tf') {
+          [['t', true], ['f', false]].forEach(([k, val]) => {
+            const b = document.getElementById(`${q.id}-${k}`);
+            b.disabled = done;
+            b.classList.toggle('picked-right', s.status === 'correct' && val === q.answer);
+            b.classList.toggle('picked-wrong', s.status === 'open' && !!s.lastWrong && s.tfLast === val);
+          });
+        } else if (q.type === 'match') {
+          q.items.forEach((it) => {
+            const st = ps(q.id, it.key);
+            const sel = document.getElementById(`${q.id}-${it.key}-sel`);
+            const locked = done || st.ok;
+            if (s.status === 'revealed' && !st.ok) sel.value = it.answer;
+            else if (st.last && !sel.value) sel.value = st.last;
+            sel.disabled = locked;
+            sel.classList.toggle('part-ok', st.ok);
+            sel.classList.toggle('part-no', !locked && !!st.wrong);
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
+        } else if (q.type === 'multi') {
+          q.options.forEach((o, i) => {
+            const box = document.getElementById(`${q.id}-o${i}`);
+            // restore saved picks once per render; after that the boxes are the student's
+            if (s.status === 'revealed') box.checked = q.answer.includes(o);
+            else if (s.multiLast && !box.dataset.restored) box.checked = s.multiLast.includes(o);
+            box.dataset.restored = '1';
+            box.disabled = done;
+            document.getElementById(`${q.id}-l${i}`).classList.toggle('opt-yes', done && q.answer.includes(o));
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
+        } else {
+          q.parts.forEach((p) => {
+            const st = ps(q.id, p.key);
+            const input = document.getElementById(`${q.id}-${p.key}-in`);
+            const mic = document.getElementById(`${q.id}-${p.key}-mic`);
+            const locked = done || st.ok;
+            if (s.status === 'revealed' && !st.ok) input.value = p.accept[0];
+            else if (st.last && !input.value) input.value = st.last;
+            input.disabled = locked;
+            input.classList.toggle('part-ok', st.ok);
+            input.classList.toggle('part-no', !locked && !!st.wrong);
+            if (mic) mic.disabled = locked;
+          });
+          document.getElementById(`${q.id}-go`).disabled = done;
+        }
+
+        fb.innerHTML = feedbackHtml(q, s) + (s.status === 'open' && s.lastWrong
+          ? ` <span class="mq-page">Look it up: lab manual ${pageRef(q)}.</span>` : '');
+        fb.className = 'mq-fb' + (s.status === 'correct' ? ' ok' : s.status === 'revealed' ? ' shown' : s.lastWrong ? ' no' : '');
+        note.hidden = !done;
+        note.textContent = done ? `${q.note} (Lab manual ${pageRef(q)})` : '';
+        revealBtn.hidden = done || s.attempts < REVEAL_AFTER;
+      }
+
+      function feedbackHtml(q, s) {
+        if (q.type === 'tf') {
+          if (s.status === 'correct') return 'Correct.';
+          if (s.status === 'revealed') return `Answer: <strong>${q.answer ? 'True' : 'False'}</strong>. Not counted in your score.`;
+          return s.lastWrong ? 'Not quite. Try again.' : '';
+        }
+        if (q.type === 'match') {
+          if (s.status === 'correct') return 'All matches correct.';
+          if (s.status === 'revealed') return 'Correct matches are filled in above. Not counted in your score.';
+          const right = q.items.filter((it) => ps(q.id, it.key).ok).map((it) => it.key);
+          const wrong = q.items.filter((it) => ps(q.id, it.key).wrong).map((it) => it.key);
+          return [right.length ? `(${right.join(', ')}) correct.` : '',
+                  wrong.length ? `(${wrong.join(', ')}) not quite, try again.` : ''].filter(Boolean).join(' ');
+        }
+        if (q.type === 'multi') {
+          if (s.status === 'correct') return 'Correct.';
+          if (s.status === 'revealed') return `Answer: <strong>${q.answer.map(esc).join(', ')}</strong>. Not counted in your score.`;
+          return s.lastWrong ? 'Not quite. One or more boxes is wrong or missing. Try again.' : '';
+        }
+        const heard = (p) => {
+          const st = ps(q.id, p.key);
+          return s.voice && st.last ? ` (heard “${esc(st.last)}”)` : '';
+        };
+        const spelled = (p) => {
+          const st = ps(q.id, p.key);
+          return st.ok && squash(st.last) !== squash(p.accept[0]) ? ` Spelled: <strong>${esc(p.accept[0])}</strong>.` : '';
+        };
+        if (s.status === 'revealed') {
+          const ans = q.parts.map((p) => (q.parts.length > 1 ? `(${p.key}) ` : '') + `<strong>${esc(p.accept[0])}</strong>`).join(', ');
+          return `Answer: ${ans}. Not counted in your score.`;
+        }
+        if (q.parts.length === 1) {
+          const p = q.parts[0];
+          if (s.status === 'correct') return `Correct${heard(p)}.${spelled(p)}`;
+          return s.lastWrong ? `Not quite${heard(p)}. Try again.` : '';
+        }
+        if (s.status === 'correct') return (q.parts.length === 2 ? 'Both parts' : 'All parts') + ' correct.' + q.parts.map(spelled).join('');
+        return q.parts.map((p) => {
+          const st = ps(q.id, p.key);
+          if (st.ok) return `(${p.key}) correct.`;
+          if (st.wrong) return `(${p.key}) not quite${heard(p)}, try again.`;
+          return '';
+        }).filter(Boolean).join(' ');
+      }
+
+      function updateHud() {
+        const total = ALL.length;
+        const correct = ALL.filter((q) => qs(q.id).status === 'correct').length;
+        const finished = ALL.filter((q) => qs(q.id).status !== 'open').length;
+        const firstTry = ALL.filter((q) => qs(q.id).status === 'correct' && qs(q.id).attempts === 1).length;
+        document.getElementById('hud-correct').textContent = correct;
+        document.getElementById('hud-total').textContent = total;
+        document.getElementById('hud-attempts').textContent = state.attempts || 0;
+        document.getElementById('hud-meter').style.width = (correct / total * 100) + '%';
+
+        if (finished === total && !state.recorded) {
+          state.recorded = true;
+          state.history = (state.history || []).concat({ finishedAt: Date.now(), correct, firstTry, total, attempts: state.attempts || 0 });
+        }
+
+        const box = document.getElementById('done-box');
+        box.hidden = finished < total;
+        if (finished === total) {
+          const revealed = total - correct;
+          document.getElementById('done-heading').textContent =
+            correct === total ? `All ${total} correct` : `${correct} of ${total} correct`;
+          document.getElementById('done-text').textContent =
+            `${firstTry} right on the first try` +
+            (revealed ? `, ${revealed} revealed. Look up the revealed ones in your manual, then start over.` : '. Start over to check it sticks.');
+        }
+
+        const hist = state.history || [];
+        const line = document.getElementById('history-line');
+        line.hidden = !hist.length;
+        if (hist.length) {
+          const best = hist.reduce((b, h) => (h.firstTry > b.firstTry ? h : b), hist[0]);
+          line.textContent = `Rounds finished: ${hist.length} · best first-try score ${best.firstTry} of ${best.total}`;
+        }
+      }
+
+      function resetAll() {
+        state = freshState(state.history);
+        render();
+        persist();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      document.getElementById('reset-btn').addEventListener('click', resetAll);
+      document.getElementById('done-reset').addEventListener('click', resetAll);
+
+      // keep the score bar just under the sticky topbar, whose height
+      // changes when it wraps on phones
+      const hud = document.querySelector('.mq-hud');
+      const topbar = document.getElementById('topbar');
+      const placeHud = () => { hud.style.top = (topbar.offsetHeight + 8) + 'px'; };
+      window.addEventListener('resize', placeHud);
+
+      render();
+      placeHud();
+      loadServer();
+    })();
+  </script>
+</body>
+</html>
