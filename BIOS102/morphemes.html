@@ -82,6 +82,11 @@
 
   <div class="wrap">
     <h2>Morpheme Breakdown</h2>
+    <nav class="ex-nav" aria-label="Morphemes by exercise">
+      <a href="/BIOS102/morphemes.html#ex2" class="current" aria-current="page">Exercise 2 &middot; Protists</a>
+      <a href="/BIOS102/morphemes.html#ex3" class="current" aria-current="page">Exercise 3 &middot; Fungi</a>
+      <a href="/BIOS102/morphemes-ex4.html">Exercise 4 &middot; Liverworts &amp; Mosses</a>
+    </nav>
     <p class="lede">Exercise 2 (The Protists) &amp; Exercise 3 (Fungi) &mdash; only the terms that actually break down into meaningful prefixes, roots, and suffixes. Names like <em>Peziza</em> or <em>Agaricus</em> aren't here because they don't decompose into recognizable word parts.</p>
     <p class="page-note">These are simplified, classroom-level breakdowns meant to help you remember and guess unfamiliar terms &mdash; not strict linguistic etymology.</p>
 
@@ -91,7 +96,7 @@
       <span class="legend-item"><span class="legend-swatch" style="background:#6fb8d6"></span> Suffix</span>
     </div>
 
-    <p class="lede" style="margin-bottom:8px;"><a href="/BIOS102/pronounce.html">&#128266; Pronunciation Guide</a> &mdash; hear these same terms spoken aloud. &nbsp;&middot;&nbsp; <a href="/BIOS102/morphemes-ex4.html">Exercise 4 morphemes (liverworts &amp; mosses) &rarr;</a></p>
+    <p class="lede" style="margin-bottom:8px;"><a href="/BIOS102/pronounce.html">&#128266; Pronunciation Guide</a> &mdash; hear these same terms spoken aloud.</p>
 
     <div class="callout-banner">
       <span class="eyebrow">Recurring root &mdash; worth learning now</span>
@@ -123,7 +128,7 @@
 (function(){
   // type: "prefix" | "root" | "suffix" -- simplified for teaching, not strict linguistics.
   const DATA = [
-    { cat: "Core Vocabulary (Exercise 2)",
+    { cat: "Core Vocabulary (Exercise 2)", id: "ex2",
       note: "The sym-/bio- family: Symbiosis, Symbiotic, and Endosymbiosis all share sym- (together) + bi (life) — only the ending changes what kind of word it is, and endo- adds \"within.\" (Symbiosis itself is actually said in Exercise 3's lichen section, not Exercise 2 — grouped here so you see the whole family together.)",
       terms: [
       ["Symbiosis", [["sym","prefix","together, with"],["bi","root","life"],["osis","suffix","condition, process"]]],
@@ -161,7 +166,7 @@
       ["Paramecium", [["para","prefix","beside, alongside"],["mec","root","length"],["ium","suffix","(noun ending)"]]],
       ["Euglena", [["eu","prefix","true, good"],["glena","root","eyeball, socket"]]],
     ]},
-    { cat: "Fungi (Exercise 3)", terms: [
+    { cat: "Fungi (Exercise 3)", id: "ex3", terms: [
       ["Mycelium", [["myc","root","fungus"],["elium","suffix","a growth, mass of"]]],
       ["Ascomycota", [["asco","root","sac, bag"],["myco","root","fungus"],["ta","suffix","group of"]]],
       ["Basidiomycota", [["basidio","root","little base, pedestal"],["myco","root","fungus"],["ta","suffix","group of"]]],
@@ -183,6 +188,7 @@
   DATA.forEach(group => {
     const section = document.createElement("section");
     section.className = "term-section";
+    if (group.id) section.id = group.id;
 
     const head = document.createElement("div");
     head.className = "term-section-head";
