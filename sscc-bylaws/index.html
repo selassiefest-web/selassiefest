@@ -259,6 +259,28 @@
       .sec-rows td:last-child { margin-left: auto; padding-right: 0; }
     }
 
+    /* ---------- gap analysis ---------- */
+    .gapm-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); margin-bottom: 18px; }
+    .gapm { border-collapse: separate; border-spacing: 0; font-size: 0.78rem; }
+    .gapm th, .gapm td { padding: 0; border-bottom: 1px solid var(--line); }
+    .gapm thead th { background: var(--panel); height: 128px; vertical-align: bottom; }
+    .gapm thead th div { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; padding: 6px 0; margin: 0 auto; font-weight: 600; color: var(--ink-2); }
+    .gapm thead th.grp-subject div { color: var(--gold-2); }
+    .gapm .dim { position: sticky; left: 0; background: var(--panel); text-align: left; padding: 4px 12px; white-space: nowrap; font-weight: 500; z-index: 2; border-right: 1px solid var(--line); }
+    .gapm thead .dim { vertical-align: bottom; padding-bottom: 8px; }
+    .gapm .dim a { color: var(--ink); text-decoration: none; } .gapm .dim a:hover { text-decoration: underline; }
+    .gapm td.c { width: 26px; min-width: 26px; height: 24px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .gapm td.sep, .gapm th.sep { border-left: 2px solid var(--line-2); }
+    .s0 { color: var(--ink-3); } .s1 { background: var(--del-bg); color: var(--del); }
+    .s2 { background: var(--gold-soft); color: var(--gold-2); } .s3 { background: var(--ins-bg); color: var(--ins); }
+    .key i.s1 { background: var(--del-bg); } .key i.s2 { background: var(--gold); } .key i.s3 { background: var(--ins); }
+    .b-missing { background: var(--del-bg); color: var(--del); } .b-weak { background: var(--warn-bg); color: var(--warn); }
+    .b-adequate { background: var(--gold-soft); color: var(--gold-2); } .b-strong { background: var(--ins-bg); color: var(--ins); }
+    .gap-card .card-body h4 { margin: 4px 0 2px; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); }
+    .gap-card .bp { border-left: 3px solid var(--ins); padding: 2px 0 2px 12px; margin: 6px 0; font-size: 0.9rem; }
+    .gap-card .bp blockquote { margin: 4px 0 0; font-family: var(--serif); color: var(--ink-2); }
+    .gap-card ul { margin: 2px 0; padding-left: 20px; font-size: 0.9rem; }
+
     /* ---------- meetings ---------- */
     .mtgs { display: grid; gap: 12px; }
     .mtg { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 18px; scroll-margin-top: 80px; }
@@ -370,6 +392,7 @@
       <button class="tab" role="tab" data-view="progress">Progress</button>
       <button class="tab" role="tab" data-view="meetings">Meetings</button>
       <button class="tab" role="tab" data-view="adopted">2022 bylaws</button>
+      <button class="tab" role="tab" data-view="gap">Gap analysis</button>
       <button class="tab" role="tab" data-view="versions">Versions</button>
       <button class="tab" role="tab" data-view="compare">Compare</button>
       <button class="tab" role="tab" data-view="packet">Adoption packet</button>
@@ -398,6 +421,8 @@
       member: null,       // { me, proposals, members } when signed in
       review: null,       // { alerts_enabled, member_count, sections: [{ key, status, note, readers, read_by_me }] }
       meetings: [],       // public meeting schedule
+      gap: null,          // { docs, dims } gap analysis, loaded on first view
+      gapFilter: 'all',
       progressOnlyMine: false,
       token: null,
       view: 'draft',
@@ -686,7 +711,7 @@
       if (!S.pub) return;
       ({ draft: viewDraft, proposals: viewProposals, versions: viewVersions, compare: viewCompare,
          packet: viewPacket, members: viewMembers, about: viewAbout, adopted: viewAdopted,
-         progress: viewProgress, meetings: viewMeetings })[S.view](focus);
+         progress: viewProgress, meetings: viewMeetings, gap: viewGap })[S.view](focus);
       if (S.member && !/\s/.test(S.member.me.display_name.trim())) {
         const box = document.createElement('form');
         box.className = 'notice no-print'; box.id = 'name-prompt';
@@ -1299,6 +1324,68 @@
         e.preventDefault(); S.filter = { status: 'open', article: '', q: '', section: a.dataset.secFilter }; go('proposals');
       }));
       $$('[data-go-mtg]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); go('meetings', a.dataset.goMtg); }));
+    }
+
+    // ---------------- gap analysis ----------------
+    const VERDICT = { missing: 'Missing', weak: 'Weak', adequate: 'Adequate', strong: 'Strong' };
+    function viewGap(focus) {
+      if (!signedIn()) {
+        main.innerHTML = `<div class="view-head"><div><h2>Gap analysis</h2><p>How the draft compares, topic by topic, with the CPD rules and other park councils' bylaws. Visible to subcommittee members.</p></div></div>
+          <div class="empty">Sign in to see the gap analysis.<br /><br /><button class="btn primary" id="gp-signin">Subcommittee sign in</button></div>`;
+        $('#gp-signin').onclick = openSignIn; return;
+      }
+      if (!S.gap) {
+        main.innerHTML = '<p class="muted">Loading the gap analysis&hellip;</p>';
+        rpc('sscc_bylaws_gap_state', { p_token: S.token }).then((g) => { S.gap = g; if (S.view === 'gap') render(focus); }).catch((e) => toast(errMsg(e), true));
+        return;
+      }
+      const { docs, dims } = S.gap;
+      if (!dims.length) { main.innerHTML = '<div class="view-head"><div><h2>Gap analysis</h2></div></div><div class="empty">The gap analysis is being prepared.</div>'; return; }
+      const byKind = (k) => docs.filter((d) => d.kind === k);
+      const docName = (id) => (docs.find((d) => d.id === id) || {}).short || id;
+      const counts = Object.fromEntries(Object.keys(VERDICT).map((v) => [v, dims.filter((d) => d.verdict === v).length]));
+      const f = S.gapFilter;
+      const shown = dims.filter((d) => f === 'all' || d.verdict === f);
+      const cols = ['subject', 'cpd', 'chicago', 'external'].flatMap((k) => byKind(k).map((d, i) => ({ ...d, first: i === 0 })));
+      const propFor = (id) => S.member.proposals.find((p) => p.id === id);
+      const secLink = (key) => { const s = secByKey(draft(), key); return s ? `<a href="#draft/sec-${esc(key)}">${esc(s.article_num)}.${s.section_num} ${esc(s.title)}</a>` : esc(key || ''); };
+      main.innerHTML = `
+        <div class="view-head"><div><h2>Gap analysis (toward v1.1)</h2>
+          <p>Every governance topic, read across the draft, the 2022 bylaws in force, the CPD rules, and ${byKind('chicago').length} other Chicago park councils' bylaws${byKind('external').length ? `, plus ${byKind('external').length} park groups outside Chicago` : ''}. For each topic: where the draft stands, the strongest provision anywhere, what others get wrong, and a recommended provision. Each recommendation is filed as a proposal, so the committee discusses and decides it like any other; the ones it accepts become v1.1.</p></div></div>
+        <div class="stat-row">
+          ${Object.keys(VERDICT).map((v) => `<div class="stat"><div class="v">${counts[v]}</div><div class="l">topics where the draft is ${VERDICT[v].toLowerCase()}</div></div>`).join('')}
+        </div>
+        <div class="notice">The study so far covers ${byKind('chicago').length} of the roughly 185 Chicago park advisory councils. More councils' bylaws will be added as they're collected, and the analysis rerun.</div>
+        <div class="toolbar" style="justify-content:space-between;"><div class="chips" role="group" aria-label="Filter by verdict">
+          <button class="chip" aria-pressed="${f === 'all'}" data-gf="all">All ${dims.length}</button>
+          ${Object.keys(VERDICT).map((v) => `<button class="chip" aria-pressed="${f === v}" data-gf="${v}">${VERDICT[v]} ${counts[v]}</button>`).join('')}</div>
+          <span class="legend">Strength <span class="key"><i class="s1"></i>1 vague or below CPD</span><span class="key"><i class="s2"></i>2 clear, meets CPD</span><span class="key"><i class="s3"></i>3 strong, worth borrowing</span></span></div>
+        <div class="gapm-wrap"><table class="gapm">
+          <thead><tr><th class="dim">Topic</th>${cols.map((d) => `<th class="${d.first ? 'sep' : ''} grp-${d.kind}" title="${esc(d.name)}"><div>${esc(d.short)}</div></th>`).join('')}</tr></thead>
+          <tbody>${shown.map((g) => `<tr><td class="dim"><a href="#gap/gap-${esc(g.id)}" data-gjump="gap-${esc(g.id)}">${esc(g.label)}</a></td>
+            ${cols.map((d) => { const v = g.scores[d.id]; return `<td class="c s${v || 0} ${d.first ? 'sep' : ''}" title="${esc(d.short)}: ${v == null ? 'n/a' : v}">${v ? v : '&middot;'}</td>`; }).join('')}</tr>`).join('')}</tbody>
+        </table></div>
+        <div class="cards">${shown.map((g) => {
+          const x = g.detail; const r = x.recommendation || {}; const p = g.proposal_id ? propFor(g.proposal_id) : null;
+          return `<article class="card gap-card" id="gap-${esc(g.id)}">
+            <div class="card-head"><div class="card-top"><span class="badge b-${g.verdict}">${VERDICT[g.verdict]}</span>
+              ${x.cpd === 'below' || x.cpd === 'conflict' ? `<span class="badge b-rejected">${x.cpd === 'below' ? 'Below CPD minimum' : 'Conflicts with CPD'}</span>` : ''}
+              <span class="meta">${esc(x.peer_coverage || '')}</span></div>
+              <div class="card-summary">${esc(g.label)}</div></div>
+            <div class="card-body">
+              <div><h4>The draft now</h4>${esc(x.draft_summary)}${x.change_from_2022 ? `<div class="muted" style="font-size:0.86rem;margin-top:4px;">Change from 2022: ${esc(x.change_from_2022)}</div>` : ''}</div>
+              ${x.cpd_note ? `<div class="notice warn" style="margin:0;"><b>CPD:</b> ${esc(x.cpd_note)}</div>` : ''}
+              ${x.peer_pattern ? `<div><h4>How other councils do it</h4>${esc(x.peer_pattern)}</div>` : ''}
+              ${(x.best_practices || []).length ? `<div><h4>Strongest provisions</h4>${x.best_practices.map((b) => `<div class="bp"><b>${esc(docName(b.doc))}</b> <span class="muted">${esc(b.cite)}</span>: ${esc(b.what)}${b.quote ? `<blockquote>&ldquo;${esc(b.quote)}&rdquo;</blockquote>` : ''}</div>`).join('')}</div>` : ''}
+              ${(x.common_weaknesses || []).length ? `<div><h4>Weaknesses to avoid</h4><ul>${x.common_weaknesses.map((w) => `<li>${esc(w)}</li>`).join('')}</ul></div>` : ''}
+              <div><h4>Recommendation</h4>${r.action === 'none' || !r.action ? 'Keep the draft as it is.' :
+                `${esc(r.summary)} <span class="muted">(${r.action === 'add' ? 'new section after' : r.action === 'amend' ? 'amends' : 'issue on'} ${secLink(r.section_key)})</span>
+                 ${p ? `<div style="margin-top:6px;"><a class="btn small" href="#proposals/p-${p.id}" data-gprop="${p.id}">Proposal #${p.id} &middot; ${esc(p.status)}</a></div>` : ''}`}</div>
+              ${(x.questions || []).length ? `<div><h4>For the committee to decide</h4><ul>${x.questions.map((q) => `<li>${esc(q)}</li>`).join('')}</ul></div>` : ''}
+            </div></article>`; }).join('')}</div>`;
+      $$('[data-gf]').forEach((c) => c.addEventListener('click', () => { S.gapFilter = c.dataset.gf; render(); }));
+      $$('[data-gjump]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); const el = document.getElementById(a.dataset.gjump); if (el) { el.scrollIntoView({ behavior: 'smooth' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700); } }));
+      $$('[data-gprop]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); S.filter = { status: 'all', article: '', q: '' }; go('proposals', 'p-' + a.dataset.gprop); }));
     }
 
     // ---------------- meetings ----------------
