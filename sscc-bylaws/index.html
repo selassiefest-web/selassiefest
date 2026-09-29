@@ -201,6 +201,25 @@
     .diff-sec { border-top: 1px solid var(--line); padding: 14px 0; }
     .diff-sec:first-child { border-top: none; }
 
+    /* ---------- 2022 bylaws ---------- */
+    .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin-top: 6px; }
+    .side .col-label { font-family: var(--sans); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+    .side .old { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+    .side .old .body { font-size: 0.95rem; color: var(--ink-2); }
+    .side .old + .old { margin-top: 8px; }
+    .new-mark { font-family: var(--sans); font-size: 0.84rem; color: var(--ins); background: var(--ins-bg); border-radius: 6px; padding: 8px 12px; }
+    .prov { border-top: 1px solid var(--line); padding: 16px 0; }
+    .prov:first-child { border-top: none; padding-top: 0; }
+    .prov .sec-title .num { color: var(--ink-3); }
+    .goes { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 0.8rem; color: var(--ink-3); }
+    .goes a { display: inline-block; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 10px; text-decoration: none; color: var(--ink-2); background: var(--panel); }
+    .goes a:hover { border-color: var(--gold); }
+    .xwalk { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .xwalk th, .xwalk td { text-align: left; vertical-align: top; padding: 7px 10px; border-top: 1px solid var(--line); }
+    .xwalk th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); font-weight: 600; }
+    .rule-box { border: 1px solid var(--line-2); border-left: 4px solid var(--black); background: var(--panel); border-radius: 6px; padding: 12px 16px; margin-bottom: 18px; font-size: 0.9rem; }
+    @media (max-width: 760px) { .side { grid-template-columns: 1fr; } }
+
     /* ---------- members / about ---------- */
     .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 24px; align-items: start; }
     .member-list { list-style: none; margin: 0; padding: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
@@ -288,6 +307,7 @@
     <div class="tabs-inner" role="tablist">
       <button class="tab" role="tab" data-view="draft">Working draft</button>
       <button class="tab" role="tab" data-view="proposals">Proposals<span class="count" id="count-open" hidden></span></button>
+      <button class="tab" role="tab" data-view="adopted">2022 bylaws</button>
       <button class="tab" role="tab" data-view="versions">Versions</button>
       <button class="tab" role="tab" data-view="compare">Compare</button>
       <button class="tab" role="tab" data-view="packet">Adoption packet</button>
@@ -298,7 +318,7 @@
 
   <main id="main" tabindex="-1"><p class="muted">Loading the bylaws&hellip;</p></main>
 
-  <footer>A working space for the Bylaws Subcommittee. Nothing here is adopted until the voting membership adopts it under Article X of the bylaws.</footer>
+  <footer>A working space for the Bylaws Subcommittee. Nothing here takes effect until the voting membership adopts it under the bylaws in force (as amended April 9, 2022): a 2/3 majority of eligible voting members, with a quorum of 10.</footer>
 
   <dialog id="dlg"></dialog>
 
@@ -318,6 +338,7 @@
       view: 'draft',
       filter: { status: 'open', article: '', q: '' },
       draftCompare: '',   // version num to show changes against in the draft
+      side2022: false,    // show the 2022 text beside each draft section
       compare: { from: '', to: 'draft' },
       packet: { from: '', to: 'draft', clean: false },
     };
@@ -329,6 +350,7 @@
     const fmtDate = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const fmtWhen = (d) => new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
     const paras = (body) => String(body || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+    const ADOPT_RULE = 'This revision is adopted under the bylaws currently in force (as amended April 9, 2022): amendments are initiated by a written motion submitted to the Secretary (Article VI), adoption requires a 2/3 majority of eligible voting members with a quorum of 10 eligible voting members (Article III, Section 1), and a copy of all amendments must be provided to the Chicago Park District.';
     const KIND = { amend: 'Amend', add: 'Add section', delete: 'Delete section', issue: 'Issue' };
     const STATUS = ['open', 'deferred', 'accepted', 'rejected', 'resolved', 'withdrawn'];
     let toastTimer;
@@ -453,6 +475,9 @@
       const v = versions().find((x) => String(x.num) === String(which));
       return v ? v.snapshot : [];
     }
+    const adopted = () => (S.pub && S.pub.adopted) || [];
+    const from2022 = (key) => adopted().filter((a) => (a.to || []).includes(key));
+    const draftRef = (key) => { const s = secByKey(draft(), key); return s ? `${s.article_num}.${s.section_num} ${s.title}` : key; };
     const labelFor = (which) => which === 'draft' ? 'Working draft' : ((versions().find((x) => String(x.num) === String(which)) || {}).label || '');
 
     // ---------------- auth ----------------
@@ -558,7 +583,7 @@
       renderChrome();
       if (!S.pub) return;
       ({ draft: viewDraft, proposals: viewProposals, versions: viewVersions, compare: viewCompare,
-         packet: viewPacket, members: viewMembers, about: viewAbout })[S.view](focus);
+         packet: viewPacket, members: viewMembers, about: viewAbout, adopted: viewAdopted })[S.view](focus);
       if (S.member && !/\s/.test(S.member.me.display_name.trim())) {
         const box = document.createElement('form');
         box.className = 'notice no-print'; box.id = 'name-prompt';
@@ -600,6 +625,13 @@
             note = '<span class="badge b-deferred">Changed</span>'; changed++;
           }
         }
+        if (S.side2022) {
+          const olds = from2022(s.key);
+          bodyHtml = `<div class="side"><div><div class="col-label">Draft</div>${bodyHtml.startsWith('<div') ? bodyHtml : `<div class="body">${bodyHtml}</div>`}</div>
+            <div><div class="col-label">Bylaws in force (2022)</div>${olds.length
+              ? olds.map((a) => `<div class="old"><div class="ref">${esc(a.label)} &middot; ${esc(a.title)}</div><div class="body">${renderBody(a.body)}</div></div>`).join('')
+              : '<div class="new-mark">New in the draft: no counterpart in the 2022 bylaws.</div>'}</div></div>`;
+        }
         const n = openCount(s.key);
         const tools = signedIn()
           ? `<div class="sec-tools ${n ? 'has-open' : ''} no-print">
@@ -608,7 +640,7 @@
              </div>` : '';
         return `<section class="section" id="sec-${esc(s.key)}">
             <div class="sec-head"><div class="sec-title"><span class="num">Section ${s.section_num}.</span> ${titleHtml} ${note}</div>${tools}</div>
-            <div class="body">${bodyHtml}</div>
+            ${S.side2022 ? bodyHtml : `<div class="body">${bodyHtml}</div>`}
           </section>`;
       };
       const removed = base ? base.filter((o) => !secByKey(list, o.key)) : [];
@@ -619,6 +651,7 @@
           <div class="toolbar no-print" style="margin:0;">
             <label class="label" for="draft-cmp">Show changes since</label>
             <select id="draft-cmp" style="width:auto;"><option value="">(off)</option>${vOpts}</select>
+            <label style="font-size:0.86rem;display:inline-flex;gap:6px;align-items:center;"><input type="checkbox" id="side-2022" ${S.side2022 ? 'checked' : ''} /> 2022 text alongside</label>
             <button class="btn" id="draft-print">Print</button>
           </div>
         </div>
@@ -640,6 +673,7 @@
           </article>
         </div>`;
       $('#draft-cmp').onchange = (e) => { S.draftCompare = e.target.value; render(); };
+      $('#side-2022').onchange = (e) => { S.side2022 = e.target.checked; render(); };
       $('#draft-print').onclick = () => window.print();
       $('#toc-select').onchange = (e) => { const el = document.getElementById(e.target.value); if (el) el.scrollIntoView(); };
       $$('[data-jump]').forEach((a) => a.addEventListener('click', (e) => {
@@ -850,6 +884,36 @@
       dlg.showModal(); $('#pick').focus();
     }
 
+    // ---------------- view: 2022 bylaws ----------------
+    function viewAdopted() {
+      const list = adopted();
+      const mapped = new Set(list.flatMap((a) => a.to || []));
+      const newOnes = draft().filter((s) => !mapped.has(s.key));
+      const notes = S.member ? S.member.proposals.filter((p) => p.author === 'Comparison with 2022 bylaws') : [];
+      const notesFor = (a) => notes.filter((n) => (a.to || []).includes(n.section_key));
+      main.innerHTML = `
+        <div class="view-head"><div><h2>The bylaws in force (as amended April 9, 2022)</h2>
+          <p>The current bylaws, word for word, with where each provision went in the draft. The draft restructures them from six articles into eleven, so provisions are moved, split, and merged rather than edited in place.</p></div>
+          <button class="btn no-print" id="a-print">Print</button></div>
+        <div class="rule-box"><b>How this revision gets adopted.</b> ${esc(ADOPT_RULE)}</div>
+        ${S.member ? `<div class="notice">${notes.length} <a href="#proposals" id="a-notes">comparison notes</a> flag the substantive differences (quorum, amendment threshold, notice period, officer terms, and more).</div>`
+          : '<div class="notice">Subcommittee members can sign in to see notes on each substantive difference.</div>'}
+        <article class="paper">
+          <div class="paper-title"><div class="t1">South Shore Cultural Center Advisory Council</div><div class="t2">Bylaws</div><div class="t3">As amended April 9, 2022 &middot; the text in force</div></div>
+          ${list.map((a) => `<div class="prov" id="adopted-${esc(a.key)}">
+              <div class="sec-title"><span class="num">${esc(a.label)}.</span> ${esc(a.title)}</div>
+              <div class="body">${renderBody(a.body)}</div>
+              <div class="goes no-print">${(a.to || []).length ? `In the draft: ${a.to.map((k) => `<a href="#draft/sec-${esc(k)}">${esc(draftRef(k))}</a>`).join('')}` : 'Not carried into the draft (record of past adoption).'}
+                ${notesFor(a).length ? `<span>&middot; ${notesFor(a).length} note${notesFor(a).length === 1 ? '' : 's'}</span>` : ''}</div>
+            </div>`).join('')}
+          <h3 class="article-h">New in the draft</h3>
+          <p class="muted" style="font-size:0.9rem;">${newOnes.length} draft sections have no counterpart in the 2022 bylaws:</p>
+          <div class="goes" style="margin-top:0;">${newOnes.map((s) => `<a href="#draft/sec-${esc(s.key)}">${esc(draftRef(s.key))}</a>`).join('')}</div>
+        </article>`;
+      $('#a-print').onclick = () => window.print();
+      if ($('#a-notes')) $('#a-notes').onclick = (e) => { e.preventDefault(); S.filter = { status: 'all', article: '', q: '2022' }; go('proposals'); };
+    }
+
     // ---------------- view: versions ----------------
     function nextLabel() {
       const l = latest(); const m = l && /^v(\d+)\.(\d+)$/.exec(l.label);
@@ -952,7 +1016,8 @@
     // ---------------- adoption packet ----------------
     function viewPacket() {
       const pk = S.packet;
-      if (!pk.from) pk.from = String((versions()[0] || {}).num || '');
+      if (!pk.from) pk.from = 'adopted';
+      if (pk.from === 'adopted') return viewPacketRestated();
       const from = snapshotFor(pk.from), to = snapshotFor(pk.to);
       const diffs = diffSnapshots(from, to).filter((d) => d.type !== 'renumbered');
       // attach the proposals behind each change (from the change logs, plus accepted-but-unversioned)
@@ -965,7 +1030,7 @@
       main.innerHTML = `
         <div class="view-head no-print"><div><h2>Adoption packet</h2><p>A printable statement of every amendment, for the notice to members that Article X requires: each change identifies the Article and Section affected, shows the old and new text, and gives the reason. Print it or save it as a PDF.</p></div></div>
         <div class="compare-row no-print">
-          <div class="field"><label for="k-from">Changes since</label><select id="k-from">${versionOptions(pk.from, false)}</select></div>
+          <div class="field"><label for="k-from">Changes since</label><select id="k-from"><option value="adopted">2022 bylaws (in force)</option>${versionOptions(pk.from, false)}</select></div>
           <div class="field"><label for="k-to">Through</label><select id="k-to">${versionOptions(pk.to, true)}</select></div>
           <div class="toolbar" style="margin:0;"><label style="font-size:0.86rem;"><input type="checkbox" id="k-clean" ${pk.clean ? 'checked' : ''} /> Include the full clean text</label><button class="btn primary" id="k-print">Print / save PDF</button></div>
         </div>
@@ -973,7 +1038,7 @@
         <article class="paper packet">
           <div class="paper-title"><div class="t1">South Shore Cultural Center Advisory Council</div><div class="t2">Proposed Amendments to the Bylaws</div>
             <div class="t3">${esc(toLabel)} compared with ${esc(labelFor(pk.from))} &middot; prepared ${fmtDate(Date.now())}</div></div>
-          <p class="prose" style="font-family:var(--serif);">The following amendments are proposed under Article X of the bylaws. Adoption requires a two-thirds vote of the votes cast, with a quorum present, at a meeting for which these amendments were included in the notice. Added text is <ins>underlined</ins>; removed text is <del>struck through</del>.</p>
+          <p class="prose" style="font-family:var(--serif);">These are the changes the subcommittee made to its working draft between ${esc(labelFor(pk.from))} and ${esc(toLabel)}. ${esc(ADOPT_RULE)} Added text is <ins>underlined</ins>; removed text is <del>struck through</del>.</p>
           ${diffs.length ? diffs.map((d, i) => {
             const s = d.s || d.o; const reasons = why(s.key);
             const kindWord = d.type === 'added' ? 'New section' : d.type === 'removed' ? 'Section deleted' : 'Amended';
@@ -1000,6 +1065,46 @@
     async function saveMyName(name) {
       try { await rpc('sscc_bylaws_set_my_name', { p_token: S.token, p_name: name }); toast('Name saved.'); await refresh(); }
       catch (err) { toast(errMsg(err), true); }
+    }
+
+    function viewPacketRestated() {
+      const pk = S.packet;
+      const to = snapshotFor(pk.to);
+      const toLabel = labelFor(pk.to);
+      const v = versions().find((x) => String(x.num) === String(pk.to));
+      const mapped = new Set(adopted().flatMap((a) => a.to || []));
+      main.innerHTML = `
+        <div class="view-head no-print"><div><h2>Adoption packet</h2><p>What goes to the membership with the notice of the vote. The draft restates the 2022 bylaws in full, so the packet gives a crosswalk from each 2022 provision to the new text, then the complete proposed bylaws. Print it or save it as a PDF.</p></div></div>
+        <div class="compare-row no-print">
+          <div class="field"><label for="k-from">Changes since</label><select id="k-from"><option value="adopted" selected>2022 bylaws (in force)</option>${versionOptions('', false)}</select></div>
+          <div class="field"><label for="k-to">Proposed text</label><select id="k-to">${versionOptions(pk.to, true)}</select></div>
+          <div class="toolbar" style="margin:0;"><button class="btn primary" id="k-print">Print / save PDF</button></div>
+        </div>
+        ${pk.to === 'draft' ? '<div class="notice warn no-print">This uses the working draft. For the official notice, have the chair publish a version and choose it under "Proposed text."</div>' : ''}
+        <article class="paper packet">
+          <div class="paper-title"><div class="t1">South Shore Cultural Center Advisory Council</div><div class="t2">Proposed Amended and Restated Bylaws</div>
+            <div class="t3">${esc(toLabel)}${v ? ` (${fmtDate(v.created_at)})` : ''} &middot; replacing the bylaws as amended April 9, 2022 &middot; prepared ${fmtDate(Date.now())}</div></div>
+          <p class="prose" style="font-family:var(--serif);">The By-laws Review Committee proposes that the bylaws of the Council, as amended April 9, 2022, be amended and restated in full as set out below. ${esc(ADOPT_RULE)}</p>
+          <h3 class="article-h" style="border-top:none;">Where each current provision goes</h3>
+          <table class="xwalk"><thead><tr><th>Bylaws in force (2022)</th><th>Proposed bylaws</th></tr></thead><tbody>
+            ${adopted().filter((a) => (a.to || []).length).map((a) => `<tr><td><b>${esc(a.label)}</b> ${esc(a.title)}</td><td>${a.to.map((k) => { const s = secByKey(to, k); return s ? `Art. ${esc(s.article_num)} §${s.section_num} ${esc(s.title)}` : '<span class="muted">(removed)</span>'; }).join('<br />')}</td></tr>`).join('')}
+            <tr><td class="muted">New provisions with no 2022 counterpart</td><td>${to.filter((s) => !mapped.has(s.key)).map((s) => `Art. ${esc(s.article_num)} §${s.section_num} ${esc(s.title)}`).join('<br />')}</td></tr>
+          </tbody></table>
+          <h3 class="article-h" style="border-top:2px solid var(--ink);">Proposed bylaws (${esc(toLabel)})</h3>
+          ${groupByArticle(to).map((a) => `<h3 class="article-h">Article ${esc(a.num)} &mdash; ${esc(a.title)}</h3>${a.sections.map((s) => `<section class="section"><div class="sec-title"><span class="num">Section ${s.section_num}.</span> ${esc(s.title)}</div><div class="body">${renderBody(s.body)}</div></section>`).join('')}`).join('')}
+          <h3 class="article-h" style="border-top:2px solid var(--ink);">Bylaws Amendment History</h3>
+          <div class="sig-block">
+            <div>Date Adopted:</div><div>Effective Date:</div><div>Amendment / Revision Description: Amended and restated in full (${esc(toLabel)}), replacing the bylaws as amended April 9, 2022.</div>
+            <div>Secretary:</div><div>President:</div>
+          </div>
+          <h4 style="margin:26px 0 6px;font-family:var(--serif);">Prior adoption record</h4>
+          <p style="font-family:var(--serif);font-size:0.95rem;">Bylaws accepted as amended at the March 13, 2021 membership meeting; Article III, Section 2 amended April 9, 2022.</p>
+          <h4 style="margin:18px 0 6px;font-family:var(--serif);">Revision record</h4>
+          <ul class="change-list">${versions().filter((x) => pk.to === 'draft' || x.num <= +pk.to).map((x) => `<li><b>${esc(x.label)}</b> &middot; ${fmtDate(x.created_at)} &middot; ${esc(x.summary)}${x.changes.length ? ` (${x.changes.length} change${x.changes.length === 1 ? '' : 's'})` : ''}</li>`).join('')}</ul>
+        </article>`;
+      $('#k-from').onchange = (e) => { pk.from = e.target.value; render(); };
+      $('#k-to').onchange = (e) => { pk.to = e.target.value; render(); };
+      $('#k-print').onclick = () => window.print();
     }
 
     // ---------------- members ----------------
@@ -1052,10 +1157,12 @@
             <li><b>Discuss.</b> Each proposal has its own comment thread. Authors can edit their proposal while it is open.</li>
             <li><b>Decide.</b> The chair accepts, rejects, or defers each proposal, after the subcommittee has discussed it. An accepted change goes straight into the working draft. If a section changes while another proposal on it is still open, that proposal is marked <i>Needs update</i> and can't be accepted until its author updates it to the current text, so no one's change silently overwrites another's.</li>
             <li><b>Publish a version.</b> When a batch of changes is settled, the chair publishes the next version (v1.1, v1.2, …). Each version freezes the full text and carries a change log: what changed, who proposed it, and why.</li>
-            <li><b>Adopt.</b> The adoption packet prints every amendment since the baseline, identifying the Article and Section affected with old and new text, as Article X requires for the notice to members. Adoption still requires a two-thirds vote of the votes cast, with a quorum present.</li>
+            <li><b>Adopt.</b> The adoption packet prints the proposed bylaws for the membership: a crosswalk from each provision of the 2022 bylaws to the new text, then the complete proposed bylaws. The revision is adopted under the bylaws in force, not the draft: a written motion to the Secretary (Art. VI), then a 2/3 majority of eligible voting members with a quorum of 10 (Art. III §1), and a copy to the Park District.</li>
           </ol></div>
           <div class="panel"><h3 style="font-family:var(--serif);font-size:1.05rem;">Who can see what</h3>
             <p style="margin:0;font-size:0.9rem;">Anyone with the link can read the working draft, the versions, and the adoption packet. Proposals, discussion, and the member list are visible only to signed-in subcommittee members. Email addresses are never shown publicly.</p>
+            <h3 style="font-family:var(--serif);font-size:1.05rem;">The 2022 bylaws</h3>
+            <p style="margin:0;font-size:0.9rem;">The <i>2022 bylaws</i> tab shows the bylaws in force word for word, with where each provision went in the draft. On the working draft, tick <i>2022 text alongside</i> to read old and new side by side. Notes titled "Comparison with 2022 bylaws" flag each substantive difference.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">Starter review notes</h3>
             <p style="margin:0;font-size:0.9rem;">v1.0 came with a set of <i>issues</i> flagged by an initial read-through (duplicate sections, undefined terms, a typo). They are questions for the subcommittee, not decisions, and each can be resolved or turned into a proposal.</p></div>
         </div>`;
