@@ -584,6 +584,32 @@ window.sfSupabase = {
     return data.publicUrl;
   },
 
+  // Pilobolus data sheet (/BIOS102/pilobolus.html) -- see
+  // supabase/bios102-pilobolus-schema.sql. Load returns every group's rows
+  // (pooled class data, no emails); save upserts one (group, light
+  // condition) row. Both validate the session token server-side.
+  async bios102LoadPilobolus(sessionToken) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bios102_load_pilobolus', { p_session: sessionToken });
+    if (error) throw error;
+    return data || [];
+  },
+
+  async bios102SavePilobolus({ sessionToken, groupNumber, lightCondition, myceliumSquares, developing, developed, shot, observations }) {
+    const client = await window.sfSupabaseReady;
+    const { error } = await client.rpc('bios102_save_pilobolus', {
+      p_session: sessionToken,
+      p_group_number: groupNumber,
+      p_light_condition: lightCondition,
+      p_mycelium_squares: myceliumSquares,
+      p_developing: developing,
+      p_developed: developed,
+      p_shot: shot,
+      p_observations: observations || '',
+    });
+    if (error) throw error;
+  },
+
   // BBPAC Opportunity Tracker (/bbpac/organization/opportunity-tracker.html)
   // -- same magic-link pattern as BIOS102 above, applied to a volunteer
   // roster instead of a class roster. See schema.sql's bbpac_tracker_*

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Pilobolus Data</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+  <style>
+    .group-picker { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 22px; }
+    .group-picker button {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+    .group-picker button:hover { color: var(--text); border-color: var(--accent); }
+    .group-picker button.on { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
+    .group-picker button .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-left: 7px; vertical-align: middle; }
+
+    table.pilo-table { border-collapse: collapse; width: 100%; min-width: 760px; }
+    table.pilo-table th, table.pilo-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      vertical-align: middle;
+      text-align: left;
+    }
+    table.pilo-table thead th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--accent);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+    table.pilo-table thead th small { display: block; color: var(--text-dim); font-weight: 400; font-size: 0.75rem; }
+    table.pilo-table th[scope="row"] { color: var(--text); font-weight: 500; white-space: nowrap; }
+    table.pilo-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.pilo-table input[type="number"], table.pilo-table textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    table.pilo-table input[type="number"] { min-width: 80px; text-align: right; }
+    table.pilo-table textarea { min-width: 180px; min-height: 58px; resize: vertical; }
+    table.pilo-table input:focus, table.pilo-table textarea:focus { outline: none; border-color: var(--accent); }
+    table.pilo-table input.invalid { border-color: var(--danger); }
+
+    table.pilo-table tr.cond-head th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--amber);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    table.pilo-table tr.mine td, table.pilo-table tr.mine th { background: var(--accent-soft); }
+    table.pilo-table tr.avg-row th, table.pilo-table tr.avg-row td {
+      font-weight: 600;
+      border-top: 2px solid var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    table.pilo-table .empty { color: var(--text-dim); opacity: 0.6; }
+    table.pilo-table .obs { color: var(--text-dim); max-width: 280px; white-space: pre-wrap; }
+    table.pilo-table .n { display: block; font-size: 0.72rem; font-weight: 400; color: var(--text-dim); }
+    .row-meta { display: block; font-size: 0.72rem; color: var(--text-dim); font-weight: 400; margin-top: 3px; white-space: normal; }
+
+    .steps { color: var(--text-dim); font-size: 0.9rem; max-width: 720px; margin: 0 0 26px 20px; line-height: 1.6; }
+    .steps li { margin-bottom: 4px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 40px; }
+    .live-note { font-size: 0.8rem; color: var(--text-dim); }
+    .section-head .btn-ghost { padding: 7px 14px; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+
+  <div class="wrap">
+    <p><a href="/BIOS102/dashboard.html">&larr; Dashboard</a></p>
+    <h1>Collecting <em>Pilobolus</em> Data</h1>
+    <p class="lede">Exercise 3 data sheet, lab manual pp. 39&ndash;40. Enter your group's numbers in Table 1. Table 2 pools every group's entries into the class data and averages them automatically.</p>
+
+    <ol class="steps">
+      <li>You have 30 minutes to make your observations and fill in your results in Table 1.</li>
+      <li>You have data for two variables (constant light and no light).</li>
+      <li>Measure the <u>extent of mycelium growth</u> with the provided grid: count how many squares show mycelium growth.</li>
+      <li>Count the stalks not yet topped by a black sporangium: these are <u>developing sporangia</u> (may have an orange color tip).</li>
+      <li>Count the stalks that are topped by a black sporangium: these are <u>developed sporangia</u>.</li>
+      <li>Under other observations, write down any other information you might consider important.</li>
+    </ol>
+
+    <h2>Your lab group</h2>
+    <div class="group-picker" id="group-picker" role="group" aria-label="Choose your lab group"></div>
+
+    <div id="table1-area" hidden>
+      <h2>Table 1: Growth of <em>Pilobolus</em> after first week <span style="color:var(--text-dim);font-weight:300;">(individual group data)</span></h2>
+      <p class="lede" style="margin-bottom:14px;">Group <span id="t1-group"></span>. Anyone in your group can enter or correct these numbers. Leave a box blank if you didn't collect that value.</p>
+      <div class="table-scroll">
+        <table class="pilo-table" id="table1"></table>
+      </div>
+      <div class="actions-row">
+        <button class="btn" id="save-btn" type="button">Save group data</button>
+        <span class="form-msg" id="save-msg"></span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2 style="margin:0;">Table 2: Growth of <em>Pilobolus</em> <span style="color:var(--text-dim);font-weight:300;">(pooled class data)</span></h2>
+      <div class="actions-row" style="margin:0;align-items:center;">
+        <span class="live-note" id="live-note">Loading&hellip;</span>
+        <button class="btn btn-ghost" id="refresh-btn" type="button">Refresh</button>
+        <button class="btn btn-ghost" id="copy-btn" type="button">Copy table</button>
+      </div>
+    </div>
+    <p class="lede" style="margin:8px 0 14px;">Averages use only the groups that have entered that value, and <em>n</em> is how many groups that is. Table 2 refreshes on its own every 30 seconds. &ldquo;Copy table&rdquo; copies it in a format you can paste into a spreadsheet or Word for your lab write-up.</p>
+    <div class="table-scroll">
+      <table class="pilo-table" id="table2"></table>
+    </div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script src="/BIOS102/js/app.js"></script>
+  <script>
+    (function () {
+      const session = BIOS.requireSession();
+      if (!session) return;
+      BIOS.mountTopbar(session);
+
+      const esc = BIOS.escapeHtml;
+      const GROUPS = [1, 2, 3, 4, 5, 6];
+      const CONDITIONS = [
+        { key: 'light', label: 'Constant fluorescent light' },
+        { key: 'dark', label: 'No light' },
+      ];
+      // key = column in bios102_pilobolus_data; int = whole numbers only.
+      const FIELDS = [
+        { key: 'mycelium_squares', head: 'Extent of mycelium growth', sub: '# squares/grid', int: false },
+        { key: 'developing_sporangiophores', head: 'Number of developing sporangiophores', sub: 'without sporangia', int: true },
+        { key: 'developed_sporangiophores', head: 'Number of developed sporangiophores', sub: 'with sporangia', int: true },
+        { key: 'sporangia_shot', head: 'Number of sporangia “shot” toward light', sub: '', int: true },
+      ];
+      const GROUP_KEY = 'bios102_pilobolus_group';
+
+      let rows = [];          // everything the server returned
+      let myGroup = null;
+      let dirty = false;      // unsaved edits in Table 1 -- don't clobber them on refresh
+
+      const byKey = (g, c) => rows.find((r) => r.group_number === g && r.light_condition === c) || null;
+      const hasData = (r) => !!r && (FIELDS.some((f) => r[f.key] !== null && r[f.key] !== undefined) || !!r.observations);
+      const fmtNum = (v) => (v === null || v === undefined ? '' : String(Number(v)));
+      const fmtAvg = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
+      const fmtWhen = (iso) => new Date(iso).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+      function headHtml() {
+        return '<thead><tr><th scope="col">Light conditions</th>' +
+          FIELDS.map((f) => '<th scope="col">' + esc(f.head) + (f.sub ? '<small>[' + esc(f.sub) + ']</small>' : '') + '</th>').join('') +
+          '<th scope="col">Other observations</th></tr></thead>';
+      }
+
+      // ---------------- group picker ----------------
+      function renderPicker() {
+        document.getElementById('group-picker').innerHTML = GROUPS.map((g) => {
+          const entered = CONDITIONS.some((c) => hasData(byKey(g, c.key)));
+          return '<button type="button" data-group="' + g + '" class="' + (g === myGroup ? 'on' : '') + '" aria-pressed="' + (g === myGroup) + '">' +
+            'Group ' + g + (entered ? '<span class="dot" title="Has data"></span>' : '') + '</button>';
+        }).join('');
+      }
+
+      document.getElementById('group-picker').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-group]');
+        if (!btn) return;
+        const g = Number(btn.dataset.group);
+        if (g === myGroup) return;
+        if (dirty && !confirm('You have unsaved changes for Group ' + myGroup + '. Switch groups and discard them?')) return;
+        myGroup = g;
+        dirty = false;
+        try { localStorage.setItem(GROUP_KEY, String(g)); } catch (err) { /* storage blocked */ }
+        renderAll();
+      });
+
+      // ---------------- Table 1 (your group) ----------------
+      function renderTable1() {
+        const area = document.getElementById('table1-area');
+        area.hidden = !myGroup;
+        if (!myGroup) return;
+        document.getElementById('t1-group').textContent = myGroup;
+        const body = CONDITIONS.map((c) => {
+          const r = byKey(myGroup, c.key);
+          const meta = hasData(r) ? '<span class="row-meta">Saved ' + esc(fmtWhen(r.updated_at)) + (r.updated_by_name ? ' by ' + esc(r.updated_by_name) : '') + '</span>' : '';
+          return '<tr data-cond="' + c.key + '"><th scope="row">' + esc(c.label) + meta + '</th>' +
+            FIELDS.map((f) => '<td><input type="number" min="0" step="' + (f.int ? '1' : 'any') + '" inputmode="' + (f.int ? 'numeric' : 'decimal') + '"' +
+              ' data-field="' + f.key + '" aria-label="' + esc(c.label + ': ' + f.head) + '" value="' + esc(fmtNum(r && r[f.key])) + '" /></td>').join('') +
+            '<td><textarea data-field="observations" maxlength="2000" aria-label="' + esc(c.label + ': other observations') + '">' + esc((r && r.observations) || '') + '</textarea></td></tr>';
+        }).join('');
+        document.getElementById('table1').innerHTML = headHtml() + '<tbody>' + body + '</tbody>';
+      }
+
+      document.getElementById('table1').addEventListener('input', (e) => {
+        dirty = true;
+        e.target.classList.remove('invalid');
+        document.getElementById('save-msg').textContent = '';
+      });
+
+      // Returns { condKey: payload } or null (and flags the bad inputs) when invalid.
+      function readTable1() {
+        let ok = true;
+        const out = {};
+        document.querySelectorAll('#table1 tbody tr').forEach((tr) => {
+          const cond = tr.dataset.cond;
+          const payload = {};
+          FIELDS.forEach((f) => {
+            const input = tr.querySelector('[data-field="' + f.key + '"]');
+            const raw = input.value.trim();
+            if (raw === '' && !input.validity.badInput) { payload[f.key] = null; return; }
+            const n = Number(raw);
+            if (input.validity.badInput || !Number.isFinite(n) || n < 0 || (f.int && !Number.isInteger(n))) {
+              input.classList.add('invalid');
+              ok = false;
+              return;
+            }
+            payload[f.key] = n;
+          });
+          payload.observations = tr.querySelector('[data-field="observations"]').value.trim();
+          out[cond] = payload;
+        });
+        return ok ? out : null;
+      }
+
+      document.getElementById('save-btn').addEventListener('click', async () => {
+        const msg = document.getElementById('save-msg');
+        const btn = document.getElementById('save-btn');
+        const data = readTable1();
+        if (!data) {
+          msg.className = 'form-msg error';
+          msg.textContent = 'Fix the boxes outlined in red: numbers must be 0 or more, and counts must be whole numbers.';
+          return;
+        }
+        // Skip a condition that's blank now and was never saved, so an
+        // untouched row doesn't show up as an empty "saved" entry.
+        const toSave = CONDITIONS.filter((c) => {
+          const p = data[c.key];
+          const blank = FIELDS.every((f) => p[f.key] === null) && !p.observations;
+          return !(blank && !byKey(myGroup, c.key));
+        });
+        if (!toSave.length) {
+          msg.className = 'form-msg error';
+          msg.textContent = 'Nothing to save yet: enter at least one value.';
+          return;
+        }
+        btn.disabled = true;
+        msg.className = 'form-msg';
+        msg.textContent = 'Saving…';
+        try {
+          for (const c of toSave) {
+            const p = data[c.key];
+            await window.sfSupabase.bios102SavePilobolus({
+              sessionToken: session.sessionToken,
+              groupNumber: myGroup,
+              lightCondition: c.key,
+              myceliumSquares: p.mycelium_squares,
+              developing: p.developing_sporangiophores,
+              developed: p.developed_sporangiophores,
+              shot: p.sporangia_shot,
+              observations: p.observations,
+            });
+          }
+          dirty = false;
+          await load();
+          msg.className = 'form-msg ok';
+          msg.textContent = 'Saved. Your numbers are now in the class table below.';
+        } catch (err) {
+          msg.className = 'form-msg error';
+          msg.textContent = 'Couldn’t save: ' + (err.message || err) + '. Try again, or log out and back in if this keeps happening.';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      // ---------------- Table 2 (pooled class data) ----------------
+      function averages(condKey) {
+        return FIELDS.map((f) => {
+          const vals = GROUPS.map((g) => byKey(g, condKey)).filter((r) => r && r[f.key] !== null && r[f.key] !== undefined).map((r) => Number(r[f.key]));
+          return vals.length ? { avg: vals.reduce((a, b) => a + b, 0) / vals.length, n: vals.length } : null;
+        });
+      }
+
+      function renderTable2() {
+        const cols = FIELDS.length + 2;
+        const body = CONDITIONS.map((c) => {
+          const groupRows = GROUPS.map((g) => {
+            const r = byKey(g, c.key);
+            const cells = FIELDS.map((f) => {
+              const v = r && r[f.key];
+              return v === null || v === undefined ? '<td class="num empty">&mdash;</td>' : '<td class="num">' + esc(fmtNum(v)) + '</td>';
+            }).join('');
+            const obs = r && r.observations ? '<td class="obs">' + esc(r.observations) + '</td>' : '<td class="empty"></td>';
+            return '<tr class="' + (g === myGroup ? 'mine' : '') + '"><th scope="row">Group ' + g + '</th>' + cells + obs + '</tr>';
+          }).join('');
+          const avgCells = averages(c.key).map((a) => a ? '<td class="num">' + fmtAvg(a.avg) + '<span class="n">n = ' + a.n + '</span></td>' : '<td class="num empty">&mdash;</td>').join('');
+          return '<tr class="cond-head"><th colspan="' + cols + '" scope="colgroup">' + esc(c.label) + '</th></tr>' + groupRows +
+            '<tr class="avg-row"><th scope="row">AVERAGE</th>' + avgCells + '<td></td></tr>';
+        }).join('');
+        document.getElementById('table2').innerHTML = headHtml() + '<tbody>' + body + '</tbody>';
+      }
+
+      // Tab-separated so it pastes straight into a spreadsheet or Word table.
+      document.getElementById('copy-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('copy-btn');
+        const clean = (s) => String(s).replace(/[\t\r\n]+/g, ' ');
+        const lines = [['Light conditions', ...FIELDS.map((f) => f.head + (f.sub ? ' [' + f.sub + ']' : '')), 'Other observations'].join('\t')];
+        CONDITIONS.forEach((c) => {
+          lines.push(c.label);
+          GROUPS.forEach((g) => {
+            const r = byKey(g, c.key);
+            lines.push(['Group ' + g, ...FIELDS.map((f) => fmtNum(r && r[f.key])), clean((r && r.observations) || '')].join('\t'));
+          });
+          lines.push(['AVERAGE', ...averages(c.key).map((a) => (a ? fmtAvg(a.avg) : ''))].join('\t'));
+        });
+        try {
+          await navigator.clipboard.writeText(lines.join('\n'));
+          btn.textContent = 'Copied!';
+        } catch (err) {
+          btn.textContent = 'Copy failed';
+        }
+        setTimeout(() => { btn.textContent = 'Copy table'; }, 1800);
+      });
+
+      // ---------------- loading ----------------
+      function renderAll() {
+        renderPicker();
+        if (!dirty) renderTable1();
+        renderTable2();
+      }
+
+      async function load() {
+        const note = document.getElementById('live-note');
+        try {
+          rows = await window.sfSupabase.bios102LoadPilobolus(session.sessionToken);
+          note.textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        } catch (err) {
+          note.textContent = 'Couldn’t load class data: ' + (err.message || err);
+        }
+        renderAll();
+      }
+
+      try {
+        const saved = Number(localStorage.getItem(GROUP_KEY));
+        if (GROUPS.includes(saved)) myGroup = saved;
+      } catch (err) { /* storage blocked */ }
+
+      document.getElementById('refresh-btn').addEventListener('click', load);
+      setInterval(() => { if (!document.hidden) load(); }, 30000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+      window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+      renderAll();
+      load();
+    })();
+  </script>
+</body>
+</html>
