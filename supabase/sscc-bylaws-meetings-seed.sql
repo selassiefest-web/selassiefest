@@ -1,8 +1,8 @@
 -- SSCC bylaws workspace: a starting meeting plan to the December 12, 2026
 -- PAC meeting (second Saturday), per La'Vonne's 2026-09-16 email: meet
 -- bi-weekly and present recommendations in December. Dates are tentative
--- (confirmed = false, so no reminders go out) until a chair sets the real
--- day, time, and place. Run once; the chairs edit it on the page after that.
+-- (confirmed = false, so no reminders go out) until the coordinator sets the
+-- real day, time, and place. Run once; the coordinator edits it on the page after that.
 insert into sscc_bylaws_meetings (kind, meets_on, title, focus, agenda) values
 ('meeting', '2026-10-03', 'Kickoff: purpose and membership', '{I,II}',
  $q$How the workspace works: propose, discuss, accept, publish a version.
@@ -15,9 +15,9 @@ Open questions from the 2022 comparison: quorum drops from 10 to 8; the 14-day p
  $q$Articles V and VI: officers, the Executive Board, terms, nominations, and elections.$q$),
 ('meeting', '2026-11-14', 'Committees through effective date; settle the draft', '{VII,VIII,IX,X,XI}',
  $q$Articles VII to XI: committees, ethics and conflicts, records, amendments (2/3 of eligible voters vs. 2/3 of votes cast), effective date.
-Walk through anything still open; the chairs settle each section.$q$),
+Walk through anything still open; the coordinator marks each section the committee agrees on as settled.$q$),
 ('milestone', '2026-11-21', 'Publish the final version and submit the written motion', '{}',
- $q$The chair publishes the version the committee recommends and prints the adoption packet.
+ $q$The coordinator publishes the version the committee recommends and prints the adoption packet.
 Submit the amendment motion in writing to the Secretary (2022 Art. VI).$q$),
 ('milestone', '2026-11-28', 'Post notice of the December 12 meeting', '{}',
  $q$Notice of the membership meeting must be posted at the South Shore Cultural Center 14 days before it (2022 Art. II §5), and emailed to members. Include the adoption packet.$q$),

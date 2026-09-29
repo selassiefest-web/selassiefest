@@ -429,7 +429,7 @@
     function errMsg(e) {
       const m = (e && (e.message || e.error_description)) || String(e);
       if (/not signed in/.test(m)) return 'Your session has ended. Please sign in again.';
-      return m.replace(/^stale: /, '');
+      return m.replace(/^stale: /, '').replace(/\bthe chair\b/g, 'the coordinator');
     }
 
     function renderBody(body) {
@@ -609,7 +609,7 @@
       dlg.innerHTML = `<form class="dlg" method="dialog" id="signin-form">
         <div class="dlg-head"><h3>Sign in</h3></div>
         <div class="dlg-body">
-          <p class="muted" style="margin:0;">Subcommittee members sign in with the email address the chair added. We'll email you a link; it works for 30 minutes, and this browser stays signed in after that.</p>
+          <p class="muted" style="margin:0;">Subcommittee members sign in with the email address the coordinator added. We'll email you a link; it works for 30 minutes, and this browser stays signed in after that.</p>
           <div class="field"><label for="si-email">Email</label><input type="email" id="si-email" required autocomplete="email" /></div>
           <p id="si-msg" class="muted" style="margin:0;" aria-live="polite"></p>
         </div>
@@ -628,7 +628,7 @@
           else {
             msg.style.color = 'var(--del)';
             msg.textContent = ({
-              not_a_member: "That email isn't on the subcommittee list. Ask the chair to add you.",
+              not_a_member: "That email isn't on the subcommittee list. Ask the coordinator to add you.",
               too_many_requests: 'Too many links requested in the last hour. Use the most recent email, or try later.',
               invalid_email: 'Please enter a valid email address.',
             })[body.error] || 'Could not send the link. Please try again.';
@@ -647,12 +647,12 @@
       const pending = S.pub ? S.pub.pending_changes : 0;
       $('#status-line').innerHTML = v
         ? `Current version <b>${esc(v.label)}</b> &middot; ${fmtDate(v.created_at)}` +
-          (pending ? ` &middot; <b>${pending}</b> accepted change${pending === 1 ? '' : 's'} in the draft, not yet in a version` : ' &middot; draft matches this version') +
+          (pending ? ` &middot; <b>${pending}</b> agreed change${pending === 1 ? '' : 's'} in the draft, not yet in a version` : ' &middot; draft matches this version') +
           (nextMeeting() ? ` &middot; next meeting <b>${fmtDay(nextMeeting().meets_on)}</b>` : '')
         : '';
       const who = $('#who');
       if (S.member) {
-        who.innerHTML = `<span class="name">${esc(S.member.me.display_name)}</span>${S.member.me.role === 'chair' ? '<span class="role-chip">Chair</span>' : ''}<button class="btn small" id="signout">Sign out</button>`;
+        who.innerHTML = `<span class="name">${esc(S.member.me.display_name)}</span>${S.member.me.role === 'chair' ? '<span class="role-chip">Coordinator</span>' : ''}<button class="btn small" id="signout">Sign out</button>`;
         $('#signout').onclick = () => signOut(false);
       } else {
         who.innerHTML = `<button class="btn" id="signin">Subcommittee sign in</button>`;
@@ -740,7 +740,7 @@
         const tools = signedIn()
           ? `<div class="sec-tools ${n ? 'has-open' : ''} no-print">
                ${n ? `<a class="btn small ghost" href="#proposals" data-sec-filter="${esc(s.key)}">${n} open</a>` : ''}
-               ${rv.status === 'settled' ? '<span class="badge b-settled" title="The chair marked this section settled">Settled</span>' : ''}
+               ${rv.status === 'settled' ? '<span class="badge b-settled" title="The coordinator marked this section settled">Settled</span>' : ''}
                <button class="btn small ${rv.read_by_me ? 'on' : ''}" data-mark="${esc(s.key)}" aria-pressed="${rv.read_by_me}" title="${rv.read_by_me ? 'You marked this reviewed. Click to undo.' : 'Mark that you have read this section'}">${rv.read_by_me ? '&#10003; Reviewed' : 'Mark reviewed'}</button>
                <button class="btn small" data-propose="${esc(s.key)}">Propose change</button>
              </div>` : '';
@@ -753,7 +753,7 @@
       main.innerHTML = `
         <div class="view-head">
           <div><h2>Working draft</h2>
-          <p>The bylaws as they stand with every accepted change applied. ${signedIn() ? 'Hover over a section to propose a change to it.' : 'Subcommittee members can sign in to propose changes.'}</p></div>
+          <p>A proposed revision, not adopted bylaws. It starts from v1.0, one member's draft rewrite of the 2022 bylaws, plus any changes the committee has agreed to since. The bylaws in force are still the <a href="#adopted">2022 bylaws</a>. ${signedIn() ? 'Hover over a section to propose a change to it.' : 'Subcommittee members can sign in to propose changes.'}</p></div>
           <div class="toolbar no-print" style="margin:0;">
             <label class="label" for="draft-cmp">Show changes since</label>
             <select id="draft-cmp" style="width:auto;"><option value="">(off)</option>${vOpts}</select>
@@ -773,8 +773,8 @@
               ${a.sections.map((s) => { const n = openCount(s.key); return `<a href="#draft/sec-${esc(s.key)}" data-jump="sec-${esc(s.key)}"><span><span class="n">${s.section_num}.</span>${esc(s.title)}</span>${n ? `<span class="dot" title="${n} open proposal${n === 1 ? '' : 's'}">${n}</span>` : reviewOf(s.key).status === 'settled' ? '<span class="done" title="Settled">&#10003;</span>' : ''}</a>`; }).join('')}`).join('')}
           </nav>
           <article class="paper">
-            <div class="paper-title"><div class="t1">Bylaws of the</div><div class="t2">South Shore Cultural Center Advisory Council</div>
-              <div class="t3">Working draft${latest() ? ` &middot; based on ${esc(latest().label)}` : ''}${S.pub.pending_changes ? ` plus ${S.pub.pending_changes} accepted change${S.pub.pending_changes === 1 ? '' : 's'}` : ''}</div></div>
+            <div class="paper-title"><div class="t1">Proposed revision of the bylaws of the</div><div class="t2">South Shore Cultural Center Advisory Council</div>
+              <div class="t3">Working draft${latest() ? ` &middot; based on ${esc(latest().label)}` : ''}${S.pub.pending_changes ? ` plus ${S.pub.pending_changes} change${S.pub.pending_changes === 1 ? '' : 's'} the committee agreed to` : ''} &middot; not adopted</div></div>
             ${arts.map((a) => `<h3 class="article-h">Article ${esc(a.num)} &mdash; ${esc(a.title)}</h3>${a.sections.map(sectionHtml).join('')}`).join('')}
           </article>
         </div>`;
@@ -886,7 +886,7 @@
         actions.push(`<button class="btn small" data-edit="${p.id}">${stale ? 'Update to current text' : 'Edit'}</button>`);
         actions.push(`<button class="btn small ghost danger" data-withdraw="${p.id}">Withdraw</button>`);
       } else if (chair && ['open', 'deferred'].includes(p.status) && p.kind !== 'issue') {
-        actions.push(`<button class="btn small ghost" data-edit="${p.id}">Edit as chair</button>`);
+        actions.push(`<button class="btn small ghost" data-edit="${p.id}">Edit as coordinator</button>`);
       }
       let decide = '';
       if (canDecide) {
@@ -941,7 +941,7 @@
       const staleN = all.filter(isStale).length;
       const secLabel = f.section ? refFor(f.section, '') : null;
       main.innerHTML = `
-        <div class="view-head"><div><h2>Proposals</h2><p>Each proposal changes one section, adds one, removes one, or flags an issue for discussion. The chair accepts changes into the working draft; they become official in the next published version.</p></div>
+        <div class="view-head"><div><h2>Proposals</h2><p>Each proposal changes one section, adds one, removes one, or flags an issue for discussion. The committee discusses it, and the coordinator records the committee's decision. An accepted change goes into the working draft and is recorded in the next published version. None of it is adopted until the membership votes.</p></div>
           <button class="btn primary no-print" id="new-prop">New proposal</button></div>
         <div class="toolbar">
           <div class="chips" role="group" aria-label="Filter by status">
@@ -967,7 +967,7 @@
       $$('[data-decide]').forEach((b) => b.addEventListener('click', async () => {
         const id = +b.dataset.decide, val = b.dataset.val;
         const note = ($(`[data-note="${id}"]`) || {}).value || '';
-        if (val === 'accepted' && !confirm('Accept this change into the working draft? The section text changes now; it becomes official in the next published version.')) return;
+        if (val === 'accepted' && !confirm('Record that the committee agreed to this change? The section text in the working draft changes now, and the change is listed in the next published version.')) return;
         b.disabled = true;
         try { await rpc('sscc_bylaws_decide', { p_token: S.token, p_id: id, p_decision: val, p_note: note }); toast(`Proposal #${id}: ${val === 'open' ? 'reopened' : val}.`); await refresh(); render('p-' + id); }
         catch (e) { toast(errMsg(e), true); b.disabled = false; }
@@ -1048,14 +1048,14 @@
           ${isChair() ? `<form class="row" id="cut-form">
               <div class="field"><label for="cut-label">Version</label><input type="text" id="cut-label" value="${esc(nextLabel())}" required /></div>
               <div class="field"><label for="cut-summary">What this version does</label><input type="text" id="cut-summary" placeholder="e.g. Adds amendment notice period; fixes Article VII titles" required /></div>
-              <button class="btn primary">Publish version</button></form>` : '<div class="muted" style="font-size:0.86rem;">The chair publishes the next version.</div>'}
+              <button class="btn primary">Publish version</button></form>` : '<div class="muted" style="font-size:0.86rem;">The coordinator publishes the next version.</div>'}
         </div>` : ''}
         <div class="timeline">${vs.map((v, i) => `
           <article class="ver" id="v-${v.num}">
             <div class="ver-top"><span class="ver-label">${esc(v.label)}</span>${i === 0 ? '<span class="ver-current">Current</span>' : ''}
               <span class="muted" style="font-size:0.85rem;">${fmtDate(v.created_at)} &middot; published by ${esc(v.created_by)} &middot; ${v.snapshot.length} sections</span></div>
             <p class="ver-summary">${esc(v.summary)}</p>
-            ${v.changes.length ? `<ul class="change-list">${v.changes.map(changeItem).join('')}</ul>` : '<p class="muted" style="margin:0;font-size:0.88rem;">Baseline: the text the subcommittee started from.</p>'}
+            ${v.changes.length ? `<ul class="change-list">${v.changes.map(changeItem).join('')}</ul>` : '<p class="muted" style="margin:0;font-size:0.88rem;">The proposed revision as one committee member drafted it, before any committee changes. Each later version records what the committee changed and why.</p>'}
             <div class="toolbar no-print" style="margin:12px 0 0;">
               ${v.num > 1 ? `<button class="btn small" data-cmp="${v.num}">Compare with ${esc(versions().find((x) => x.num === v.num - 1).label)}</button>` : ''}
               <button class="btn small" data-read="${v.num}">Read this version</button>
@@ -1187,7 +1187,7 @@
           <div class="field"><label for="k-to">Proposed text</label><select id="k-to">${versionOptions(pk.to, true)}</select></div>
           <div class="toolbar" style="margin:0;"><button class="btn primary" id="k-print">Print / save PDF</button></div>
         </div>
-        ${pk.to === 'draft' ? '<div class="notice warn no-print">This uses the working draft. For the official notice, have the chair publish a version and choose it under "Proposed text."</div>' : ''}
+        ${pk.to === 'draft' ? '<div class="notice warn no-print">This uses the working draft. For the official notice, have the coordinator publish a version and choose it under "Proposed text."</div>' : ''}
         <article class="paper packet">
           <div class="paper-title"><div class="t1">South Shore Cultural Center Advisory Council</div><div class="t2">Proposed Amended and Restated Bylaws</div>
             <div class="t3">${esc(toLabel)}${v ? ` (${fmtDate(v.created_at)})` : ''} &middot; replacing the bylaws as amended April 9, 2022 &middot; prepared ${fmtDate(Date.now())}</div></div>
@@ -1263,7 +1263,7 @@
       const onlyMine = S.progressOnlyMine;
       main.innerHTML = `
         <div class="view-head"><div><h2>Review progress</h2>
-          <p>Where the committee stands on each of the draft's ${all.total} sections. Mark a section reviewed once you've read it (on the working draft, or here). ${chair ? 'As chair, set each section to In discussion or Settled as the committee works through it.' : 'The chairs mark sections settled as the committee agrees on them.'}</p></div></div>
+          <p>Where the committee stands on each of the draft's ${all.total} sections. Mark a section reviewed once you've read it (on the working draft, or here). ${chair ? 'As coordinator, set each section to In discussion or Settled as the committee works through it.' : 'The coordinator marks sections settled as the committee agrees on them.'}</p></div></div>
         <div class="stat-row">
           <div class="stat"><div class="v">${all.settled}<span class="muted" style="font-size:1rem;"> / ${all.total}</span></div><div class="l">sections settled</div></div>
           <div class="stat"><div class="v">${all.discussion}</div><div class="l">in discussion or with open proposals</div></div>
@@ -1365,7 +1365,7 @@
           ${S.review ? (() => { const t = tally(draft().map((s) => s.key)); return `<div class="stat"><div class="v">${t.settled}<span class="muted" style="font-size:1rem;"> / ${t.total}</span></div><div class="l"><a href="#progress" data-go="progress">sections settled</a></div></div>`; })()
             : `<div class="stat"><div class="v">${draft().length}</div><div class="l">sections in the draft</div></div>`}
         </div>
-        ${ms.some((m) => m.kind === 'meeting' && !m.confirmed && m.meets_on >= today) ? `<div class="notice">Dates marked <b>Tentative</b> are not final yet.${chair ? ' Edit each one to set the real day, time, and place, and tick Confirmed so members get a reminder.' : ' The chairs will confirm the day, time, and place.'}</div>` : ''}
+        ${ms.some((m) => m.kind === 'meeting' && !m.confirmed && m.meets_on >= today) ? `<div class="notice">Dates marked <b>Tentative</b> are not final yet.${chair ? ' Edit each one to set the real day, time, and place, and tick Confirmed so members get a reminder.' : ' The coordinator will confirm the day, time, and place.'}</div>` : ''}
         <div class="mtgs">${ms.length ? ms.map((m) => {
           const d = dayObj(m.meets_on); const past = m.meets_on < today; const isNext = nm && nm.id === m.id;
           const focus = (m.focus || []).map((a) => {
@@ -1402,9 +1402,9 @@
       const ms = S.member.members;
       const tally = (name) => S.member.proposals.filter((p) => p.author === name).length;
       main.innerHTML = `
-        <div class="view-head"><div><h2>Subcommittee</h2><p>${ms.length} member${ms.length === 1 ? '' : 's'}. ${isChair() ? 'As chair you can add members; they sign in with the email you enter.' : 'Ask the chair to add or remove members.'}</p></div></div>
+        <div class="view-head"><div><h2>Subcommittee</h2><p>${ms.length} member${ms.length === 1 ? '' : 's'}. ${isChair() ? 'As coordinator you can add members; they sign in with the email you enter.' : 'Ask the coordinator to add or remove members.'}</p></div></div>
         <div class="grid-2">
-          <ul class="member-list">${ms.map((m) => `<li><div class="grow"><div><b>${esc(m.display_name)}</b> ${m.role === 'chair' ? '<span class="badge b-accepted">Chair</span>' : ''}</div>${m.email ? `<div class="email">${esc(m.email)}</div>` : ''}</div>
+          <ul class="member-list">${ms.map((m) => `<li><div class="grow"><div><b>${esc(m.display_name)}</b> ${m.role === 'chair' ? '<span class="badge b-accepted">Coordinator</span>' : ''}</div>${m.email ? `<div class="email">${esc(m.email)}</div>` : ''}</div>
             <span class="muted" style="font-size:0.8rem;">${tally(m.display_name)} proposal${tally(m.display_name) === 1 ? '' : 's'}</span>
             ${isChair() && m.email && m.email !== S.member.me.email ? `<button class="btn small ghost danger" data-remove="${esc(m.email)}" aria-label="Remove ${esc(m.display_name)}">Remove</button>` : ''}</li>`).join('')}</ul>
           <div style="display:grid;gap:16px;">
@@ -1412,13 +1412,13 @@
             <div class="field"><label for="mn-name">Shown on your proposals and comments</label><input type="text" id="mn-name" value="${esc(S.member.me.display_name)}" required maxlength="80" /></div>
             <button class="btn">Save</button></form>
           <div class="panel"><h3 style="font-family:var(--serif);font-size:1.05rem;">Email alerts</h3>
-            <p style="margin:0;font-size:0.88rem;">Every member of the committee gets an email when someone submits a proposal or flags an issue, when a chair publishes a version, and two days before each confirmed meeting. You aren't emailed about your own proposals or versions.</p>
+            <p style="margin:0;font-size:0.88rem;">Every member of the committee gets an email when someone submits a proposal or flags an issue, when the coordinator publishes a version, and two days before each confirmed meeting. You aren't emailed about your own proposals or versions.</p>
             ${S.review ? `<p style="margin:0;font-size:0.88rem;">Alerts are <b>${S.review.alerts_enabled ? 'on' : 'off'}</b>.</p>` : ''}
             ${isChair() && S.review ? `<button class="btn" id="alerts-toggle">${S.review.alerts_enabled ? 'Pause alerts for everyone' : 'Turn alerts back on'}</button>` : ''}</div>
           ${isChair() ? `<form class="panel" id="add-member"><h3 style="font-family:var(--serif);font-size:1.05rem;">Add a member</h3>
             <div class="field"><label for="am-name">Name</label><input type="text" id="am-name" required /></div>
             <div class="field"><label for="am-email">Email</label><input type="email" id="am-email" required /></div>
-            <div class="field"><label for="am-role">Role</label><select id="am-role"><option value="member">Member: proposes and comments</option><option value="chair">Chair: also decides and publishes versions</option></select></div>
+            <div class="field"><label for="am-role">Role</label><select id="am-role"><option value="member">Member: proposes and comments</option><option value="chair">Coordinator: also records decisions and publishes versions</option></select></div>
             <button class="btn primary">Add member</button>
             <p class="muted" style="margin:0;font-size:0.8rem;">Then send them the link to this page: selassiefest.com/sscc-bylaws/</p></form>` : ''}
           </div>
@@ -1445,19 +1445,19 @@
     // ---------------- about ----------------
     function viewAbout() {
       main.innerHTML = `
-        <div class="view-head"><div><h2>How this works</h2><p>One working draft, changed only through proposals the subcommittee has discussed, with a numbered version history so nothing is lost and every change can be traced.</p></div></div>
+        <div class="view-head"><div><h2>How this works</h2><p>The committee starts from one member's proposed rewrite of the 2022 bylaws (v1.0) and works it into the revision it will recommend. The draft changes only through proposals the committee has discussed, and a numbered version history means nothing is lost and every change can be traced.</p></div></div>
         <div class="grid-2"><div class="prose">
           <ol class="steps">
             <li><b>Propose.</b> Open the working draft, pick a section, and choose <i>Amend wording</i>, <i>Add a section</i>, <i>Delete</i>, or <i>Flag an issue</i>. Every proposal needs a one-line summary and should say why. You see a redline of your change before you submit.</li>
             <li><b>Discuss.</b> Each proposal has its own comment thread. Authors can edit their proposal while it is open.</li>
-            <li><b>Decide.</b> The chair accepts, rejects, or defers each proposal, after the subcommittee has discussed it. An accepted change goes straight into the working draft. If a section changes while another proposal on it is still open, that proposal is marked <i>Needs update</i> and can't be accepted until its author updates it to the current text, so no one's change silently overwrites another's.</li>
-            <li><b>Publish a version.</b> When a batch of changes is settled, the chair publishes the next version (v1.1, v1.2, …). Each version freezes the full text and carries a change log: what changed, who proposed it, and why.</li>
+            <li><b>Decide.</b> The committee accepts, rejects, or defers each proposal after discussing it, and the coordinator records the decision on the site. An accepted change goes straight into the working draft. If a section changes while another proposal on it is still open, that proposal is marked <i>Needs update</i> and can't be accepted until its author updates it to the current text, so no one's change silently overwrites another's.</li>
+            <li><b>Publish a version.</b> When a batch of changes is settled, the coordinator publishes the next version (v1.1, v1.2, …). Each version freezes the full text and carries a change log: what changed, who proposed it, and why.</li>
             <li><b>Adopt.</b> The adoption packet prints the proposed bylaws for the membership: a crosswalk from each provision of the 2022 bylaws to the new text, then the complete proposed bylaws. The revision is adopted under the bylaws in force, not the draft: a written motion to the Secretary (Art. VI), then a 2/3 majority of eligible voting members with a quorum of 10 (Art. III §1), and a copy to the Park District.</li>
           </ol></div>
           <div class="panel"><h3 style="font-family:var(--serif);font-size:1.05rem;">Who can see what</h3>
             <p style="margin:0;font-size:0.9rem;">Anyone with the link can read the working draft, the versions, the meeting schedule, and the adoption packet. Proposals, discussion, and the member list are visible only to signed-in subcommittee members. Email addresses are never shown publicly.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">Progress and meetings</h3>
-            <p style="margin:0;font-size:0.9rem;">Mark each section <i>reviewed</i> once you've read it. The chairs mark sections <i>in discussion</i> and then <i>settled</i> as the committee agrees; the <i>Progress</i> tab shows where every article stands. The <i>Meetings</i> tab lays out which articles each meeting takes up on the way to the December 12 PAC meeting.</p>
+            <p style="margin:0;font-size:0.9rem;">Mark each section <i>reviewed</i> once you've read it. The coordinator marks sections <i>in discussion</i> and then <i>settled</i> as the committee agrees; the <i>Progress</i> tab shows where every article stands. The <i>Meetings</i> tab lays out which articles each meeting takes up on the way to the December 12 PAC meeting.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">Email</h3>
             <p style="margin:0;font-size:0.9rem;">Everyone on the committee is emailed about new proposals, newly published versions, and upcoming confirmed meetings.</p>
             <h3 style="font-family:var(--serif);font-size:1.05rem;">The 2022 bylaws</h3>

@@ -5,7 +5,7 @@
 // supabase/sscc-bylaws-progress-meetings.sql), authenticated by the
 // x-webhook-secret header. Bodies:
 //   { event: "proposal", id }   a member submitted a proposal or flagged an issue
-//   { event: "version", num }   a chair published a version
+//   { event: "version", num }   the coordinator published a version
 //   { event: "reminders" }      confirmed meetings two days out
 // Add "dry_run": true to get the recipients and subject without sending, or
 // "test_to": "<email>" to send only to that address.
@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
         subject: `Bylaws ${v.label} published: ${clip(v.summary, 90)}`,
         html: wrap(`
           <h2 style="font-size:20px;margin:8px 0 4px;">${esc(v.label)} is published</h2>
-          <p style="margin:0 0 12px;color:#4a4338;">${esc(nameOf(v.created_by, "The chair"))} published ${esc(v.label)} of the draft bylaws: ${esc(v.summary)}</p>
+          <p style="margin:0 0 12px;color:#4a4338;">${esc(nameOf(v.created_by, "The coordinator"))} published ${esc(v.label)} of the draft bylaws: ${esc(v.summary)}</p>
           ${list ? `<p style="margin:0 0 4px;"><b>${(changes || []).length} change${(changes || []).length === 1 ? "" : "s"}:</b></p><ul style="margin:0 0 8px;padding-left:20px;">${list}</ul>` : ""}
           ${button(`${PAGE}#versions/v-${v.num}`, `Read ${v.label}`)}`),
       },
