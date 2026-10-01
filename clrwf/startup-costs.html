@@ -117,12 +117,18 @@
     <p>Prices were checked in late September 2026. Items marked <span class="pill verify">Confirm price</span> are published standard rates. Check the price on the sign-up page before you pay.</p>
   </div>
 
-  <div class="email-card">
-    <div class="label"><strong style="color:var(--ink)">Use this email for every sign-up.</strong> Keep all the accounts under one login, and save each password somewhere safe.</div>
-    <code id="craigEmail">Clrainfordlpm1@gmail.com</code>
-    <button class="btn ghost small" type="button" id="copyEmail"><i class="far fa-copy"></i> Copy</button>
-    <span class="copied" id="copiedMsg" aria-live="polite"></span>
-  </div>
+  <section id="start" style="margin-top:30px">
+    <span class="eyebrow">Start here</span>
+    <h2>Create the business login first</h2>
+    <p class="lede"><strong style="color:var(--ink)">Don't use your personal Gmail for any of this.</strong> Create one new Gmail that belongs to the business, and use it to sign up for every account on this page. That way Stephen can help run the accounts without your personal email being involved.</p>
+    <div id="startSteps"></div>
+    <div class="email-card">
+      <label class="label" for="bizEmail"><strong style="color:var(--ink)">Your new business Gmail:</strong> type it here once, then copy it into each sign-up. It's saved only in this browser.</label>
+      <input id="bizEmail" type="email" placeholder="e.g. clrainfordwelding@gmail.com" autocomplete="off" style="flex:1 1 240px; padding:10px 12px; border:1.5px solid var(--line-strong); border-radius:5px; background:var(--surface-2); color:var(--ink); font-size:0.95rem; font-family:ui-monospace,Consolas,monospace;">
+      <button class="btn ghost small" type="button" id="copyEmail"><i class="far fa-copy"></i> Copy</button>
+      <span class="copied" id="copiedMsg" aria-live="polite"></span>
+    </div>
+  </section>
 
   <div class="totals">
     <div class="tile"><div class="k">Year 1</div><div class="v" id="totY1">$0</div><div class="s">3 years of the domain + 1 year of email</div></div>
@@ -212,6 +218,16 @@
     {svc:'Cash App — Business account', url:'https://cash.app/business', use:'Small jobs, pay by $Cashtag', pct:0.0275, fixed:0, rate:'2.75%', status:'verify',
      note:'Business accounts pay a fee on money received.'}
   ];
+  var START = [
+    {id:'gmail', cat:'Business login', title:'Create a new business Gmail', svc:'Google — free Gmail account',
+     url:'https://accounts.google.com/signup', cta:'Create the Gmail',
+     desc:'Pick a business-sounding name such as <strong>clrainfordwelding@gmail.com</strong> or <strong>clrainford.fab@gmail.com</strong>; Google will say if a name is taken. Use <strong>your cell phone</strong> for the verification text and as the recovery phone. Google lets you use the same phone for more than one account. Add <strong>stephen@selassiefest.com</strong> as the recovery email so either of you can get back in. Then send Stephen the new address.',
+     price:'<div class="now">Free</div>'},
+    {id:'vault', cat:'Passwords', title:'Save & share the passwords', svc:'Bitwarden — free password manager',
+     url:'https://vault.bitwarden.com/#/register', cta:'Create a Bitwarden account', alt:{url:'https://bitwarden.com/pricing/', label:'See plans'},
+     desc:'Sign up with the new business Gmail. Save each password here as you create each account below. The free plan includes a free <strong>2-person organization</strong>: invite Stephen to it and put the business logins there, so passwords are never sent by text or email.',
+     price:'<div class="now">Free</div>'}
+  ];
   var REG = [
     {id:'gbp', cat:'Free listing', title:'Google Business Profile', svc:'Google', url:'https://www.google.com/business/', cta:'Claim the listing',
      desc:'Puts the shop on Google Maps and Search with hours, photos, and reviews. Link it to the website once the domain is live.', price:'Free'},
@@ -257,6 +273,9 @@
   document.getElementById('totY2').textContent = money(tot[1]);
   document.getElementById('totY4').textContent = money(tot[3]);
 
+  var start = document.getElementById('startSteps');
+  START.forEach(function(s,i){ start.insertAdjacentHTML('beforeend', stepHTML(s, 'Start '+(i+1), s.price)); });
+
   var reg = document.getElementById('regSteps');
   REG.forEach(function(s,i){
     var p='<div class="now">'+s.price+'</div>'+(s.verify?'<div><span class="pill verify">Confirm price</span></div>':'');
@@ -281,11 +300,15 @@
   }
   amt.addEventListener('input', renderPay); renderPay();
 
+  var biz=document.getElementById('bizEmail'), EKEY='clrwf-startup-email';
+  try{ biz.value=localStorage.getItem(EKEY)||''; }catch(e){}
+  biz.addEventListener('input', function(){ try{ localStorage.setItem(EKEY, biz.value.trim()); }catch(e){} });
   document.getElementById('copyEmail').addEventListener('click', function(){
-    var t=document.getElementById('craigEmail').textContent, m=document.getElementById('copiedMsg');
+    var t=biz.value.trim(), m=document.getElementById('copiedMsg');
+    if(!t){ m.textContent='Type it first'; biz.focus(); return; }
     function ok(){ m.textContent='Copied'; setTimeout(function(){ m.textContent=''; },2000); }
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, function(){ m.textContent='Select & copy'; }); }
-    else { m.textContent='Select & copy'; }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, function(){ biz.select(); m.textContent='Press Ctrl+C'; }); }
+    else { biz.select(); m.textContent='Press Ctrl+C'; }
   });
   document.getElementById('yr').textContent = new Date().getFullYear();
 })();
