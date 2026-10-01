@@ -59,3 +59,11 @@ alter table bios102_quiz_report_sent enable row level security;
 --     $$ select net.http_post(... body := '{"mode":"summary","quiz":3}'::jsonb);
 --        select cron.unschedule('bios102-quiz3-finishes');
 --        select cron.unschedule('bios102-quiz3-summary') $$);
+-- Mock Quiz 3 student invite (applied live 2026-10-01): one-time job at
+-- Thu Oct 1 8:00 am Central (13:00Z), same Vault secret, then it unschedules
+-- itself. timeout_milliseconds is raised because the invite loop paces its
+-- 21 sends ~0.6 s apart, past pg_net's 5 s default:
+--   select cron.schedule('bios102-quiz3-invite', '0 13 1 10 *',
+--     $$ select net.http_post(... body := '{"mode":"invite","quiz":3}'::jsonb,
+--        timeout_milliseconds := 120000);
+--        select cron.unschedule('bios102-quiz3-invite') $$);
