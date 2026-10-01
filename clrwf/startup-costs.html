@@ -124,7 +124,7 @@
     <div id="startSteps"></div>
     <div class="email-card">
       <label class="label" for="bizEmail"><strong style="color:var(--ink)">Your new business Gmail:</strong> type it here once, then copy it into each sign-up. It's saved only in this browser.</label>
-      <input id="bizEmail" type="email" placeholder="e.g. clrainfordwelding@gmail.com" autocomplete="off" style="flex:1 1 240px; padding:10px 12px; border:1.5px solid var(--line-strong); border-radius:5px; background:var(--surface-2); color:var(--ink); font-size:0.95rem; font-family:ui-monospace,Consolas,monospace;">
+      <input id="bizEmail" type="email" placeholder="craigdiwelder@gmail.com" autocomplete="off" style="flex:1 1 240px; padding:10px 12px; border:1.5px solid var(--line-strong); border-radius:5px; background:var(--surface-2); color:var(--ink); font-size:0.95rem; font-family:ui-monospace,Consolas,monospace;">
       <button class="btn ghost small" type="button" id="copyEmail"><i class="far fa-copy"></i> Copy</button>
       <span class="copied" id="copiedMsg" aria-live="polite"></span>
     </div>
@@ -221,7 +221,7 @@
   var START = [
     {id:'gmail', cat:'Business login', title:'Create a new business Gmail', svc:'Google — free Gmail account',
      url:'https://accounts.google.com/signup', cta:'Create the Gmail',
-     desc:'Pick a business-sounding name such as <strong>clrainfordwelding@gmail.com</strong> or <strong>clrainford.fab@gmail.com</strong>; Google will say if a name is taken. Use <strong>your cell phone</strong> for the verification text and as the recovery phone. Google lets you use the same phone for more than one account. Add <strong>stephen@selassiefest.com</strong> as the recovery email so either of you can get back in. Then send Stephen the new address.',
+     desc:'Create <strong>craigdiwelder@gmail.com</strong>; Google showed it as available on Oct 1. If it has been taken since, Google will suggest something close. Use <strong>your cell phone</strong> for the verification text and as the recovery phone. Google lets you use the same phone for more than one account. Add <strong>stephen@selassiefest.com</strong> as the recovery email so either of you can get back in. Then send Stephen the new address.',
      price:'<div class="now">Free</div>'},
     {id:'vault', cat:'Passwords', title:'Save & share the passwords', svc:'Bitwarden — free password manager',
      url:'https://vault.bitwarden.com/#/register', cta:'Create a Bitwarden account', alt:{url:'https://bitwarden.com/pricing/', label:'See plans'},
@@ -301,7 +301,8 @@
   amt.addEventListener('input', renderPay); renderPay();
 
   var biz=document.getElementById('bizEmail'), EKEY='clrwf-startup-email';
-  try{ biz.value=localStorage.getItem(EKEY)||''; }catch(e){}
+  biz.value='craigdiwelder@gmail.com';
+  try{ var saved=localStorage.getItem(EKEY); if(saved) biz.value=saved; }catch(e){}
   biz.addEventListener('input', function(){ try{ localStorage.setItem(EKEY, biz.value.trim()); }catch(e){} });
   document.getElementById('copyEmail').addEventListener('click', function(){
     var t=biz.value.trim(), m=document.getElementById('copiedMsg');
