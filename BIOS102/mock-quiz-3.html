@@ -94,6 +94,55 @@
     .mq-page { color: var(--amber); white-space: nowrap; }
     @media (max-width: 560px) { .mq-match-row { grid-template-columns: 1fr; gap: 6px; } }
 
+    /* life cycle game */
+    .lc-hud {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 10px;
+      padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--bg-panel); font-size: 0.88rem; color: var(--text-dim);
+    }
+    .lc-hud strong { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .lc-hud .lc-win { flex-basis: 100%; color: var(--accent); }
+    .lc-hud .lc-hot, .lc-hud .lc-hot strong { color: var(--amber); }
+    .lc-help { margin: 8px 0 0; font-size: 0.86rem; color: var(--text-dim); }
+    .lc-dia { position: relative; margin: 4px 0 14px; border-radius: 8px; overflow: hidden; background: #fff; }
+    .lc-dia img { display: block; width: 100%; height: auto; }
+    .lc-pin {
+      position: absolute; transform: translate(-50%, -50%);
+      width: 26px; height: 26px; border-radius: 50%; padding: 0;
+      border: 2px solid #fff; background: #1d2b26; color: #fff;
+      font-family: inherit; font-size: 0.72rem; font-weight: 600; line-height: 1;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+    }
+    .lc-pin:disabled { cursor: default; }
+    .lc-pin.is-active { background: var(--amber); color: #1d2b26; box-shadow: 0 0 0 4px rgba(224,169,64,0.45); }
+    .lc-pin.pin-ok { background: var(--accent); }
+    .lc-pin.pin-shown { background: var(--amber); color: #1d2b26; }
+    .lc-pin.pin-no { background: var(--danger); animation: lc-shake 0.35s; }
+    .lc-tag {
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 3px;
+      padding: 1px 6px; border-radius: 4px; white-space: nowrap; pointer-events: none;
+      background: rgba(255,255,255,0.94); color: #14201b; font-size: 0.68rem; font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .lc-tag:empty { display: none; }
+    .lc-tag.edge-l { left: 0; transform: none; }
+    .lc-tag.edge-r { left: auto; right: 0; transform: none; }
+    .lc-parts { display: grid; gap: 10px; }
+    .lc-part { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 4px 10px; align-items: center; }
+    .lc-num {
+      grid-row: span 2; align-self: start; margin-top: 8px;
+      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 600; background: #1d2b26; border: 1px solid var(--border);
+    }
+    .lc-num.pin-ok { background: var(--accent); }
+    .lc-cue { font-size: 0.8rem; color: var(--text-dim); font-style: italic; }
+    @media (max-width: 560px) {
+      .lc-pin { width: 22px; height: 22px; font-size: 0.64rem; }
+      .lc-tag { font-size: 0.6rem; padding: 0 4px; }
+    }
+    @keyframes lc-shake { 0%, 100% { margin-left: 0; } 25% { margin-left: -4px; } 75% { margin-left: 4px; } }
+
     .mq-fb { margin-top: 10px; font-size: 0.9rem; min-height: 1.2em; }
     .mq-fb.ok { color: var(--accent); }
     .mq-fb.no { color: var(--danger); }
@@ -117,6 +166,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .mq-meter span, .mq-q { transition: none; }
+      .lc-pin.pin-no { animation: none; }
     }
   </style>
 </head>
@@ -132,6 +182,7 @@
         <li>Every answer is graded as soon as you submit it. Wrong answers can be retried as many times as you like.</li>
         <li>For fill-in-the-blank, type your answer or tap <strong>Speak</strong> and say it. Close spellings count.</li>
         <li>After 3 misses on a question you can choose to see the answer. Revealed answers don't count toward your score.</li>
+        <li>The <strong>moss life cycle game</strong> at the end has you name every part of the life cycle on the diagram, then match structures to what they do.</li>
         <li>Your work is saved to your BIOS102 account, so you can come back to it on any device all semester. <strong>Start over</strong> begins a new round with shuffled questions and keeps your past scores.</li>
       </ul>
     </div>
@@ -205,6 +256,17 @@
                   accept: ['Mnium', 'mnyum', 'nium', 'mneum', 'nee um', 'knee um'] },
               ],
               note: 'Marchantia is the liverwort (phylum Hepatophyta). Polytrichum and Mnium are the two moss genera (phylum Bryophyta). The manual says they are very similar, and both are seen as living specimens or on slides.' },
+            { id: 'next-plants', type: 'fill', page: 53,
+              prompt: 'Next lab, Exercise 5 covers Phylum Lycophyta (the club mosses) and Phylum Monilophyta (Psilotum and the true ferns).',
+              parts: [
+                { key: 'a', prompt: 'These plants are (seeded or seedless): ___',
+                  accept: ['seedless', 'seed less', 'seedles', 'seedlass', 'without seeds', 'no seeds'],
+                  reject: ['seeded', 'seed'] },
+                { key: 'b', prompt: 'These plants are (nonvascular or vascular): ___',
+                  accept: ['vascular', 'vasculer', 'vascula', 'vascular plants', 'vas cular'],
+                  reject: ['nonvascular', 'non vascular', 'not vascular'] },
+              ],
+              note: 'The Exercise 5 title page (p. 53) reads “Kingdom Plantae: Seedless Vascular Plants,” with Phylum Lycophyta (Lycopodium, Selaginella) and Phylum Monilophyta (Psilotum, true ferns).' },
           ],
         },
         {
@@ -213,15 +275,6 @@
             { id: 'ancestors', type: 'tf', page: 43,
               prompt: 'Land plants are considered the descendants of the aquatic green algae.',
               answer: true, note: 'True. Land plants suggest both haploid and diploid algal ancestors.' },
-            { id: 'amphibians', type: 'fill', page: 43,
-              prompt: 'The mosses and liverworts are sometimes called the “___ of the plant world,” since they are the transition group that brought plant life from the water onto land.',
-              parts: [{ key: 'x', accept: ['amphibians', 'amphibian', 'amfibians', 'amphibeans', 'am phibians', 'amphibions'] }],
-              note: 'They made the move onto land, but water is still essential for their reproduction.' },
-            { id: 'adaptations', type: 'multi', page: 43,
-              prompt: 'Select all of the adaptations the manual names as essential to enable survival on land.',
-              options: ['Stomata', 'A waxy cuticle layer', 'A cell wall made of chitin', 'Cilia for moving and feeding'],
-              answer: ['Stomata', 'A waxy cuticle layer'],
-              note: 'On land, plants had to deal with fluctuations in moisture, temperature, and wind, unlike the constant, moist habitats of ponds, lakes, and oceans. Chitin cell walls belong to the fungi (Exercise 3), and cilia to Paramecium (Exercise 2).' },
             { id: 'water', type: 'tf', page: 43,
               prompt: 'Water, as rain or dew, is essential for the reproduction of these plants.',
               answer: true, note: 'True. That is part of why they are restricted to moist habitats.' },
@@ -235,7 +288,7 @@
           id: 'thallus', eyebrow: 'Exercise 4', title: 'The liverwort thallus',
           questions: [
             { id: 'thallus', type: 'fill', page: 44,
-              prompt: 'Since liverworts lack vascular tissues, the plant body is not a stem or leaf. It is called a ___.',
+              prompt: 'The flat liverwort plant body is called a ___.',
               parts: [{ key: 'x', accept: ['thallus', 'thalus', 'thallis', 'thalli', 'tallus', 'thal us', 'thallous'] }],
               note: 'Plural: thalli. Over 8,000 species of liverworts have been identified.' },
             { id: 'horizontal', type: 'tf', page: 44,
@@ -244,7 +297,17 @@
             { id: 'cuticle', type: 'fill', page: 44,
               prompt: 'The dorsal side of the Marchantia thallus appears shiny due to the presence of a waxy ___.',
               parts: [{ key: 'x', accept: ['cuticle', 'cuticle layer', 'cutical', 'cuticul', 'cue tickle', 'cutickle', 'cuticles'] }],
-              note: 'Both sexual and asexual structures form on the dorsal surface of the thallus.' },
+              note: 'You see the shiny dorsal side on the living plants set up on the demonstration stereomicroscopes.' },
+            { id: 'rhizoids', type: 'fill', page: 44,
+              prompt: 'Liverworts have rootlike structures that anchor the thallus to the ground.',
+              parts: [
+                { key: 'a', prompt: 'These rootlike structures are called ___',
+                  accept: ['rhizoids', 'rhizoid', 'rizoids', 'rhizoyds', 'rise oids', 'rhi zoids', 'rhizoides'] },
+                { key: 'b', prompt: 'They are found on the (dorsal or ventral) side of the thallus: ___',
+                  accept: ['ventral', 'ventral side', 'underside', 'bottom', 'lower', 'under side', 'ventrle'],
+                  reject: ['dorsal', 'top', 'upper'] },
+              ],
+              note: 'The rhizoids anchor the thallus to the ground and are present on the ventral side. You label them on the ventral surface of the living thallus (A1b).' },
             { id: 'layers-match', type: 'match', page: '45, 46',
               prompt: 'Match each structure you label on the liverwort slides to its description.',
               choices: ['An opening in the upper epidermis', 'Large cells that store starch', 'Slender threadlike cells in the capsule that help release spores', 'A small canal that allows sperm to reach the egg', 'Attaches the sporophyte to the gametophyte'],
@@ -295,16 +358,17 @@
         {
           id: 'moss', eyebrow: 'Exercise 4', title: 'Mosses',
           questions: [
-            { id: 'algae-look', type: 'tf', page: 48,
-              prompt: 'The moss protonema looks a lot like filamentous green algae.',
-              answer: true, note: 'True. On the slide (B1a, 40X) you label the protonema: very early filaments that resemble filamentous green algae.' },
-            { id: 'buds', type: 'fill', page: 48,
-              prompt: 'The protonema eventually forms ___ that grow into vertical, radially symmetrical, leafy green gametophyte plants.',
-              parts: [{ key: 'x', accept: ['buds', 'bud', 'budlike structures', 'bud like structures', 'budlike structure'] }],
-              note: 'Small, budlike structures form along the length of the filamentous protonema and grow into mature “leafy” gametophytes.' },
-            { id: 'radial', type: 'tf', page: 48,
-              prompt: 'The leafy green moss gametophyte is radially symmetrical.',
-              answer: true, note: 'True. It grows vertically, unlike the flat liverwort thallus, which grows horizontally.' },
+            { id: 'protonema', type: 'fill', page: '48, 52',
+              prompt: 'The protonema is the filamentous thread of cells that a moss starts out as.',
+              parts: [
+                { key: 'a', prompt: 'The protonema is the beginning of the moss (gametophyte or sporophyte): ___',
+                  accept: ['gametophyte', 'gametophytes', 'gamete o fight', 'gametofyte', 'gametophite', 'gameto phyte'],
+                  reject: ['sporophyte', 'sporophytes'] },
+                { key: 'b', prompt: 'The protonema is (haploid or diploid): ___',
+                  accept: ['haploid', 'haploids', 'n', '1n', 'hap loid', 'haployed', 'hap lloyd'],
+                  reject: ['diploid', '2n'] },
+              ],
+              note: 'The moss gametophyte begins as a filamentous thread of cells called a protonema (p. 48). The moss life cycle diagram (p. 52) shades the protonema as haploid (n).' },
             { id: 'tips', type: 'fill', page: 48,
               prompt: 'Polytrichum is a dioecious moss, with the reproductive organs located at the ___ of separate male and female plants.',
               parts: [{ key: 'x', accept: ['tips', 'tip', 'top', 'tops', 'apex', 'apices'] }],
@@ -328,9 +392,12 @@
                 { key: 'd', label: 'Foot', answer: 'Sporophyte plant' },
               ],
               note: 'B1d labels the “leafy” blades under the gametophyte plant and the capsule under the sporophyte plant. The egg is retained in the archegonium of the female plant, and the embryo differentiates into the sporophyte parts, including the foot.' },
-            { id: 'mother-cells', type: 'tf', page: 49,
-              prompt: 'In the Polytrichum capsule, the spore mother cells are located in the center of the capsule as a long string mass of cells.',
-              answer: true, note: 'True. Label the capsule (use a bracket) and the spore mother cells on the demonstration stereomicroscope (B1e).' },
+            { id: 'gametes', type: 'fill', page: 47,
+              prompt: 'The gametes (eggs and sperm) of these plants are formed by ___ (mitosis or meiosis).',
+              parts: [{ key: 'x',
+                accept: ['mitosis', 'mitosys', 'my tosis', 'mytosis', 'mitoses', 'mitotic'],
+                reject: ['meiosis', 'meiotic', 'my osis'] }],
+              note: 'Mitosis. This is liverwort review question 9 (p. 47).' },
           ],
         },
         {
@@ -350,6 +417,96 @@
             { id: 'arch-head', type: 'tf', page: 51,
               prompt: 'In the liverwort life cycle diagram, the archegonial head is found on the male gametophyte.',
               answer: false, note: 'False. The archegonial head, bearing the archegonia, is on the female gametophyte.' },
+          ],
+        },
+        {
+          // The life cycle game: every structure on the manual's moss life
+          // cycle (p. 52), redrawn without labels, in three rounds that follow
+          // the cycle. Pins are x/y percentages of moss-life-cycle.jpg.
+          id: 'mosscycle', eyebrow: 'Life cycle game', title: 'Label the moss life cycle', fixed: true, game: true,
+          questions: [
+            { id: 'lc-r1', type: 'diagram', page: 52,
+              prompt: 'Round 1 of 3: from spore to gametophyte. Name each numbered structure or process.',
+              parts: [
+                { key: '1', x: 5, y: 54, accept: ['sporangium', 'capsule', 'sporangia', 'spore angium', 'sporangeum', 'capsule sporangium'] },
+                { key: '2', x: 13, y: 45, accept: ['spores', 'spore', 'spoors', 'spors'] },
+                { key: '3', x: 14, y: 66, prompt: 'the process happening here', accept: ['meiosis', 'meiosys', 'miosis', 'my osis', 'myosis', 'meosis'], reject: ['mitosis'] },
+                { key: '4', x: 30, y: 37, accept: ['protonema', 'protonemata', 'proto nema', 'protonima', 'protenema', 'pro to neema', 'protonemma'] },
+                { key: '5', x: 23, y: 21, accept: ['bud', 'buds', 'budlike structure', 'bud like structure'] },
+                { key: '6', x: 48, y: 13, accept: ['male gametophyte', 'male gametophytes', 'male plant', 'male gametofyte', 'male gameto phyte'], reject: ['female gametophyte', 'female plant'] },
+                { key: '7', x: 49, y: 40, accept: ['female gametophyte', 'female gametophytes', 'gametophore', 'female plant', 'female gametofyte'], reject: ['male gametophyte', 'male plant'] },
+                { key: '8', x: 52, y: 52, accept: ['rhizoid', 'rhizoids', 'rizoid', 'rhizoyd', 'rise oid', 'rhi zoid'] },
+              ],
+              note: 'Meiosis in the sporangium (capsule) releases haploid spores. A spore grows into a filamentous protonema, which forms "buds" that grow into the leafy male and female gametophytes, anchored by rhizoids. The manual also labels the female shoot the gametophore.' },
+            { id: 'lc-r2', type: 'diagram', page: 52,
+              prompt: 'Round 2 of 3: gametes and fertilization. Name each numbered structure or process.',
+              parts: [
+                { key: '9', x: 64, y: 10, accept: ['antheridia', 'antheridium', 'antheridias', 'anthridia', 'an theridia', 'antherida', 'antheredia'], reject: ['archegonia', 'archegonium'] },
+                { key: '10', x: 80, y: 7, accept: ['sperm', 'sperms', 'sperm cell', 'sperm cells'] },
+                { key: '11', x: 80, y: 16, prompt: 'what the sperm travel in', accept: ['raindrop', 'rain drop', 'raindrops', 'rain', 'water', 'water drop', 'water droplet', 'droplet', 'dew', 'rain water'] },
+                { key: '12', x: 62, y: 36, accept: ['archegonia', 'archegonium', 'arkegonia', 'archigonia', 'arche gonia', 'archegonea', 'archegonias'], reject: ['antheridia', 'antheridium'] },
+                { key: '13', x: 70, y: 36, accept: ['egg', 'eggs', 'egg cell'] },
+                { key: '14', x: 95, y: 48, prompt: 'the process happening here', accept: ['fertilization', 'fertilisation', 'fertilization within archegonium', 'fertilize', 'fertilized', 'fertilizing'] },
+              ],
+              note: 'The antheridia on the male gametophyte release sperm, which swim through water (the raindrop) to the archegonia on the female gametophyte. Fertilization takes place within the archegonium, where the nonmotile egg is retained.' },
+            { id: 'lc-r3', type: 'diagram', page: 52,
+              prompt: 'Round 3 of 3: the sporophyte. Name each numbered structure.',
+              parts: [
+                { key: '15', x: 87, y: 57, accept: ['zygote', 'zygotes', 'zigote', 'zy goat', 'zygot', 'zygoat'] },
+                { key: '16', x: 75, y: 75, accept: ['embryo', 'embryos', 'embrio', 'em bryo', 'embreo'] },
+                { key: '17', x: 59, y: 76, accept: ['young sporophyte', 'young sporophytes', 'immature sporophyte', 'young sporofyte'], reject: ['mature sporophyte', 'embryo'] },
+                { key: '18', x: 45, y: 66, accept: ['capsule', 'capsules', 'sporangium', 'capsule sporangium', 'capsul', 'capsual'] },
+                { key: '19', x: 43, y: 75, accept: ['seta', 'setae', 'stalk', 'seta stalk', 'seeta', 'sita'] },
+                { key: '20', x: 26, y: 67, accept: ['mature sporophytes', 'mature sporophyte', 'sporophytes', 'sporophyte', 'mature sporofytes'], reject: ['young sporophyte'] },
+                { key: '21', x: 19, y: 86, accept: ['female gametophytes', 'female gametophyte', 'gametophytes', 'gametophyte', 'female plants', 'female plant'], reject: ['male gametophyte', 'sporophyte'] },
+              ],
+              note: 'The zygote grows into an embryo, then a young sporophyte, then a mature sporophyte (foot, seta, and capsule) that grows above the female gametophyte and stays attached to it for its entire existence.' },
+            { id: 'lc-ploidy', type: 'match', page: '45, 49, 52',
+              prompt: 'The life cycle key shades each stage haploid (n) or diploid (2n). Sort each one.',
+              choices: ['Haploid (n)', 'Diploid (2n)'],
+              items: [
+                { key: 'a', label: 'Spores', answer: 'Haploid (n)' },
+                { key: 'b', label: 'Protonema', answer: 'Haploid (n)' },
+                { key: 'c', label: 'Leafy male and female gametophytes', answer: 'Haploid (n)' },
+                { key: 'd', label: 'Sperm and egg', answer: 'Haploid (n)' },
+                { key: 'e', label: 'Zygote', answer: 'Diploid (2n)' },
+                { key: 'f', label: 'Embryo', answer: 'Diploid (2n)' },
+                { key: 'g', label: 'Seta and capsule', answer: 'Diploid (2n)' },
+                { key: 'h', label: 'Spore mother cells', answer: 'Diploid (2n)' },
+              ],
+              note: 'Fertilization starts the diploid generation and meiosis ends it: diploid spore mother cells in the capsule undergo meiosis to form haploid spores (p. 45; they divide by meiosis before being released, p. 49).' },
+            { id: 'lc-becomes', type: 'match', page: '48, 49',
+              prompt: 'What does each one grow or develop into?',
+              choices: ['A filamentous protonema', 'A mature “leafy” gametophyte', 'An embryo', 'A foot, seta, and capsule', 'Spore mother cells'],
+              items: [
+                { key: 'a', label: 'A germinating spore', answer: 'A filamentous protonema' },
+                { key: 'b', label: 'A budlike structure on the protonema', answer: 'A mature “leafy” gametophyte' },
+                { key: 'c', label: 'The zygote', answer: 'An embryo' },
+                { key: 'd', label: 'The embryo', answer: 'A foot, seta, and capsule' },
+              ],
+              note: 'The moss gametophyte begins as a filamentous protonema that grows from a germinating spore, and buds along it grow into mature “leafy” gametophytes (p. 48). The zygote grows into an embryo that differentiates into a foot, seta (stalk), and capsule (p. 49).' },
+            { id: 'lc-function', type: 'match', page: '43, 44, 45, 48, 49',
+              prompt: 'Structure and function: match each part of the life cycle to what it does.',
+              choices: [
+                'Contains the sperm',
+                'Retains the nonmotile egg; a canal opens leading to it',
+                'Holds the spore mother cells, which divide by meiosis',
+                'The stalk of the sporophyte',
+                'Attaches the sporophyte to the gametophyte',
+                'Water that the sperm swim through to reach the egg',
+                'Rootlike structures that anchor the plant to the ground',
+                'Large cells that store starch',
+              ],
+              items: [
+                { key: 'a', label: 'Antheridium', answer: 'Contains the sperm' },
+                { key: 'b', label: 'Archegonium', answer: 'Retains the nonmotile egg; a canal opens leading to it' },
+                { key: 'c', label: 'Capsule', answer: 'Holds the spore mother cells, which divide by meiosis' },
+                { key: 'd', label: 'Seta', answer: 'The stalk of the sporophyte' },
+                { key: 'e', label: 'Foot', answer: 'Attaches the sporophyte to the gametophyte' },
+                { key: 'f', label: 'Raindrop', answer: 'Water that the sperm swim through to reach the egg' },
+                { key: 'g', label: 'Rhizoids', answer: 'Rootlike structures that anchor the plant to the ground' },
+              ],
+              note: 'Antheridium: sperm within (p. 48). Archegonium: nonmotile egg retained, canal opens (p. 49). Capsule: spore mother cells divide by meiosis (p. 49). Seta (stalk) and foot are the same as the liverwort sporophyte parts; the foot attaches the sporophyte to the gametophyte (pp. 45, 49). Water as rain or dew is essential for reproduction, and sperm swim with flagella (pp. 43, 45). Rhizoids anchor the thallus to the ground (p. 44). The leftover choice describes parenchyma cells.' },
           ],
         },
       ];
@@ -426,7 +583,8 @@
         const order = {};
         SECTIONS.forEach((s) => {
           const ids = s.questions.map((q) => q.id);
-          for (let i = ids.length - 1; i > 0; i--) {
+          // the life cycle game's rounds follow the cycle, so they stay in order
+          for (let i = s.fixed ? 0 : ids.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [ids[i], ids[j]] = [ids[j], ids[i]];
           }
@@ -435,7 +593,7 @@
         return order;
       }
       function freshState(history) {
-        return { v: 2, updatedAt: 0, attempts: 0, order: shuffledOrder(), q: {}, recorded: false, history: history || [] };
+        return { v: 2, updatedAt: 0, attempts: 0, order: shuffledOrder(), q: {}, recorded: false, history: history || [], lc: { streak: 0, best: 0 } };
       }
       // A save made before the question bank was edited still loads: removed
       // questions drop out of the order, new ones are appended to their
@@ -450,6 +608,7 @@
           s.order[sec.id] = kept.concat(added);
         });
         Object.keys(s.q).forEach((id) => { if (!BY_ID[id]) delete s.q[id]; });
+        if (!s.lc) s.lc = { streak: 0, best: 0 };
         return true;
       }
       function loadLocal() {
@@ -557,6 +716,7 @@
         document.getElementById('quiz').innerHTML = SECTIONS.map((sec) => `
           <section class="mq-section">
             <h2><small>${esc(sec.eyebrow)}</small>${esc(sec.title)}</h2>
+            ${sec.game ? gameHudHtml() : ''}
             <div class="mq-list">
               ${state.order[sec.id].map((id) => questionHtml(BY_ID[id], ++n)).join('')}
             </div>
@@ -564,6 +724,19 @@
         `).join('');
         ALL.forEach((q) => { wire(q); paint(q); });
         updateHud();
+      }
+
+      function gameHudHtml() {
+        return `<p class="lc-help">Every part of the moss life cycle from your manual (p. 52), redrawn without labels.
+            Name each numbered pin. Correct labels lock onto the picture, and tapping a pin jumps to its blank.
+            Your streak counts labels right in a row.</p>
+          <div class="lc-hud" role="status" aria-live="polite">
+            <span>Labels <strong id="lc-found">0</strong> of <strong id="lc-total">0</strong></span>
+            <div class="mq-meter" aria-hidden="true"><span id="lc-meter"></span></div>
+            <span id="lc-streak-wrap">Streak <strong id="lc-streak">0</strong></span>
+            <span>Best <strong id="lc-best">0</strong></span>
+            <span class="lc-win" id="lc-win" hidden></span>
+          </div>`;
       }
 
       function inputRow(q, part, num, withCheck) {
@@ -601,6 +774,22 @@
               </label>`).join('')}
             </div>
             <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
+        } else if (q.type === 'diagram') {
+          controls = `<div class="lc-dia">
+              <img src="/BIOS102/img/moss-life-cycle.jpg" width="1305" height="1206" loading="lazy"
+                alt="Moss life cycle drawn without labels, with numbered pins on the structures to name" />
+              ${q.parts.map((p) => `<button type="button" class="lc-pin" id="${q.id}-${p.key}-pin"
+                style="left:${p.x}%;top:${p.y}%" aria-label="Go to blank ${p.key}">${p.key}<span
+                class="lc-tag${p.x < 14 ? ' edge-l' : p.x > 86 ? ' edge-r' : ''}" id="${q.id}-${p.key}-tag"></span></button>`).join('')}
+            </div>
+            <div class="lc-parts">
+              ${q.parts.map((p) => `<div class="lc-part">
+                <span class="lc-num" id="${q.id}-${p.key}-num">${p.key}</span>
+                ${p.prompt ? `<span class="lc-cue">${esc(p.prompt)}</span>` : ''}
+                ${inputRow(q, p, num, false)}
+              </div>`).join('')}
+            </div>
+            <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         } else if (q.parts.length === 1) {
           controls = inputRow(q, q.parts[0], num, true);
         } else {
@@ -612,7 +801,7 @@
             </div>
             <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
         }
-        const kind = q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.type === 'match' ? `Match · ${q.items.length} items` : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
+        const kind = q.type === 'diagram' ? `Label the diagram · ${q.parts.length} labels` : q.type === 'tf' ? 'True or false' : q.type === 'multi' ? 'Select all that apply' : q.type === 'match' ? `Match · ${q.items.length} items` : q.parts.length > 1 ? `Fill in the blanks · ${q.parts.length} parts` : 'Fill in the blank';
         return `
           <article class="mq-q" id="${q.id}-card">
             <div class="mq-num">${num}.</div>
@@ -650,6 +839,12 @@
             });
             const mic = document.getElementById(`${q.id}-${p.key}-mic`);
             if (mic) mic.addEventListener('click', () => listen(q, p, mic, input));
+            if (q.type === 'diagram') {
+              const pin = document.getElementById(`${q.id}-${p.key}-pin`);
+              pin.addEventListener('click', () => { if (!input.disabled) input.focus(); });
+              input.addEventListener('focus', () => pin.classList.add('is-active'));
+              input.addEventListener('blur', () => pin.classList.remove('is-active'));
+            }
           });
         }
         document.getElementById(`${q.id}-reveal`).addEventListener('click', () => reveal(q));
@@ -772,6 +967,10 @@
           st.last = String(values[p.key]).trim();
           st.ok = matchesPart(values[p.key], p);
           st.wrong = !st.ok;
+          if (q.type === 'diagram') {
+            state.lc.streak = st.ok ? state.lc.streak + 1 : 0;
+            state.lc.best = Math.max(state.lc.best, state.lc.streak);
+          }
         });
         const allOk = q.parts.every((p) => ps(q.id, p.key).ok);
         s.lastWrong = toGrade.some((p) => !ps(q.id, p.key).ok);
@@ -848,6 +1047,17 @@
             input.classList.toggle('part-ok', st.ok);
             input.classList.toggle('part-no', !locked && !!st.wrong);
             if (mic) mic.disabled = locked;
+            if (q.type === 'diagram') {
+              const pin = document.getElementById(`${q.id}-${p.key}-pin`);
+              pin.classList.toggle('pin-ok', st.ok);
+              pin.classList.toggle('pin-shown', s.status === 'revealed' && !st.ok);
+              pin.classList.toggle('pin-no', !locked && !!st.wrong);
+              pin.disabled = locked;
+              document.getElementById(`${q.id}-${p.key}-num`).classList.toggle('pin-ok', st.ok);
+              const label = p.accept[0];
+              document.getElementById(`${q.id}-${p.key}-tag`).textContent =
+                st.ok || s.status === 'revealed' ? label.charAt(0).toUpperCase() + label.slice(1) : '';
+            }
           });
           document.getElementById(`${q.id}-go`).disabled = done;
         }
@@ -857,7 +1067,7 @@
         fb.className = 'mq-fb' + (s.status === 'correct' ? ' ok' : s.status === 'revealed' ? ' shown' : s.lastWrong ? ' no' : '');
         note.hidden = !done;
         note.textContent = done ? `${q.note} (Lab manual ${pageRef(q)})` : '';
-        revealBtn.hidden = done || s.attempts < REVEAL_AFTER;
+        revealBtn.hidden = done || s.attempts < (q.type === 'diagram' ? REVEAL_AFTER * 2 : REVEAL_AFTER);
       }
 
       function feedbackHtml(q, s) {
@@ -887,6 +1097,14 @@
           const st = ps(q.id, p.key);
           return st.ok && squash(st.last) !== squash(p.accept[0]) ? ` Spelled: <strong>${esc(p.accept[0])}</strong>.` : '';
         };
+        if (q.type === 'diagram') {
+          const got = q.parts.filter((p) => ps(q.id, p.key).ok).length;
+          if (s.status === 'correct') return `Round complete: all ${q.parts.length} labels correct.`;
+          if (s.status === 'revealed') return 'The answers are on the picture. Not counted in your score.';
+          const wrong = q.parts.filter((p) => ps(q.id, p.key).wrong).map((p) => p.key);
+          if (!got && !wrong.length) return '';
+          return `${got} of ${q.parts.length} labeled.` + (wrong.length ? ` ${wrong.join(', ')} not quite, try again.` : '');
+        }
         if (s.status === 'revealed') {
           const ans = q.parts.map((p) => (q.parts.length > 1 ? `(${p.key}) ` : '') + `<strong>${esc(p.accept[0])}</strong>`).join(', ');
           return `Answer: ${ans}. Not counted in your score.`;
@@ -929,6 +1147,24 @@
           document.getElementById('done-text').textContent =
             `${firstTry} right on the first try` +
             (revealed ? `, ${revealed} revealed. Look up the revealed ones in your manual, then start over.` : '. Start over to check it sticks.');
+        }
+
+        const game = ALL.filter((q) => q.type === 'diagram');
+        if (game.length && document.getElementById('lc-found')) {
+          const parts = game.flatMap((q) => q.parts.map((p) => ps(q.id, p.key)));
+          const found = parts.filter((st) => st.ok).length;
+          document.getElementById('lc-found').textContent = found;
+          document.getElementById('lc-total').textContent = parts.length;
+          document.getElementById('lc-meter').style.width = (found / parts.length * 100) + '%';
+          document.getElementById('lc-streak').textContent = state.lc.streak;
+          document.getElementById('lc-streak-wrap').classList.toggle('lc-hot', state.lc.streak >= 5);
+          document.getElementById('lc-best').textContent = state.lc.best;
+          const win = document.getElementById('lc-win');
+          const allDone = game.every((q) => qs(q.id).status !== 'open');
+          win.hidden = !allDone;
+          win.textContent = !allDone ? '' : found === parts.length
+            ? `Life cycle complete: all ${parts.length} labels, best streak ${state.lc.best}. Start over to beat it.`
+            : `Life cycle finished with ${found} of ${parts.length} labels. Start over to get them all.`;
         }
 
         const hist = state.history || [];
