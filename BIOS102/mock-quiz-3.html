@@ -115,6 +115,8 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.45);
     }
     .lc-pin:disabled { cursor: default; }
+    /* processes (meiosis, fertilization) are boxes, like the manual's boxed labels; structures are dots */
+    .lc-pin.lc-proc, .lc-num.lc-proc { width: 36px; border-radius: 4px; }
     .lc-pin.is-active { background: var(--amber); color: #1d2b26; box-shadow: 0 0 0 4px rgba(224,169,64,0.45); }
     .lc-pin.pin-ok { background: var(--accent); }
     .lc-pin.pin-shown { background: var(--amber); color: #1d2b26; }
@@ -129,9 +131,9 @@
     .lc-tag.edge-l { left: 0; transform: none; }
     .lc-tag.edge-r { left: auto; right: 0; transform: none; }
     .lc-parts { display: grid; gap: 10px; }
-    .lc-part { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 4px 10px; align-items: center; }
+    .lc-part { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 4px 10px; align-items: center; }
     .lc-num {
-      grid-row: span 2; align-self: start; margin-top: 8px;
+      grid-row: span 2; align-self: start; justify-self: center; margin-top: 8px;
       width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
       font-size: 0.72rem; font-weight: 600; background: #1d2b26; border: 1px solid var(--border);
     }
@@ -139,6 +141,7 @@
     .lc-cue { font-size: 0.8rem; color: var(--text-dim); font-style: italic; }
     @media (max-width: 560px) {
       .lc-pin { width: 22px; height: 22px; font-size: 0.64rem; }
+      .lc-pin.lc-proc { width: 30px; }
       .lc-tag { font-size: 0.6rem; padding: 0 4px; }
     }
     @keyframes lc-shake { 0%, 100% { margin-left: 0; } 25% { margin-left: -4px; } 75% { margin-left: 4px; } }
@@ -430,7 +433,7 @@
               parts: [
                 { key: '1', x: 5, y: 54, accept: ['sporangium', 'capsule', 'sporangia', 'spore angium', 'sporangeum', 'capsule sporangium'] },
                 { key: '2', x: 13, y: 45, accept: ['spores', 'spore', 'spoors', 'spors'] },
-                { key: '3', x: 14, y: 66, prompt: 'the process happening here', accept: ['meiosis', 'meiosys', 'miosis', 'my osis', 'myosis', 'meosis'], reject: ['mitosis'] },
+                { key: '3', x: 14, y: 66, process: true, prompt: 'the process happening here', accept: ['meiosis', 'meiosys', 'miosis', 'my osis', 'myosis', 'meosis'], reject: ['mitosis'] },
                 { key: '4', x: 30, y: 37, accept: ['protonema', 'protonemata', 'proto nema', 'protonima', 'protenema', 'pro to neema', 'protonemma'] },
                 { key: '5', x: 23, y: 21, accept: ['bud', 'buds', 'budlike structure', 'bud like structure'] },
                 { key: '6', x: 48, y: 13, accept: ['male gametophyte', 'male gametophytes', 'male plant', 'male gametofyte', 'male gameto phyte'], reject: ['female gametophyte', 'female plant'] },
@@ -446,7 +449,7 @@
                 { key: '11', x: 80, y: 16, prompt: 'what the sperm travel in', accept: ['raindrop', 'rain drop', 'raindrops', 'rain', 'water', 'water drop', 'water droplet', 'droplet', 'dew', 'rain water'] },
                 { key: '12', x: 62, y: 36, accept: ['archegonia', 'archegonium', 'arkegonia', 'archigonia', 'arche gonia', 'archegonea', 'archegonias'], reject: ['antheridia', 'antheridium'] },
                 { key: '13', x: 70, y: 36, accept: ['egg', 'eggs', 'egg cell'] },
-                { key: '14', x: 95, y: 48, prompt: 'the process happening here', accept: ['fertilization', 'fertilisation', 'fertilization within archegonium', 'fertilize', 'fertilized', 'fertilizing'] },
+                { key: '14', x: 95, y: 48, process: true, prompt: 'the process happening here', accept: ['fertilization', 'fertilisation', 'fertilization within archegonium', 'fertilize', 'fertilized', 'fertilizing'] },
               ],
               note: 'The antheridia on the male gametophyte release sperm, which swim through water (the raindrop) to the archegonia on the female gametophyte. Fertilization takes place within the archegonium, where the nonmotile egg is retained.' },
             { id: 'lc-r3', type: 'diagram', page: 52,
@@ -729,7 +732,7 @@
       function gameHudHtml() {
         return `<p class="lc-help">Every part of the moss life cycle from your manual (p. 52), redrawn without labels.
             Name each numbered pin. Correct labels lock onto the picture, and tapping a pin jumps to its blank.
-            Your streak counts labels right in a row.</p>
+            Round pins are structures; square boxes are processes. Your streak counts labels right in a row.</p>
           <div class="lc-hud" role="status" aria-live="polite">
             <span>Labels <strong id="lc-found">0</strong> of <strong id="lc-total">0</strong></span>
             <div class="mq-meter" aria-hidden="true"><span id="lc-meter"></span></div>
@@ -778,13 +781,13 @@
           controls = `<div class="lc-dia">
               <img src="/BIOS102/img/moss-life-cycle.jpg" width="1305" height="1206" loading="lazy"
                 alt="Moss life cycle drawn without labels, with numbered pins on the structures to name" />
-              ${q.parts.map((p) => `<button type="button" class="lc-pin" id="${q.id}-${p.key}-pin"
-                style="left:${p.x}%;top:${p.y}%" aria-label="Go to blank ${p.key}">${p.key}<span
+              ${q.parts.map((p) => `<button type="button" class="lc-pin${p.process ? ' lc-proc' : ''}" id="${q.id}-${p.key}-pin"
+                style="left:${p.x}%;top:${p.y}%" aria-label="Go to blank ${p.key}${p.process ? ' (a process)' : ''}">${p.key}<span
                 class="lc-tag${p.x < 14 ? ' edge-l' : p.x > 86 ? ' edge-r' : ''}" id="${q.id}-${p.key}-tag"></span></button>`).join('')}
             </div>
             <div class="lc-parts">
               ${q.parts.map((p) => `<div class="lc-part">
-                <span class="lc-num" id="${q.id}-${p.key}-num">${p.key}</span>
+                <span class="lc-num${p.process ? ' lc-proc' : ''}" id="${q.id}-${p.key}-num">${p.key}</span>
                 ${p.prompt ? `<span class="lc-cue">${esc(p.prompt)}</span>` : ''}
                 ${inputRow(q, p, num, false)}
               </div>`).join('')}
