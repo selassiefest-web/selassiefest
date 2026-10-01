@@ -139,6 +139,7 @@
     }
     .lc-num.pin-ok { background: var(--accent); }
     .lc-cue { font-size: 0.8rem; color: var(--text-dim); font-style: italic; }
+    .lc-explain { margin: 0; font-size: 0.84rem; color: var(--text-dim); line-height: 1.5; }
     @media (max-width: 560px) {
       .lc-pin { width: 22px; height: 22px; font-size: 0.64rem; }
       .lc-pin.lc-proc { width: 30px; }
@@ -434,8 +435,11 @@
                 { key: '1', x: 5, y: 54, accept: ['sporangium', 'capsule', 'sporangia', 'spore angium', 'sporangeum', 'capsule sporangium'] },
                 { key: '2', x: 13, y: 45, accept: ['spores', 'spore', 'spoors', 'spors'] },
                 { key: '3', x: 14, y: 66, process: true, prompt: 'the process happening here', accept: ['meiosis', 'meiosys', 'miosis', 'my osis', 'myosis', 'meosis'], reject: ['mitosis'] },
-                { key: '4', x: 30, y: 37, accept: ['protonema', 'protonemata', 'proto nema', 'protonima', 'protenema', 'pro to neema', 'protonemma'] },
-                { key: '5', x: 23, y: 21, accept: ['bud', 'buds', 'budlike structure', 'bud like structure'] },
+                // the drawing doesn't separate the protonema from its buds, so either name counts
+                { key: '4', x: 30, y: 37, tag: 'Protonema / bud',
+                  accept: ['protonema', 'protonemata', 'proto nema', 'protonima', 'protenema', 'pro to neema', 'protonemma',
+                    'bud', 'buds', 'budlike structure', 'bud like structure', 'budlike structures'],
+                  explain: 'Either answer counts here. The protonema is the filamentous thread of cells that grows from a germinating spore (it looks a lot like filamentous green algae). Buds are the small, budlike structures that form along the length of the protonema and grow into the mature “leafy” gametophytes (p. 48).' },
                 { key: '6', x: 48, y: 13, accept: ['male gametophyte', 'male gametophytes', 'male plant', 'male gametofyte', 'male gameto phyte'], reject: ['female gametophyte', 'female plant'] },
                 { key: '7', x: 49, y: 40, accept: ['female gametophyte', 'female gametophytes', 'gametophore', 'female plant', 'female gametofyte'], reject: ['male gametophyte', 'male plant'] },
                 { key: '8', x: 52, y: 52, accept: ['rhizoid', 'rhizoids', 'rizoid', 'rhizoyd', 'rise oid', 'rhi zoid'] },
@@ -515,6 +519,11 @@
       ];
 
       const ALL = SECTIONS.flatMap((s) => s.questions);
+      // Pins are numbered in order across the game's rounds. The numbers are
+      // display only: part keys stay fixed, so a save keeps matching its pin
+      // when a label is added or removed.
+      let pinNum = 0;
+      ALL.filter((q) => q.type === 'diagram').forEach((q) => q.parts.forEach((p) => { p.num = ++pinNum; }));
       const BY_ID = Object.fromEntries(ALL.map((q) => [q.id, q]));
       const REVEAL_AFTER = 3;
       const GENERA = ['Marchantia', 'Polytrichum', 'Mnium', 'Paramecium'];
@@ -782,14 +791,15 @@
               <img src="/BIOS102/img/moss-life-cycle.jpg" width="1305" height="1206" loading="lazy"
                 alt="Moss life cycle drawn without labels, with numbered pins on the structures to name" />
               ${q.parts.map((p) => `<button type="button" class="lc-pin${p.process ? ' lc-proc' : ''}" id="${q.id}-${p.key}-pin"
-                style="left:${p.x}%;top:${p.y}%" aria-label="Go to blank ${p.key}${p.process ? ' (a process)' : ''}">${p.key}<span
+                style="left:${p.x}%;top:${p.y}%" aria-label="Go to blank ${p.num}${p.process ? ' (a process)' : ''}">${p.num}<span
                 class="lc-tag${p.x < 14 ? ' edge-l' : p.x > 86 ? ' edge-r' : ''}" id="${q.id}-${p.key}-tag"></span></button>`).join('')}
             </div>
             <div class="lc-parts">
               ${q.parts.map((p) => `<div class="lc-part">
-                <span class="lc-num${p.process ? ' lc-proc' : ''}" id="${q.id}-${p.key}-num">${p.key}</span>
+                <span class="lc-num${p.process ? ' lc-proc' : ''}" id="${q.id}-${p.key}-num">${p.num}</span>
                 ${p.prompt ? `<span class="lc-cue">${esc(p.prompt)}</span>` : ''}
                 ${inputRow(q, p, num, false)}
+                ${p.explain ? `<p class="lc-explain" id="${q.id}-${p.key}-explain" hidden></p>` : ''}
               </div>`).join('')}
             </div>
             <div class="mq-row mq-check-row"><button type="button" class="mq-btn primary" id="${q.id}-go">Check</button></div>`;
@@ -1057,9 +1067,12 @@
               pin.classList.toggle('pin-no', !locked && !!st.wrong);
               pin.disabled = locked;
               document.getElementById(`${q.id}-${p.key}-num`).classList.toggle('pin-ok', st.ok);
-              const label = p.accept[0];
+              const shown = st.ok || s.status === 'revealed';
+              const label = p.tag || p.accept[0];
               document.getElementById(`${q.id}-${p.key}-tag`).textContent =
-                st.ok || s.status === 'revealed' ? label.charAt(0).toUpperCase() + label.slice(1) : '';
+                shown ? label.charAt(0).toUpperCase() + label.slice(1) : '';
+              const explain = document.getElementById(`${q.id}-${p.key}-explain`);
+              if (explain) { explain.hidden = !shown; explain.textContent = shown ? p.explain : ''; }
             }
           });
           document.getElementById(`${q.id}-go`).disabled = done;
@@ -1104,7 +1117,7 @@
           const got = q.parts.filter((p) => ps(q.id, p.key).ok).length;
           if (s.status === 'correct') return `Round complete: all ${q.parts.length} labels correct.`;
           if (s.status === 'revealed') return 'The answers are on the picture. Not counted in your score.';
-          const wrong = q.parts.filter((p) => ps(q.id, p.key).wrong).map((p) => p.key);
+          const wrong = q.parts.filter((p) => ps(q.id, p.key).wrong).map((p) => p.num);
           if (!got && !wrong.length) return '';
           return `${got} of ${q.parts.length} labeled.` + (wrong.length ? ` ${wrong.join(', ')} not quite, try again.` : '');
         }
