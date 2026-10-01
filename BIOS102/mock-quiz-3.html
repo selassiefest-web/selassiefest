@@ -236,6 +236,7 @@
       // type 'match' -> items: [{ key, label, answer }], choices: [...]; one
       // dropdown per item, graded item by item like fill-in parts.
       // `page` is a number, or a string like '24, 25, 29' for several pages.
+      // `follows: '<id>'` keeps a question directly after that one in the shuffle.
       const SECTIONS = [
         {
           id: 'id', eyebrow: 'Exercise 4', title: 'Identify the plants',
@@ -276,9 +277,6 @@
         {
           id: 'land', eyebrow: 'Exercise 4', title: 'Moving onto land',
           questions: [
-            { id: 'ancestors', type: 'tf', page: 43,
-              prompt: 'Land plants are considered the descendants of the aquatic green algae.',
-              answer: true, note: 'True. Land plants suggest both haploid and diploid algal ancestors.' },
             { id: 'water', type: 'tf', page: 43,
               prompt: 'Water, as rain or dew, is essential for the reproduction of these plants.',
               answer: true, note: 'True. That is part of why they are restricted to moist habitats.' },
@@ -322,18 +320,19 @@
                 { key: 'd', label: 'Neck of the archegonium', answer: 'A small canal that allows sperm to reach the egg' },
               ],
               note: 'Pore and parenchyma cells are labels on the thallus cross-section (A1e, p. 45). Elators are in the capsule of the sporophyte (p. 45), and the neck of the archegonium is labeled on A1g (p. 46). The leftover choice describes the foot.' },
-            { id: 'stoma', type: 'tf', page: 47,
-              prompt: 'The pore on the dorsal surface of the liverwort thallus is similar to a stoma in higher plants.',
-              answer: true, note: 'True. Review question 4 asks where the pore is located and what its function is. On the magnified dorsal surface (A1a) it is the hole in the center of each cell.' },
           ],
         },
         {
           id: 'liversex', eyebrow: 'Exercise 4', title: 'Liverwort sexual reproduction',
           questions: [
             { id: 'dioecious', type: 'fill', page: 45,
-              prompt: 'Marchantia is a ___ plant, since its male and female sexual reproductive organs form on separate thalli.',
-              parts: [{ key: 'x', accept: ['dioecious', 'diecious', 'dioecius', 'dieoecious', 'die ee shus', 'dyeeshus', 'dioicous', 'dioecous'] }],
+              prompt: 'Marchantia is a ___ plant since its sexual reproductive organs form on separate thalli.',
+              parts: [{ key: 'x', accept: ['dioecious', 'diecious', 'dioecius', 'dieoecious', 'die ee shus', 'dyeeshus', 'dioicous', 'dioecous', 'die eesh us'] }],
               note: 'The sexual reproductive structures form as vertical shoots with either male or female receptacles (heads) on top.' },
+            { id: 'dioecious-moss', type: 'fill', page: 48, follows: 'dioecious',
+              prompt: 'Polytrichum is a ___ moss, with the reproductive organs located at the tips of separate male and female plants.',
+              parts: [{ key: 'x', accept: ['dioecious', 'diecious', 'dioecius', 'dieoecious', 'die ee shus', 'dyeeshus', 'dioicous', 'dioecous', 'die eesh us'] }],
+              note: 'Like Marchantia, Polytrichum is dioecious. Examine both male and female plant tips microscopically; the female rosette with archegonia is set up on a demonstration microscope.' },
             { id: 'archegonia', type: 'fill', page: 45,
               prompt: 'The female reproductive organs, each containing an egg, are called ___.',
               parts: [{ key: 'x',
@@ -354,9 +353,6 @@
               prompt: 'The ___ attaches the liverwort sporophyte to the gametophyte throughout its entire existence.',
               parts: [{ key: 'x', accept: ['foot', 'feet', 'foote'] }],
               note: 'On the mature sporophyte slide (A1h, p. 46), choose a sporophyte that still has its foot attached to the archegonial receptacle.' },
-            { id: 'capsule-open', type: 'tf', page: 45,
-              prompt: 'The liverwort capsule breaks open to release its spores.',
-              answer: true, note: 'True. The capsule breaks open, and the spores are released with the help of slender threadlike elators.' },
           ],
         },
         {
@@ -373,19 +369,9 @@
                   reject: ['diploid', '2n'] },
               ],
               note: 'The moss gametophyte begins as a filamentous thread of cells called a protonema (p. 48). The moss life cycle diagram (p. 52) shades the protonema as haploid (n).' },
-            { id: 'tips', type: 'fill', page: 48,
-              prompt: 'Polytrichum is a dioecious moss, with the reproductive organs located at the ___ of separate male and female plants.',
-              parts: [{ key: 'x', accept: ['tips', 'tip', 'top', 'tops', 'apex', 'apices'] }],
-              note: 'Examine both male and female plant tips microscopically. The female rosette with archegonia is set up on a demonstration microscope.' },
             { id: 'nonmotile', type: 'tf', page: 49,
               prompt: 'The moss egg is nonmotile and is retained within the archegonium.',
               answer: true, note: 'True. When the archegonium is mature, a canal opens leading to the egg, and the sperm swims through this canal and unites with it.' },
-            { id: 'above', type: 'fill', page: 49,
-              prompt: 'The moss sporophyte grows ___ the gametophyte and remains attached to it for its entire existence.',
-              parts: [{ key: 'x',
-                accept: ['above', 'on top of', 'on top', 'over', 'out of the top of', 'up from'],
-                reject: ['below', 'under', 'beneath', 'underneath', 'beside'] }],
-              note: 'In Polytrichum the sporophyte grows so tall above the gametophyte that you gently move the petri dish to sketch both generations.' },
             { id: 'plant-match', type: 'match', page: 49,
               prompt: 'When you sketch the living Polytrichum with its attached sporophyte (B1d), which plant does each part belong to?',
               choices: ['Gametophyte plant', 'Sporophyte plant'],
@@ -468,7 +454,7 @@
                 { key: '21', x: 19, y: 86, accept: ['female gametophytes', 'female gametophyte', 'gametophytes', 'gametophyte', 'female plants', 'female plant'], reject: ['male gametophyte', 'sporophyte'] },
               ],
               note: 'The zygote grows into an embryo, then a young sporophyte, then a mature sporophyte (foot, seta, and capsule) that grows above the female gametophyte and stays attached to it for its entire existence.' },
-            { id: 'lc-ploidy', type: 'match', page: '45, 49, 52',
+            { id: 'lc-ploidy', type: 'match', page: '45, 52',
               prompt: 'The life cycle key shades each stage haploid (n) or diploid (2n). Sort each one.',
               choices: ['Haploid (n)', 'Diploid (2n)'],
               items: [
@@ -479,9 +465,8 @@
                 { key: 'e', label: 'Zygote', answer: 'Diploid (2n)' },
                 { key: 'f', label: 'Embryo', answer: 'Diploid (2n)' },
                 { key: 'g', label: 'Seta and capsule', answer: 'Diploid (2n)' },
-                { key: 'h', label: 'Spore mother cells', answer: 'Diploid (2n)' },
               ],
-              note: 'Fertilization starts the diploid generation and meiosis ends it: diploid spore mother cells in the capsule undergo meiosis to form haploid spores (p. 45; they divide by meiosis before being released, p. 49).' },
+              note: 'Fertilization starts the diploid generation and meiosis ends it: meiosis in the capsule forms the haploid spores (p. 45), and the life cycle key shades each stage (p. 52).' },
             { id: 'lc-becomes', type: 'match', page: '48, 49',
               prompt: 'What does each one grow or develop into?',
               choices: ['A filamentous protonema', 'A mature “leafy” gametophyte', 'An embryo', 'A foot, seta, and capsule', 'Spore mother cells'],
@@ -591,6 +576,13 @@
       //           q: { id: { status: 'open'|'correct'|'revealed', attempts,
       //                      lastWrong, tfLast, voice, parts: { key: { ok, last, wrong } } } },
       //           recorded, history: [{ finishedAt, correct, firstTry, total, attempts }] }
+      function placeFollowers(ids) {
+        ALL.filter((q) => q.follows && ids.includes(q.id) && ids.includes(q.follows)).forEach((q) => {
+          ids.splice(ids.indexOf(q.id), 1);
+          ids.splice(ids.indexOf(q.follows) + 1, 0, q.id);
+        });
+        return ids;
+      }
       function shuffledOrder() {
         const order = {};
         SECTIONS.forEach((s) => {
@@ -600,7 +592,7 @@
             const j = Math.floor(Math.random() * (i + 1));
             [ids[i], ids[j]] = [ids[j], ids[i]];
           }
-          order[s.id] = ids;
+          order[s.id] = placeFollowers(ids);
         });
         return order;
       }
@@ -617,10 +609,20 @@
           const kept = (Array.isArray(s.order[sec.id]) ? s.order[sec.id] : []).filter((id) => ids.includes(id));
           const added = ids.filter((id) => !kept.includes(id));
           if (added.length) s.recorded = false;
-          s.order[sec.id] = kept.concat(added);
+          s.order[sec.id] = placeFollowers(kept.concat(added));
         });
         Object.keys(s.q).forEach((id) => { if (!BY_ID[id]) delete s.q[id]; });
         if (!s.lc) s.lc = { streak: 0, best: 0 };
+        // a part removed from a question can leave it open with every
+        // remaining part already right, and nothing left to check
+        Object.keys(s.q).forEach((id) => {
+          const st = s.q[id];
+          const keys = (BY_ID[id].items || BY_ID[id].parts || []).map((p) => p.key);
+          if (st.status === 'open' && keys.length && keys.every((k) => st.parts && st.parts[k] && st.parts[k].ok)) {
+            st.status = 'correct';
+            st.lastWrong = false;
+          }
+        });
         return true;
       }
       function loadLocal() {
