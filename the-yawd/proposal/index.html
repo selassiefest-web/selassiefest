@@ -69,6 +69,19 @@
   .bar { position: sticky; top: 0; z-index: 3; background: #fff; border-bottom: 1px solid #ccc; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-family: Arial, sans-serif; font-size: 14px; }
   .bar a { color: #000; font-weight: bold; }
   @media print { .bar { display: none; } body { background: #fff; } }
+
+  /* Screen only: click a rendering to view it full size. */
+  @media screen {
+    figure img { cursor: zoom-in; }
+    .lb { position: fixed; inset: 0; z-index: 10; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 16px; }
+    .lb.open { display: flex; }
+    .lb img { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; cursor: zoom-out; }
+    .lb .cap { color: #fff; font-family: Arial, sans-serif; font-size: 14px; margin-top: 10px; text-align: center; }
+    .lb button { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: #fff; border: 0; font-size: 28px; width: 48px; height: 64px; cursor: pointer; border-radius: 6px; }
+    .lb .prev { left: 10px; } .lb .next { right: 10px; }
+    .lb .close { top: 14px; right: 14px; transform: none; width: 44px; height: 44px; font-size: 24px; }
+  }
+  @media print { .lb { display: none !important; } }
 </style>
 </head>
 <body>
@@ -298,6 +311,48 @@
   if (location.hash === '#noimages') document.body.classList.add('noimages');
   const d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   document.querySelectorAll('[data-date]').forEach(el => el.textContent = d);
+</script>
+<div class="lb" id="lb" role="dialog" aria-label="Enlarged rendering">
+  <button class="close" aria-label="Close">&times;</button>
+  <button class="prev" aria-label="Previous">&#8249;</button>
+  <img alt="">
+  <div class="cap"></div>
+  <button class="next" aria-label="Next">&#8250;</button>
+</div>
+<script>
+  // Click any rendering to see the full-size version; arrows/swipe to browse, Esc to close.
+  (function () {
+    const figs = [...document.querySelectorAll('figure')];
+    const lb = document.getElementById('lb'), img = lb.querySelector('img'), cap = lb.querySelector('.cap');
+    let i = 0;
+    const full = f => f.querySelector('img').getAttribute('src').replace('/img/', '/img/full/');
+    function show(n) {
+      i = (n + figs.length) % figs.length;
+      img.src = full(figs[i]);
+      cap.textContent = (figs[i].querySelector('figcaption') || {}).textContent || '';
+      lb.classList.add('open');
+    }
+    const close = () => lb.classList.remove('open');
+    figs.forEach((f, n) => f.querySelector('img').addEventListener('click', () => show(n)));
+    lb.querySelector('.prev').onclick = e => { e.stopPropagation(); show(i - 1); };
+    lb.querySelector('.next').onclick = e => { e.stopPropagation(); show(i + 1); };
+    lb.querySelector('.close').onclick = close;
+    img.onclick = close;
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(i - 1);
+      if (e.key === 'ArrowRight') show(i + 1);
+    });
+    let x0 = null;
+    lb.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+    });
+  })();
 </script>
 </body>
 </html>
