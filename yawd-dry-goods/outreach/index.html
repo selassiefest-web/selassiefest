@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Yawd Supplier Outreach</title>
+<link rel="icon" type="image/png" href="/yawd-dry-goods/img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,400&family=Jost:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: a working pipeline. Status strip on top, filter bar, supplier rows, detail drawer on the right. */
+  :root{
+    --bg:#F6F3EC; --surface:#FFFFFF; --surface-2:#EFEBE1; --ink:#1C1A15; --ink-soft:#5A5548; --ink-faint:#8D8676;
+    --line:#E0D9C9; --gold:#9A7424; --gold-bg:#F5EBD3; --leaf:#1F6A45; --leaf-bg:#E2F0E6;
+    --s-new:#8D8676; --s-out:#2F6FB0; --s-talk:#9A7424; --s-sample:#7A4FB0; --s-yes:#1F6A45; --s-no:#B0453A;
+    --chip-bg:#EFEBE1; --focus:#9A7424; --shadow:0 1px 2px rgba(40,32,15,.06), 0 12px 32px -16px rgba(40,32,15,.25);
+    --display:'Bodoni Moda', Didot, Georgia, serif; --body:'Jost', 'Segoe UI', system-ui, sans-serif; --mono:'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#13110D; --surface:#1B1914; --surface-2:#24211A; --ink:#F1EADB; --ink-soft:#BDB4A1; --ink-faint:#877F6E;
+    --line:#2F2B22; --gold:#D9B45F; --gold-bg:#2E2717; --leaf:#7FCB9F; --leaf-bg:#16291E;
+    --s-new:#877F6E; --s-out:#7DB3E8; --s-talk:#D9B45F; --s-sample:#B997E8; --s-yes:#7FCB9F; --s-no:#EB9186;
+    --chip-bg:#24211A; --focus:#D9B45F; --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6); color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#13110D; --surface:#1B1914; --surface-2:#24211A; --ink:#F1EADB; --ink-soft:#BDB4A1; --ink-faint:#877F6E;
+    --line:#2F2B22; --gold:#D9B45F; --gold-bg:#2E2717; --leaf:#7FCB9F; --leaf-bg:#16291E;
+    --s-new:#877F6E; --s-out:#7DB3E8; --s-talk:#D9B45F; --s-sample:#B997E8; --s-yes:#7FCB9F; --s-no:#EB9186;
+    --chip-bg:#24211A; --focus:#D9B45F; --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6); color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.5}
+  button, input, select, textarea{font:inherit; color:inherit}
+  a{color:var(--gold)}
+  .wrap{max-width:1240px; margin:0 auto; padding-inline:20px; padding-block:28px 80px}
+  :focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+
+  header.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:22px}
+  .kicker{font-size:.7rem; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); font-weight:600}
+  h1{font-family:var(--display); font-weight:500; font-size:clamp(1.8rem, 3.4vw, 2.5rem); margin:6px 0 0; line-height:1.1; text-wrap:balance}
+  h1 em{font-style:italic; font-weight:400; color:var(--gold)}
+  .sub{color:var(--ink-soft); margin-top:6px; max-width:62ch}
+  .tabs{display:flex; gap:4px; background:var(--surface-2); padding:4px; border-radius:999px}
+  .tabs button{border:0; background:transparent; padding:8px 16px; border-radius:999px; cursor:pointer; color:var(--ink-soft); font-weight:500; font-size:.9rem}
+  .tabs button[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+
+  /* pipeline strip */
+  .pipe{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:18px}
+  .pipe button{all:unset; box-sizing:border-box; cursor:pointer; background:var(--surface); padding:14px 16px; display:flex; flex-direction:column; gap:2px; position:relative}
+  .pipe button::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--c)}
+  .pipe button[aria-pressed="true"]{background:var(--surface-2)}
+  .pipe b{font-family:var(--display); font-weight:500; font-size:1.7rem; font-variant-numeric:tabular-nums; line-height:1}
+  .pipe span{font-size:.78rem; color:var(--ink-soft)}
+
+  /* toolbar */
+  .bar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px}
+  .bar input[type=search]{flex:1 1 260px; min-width:0; padding:10px 14px; border:1px solid var(--line); background:var(--surface); border-radius:10px}
+  .bar select{padding:10px 12px; border:1px solid var(--line); background:var(--surface); border-radius:10px; max-width:100%}
+  .btn{border:1px solid var(--line); background:var(--surface); padding:9px 16px; border-radius:10px; cursor:pointer; font-weight:500; font-size:.9rem; white-space:nowrap}
+  .btn.primary{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+  .btn.ghost{background:transparent}
+  .btn:disabled{opacity:.5; cursor:default}
+  .count{font-size:.85rem; color:var(--ink-faint); margin:0 0 10px}
+
+  /* rows */
+  .list{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  .row{display:grid; grid-template-columns:minmax(0,2.1fr) minmax(0,1.6fr) minmax(0,1.9fr) 150px; gap:16px; align-items:start; padding:14px 18px; border-top:1px solid var(--line); cursor:pointer; text-align:left; width:100%; background:transparent; border-left:0; border-right:0; border-bottom:0}
+  .row:first-child{border-top:0}
+  .row:hover{background:var(--surface-2)}
+  .row.head{cursor:default; background:var(--surface-2); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; padding-block:10px}
+  .co{font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .prod{color:var(--ink-soft); font-size:.86rem; margin-top:2px; overflow-wrap:anywhere}
+  .who{font-size:.9rem; overflow-wrap:anywhere}
+  .who small{display:block; color:var(--ink-faint); font-size:.8rem}
+  .reach{font-family:var(--mono); font-size:.8rem; display:flex; flex-direction:column; gap:2px; overflow-wrap:anywhere; color:var(--ink-soft)}
+  .reach .none{font-family:var(--body); color:var(--ink-faint); font-style:italic; font-size:.85rem}
+  .stat{display:flex; flex-direction:column; gap:6px; align-items:flex-start}
+  .pill{display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:500; padding:3px 10px 3px 8px; border-radius:999px; background:var(--chip-bg); white-space:nowrap}
+  .pill::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--c)}
+  .due{font-size:.76rem; color:var(--ink-faint)}
+  .due.late{color:var(--s-no); font-weight:500}
+  .tag{font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; padding:2px 7px; border-radius:5px; background:var(--chip-bg); color:var(--ink-soft)}
+  .tag.cat-alcohol{background:var(--gold-bg); color:var(--gold)}
+  .tag.hi{background:var(--leaf-bg); color:var(--leaf)}
+  .conf{font-size:.7rem; color:var(--ink-faint)}
+  .conf.low{color:var(--s-no)}
+  .empty{padding:48px 24px; text-align:center; color:var(--ink-soft)}
+  .empty h3{font-family:var(--display); font-weight:500; font-size:1.4rem; margin:0 0 8px; color:var(--ink)}
+
+  /* drawer */
+  .scrim{position:fixed; inset:0; background:rgba(10,8,4,.42); z-index:30}
+  .drawer{position:fixed; top:0; right:0; bottom:0; width:min(560px, 100%); background:var(--surface); z-index:31; box-shadow:var(--shadow); display:flex; flex-direction:column; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+  .dh{padding:20px 22px 14px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:flex-start; justify-content:space-between}
+  .dh h2{font-family:var(--display); font-weight:500; font-size:1.55rem; margin:4px 0 0; line-height:1.15; text-wrap:balance}
+  .db{padding:18px 22px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:18px}
+  .x{border:0; background:var(--surface-2); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:1.1rem; flex:none}
+  .kv{display:grid; grid-template-columns:110px minmax(0,1fr); gap:8px 14px; font-size:.9rem}
+  .kv dt{color:var(--ink-faint); font-size:.78rem; padding-top:2px}
+  .kv dd{margin:0; overflow-wrap:anywhere}
+  .kv dd.m{font-family:var(--mono); font-size:.85rem}
+  .copy{border:1px solid var(--line); background:transparent; border-radius:6px; font-size:.7rem; padding:1px 7px; margin-left:6px; cursor:pointer; color:var(--ink-soft); font-family:var(--body)}
+  .sec{font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:8px}
+  .note{background:var(--surface-2); border-radius:10px; padding:12px 14px; font-size:.88rem; color:var(--ink-soft)}
+  .src{display:flex; flex-direction:column; gap:4px; font-size:.82rem}
+  .src a{overflow-wrap:anywhere}
+  .f{display:flex; flex-direction:column; gap:5px}
+  .f label{font-size:.76rem; color:var(--ink-faint); font-weight:500}
+  .f input, .f select, .f textarea{padding:9px 12px; border:1px solid var(--line); border-radius:9px; background:var(--bg); width:100%}
+  .f textarea{min-height:80px; resize:vertical}
+  .g2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .log{display:flex; flex-direction:column; gap:8px; margin:0; padding:0; list-style:none}
+  .log li{display:grid; grid-template-columns:86px minmax(0,1fr) auto; gap:10px; font-size:.86rem; padding:8px 0; border-top:1px solid var(--line)}
+  .log time{font-family:var(--mono); font-size:.76rem; color:var(--ink-faint); padding-top:2px}
+  .log button{border:0; background:transparent; color:var(--ink-faint); cursor:pointer; font-size:.8rem}
+  .logadd{display:flex; gap:8px}
+  .logadd input{flex:1; min-width:0; padding:9px 12px; border:1px solid var(--line); border-radius:9px; background:var(--bg)}
+  .df{padding:14px 22px; border-top:1px solid var(--line); display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .saved{font-size:.82rem; color:var(--ink-faint)}
+  .danger{color:var(--s-no)}
+
+  /* panels */
+  .panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:26px 28px; max-width:860px}
+  .panel h2{font-family:var(--display); font-weight:500; font-size:1.6rem; margin:0 0 6px}
+  .panel p.lead{color:var(--ink-soft); margin:0 0 18px}
+  .lic{margin:0; padding:0; list-style:none; display:flex; flex-direction:column}
+  .lic li{padding:14px 0; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:4px}
+  .lic li b{font-weight:600}
+  .lic li a{font-size:.8rem; overflow-wrap:anywhere}
+  .tpl{white-space:pre-wrap; font-family:var(--body); background:var(--surface-2); border-radius:10px; padding:18px 20px; font-size:.92rem; line-height:1.6; margin:0}
+  .toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:9px 16px; border-radius:999px; font-size:.86rem; z-index:40}
+  .banner{background:var(--gold-bg); color:var(--ink); border-radius:12px; padding:12px 16px; font-size:.9rem; margin-bottom:16px}
+
+  @media (max-width:900px){
+    .pipe{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .row.head{display:none}
+    .row{grid-template-columns:minmax(0,1fr) auto; gap:6px 14px}
+    .row .who, .row .reach{grid-column:1 / -1}
+    .row .stat{grid-row:1; grid-column:2; align-items:flex-end}
+  }
+  @media (max-width:520px){
+    .wrap{padding-inline:16px}
+    .pipe{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .g2{grid-template-columns:1fr}
+    .kv{grid-template-columns:1fr; gap:2px}
+    .kv dd{margin-bottom:8px}
+    .panel{padding:20px 18px}
+    .log li{grid-template-columns:minmax(0,1fr) auto}
+    .log time{grid-column:1 / -1}
+  }
+  @media (prefers-reduced-motion: no-preference){ .drawer{animation:slidein .22s ease-out} @keyframes slidein{from{transform:translateX(24px); opacity:.6}} }
+</style>
+<style>
+  html,body{margin:0}
+  [hidden]{display:none !important}
+  .signin{min-height:100vh; display:flex; align-items:center; justify-content:center; padding-inline:16px; padding-block:40px}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:34px 32px; width:min(420px,100%); box-shadow:var(--shadow); display:flex; flex-direction:column; gap:14px}
+  .card img{width:58px; height:auto; display:block}
+  .card h1{font-size:1.9rem; margin:0}
+  .card p{margin:0; color:var(--ink-soft)}
+  .card input{padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--bg); width:100%}
+  .card .msg{font-size:.9rem; min-height:1.3em}
+  .card .msg.err{color:var(--s-no)}
+  .card .msg.ok{color:var(--leaf)}
+  .who-bar{display:flex; gap:10px; align-items:center; font-size:.85rem; color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<section class="signin" id="signin" hidden>
+  <form class="card" id="signinForm" novalidate>
+    <img src="/yawd-dry-goods/img/y-mark.png" alt="" width="58" height="46">
+    <div class="kicker">Yawd Dry Goods &middot; Private</div>
+    <h1>Supplier <em>outreach</em></h1>
+    <p>Enter your email and we'll send you a sign-in link. Only people on the access list can sign in.</p>
+    <label for="siEmail" class="sr" style="position:absolute;left:-9999px">Email</label>
+    <input id="siEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+    <button class="btn primary" type="submit" id="siBtn">Email me a link</button>
+    <p class="msg" id="siMsg" role="status"></p>
+  </form>
+</section>
+<div id="app" hidden>
+
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="kicker">Yawd Dry Goods &middot; Private</div>
+      <h1>Supplier <em>outreach</em></h1>
+      <div class="who-bar" id="whoBar"></div>
+      <p class="sub">Jamaican makers, exporters and distributors to approach directly. Contact details come from public listings; confirm each one before relying on it.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-sup" aria-selected="true" data-tab="sup">Suppliers</button>
+      <button role="tab" id="tab-lic" aria-selected="false" data-tab="lic">Alcohol licensing</button>
+      <button role="tab" id="tab-tpl" aria-selected="false" data-tab="tpl">Intro email</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <section id="p-sup">
+    <div class="pipe" id="pipe"></div>
+    <div class="bar">
+      <input type="search" id="q" placeholder="Search company, product, person, parish..." aria-label="Search suppliers">
+      <select id="fcat" aria-label="Category"></select>
+      <select id="fsort" aria-label="Sort">
+        <option value="priority">Sort: priority</option>
+        <option value="due">Sort: follow-up date</option>
+        <option value="name">Sort: name</option>
+        <option value="updated">Sort: recently updated</option>
+      </select>
+      <label style="display:flex;gap:6px;align-items:center;font-size:.88rem;color:var(--ink-soft)"><input type="checkbox" id="fcontact"> Has phone or email</label>
+      <button class="btn primary" id="addBtn">Add supplier</button>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="list" id="list">
+      <div class="empty"><h3>Loading suppliers</h3><p>Your supplier list is stored privately with this page and appears here in a moment.</p></div>
+    </div>
+  </section>
+
+  <section id="p-lic" hidden>
+    <div class="panel">
+      <h2>Importing rum, beer and wine</h2>
+      <p class="lead">Alcohol follows different rules from groceries. These are the licences that sit between a Jamaican distillery and a Chicago shelf.</p>
+      <ul class="lic" id="lic"><li>Licensing notes load from the tracker's data.</li></ul>
+    </div>
+  </section>
+
+  <section id="p-tpl" hidden>
+    <div class="panel">
+      <h2>First-contact email</h2>
+      <p class="lead">Send to export sales managers. Replace the sign-off once Yawd has its own email address.</p>
+      <p style="margin:0 0 8px"><b>Subject:</b> <span id="tplSubject">Direct export partnership: Jamaican grocery opening in Chicago</span> <button class="copy" data-copy-el="tplSubject">Copy</button></p>
+      <pre class="tpl" id="tplBody">Dear Export Sales Manager,
+
+We are opening Yawd Dry Goods, a Jamaican grocery and distribution business in Chicago, Illinois. We plan to buy directly from Jamaican manufacturers, farmers and agro-processors rather than through U.S. distributors, and to supply our store, home-delivery customers and Chicago's Caribbean restaurants.
+
+We would like to carry your products. Could you send us:
+
+- Your current export catalogue and wholesale price list
+- Minimum order quantities and case or pallet sizes
+- FOB pricing from Kingston or Montego Bay
+- Your experience shipping to the United States, including your FDA facility registration
+- Payment terms, production lead times and preferred freight forwarders
+
+If someone else handles international sales, we would be grateful for an introduction.
+
+We look forward to working with you.
+
+Kind regards,
+
+[Name]
+Yawd Dry Goods
+Chicago, Illinois, USA
+[Phone] · [Email]</pre>
+      <p style="margin:12px 0 0"><button class="btn" data-copy-el="tplBody">Copy email</button></p>
+    </div>
+  </section>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-labelledby="dTitle" role="dialog"></aside>
+<div class="toast" id="toast" hidden role="status"></div>
+
+</div>
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  const STATUSES = [
+    {k:'new', label:'Not contacted', c:'--s-new'},
+    {k:'out', label:'Reached out', c:'--s-out'},
+    {k:'talk', label:'In conversation', c:'--s-talk'},
+    {k:'sample', label:'Samples / pricing', c:'--s-sample'},
+    {k:'yes', label:'Approved supplier', c:'--s-yes'},
+    {k:'no', label:'Not a fit', c:'--s-no'},
+  ];
+  const CATS = {
+    gateway:'Trade gateways', major:'Large manufacturers', canned:'Canned & processed', seasonings:'Seasonings & sauces',
+    'coffee-tea':'Coffee, tea & cocoa', 'baking-snacks':'Flour, baking & snacks', specialty:'Specialty & bush',
+    beverages:'Juices & soft drinks', alcohol:'Rum, beer & wine', distributor:'Distributors & export houses'
+  };
+  const PRI = {high:0, medium:1, low:2};
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const st = (k) => STATUSES.find((s) => s.k === k) || STATUSES[0];
+  const today = () => new Date().toISOString().slice(0,10);
+
+  let rows = [], fStatus = null, openId = null, canWrite = true, session = null, client = null;
+
+  // Tabs
+  document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach((x) => x.setAttribute('aria-selected', x === b ? 'true' : 'false'));
+    ['sup','lic','tpl'].forEach((t) => $('p-' + t).hidden = t !== b.dataset.tab);
+  }));
+
+  // Copy helpers
+  function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 1800); }
+  async function copy(text){
+    try { await navigator.clipboard.writeText(text); toast('Copied'); }
+    catch { toast('Copy blocked here. Select the text instead.'); }
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-copy],[data-copy-el]');
+    if (!b) return;
+    e.stopPropagation();
+    copy(b.dataset.copy ?? $(b.dataset.copyEl).textContent);
+  });
+
+  // Filters
+  $('fcat').innerHTML = '<option value="">All categories</option>' + Object.entries(CATS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+  ['q','fcat','fsort','fcontact'].forEach((id) => $(id).addEventListener('input', render));
+
+  function visible(){
+    const q = $('q').value.trim().toLowerCase();
+    const cat = $('fcat').value, needContact = $('fcontact').checked;
+    let out = rows.filter((r) => {
+      if (fStatus && (r.status || 'new') !== fStatus) return false;
+      if (cat && r.category !== cat) return false;
+      if (needContact && !r.phone && !r.email) return false;
+      if (q) {
+        const hay = [r.company, r.products, r.contact_name, r.contact_title, r.parish, r.address, r.notes, r.us_importer].join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    const s = $('fsort').value;
+    out.sort((a,b) => {
+      if (s === 'name') return a.company.localeCompare(b.company);
+      if (s === 'updated') return (b.updated_at || '').localeCompare(a.updated_at || '');
+      if (s === 'due') return (a.follow_up || '9999').localeCompare(b.follow_up || '9999') || a.company.localeCompare(b.company);
+      return (PRI[a.priority] ?? 1) - (PRI[b.priority] ?? 1) || a.company.localeCompare(b.company);
+    });
+    return out;
+  }
+
+  function renderPipe(){
+    const counts = Object.fromEntries(STATUSES.map((s) => [s.k, 0]));
+    rows.forEach((r) => counts[r.status || 'new']++);
+    $('pipe').innerHTML = STATUSES.map((s) => `<button style="--c:var(${s.c})" aria-pressed="${fStatus === s.k}" data-st="${s.k}"><b>${counts[s.k]}</b><span>${s.label}</span></button>`).join('');
+    $('pipe').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { fStatus = fStatus === b.dataset.st ? null : b.dataset.st; render(); }));
+  }
+
+  function render(){
+    renderPipe();
+    if (!rows.length) return;
+    const v = visible();
+    $('count').textContent = `${v.length} of ${rows.length} suppliers` + (fStatus ? ` · ${st(fStatus).label}` : '');
+    if (!v.length) { $('list').innerHTML = '<div class="empty"><h3>No matches</h3><p>Clear a filter or try a different search.</p></div>'; return; }
+    const t = today();
+    $('list').innerHTML = '<div class="row head"><div>Supplier</div><div>Contact</div><div>Phone &amp; email</div><div>Status</div></div>' + v.map((r) => {
+      const s = st(r.status);
+      const late = r.follow_up && r.follow_up < t && !['yes','no'].includes(r.status);
+      return `<button class="row" data-id="${esc(r.id)}">
+        <div><div class="co">${esc(r.company)} <span class="tag ${r.category === 'alcohol' ? 'cat-alcohol' : ''}">${esc(CATS[r.category] || r.category || '')}</span>${r.priority === 'high' ? '<span class="tag hi">Priority</span>' : ''}</div>
+          <div class="prod">${esc(r.products || '')}</div></div>
+        <div class="who">${r.contact_name ? esc(r.contact_name) : '<span class="conf">No named contact</span>'}<small>${esc(r.contact_title || r.parish || '')}</small></div>
+        <div class="reach">${r.phone ? `<span>${esc(r.phone)}</span>` : ''}${r.email ? `<span>${esc(r.email)}</span>` : ''}${!r.phone && !r.email ? (r.website ? `<span>${esc(r.website)}</span>` : '<span class="none">Needs contact details</span>') : ''}
+          ${r.confidence ? `<span class="conf ${r.confidence === 'low' ? 'low' : ''}">${esc(r.confidence)} confidence${r.source_date ? ' · ' + esc(r.source_date) : ''}</span>` : ''}</div>
+        <div class="stat"><span class="pill" style="--c:var(${s.c})">${s.label}</span>${r.follow_up ? `<span class="due ${late ? 'late' : ''}">${late ? 'Overdue ' : 'Follow up '}${esc(r.follow_up)}</span>` : ''}</div>
+      </button>`;
+    }).join('');
+    $('list').querySelectorAll('.row[data-id]').forEach((b) => b.addEventListener('click', () => openDrawer(b.dataset.id)));
+    if (openId && !$('drawer').hidden) { /* keep drawer fields as typed */ }
+  }
+
+  // Drawer
+  function closeDrawer(){ $('drawer').hidden = true; $('scrim').hidden = true; openId = null; }
+  $('scrim').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('drawer').hidden) closeDrawer(); });
+  $('addBtn').addEventListener('click', () => openDrawer(null));
+
+  function field(id, label, val, type='text', extra=''){
+    return `<div class="f"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(val || '')}" ${extra}></div>`;
+  }
+
+  function openDrawer(id){
+    const r = id ? rows.find((x) => x.id === id) : {status:'new', priority:'medium', category:'canned', log:[]};
+    if (!r) return;
+    openId = id;
+    const isNew = !id;
+    const statusOpts = STATUSES.map((s) => `<option value="${s.k}" ${r.status === s.k ? 'selected' : ''}>${s.label}</option>`).join('');
+    const catOpts = Object.entries(CATS).map(([k,v]) => `<option value="${k}" ${r.category === k ? 'selected' : ''}>${v}</option>`).join('');
+    const reach = (label, v, mono=true) => v ? `<dt>${label}</dt><dd class="${mono ? 'm' : ''}">${esc(v)}<button class="copy" data-copy="${esc(v)}">Copy</button></dd>` : '';
+    const web = r.website ? `<dt>Website</dt><dd><a href="${esc(/^https?:/.test(r.website) ? r.website : 'https://' + r.website)}" target="_blank" rel="noopener">${esc(r.website)}</a></dd>` : '';
+    $('drawer').innerHTML = `
+      <div class="dh"><div><div class="kicker">${esc(CATS[r.category] || 'New supplier')}</div><h2 id="dTitle">${isNew ? 'Add a supplier' : esc(r.company)}</h2></div><button class="x" id="dClose" aria-label="Close">&times;</button></div>
+      <div class="db">
+        ${isNew ? `
+          ${field('e-company','Company', '', 'text', 'required')}
+          <div class="g2"><div class="f"><label for="e-category">Category</label><select id="e-category">${catOpts}</select></div>${field('e-parish','Parish', '')}</div>
+          ${field('e-products','Products', '')}
+          <div class="g2">${field('e-contact_name','Contact name', '')}${field('e-contact_title','Title', '')}</div>
+          <div class="g2">${field('e-phone','Phone', '', 'tel')}${field('e-email','Email', '', 'email')}</div>
+          ${field('e-website','Website', '')}${field('e-address','Address', '')}
+        ` : `
+          ${r.products ? `<div style="color:var(--ink-soft)">${esc(r.products)}</div>` : ''}
+          <dl class="kv">
+            ${r.contact_name ? `<dt>Contact</dt><dd>${esc(r.contact_name)}${r.contact_title ? ', ' + esc(r.contact_title) : ''}</dd>` : ''}
+            ${reach('Phone', r.phone)}${reach('Email', r.email)}${web}
+            ${r.address ? `<dt>Address</dt><dd>${esc(r.address)}${r.parish && !String(r.address).includes(r.parish) ? ', ' + esc(r.parish) : ''}</dd>` : (r.parish ? `<dt>Parish</dt><dd>${esc(r.parish)}</dd>` : '')}
+            ${r.exports_to_us === true ? '<dt>U.S. exports</dt><dd>Already ships to the U.S.</dd>' : ''}
+            ${r.us_importer ? `<dt>U.S. importer</dt><dd>${esc(r.us_importer)}</dd>` : ''}
+            ${r.confidence ? `<dt>Confidence</dt><dd>${esc(r.confidence)}${r.source_date ? ' · source dated ' + esc(r.source_date) : ''}</dd>` : ''}
+          </dl>
+          ${r.research_notes ? `<div class="note">${esc(r.research_notes)}</div>` : ''}
+          ${(r.source_urls || []).length ? `<div><div class="sec">Sources</div><div class="src">${r.source_urls.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//,''))}</a>`).join('')}</div></div>` : ''}
+          <details><summary style="cursor:pointer;font-size:.86rem;color:var(--ink-soft)">Edit contact details</summary>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+              ${field('e-company','Company', r.company)}
+              <div class="g2"><div class="f"><label for="e-category">Category</label><select id="e-category">${catOpts}</select></div>${field('e-parish','Parish', r.parish)}</div>
+              ${field('e-products','Products', r.products)}
+              <div class="g2">${field('e-contact_name','Contact name', r.contact_name)}${field('e-contact_title','Title', r.contact_title)}</div>
+              <div class="g2">${field('e-phone','Phone', r.phone, 'tel')}${field('e-email','Email', r.email, 'email')}</div>
+              ${field('e-website','Website', r.website)}${field('e-address','Address', r.address)}
+            </div>
+          </details>
+        `}
+        <div><div class="sec">Outreach</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="g2">
+              <div class="f"><label for="e-status">Status</label><select id="e-status">${statusOpts}</select></div>
+              <div class="f"><label for="e-priority">Priority</label><select id="e-priority">${['high','medium','low'].map((p) => `<option value="${p}" ${r.priority === p ? 'selected' : ''}>${p[0].toUpperCase() + p.slice(1)}</option>`).join('')}</select></div>
+            </div>
+            <div class="g2">${field('e-next_step','Next step', r.next_step)}${field('e-follow_up','Follow up on', r.follow_up, 'date')}</div>
+            <div class="f"><label for="e-notes">Notes</label><textarea id="e-notes">${esc(r.notes || '')}</textarea></div>
+          </div>
+        </div>
+        ${isNew ? '' : `<div><div class="sec">Contact log</div>
+          <div class="logadd"><input id="e-log" placeholder="Called, left voicemail with reception..." aria-label="New log entry"><button class="btn" id="logBtn">Log it</button></div>
+          <ul class="log" id="logList">${(r.log || []).slice().reverse().map((l, i, arr) => `<li><time>${esc(l.date)}</time><span>${esc(l.text)}</span><button data-del="${arr.length - 1 - i}" aria-label="Remove entry">Remove</button></li>`).join('')}</ul></div>`}
+      </div>
+      <div class="df">
+        ${isNew ? '<span></span>' : `<button class="btn ghost danger" id="delBtn">Delete supplier</button>`}
+        <div style="display:flex;gap:10px;align-items:center"><span class="saved" id="saved">${r.updated_at ? 'Updated ' + esc(r.updated_at.slice(0,10)) : ''}</span><button class="btn primary" id="saveBtn" ${canWrite ? '' : 'disabled'}>${isNew ? 'Add supplier' : 'Save changes'}</button></div>
+      </div>`;
+    $('drawer').hidden = false; $('scrim').hidden = false;
+    $('dClose').addEventListener('click', closeDrawer);
+    $('saveBtn').addEventListener('click', () => save(r, isNew));
+    if (!isNew) {
+      $('logBtn').addEventListener('click', () => addLog(r));
+      $('e-log').addEventListener('keydown', (e) => { if (e.key === 'Enter') addLog(r); });
+      $('logList').addEventListener('click', (e) => { const b = e.target.closest('[data-del]'); if (b) delLog(r, +b.dataset.del); });
+      let armed = false;
+      $('delBtn').addEventListener('click', async (e) => {
+        if (!armed) { armed = true; e.target.textContent = 'Click again to delete'; return; }
+        try { await store.del(r.id); closeDrawer(); toast('Supplier deleted'); } catch (err) { fail(err); }
+      });
+    }
+    (isNew ? $('e-company') : $('dClose')).focus();
+  }
+
+  const val = (id) => { const el = $(id); return el ? el.value.trim() : undefined; };
+  function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'supplier'; }
+
+  async function save(r, isNew){
+    const patch = {
+      status: val('e-status'), priority: val('e-priority'), next_step: val('e-next_step') || null,
+      follow_up: val('e-follow_up') || null, notes: val('e-notes') || null, updated_at: new Date().toISOString(),
+    };
+    ['company','category','parish','products','contact_name','contact_title','phone','email','website','address'].forEach((k) => {
+      const v = val('e-' + k); if (v !== undefined) patch[k] = v || null;
+    });
+    if (isNew && !patch.company) { $('e-company').focus(); toast('Add a company name first'); return; }
+    $('saveBtn').disabled = true;
+    try {
+      if (isNew) {
+        let id = slug(patch.company); if (rows.some((x) => x.id === id)) id += '-' + Date.now().toString(36);
+        await store.put(id, {...patch, log: [], source_urls: []});
+        closeDrawer(); toast('Supplier added');
+      } else {
+        await store.patch(r.id, patch);
+        toast('Saved'); $('saved').textContent = 'Updated ' + today();
+      }
+    } catch (err) { fail(err); }
+    if ($('saveBtn')) $('saveBtn').disabled = !canWrite;
+  }
+
+  async function addLog(r){
+    const text = $('e-log').value.trim(); if (!text) return;
+    const cur = rows.find((x) => x.id === r.id) || r;
+    const log = [...(cur.log || []), {date: today(), text}];
+    const patch = {log, updated_at: new Date().toISOString()};
+    if ((cur.status || 'new') === 'new') patch.status = 'out';
+    try { await store.patch(r.id, patch); $('e-log').value = ''; toast(patch.status ? 'Logged · marked Reached out' : 'Logged'); openDrawer(r.id); }
+    catch (err) { fail(err); }
+  }
+  async function delLog(r, i){
+    const cur = rows.find((x) => x.id === r.id) || r;
+    const log = (cur.log || []).filter((_, j) => j !== i);
+    try { await store.patch(r.id, {log}); openDrawer(r.id); } catch (err) { fail(err); }
+  }
+
+  function fail(err){
+    console.error(err);
+    if (err && err.code === '28000') { signOut('Your session ended. Request a new sign-in link.'); return; }
+    toast("That didn't save. Check your connection and try again.");
+  }
+
+  function renderLicensing(doc){
+    const items = doc && Array.isArray(doc.items) ? doc.items : [];
+    if (!items.length) return;
+    $('lic').innerHTML = items.map((it) => `<li><b>${esc(it.title)}</b><span>${esc(it.text)}</span>${it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.url.replace(/^https?:\/\//,''))}</a>` : ''}</li>`).join('');
+  }
+
+  // ── Supabase-backed store (see supabase/yawd-tracker.sql) ──
+  const SESSION_KEY = 'yawd_tracker_session';
+  const getSession = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; } };
+  const setSession = (v) => { try { localStorage.setItem(SESSION_KEY, JSON.stringify(v)); } catch {} };
+  const clearSession = () => { try { localStorage.removeItem(SESSION_KEY); } catch {} };
+
+  const store = {
+    async put(id, data){
+      const { data: at, error } = await client.rpc('yawd_tracker_save', { p_session: session.sessionToken, p_id: id, p_data: data });
+      if (error) throw error;
+      const row = {id, ...data, updated_at: at};
+      const i = rows.findIndex((x) => x.id === id);
+      if (i >= 0) rows[i] = row; else rows.push(row);
+      render();
+    },
+    async patch(id, patch){
+      const cur = rows.find((x) => x.id === id) || {};
+      const { id: _drop, ...rest } = cur;
+      await store.put(id, {...rest, ...patch});
+    },
+    async del(id){
+      const { error } = await client.rpc('yawd_tracker_delete', { p_session: session.sessionToken, p_id: id });
+      if (error) throw error;
+      rows = rows.filter((x) => x.id !== id);
+      render();
+    },
+  };
+
+  async function load(quiet){
+    const { data, error } = await client.rpc('yawd_tracker_load', { p_session: session.sessionToken });
+    if (error) { if (error.code === '28000') return signOut('Your session ended. Request a new sign-in link.'); if (!quiet) toast("Couldn't load suppliers. Reload to try again."); return; }
+    rows = data.filter((d) => d.collection === 'suppliers').map((d) => ({...d.data, id: d.id, updated_at: d.updated_at}));
+    const lic = data.find((d) => d.collection === 'meta' && d.id === 'licensing');
+    if (lic) renderLicensing(lic.data);
+    if (!rows.length) { renderPipe(); $('count').textContent = ''; $('list').innerHTML = '<div class="empty"><h3>No suppliers yet</h3><p>Use <b>Add supplier</b> to start the list.</p></div>'; return; }
+    if ($('drawer').hidden) render(); else renderPipe();
+  }
+
+  function showApp(){
+    $('signin').hidden = true; $('app').hidden = false;
+    $('whoBar').innerHTML = `Signed in as ${esc(session.displayName || session.email)} <button class="btn ghost" id="outBtn" style="padding:4px 12px">Sign out</button>`;
+    $('outBtn').addEventListener('click', () => signOut());
+    renderPipe(); load();
+  }
+  function signOut(msg){
+    clearSession(); session = null; closeDrawer();
+    $('app').hidden = true; $('signin').hidden = false;
+    $('siMsg').className = 'msg' + (msg ? ' err' : ''); $('siMsg').textContent = msg || '';
+  }
+  // Pick up other people's edits when the tab comes back into focus.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && session) load(true); });
+
+  $('signinForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('siEmail').value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('siMsg').className = 'msg err'; $('siMsg').textContent = 'Enter a full email address.'; return; }
+    $('siBtn').disabled = true;
+    // A listed email inserts (and the trigger emails the link); anything else
+    // is refused by RLS. Show the same message either way so the page never
+    // confirms who is on the list.
+    const { error } = await client.from('yawd_tracker_login_links').insert({ email });
+    if (error && error.code !== '42501') console.error(error);
+    $('siMsg').className = 'msg ok';
+    $('siMsg').textContent = "If that email is on the access list, a sign-in link is on its way. Check your inbox (and spam).";
+    $('siBtn').disabled = false;
+  });
+
+  (async () => {
+    client = await window.sfSupabaseReady;
+    const token = new URLSearchParams(location.search).get('token');
+    const saved = getSession();
+    const candidate = token || (saved && saved.sessionToken);
+    if (token) history.replaceState(null, '', location.pathname);
+    if (candidate) {
+      const { data, error } = await client.rpc('yawd_tracker_verify', { p_token: candidate });
+      if (!error && data && data.length) {
+        session = { sessionToken: data[0].session_token, email: data[0].email, displayName: data[0].display_name };
+        setSession(session);
+        return showApp();
+      }
+      clearSession();
+      return signOut(token ? 'That link has expired or was already replaced. Request a new one.' : '');
+    }
+    signOut();
+  })();
+})();
+</script>
+</body>
+</html>

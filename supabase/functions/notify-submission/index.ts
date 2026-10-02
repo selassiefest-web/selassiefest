@@ -394,6 +394,50 @@ function formatBbpacMeetingNotify(record: Record<string, any>) {
   };
 }
 
+// Yawd Dry Goods (/yawd-dry-goods/) early-access list. Yawd is its own
+// business, not a festival feature, so this goes to Stephen directly rather
+// than the festival inbox.
+const YAWD_TYPE_LABELS: Record<string, string> = {
+  household: 'Household',
+  restaurant: 'Restaurant / kitchen',
+  maker: 'Jamaican maker (supplier)',
+  other: 'Other',
+};
+
+function formatYawdWaitlist(record: Record<string, any>) {
+  const type = YAWD_TYPE_LABELS[record.customer_type] || record.customer_type;
+  const interests = Array.isArray(record.interests) ? record.interests.join(', ') : record.interests;
+  return {
+    subject: `Yawd list — ${record.full_name} (${type})`,
+    html: `
+      <h2>New Yawd Dry Goods sign-up</h2>
+      <p><strong>Name:</strong> ${escapeHtml(record.full_name)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(record.email)}${record.phone ? ' · ' + escapeHtml(record.phone) : ''}</p>
+      <p><strong>Type:</strong> ${escapeHtml(type)}${record.business_name ? ' — ' + escapeHtml(record.business_name) : ''}</p>
+      ${record.zip ? `<p><strong>ZIP:</strong> ${escapeHtml(record.zip)}</p>` : ''}
+      ${interests ? `<p><strong>Interested in:</strong> ${escapeHtml(interests)}</p>` : ''}
+      ${record.message ? `<p><strong>Can't find in Chicago:</strong><br>${escapeHtml(record.message)}</p>` : ''}
+      <p style="color:#666;font-size:12px;">Source: ${escapeHtml(record.source || '—')} · Record id: ${escapeHtml(record.id)}</p>
+    `,
+  };
+}
+
+// Yawd supplier outreach tracker sign-in link (same magic-link pattern as
+// BIOS102 -- the row id is the token; see supabase/yawd-tracker.sql).
+function formatYawdTrackerLoginLink(record: Record<string, any>) {
+  const url = `https://selassiefest.com/yawd-dry-goods/outreach/?token=${encodeURIComponent(record.id)}`;
+  return {
+    subject: 'Your Yawd supplier tracker sign-in link',
+    html: `
+      <h2>Sign in to the Yawd supplier tracker</h2>
+      <p>Click below to open the supplier outreach tracker. The link works for 30 minutes.</p>
+      <p style="margin:20px 0;"><a href="${url}" style="background:#1C1A15;color:#F2E8D3;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Open the tracker</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${url}</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't request this, you can ignore this email.</p>
+    `,
+  };
+}
+
 function formatBbpacVolunteerSignup(record: Record<string, any>) {
   return {
     subject: `New Bongo Beach PAC Volunteer — ${record.full_name}`,
@@ -789,6 +833,12 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
           ];
         },
       },
+    ],
+  },
+  yawd_waitlist: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatYawdWaitlist }] },
+  yawd_tracker_login_links: {
+    notifications: [
+      { to: (record) => record.email, format: formatYawdTrackerLoginLink, from: () => 'Yawd Dry Goods <hello@selassiefest.com>' },
     ],
   },
   bbpac_meeting_notify: { notifications: [{ to: () => BBPAC_NOTIFY_TO, format: formatBbpacMeetingNotify }] },
