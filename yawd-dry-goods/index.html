@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yawd Dry Goods | Straight from Jamaica to Chicago</title>
+<meta name="description" content="Yawd Dry Goods is a Jamaican grocery and distribution house coming to Chicago. We buy direct from Jamaica's makers and bring it to our store, your door and your restaurant kitchen.">
+<!-- Preliminary site: kept out of search until launch. Remove this tag and add
+     the page to /sitemap.xml when Yawd is ready to be found. -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Yawd Dry Goods: Straight from Jamaica. No middleman.">
+<meta property="og:description" content="A Jamaican grocery and distribution house coming to Chicago. Join the early-access list.">
+<meta property="og:image" content="https://selassiefest.com/yawd-dry-goods/img/icon.png">
+<link rel="icon" type="image/png" href="/yawd-dry-goods/img/icon.png">
+<link rel="apple-touch-icon" href="/yawd-dry-goods/img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#0D0B08; --ink-2:#16130E; --ink-3:#1E1A13;
+    --line:rgba(214,178,94,.18); --line-strong:rgba(214,178,94,.38);
+    --gold:#D6B25E; --gold-deep:#A9822F; --gold-soft:#EBD49A;
+    --cream:#F2E8D3; --cream-soft:#C9BFAA; --cream-faint:#8E8573;
+    --leaf:#1E5C3F; --leaf-deep:#123826;
+    --ok:#8FD3A8; --err:#F0A093;
+    --radius:14px;
+    --serif:'Bodoni Moda', 'Didot', Georgia, serif;
+    --sans:'Jost', -apple-system, 'Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:76px}
+  body{margin:0; background:var(--ink); color:var(--cream); font-family:var(--sans); font-weight:300; font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{max-width:100%; height:auto; display:block}
+  a{color:var(--gold-soft)}
+  h1,h2,h3{font-family:var(--serif); font-weight:400; margin:0; line-height:1.1; letter-spacing:-.01em}
+  p{margin:0}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 24px}
+  .caps{font-family:var(--sans); font-weight:500; font-size:.74rem; letter-spacing:.32em; text-transform:uppercase; color:var(--gold)}
+  .rule{display:flex; align-items:center; gap:18px}
+  .rule::before,.rule::after{content:""; height:1px; background:var(--line-strong); flex:1}
+  .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+  /* ── nav ── */
+  .nav{position:sticky; top:0; z-index:20; background:rgba(13,11,8,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex; align-items:center; justify-content:space-between; height:68px; gap:20px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--cream)}
+  .brand img{width:38px; height:auto}
+  .brand b{font-family:var(--serif); font-weight:400; font-size:1.45rem; letter-spacing:.06em}
+  .brand span{font-size:.62rem; letter-spacing:.34em; text-transform:uppercase; color:var(--gold); font-weight:500; border-left:1px solid var(--line-strong); padding-left:12px}
+  .nav ul{display:flex; gap:30px; list-style:none; margin:0; padding:0}
+  .nav ul a{color:var(--cream-soft); text-decoration:none; font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; font-weight:400}
+  .nav ul a:hover{color:var(--gold-soft)}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; font-family:var(--sans); font-weight:500; font-size:.8rem; letter-spacing:.2em; text-transform:uppercase; text-decoration:none; padding:15px 26px; border-radius:999px; border:1px solid var(--gold); cursor:pointer; transition:background .2s, color .2s, transform .2s}
+  .btn.solid{background:var(--gold); color:var(--ink)}
+  .btn.solid:hover{background:var(--gold-soft)}
+  .btn.ghost{background:transparent; color:var(--gold-soft)}
+  .btn.ghost:hover{background:rgba(214,178,94,.1)}
+  .btn.sm{padding:10px 18px; font-size:.7rem}
+  .btn:active{transform:translateY(1px)}
+
+  /* ── hero ── */
+  .hero{position:relative; padding:96px 0 0; overflow:hidden}
+  .hero::before{content:""; position:absolute; inset:-20% -10% auto auto; width:900px; height:900px; background:radial-gradient(closest-side, rgba(214,178,94,.13), transparent 70%); pointer-events:none}
+  .hero::after{content:""; position:absolute; left:-200px; bottom:-300px; width:700px; height:700px; background:radial-gradient(closest-side, rgba(30,92,63,.28), transparent 70%); pointer-events:none}
+  .hero-grid{position:relative; z-index:1; display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center}
+  .hero h1{font-size:clamp(2.9rem, 6.6vw, 5.6rem); margin:22px 0 26px}
+  .hero h1 em{font-style:italic; color:var(--gold)}
+  .hero .lede{font-size:1.18rem; color:var(--cream-soft); max-width:36em}
+  .hero .ctas{display:flex; flex-wrap:wrap; gap:14px; margin-top:38px}
+  .mark{position:relative; justify-self:center; width:min(100%, 440px)}
+  .mark img{width:100%; filter:drop-shadow(0 30px 60px rgba(214,178,94,.18)); animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both}
+  .mark figcaption{text-align:center; margin-top:26px}
+  @keyframes rise{from{opacity:0; transform:translateY(24px) scale(.97)} to{opacity:1; transform:none}}
+  .facts{position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); margin-top:90px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts div{padding:26px 24px; border-right:1px solid var(--line)}
+  .facts div:last-child{border-right:0}
+  .facts strong{display:block; font-family:var(--serif); font-weight:400; font-size:1.6rem; color:var(--gold-soft)}
+  .facts span{font-size:.92rem; color:var(--cream-faint)}
+
+  /* ── ticker ── */
+  .ticker{overflow:hidden; border-bottom:1px solid var(--line); background:var(--ink-2); padding:18px 0}
+  .ticker-track{display:flex; width:max-content; animation:slide 60s linear infinite}
+  .ticker span{font-family:var(--serif); font-style:italic; font-size:1.25rem; color:var(--cream-soft); white-space:nowrap; padding:0 22px}
+  .ticker span::after{content:"\2022"; color:var(--gold); font-style:normal; margin-left:44px}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){.ticker-track,.mark img{animation:none}}
+
+  /* ── sections ── */
+  section{padding:120px 0}
+  .head{max-width:760px; margin-bottom:60px}
+  .head h2{font-size:clamp(2.2rem, 4.6vw, 3.6rem); margin-top:16px}
+  .head h2 em{font-style:italic; color:var(--gold)}
+  .head p{color:var(--cream-soft); margin-top:20px; font-size:1.1rem}
+
+  /* road */
+  .road{display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative}
+  .road li{list-style:none; padding:0 34px 0 0; position:relative}
+  .road{padding:0; margin:0}
+  .road .num{font-family:var(--serif); font-size:4.2rem; line-height:1; color:transparent; -webkit-text-stroke:1px var(--gold-deep)}
+  .road .line{height:1px; background:linear-gradient(90deg, var(--gold), transparent); margin:22px 0 24px}
+  .road h3{font-size:1.65rem; margin-bottom:12px}
+  .road p{color:var(--cream-soft)}
+  .pull{margin-top:80px; padding:46px 50px; border:1px solid var(--line-strong); border-radius:var(--radius); background:linear-gradient(135deg, rgba(214,178,94,.08), transparent 60%); display:grid; grid-template-columns:auto 1fr; gap:36px; align-items:center}
+  .pull .q{font-family:var(--serif); font-size:6rem; line-height:.6; color:var(--gold)}
+  .pull p{font-family:var(--serif); font-size:clamp(1.3rem, 2.4vw, 1.75rem); line-height:1.4}
+  .pull p span{color:var(--gold-soft); font-style:italic}
+
+  /* shelves */
+  #shelves{background:var(--ink-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .shelves{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+  .shelf{background:var(--ink-2); padding:34px 32px 36px; transition:background .25s}
+  .shelf:hover{background:var(--ink-3)}
+  .shelf .caps{font-size:.66rem; color:var(--cream-faint)}
+  .shelf h3{font-size:1.55rem; margin:10px 0 18px; color:var(--gold-soft)}
+  .shelf ul{list-style:none; margin:0; padding:0}
+  .shelf li{padding:8px 0; border-top:1px solid rgba(242,232,211,.07); color:var(--cream-soft); font-size:.98rem}
+  .shelf li:first-child{border-top:0}
+  .note{margin-top:22px; color:var(--cream-faint); font-size:.9rem}
+
+  /* ways */
+  .ways{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
+  .way{border:1px solid var(--line); border-radius:var(--radius); padding:38px 34px; background:var(--ink-2); display:flex; flex-direction:column}
+  .way svg{width:40px; height:40px; stroke:var(--gold); fill:none; stroke-width:1.3; margin-bottom:26px}
+  .way h3{font-size:1.75rem; margin-bottom:14px}
+  .way > p{color:var(--cream-soft)}
+  .way ul{margin:22px 0 0; padding:0; list-style:none; border-top:1px solid var(--line)}
+  .way li{padding:11px 0 11px 22px; position:relative; border-bottom:1px solid rgba(242,232,211,.06); font-size:.95rem; color:var(--cream-soft)}
+  .way li::before{content:""; position:absolute; left:2px; top:20px; width:7px; height:7px; border:1px solid var(--gold); transform:rotate(45deg)}
+
+  /* kitchens */
+  .kitchens{background:linear-gradient(160deg, var(--leaf-deep), #0B1F15 70%); border-radius:22px; padding:80px 72px; display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:center; position:relative; overflow:hidden; border:1px solid rgba(143,211,168,.15)}
+  .kitchens::after{content:""; position:absolute; right:-120px; top:-120px; width:420px; height:420px; border:1px solid rgba(214,178,94,.25); border-radius:50%}
+  .kitchens h2{font-size:clamp(2rem, 4vw, 3.1rem); margin:16px 0 22px}
+  .kitchens h2 em{font-style:italic; color:var(--gold)}
+  .kitchens p{color:#CFDCD2}
+  .kitchens dl{margin:0; display:grid; gap:0; position:relative; z-index:1}
+  .kitchens dl div{padding:18px 0; border-top:1px solid rgba(242,232,211,.14)}
+  .kitchens dt{font-family:var(--serif); font-size:1.25rem; color:var(--gold-soft)}
+  .kitchens dd{margin:4px 0 0; color:#B9CBBE; font-size:.95rem}
+
+  /* makers */
+  .makers{display:grid; grid-template-columns:auto 1fr auto; gap:40px; align-items:center; padding:44px 48px; border:1px dashed var(--line-strong); border-radius:var(--radius)}
+  .makers .flag{width:66px; height:44px; border-radius:4px; overflow:hidden; flex:none}
+  .makers h3{font-size:1.7rem; margin-bottom:8px}
+  .makers p{color:var(--cream-soft)}
+
+  /* form */
+  #join{background:var(--ink-2); border-top:1px solid var(--line)}
+  .join-grid{display:grid; grid-template-columns:.8fr 1.2fr; gap:70px; align-items:start}
+  .join-grid .head{margin-bottom:0; position:sticky; top:110px}
+  form{background:var(--ink); border:1px solid var(--line-strong); border-radius:20px; padding:42px}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  .field{margin-bottom:20px}
+  label, legend{display:block; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--cream-faint); margin-bottom:8px; font-weight:500}
+  label .opt{letter-spacing:.05em; text-transform:none; color:var(--cream-faint); font-weight:300}
+  input[type=text], input[type=email], input[type=tel], textarea{width:100%; font:inherit; font-size:1rem; color:var(--cream); background:var(--ink-2); border:1px solid rgba(242,232,211,.14); border-radius:10px; padding:13px 15px; transition:border-color .2s}
+  input:focus, textarea:focus{outline:none; border-color:var(--gold)}
+  textarea{min-height:96px; resize:vertical}
+  fieldset{border:0; padding:0; margin:0 0 22px; min-width:0}
+  .who{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  .who label, .chips label{margin:0; letter-spacing:normal; text-transform:none; font-size:.95rem; color:var(--cream-soft); font-weight:400; cursor:pointer}
+  .who input, .chips input{position:absolute; opacity:0; pointer-events:none}
+  .who span{display:block; padding:14px 16px; border:1px solid rgba(242,232,211,.14); border-radius:10px; transition:all .2s; line-height:1.35}
+  .who span small{display:block; color:var(--cream-faint); font-size:.8rem; margin-top:2px}
+  .who input:checked + span{border-color:var(--gold); background:rgba(214,178,94,.09); color:var(--cream)}
+  .who input:focus-visible + span, .chips input:focus-visible + span{outline:2px solid var(--gold); outline-offset:2px}
+  .chips{display:flex; flex-wrap:wrap; gap:8px}
+  .chips span{display:inline-block; padding:8px 15px; border:1px solid rgba(242,232,211,.14); border-radius:999px; font-size:.88rem; transition:all .2s}
+  .chips input:checked + span{border-color:var(--gold); background:var(--gold); color:var(--ink)}
+  .hp{position:absolute; left:-9999px}
+  .submit{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-top:8px}
+  .submit .btn{min-width:220px}
+  .fine{font-size:.82rem; color:var(--cream-faint)}
+  .status{margin-top:18px; font-size:.95rem; min-height:1.4em}
+  .status.err{color:var(--err)}
+  .thanks{text-align:center; padding:30px 10px}
+  .thanks img{width:84px; margin:0 auto 20px}
+  .thanks h3{font-size:2rem; margin-bottom:12px}
+  .thanks p{color:var(--cream-soft)}
+
+  /* faq */
+  .faq{max-width:860px}
+  details{border-top:1px solid var(--line)}
+  details:last-child{border-bottom:1px solid var(--line)}
+  summary{list-style:none; cursor:pointer; padding:26px 44px 26px 0; position:relative; font-family:var(--serif); font-size:1.35rem}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+"; position:absolute; right:4px; top:50%; transform:translateY(-50%); font-family:var(--sans); font-weight:300; font-size:1.8rem; color:var(--gold); transition:transform .25s}
+  details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+  details p{padding:0 0 28px; color:var(--cream-soft); max-width:62ch}
+
+  /* footer */
+  footer{border-top:1px solid var(--line); padding:70px 0 50px; text-align:center}
+  footer img{width:64px; margin:0 auto 18px}
+  footer .tag{font-family:var(--serif); font-style:italic; font-size:1.4rem; color:var(--gold-soft); margin-bottom:26px}
+  footer .rule{max-width:520px; margin:0 auto 24px}
+  footer small{color:var(--cream-faint); font-size:.82rem; letter-spacing:.06em}
+
+  /* reveal */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .8s ease, transform .8s ease}
+  .reveal.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1; transform:none; transition:none}}
+
+  /* ── responsive ── */
+  @media (max-width:980px){
+    .nav ul{display:none}
+    .hero{padding-top:56px}
+    .hero-grid{grid-template-columns:1fr; gap:30px}
+    .mark{order:-1; width:min(56%, 230px)}
+    .mark figcaption{display:none}
+    .facts{grid-template-columns:1fr; margin-top:60px}
+    .facts div{border-right:0; border-bottom:1px solid var(--line); padding:20px 0}
+    .facts div:last-child{border-bottom:0}
+    section{padding:84px 0}
+    .road{grid-template-columns:1fr; gap:44px}
+    .road li{padding:0}
+    .pull{grid-template-columns:1fr; gap:10px; padding:34px 28px; margin-top:56px}
+    .pull .q{font-size:4rem}
+    .shelves{grid-template-columns:1fr 1fr}
+    .ways{grid-template-columns:1fr}
+    .kitchens{grid-template-columns:1fr; padding:52px 30px; gap:36px}
+    .makers{grid-template-columns:1fr; gap:20px; padding:34px 28px}
+    .join-grid{grid-template-columns:1fr; gap:40px}
+    .join-grid .head{position:static}
+  }
+  @media (max-width:620px){
+    body{font-size:16px}
+    .wrap{padding:0 16px}
+    .brand span{display:none}
+    .shelves{grid-template-columns:1fr}
+    .shelf{padding:28px 24px}
+    form{padding:26px 20px}
+    .row, .who{grid-template-columns:1fr; gap:0}
+    .who{gap:10px}
+    .hero .ctas .btn{flex:1 1 100%}
+    .submit .btn{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="/yawd-dry-goods/" aria-label="Yawd Dry Goods home">
+      <img src="/yawd-dry-goods/img/y-mark.png" alt="" width="38" height="30">
+      <b>YAWD</b><span>Dry Goods</span>
+    </a>
+    <ul>
+      <li><a href="#road">How it works</a></li>
+      <li><a href="#shelves">The shelves</a></li>
+      <li><a href="#kitchens">Restaurants</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn solid sm" href="#join">Join the list</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="caps">Coming soon &middot; Chicago</p>
+        <h1>Straight from Jamaica. <em>No middleman.</em></h1>
+        <p class="lede">Yawd Dry Goods is a Jamaican grocery and distribution house for Chicago. We buy direct from the island's manufacturers, farmers and agro-processors, then bring it to our store, to your door, and to your restaurant's kitchen.</p>
+        <div class="ctas">
+          <a class="btn solid" href="#join">Get early access</a>
+          <a class="btn ghost" href="#kitchens">Restaurant accounts</a>
+        </div>
+      </div>
+      <figure class="mark">
+        <img src="/yawd-dry-goods/img/y-mark.png" alt="The gold Yawd Y monogram" width="733" height="585">
+        <figcaption class="caps">Come home.</figcaption>
+      </figure>
+    </div>
+    <div class="facts">
+      <div><strong>8,000 sq ft</strong><span>A full Jamaican pantry under one roof</span></div>
+      <div><strong>To your door</strong><span>Order online, delivered across Chicago</span></div>
+      <div><strong>To your kitchen</strong><span>Case and bulk supply for restaurants</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Ackee</span><span>Callaloo</span><span>Pimento</span><span>Blue Mountain coffee</span><span>Sorrel</span><span>Cerasee</span><span>Scotch bonnet sauce</span><span>Jerk seasoning</span><span>Browning</span><span>Water crackers</span><span>Tamarind balls</span><span>Bun mix</span><span>Quassia</span><span>Sarsaparilla</span><span>Coconut milk</span><span>Plantain chips</span>
+    <span>Ackee</span><span>Callaloo</span><span>Pimento</span><span>Blue Mountain coffee</span><span>Sorrel</span><span>Cerasee</span><span>Scotch bonnet sauce</span><span>Jerk seasoning</span><span>Browning</span><span>Water crackers</span><span>Tamarind balls</span><span>Bun mix</span><span>Quassia</span><span>Sarsaparilla</span><span>Coconut milk</span><span>Plantain chips</span>
+  </div>
+</div>
+
+<section id="road">
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="caps">How it works</p>
+      <h2>The short road <em>home.</em></h2>
+      <p>Most Jamaican goods on Chicago shelves pass through an importer, then a distributor, then a wholesaler before they reach you, and each one adds a markup. We go to the source instead.</p>
+    </div>
+    <ol class="road">
+      <li class="reveal">
+        <div class="num">01</div><div class="line"></div>
+        <h3>Made in Jamaica</h3>
+        <p>We buy straight from Jamaican makers, from household names to small family producers, found through the island's own export and manufacturers' networks and visited in person.</p>
+      </li>
+      <li class="reveal">
+        <div class="num">02</div><div class="line"></div>
+        <h3>Shipped by sea</h3>
+        <p>Goods leave Kingston and Montego Bay by container for the Midwest. We import them ourselves, with FDA and customs paperwork handled properly.</p>
+      </li>
+      <li class="reveal">
+        <div class="num">03</div><div class="line"></div>
+        <h3>On the shelf in Chicago</h3>
+        <p>From our warehouse to our aisles, your doorstep, or the walk-in at your restaurant. One trip, with no extra hands in between.</p>
+      </li>
+    </ol>
+    <div class="pull reveal">
+      <div class="q" aria-hidden="true">&ldquo;</div>
+      <p>Fewer stops between the factory and the shelf means <span>fairer prices</span>, fresher stock, and things you can't find anywhere else in the city.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shelves">
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="caps">The shelves</p>
+      <h2>Everything for a <em>Sunday dinner.</em> And the rest of the week.</h2>
+      <p>A planned look at the aisles, built around the dry goods and pantry staples Jamaican kitchens run on.</p>
+    </div>
+    <div class="shelves reveal">
+      <div class="shelf"><p class="caps">Aisle one</p><h3>Canned &amp; prepared</h3><ul><li>Ackee and callaloo</li><li>Coconut milk and cream</li><li>Peas, beans and vegetables</li><li>Soups and meal bases</li></ul></div>
+      <div class="shelf"><p class="caps">Aisle two</p><h3>Seasonings &amp; sauces</h3><ul><li>Jerk seasoning, wet and dry</li><li>Curry powders and blends</li><li>Pimento, ginger and turmeric</li><li>Pepper sauce, browning and marinades</li></ul></div>
+      <div class="shelf"><p class="caps">Aisle three</p><h3>Pantry staples</h3><ul><li>Flour, cornmeal and baking mixes</li><li>Rice and rice mixes</li><li>Macaroni and pasta</li><li>Coconut oil, vinegar and condiments</li></ul></div>
+      <div class="shelf"><p class="caps">Aisle four</p><h3>Coffee, tea &amp; drinks</h3><ul><li>Blue Mountain and High Mountain coffee</li><li>Cerasee, ginger and herbal teas</li><li>Syrups and drink mixes</li><li>Juices and coconut water</li></ul></div>
+      <div class="shelf"><p class="caps">Aisle five</p><h3>Snacks &amp; baking</h3><ul><li>Biscuits and water crackers</li><li>Banana and plantain chips</li><li>Bun and cake mixes</li><li>Tamarind balls and sweets</li></ul></div>
+      <div class="shelf"><p class="caps">Aisle six</p><h3>Bush &amp; specialty</h3><ul><li>Sorrel, dried and candied</li><li>Quassia chips and sarsaparilla</li><li>Bush teas and herbs</li><li>Guava and mango products</li></ul></div>
+    </div>
+    <p class="note">Product lines are still being finalized with suppliers. Tell us what you can't find in Chicago when you join the list.</p>
+  </div>
+</section>
+
+<section id="ways">
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="caps">Three ways to shop</p>
+      <h2>Walk in, order in, or <em>stock up.</em></h2>
+    </div>
+    <div class="ways">
+      <article class="way reveal">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 16 20 6l15 10"/><path d="M8 15v19h24V15"/><path d="M16 34V23h8v11"/></svg>
+        <h3>The store</h3>
+        <p>An 8,000-square-foot Jamaican market, built to feel like a shop back home and stocked like a warehouse.</p>
+        <ul><li>Aisles organized by how you cook</li><li>Tastings and cultural events</li><li>A community board and gathering space</li><li>Open seven days a week</li></ul>
+      </article>
+      <article class="way reveal">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 11h20v17H3z"/><path d="M23 17h8l5 6v5H23"/><circle cx="10" cy="30" r="3"/><circle cx="29" cy="30" r="3"/></svg>
+        <h3>Delivery</h3>
+        <p>Order online and we'll bring it to your door anywhere in the Chicago area.</p>
+        <ul><li>Same-day and next-day delivery</li><li>Pickup counter for online orders</li><li>Monthly pantry box for the staples you always need</li></ul>
+      </article>
+      <article class="way reveal">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 34h28"/><path d="M9 34V20h22v14"/><path d="M14 20v-5a6 6 0 0 1 12 0v5"/><path d="M20 9V5"/></svg>
+        <h3>Restaurant supply</h3>
+        <p>Bulk Jamaican ingredients for restaurants, caterers, bakeries and food trucks.</p>
+        <ul><li>Case and pallet pricing</li><li>Scheduled weekly routes</li><li>Custom sourcing on request</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="kitchens" style="padding-top:0">
+  <div class="wrap">
+    <div class="kitchens reveal">
+      <div>
+        <p class="caps">For restaurants &amp; caterers</p>
+        <h2>For the kitchens that keep <em>Chicago fed.</em></h2>
+        <p>Chicagoland has hundreds of jerk spots, patty shops, bakeries and caterers, and most buy their Jamaican ingredients through U.S. distributors at marked-up prices. We'll supply them direct.</p>
+        <div style="margin-top:32px"><a class="btn solid" href="#join" data-who="restaurant">Open an account early</a></div>
+      </div>
+      <dl>
+        <div><dt>Bulk pricing</dt><dd>Cases and pallets of the items you go through fastest.</dd></div>
+        <div><dt>Delivery you can plan around</dt><dd>Weekly or biweekly routes on a fixed day.</dd></div>
+        <div><dt>Find it for you</dt><dd>Need something we don't stock? We'll source it from Jamaica.</dd></div>
+        <div><dt>Terms for regulars</dt><dd>Net-30 for established accounts.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="makers reveal">
+      <svg class="flag" viewBox="0 0 66 44" role="img" aria-label="Flag of Jamaica"><rect width="66" height="44" fill="#009B3A"/><path d="M0 0 33 22 0 44zM66 0 33 22 66 44z" fill="#000"/><path d="M0 0 66 44M66 0 0 44" stroke="#FED100" stroke-width="6"/></svg>
+      <div>
+        <h3>Make it in Jamaica?</h3>
+        <p>We're building our supplier list now. If you're a Jamaican manufacturer, farmer or agro-processor ready to export, we want to hear from you.</p>
+      </div>
+      <a class="btn ghost" href="#join" data-who="maker">Talk to us</a>
+    </div>
+  </div>
+</section>
+
+<section id="join">
+  <div class="wrap join-grid">
+    <div class="head reveal">
+      <p class="caps">Early access</p>
+      <h2>Be first through <em>the door.</em></h2>
+      <p>Join the list and you'll be the first to hear where the store will be, when we open, and when delivery starts. Restaurants on the list get first call on wholesale accounts.</p>
+    </div>
+
+    <form id="joinForm" novalidate>
+      <div id="formBody">
+        <div class="row">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="full_name" type="text" autocomplete="name" required maxlength="200"></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="320"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="f-phone">Phone <span class="opt">(optional)</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40"></div>
+          <div class="field"><label for="f-zip">ZIP code <span class="opt">(helps us plan delivery)</span></label><input id="f-zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="12"></div>
+        </div>
+
+        <fieldset>
+          <legend>I'm shopping for</legend>
+          <div class="who">
+            <label><input type="radio" name="customer_type" value="household" checked><span>My home<small>Store and delivery</small></span></label>
+            <label><input type="radio" name="customer_type" value="restaurant"><span>My restaurant or kitchen<small>Wholesale account</small></span></label>
+            <label><input type="radio" name="customer_type" value="maker"><span>I'm a Jamaican maker<small>I'd like you to stock my products</small></span></label>
+            <label><input type="radio" name="customer_type" value="other"><span>Something else<small>Press, partners, questions</small></span></label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="bizField" hidden><label for="f-biz">Business name</label><input id="f-biz" name="business_name" type="text" autocomplete="organization" maxlength="200"></div>
+
+        <fieldset>
+          <legend>What are you after? <span class="opt" style="letter-spacing:.05em;text-transform:none">(pick any)</span></legend>
+          <div class="chips">
+            <label><input type="checkbox" name="interests" value="canned"><span>Canned &amp; prepared</span></label>
+            <label><input type="checkbox" name="interests" value="seasonings"><span>Seasonings &amp; sauces</span></label>
+            <label><input type="checkbox" name="interests" value="pantry"><span>Pantry staples</span></label>
+            <label><input type="checkbox" name="interests" value="coffee-tea"><span>Coffee &amp; tea</span></label>
+            <label><input type="checkbox" name="interests" value="snacks"><span>Snacks &amp; baking</span></label>
+            <label><input type="checkbox" name="interests" value="bush-specialty"><span>Bush &amp; specialty</span></label>
+            <label><input type="checkbox" name="interests" value="delivery"><span>Home delivery</span></label>
+            <label><input type="checkbox" name="interests" value="pantry-box"><span>Monthly pantry box</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field"><label for="f-msg">What can't you find in Chicago? <span class="opt">(optional)</span></label><textarea id="f-msg" name="message" maxlength="2000" placeholder="The brand you grew up on, the thing you bring back in your suitcase..."></textarea></div>
+
+        <div class="hp" aria-hidden="true"><label for="f-web">Leave this empty</label><input id="f-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+
+        <div class="submit">
+          <button class="btn solid" type="submit" id="submitBtn">Join the list</button>
+          <p class="fine">No spam. Just opening news, and you can leave anytime.</p>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="thanks" id="thanks" hidden>
+        <img src="/yawd-dry-goods/img/y-mark.png" alt="" width="84" height="67">
+        <h3>Welcome to the Yawd.</h3>
+        <p id="thanksMsg">You're on the list. We'll be in touch as soon as there's news.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="caps">Questions</p>
+      <h2>Good to <em>know.</em></h2>
+    </div>
+    <div class="faq">
+      <details><summary>When do you open?</summary><p>We're lining up suppliers and a location now. People on the early-access list will hear the opening date first, along with any soft-opening invitations.</p></details>
+      <details><summary>Where will the store be?</summary><p>In Chicago. We're looking at neighborhoods with strong Caribbean and African communities, and we'll announce the address to the list before anyone else.</p></details>
+      <details><summary>Do you deliver outside Chicago?</summary><p>We're starting with home delivery across the Chicago area. Shipping farther out is on the roadmap. Add your ZIP code when you sign up so we know where the demand is.</p></details>
+      <details><summary>Can my restaurant buy wholesale?</summary><p>Yes. Restaurant, catering and bakery accounts are a core part of what we're building: case and pallet pricing, scheduled delivery, and custom sourcing. Choose "My restaurant or kitchen" on the form and we'll reach out before we open.</p></details>
+      <details><summary>Is everything really from Jamaica?</summary><p>That's the whole idea. We buy Jamaican-made goods from the people who make them, without going through a U.S. distributor. Every supplier is checked for FDA registration and export readiness before we place an order.</p></details>
+      <details><summary>I make a product in Jamaica. Can you carry it?</summary><p>We'd love to talk. Choose "I'm a Jamaican maker" on the form and tell us what you make. Export-ready producers with FDA-registered facilities are the easiest place to start, but reach out even if you're not there yet.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <img src="/yawd-dry-goods/img/y-mark.png" alt="" width="64" height="51">
+    <p class="tag">From Jamaica to your door.</p>
+    <p class="caps rule">Yawd Dry Goods</p>
+    <small>Chicago, Illinois &middot; Coming soon &middot; &copy; 2026</small>
+  </div>
+</footer>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function () {
+  // Scroll reveal
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px' }) : null;
+  document.querySelectorAll('.reveal').forEach((el) => io ? io.observe(el) : el.classList.add('in'));
+
+  const form = document.getElementById('joinForm');
+  const bizField = document.getElementById('bizField');
+  const status = document.getElementById('status');
+  const btn = document.getElementById('submitBtn');
+
+  function syncWho() {
+    const who = form.customer_type.value;
+    bizField.hidden = !(who === 'restaurant' || who === 'maker');
+    bizField.querySelector('label').textContent = who === 'maker' ? 'Company or brand name' : 'Business name';
+  }
+  form.querySelectorAll('input[name=customer_type]').forEach((r) => r.addEventListener('change', syncWho));
+
+  // "Open an account early" / "Talk to us" preselect the right customer type
+  document.querySelectorAll('[data-who]').forEach((a) => a.addEventListener('click', () => {
+    const r = form.querySelector(`input[name=customer_type][value="${a.dataset.who}"]`);
+    if (r) { r.checked = true; syncWho(); }
+  }));
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    status.className = 'status'; status.textContent = '';
+    if (form.website.value) return; // honeypot
+
+    const name = form.full_name.value.trim();
+    const email = form.email.value.trim();
+    if (!name) { status.className = 'status err'; status.textContent = 'Please add your name.'; form.full_name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.className = 'status err'; status.textContent = 'Please check your email address.'; form.email.focus(); return; }
+
+    const who = form.customer_type.value;
+    const row = {
+      full_name: name,
+      email,
+      phone: form.phone.value.trim() || null,
+      zip: form.zip.value.trim() || null,
+      customer_type: who,
+      business_name: (who === 'restaurant' || who === 'maker') ? (form.business_name.value.trim() || null) : null,
+      interests: [...form.querySelectorAll('input[name=interests]:checked')].map((c) => c.value),
+      message: form.message.value.trim() || null,
+      source: new URLSearchParams(location.search).get('src') || 'yawd-dry-goods',
+    };
+
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const client = await window.sfSupabaseReady;
+      const { error } = await client.from('yawd_waitlist').insert(row);
+      if (error) throw error;
+      document.getElementById('formBody').hidden = true;
+      document.getElementById('thanks').hidden = false;
+      document.getElementById('thanksMsg').textContent =
+        who === 'restaurant' ? "You're on the list. We'll reach out about a wholesale account before we open." :
+        who === 'maker' ? "Thank you. We'll be in touch to talk about your products." :
+        "You're on the list. We'll be in touch as soon as there's news.";
+      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+      console.error(err);
+      status.className = 'status err';
+      status.textContent = "Something went wrong and your sign-up didn't go through. Please try again in a moment.";
+      btn.disabled = false; btn.textContent = 'Join the list';
+    }
+  });
+})();
+</script>
+</body>
+</html>
