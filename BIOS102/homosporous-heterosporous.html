@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio vs. Duplex: Spore Types</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#eef3f6; --ink:#14283a; --muted:#51677a; --line:#14283a; --panel:#ffffff;
+  --spore:#e0892b; --male:#2a7fb8; --female:#c2417a; --room:#f7fafc;
+  --good:#1d7a46; --goodbg:#e3f4ea; --bad:#b3261e; --badbg:#fbe9e7; --accent:#14283a;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1b26; --ink:#e6eef5; --muted:#9bb0c2; --line:#9bb0c2; --panel:#172636; --room:#1c2f42;
+    --spore:#f0a24a; --male:#5ab0e6; --female:#ec7bb0;
+    --good:#6fd39a; --goodbg:#17352a; --bad:#ff958d; --badbg:#3b1f1d; --accent:#e6eef5;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.55}
+main{max-width:720px;margin:0 auto;padding:18px 18px 120px}
+h1{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.08;margin:6px 0 6px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.35rem;margin:0 0 8px;line-height:1.2}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.hide{display:none!important}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.bar{height:10px;background:var(--panel);border:2px solid var(--line);border-radius:99px;overflow:hidden;margin:8px 0 18px}
+.bar i{display:block;height:100%;width:0;background:var(--spore);transition:width .35s}
+.step{display:none}
+.step.on{display:block}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.why{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--spore);margin-bottom:4px}
+button{font:inherit;color:inherit}
+.btn{font-weight:800;padding:14px 18px;border:2px solid var(--line);background:var(--accent);color:var(--bg);border-radius:12px;cursor:pointer;min-height:52px}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btn.full{width:100%}
+button:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--spore);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.rate{display:flex;gap:8px;margin:10px 0}
+.rate button{flex:1;padding:14px 0;border:2px solid var(--line);background:transparent;border-radius:10px;font-weight:800;font-size:1.1rem;cursor:pointer;min-height:52px}
+.rate button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ratelabels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.toggle{display:flex;gap:8px;margin-bottom:14px}
+.toggle button{flex:1;font-weight:600;padding:12px 10px;border:2px solid var(--line);background:transparent;border-radius:10px;cursor:pointer;min-height:56px}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.toggle small{display:block;font-weight:400;opacity:.85}
+.plan{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:10px}
+.plan svg{display:block;width:100%;height:auto}
+.plan text{font-family:inherit;fill:var(--ink)}
+.room{fill:var(--room);stroke:var(--line);stroke-width:3}
+.wall{stroke:var(--line);stroke-width:3}
+.facts{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.facts li{background:var(--panel);border-left:6px solid var(--spore);padding:10px 14px;border-radius:0 8px 8px 0}
+.hook{font-size:1.5rem;font-weight:800;line-height:1.2;margin:4px 0}
+.hook b{color:var(--spore)}
+textarea,input[type=text]{width:100%;font:inherit;padding:12px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+.chip{font-weight:600;padding:10px 12px;border:2px dashed var(--line);background:transparent;border-radius:99px;cursor:pointer;text-align:left}
+.sortcard{text-align:center;padding:26px 16px}
+.sortcard .name{font-size:1.8rem;font-weight:800;line-height:1.15}
+.guess{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0;font-weight:600;cursor:pointer}
+.guess input{width:22px;height:22px}
+.fb{border-radius:12px;padding:12px 14px;margin:12px 0;font-weight:600}
+.fb.ok{background:var(--goodbg);color:var(--good)}
+.fb.no{background:var(--badbg);color:var(--bad)}
+.fb span{display:block;font-weight:400;color:var(--ink)}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--muted)}
+.stat:last-child{border:0}
+table{border-collapse:collapse;width:100%}
+th,td{border:2px solid var(--line);padding:8px 10px;text-align:left;font-size:.95rem}
+th{background:var(--ink);color:var(--bg)}
+.wide{overflow-x:auto}
+details{background:var(--panel);border:2px solid var(--line);border-radius:10px;margin-bottom:10px}
+summary{cursor:pointer;padding:14px;font-weight:600}
+details p{padding:0 14px 6px;color:var(--ink)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0}
+.check input{width:22px;height:22px;margin-top:3px;flex:none}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:2px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+.sticky .in{max-width:720px;margin:0 auto;display:flex;gap:10px}
+.sticky .btn.ghost{flex:0 0 auto}
+.sticky .btn:not(.ghost){flex:1}
+.banner{background:var(--goodbg);color:var(--ink);border:2px solid var(--good);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="topline"><span id="where">Step 1 of 7</span><span id="left">about 5 min total</span></div>
+  <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+
+  <!-- 1 INTRO -->
+  <section class="step" id="s-intro">
+    <h1>Studio vs. Duplex</h1>
+    <p class="muted">Homosporous vs. heterosporous in about 5 minutes. One small screen at a time. Close the tab any time; it remembers where you stopped.</p>
+    <div class="banner hide" id="welcomeback"></div>
+    <div class="card">
+      <span class="why">Brain check</span>
+      <h2>Right now, how well could you explain homosporous vs. heterosporous to a friend?</h2>
+      <p class="muted small">Rate it before you learn anything. Your honest guess is the point; we compare it to what you actually do at the end.</p>
+      <div class="rate" role="group" aria-label="Confidence before" data-key="pre"></div>
+      <div class="ratelabels"><span>No idea</span><span>Could teach it</span></div>
+    </div>
+  </section>
+
+  <!-- 2 EXPLORE -->
+  <section class="step" id="s-explore">
+    <span class="why">Big picture</span>
+    <h2>Two kinds of apartments</h2>
+    <p><b>Homosporous = studio</b>: one room, everything happens in it. <b>Heterosporous = duplex</b>: two units, two jobs. Tap both floor plans to continue.</p>
+    <div class="toggle" role="group" aria-label="Choose a floor plan">
+      <button id="b1" aria-pressed="true">Studio<small>homosporous</small></button>
+      <button id="b2" aria-pressed="false">Duplex<small>heterosporous</small></button>
+    </div>
+    <div class="plan">
+<!-- STUDIO -->
+    <svg id="studio" viewBox="0 0 600 300" role="img" aria-label="Floor plan of a studio: one spore type grows into one gametophyte that makes both sperm and eggs">
+      <rect class="room" x="20" y="20" width="560" height="260" rx="6"/>
+      <text x="36" y="48" font-size="18" font-weight="800">STUDIO: one room, one spore type</text>
+      <circle cx="110" cy="170" r="30" fill="var(--spore)"/>
+      <text x="110" y="226" font-size="15" text-anchor="middle">1 kind of spore</text>
+      <path d="M150 170 H250" stroke="var(--line)" stroke-width="3" fill="none"/>
+      <path d="M250 170 l-12 -8 v16z" fill="var(--line)" transform="translate(12 0)"/>
+      <ellipse cx="400" cy="170" rx="110" ry="70" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="400" y="150" font-size="15" text-anchor="middle">bisexual gametophyte</text>
+      <text x="355" y="198" font-size="34" text-anchor="middle" fill="var(--male)" style="fill:var(--male)">♂</text>
+      <text x="445" y="198" font-size="34" text-anchor="middle" style="fill:var(--female)">♀</text>
+      <text x="400" y="248" font-size="14" text-anchor="middle" style="fill:var(--muted)">sperm + eggs from the same body</text>
+    </svg>
+    <!-- DUPLEX -->
+    <svg id="duplex" class="hide" viewBox="0 0 600 340" role="img" aria-label="Floor plan of a duplex: small microspore grows into a male gametophyte, large megaspore grows into a female gametophyte">
+      <rect class="room" x="20" y="20" width="560" height="300" rx="6"/>
+      <path class="wall" d="M240 20 V320"/>
+      <text x="36" y="48" font-size="17" font-weight="800">UNIT A</text>
+      <text x="256" y="48" font-size="17" font-weight="800">UNIT B</text>
+      <!-- A: micro -->
+      <circle cx="80" cy="150" r="13" fill="var(--spore)"/>
+      <text x="80" y="188" font-size="14" text-anchor="middle">microspore</text>
+      <text x="80" y="206" font-size="13" text-anchor="middle" style="fill:var(--muted)">small</text>
+      <path d="M100 150 H150" stroke="var(--line)" stroke-width="3"/>
+      <ellipse cx="185" cy="150" rx="32" ry="26" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="185" y="162" font-size="30" text-anchor="middle" style="fill:var(--male)">♂</text>
+      <text x="130" y="262" font-size="15" text-anchor="middle" font-weight="600">male only</text>
+      <text x="130" y="282" font-size="13" text-anchor="middle" style="fill:var(--muted)">makes sperm</text>
+      <!-- B: mega -->
+      <circle cx="320" cy="170" r="38" fill="var(--spore)"/>
+      <text x="320" y="228" font-size="14" text-anchor="middle">megaspore</text>
+      <text x="320" y="246" font-size="13" text-anchor="middle" style="fill:var(--muted)">BIG</text>
+      <path d="M368 170 H418" stroke="var(--line)" stroke-width="3"/>
+      <ellipse cx="480" cy="170" rx="55" ry="45" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="480" y="184" font-size="38" text-anchor="middle" style="fill:var(--female)">♀</text>
+      <text x="420" y="286" font-size="15" text-anchor="middle" font-weight="600">female only</text>
+      <text x="420" y="306" font-size="13" text-anchor="middle" style="fill:var(--muted)">makes eggs</text>
+    </svg>
+    </div>
+    <ul class="facts" id="facts-studio">
+      <li><b>1 spore type</b> grows into <b>1 gametophyte</b> that <i>usually</i> makes both sperm and eggs.</li>
+      <li>The gametophyte is bigger and <b>free-living</b> (it feeds itself).</li>
+      <li>Examples: most ferns, horsetails, club mosses.</li>
+    </ul>
+    <ul class="facts hide" id="facts-duplex">
+      <li><b>Micro = male.</b> Small spore, male gametophyte, sperm.</li>
+      <li><b>Mega = female.</b> Big spore, female gametophyte, eggs.</li>
+      <li>Gametophytes are <b>tiny and stay inside the spore wall</b>, fed by the parent plant.</li>
+      <li>Examples: <i>Selaginella</i>, <i>Isoetes</i>, water ferns, <b>all seed plants</b>. This is the stepping stone to seeds.</li>
+    </ul>
+    <div class="wide" style="margin-top:16px">
+      <table>
+        <tr><th></th><th>Studio (homo)</th><th>Duplex (hetero)</th></tr>
+        <tr><td>Spore types</td><td>1</td><td>2 (micro + mega)</td></tr>
+        <tr><td>Gametophyte</td><td>Usually both sexes</td><td>One sex each</td></tr>
+        <tr><td>Size</td><td>Larger, free-living</td><td>Tiny, enclosed</td></tr>
+        <tr><td>Examples</td><td>Ferns, horsetails</td><td>Selaginella, seed plants</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3 HOOKS -->
+  <section class="step" id="s-hooks">
+    <span class="why">Make it stick</span>
+    <h2>Two hooks. Say them out loud.</h2>
+    <div class="card">
+      <p class="hook"><b>HOMO</b> = <b>same</b>.<br>One kind of spore.</p>
+      <p class="hook"><b>HETERO</b> = <b>different</b>.<br>Two kinds of spore.</p>
+      <p class="hook" style="margin-top:14px"><b>Mega</b> eggs. <b>Micro</b> sperm.</p>
+      <p class="muted small">Big spore, big egg. Tiny spore, tiny sperm.</p>
+    </div>
+    <div class="card">
+      <h2>Now make one that is yours.</h2>
+      <p class="muted small">Hooks you build yourself stick far better than ones you read. A silly image or a rhyme works. Pick a starter or write your own.</p>
+      <div class="row" id="chips" style="margin-bottom:10px">
+        <button class="chip" type="button" data-t="Homo = Home alone in a studio.">Homo = Home alone in a studio</button>
+        <button class="chip" type="button" data-t="Hetero = two Housemates, one Huge egg and one Hardly-there sperm.">Hetero = two housemates</button>
+        <button class="chip" type="button" data-t="Mega = Meal (the egg is the big meal). Micro = Mini sperm.">Mega = Meal, Micro = Mini</button>
+      </div>
+      <label for="hook" class="small muted">Your hook (saved on this device)</label>
+      <textarea id="hook" placeholder="Type or tap a starter and then tweak it..."></textarea>
+    </div>
+  </section>
+
+  <!-- 4 SORT -->
+  <section class="step" id="s-sort">
+    <span class="why">Practice</span>
+    <h2>Studio or duplex?</h2>
+    <p class="muted small">One card at a time. Flip the switch if you are guessing. Wrong cards come back so you get a second shot.</p>
+    <div id="sort-root"></div>
+  </section>
+
+  <!-- 5 RECALL -->
+  <section class="step" id="s-recall">
+    <span class="why">Brain dump</span>
+    <h2>Close your eyes if you like. What do you remember?</h2>
+    <p>Without scrolling up, write (or say out loud) <b>3 differences</b> between homosporous and heterosporous. Messy is fine. Pulling it out of your memory is what builds the memory.</p>
+    <textarea id="brain" placeholder="1.&#10;2.&#10;3."></textarea>
+    <button class="btn full" id="reveal" style="margin-top:12px" disabled>Check my answer</button>
+    <div id="key" class="hide card" style="margin-top:14px">
+      <h2>Did you get these?</h2>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Spore types:</b> homosporous has 1, heterosporous has 2 (micro + mega).</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Gametophyte sex:</b> studio gametophyte usually makes both sperm and eggs; duplex gametophytes are male or female only.</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Size and location:</b> studio gametophytes are larger and free-living; duplex gametophytes are tiny and stay inside the spore wall.</span></label>
+      <p class="muted small" style="margin-top:8px">Tick the ones you had. Anything unticked is exactly what to review next, and that is useful information, not a failure.</p>
+    </div>
+  </section>
+
+  <!-- 6 TRAPS -->
+  <section class="step" id="s-traps">
+    <span class="why">Exam traps</span>
+    <h2>Where people lose points</h2>
+    <p class="muted small">Open all three to continue.</p>
+    <details class="trap"><summary>Is heterosporous the same as dioecious?</summary><p><b>No.</b> Heterosporous is about the <b>spores</b> (two sizes). Dioecious is about separate male and female <b>whole plants</b> in seed plants. An oak is heterosporous but not dioecious.</p></details>
+    <details class="trap"><summary>Do homosporous plants always have bisexual gametophytes?</summary><p><b>Usually, not always.</b> Some liverworts like <i>Marchantia</i> are homosporous, yet each gametophyte grows up male or female. So the deciding test is <b>how many spore types</b>, not what the gametophyte does. Check how your instructor words this on exams.</p></details>
+    <details class="trap"><summary>Why does heterospory matter?</summary><p>Keeping the tiny female gametophyte <b>inside the parent</b> is the first step toward the ovule, and an ovule becomes a seed. No heterospory, no seeds.</p></details>
+  </section>
+
+  <!-- 7 PLAN -->
+  <section class="step" id="s-plan">
+    <span class="why">Lock it in</span>
+    <h2>Check your gut, then plan your reviews</h2>
+    <div class="card">
+      <p><b>Now</b>, how well could you explain it to a friend?</p>
+      <div class="rate" role="group" aria-label="Confidence after" data-key="post"></div>
+      <div class="ratelabels"><span>No idea</span><span>Could teach it</span></div>
+    </div>
+    <div class="card hide" id="calib"></div>
+    <div class="card">
+      <h2>Your memory plan</h2>
+      <p>One study session is not enough, and that is normal brain science, not a personal flaw. Short reviews spaced out over time move this into long-term memory. Each one takes about 60 seconds.</p>
+      <div class="stat"><span>Today</span><b>Learned &#10003;</b></div>
+      <div class="stat"><span>Tomorrow</span><b id="d1"></b></div>
+      <div class="stat"><span>In 3 days</span><b id="d3"></b></div>
+      <div class="stat"><span>In 1 week</span><b id="d7"></b></div>
+      <div class="stat"><span>In 3 weeks</span><b id="d21"></b></div>
+      <p class="muted small" style="margin-top:10px">Your brain will not remind you, so let your phone do it.</p>
+      <button class="btn full" id="ics" type="button">Add review reminders to my calendar</button>
+    </div>
+  </section>
+
+  <!-- REVIEW MODE -->
+  <section class="step" id="s-review">
+    <span class="why">60-second review</span>
+    <h2>Quick check: what do you still remember?</h2>
+    <div id="review-root"></div>
+  </section>
+
+  <section class="step" id="s-reviewdone">
+    <h2 id="rd-title"></h2>
+    <p id="rd-body"></p>
+    <button class="btn full" id="rd-ics" type="button">Refresh my calendar reminders</button>
+  </section>
+</main>
+
+<div class="sticky" id="nav">
+  <div class="in">
+    <button class="btn ghost" id="back" type="button">Back</button>
+    <button class="btn" id="next" type="button">Next</button>
+  </div>
+</div>
+
+<script>
+(function(){
+var KEY='bios102_homohetero_v1';
+var DAY=86400000, GAPS=[1,3,7,21];
+var CARDS=[
+ {id:'fern',n:'Most ferns',a:'studio',w:'One spore type grows into one heart-shaped gametophyte that makes both sperm and eggs.'},
+ {id:'horse',n:'Horsetails (Equisetum)',a:'studio',w:'Horsetails make just one kind of spore.'},
+ {id:'lyco',n:'Club moss (Lycopodium)',a:'studio',w:'Club mosses like Lycopodium are homosporous: one spore type.'},
+ {id:'sela',n:'Spike moss (Selaginella)',a:'duplex',w:'It makes tiny microspores and big megaspores. Two types means duplex.'},
+ {id:'isoe',n:'Quillwort (Isoetes)',a:'duplex',w:'Isoetes is heterosporous: micro and mega spores.'},
+ {id:'azol',n:'Water fern (Azolla)',a:'duplex',w:'Unlike land ferns, water ferns are heterosporous.'},
+ {id:'pine',n:'Pine tree',a:'duplex',w:'All seed plants are heterosporous. Pollen comes from microspores; the ovule holds a megaspore.'},
+ {id:'oak',n:'Oak, or any flowering plant',a:'duplex',w:'All seed plants are heterosporous, flowering plants included.'}
+];
+function find(id){for(var i=0;i<CARDS.length;i++)if(CARDS[i].id===id)return CARDS[i]}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+var S=load();
+S.step=S.step||0; if(S.pre===undefined)S.pre=null; if(S.post===undefined)S.post=null;
+S.hook=S.hook||''; S.brain=S.brain||''; S.missed=S.missed||[]; S.seen=S.seen||{};
+S.sort=S.sort||null; S.keyDone=!!S.keyDone; S.traps=S.traps||0; S.done=!!S.done;
+if(S.box===undefined)S.box=-1; S.due=S.due||null; S.log=S.log||[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function fmt(ms){return new Date(ms).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
+
+var STEPS=['intro','explore','hooks','sort','recall','traps','plan'];
+var MINS=[5,4,3,3,2,1,1];
+var reviewing=false;
+
+/* ---------- gates ---------- */
+function gate(i){
+  switch(STEPS[i]){
+    case 'intro': return S.pre!==null;
+    case 'explore': return !!(S.seen.s&&S.seen.d);
+    case 'hooks': return S.hook.trim().length>=3;
+    case 'sort': return !!(S.sort&&S.sort.done);
+    case 'recall': return S.keyDone;
+    case 'traps': return S.traps>=3;
+    case 'plan': return S.post!==null;
+  }
+  return true;
+}
+
+/* ---------- navigation ---------- */
+function showSection(id){
+  var all=document.querySelectorAll('.step');
+  for(var i=0;i<all.length;i++)all[i].classList.toggle('on',all[i].id===id);
+  window.scrollTo(0,0);
+}
+function render(){
+  if(reviewing)return;
+  var i=S.step, last=STEPS.length-1;
+  showSection('s-'+STEPS[i]);
+  $('where').textContent='Step '+(i+1)+' of '+STEPS.length;
+  var left=0;for(var k=i;k<STEPS.length;k++)left+=MINS[k]>2?MINS[k]-1:MINS[k];
+  $('left').textContent=i===last?'last one':'about '+Math.max(1,Math.round(left/1.4))+' min left';
+  $('fill').style.width=((i+(gate(i)?1:0))/STEPS.length*100)+'%';
+  $('back').style.visibility=i===0?'hidden':'visible';
+  var nx=$('next');
+  nx.textContent=i===last?(S.done?'Done. See you tomorrow!':'Finish and save my plan'):'Next';
+  nx.disabled=!gate(i)||(i===last&&S.done);
+  if(STEPS[i]==='sort')initSort();
+  if(STEPS[i]==='plan')renderPlan();
+  if(STEPS[i]==='intro')renderWelcome();
+}
+$('next').addEventListener('click',function(){
+  if(!gate(S.step))return;
+  if(S.step===STEPS.length-1){finish();return}
+  S.step++;save();render();
+});
+$('back').addEventListener('click',function(){if(S.step>0){S.step--;save();render()}});
+
+/* ---------- rating widgets ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('.rate'),function(g){
+  var key=g.getAttribute('data-key');
+  for(var n=1;n<=5;n++){
+    var b=document.createElement('button');b.type='button';b.textContent=n;b.setAttribute('data-n',n);
+    b.setAttribute('aria-pressed',S[key]===n?'true':'false');
+    b.addEventListener('click',function(){
+      S[key]=Number(this.getAttribute('data-n'));
+      var me=this;
+      Array.prototype.forEach.call(g.children,function(c){c.setAttribute('aria-pressed',c===me?'true':'false')});
+      save();render();
+    });
+    g.appendChild(b);
+  }
+});
+
+/* ---------- explore ---------- */
+var b1=$('b1'),b2e=$('b2');
+function flip(isStudio){
+  $('studio').classList.toggle('hide',!isStudio);$('facts-studio').classList.toggle('hide',!isStudio);
+  $('duplex').classList.toggle('hide',isStudio);$('facts-duplex').classList.toggle('hide',isStudio);
+  b1.setAttribute('aria-pressed',isStudio);b2e.setAttribute('aria-pressed',!isStudio);
+  S.seen[isStudio?'s':'d']=1;save();render();
+}
+b1.addEventListener('click',function(){flip(true)});
+b2e.addEventListener('click',function(){flip(false)});
+S.seen.s=S.seen.s||1; // studio is shown first
+
+/* ---------- hooks ---------- */
+$('hook').value=S.hook;
+$('hook').addEventListener('input',function(){S.hook=this.value;save();render()});
+Array.prototype.forEach.call(document.querySelectorAll('#chips .chip'),function(c){
+  c.addEventListener('click',function(){var t=this.getAttribute('data-t');$('hook').value=t;S.hook=t;save();render();$('hook').focus()});
+});
+
+/* ---------- sort engine (used by lesson and review) ---------- */
+function makeSort(root,ids,state,onUpdate,onDone){
+  // state: {queue:[], total:n, first:{id:{ok,sure}}, seenOnce:{}}
+  function view(){
+    if(!state.queue.length){onDone();return}
+    var id=state.queue[0],c=find(id);
+    var doneCount=state.total-uniq(state.queue);
+    root.innerHTML='<p class="muted small">Card '+(Math.min(doneCount+1,state.total))+' of '+state.total+'</p>'+
+      '<div class="card sortcard"><div class="name">'+c.n+'</div>'+
+      '<label class="guess"><input type="checkbox" id="g"> I’m just guessing</label></div>'+
+      '<div class="row"><button class="btn" data-a="studio">Studio<br><small>homosporous</small></button>'+
+      '<button class="btn" data-a="duplex">Duplex<br><small>heterosporous</small></button></div>'+
+      '<div id="fb" aria-live="polite"></div>';
+    Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){
+      b.addEventListener('click',function(){answer(c,this.getAttribute('data-a'))});
+    });
+  }
+  function uniq(q){var m={};q.forEach(function(x){m[x]=1});return Object.keys(m).length}
+  function answer(c,a){
+    var sure=!root.querySelector('#g').checked, ok=a===c.a;
+    if(!state.first[c.id])state.first[c.id]={ok:ok,sure:sure};
+    state.queue.shift();
+    setTimeout(function(){save()},0);
+    if(!ok){
+      state.queue.splice(Math.min(2,state.queue.length),0,c.id);
+      if(S.missed.indexOf(c.id)<0)S.missed.push(c.id);
+    } else {
+      var mi=S.missed.indexOf(c.id);
+      if(mi>=0&&state.first[c.id].ok)S.missed.splice(mi,1);
+    }
+    Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){b.disabled=true});
+    var msg=ok?(sure?'Correct, and you knew it.':'Correct! You were guessing, but your instincts were right.')
+              :(sure?'Not quite. You felt sure, so this one is worth noticing.':'Not quite. Good that you flagged it as a guess.');
+    root.querySelector('#fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'">'+(ok?'✓ ':'✗ ')+msg+
+      '<span>'+c.n+' is a <b>'+(c.a==='studio'?'studio (homosporous)':'duplex (heterosporous)')+'</b>. '+c.w+'</span></div>'+
+      '<button class="btn full" id="nxt">'+(state.queue.length?'Next card':'See results')+'</button>';
+    var nb=root.querySelector('#nxt');nb.focus();
+    nb.addEventListener('click',function(){onUpdate();view()});
+  }
+  view();
+}
+function newSortState(ids){return {queue:shuffle(ids),total:ids.length,first:{},done:false}}
+function sortScore(st){
+  var ids=Object.keys(st.first),r={n:ids.length,ok:0,sureWrong:0,guessRight:0};
+  ids.forEach(function(k){var f=st.first[k];if(f.ok)r.ok++;if(!f.ok&&f.sure)r.sureWrong++;if(f.ok&&!f.sure)r.guessRight++});
+  return r;
+}
+
+var sortInited=false;
+function initSort(){
+  var root=$('sort-root');
+  if(S.sort&&S.sort.done){showSortResult(root);return}
+  if(!S.sort||!S.sort.queue||!S.sort.queue.length)S.sort=newSortState(CARDS.map(function(c){return c.id}));
+  makeSort(root,null,S.sort,function(){save()},function(){S.sort.done=true;save();showSortResult(root);render()});
+}
+function showSortResult(root){
+  var r=sortScore(S.sort);
+  root.innerHTML='<div class="card"><h2>'+r.ok+' of '+r.n+' right on the first try</h2>'+
+    '<div class="stat"><span>Sure and wrong</span><b>'+r.sureWrong+'</b></div>'+
+    '<div class="stat"><span>Guessed but right</span><b>'+r.guessRight+'</b></div>'+
+    '<p class="muted small" style="margin-top:10px">'+(r.sureWrong?'The "sure and wrong" ones are your real blind spots. Those are the best things to study.':'No blind spots here. Your sense of what you know is accurate.')+'</p>'+
+    '<button class="btn ghost full" id="again" type="button">Replay the deck</button></div>';
+  $('again').addEventListener('click',function(){S.sort=null;save();render()});
+}
+
+/* ---------- recall ---------- */
+$('brain').value=S.brain;
+function brainUI(){
+  $('reveal').disabled=$('brain').value.trim().length<10;
+  $('key').classList.toggle('hide',!S.keyShown);
+}
+$('brain').addEventListener('input',function(){S.brain=this.value;save();brainUI()});
+$('reveal').addEventListener('click',function(){S.keyShown=true;save();brainUI();$('key').scrollIntoView({behavior:'smooth',block:'nearest'})});
+Array.prototype.forEach.call(document.querySelectorAll('.keybox'),function(cb){
+  cb.addEventListener('change',function(){S.keyDone=true;save();render()});
+});
+brainUI();
+
+/* ---------- traps ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('details.trap'),function(d){
+  d.addEventListener('toggle',function(){
+    if(d.open&&!d.getAttribute('data-seen')){d.setAttribute('data-seen','1');S.traps++;save();render()}
+  });
+});
+
+/* ---------- plan ---------- */
+function renderPlan(){
+  var base=S.done&&S.startedAt?S.startedAt:Date.now();
+  [1,3,7,21].forEach(function(g){$('d'+g).textContent=fmt(base+g*DAY)});
+  var c=$('calib');
+  if(S.post===null||!S.sort){c.classList.add('hide');return}
+  var r=sortScore(S.sort),pct=r.n?Math.round(r.ok/r.n*100):0,line;
+  if(S.pre<=2&&pct>=75)line='You started at '+S.pre+'/5 and got '+pct+'% on the first try. <b>You know more than you think.</b> Trust the effort.';
+  else if(S.post>=4&&pct<=62)line='You feel '+S.post+'/5 but scored '+pct+'% first try. <b>Feeling familiar is not the same as knowing.</b> Rely on quizzing, not rereading.';
+  else if(S.post<=2&&pct>=75)line='You feel '+S.post+'/5 but got '+pct+'% first try. <b>Your gut is too harsh on you.</b>';
+  else line='You rated '+S.pre+' before and '+S.post+' after, with '+pct+'% first try. <b>Your confidence is tracking your skill well.</b>';
+  c.innerHTML='<h2>Your calibration</h2><p>'+line+'</p><p class="muted small">Gap between feeling and knowing is the number one reason students are surprised by exam scores. You just measured yours.</p>';
+  c.classList.remove('hide');
+}
+function finish(){
+  S.done=true;S.startedAt=Date.now();S.box=0;S.due=S.startedAt+GAPS[0]*DAY;
+  S.log.push({t:S.startedAt,kind:'learn'});save();render();
+}
+
+/* ---------- calendar (.ics) ---------- */
+function two(n){return (n<10?'0':'')+n}
+function stamp(ms,h){var d=new Date(ms);return ''+d.getFullYear()+two(d.getMonth()+1)+two(d.getDate())+'T'+two(h)+'0000'}
+function downloadIcs(){
+  var base=S.startedAt||Date.now(),url=location.origin&&location.origin!=='null'?location.origin+'/BIOS102/homosporous-heterosporous.html?review=1':'https://selassiefest.com/BIOS102/homosporous-heterosporous.html?review=1';
+  var L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//BIOS102//Spore Review//EN','CALSCALE:GREGORIAN'];
+  GAPS.forEach(function(g,i){
+    var ms=base+g*DAY,d=new Date(ms);
+    L.push('BEGIN:VEVENT','UID:bios102-homohetero-'+base+'-'+g+'@selassiefest.com',
+      'DTSTAMP:'+stamp(Date.now(),0).replace(/T\d+/,'T000000')+'Z',
+      'DTSTART:'+stamp(ms,9),'DTEND:'+stamp(ms,9).replace('090000','091500'),
+      'SUMMARY:BIOS102 60-second review: Studio vs. Duplex ('+(i+1)+' of 4)',
+      'DESCRIPTION:Quick memory check. No notes first! Try to answer from memory. '+url,
+      'URL:'+url,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:60-second BIOS102 review','TRIGGER:PT0M','END:VALARM','END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  var blob=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='bios102-spore-reviews.ics';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+$('ics').addEventListener('click',downloadIcs);
+$('rd-ics').addEventListener('click',downloadIcs);
+
+/* ---------- welcome back / review ---------- */
+function renderWelcome(){
+  var w=$('welcomeback');
+  if(!S.done){w.classList.add('hide');return}
+  var due=S.due&&Date.now()>=S.due;
+  w.classList.remove('hide');
+  w.innerHTML=(due?'<b>Your review is ready.</b> It takes about 60 seconds.':'<b>Welcome back!</b> Your next review is due '+fmt(S.due)+'. You can practice early; it just will not move your schedule.')+
+    '<div style="margin-top:10px"><button class="btn full" id="startrev" type="button">Start 60-second review</button></div>';
+  $('startrev').addEventListener('click',startReview);
+}
+var revState=null;
+function startReview(){
+  reviewing=true;$('nav').classList.add('hide');
+  $('where').textContent='Review';$('left').textContent='about 1 min';$('fill').style.width='0%';
+  showSection('s-review');
+  var pool=S.missed.slice(),rest=shuffle(CARDS.map(function(c){return c.id}).filter(function(i){return pool.indexOf(i)<0}));
+  var ids=shuffle(pool.concat(rest).slice(0,6));
+  revState=newSortState(ids);
+  var root=$('review-root');
+  makeSort(root,null,revState,function(){},function(){reviewRecall(root)});
+}
+function reviewRecall(root){
+  root.innerHTML='<div class="card"><h2>Say it from memory</h2><p>Out loud or in your head, no peeking: <b>what is the difference between homosporous and heterosporous?</b></p>'+
+    '<details><summary>Show the answer</summary><p>Homosporous: one spore type, usually one bisexual free-living gametophyte. Heterosporous: two spore types, micro (male) and mega (female), with tiny gametophytes that stay inside the spore wall.</p></details>'+
+    '<p style="margin-top:12px"><b>How did you do?</b></p><div class="row"><button class="btn ghost" data-r="1">Got it</button><button class="btn ghost" data-r="0">Missed some</button></div></div>';
+  Array.prototype.forEach.call(root.querySelectorAll('[data-r]'),function(b){
+    b.addEventListener('click',function(){endReview(this.getAttribute('data-r')==='1')});
+  });
+}
+function endReview(recallOk){
+  var r=sortScore(revState),strong=recallOk&&r.n&&r.ok/r.n>=0.83,due=S.due&&Date.now()>=S.due,t,body;
+  if(due){
+    if(strong){S.box=Math.min(S.box+1,GAPS.length);}else{S.box=0}
+    var next=S.box>=GAPS.length?null:GAPS[S.box];
+    S.due=next?Date.now()+next*DAY:null;
+    S.startedAt=Date.now();
+  }
+  S.log.push({t:Date.now(),kind:'review',ok:r.ok,n:r.n,recall:recallOk});save();
+  if(strong){
+    t='Nice. That is getting locked in.';
+    body=due?(S.due?'Your next review is '+fmt(S.due)+'. The gaps get longer as your memory gets stronger.':'You have finished all four reviews. This is in long-term memory. Do one last quick check the night before your exam.'):'You practiced early, so your schedule stays the same.';
+  } else {
+    t='That is useful. Forgetting is how you learn what to fix.';
+    body='You got '+r.ok+' of '+r.n+' on the first try'+(recallOk?'':' and missed some of the recall')+'. '+(due?'We will check again tomorrow, since a fast second look right after a stumble works best.':'Try the review again when it is due.')+' Want a refresher? Reopen the lesson from the start.';
+  }
+  $('rd-title').textContent=t;$('rd-body').textContent=body;showSection('s-reviewdone');
+  $('rd-ics').classList.toggle('hide',!S.due);
+}
+
+/* ---------- boot ---------- */
+if(S.step>=STEPS.length)S.step=STEPS.length-1;
+if(S.done)S.step=0;
+var wantReview=/[?&]review=1/.test(location.search);
+if(S.done&&wantReview){
+  $('nav').classList.add('hide');startReview();
+} else render();
+})();
+</script>
+</body>
+</html>
