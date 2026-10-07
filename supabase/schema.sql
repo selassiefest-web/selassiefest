@@ -22,9 +22,11 @@ alter table anansi_story_submissions enable row level security;
 -- Both forms are public and submit with the anon key. Only INSERT is granted to
 -- anon, and there is no SELECT policy, so the anon key can never read back
 -- other people's emails or stories.
-create policy "Allow anon insert" on newsletter_subscribers
-  for insert to anon
-  with check (true);
+-- newsletter_subscribers: no anon insert any more (10/7/2026). Bots used the
+-- open insert to sign up strangers; signups now go through the
+-- newsletter-signup edge function (Turnstile + honeypot + per-IP throttle),
+-- which writes with the service role.
+drop policy if exists "Allow anon insert" on newsletter_subscribers;
 
 create policy "Allow anon insert" on anansi_story_submissions
   for insert to anon
@@ -34,7 +36,7 @@ create policy "Allow anon insert" on anansi_story_submissions
 -- privilege first. Without these grants, anon gets a generic RLS-violation
 -- error on every insert even though the policy above is satisfied.
 grant usage on schema public to anon;
-grant insert on newsletter_subscribers to anon;
+revoke insert on newsletter_subscribers from anon, authenticated;
 grant insert on anansi_story_submissions to anon;
 
 -- ─────────────────────────────────────────────────────────────────────────
