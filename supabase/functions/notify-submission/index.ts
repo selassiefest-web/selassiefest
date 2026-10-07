@@ -308,69 +308,6 @@ function formatSecurityGuardContract(record: Record<string, any>) {
   };
 }
 
-// 2nd Chance Housing lease e-signature bridge -- see supabase/schema.sql's
-// "lease e-signature bridge" section for the full data-flow explanation.
-// This is unrelated-organization mail routed through SelassieFest's already
-// -verified Resend sending domain (a shared-infrastructure decision, not a
-// SelassieFest feature), so both formatters below use the `from`/`replyTo`
-// overrides to keep the display name and reply address correct for 2nd
-// Chance Housing rather than SelassieFest.
-const LEASE_SIGN_FROM = '2nd Chance Housing <hello@selassiefest.com>';
-const LEASE_MANAGER_EMAIL = 'mkepropertymanager@gmail.com';
-
-function formatLeaseSigningRequest(record: Record<string, any>) {
-  const signUrl = `https://selassiefest.com/lease-sign/?id=${record.id}`;
-  return {
-    subject: `Please review and sign your lease${record.unit_label ? ' — ' + record.unit_label : ''}`,
-    html: `
-      <h2>Your lease is ready to sign</h2>
-      <p>Hi ${escapeHtml(record.tenant_name)},</p>
-      <p>Please review and sign your lease${record.unit_label ? ` for <strong>${escapeHtml(record.unit_label)}</strong>` : ''} using the secure link below:</p>
-      <p style="margin:24px 0;"><a href="${signUrl}" style="background:#2b7a4b;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;">Review &amp; Sign Lease</a></p>
-      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${signUrl}</p>
-      <p>Once you sign, you and our office will both automatically receive a copy of the fully signed lease by email.</p>
-      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Questions? Reply to this email.</p>
-    `,
-  };
-}
-
-function formatLeaseSigningRequestStaffCopy(record: Record<string, any>) {
-  return {
-    subject: `The Attached Lease was sent to ${record.tenant_name}`,
-    html: `
-      <h2>Lease sent for signature</h2>
-      <p><strong>Tenant:</strong> ${escapeHtml(record.tenant_name)} (${escapeHtml(record.tenant_email)})</p>
-      ${record.unit_label ? `<p><strong>Unit:</strong> ${escapeHtml(record.unit_label)}</p>` : ''}
-      <p>A copy of the lease as sent (unsigned) is attached for your records. You'll get another email once it's signed.</p>
-    `,
-  };
-}
-
-function formatLeaseSignatureStaff(record: Record<string, any>) {
-  return {
-    subject: `Signed Lease — ${record.tenant_name}${record.unit_label ? ' (' + record.unit_label + ')' : ''}`,
-    html: `
-      <h2>Lease Signed</h2>
-      <p><strong>Tenant:</strong> ${escapeHtml(record.tenant_name)} (${escapeHtml(record.tenant_email)})</p>
-      ${record.unit_label ? `<p><strong>Unit:</strong> ${escapeHtml(record.unit_label)}</p>` : ''}
-      <p><strong>Signed as:</strong> ${escapeHtml(record.signature_typed_name)}</p>
-      <p><strong>Signed at:</strong> ${escapeHtml(record.signed_at)}</p>
-      <p>Signed PDF is attached.</p>
-    `,
-  };
-}
-
-function formatLeaseSignatureTenantCopy(record: Record<string, any>) {
-  return {
-    subject: `Your signed lease copy${record.unit_label ? ' — ' + record.unit_label : ''}`,
-    html: `
-      <h2>Thank you, ${escapeHtml(record.tenant_name)}!</h2>
-      <p>Your lease${record.unit_label ? ` for <strong>${escapeHtml(record.unit_label)}</strong>` : ''} has been signed and submitted. A copy is attached for your records.</p>
-      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Questions? Reply to this email.</p>
-    `,
-  };
-}
-
 function formatEventNotifyConfirmation(record: Record<string, any>) {
   return {
     subject: `You're on the list — ${record.event_name}`,
@@ -730,7 +667,7 @@ type TableConfig = {
 // tables are exempt because their insert policy already checks a roster.
 // Counts come from the table itself (rows in the window, this one included);
 // a table without created_at, or a failed count, lets the email through.
-const STAFF_INBOXES = new Set([NOTIFY_TO, BBPAC_NOTIFY_TO, CLRWF_NOTIFY_TO, LEASE_MANAGER_EMAIL, 'stephen@selassiefest.com'].map((e) => e.toLowerCase()));
+const STAFF_INBOXES = new Set([NOTIFY_TO, BBPAC_NOTIFY_TO, CLRWF_NOTIFY_TO, 'stephen@selassiefest.com'].map((e) => e.toLowerCase()));
 const SELF_EMAIL_PER_ADDRESS_PER_DAY = 2;
 const SELF_EMAIL_PER_TABLE_PER_HOUR = 10;
 
@@ -854,31 +791,6 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       },
     ],
   },
-  lease_signing_requests: {
-    notifications: [
-      {
-        to: (record) => record.tenant_email,
-        format: formatLeaseSigningRequest,
-        from: () => LEASE_SIGN_FROM,
-        replyTo: () => LEASE_MANAGER_EMAIL,
-      },
-      {
-        to: () => LEASE_MANAGER_EMAIL,
-        format: formatLeaseSigningRequestStaffCopy,
-        from: () => LEASE_SIGN_FROM,
-        replyTo: () => LEASE_MANAGER_EMAIL,
-        attachments: async (record) => {
-          if (!record.draft_pdf_path) return [];
-          return [
-            {
-              filename: `Lease-Sent-${record.tenant_name || record.id}.pdf`,
-              content: await fetchStorageObjectAsBase64('lease-draft-pdfs', record.draft_pdf_path),
-            },
-          ];
-        },
-      },
-    ],
-  },
   yawd_waitlist: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatYawdWaitlist }] },
   yawd_tracker_login_links: {
     notifications: [
@@ -960,34 +872,6 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
           const voiceNotes = await fetchClrwfVoiceNoteAttachments(record, 'CLRWF-Application');
           return [...resume, ...voiceNotes];
         },
-      },
-    ],
-  },
-  lease_signatures: {
-    notifications: [
-      {
-        to: () => LEASE_MANAGER_EMAIL,
-        format: formatLeaseSignatureStaff,
-        from: () => LEASE_SIGN_FROM,
-        replyTo: () => LEASE_MANAGER_EMAIL,
-        attachments: async (record) => [
-          {
-            filename: `Signed-Lease-${record.tenant_name || record.id}.pdf`,
-            content: await fetchStorageObjectAsBase64('lease-signed-pdfs', record.pdf_path),
-          },
-        ],
-      },
-      {
-        to: (record) => record.tenant_email,
-        format: formatLeaseSignatureTenantCopy,
-        from: () => LEASE_SIGN_FROM,
-        replyTo: () => LEASE_MANAGER_EMAIL,
-        attachments: async (record) => [
-          {
-            filename: `Signed-Lease-${record.tenant_name || record.id}.pdf`,
-            content: await fetchStorageObjectAsBase64('lease-signed-pdfs', record.pdf_path),
-          },
-        ],
       },
     ],
   },
