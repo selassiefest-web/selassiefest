@@ -13,6 +13,15 @@
     var input = form.querySelector('input[type="email"]');
     var button = form.querySelector('button');
     var msgEl = form.querySelector('[data-sf-nf-msg]');
+    // Bot traps (10/6/2026, bots were signing up strangers): a field people
+    // never see, and a minimum time between page load and submit. A trapped
+    // submit shows the normal success message and saves nothing.
+    var trap = document.createElement('input');
+    trap.type = 'text'; trap.name = 'website'; trap.tabIndex = -1;
+    trap.autocomplete = 'off'; trap.setAttribute('aria-hidden', 'true');
+    trap.style.cssText = 'position:absolute;left:-10000px;width:1px;height:1px;opacity:0;';
+    form.appendChild(trap);
+    var loadedAt = Date.now();
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -21,6 +30,12 @@
       if (!EMAIL_RE.test(email)) {
         setMsg(msgEl, 'Please enter a valid email address.', 'is-error');
         input.focus();
+        return;
+      }
+
+      if (trap.value || Date.now() - loadedAt < 3000) {
+        setMsg(msgEl, "You're on the list!", 'is-success');
+        form.reset();
         return;
       }
 

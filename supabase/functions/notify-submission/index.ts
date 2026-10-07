@@ -32,6 +32,7 @@ const REPLY_TO = 'selassiefest@gmail.com';
 // without any code here. Every newsletter_subscribers insert gets synced
 // into it below, in addition to the subscriber's own confirmation email.
 const NEWSLETTER_AUDIENCE_ID = '6561e97b-31be-45c8-a069-e8d8ae29711e';
+const NEWSLETTER_AUDIENCE_SYNC = false;
 const STORAGE_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/game-submissions';
 const VENDOR_APPLICATIONS_PUBLIC_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/vendor-applications';
 
@@ -723,6 +724,47 @@ type TableConfig = {
   notifications: Notification[];
 };
 
+// Abuse guard for emails sent to an address a visitor typed in (10/6/2026).
+// Most of these tables take a plain anon insert, so without this anyone can
+// make us email anyone. Staff inboxes are never limited. The *_login_links
+// tables are exempt because their insert policy already checks a roster.
+// Counts come from the table itself (rows in the window, this one included);
+// a table without created_at, or a failed count, lets the email through.
+const STAFF_INBOXES = new Set([NOTIFY_TO, BBPAC_NOTIFY_TO, CLRWF_NOTIFY_TO, LEASE_MANAGER_EMAIL, 'stephen@selassiefest.com'].map((e) => e.toLowerCase()));
+const SELF_EMAIL_PER_ADDRESS_PER_DAY = 2;
+const SELF_EMAIL_PER_TABLE_PER_HOUR = 10;
+
+async function countRows(table: string, filter: string): Promise<number | null> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&${filter}`, {
+    method: 'HEAD',
+    headers: {
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+      Prefer: 'count=exact',
+      Range: '0-0',
+    },
+  });
+  const total = res.headers.get('content-range')?.split('/')[1];
+  return res.ok && total && total !== '*' ? Number(total) : null;
+}
+
+async function selfAddressedAllowed(table: string, record: Record<string, any>, to: string): Promise<{ ok: boolean; reason?: string }> {
+  if (STAFF_INBOXES.has(String(to).toLowerCase()) || table.endsWith('_login_links')) return { ok: true };
+  const column = Object.keys(record).find((k) => typeof record[k] === 'string' && record[k].toLowerCase() === String(to).toLowerCase());
+  const hourAgo = new Date(Date.now() - 3600_000).toISOString();
+  const dayAgo = new Date(Date.now() - 86400_000).toISOString();
+  try {
+    const [perTable, perAddress] = await Promise.all([
+      countRows(table, `created_at=gte.${encodeURIComponent(hourAgo)}`),
+      column ? countRows(table, `${column}=ilike.${encodeURIComponent(to)}&created_at=gte.${encodeURIComponent(dayAgo)}`) : null,
+    ]);
+    if (perTable !== null && perTable > SELF_EMAIL_PER_TABLE_PER_HOUR) return { ok: false, reason: `over ${SELF_EMAIL_PER_TABLE_PER_HOUR} per hour` };
+    if (perAddress !== null && perAddress > SELF_EMAIL_PER_ADDRESS_PER_DAY) return { ok: false, reason: `over ${SELF_EMAIL_PER_ADDRESS_PER_DAY} per address per day` };
+  } catch (e) {
+    console.error('notify-submission: abuse guard count failed', e);
+  }
+  return { ok: true };
+}
 const TABLE_CONFIG: Record<string, TableConfig> = {
   marketplace_preorders: { notifications: [{ to: () => NOTIFY_TO, format: formatMarketplacePreorder }] },
   volunteer_signups: { notifications: [{ to: () => NOTIFY_TO, format: formatVolunteerSignup }] },
@@ -749,7 +791,12 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     ],
   },
   stripe_donations: { notifications: [{ to: () => NOTIFY_TO, format: formatDonation }] },
-  newsletter_subscribers: { notifications: [{ to: (record) => record.email, format: formatNewsletterConfirmation }] },
+  // No email back to the address typed in (10/6/2026): the footer form is a
+  // plain anon insert, and bots were using it to send "You're on the list"
+  // to strangers (Gmail dot-trick addresses, an AT&T SMS gateway, a .gov
+  // inbox). The row is still saved; the on-page message is the confirmation.
+  // Restore this only once signups go through a captcha-checked function.
+  newsletter_subscribers: { notifications: [] },
   game_submissions: {
     notifications: [
       { to: () => NOTIFY_TO, format: formatGameSubmission },
@@ -784,12 +831,9 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   event_notify_signups: {
     notifications: [
       { to: () => NOTIFY_TO, format: formatEventNotifySignup },
-      {
-        to: (record) => record.email,
-        format: formatEventNotifyConfirmation,
-        from: (record) =>
-          record.brand === 'trc' ? 'TRC Events <hello@selassiefest.com>' : 'SelassieFest <hello@selassiefest.com>',
-      },
+      // Confirmation to the typed-in address is off for the same reason as
+      // newsletter_subscribers (bot signups, 10/6/2026). The on-page message
+      // confirms. Staff still get their copy above.
     ],
   },
   bios102_login_links: {
@@ -966,7 +1010,9 @@ Deno.serve(async (req: Request) => {
 
     // Best-effort — a Resend Audience hiccup shouldn't block the
     // confirmation email itself.
-    if (table === 'newsletter_subscribers') {
+    // Off with the confirmation email above (bot signups): syncing would put
+    // every address a bot typed into the Broadcasts audience.
+    if (table === 'newsletter_subscribers' && NEWSLETTER_AUDIENCE_SYNC) {
       try {
         await fetch(`https://api.resend.com/audiences/${NEWSLETTER_AUDIENCE_ID}/contacts`, {
           method: 'POST',
@@ -991,6 +1037,11 @@ Deno.serve(async (req: Request) => {
       const to = notification.to(record);
       if (!to) {
         return { skipped: true, reason: 'no recipient email on record' };
+      }
+      const guard = await selfAddressedAllowed(table, record, to);
+      if (!guard.ok) {
+        console.warn(`notify-submission: held email to typed-in address (${table}): ${guard.reason}`);
+        return { skipped: true, reason: guard.reason };
       }
 
       const { subject, html } = notification.format(record);
