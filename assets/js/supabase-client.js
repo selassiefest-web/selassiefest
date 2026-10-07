@@ -13,6 +13,68 @@ window.sfSupabaseReady = (async () => {
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 })();
 
+// Public forms no longer insert directly (bots were abusing the open inserts,
+// 10/7/2026). sfProtectedInsert() gets a Cloudflare Turnstile token and posts
+// the row to the public-submit edge function, which checks it and saves it.
+// It resolves to { error } like a supabase-js insert, so callers don't change.
+const SF_PUBLIC_SUBMIT_URL = SUPABASE_URL + '/functions/v1/public-submit';
+const SF_TURNSTILE_SITE_KEY = '0x4AAAAAAFP_zBLKj8yz11WF';
+let sfTurnstileLoad = null;
+let sfTurnstileWidget = null;
+let sfTurnstilePending = null;
+
+function sfTurnstileToken() {
+  if (!sfTurnstileLoad) {
+    sfTurnstileLoad = new Promise((resolve, reject) => {
+      window.sfTurnstileOnload = resolve;
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=sfTurnstileOnload';
+      s.async = true;
+      s.onerror = () => reject(new Error('Could not load the security check.'));
+      document.head.appendChild(s);
+    });
+  }
+  return sfTurnstileLoad.then(() => new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('The security check timed out.')), 60000);
+    sfTurnstilePending = {
+      resolve: (t) => { clearTimeout(timer); resolve(t); },
+      reject: (e) => { clearTimeout(timer); reject(e); },
+    };
+    if (sfTurnstileWidget === null) {
+      // Bottom-right, and only visible if Cloudflare wants the visitor to click.
+      const box = document.createElement('div');
+      box.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:2147483000;';
+      document.body.appendChild(box);
+      sfTurnstileWidget = window.turnstile.render(box, {
+        sitekey: SF_TURNSTILE_SITE_KEY,
+        appearance: 'interaction-only',
+        execution: 'execute',
+        callback: (t) => sfTurnstilePending && sfTurnstilePending.resolve(t),
+        'error-callback': () => { sfTurnstilePending && sfTurnstilePending.reject(new Error('The security check failed.')); },
+      });
+    } else {
+      window.turnstile.reset(sfTurnstileWidget);
+    }
+    window.turnstile.execute(sfTurnstileWidget);
+  }));
+}
+
+window.sfProtectedInsert = async function (form, record) {
+  try {
+    const token = await sfTurnstileToken();
+    const res = await fetch(SF_PUBLIC_SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ form, record, token }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (out.ok) return { error: null };
+    return { error: { code: out.code || String(res.status), message: out.error || 'Something went wrong. Please try again.' } };
+  } catch (e) {
+    return { error: { code: 'network', message: e.message || 'Something went wrong. Please try again.' } };
+  }
+};
+
 window.sfSupabase = {
   async subscribeNewsletter(email, source = null) {
     const client = await window.sfSupabaseReady;
@@ -27,7 +89,7 @@ window.sfSupabase = {
 
   async submitAnansiStory({ name, email, storyTitle, storyText }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('anansi_story_submissions').insert({
+    const { error } = await window.sfProtectedInsert('anansi_story_submissions', {
       name,
       email,
       story_title: storyTitle,
@@ -38,7 +100,7 @@ window.sfSupabase = {
 
   async submitVolunteerSignup({ fullName, email, phone, age, roleChoice, shiftPreference, tshirtSize, emergencyContact, accommodations, referralSource, waiverAccepted }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('volunteer_signups').insert({
+    const { error } = await window.sfProtectedInsert('volunteer_signups', {
       full_name: fullName,
       email,
       phone,
@@ -56,7 +118,7 @@ window.sfSupabase = {
 
   async submitSponsorInquiry({ sourcePage, email, fields }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('sponsor_inquiries').insert({
+    const { error } = await window.sfProtectedInsert('sponsor_inquiries', {
       source_page: sourcePage,
       email,
       fields,
@@ -66,7 +128,7 @@ window.sfSupabase = {
 
   async submitCampRegistration({ camperName, guardianName, guardianEmail, guardianPhone, registrationData }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('camp_registrations').insert({
+    const { error } = await window.sfProtectedInsert('camp_registrations', {
       camper_name: camperName,
       guardian_name: guardianName,
       guardian_email: guardianEmail,
@@ -147,7 +209,7 @@ window.sfSupabase = {
       if (error) throw error;
     }
 
-    const { error } = await client.from('game_submissions').insert({
+    const { error } = await window.sfProtectedInsert('game_submissions', {
       game_slug: gameSlug,
       game_name: gameName,
       submitter_name: submitterName,
@@ -188,7 +250,7 @@ window.sfSupabase = {
       photoPaths.push(path);
     }
 
-    const { error } = await client.from('vendor_applications').insert({
+    const { error } = await window.sfProtectedInsert('vendor_applications', {
       business_name: businessName,
       contact_email: contactEmail,
       product_description: productDescription,
@@ -215,7 +277,7 @@ window.sfSupabase = {
     });
     if (uploadError) throw uploadError;
 
-    const { error } = await client.from('security_guard_contracts').insert({
+    const { error } = await window.sfProtectedInsert('security_guard_contracts', {
       vendor_company_name: vendorCompanyName,
       vendor_address: vendorAddress || null,
       vendor_contact: vendorContact || null,
@@ -273,7 +335,7 @@ window.sfSupabase = {
     message,
   }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('plates_for_purpose_responses').insert({
+    const { error } = await window.sfProtectedInsert('plates_for_purpose_responses', {
       restaurant_slug: restaurantSlug,
       business_name: businessName,
       decision,
@@ -343,13 +405,13 @@ window.sfSupabase = {
   // write-only inserts, same convention as everything above.
   async bbpacMeetingNotify(email) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_meeting_notify').insert({ email });
+    const { error } = await window.sfProtectedInsert('bbpac_meeting_notify', { email });
     if (error) throw error;
   },
 
   async bbpacVolunteerSignup({ fullName, email, phone, interestArea, availability }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_volunteer_signups').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_volunteer_signups', {
       full_name: fullName,
       email,
       phone: phone || null,
@@ -361,7 +423,7 @@ window.sfSupabase = {
 
   async bbpacMembershipSignup({ fullName, email, membershipLevel, message }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_membership_signups').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_membership_signups', {
       full_name: fullName,
       email,
       membership_level: membershipLevel || null,
@@ -372,7 +434,7 @@ window.sfSupabase = {
 
   async bbpacSponsorInquiry({ businessName, contactName, email, message }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_sponsor_inquiries').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_sponsor_inquiries', {
       business_name: businessName,
       contact_name: contactName || null,
       email,
@@ -383,7 +445,7 @@ window.sfSupabase = {
 
   async bbpacVendorApplication({ businessName, contactName, email, productDescription, preferredEvent }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_vendor_applications').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_vendor_applications', {
       business_name: businessName,
       contact_name: contactName || null,
       email,
@@ -395,7 +457,7 @@ window.sfSupabase = {
 
   async bbpacContactMessage({ name, email, topic, message }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_contact_messages').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_contact_messages', {
       name,
       email,
       topic: topic || null,
@@ -406,7 +468,7 @@ window.sfSupabase = {
 
   async bbpacPhotoSubmission({ name, email, description, era }) {
     const client = await window.sfSupabaseReady;
-    const { error } = await client.from('bbpac_photo_submissions').insert({
+    const { error } = await window.sfProtectedInsert('bbpac_photo_submissions', {
       name,
       email,
       description: description || null,
@@ -461,7 +523,7 @@ window.sfSupabase = {
 
     const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
 
-    const { error } = await client.from('clrwf_quote_requests').insert({
+    const { error } = await window.sfProtectedInsert('clrwf_quote_requests', {
       full_name: fullName,
       email,
       phone: phone || null,
@@ -483,7 +545,7 @@ window.sfSupabase = {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
     const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
-    const { error } = await client.from('clrwf_maintenance_agreement_requests').insert({
+    const { error } = await window.sfProtectedInsert('clrwf_maintenance_agreement_requests', {
       business_name: businessName,
       contact_name: contactName || null,
       email,
@@ -500,7 +562,7 @@ window.sfSupabase = {
     const client = await window.sfSupabaseReady;
     const stamp = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
     const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
-    const { error } = await client.from('clrwf_contact_messages').insert({ name, email, message, voice_note_paths: voiceNotePaths });
+    const { error } = await window.sfProtectedInsert('clrwf_contact_messages', { name, email, message, voice_note_paths: voiceNotePaths });
     if (error) throw error;
   },
 
@@ -685,7 +747,7 @@ window.sfSupabase = {
 
     const voiceNotePaths = await this._uploadClrwfVoiceNotes(voiceNotes, stamp);
 
-    const { error } = await client.from('clrwf_job_applications').insert({
+    const { error } = await window.sfProtectedInsert('clrwf_job_applications', {
       position,
       full_name: fullName,
       email,

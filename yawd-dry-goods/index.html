@@ -541,7 +541,7 @@
     btn.disabled = true; btn.textContent = 'Sending...';
     try {
       const client = await window.sfSupabaseReady;
-      const { error } = await client.from('yawd_waitlist').insert(row);
+      const { error } = await window.sfProtectedInsert('yawd_waitlist', row);
       if (error) throw error;
       document.getElementById('formBody').hidden = true;
       document.getElementById('thanks').hidden = false;

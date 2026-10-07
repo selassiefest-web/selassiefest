@@ -605,7 +605,7 @@
     var allExpertiseKeys = activeExpertiseKeys();
 
     var client = await window.sfSupabaseReady;
-    var result = await client.from('bbpac_formation_section_signup_requests').insert({
+    var result = await window.sfProtectedInsert('bbpac_formation_section_signup_requests', {
       full_name: fullName, email: email, requested_sections: sections, message: message || null,
       expertise_tags: allExpertiseKeys.length ? allExpertiseKeys : null,
       expertise_other: otherText || null,
