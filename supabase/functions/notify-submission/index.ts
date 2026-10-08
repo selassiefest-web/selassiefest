@@ -21,6 +21,15 @@ const BBPAC_NOTIFY_TO = 'stephen@selassiefest.com';
 // for now, same reasoning as BBPAC_NOTIFY_TO -- update to Rainford's own
 // inbox once he's onboarded to receive leads directly.
 const CLRWF_NOTIFY_TO = 'stephen@selassiefest.com';
+// Everything addressed to Stephen is copied to Paksipras too (10/7/2026),
+// except C. L. Rainford's leads (another business's customers) and the
+// *_login_links tables, whose emails carry a sign-in link meant for one person.
+const STEPHEN_CC = ['paksipras@gmail.com'];
+function ccFor(table: string, to: string): string[] | undefined {
+  if (String(to).toLowerCase() !== 'stephen@selassiefest.com') return undefined;
+  if (table.startsWith('clrwf_') || table.endsWith('_login_links')) return undefined;
+  return STEPHEN_CC;
+}
 // selassiefest.com is verified with Resend, so mail now sends from a real
 // address instead of the onboarding@resend.dev sandbox (which could only
 // ever deliver to the account's own inbox). reply_to keeps replies landing
@@ -328,6 +337,46 @@ function formatBbpacMeetingNotify(record: Record<string, any>) {
     html: `
       <h2>New Meeting Notification Signup</h2>
       <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
+    `,
+  };
+}
+
+function formatAppearanceReleaseStaff(record: Record<string, any>) {
+  const minor = record.release_type === 'minor';
+  return {
+    subject: `Appearance release signed \u2014 ${record.subject_name}${minor ? ' (minor)' : ''}`,
+    html: `
+      <h2>Appearance Release \u2014 Anatomy of a Shoreline</h2>
+      <p><strong>Appearing:</strong> ${escapeHtml(record.subject_name)}${minor ? ' <em>(minor)</em>' : ''}</p>
+      <p><strong>Signed by:</strong> ${escapeHtml(record.signer_name)}${record.signer_relationship ? ' \u2014 ' + escapeHtml(record.signer_relationship) : ''}</p>
+      <p><strong>Contact:</strong> ${escapeHtml(record.signer_email)}${record.signer_phone ? ', ' + escapeHtml(record.signer_phone) : ''}</p>
+      ${record.filmed_location ? `<p><strong>Filmed at:</strong> ${escapeHtml(record.filmed_location)}</p>` : ''}
+      ${record.filmed_date ? `<p><strong>Filmed on:</strong> ${escapeHtml(record.filmed_date)}</p>` : ''}
+      <hr>
+      <p><strong>Typed signature:</strong> ${escapeHtml(record.signature_typed_name)}</p>
+      <p><strong>Signed at:</strong> ${escapeHtml(record.signed_at)}</p>
+      <p><strong>Release version:</strong> ${escapeHtml(record.release_version)}</p>
+      <p style="color:#666;font-size:12px;"><strong>User agent:</strong> ${escapeHtml(record.user_agent || '\u2014')}</p>
+      <p style="color:#666;font-size:12px;">Record id: ${escapeHtml(record.id)}</p>
+    `,
+  };
+}
+
+function formatAppearanceReleaseSignerCopy(record: Record<string, any>) {
+  const minor = record.release_type === 'minor';
+  return {
+    subject: 'Your copy \u2014 appearance release for "Anatomy of a Shoreline"',
+    html: `
+      <p>Thank you \u2014 this is your copy of the appearance release you signed for the documentary <em>Anatomy of a Shoreline</em>, produced by Ras Tafari Inc.</p>
+      <p><strong>Appearing:</strong> ${escapeHtml(record.subject_name)}${minor ? ' (minor)' : ''}<br>
+      <strong>Signed by:</strong> ${escapeHtml(record.signer_name)}${record.signer_relationship ? ' (' + escapeHtml(record.signer_relationship) + ')' : ''}<br>
+      <strong>Signature:</strong> ${escapeHtml(record.signature_typed_name)}<br>
+      <strong>Date:</strong> ${escapeHtml(record.signed_at)}<br>
+      <strong>Release version:</strong> ${escapeHtml(record.release_version)}</p>
+      <p>You gave Ras Tafari Inc. permission to use your name, likeness, image, voice and performance in the film and in connection with it, worldwide and for the life of the copyright, without payment. The full text you agreed to is at
+      <a href="https://selassiefest.com/night-out/release.html">selassiefest.com/night-out/release.html</a>.</p>
+      <p>Changed your mind? Reply to this email, or write to selassiefest@gmail.com, and we will take you out of the film. No explanation needed.</p>
+      <p style="color:#666;font-size:12px;">Ras Tafari Inc. \u00b7 6227 S. Prairie Ave., Chicago, IL 60637 \u00b7 414-909-3279</p>
     `,
   };
 }
@@ -702,6 +751,7 @@ async function selfAddressedAllowed(table: string, record: Record<string, any>, 
   }
   return { ok: true };
 }
+
 const TABLE_CONFIG: Record<string, TableConfig> = {
   marketplace_preorders: { notifications: [{ to: () => NOTIFY_TO, format: formatMarketplacePreorder }] },
   volunteer_signups: { notifications: [{ to: () => NOTIFY_TO, format: formatVolunteerSignup }] },
@@ -788,6 +838,19 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: (record) => record.email,
         format: formatBbpacTrackerLoginLink,
         from: () => 'Bongo Beach PAC <hello@selassiefest.com>',
+      },
+    ],
+  },
+  night_out_appearance_releases: {
+    notifications: [
+      { to: () => BBPAC_NOTIFY_TO, format: formatAppearanceReleaseStaff },
+      {
+        // The signer's own copy. Required for an electronic signature to hold
+        // up -- the signer has to be given a record of what they agreed to.
+        to: (record) => record.signer_email,
+        format: formatAppearanceReleaseSignerCopy,
+        from: () => 'Anatomy of a Shoreline <hello@selassiefest.com>',
+        replyTo: () => BBPAC_NOTIFY_TO,
       },
     ],
   },
@@ -932,6 +995,7 @@ Deno.serve(async (req: Request) => {
       const from = notification.from ? notification.from(record) : FROM;
       const replyTo = notification.replyTo ? notification.replyTo(record) : REPLY_TO;
       const attachments = notification.attachments ? await notification.attachments(record) : undefined;
+      const cc = ccFor(table, to);
 
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -939,7 +1003,7 @@ Deno.serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, ...(attachments ? { attachments } : {}) }),
+        body: JSON.stringify({ from, to, ...(cc ? { cc } : {}), reply_to: replyTo, subject, html, ...(attachments ? { attachments } : {}) }),
       });
 
       if (!resendRes.ok) {

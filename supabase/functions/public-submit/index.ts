@@ -53,6 +53,12 @@ const FORMS: Record<string, FormConfig> = {
   clrwf_maintenance_agreement_requests: { columns: ["business_name", "contact_name", "email", "phone", "property_description", "service_needs", "message", "voice_note_paths"] },
   clrwf_contact_messages: { columns: ["name", "email", "message", "voice_note_paths"] },
   clrwf_job_applications: { columns: ["position", "full_name", "email", "phone", "cover_letter", "resume_path", "voice_note_paths"] },
+  // Documentary appearance releases (night-out/release.html). Validation is in
+  // the table's CHECK constraints, which a 23514 surfaces as a 409.
+  night_out_appearance_releases: {
+    columns: ["release_type", "subject_name", "signer_name", "signer_relationship", "signer_email", "signer_phone",
+      "filmed_location", "filmed_date", "release_version", "electronic_consent", "signature_typed_name", "user_agent", "source_page"],
+  },
   yawd_waitlist: { columns: ["full_name", "email", "phone", "zip", "customer_type", "business_name", "interests", "message", "source"] },
   // trcevent.com
   event_notify_signups: { columns: ["event_slug", "event_name", "brand", "email"] },

@@ -364,6 +364,31 @@ window.sfSupabase = {
     return data || [];
   },
 
+  // Documentary appearance releases for "Anatomy of a Shoreline" (night-out/).
+  // Posts through public-submit (Turnstile) like the other public forms --
+  // see supabase/night-out-releases.sql. The AFTER INSERT trigger emails a staff
+  // copy and a copy back to the signer; that second email is what provides
+  // the signer with a record of what they signed, so there is no PDF to
+  // generate and no storage bucket here.
+  async submitAppearanceRelease({ releaseType, subjectName, signerName, signerRelationship, signerEmail, signerPhone, filmedLocation, filmedDate, releaseVersion, electronicConsent, signatureTypedName, userAgent, sourcePage }) {
+    const { error } = await window.sfProtectedInsert('night_out_appearance_releases', {
+      release_type: releaseType,
+      subject_name: subjectName,
+      signer_name: signerName,
+      signer_relationship: signerRelationship || null,
+      signer_email: signerEmail,
+      signer_phone: signerPhone || null,
+      filmed_location: filmedLocation || null,
+      filmed_date: filmedDate || null,
+      release_version: releaseVersion,
+      electronic_consent: electronicConsent === true,
+      signature_typed_name: signatureTypedName,
+      user_agent: userAgent || null,
+      source_page: sourcePage || null,
+    });
+    if (error) throw error;
+  },
+
   // 63rd Street Bongo Beach Park Advisory Council (bbpac/) -- a Ras Tafari
   // Inc. community initiative, separate from the SelassieFest festival itself
   // but sharing this same Supabase project. All six tables below are
