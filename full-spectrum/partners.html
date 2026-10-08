@@ -64,6 +64,9 @@
   .chips{display:flex; flex-wrap:wrap; gap:5px; margin:7px 0 0;}
   .chip{font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--sea-soft); color:var(--sea);}
   .chip.part{background:var(--sun-soft); color:var(--sun);}
+  .pitch{margin-top:10px; padding:10px 12px; border-radius:10px; background:var(--sun-soft); font-size:0.92rem; line-height:1.5;}
+  .pitch .lbl{font-size:0.7rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--sun); display:block; margin-bottom:2px;}
+  .pitch .ask{margin-top:6px; font-weight:700;}
   .next{margin-top:8px; font-size:0.88rem;}
   .next .due{font-weight:700;}
   .next .due.over{color:var(--red);}
@@ -165,7 +168,8 @@
   </div>
   <div class="f"><label>Partner type</label><div class="checks" id="eTypes"></div></div>
   <div class="f"><label>Program parts</label><div class="checks" id="eParts"></div></div>
-  <div class="f"><label for="eAsk">What we'll ask for</label><textarea id="eAsk"></textarea></div>
+  <div class="f"><label for="ePitch">Elevator pitch</label><textarea id="ePitch" style="min-height:110px"></textarea></div>
+  <div class="f"><label for="eAsk">The ask (one clear yes/no request)</label><textarea id="eAsk"></textarea></div>
   <div class="row2">
     <div class="f"><label for="eCommit">What they've committed</label><input id="eCommit"></div>
     <div class="f"><label for="eValue">Value ($, cash or in-kind)</label><input id="eValue" type="number" step="0.01" min="0"></div>
@@ -258,7 +262,7 @@
       if (due === 'over' && !(d && d < t0)) return false;
       if (due === 'week' && !(d && d <= wk)) return false;
       if (due === 'none' && p.next_step) return false;
-      if (q){ var hay = [p.name, p.category, p.address, p.ask, p.notes, p.commitment, p.next_step, JSON.stringify(p.contacts || [])].join(' ').toLowerCase(); if (hay.indexOf(q) < 0) return false; }
+      if (q){ var hay = [p.name, p.category, p.address, p.ask, p.pitch, p.notes, p.commitment, p.next_step, JSON.stringify(p.contacts || [])].join(' ').toLowerCase(); if (hay.indexOf(q) < 0) return false; }
       return true;
     });
     var s = $('sort').value;
@@ -287,6 +291,7 @@
       return '<div class="card p" style="--sc:' + st.color + '">' +
         '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + '</span></div>' +
         '<div class="chips">' + (p.partner_types || []).map(function(t){ return '<span class="chip">' + esc(TYPES[t] || t) + '</span>'; }).join('') + (p.program_parts || []).map(function(t){ return '<span class="chip part">' + esc(PARTS[t] || t) + '</span>'; }).join('') + '</div>' +
+        (p.pitch ? '<div class="pitch"><span class="lbl">Elevator pitch</span>' + esc(p.pitch) + (p.ask ? '<div class="ask">The ask: ' + esc(p.ask) + '</div>' : '') + '</div>' : '') +
         '<div class="next">' + (p.next_step ? '<strong>Next:</strong> ' + esc(p.next_step) + (d ? ' &middot; <span class="due ' + cls + '">' + (cls === 'over' ? 'overdue, ' : 'due ') + fmtDate(p.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') +
           (p.last_contact_at ? ' <span class="p-cat">&middot; last contact ' + fmtDate(p.last_contact_at) + '</span>' : '') + '</div>' +
         '<div class="p-actions">' +
@@ -297,7 +302,7 @@
           '<button class="btn small" data-act="edit" data-id="' + p.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
         '</div>' +
         '<div class="details' + (state.open[p.id] ? ' open' : '') + '"><dl>' +
-          (p.ask ? '<dt>Our ask</dt><dd>' + esc(p.ask) + '</dd>' : '') +
+          (p.ask && !p.pitch ? '<dt>Our ask</dt><dd>' + esc(p.ask) + '</dd>' : '') +
           (p.commitment ? '<dt>Committed</dt><dd>' + esc(p.commitment) + (p.commitment_value ? ' ($' + Number(p.commitment_value).toLocaleString() + ')' : '') + '</dd>' : '') +
           (contacts ? '<dt>Contacts</dt><dd>' + contacts + '</dd>' : '') +
           (p.address ? '<dt>Address</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.address) + '" target="_blank" rel="noopener">' + esc(p.address) + '</a></dd>' : '') +
@@ -348,7 +353,7 @@
     editId = id || null;
     $('editTitle').textContent = id ? 'Edit: ' + p.name : 'Add partner';
     $('eName').value = p.name || ''; $('eCat').value = p.category || ''; $('eStage').value = p.stage;
-    $('eAsk').value = p.ask || ''; $('eCommit').value = p.commitment || ''; $('eValue').value = p.commitment_value || '';
+    $('eAsk').value = p.ask || ''; $('ePitch').value = p.pitch || ''; $('eCommit').value = p.commitment || ''; $('eValue').value = p.commitment_value || '';
     $('eNext').value = p.next_step || ''; $('eDue').value = p.next_step_due || '';
     $('ePhone').value = p.phone || ''; $('eEmail').value = p.email || ''; $('eAddr').value = p.address || ''; $('eWeb').value = p.website || ''; $('eHours').value = p.hours_note || '';
     $('eNotes').value = p.notes || '';
@@ -364,7 +369,7 @@
     var checked = function(sel){ return Array.from(document.querySelectorAll(sel + ' input:checked')).map(function(i){ return i.value; }); };
     var contacts = $('eContacts').value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
       var f = l.split('|').map(function(x){ return x.trim(); }); var c = { name: f[0] || '', role: f[1] || '' }; if (f[2]) c.email = f[2]; if (f[3]) c.phone = f[3]; return c; });
-    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ask: $('eAsk').value, commitment: $('eCommit').value,
+    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ask: $('eAsk').value, pitch: $('ePitch').value, commitment: $('eCommit').value,
       commitment_value: $('eValue').value, next_step: $('eNext').value, next_step_due: $('eDue').value, phone: $('ePhone').value, email: $('eEmail').value,
       address: $('eAddr').value, website: $('eWeb').value, hours_note: $('eHours').value, notes: $('eNotes').value, contacts: contacts,
       partner_types: checked('#eTypes'), program_parts: checked('#eParts') };
@@ -378,7 +383,7 @@
   });
 
   $('csvBtn').addEventListener('click', function(){
-    var cols = ['name','category','stage','partner_types','program_parts','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
+    var cols = ['name','category','stage','partner_types','program_parts','pitch','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
     var cell = function(v){ if (Array.isArray(v)) v = v.map(function(x){ return typeof x === 'object' ? [x.name,x.role,x.email,x.phone].filter(Boolean).join(' / ') : x; }).join('; '); v = v == null ? '' : String(v); return '"' + v.replace(/"/g,'""') + '"'; };
     var csv = cols.join(',') + '\n' + filtered().map(function(p){ return cols.map(function(c){ return cell(c === 'stage' ? (STAGE[p.stage] || {}).label : p[c]); }).join(','); }).join('\n');
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'full-spectrum-partners.csv'; a.click();

@@ -95,6 +95,7 @@ create table if not exists fs_partners (
   stage text not null default 'not_contacted'
     check (stage in ('not_contacted','reached_out','in_conversation','meeting_set','committed','confirmed','declined','on_hold')),
   ask text,                                          -- what we plan to ask them for
+  pitch text,                                        -- the spoken elevator pitch for this partner
   commitment text,                                   -- what they've agreed to give
   commitment_value numeric(10,2),                    -- cash or in-kind value, if known
   next_step text,
@@ -107,6 +108,7 @@ create table if not exists fs_partners (
   updated_at timestamptz not null default now()
 );
 alter table fs_partners enable row level security;
+alter table fs_partners add column if not exists pitch text;
 create index if not exists fs_partners_stage_idx on fs_partners (stage, next_step_due);
 
 create table if not exists fs_partner_activity (
@@ -160,6 +162,7 @@ begin
     program_parts   = case when p ? 'program_parts' then array(select jsonb_array_elements_text(p->'program_parts')) else program_parts end,
     stage           = case when p ? 'stage' then p->>'stage' else stage end,
     ask             = case when p ? 'ask' then nullif(trim(p->>'ask'),'') else ask end,
+    pitch           = case when p ? 'pitch' then nullif(trim(p->>'pitch'),'') else pitch end,
     commitment      = case when p ? 'commitment' then nullif(trim(p->>'commitment'),'') else commitment end,
     commitment_value= case when p ? 'commitment_value' then nullif(p->>'commitment_value','')::numeric else commitment_value end,
     next_step       = case when p ? 'next_step' then nullif(trim(p->>'next_step'),'') else next_step end,
