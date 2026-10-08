@@ -687,6 +687,22 @@ function formatBbpacTrackerLoginLink(record: Record<string, any>) {
   };
 }
 
+// Full Spectrum Partner Tracker magic-link sign-in -- see
+// supabase/full-spectrum-partners.sql.
+function formatFsPartnerLoginLink(record: Record<string, any>) {
+  const verifyUrl = `https://selassiefest.com/full-spectrum/partners.html?token=${encodeURIComponent(record.id)}`;
+  return {
+    subject: `Your Full Spectrum Partner Tracker sign-in link`,
+    html: `
+      <h2>Sign in to the Partner Tracker</h2>
+      <p>Click below to sign in to the Full Spectrum at Rainbow Beach partner tracker.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="background:#2F3DB5;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Sign in to the Tracker</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${verifyUrl}</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't request this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -829,6 +845,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
         to: (record) => record.email,
         format: formatBios102LoginLink,
         from: () => 'BIOS102 Lab Companion <hello@selassiefest.com>',
+      },
+    ],
+  },
+  fs_partner_login_links: {
+    notifications: [
+      {
+        to: (record) => record.email,
+        format: formatFsPartnerLoginLink,
+        from: () => 'Full Spectrum at Rainbow Beach <hello@selassiefest.com>',
       },
     ],
   },
