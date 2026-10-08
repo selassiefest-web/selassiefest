@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Full Spectrum at Rainbow Beach</title>
+<meta name="description" content="A personal invitation to partner with Full Spectrum at Rainbow Beach.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#FAF8F4; --surface:#FFFFFF; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93; --line:#E5E0D6; --line-strong:#D2CBBD;
+    --accent:#2F3DB5; --accent-ink:#FFFFFF; --sun:#D98E04; --sun-soft:#FCEFD2; --green:#1F7A3E; --green-soft:#E1F1E6; --red:#C0392B;
+    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#0D0F1C; --surface:#151829; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3; --line:#272B44; --line-strong:#353A58;
+    --accent:#9AA6FF; --accent-ink:#0D0F1C; --sun:#F5B53A; --sun-soft:rgba(245,181,58,0.13); --green:#5BD08A; --green-soft:rgba(91,208,138,0.12); --red:#FF7A70; } }
+  :root[data-theme="dark"]{
+    --bg:#0D0F1C; --surface:#151829; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3; --line:#272B44; --line-strong:#353A58;
+    --accent:#9AA6FF; --accent-ink:#0D0F1C; --sun:#F5B53A; --sun-soft:rgba(245,181,58,0.13); --green:#5BD08A; --green-soft:rgba(91,208,138,0.12); --red:#FF7A70; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.6;}
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; font-weight:800; margin:0; letter-spacing:-0.01em; line-height:1.2;}
+  button,input,textarea{font:inherit; color:inherit;}
+  .stripe{height:8px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
+  .wrap{max-width:640px; margin:0 auto; padding:0 16px;}
+  header{padding:30px 0 8px;}
+  .eyebrow{font-size:0.74rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--sun);}
+  h1{font-size:clamp(1.6rem,6vw,2.2rem); margin:8px 0 4px;}
+  .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:20px; margin:16px 0;}
+  .pitch{font-size:1.06rem;}
+  .ask{background:var(--sun-soft); border-radius:14px; padding:14px 16px; margin-top:14px;}
+  .ask .lbl{font-size:0.72rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--sun);}
+  .ask p{margin:4px 0 0; font-weight:700; font-size:1.05rem;}
+  .choices{display:grid; gap:10px; margin-top:6px;}
+  .choice{display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:14px 16px; border-radius:14px; border:2px solid var(--line-strong); background:var(--surface); cursor:pointer; font-weight:700; font-size:1.02rem;}
+  .choice i{font-size:1.2rem; width:24px; text-align:center;}
+  .choice.yes{border-color:var(--green); background:var(--green-soft);} .choice.yes i{color:var(--green);}
+  .choice.on{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent); border-color:var(--accent);}
+  form{display:none; margin-top:14px;} form.open{display:block;}
+  .f{display:grid; gap:4px; margin-bottom:10px;}
+  .f label{font-size:0.8rem; font-weight:700; color:var(--ink-soft);}
+  .f input,.f textarea{padding:11px 12px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--bg); width:100%;}
+  .f textarea{min-height:80px; resize:vertical;}
+  .submit{width:100%; padding:14px; border-radius:999px; border:none; background:var(--accent); color:var(--accent-ink); font-weight:800; font-size:1.02rem; cursor:pointer;}
+  .submit[disabled]{opacity:0.6; cursor:default;}
+  .msg{margin-top:10px; font-size:0.92rem;} .msg.err{color:var(--red);}
+  .done{text-align:center;} .done i{font-size:2.4rem; color:var(--green); margin-bottom:8px;}
+  .parts{list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px;}
+  .parts li{display:flex; gap:10px; align-items:baseline;}
+  .parts b{display:inline-grid; place-items:center; width:26px; height:26px; flex:none; border-radius:8px; color:#fff; font-family:"Montserrat",sans-serif; font-size:0.85rem;}
+  .links{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .btn{display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px; border:1.5px solid var(--line-strong); font-weight:600; font-size:0.9rem; text-decoration:none; color:var(--ink);}
+  .sig{display:flex; gap:12px; align-items:center;}
+  .sig .who b{display:block;}
+  .small{font-size:0.85rem; color:var(--ink-faint);}
+  footer{padding:20px 0 40px; text-align:center; font-size:0.8rem; color:var(--ink-faint);}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Full Spectrum at Rainbow Beach</div>
+    <h1 id="title">A personal invitation</h1>
+    <p class="small" id="sub">From Ras Tafari Inc., the producers of SelassieFest</p>
+  </header>
+
+  <div id="main">
+    <div class="card"><p class="small">Loading your invitation&hellip;</p></div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:1.15rem">What is Full Spectrum?</h2>
+    <p style="margin:8px 0 0">A free, year-round music and culture program at Rainbow Beach Park, 3111 E. 77th St., so South Shore families don't have to travel downtown for it.</p>
+    <ul class="parts">
+      <li><b style="background:var(--r1)">a</b><span><strong>DJ classes</strong> for every age, with a girls-only track, Empress Decks</span></li>
+      <li><b style="background:var(--r3)">b</b><span><strong>Rainbow Wednesdays</strong>, free summer music nights on the beach</span></li>
+      <li><b style="background:var(--r5)">c</b><span><strong>Live stage shows</strong> with DJs and local and major recording artists</span></li>
+      <li><b style="background:var(--r7)">d</b><span><strong>Festivals</strong>, including Caribbean and African heritage days and SelassieFest</span></li>
+      <li><b style="background:var(--r2)">e</b><span><strong>Fall &amp; holiday parties</strong>, from the Kids Kostume Party to Noon Year's Eve</span></li>
+    </ul>
+    <div class="links">
+      <a class="btn" href="/full-spectrum/deck.html"><i class="fa-solid fa-display"></i> Watch the 5-minute pitch</a>
+      <a class="btn" href="/full-spectrum/"><i class="fa-solid fa-file-lines"></i> Read the proposal</a>
+    </div>
+  </div>
+
+  <div class="card sig">
+    <div class="who"><b>Stephen Henry</b><span class="small">President, Ras Tafari Inc. &middot; Full Spectrum at Rainbow Beach</span><br>
+      <a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+  </div>
+  <footer>Ras Tafari Inc., a 501(c)(3) nonprofit &middot; 7700 S. Stony Island Ave., Chicago, IL 60649</footer>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  var key = (new URLSearchParams(location.search).get('k') || '').trim().toLowerCase();
+  var decision = null;
+
+  function notFound(){
+    $('main').innerHTML = '<div class="card"><p>We couldn’t find this invitation. You can still read about Full Spectrum below, or call Stephen directly at <a href="tel:4149093279">414-909-3279</a>.</p></div>';
+  }
+
+  async function boot(){
+    if (!/^[a-z0-9]{6,12}$/.test(key)) return notFound();
+    try {
+      var c = await window.sfSupabaseReady;
+      var r = await c.rpc('fs_pitch_view', { p_key: key });
+      if (r.error || !r.data || !r.data.length) return notFound();
+      render(r.data[0]);
+    } catch(e){ notFound(); }
+  }
+
+  function render(p){
+    document.title = 'For ' + p.name + ' | Full Spectrum at Rainbow Beach';
+    $('title').innerHTML = 'For <span class="rb">' + esc(p.name) + '</span>';
+    $('main').innerHTML =
+      '<div class="card"><div class="pitch">' + esc(p.pitch) + '</div>' +
+        (p.ask ? '<div class="ask"><span class="lbl">Our ask</span><p>' + esc(p.ask) + '</p></div>' : '') + '</div>' +
+      '<div class="card" id="answer"><h2 style="font-size:1.15rem; margin-bottom:10px">Your answer</h2>' +
+        '<div class="choices">' +
+          '<button class="choice yes" data-d="yes"><i class="fa-solid fa-circle-check"></i> Yes, count us in</button>' +
+          '<button class="choice" data-d="call_me"><i class="fa-solid fa-phone"></i> Call me, I have questions</button>' +
+          '<button class="choice" data-d="not_now"><i class="fa-regular fa-clock"></i> Not right now</button>' +
+        '</div>' +
+        '<form id="form" novalidate>' +
+          '<div class="f"><label for="n">Your name</label><input id="n" autocomplete="name"></div>' +
+          '<div class="f"><label for="t">Your title or role</label><input id="t" placeholder="Owner, manager, pastor, principal&hellip;"></div>' +
+          '<div class="f"><label for="ph">Best phone</label><input id="ph" type="tel" autocomplete="tel"></div>' +
+          '<div class="f"><label for="em">Email</label><input id="em" type="email" autocomplete="email"></div>' +
+          '<div class="f"><label for="m">Anything you’d like to add</label><textarea id="m"></textarea></div>' +
+          '<button class="submit" id="go" type="submit">Send my answer</button><p class="msg" id="msg"></p>' +
+        '</form></div>';
+    document.querySelectorAll('.choice').forEach(function(b){
+      b.addEventListener('click', function(){
+        decision = b.getAttribute('data-d');
+        document.querySelectorAll('.choice').forEach(function(x){ x.classList.toggle('on', x === b); });
+        $('form').classList.add('open');
+        $('go').textContent = decision === 'yes' ? 'Count us in' : decision === 'call_me' ? 'Please call me' : 'Send';
+        $('n').focus();
+      });
+    });
+    $('form').addEventListener('submit', submit);
+  }
+
+  async function submit(e){
+    e.preventDefault();
+    var rec = { pitch_key: key, decision: decision, contact_name: $('n').value.trim(), contact_title: $('t').value.trim(),
+                phone: $('ph').value.trim(), email: $('em').value.trim(), message: $('m').value.trim() };
+    if (decision !== 'not_now' && (!rec.contact_name || (!rec.phone && !rec.email))){
+      $('msg').className = 'msg err'; $('msg').textContent = 'Please add your name and a phone number or email so we can follow up.'; return;
+    }
+    $('go').disabled = true; $('msg').className = 'msg'; $('msg').textContent = 'Sending…';
+    var r = await window.sfProtectedInsert('fs_partner_responses', rec);
+    if (r.error){ $('go').disabled = false; $('msg').className = 'msg err'; $('msg').textContent = r.error.message; return; }
+    $('answer').innerHTML = '<div class="done"><i class="fa-solid fa-circle-check"></i><h2 style="font-size:1.2rem">' +
+      (decision === 'yes' ? 'Thank you! Welcome to Full Spectrum.' : decision === 'call_me' ? 'Thank you! Stephen will call you soon.' : 'Thank you for letting us know.') +
+      '</h2><p class="small" style="margin-top:6px">' + (decision === 'not_now' ? 'If anything changes, call Stephen at 414-909-3279.' : 'Expect to hear from Stephen within two days.') + '</p></div>';
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

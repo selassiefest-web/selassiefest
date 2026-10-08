@@ -212,6 +212,7 @@
   function saveSession(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
   function clearSession(){ try { localStorage.removeItem(KEY); } catch(e){} }
   async function client(){ return await window.sfSupabaseReady; }
+  function pitchUrl(p){ return 'https://selassiefest.com/partner/?k=' + p.pitch_key; }
   function today(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
   function parseDate(s){ return s ? new Date(s + 'T00:00:00') : null; }
   function fmtDate(s){ var d = parseDate(String(s).slice(0,10)); return d ? d.toLocaleDateString('en-US',{month:'short', day:'numeric', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined}) : ''; }
@@ -300,6 +301,7 @@
           (p.email ? '<a class="btn small" href="mailto:' + esc(p.email) + '"><i class="fa-solid fa-envelope"></i> Email</a>' : '') +
           '<button class="btn small" data-act="toggle" data-id="' + p.id + '">' + (state.open[p.id] ? 'Hide' : 'Details') + (log.length ? ' (' + log.length + ')' : '') + '</button>' +
           '<button class="btn small" data-act="edit" data-id="' + p.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
+          (p.pitch_key ? '<a class="btn small" href="' + pitchUrl(p) + '" target="_blank" rel="noopener"><i class="fa-solid fa-qrcode"></i> Pitch page' + (p.pitch_views ? ' &middot; ' + p.pitch_views + ' view' + (p.pitch_views === 1 ? '' : 's') : '') + '</a>' : '') +
         '</div>' +
         '<div class="details' + (state.open[p.id] ? ' open' : '') + '"><dl>' +
           (p.ask && !p.pitch ? '<dt>Our ask</dt><dd>' + esc(p.ask) + '</dd>' : '') +
@@ -383,9 +385,9 @@
   });
 
   $('csvBtn').addEventListener('click', function(){
-    var cols = ['name','category','stage','partner_types','program_parts','pitch','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
+    var cols = ['name','category','stage','pitch_url','pitch_views','partner_types','program_parts','pitch','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
     var cell = function(v){ if (Array.isArray(v)) v = v.map(function(x){ return typeof x === 'object' ? [x.name,x.role,x.email,x.phone].filter(Boolean).join(' / ') : x; }).join('; '); v = v == null ? '' : String(v); return '"' + v.replace(/"/g,'""') + '"'; };
-    var csv = cols.join(',') + '\n' + filtered().map(function(p){ return cols.map(function(c){ return cell(c === 'stage' ? (STAGE[p.stage] || {}).label : p[c]); }).join(','); }).join('\n');
+    var csv = cols.join(',') + '\n' + filtered().map(function(p){ return cols.map(function(c){ return cell(c === 'stage' ? (STAGE[p.stage] || {}).label : c === 'pitch_url' ? (p.pitch_key ? pitchUrl(p) : '') : p[c]); }).join(','); }).join('\n');
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'full-spectrum-partners.csv'; a.click();
   });
   $('signoutBtn').addEventListener('click', function(){ clearSession(); state.session = null; showSignin('Signed out.'); });

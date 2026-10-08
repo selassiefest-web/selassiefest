@@ -59,6 +59,7 @@ const FORMS: Record<string, FormConfig> = {
     columns: ["release_type", "subject_name", "signer_name", "signer_relationship", "signer_email", "signer_phone",
       "filmed_location", "filmed_date", "release_version", "electronic_consent", "signature_typed_name", "user_agent", "source_page"],
   },
+  fs_partner_responses: { columns: ["pitch_key", "decision", "contact_name", "contact_title", "phone", "email", "message"] },
   yawd_waitlist: { columns: ["full_name", "email", "phone", "zip", "customer_type", "business_name", "interests", "message", "source"] },
   // trcevent.com
   event_notify_signups: { columns: ["event_slug", "event_name", "brand", "email"] },

@@ -703,6 +703,22 @@ function formatFsPartnerLoginLink(record: Record<string, any>) {
   };
 }
 
+// Full Spectrum pitch-page answers (/partner/?k=...) -- see
+// supabase/full-spectrum-pitch-pages.sql.
+function formatFsPartnerResponse(record: Record<string, any>) {
+  const label = record.decision === 'yes' ? 'YES, count us in' : record.decision === 'call_me' ? 'Call me, I have questions' : 'Not right now';
+  const biz = record.partner_name || 'A partner';
+  const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  return {
+    subject: `${record.decision === 'yes' ? 'YES' : record.decision === 'call_me' ? 'Call back' : 'Not now'}: ${biz} answered your Full Spectrum pitch`,
+    html: `
+      <h2>${escapeHtml(biz)}: ${escapeHtml(label)}</h2>
+      <table style="border-collapse:collapse;">${row('Name', record.contact_name)}${row('Title', record.contact_title)}${row('Phone', record.phone)}${row('Email', record.email)}${row('Message', record.message)}</table>
+      <p style="margin-top:18px;">It's logged on the partner, and their contact details were added. <a href="https://selassiefest.com/full-spectrum/partners.html">Open the Partner Tracker</a></p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -848,6 +864,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
       },
     ],
   },
+  fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   fs_partner_login_links: {
     notifications: [
       {
