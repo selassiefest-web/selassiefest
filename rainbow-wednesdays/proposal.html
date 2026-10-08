@@ -15,7 +15,7 @@
     --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93;
     --line:#E5E0D6; --line-strong:#D2CBBD;
     --accent:#2F3DB5; --accent-ink:#FFFFFF; --sun:#D98E04; --sun-soft:#FCEFD2; --coral:#D6453D; --sea:#0A7F8C; --sea-soft:#DDF1F2; --green:#1F7A3E; --green-soft:#E1F1E6;
-    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5246C9;
+    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
     --shadow:0 1px 2px rgba(22,24,43,0.05), 0 10px 28px rgba(22,24,43,0.07);
   }
   @media (prefers-color-scheme: dark){
@@ -39,7 +39,7 @@
   h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; font-weight:800; letter-spacing:-0.015em; margin:0; text-wrap:balance; line-height:1.15;}
   .eyebrow{font-size:0.74rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--sun);}
   .wrap{max-width:1060px; margin:0 auto; padding:0 16px;}
-  .stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 16.66%,var(--r2) 16.66% 33.33%,var(--r3) 33.33% 50%,var(--r4) 50% 66.66%,var(--r5) 66.66% 83.33%,var(--r6) 83.33%);}
+  .stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
 
   nav.top{display:flex; gap:6px 18px; flex-wrap:wrap; justify-content:center; padding:14px 56px 0; font-size:0.86rem; font-weight:600;}
   nav.top a{color:var(--ink-soft); text-decoration:none;}
@@ -54,12 +54,12 @@
   .eq span:nth-child(4){background:var(--r4); height:90%; animation-delay:-0.7s;}
   .eq span:nth-child(5){background:var(--r5); height:55%; animation-delay:-0.3s;}
   .eq span:nth-child(6){background:var(--r6); height:75%; animation-delay:-0.9s;}
-  .eq span:nth-child(7){background:var(--r1); height:40%; animation-delay:-0.4s;}
+  .eq span:nth-child(7){background:var(--r7); height:40%; animation-delay:-0.4s;}
   @keyframes bounce{0%,100%{transform:scaleY(0.45);} 50%{transform:scaleY(1);}}
   .eq span{transform-origin:bottom;}
   @media (prefers-reduced-motion: reduce){ .eq span{animation:none;} }
   .hero h1{font-size:clamp(2.1rem,6vw,3.4rem); max-width:860px; margin:8px auto 14px;}
-  .hero h1 .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero h1 .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
   .hero p.lede{color:var(--ink-soft); max-width:700px; margin:0 auto 22px; font-size:1.1rem;}
   .status{display:inline-flex; align-items:center; gap:8px; background:var(--sun-soft); color:var(--sun); border-radius:999px; padding:6px 14px; font-size:0.82rem; font-weight:700; margin-bottom:20px;}
   .cta{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
@@ -104,6 +104,15 @@
   .wk .d small{display:block; font-family:"Inter",sans-serif; font-weight:600; font-size:0.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.08em;}
   .wk h3{font-size:0.98rem; margin-bottom:2px;}
   .wk p{margin:0; font-size:0.88rem; color:var(--ink-soft);}
+
+  .spectrum{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; margin:22px 0 10px;}
+  @media (max-width:760px){ .spectrum{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  @media (max-width:420px){ .spectrum{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .spectrum div{background:var(--c); color:#fff; border-radius:14px; padding:12px 10px; text-align:center; font-size:0.8rem; line-height:1.35;}
+  .spectrum div.lt{color:#16182B;}
+  .spectrum b{display:block; font-family:"Montserrat",sans-serif; font-size:1rem; margin-bottom:2px;}
+  .full{border-radius:14px; padding:12px 16px; text-align:center; font-weight:700; color:#fff; background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); text-shadow:0 1px 2px rgba(0,0,0,0.35);}
+  .wk .d small.col{color:var(--c); font-weight:800;}
   .tag{display:inline-block; font-size:0.7rem; font-weight:700; padding:1px 8px; border-radius:999px; background:var(--sea-soft); color:var(--sea); margin-left:6px; vertical-align:middle;}
 
   ol.path{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; counter-reset:p;}
@@ -216,7 +225,7 @@
 <section id="summary">
   <h2><span class="num">1</span> Project summary</h2>
   <p class="q">In two or three sentences, describe your proposed program.</p>
-  <p class="lead">Rainbow Wednesdays is a free summer series at Rainbow Beach Park where neighborhood DJs, from middle-schoolers who taught themselves last winter to veteran selectors, perform live sets that blend, flip and remix music into something new on the spot, while young instrumentalists from South Shore play over the decks. Fourteen Wednesday evenings, June 2 to September 1, 2027, give at least 50 young people a paid stage on the lakefront and give the neighborhood a weekly reason to come to the beach together.</p>
+  <p class="lead">Rainbow Wednesdays is a free summer series at Rainbow Beach Park where neighborhood DJs, from middle-schoolers who taught themselves last winter to veteran selectors, perform live sets that blend, flip and remix music into something new on the spot, while young instrumentalists from South Shore play over the decks. Fourteen Wednesday evenings, June 2 to September 1, 2027, give at least 50 young people a paid stage on the lakefront and give the neighborhood a weekly reason to come to the beach together. Each Wednesday is one color of the rainbow and one sound; the season goes around the spectrum twice and ends with every color at once.</p>
 </section>
 
 <section id="program">
@@ -224,6 +233,8 @@
   <p class="q">Describe the program in detail. What will the audience experience?</p>
   <p>DJing has become the most accessible instrument in the neighborhood. A beginner controller costs about $100 to $300, mixing software is free, and young people in South Shore are learning from videos in their bedrooms. So are their parents and grandparents, many of whom grew up on Chicago house and on the sound systems of the South Side. What none of them have is a place to play for a real crowd. Rainbow Wednesdays builds that place, and makes it a performance worth coming to watch.</p>
   <p>The series is built around <strong>live creation</strong>. A Rainbow Wednesdays DJ is not playing a playlist. They are blending two songs into a third, cutting a classic into a new rhythm, answering what the crowd asks for and, in the Live Lab, building a track from scratch while young drummers, steel pan players, horn players, keyboardists and violinists improvise on top of it. Every night, the audience hears music that did not exist before that evening.</p>
+  <h3>Why &ldquo;Rainbow&rdquo;</h3>
+  <p>A rainbow is ordinary light split open to show every color it was carrying. The series does the same with the music already in the neighborhood. <strong>Every genre is a color:</strong> each Wednesday is assigned one of the seven colors and one sound, and fourteen Wednesdays take the season around the spectrum exactly twice. <strong>Blends make new colors:</strong> the Theme Clash and the Live Lab are where two sounds mix into a third. <strong>The crowd is the rainbow:</strong> the format is built so that a twelve-year-old and a seventy-year-old, a first-timer and a veteran, share the same decks. Each week's color sets that night's flyer and the lights on the DJ booth, and the audience is invited to wear it. The Finale ends in full spectrum, with every color at once. And it happens at Rainbow Beach.</p>
   <h3>Each Wednesday, 6:00 to 8:30 pm</h3>
   <table class="t">
     <thead><tr><th style="width:110px">Time</th><th>Segment</th><th>What happens</th></tr></thead>
@@ -243,24 +254,24 @@
   <p>Every Wednesday has one segment where wordplay and genre-mixing take center stage. A DJ takes a theme the whole crowd recognizes in two notes, such as a <strong>movie theme, a TV sitcom theme, video-game music or a TV commercial jingle</strong>, and blends it live with a killer, well-known song, so that both turn into something new. Other sources include cartoon themes, game-day stadium anthems, ringtones and viral video sounds, and neighborhood sounds like the ice-cream truck and the school bell. The MC rides the blend with wordplay, and the audience shouts out the next pairing.</p>
   <p>The Theme Clash is cut to fit each week's sound (sitcom themes over Chicago house, game music over footwork, movie scores over a reggae riddim). It builds to semifinals on August 25 and a final at the September 1 Finale. Every pairing is cleared for a family audience, and themes are quoted briefly the way a DJ quotes a hook, not played in full.</p>
   <h3>The season</h3>
-  <p>Each week takes one sound and asks the DJs to reinvent it. The themes give audiences a reason to return, and give performers a creative brief.</p>
+  <p>Each week takes one color and one sound and asks the DJs to reinvent it. The themes give audiences a reason to return, and give performers a creative brief.</p>
   <table class="t">
-    <thead><tr><th style="width:90px">Date</th><th>Theme</th></tr></thead>
+    <thead><tr><th style="width:90px">Date</th><th style="width:90px">Color</th><th>Theme</th></tr></thead>
     <tbody>
-      <tr><td>June 2</td><td>Opening Night: Rainbow Rising. The first cohort of youth DJs is introduced.</td></tr>
-      <tr><td>June 9</td><td>Chicago House. The sound this city gave the world, re-edited by a new generation.</td></tr>
-      <tr><td>June 16</td><td>Freedom Sounds, Juneteenth week. Spirituals, soul, funk and protest songs sampled and blended.</td></tr>
-      <tr><td>June 23</td><td>Riddim &amp; Steel, Caribbean-American Heritage Month. Steel pan and hand drums in the Live Lab.</td></tr>
-      <tr><td>June 30</td><td>Footwork &amp; Juke. The South Side's own dance music, with a dance circle in front of the booth.</td></tr>
-      <tr><td>July 7</td><td>Old School / New School. Every set is shared by a youth DJ and a veteran.</td></tr>
-      <tr><td>July 14</td><td>Afrobeats &amp; Amapiano. Talking drum and percussion in the Live Lab.</td></tr>
-      <tr><td>July 21</td><td>Roots &amp; Culture. Roots reggae and sound-system style, the week of the SelassieFest festival.</td></tr>
-      <tr><td>July 28</td><td>Soul &amp; R&amp;B Sing-Along. Great R&amp;B originals, plus sing-over covers that carry them into reggae and other genres, led by DJs who get the whole crowd singing out loud.</td></tr>
-      <tr><td>Aug. 4</td><td>Gospel at Sunset. Church musicians and choir members join the Live Lab.</td></tr>
-      <tr><td>Aug. 11</td><td>Back-to-School Youth Takeover. Every slot, including the MC, goes to performers under 18.</td></tr>
-      <tr><td>Aug. 18</td><td>Band Meets Booth. An extended Live Lab with a full youth ensemble.</td></tr>
-      <tr><td>Aug. 25</td><td>Theme Clash Semifinals, judged by crowd noise.</td></tr>
-      <tr><td>Sept. 1</td><td>Season Finale: The Rainbow Crown. The Theme Clash final, every youth DJ of the season, and a closing Live Lab with all of the season's young musicians.</td></tr>
+      <tr><td>June 2</td><td>Red</td><td>Opening Night: Rainbow Rising. The first cohort of youth DJs is introduced.</td></tr>
+      <tr><td>June 9</td><td>Orange</td><td>Chicago House. The sound this city gave the world, re-edited by a new generation.</td></tr>
+      <tr><td>June 16</td><td>Yellow</td><td>Freedom Sounds, Juneteenth week. Spirituals, soul, funk and protest songs sampled and blended.</td></tr>
+      <tr><td>June 23</td><td>Green</td><td>Riddim &amp; Steel, Caribbean-American Heritage Month. Steel pan and hand drums in the Live Lab.</td></tr>
+      <tr><td>June 30</td><td>Blue</td><td>Footwork &amp; Juke. The South Side's own dance music, with a dance circle in front of the booth.</td></tr>
+      <tr><td>July 7</td><td>Indigo</td><td>Old School / New School. Every set is shared by a youth DJ and a veteran.</td></tr>
+      <tr><td>July 14</td><td>Violet</td><td>Afrobeats &amp; Amapiano. Talking drum and percussion in the Live Lab.</td></tr>
+      <tr><td>July 21</td><td>Red</td><td>Roots &amp; Culture. Roots reggae and sound-system style, the week of the SelassieFest festival.</td></tr>
+      <tr><td>July 28</td><td>Orange</td><td>Soul &amp; R&amp;B Sing-Along. Great R&amp;B originals, plus sing-over covers that carry them into reggae and other genres, led by DJs who get the whole crowd singing out loud.</td></tr>
+      <tr><td>Aug. 4</td><td>Yellow</td><td>Gospel at Sunset. Church musicians and choir members join the Live Lab.</td></tr>
+      <tr><td>Aug. 11</td><td>Green</td><td>Back-to-School Youth Takeover. Every slot, including the MC, goes to performers under 18.</td></tr>
+      <tr><td>Aug. 18</td><td>Blue</td><td>Band Meets Booth. An extended Live Lab with a full youth ensemble.</td></tr>
+      <tr><td>Aug. 25</td><td>Indigo</td><td>Theme Clash Semifinals, judged by crowd noise.</td></tr>
+      <tr><td>Sept. 1</td><td>Violet + full spectrum</td><td>Season Finale: The Rainbow Crown. The Theme Clash final, every youth DJ of the season, and a closing Live Lab with all of the season's young musicians.</td></tr>
     </tbody>
   </table>
 
@@ -309,7 +320,7 @@
     </tbody>
   </table>
   <h3>Marketing</h3>
-  <p>A season poster and a weekly flyer with that night's theme and performers, using Night Out's printed materials; banners at the beach; flyers at schools, libraries, churches and businesses near the park; and weekly posts by the performers themselves. Young performers bring their own crowds, and that is the series' strongest marketing.</p>
+  <p>A rainbow season poster and a weekly flyer printed in that night's color, with its theme and performers, using Night Out's printed materials; banners at the beach; flyers at schools, libraries, churches and businesses near the park; and weekly posts by the performers themselves. Young performers bring their own crowds, and that is the series' strongest marketing.</p>
 </section>
 
 <section id="production">
@@ -387,7 +398,7 @@
       <tr><td>Generator rental and fuel: $75 &times; 14 nights</td><td class="n">$1,050</td><td class="n">&mdash;</td></tr>
       <tr><td>Signage and banners</td><td class="n">$400</td><td class="n">&mdash;</td></tr>
       <tr><td>Sound reinforcement, own inventory: $250 &times; 14 nights</td><td class="n">&mdash;</td><td class="n">$3,500</td></tr>
-      <tr><td>Canopy, tables, chairs, sign-up station, own inventory</td><td class="n">&mdash;</td><td class="n">$1,400</td></tr>
+      <tr><td>Canopy, tables, chairs, sign-up station and LED booth lights in the week's color, own inventory</td><td class="n">&mdash;</td><td class="n">$1,400</td></tr>
       <tr class="sub"><td>Materials subtotal</td><td class="n">$2,890</td><td class="n">$4,900</td></tr>
     </tbody>
   </table>

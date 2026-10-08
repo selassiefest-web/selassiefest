@@ -17,7 +17,7 @@
     --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93;
     --line:#E5E0D6; --line-strong:#D2CBBD;
     --accent:#2F3DB5; --accent-ink:#FFFFFF; --sun:#D98E04; --sun-soft:#FCEFD2; --coral:#D6453D; --sea:#0A7F8C; --sea-soft:#DDF1F2; --green:#1F7A3E; --green-soft:#E1F1E6;
-    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5246C9;
+    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
     --shadow:0 1px 2px rgba(22,24,43,0.05), 0 10px 28px rgba(22,24,43,0.07);
   }
   @media (prefers-color-scheme: dark){
@@ -41,7 +41,7 @@
   h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; font-weight:800; letter-spacing:-0.015em; margin:0; text-wrap:balance; line-height:1.15;}
   .eyebrow{font-size:0.74rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--sun);}
   .wrap{max-width:1060px; margin:0 auto; padding:0 16px;}
-  .stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 16.66%,var(--r2) 16.66% 33.33%,var(--r3) 33.33% 50%,var(--r4) 50% 66.66%,var(--r5) 66.66% 83.33%,var(--r6) 83.33%);}
+  .stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
 
   nav.top{display:flex; gap:6px 18px; flex-wrap:wrap; justify-content:center; padding:14px 56px 0; font-size:0.86rem; font-weight:600;}
   nav.top a{color:var(--ink-soft); text-decoration:none;}
@@ -56,12 +56,12 @@
   .eq span:nth-child(4){background:var(--r4); height:90%; animation-delay:-0.7s;}
   .eq span:nth-child(5){background:var(--r5); height:55%; animation-delay:-0.3s;}
   .eq span:nth-child(6){background:var(--r6); height:75%; animation-delay:-0.9s;}
-  .eq span:nth-child(7){background:var(--r1); height:40%; animation-delay:-0.4s;}
+  .eq span:nth-child(7){background:var(--r7); height:40%; animation-delay:-0.4s;}
   @keyframes bounce{0%,100%{transform:scaleY(0.45);} 50%{transform:scaleY(1);}}
   .eq span{transform-origin:bottom;}
   @media (prefers-reduced-motion: reduce){ .eq span{animation:none;} }
   .hero h1{font-size:clamp(2.1rem,6vw,3.4rem); max-width:860px; margin:8px auto 14px;}
-  .hero h1 .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero h1 .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
   .hero p.lede{color:var(--ink-soft); max-width:700px; margin:0 auto 22px; font-size:1.1rem;}
   .status{display:inline-flex; align-items:center; gap:8px; background:var(--sun-soft); color:var(--sun); border-radius:999px; padding:6px 14px; font-size:0.82rem; font-weight:700; margin-bottom:20px;}
   .cta{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
@@ -106,6 +106,15 @@
   .wk .d small{display:block; font-family:"Inter",sans-serif; font-weight:600; font-size:0.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.08em;}
   .wk h3{font-size:0.98rem; margin-bottom:2px;}
   .wk p{margin:0; font-size:0.88rem; color:var(--ink-soft);}
+
+  .spectrum{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; margin:22px 0 10px;}
+  @media (max-width:760px){ .spectrum{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  @media (max-width:420px){ .spectrum{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .spectrum div{background:var(--c); color:#fff; border-radius:14px; padding:12px 10px; text-align:center; font-size:0.8rem; line-height:1.35;}
+  .spectrum div.lt{color:#16182B;}
+  .spectrum b{display:block; font-family:"Montserrat",sans-serif; font-size:1rem; margin-bottom:2px;}
+  .full{border-radius:14px; padding:12px 16px; text-align:center; font-weight:700; color:#fff; background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); text-shadow:0 1px 2px rgba(0,0,0,0.35);}
+  .wk .d small.col{color:color-mix(in srgb,var(--c) 72%,var(--ink)); font-weight:800;}
   .tag{display:inline-block; font-size:0.7rem; font-weight:700; padding:1px 8px; border-radius:999px; background:var(--sea-soft); color:var(--sea); margin-left:6px; vertical-align:middle;}
 
   ol.path{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; counter-reset:p;}
@@ -151,14 +160,14 @@
 <div class="stripe"></div>
 <button class="theme-toggle" id="themeBtn" aria-label="Toggle light or dark theme"><i class="fa-solid fa-circle-half-stroke"></i></button>
 <nav class="top" aria-label="Sections">
-  <a href="#idea">The idea</a><a href="#night">A Wednesday</a><a href="#hook">Theme Clash</a><a href="#season">The season</a><a href="#dj">For DJs &amp; musicians</a><a href="#plan">Plan &amp; budget</a><a href="/rainbow-wednesdays/proposal.html">Full grant proposal</a>
+  <a href="#idea">The idea</a><a href="#why-rainbow">Why Rainbow</a><a href="#night">A Wednesday</a><a href="#hook">Theme Clash</a><a href="#season">The season</a><a href="#dj">For DJs &amp; musicians</a><a href="#plan">Plan &amp; budget</a><a href="/rainbow-wednesdays/proposal.html">Full grant proposal</a>
 </nav>
 
 <header class="hero">
   <div class="wrap">
     <div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="eyebrow">Rainbow Beach Park &middot; 3111 E. 77th St. &middot; South Shore, Chicago</div>
-    <h1><span class="rb">Rainbow Wednesdays</span><br>New music, made live on the beach</h1>
+    <h1><span class="rb">Rainbow Wednesdays</span><br>Every color of sound, live on the beach</h1>
     <p class="lede">A free summer series where neighborhood DJs, from first-timers in middle school to veteran selectors, blend, flip and build new music on the spot. Young musicians from the neighborhood play live alongside the decks, and every night peaks with the Theme Clash, where a movie, TV or game theme collides with a hit everyone knows. Every Wednesday evening, June 2 to September 1, 2027.</p>
     <div class="status"><i class="fa-solid fa-seedling"></i> Proposal &middot; following our first conversation with Rainbow Beach Park on October 7, 2026</div>
     <div class="cta">
@@ -191,6 +200,32 @@
       <div class="card seg" style="--c:var(--r4)"><i class="fa-solid fa-drum"></i><h3>Live instruments meet the decks</h3><p>Young drummers, steel pan players, horn players, keyboardists and violinists from neighborhood schools play over the DJ's loops. It's a band and a booth at the same time.</p></div>
       <div class="card seg" style="--c:var(--r6)"><i class="fa-solid fa-people-arrows"></i><h3>Young and old on the same decks</h3><p>A twelve-year-old who started last winter can play back-to-back with a selector who has rocked parties since the 1980s. Each one teaches the other something.</p></div>
     </div>
+  </div>
+</section>
+
+<section id="why-rainbow">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Why it's called Rainbow</div>
+      <h2>A rainbow is every color at once. So is this music.</h2>
+      <p>A rainbow is ordinary light split open to show every color it was carrying. Rainbow Wednesdays does that with sound. House, reggae, R&amp;B, footwork, gospel, Afrobeats and hip-hop are all already in this neighborhood. Each Wednesday turns one of them into a color for the night, and then the DJs start mixing.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card seg" style="--c:var(--r1)"><i class="fa-solid fa-palette"></i><h3>Every genre is a color</h3><p>One color and one sound each week. The season works through the whole spectrum, so nobody's music is left out.</p></div>
+      <div class="card seg" style="--c:var(--r4)"><i class="fa-solid fa-droplet"></i><h3>Blends make new colors</h3><p>Red and yellow make orange. A sitcom theme and a reggae hit make a song nobody has heard. That's the Theme Clash. A DJ and a young drummer make a third thing too. That's the Live Lab.</p></div>
+      <div class="card seg" style="--c:var(--r7)"><i class="fa-solid fa-people-group"></i><h3>The crowd is the rainbow</h3><p>Twelve-year-olds and seventy-year-olds, first-timers and veterans, every block of South Shore. The more kinds of people on the beach, the better it sounds.</p></div>
+    </div>
+    <div class="spectrum" aria-label="The seven colors and their Wednesdays">
+      <div style="--c:var(--r1)"><b>Red</b>Jun 2 &amp; Jul 21</div>
+      <div style="--c:var(--r2)" class="lt"><b>Orange</b>Jun 9 &amp; Jul 28</div>
+      <div style="--c:var(--r3)" class="lt"><b>Yellow</b>Jun 16 &amp; Aug 4</div>
+      <div style="--c:var(--r4)"><b>Green</b>Jun 23 &amp; Aug 11</div>
+      <div style="--c:var(--r5)"><b>Blue</b>Jun 30 &amp; Aug 18</div>
+      <div style="--c:var(--r6)"><b>Indigo</b>Jul 7 &amp; Aug 25</div>
+      <div style="--c:var(--r7)"><b>Violet</b>Jul 14 &amp; Sep 1</div>
+    </div>
+    <div class="full">September 1 Finale: full spectrum, every color at once</div>
+    <p class="note">Fourteen Wednesdays is exactly the seven colors twice. Each week's color sets the flyer and the lights on the DJ booth, and the crowd is invited to wear it. And it all happens, fittingly, at Rainbow Beach.</p>
   </div>
 </section>
 
@@ -238,24 +273,24 @@
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow">The 2027 season</div>
-      <h2>Fourteen Wednesdays, fourteen themes</h2>
-      <p>Each week takes one sound and lets the DJs reinvent it. The themes are a starting suggestion; the artists and the council will shape the final list.</p>
+      <h2>Fourteen Wednesdays, twice around the rainbow</h2>
+      <p>Each week has a color and a sound. The first seven Wednesdays travel red to violet; the next seven go around again; the Finale ends in every color at once. The themes are a starting suggestion; the artists and the council will shape the final list.</p>
     </div>
     <div class="season">
-      <div class="wk" style="--c:var(--r1)"><div class="d">Jun 2<small>Wed</small></div><div><h3>Opening Night: Rainbow Rising <span class="tag">7 pm start</span></h3><p>The whole first cohort of youth DJs, introduced one by one.</p></div></div>
-      <div class="wk" style="--c:var(--r2)"><div class="d">Jun 9<small>Wed</small></div><div><h3>Chicago House</h3><p>The sound this city gave the world, re-edited by kids who were born long after the warehouse days.</p></div></div>
-      <div class="wk" style="--c:var(--r3)"><div class="d">Jun 16<small>Wed</small></div><div><h3>Freedom Sounds: Juneteenth Week</h3><p>Spirituals, soul, funk and protest songs sampled and blended into something new.</p></div></div>
-      <div class="wk" style="--c:var(--r4)"><div class="d">Jun 23<small>Wed</small></div><div><h3>Riddim &amp; Steel</h3><p>Caribbean-American Heritage Month. Steel pan and hand drums in the Live Lab over reggae, soca and dancehall riddims.</p></div></div>
-      <div class="wk" style="--c:var(--r5)"><div class="d">Jun 30<small>Wed</small></div><div><h3>Footwork &amp; Juke</h3><p>The South Side's own fast, dance-led sound, with a dance circle in front of the booth.</p></div></div>
-      <div class="wk" style="--c:var(--r6)"><div class="d">Jul 7<small>Wed</small></div><div><h3>Old School / New School <span class="tag">7 pm start</span></h3><p>Every set is split between a youth DJ and a veteran.</p></div></div>
-      <div class="wk" style="--c:var(--r1)"><div class="d">Jul 14<small>Wed</small></div><div><h3>Afrobeats &amp; Amapiano</h3><p>Talking drum and percussion in the Live Lab.</p></div></div>
-      <div class="wk" style="--c:var(--r2)"><div class="d">Jul 21<small>Wed</small></div><div><h3>Roots &amp; Culture: SelassieFest Warm-Up</h3><p>Roots reggae and sound-system style, three days before the SelassieFest festival in Jackson Park.</p></div></div>
-      <div class="wk" style="--c:var(--r3)"><div class="d">Jul 28<small>Wed</small></div><div><h3>Soul &amp; R&amp;B Sing-Along</h3><p>Great R&amp;B originals, plus sing-over covers that carry them into reggae and other genres. DJs who can get the whole beach singing the words out loud.</p></div></div>
-      <div class="wk" style="--c:var(--r4)"><div class="d">Aug 4<small>Wed</small></div><div><h3>Gospel at Sunset <span class="tag">7 pm start</span></h3><p>Church musicians and choir kids join the Live Lab.</p></div></div>
-      <div class="wk" style="--c:var(--r5)"><div class="d">Aug 11<small>Wed</small></div><div><h3>Back-to-School Youth Takeover</h3><p>Every slot, the MC included, goes to performers under 18.</p></div></div>
-      <div class="wk" style="--c:var(--r6)"><div class="d">Aug 18<small>Wed</small></div><div><h3>Band Meets Booth</h3><p>An extended Live Lab with a full youth ensemble playing with the featured DJ.</p></div></div>
-      <div class="wk" style="--c:var(--r1)"><div class="d">Aug 25<small>Wed</small></div><div><h3>Theme Clash Semifinals</h3><p>The season's best Theme Clash DJs face off, judged by crowd noise.</p></div></div>
-      <div class="wk" style="--c:var(--r2)"><div class="d">Sep 1<small>Wed</small></div><div><h3>Season Finale: The Rainbow Crown <span class="tag">7 pm start</span></h3><p>The Theme Clash final, a showcase of every youth DJ, and a set from the whole season's Live Lab players.</p></div></div>
+      <div class="wk" style="--c:var(--r1)"><div class="d">Jun 2<small class="col">Red</small></div><div><h3>Opening Night: Rainbow Rising <span class="tag">7 pm start</span></h3><p>The whole first cohort of youth DJs, introduced one by one.</p></div></div>
+      <div class="wk" style="--c:var(--r2)"><div class="d">Jun 9<small class="col">Orange</small></div><div><h3>Chicago House</h3><p>The sound this city gave the world, re-edited by kids who were born long after the warehouse days.</p></div></div>
+      <div class="wk" style="--c:var(--r3)"><div class="d">Jun 16<small class="col">Yellow</small></div><div><h3>Freedom Sounds: Juneteenth Week</h3><p>Spirituals, soul, funk and protest songs sampled and blended into something new.</p></div></div>
+      <div class="wk" style="--c:var(--r4)"><div class="d">Jun 23<small class="col">Green</small></div><div><h3>Riddim &amp; Steel</h3><p>Caribbean-American Heritage Month. Steel pan and hand drums in the Live Lab over reggae, soca and dancehall riddims.</p></div></div>
+      <div class="wk" style="--c:var(--r5)"><div class="d">Jun 30<small class="col">Blue</small></div><div><h3>Footwork &amp; Juke</h3><p>The South Side's own fast, dance-led sound, with a dance circle in front of the booth.</p></div></div>
+      <div class="wk" style="--c:var(--r6)"><div class="d">Jul 7<small class="col">Indigo</small></div><div><h3>Old School / New School <span class="tag">7 pm start</span></h3><p>Every set is split between a youth DJ and a veteran.</p></div></div>
+      <div class="wk" style="--c:var(--r7)"><div class="d">Jul 14<small class="col">Violet</small></div><div><h3>Afrobeats &amp; Amapiano</h3><p>Talking drum and percussion in the Live Lab.</p></div></div>
+      <div class="wk" style="--c:var(--r1)"><div class="d">Jul 21<small class="col">Red</small></div><div><h3>Roots &amp; Culture: SelassieFest Warm-Up</h3><p>Roots reggae and sound-system style, three days before the SelassieFest festival in Jackson Park.</p></div></div>
+      <div class="wk" style="--c:var(--r2)"><div class="d">Jul 28<small class="col">Orange</small></div><div><h3>Soul &amp; R&amp;B Sing-Along</h3><p>Great R&amp;B originals, plus sing-over covers that carry them into reggae and other genres. DJs who can get the whole beach singing the words out loud.</p></div></div>
+      <div class="wk" style="--c:var(--r3)"><div class="d">Aug 4<small class="col">Yellow</small></div><div><h3>Gospel at Sunset <span class="tag">7 pm start</span></h3><p>Church musicians and choir kids join the Live Lab.</p></div></div>
+      <div class="wk" style="--c:var(--r4)"><div class="d">Aug 11<small class="col">Green</small></div><div><h3>Back-to-School Youth Takeover</h3><p>Every slot, the MC included, goes to performers under 18.</p></div></div>
+      <div class="wk" style="--c:var(--r5)"><div class="d">Aug 18<small class="col">Blue</small></div><div><h3>Band Meets Booth</h3><p>An extended Live Lab with a full youth ensemble playing with the featured DJ.</p></div></div>
+      <div class="wk" style="--c:var(--r6)"><div class="d">Aug 25<small class="col">Indigo</small></div><div><h3>Theme Clash Semifinals</h3><p>The season's best Theme Clash DJs face off, judged by crowd noise.</p></div></div>
+      <div class="wk" style="--c:var(--r7)"><div class="d">Sep 1<small class="col">Violet + full spectrum</small></div><div><h3>Season Finale: The Rainbow Crown <span class="tag">7 pm start</span></h3><p>The Theme Clash final, a showcase of every youth DJ, and a set from the whole season's Live Lab players. It ends in full spectrum, with all fourteen nights' colors and sounds on the beach at once.</p></div></div>
     </div>
     <p class="note">All dates are requested, not confirmed. Final dates, times and the performance area are set with Rainbow Beach Park and the Chicago Park District.</p>
   </div>
