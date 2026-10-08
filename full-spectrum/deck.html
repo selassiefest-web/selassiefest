@@ -55,6 +55,8 @@
     background:radial-gradient(circle at 30% 30%, color-mix(in srgb,var(--c) 55%,transparent), transparent 60%), radial-gradient(circle at 75% 75%, color-mix(in srgb,var(--c2) 45%,transparent), transparent 60%), linear-gradient(160deg,#121528,#07080f);}
   .frame-visual .big{font-size:clamp(3rem,10vw,6.5rem); color:#fff; filter:drop-shadow(0 6px 24px rgba(0,0,0,0.45));}
   .frame-visual .tagword{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1rem,3vw,1.6rem); letter-spacing:0.12em; text-transform:uppercase; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.5); text-align:center;}
+  .frame-visual.photo{background-size:cover; background-position:center; justify-content:flex-end; align-items:flex-start;}
+  .frame-visual.photo .tagword{font-size:clamp(0.85rem,2.2vw,1.15rem); text-align:left;}
   .frame-visual.spectrum{background:linear-gradient(135deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7));}
   .frame-counter{position:absolute; top:12px; right:16px; font-size:0.72rem; letter-spacing:0.1em; color:rgba(255,255,255,0.7);}
   .frame-content{flex:1 1 auto; padding:18px 20px 16px; overflow-y:auto;}
@@ -130,39 +132,39 @@
 const CONTACT = { email: 'stephen@selassiefest.com', phone: '414-909-3279' };
 
 const FRAMES = [
-  { c:'r3', c2:'r7', spectrum:true, icon:'fa-rainbow', tag:'Full Spectrum', label:'Rainbow Beach Park', personalize:true,
+  { c:'r3', c2:'r7', spectrum:true, icon:'fa-rainbow', image:'/full-spectrum/img/01-title-beach-evening.jpg', tag:'Full Spectrum', label:'Rainbow Beach Park', personalize:true,
     headline:'Full Spectrum at Rainbow Beach',
     bullets:['One program, five parts: <b>DJ classes</b>, <b>Rainbow Wednesdays</b>, <b>live stage shows</b>, <b>festivals</b> and <b>fall &amp; holiday parties</b>','Free, year-round, for every age and every background','Proposed for Rainbow Beach Park, 3111 E. 77th St., starting in 2027'],
     voice:['Thank you for taking a few minutes with us.','This is Full Spectrum at Rainbow Beach: one program with five parts.','DJ classes, Rainbow Wednesdays, live stage shows, festivals, and fall and holiday parties.','All of it free, year-round, and built for every age and every background, right here on the South Side lakefront.'] },
 
-  { c:'r1', c2:'r2', icon:'fa-route', tag:'Nine miles', label:'The problem',
+  { c:'r1', c2:'r2', icon:'fa-route', image:'/full-spectrum/img/02-problem-bus-stop.jpg', tag:'Nine miles', label:'The problem',
     headline:'The big free music is downtown. South Shore is nine miles away.',
     bullets:["Chicago's biggest free music happens at Grant Park and the downtown lakefront",'For a family at 77th Street: about nine miles each way, fares or parking for everyone, and a late ride home','Many South Shore families make that trip once a summer. Many never do'],
     voice:["Here's the problem.","Chicago's biggest free music happens downtown, at Grant Park and the lakefront around it.",'For a family at Seventy-Seventh Street, that is about nine miles each way.','Fares or parking for everyone, an hour or more of travel, and a late ride home with small children or grandparents.','So many families make that trip once a summer, and many never do.'] },
 
-  { c:'r4', c2:'r5', icon:'fa-house-chimney', tag:'Bring it home', label:'The idea',
+  { c:'r4', c2:'r5', icon:'fa-house-chimney', image:'/full-spectrum/img/03-bring-it-home.jpg', tag:'Bring it home', label:'The idea',
     headline:'Bring it home, and let neighbors be the performers, not just the audience',
     bullets:['Rainbow Beach already has the lake, the lawn, a summer crowd and a neighborhood full of musicians','Neighbors can walk, bike or take one bus to every part of the program','Built from the neighborhood\'s own music: house, footwork, soul, gospel, reggae, Afrobeats, hip-hop'],
     voice:['Our answer is simple: bring it home.','Rainbow Beach already has what those downtown stages have. The lake, open lawn, a summer crowd, and a neighborhood full of musicians.','And here, residents are not only the audience. They are the performers.'] },
 
-  { c:'r1', c2:'r3', icon:'fa-headphones', tag:'(a) DJ classes', label:'Part a',
+  { c:'r1', c2:'r3', icon:'fa-headphones', image:'/full-spectrum/img/04-a-dj-classes.jpg', tag:'(a) DJ classes', label:'Part a',
     headline:'DJ classes, for every age',
     bullets:['Free cohorts, year-round: indoors in the off-season, outdoors in summer','Tracks for <b>Little DJs</b> with a grown-up, <b>Teens</b>, <b>Grown-Ups &amp; Elders</b>, and a <b>Live Lab</b> for young instrumentalists','Program-owned gear, so no one needs their own','Every class graduates with a set at Rainbow Wednesdays'],
     more:['Classes cover beatmatching and blending, building a set, live looping and editing, playing with live musicians, and the wordplay and mashups of the Theme Clash. They are taught by experienced Chicago DJs. From the park, we would ask for a room in the off-season, as available, and a regular time slot.'],
     voice:['Part A is DJ classes.','Free, hands-on, and year-round, indoors when the beach is closed.','There are tracks for little kids learning with a parent or grandparent, for teens, for grown-ups and elders, and a live lab for young musicians.','We supply the gear, so cost is never the barrier.','And every class ends with a real set in front of a real crowd.'] },
 
-  { c:'r3', c2:'r2', icon:'fa-compact-disc', tag:'(b) Rainbow Wednesdays', label:'Part b',
+  { c:'r3', c2:'r2', icon:'fa-compact-disc', image:'/full-spectrum/img/05-b-rainbow-wednesdays.jpg', tag:'(b) Rainbow Wednesdays', label:'Part b',
     headline:'Rainbow Wednesdays: fully planned and ready',
     bullets:['14 <b>FREE</b> Wednesday evenings, June 2 to September 1, 2027','Each week is one color and one sound; the season goes around the spectrum twice','Open Decks, Youth Showcase, Live Lab, the <b>Theme Clash</b>, and Generations Back-to-Back'],
     more:['Read the <a href="/rainbow-wednesdays/">series overview</a>, the <a href="/rainbow-wednesdays/proposal.html">full Rainbow Wednesdays proposal</a>, or <a href="/rainbow-wednesdays/#examples">examples of the format online</a>.'],
     voice:['Part B is Rainbow Wednesdays, and it is already fully planned.','Fourteen free Wednesday evenings on the beach, June through Labor Day week.','Each Wednesday is one color of the rainbow and one sound.','Young DJs and young musicians perform, mentored by experienced Chicago DJs, and every night peaks with the Theme Clash, where a theme everyone knows collides with a song everyone loves.'] },
 
-  { c:'r5', c2:'r6', icon:'fa-microphone-lines', tag:'(c) Live stage shows', label:'Part c',
+  { c:'r5', c2:'r6', icon:'fa-microphone-lines', image:'/full-spectrum/img/06-c-stage-show.jpg', tag:'(c) Live stage shows', label:'Part c',
     headline:'Live stage shows: DJs with local and major recording artists',
     bullets:['Concert nights on a stage on selected summer evenings, dates set with park staff','Youth openers, then local artists with a live band and DJ, then a major recording artist as headliner','No artists are booked yet; headliners are booked only once a show is funded and scheduled'],
     voice:['Part C is live stage shows.','Concert nights where DJs perform alongside live musicians, local recording artists, and a major recording artist as headliner.','Every lineup opens with young performers who came up through the classes and Rainbow Wednesdays.','So a teenager who learned to blend in February can open for a national act in August.'] },
 
-  { c:'r7', c2:'r1', icon:'fa-flag', tag:'(d) Festivals', label:'Part d',
+  { c:'r7', c2:'r1', icon:'fa-flag', image:'/full-spectrum/img/07-d-festival.jpg', tag:'(d) Festivals', label:'Part d',
     headline:'Festivals, including SelassieFest',
     bullets:['Full-day, all-ages festivals of music, food, culture, vendors and family activities','<b>SelassieFest</b>, Chicago\'s roots reggae and cultural festival, is already produced by Ras Tafari Inc.; the 2027 edition is planned for Saturday, July 24, venue to be confirmed, and Rainbow Beach is under consideration','At Rainbow Beach: an end-of-summer Full Spectrum festival and SelassieFest itself or a SelassieFest community day','Heritage days: <b>Juneteenth</b>, <b>International Reggae Day</b>, <b>Belize Day</b>, <b>Jamaica 65</b>, the <b>Marcus Garvey Festival</b> and <b>Trinidad &amp; Tobago Independence</b>','The strongest young performers of each season are offered a set at SelassieFest'],
     more:['Chicago\'s Belizean community held its first Belizean Day in Washington Park in 1980, and in 1998 Mayor Richard M. Daley declared the first Sunday in August for the celebration. Heritage days led by another community\'s organization are planned with that organization, not in its place.','Each festival day is permitted on its own, with its own site plan, insurance and the special event permit the park requires.'],
@@ -174,38 +176,38 @@ const FRAMES = [
     more:['All free, alcohol-free and family-friendly, indoors at the park as space allows. DJ class students, including the Empress Decks girls, play for their own families while the beach is closed.'],
     voice:['Part E keeps the park alive when the beach closes.','From October through December, a season of free family parties.','A Kids Kostume Party. An Icons Party for Prince, Michael Jackson, Bob Marley, and Chicago legends like Curtis Mayfield and Donny Hathaway. A Thanks and Giving potluck that honors our elders. A Holiday Steppers set, because steppin\' is a South Side tradition.','Then a Christmas party and holiday market, a Kwanzaa night, and a Noon Year\'s Eve countdown for the little ones.','And the DJ class students play for their own families.'] },
 
-  { c:'r2', c2:'r5', icon:'fa-stairs', tag:'Learn · Play · Open · Headline', label:'How they fit',
+  { c:'r2', c2:'r5', icon:'fa-stairs', image:'/full-spectrum/img/09-ladder-generations.jpg', tag:'Learn · Play · Open · Headline', label:'How they fit',
     headline:'Five parts, one ladder',
     bullets:['<b>Learn</b> in the DJ classes','<b>Play</b> at Rainbow Wednesdays','<b>Open</b> for local and major artists at the stage shows','<b>Headline</b> at a festival, including SelassieFest','A neighbor can start as a spectator and end up on a festival stage without leaving the park','The fall and holiday parties keep the ladder going while the beach is closed','<b>Empress Decks</b> on every rung, so girls climb the whole ladder too'],
     voice:['Here is why these parts belong together. They are a ladder.','Learn in the classes. Play at Rainbow Wednesdays. Open for the artists at the stage shows. Headline at a festival.','A neighbor can start the year as a spectator and end it on a festival stage, without ever leaving the park.'] },
 
-  { c:'r6', c2:'r4', icon:'fa-people-group', tag:'Diversity', label:'Participants & audience',
+  { c:'r6', c2:'r4', icon:'fa-people-group', image:'/full-spectrum/img/10-diversity.jpg', tag:'Diversity', label:'Participants & audience',
     headline:'Diversity is built into the format, not added at the end',
     bullets:['<b>Age:</b> young children to elders; every Wednesday ends with youth and veterans trading songs','<b>Experience:</b> first-timers to major recording artists, all on one ladder','<b>Musical culture:</b> every genre is a color, and music belongs to whoever loves it','<b>Heritage:</b> kids play their grandparents\' music in ways the elders have never heard','<b>Gender:</b> seats held for girls and women in every class'],
     voice:['Diversity of participants and audience is built into the format.','Every age, from young children to elders.','Every level, from first-timers to major recording artists.','Every musical culture. Every genre is a color, and music belongs to whoever loves it.','A child can play her grandmother\'s music in a way her grandmother has never heard it.'] },
 
-  { c:'r4', c2:'r3', icon:'fa-hand-holding-heart', tag:'Inclusivity', label:'Everyone welcome',
+  { c:'r4', c2:'r3', icon:'fa-hand-holding-heart', image:'/full-spectrum/img/11-inclusivity.jpg', tag:'Inclusivity', label:'Everyone welcome',
     headline:'Everyone is welcome, and here is how we make it true',
     bullets:['<b>Free</b> to attend, free classes, gear provided, young performers paid','<b>Access:</b> accessible viewing area, seating, ASL at stage shows and festivals','<b>Sensory-friendly:</b> metered sound, free ear protection, a quieter zone','<b>Language:</b> flyers and open calls in English and Spanish','<b>Family-friendly:</b> clean lyrics, no alcohol, guardian consent for minors'],
     voice:['Everyone is welcome at Full Spectrum, whatever their race, background, religion, gender, ability, age or income.','Saying it is the easy part, so here is how we make it true.','Everything is free. We provide the gear. There is accessible seating and sign language interpretation, sound kept to park limits, materials in English and Spanish, and a clean, family-friendly policy at every event.'] },
 
-  { c:'r7', c2:'r1', icon:'fa-crown', tag:'Empress Decks', label:'A focus on girls',
+  { c:'r7', c2:'r1', icon:'fa-crown', image:'/full-spectrum/img/12-girls-empress-decks.jpg', tag:'Empress Decks', label:'A focus on girls',
     headline:'Most young people who step up are boys. We are changing that.',
     bullets:['<b>Empress Decks:</b> a girls-only DJ class track taught by women DJs, plus a Live Sound track for girls','A girl or young woman on every Rainbow Wednesday lineup, and one all-girls-and-women <b>Empress Night</b> each season','A girl opens every stage show; top girl performers get a set at the Empress Empowerment Village at SelassieFest','Every season report counts girls enrolled, performing and on crew'],
     voice:['Here is something we have learned.','When we open the decks to young people, most of the ones who step up are boys.','Girls are just as interested and just as talented, but far fewer come forward.','So Full Spectrum makes girls a deliberate focus. We call it Empress Decks.','A girls-only class track taught by women DJs. A girl on every Rainbow Wednesday lineup, and a girl opening every stage show.','And we will count it, every season, so the park can see the gap closing.'] },
 
-  { c:'r5', c2:'r3', icon:'fa-stamp', tag:'Approve once', label:'The ask',
+  { c:'r5', c2:'r3', icon:'fa-stamp', image:'/full-spectrum/img/13-approve-once.jpg', tag:'Approve once', label:'The ask',
     headline:'Approve Full Spectrum once, then schedule each part as it\'s ready',
     bullets:['<b>Decided once, now:</b> that all five parts belong at Rainbow Beach, their purpose, standards, producer and general spaces','<b>Confirmed each time with park staff:</b> dates, site plan, insurance certificate, and any permit the event\'s size requires','No new proposal and no new approval to add a class, a show, a festival day or a holiday party'],
     voice:['So here is our ask.','Review all five parts now, and recognize Full Spectrum as one program at Rainbow Beach Park.','After that, adding a class, a stage show or a festival day is a scheduling conversation with park staff.','Dates, a site plan, insurance and any permit the event needs, confirmed each time.','Not a new proposal, and not a new approval.'] },
 
-  { c:'r3', c2:'r4', icon:'fa-shield-halved', tag:'Standards & funding', label:'What the park can count on',
+  { c:'r3', c2:'r4', icon:'fa-shield-halved', image:'/full-spectrum/img/14-standards.jpg', tag:'Standards & funding', label:'What the park can count on',
     headline:'No cost to the park to approve. The same standards at every event.',
     bullets:['Each part is funded on its own and starts only when its funding is in place','$1,000,000 liability insurance naming the Chicago Park District','Background checks for adults working with youth; clean lyrics; no alcohol','Sound to park limits, our own equipment, the site left cleaner than we found it','A report to the park after every season'],
     more:['Planned funding: arts grants, including the Illinois Arts Council, for Rainbow Wednesdays; arts and youth grants, sponsors, vendor fees and Ras Tafari Inc. for the other parts.'],
     voice:['Approving the program does not commit the park to any cost.','Each part is funded on its own, and none starts until its funding is in place.','And at every event, the park can count on the same standards: full insurance, background checks, clean lyrics, sound kept to limits, and a report back after every season.'] },
 
-  { c:'r7', c2:'r5', spectrum:true, icon:'fa-handshake', tag:'Next steps', label:'Who we are', cta:true,
+  { c:'r7', c2:'r5', spectrum:true, icon:'fa-handshake', image:'/full-spectrum/img/15-close-rainbow.jpg', tag:'Next steps', label:'Who we are', cta:true,
     headline:'Let\'s bring the full spectrum to Rainbow Beach',
     bullets:['Presented by the <b>Rainbow Beach Park Advisory Council</b> (pending its vote) with <b>Ras Tafari Inc. Consultants</b>, producer of SelassieFest','Next: review with park leadership, a walk-through of the spaces, and a presentation to the council','Stephen Henry, President, Ras Tafari Inc.'],
     voice:['Full Spectrum would be presented by the Rainbow Beach Park Advisory Council, with Ras Tafari Incorporated as producer.','Our next steps are a review with park leadership, a walk-through of the spaces, and a presentation to the council.','Thank you. We would love to bring the full spectrum to Rainbow Beach.'] }
@@ -226,9 +228,9 @@ function renderFrames(){
     const cta = f.cta ? `<div class="cta-buttons"><a class="cta-btn primary" href="mailto:${CONTACT.email}"><i class="fa-solid fa-envelope"></i> Email us</a><a class="cta-btn" href="tel:${CONTACT.phone.replace(/[^0-9]/g,'')}"><i class="fa-solid fa-phone"></i> ${CONTACT.phone}</a><a class="cta-btn" href="/full-spectrum/">Full proposal</a><a class="cta-btn" href="/full-spectrum/full-spectrum-proposal.pdf" download><i class="fa-solid fa-file-pdf"></i> PDF</a></div>` : '';
     const name = state.name.trim();
     el.innerHTML = `
-      <div class="frame-visual${f.spectrum ? ' spectrum' : ''}">
+      <div class="frame-visual${f.spectrum ? ' spectrum' : ''}${f.image ? ' photo' : ''}"${f.image ? ` style="background-image:linear-gradient(to top, rgba(7,8,15,0.75), rgba(7,8,15,0) 45%), url('${f.image}')"` : ''}>
         <span class="frame-counter">${String(i + 1).padStart(2,'0')} / ${FRAMES.length}</span>
-        <i class="fa-solid ${f.icon} big" aria-hidden="true"></i>
+        ${f.image ? '' : `<i class="fa-solid ${f.icon} big" aria-hidden="true"></i>`}
         <span class="tagword">${f.tag}</span>
       </div>
       <div class="frame-content"><div class="frame-content-inner">
@@ -302,6 +304,7 @@ function begin(withSound){
   document.getElementById('start-screen').hidden = true;
   document.getElementById('deck').hidden = false;
   renderFrames(); renderDots(); setMuted(!withSound); goTo(0);
+  FRAMES.forEach(f => { if (f.image) { const im = new Image(); im.src = f.image; } });
 }
 
 document.getElementById('begin-btn').addEventListener('click', () => begin(true));
