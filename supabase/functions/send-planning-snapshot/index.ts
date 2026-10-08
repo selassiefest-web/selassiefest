@@ -7,7 +7,7 @@
 // whatever the page's editable fields currently hold, since there's no
 // single "record" being created here, just a copy of the whole document.
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
-const TO = 'stephen@selassiefest.com';
+const TO = ['stephen@selassiefest.com', 'paksipras@gmail.com'];
 const FROM = 'SelassieFest <hello@selassiefest.com>';
 const REPLY_TO = 'selassiefest@gmail.com';
 

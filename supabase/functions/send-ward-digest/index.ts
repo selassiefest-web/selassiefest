@@ -8,7 +8,7 @@
 // shouldn't be something any visitor holding the public anon key can fire.
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const DIGEST_SECRET = Deno.env.get('DIGEST_SECRET')!;
-const TO = ['stephen@selassiefest.com', 'selassiefest@gmail.com'];
+const TO = ['stephen@selassiefest.com', 'selassiefest@gmail.com', 'paksipras@gmail.com'];
 const FROM = 'SelassieFest <hello@selassiefest.com>';
 const REPLY_TO = 'selassiefest@gmail.com';
 

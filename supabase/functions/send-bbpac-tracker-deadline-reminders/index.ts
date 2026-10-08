@@ -11,7 +11,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const WEBHOOK_SECRET = Deno.env.get("BBPAC_TRACKER_REMINDER_SECRET");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM = "Bongo Beach PAC <hello@selassiefest.com>";
-const TO = "stephen@selassiefest.com";
+const TO = ["stephen@selassiefest.com", "paksipras@gmail.com"];
 
 function escapeHtml(s: unknown) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
