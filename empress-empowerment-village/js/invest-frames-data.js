@@ -32,12 +32,12 @@ const FRAMES = [
     headline: 'THE EMPRESS EMPOWERMENT VILLAGE',
     bullets: [
       'See It. Learn It. Become It.',
-      'Selassie Fest 2027 · July 24 · Seven Hills, Washington Park, Chicago, IL',
+      'Selassie Fest 2027 · July 24 · Chicago, IL',
       'Presented by Ras Tafari Inc., a 501(c)(3) nonprofit'
     ],
     voice: [
       "Good morning, and thank you for the chance to share something we believe can change the trajectory of a girl's life in a single day.",
-      "This is the Empress Empowerment Village, a signature experience inside Selassie Fest, happening July 24th, 2027, at Seven Hills in Washington Park, Chicago.",
+      "This is the Empress Empowerment Village, a signature experience inside Selassie Fest, happening July 24th, 2027, in Chicago.",
       "It's built and presented by Ras Tafari Incorporated, a 501c3 nonprofit.",
       "Our theme is simple: see it, learn it, become it.",
       "By the end of this, I think you'll understand exactly why that matters."
@@ -369,7 +369,7 @@ const FRAMES = [
     visual: 'A group of women embracing warmly at golden hour, festival lights glowing behind them.',
     headline: 'JOIN US. BUILD THE FUTURE.',
     bullets: [
-      'The Empress Empowerment Village · July 24, 2027 · Seven Hills, Washington Park, Chicago',
+      'The Empress Empowerment Village · July 24, 2027 · Chicago',
       'Become a Founding Partner today',
       '“Together, we are creating a place where every girl can see what’s possible — and begin the journey to become it.”'
     ],

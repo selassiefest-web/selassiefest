@@ -11,11 +11,11 @@ const FRAMES = [
     image: 'assets/images/frame-01.jpg',
     batch: 'hook',
     personalize: 'start',
-    visual: "Archival-toned photo of a packed festival field at Seven Hills in Washington Park, 1990s film grain, dissolving into the same hillside today — quiet, empty, waiting.",
+    visual: "Archival-toned photo of a packed festival field in Washington Park, 1990s film grain, dissolving into the same hillside today — quiet, empty, waiting.",
     headline: 'From 1981 to 1997, Selassie Fest was one of the largest three-day festivals on Chicago’s South Side. Then, for thirty years, it stopped.',
     voice: [
       'Prepared for {{name}}.',
-      'For sixteen years, thousands of people gathered at Washington Park’s Historic Seven Hills to celebrate Caribbean and African Diaspora culture.',
+      'For sixteen years, thousands of people gathered in Washington Park to celebrate Caribbean and African Diaspora culture.',
       'In 1997, the festival held its final gathering — but the legacy never actually left.'
     ],
     tellMore: "For nearly two decades, Selassie Fest was more than an annual gathering. It was a place where families reunited, elders shared history with younger generations, musicians and artists found audiences, entrepreneurs introduced their businesses, and educators inspired learning — a place where culture wasn't simply displayed, it was lived. Although the festival concluded in 1997, its legacy has endured through the memories of those who attended and the generations who continue to recognize its importance in Chicago's cultural history."
@@ -53,7 +53,7 @@ const FRAMES = [
       'Musicians and artists found audiences here. Entrepreneurs found their first customers.',
       'It became a place where culture wasn’t something on display — it was something you lived, for three days, every year.'
     ],
-    tellMore: 'From 1981 through 1997, Selassie Fest became one of the largest three-day cultural festivals on Chicago’s South Side. Held at the historic Seven Hills in Washington Park, it welcomed thousands of attendees each year to celebrate the rich cultural traditions, artistic excellence, entrepreneurial spirit, and community values of the Caribbean and African Diaspora — reflecting the diversity, creativity, and resilience that continue to define Chicago today.'
+    tellMore: 'From 1981 through 1997, Selassie Fest became one of the largest three-day cultural festivals on Chicago’s South Side. Held in Washington Park, it welcomed thousands of attendees each year to celebrate the rich cultural traditions, artistic excellence, entrepreneurial spirit, and community values of the Caribbean and African Diaspora — reflecting the diversity, creativity, and resilience that continue to define Chicago today.'
   },
   {
     id: 5,
@@ -129,7 +129,7 @@ const FRAMES = [
       'The date is deliberate.',
       'But this isn’t a closed-door commemoration — it’s a day dedicated to culture, community, and shared humanity, open to everyone who wants to learn and celebrate.'
     ],
-    tellMore: 'Beginning July 24, 2027, Selassie Fest returns as an annual one-day signature event at the Historic Seven Hills in Washington Park, held on the weekend of, or nearest to, July 23. The date commemorates the birth of His Imperial Majesty Emperor Haile Selassie I, whose life and legacy continue to inspire people around the world through principles of dignity, self-determination, education, service, unity, and international cooperation. While this historical commemoration remains central to the festival’s identity, Selassie Fest is designed to welcome all who wish to learn, celebrate, and participate.'
+    tellMore: 'Beginning July 24, 2027, Selassie Fest returns as an annual one-day signature event, held on the weekend of, or nearest to, July 23. The date commemorates the birth of His Imperial Majesty Emperor Haile Selassie I, whose life and legacy continue to inspire people around the world through principles of dignity, self-determination, education, service, unity, and international cooperation. While this historical commemoration remains central to the festival’s identity, Selassie Fest is designed to welcome all who wish to learn, celebrate, and participate.'
   },
   {
     id: 11,
@@ -141,17 +141,17 @@ const FRAMES = [
       'Chicago has always been strengthened by the contributions of people from many cultures.',
       'Selassie Fest welcomes residents and visitors of every age, background, faith, and nationality — because understanding another culture enriches your own.'
     ],
-    tellMore: 'Selassie Fest is rooted in the heritage of the Caribbean and African Diaspora, yet its spirit extends far beyond any single community. Accordingly, Selassie Fest welcomes residents and visitors of every age, background, faith, and nationality to gather at the Historic Seven Hills in Washington Park in an atmosphere of mutual respect, learning, and celebration. Entertainment draws people together, education gives the experience lasting value, and community gives it purpose.'
+    tellMore: 'Selassie Fest is rooted in the heritage of the Caribbean and African Diaspora, yet its spirit extends far beyond any single community. Accordingly, Selassie Fest welcomes residents and visitors of every age, background, faith, and nationality to gather in an atmosphere of mutual respect, learning, and celebration. Entertainment draws people together, education gives the experience lasting value, and community gives it purpose.'
   },
   {
     id: 12,
     image: 'assets/images/frame-12.jpg',
     batch: 'momentum',
-    visual: "A wide landscape shot of Washington Park's Seven Hills, empty and green, golden-hour light.",
-    headline: 'The Historic Seven Hills isn’t just the venue. It’s part of the story.',
+    visual: "A wide landscape shot of Washington Park, empty and green, golden-hour light.",
+    headline: 'The place is part of the story.',
     voice: [
-      'This is where families gathered for sixteen years, where friendships formed and businesses were introduced.',
-      'Returning here honors the festival’s history — and the generations of residents who’ve gathered on this ground.'
+      'Washington Park is where families gathered for sixteen years, where friendships formed and businesses were introduced.',
+      'Wherever the festival gathers in 2027, it carries that history — and the generations of residents who gathered on that ground.'
     ],
     tellMore: 'From 1981 through 1997, this remarkable setting welcomed thousands of residents and visitors who gathered to celebrate the rich heritage of the Caribbean and African Diaspora through music, education, entrepreneurship, art, and community fellowship. Ras Tafari Inc. is committed to working collaboratively with the Chicago Park District, community organizations, volunteers, and public partners to promote responsible stewardship of this cherished public space — respecting the land, planning thoughtfully, and ensuring future generations may continue to enjoy this remarkable setting.'
   },
@@ -165,7 +165,7 @@ const FRAMES = [
       'Families enjoy live music and cultural performances.',
       'Children take part in educational activities. Artists exhibit work. Entrepreneurs introduce their businesses. Food vendors share culinary traditions from across the diaspora.'
     ],
-    tellMore: 'From the moment visitors arrive at the Historic Seven Hills in Washington Park, Selassie Fest offers opportunities to experience the richness of Caribbean and African Diaspora culture through engaging, accessible programming: live music and performances for families, educational activities for children, exhibits from artists, talks from authors and historians, product showcases from entrepreneurs and local businesses, and food from vendors representing the diverse cultures across the festival. Throughout the day, every space is designed to encourage learning, conversation, and meaningful connection.'
+    tellMore: 'From the moment visitors arrive, Selassie Fest offers opportunities to experience the richness of Caribbean and African Diaspora culture through engaging, accessible programming: live music and performances for families, educational activities for children, exhibits from artists, talks from authors and historians, product showcases from entrepreneurs and local businesses, and food from vendors representing the diverse cultures across the festival. Throughout the day, every space is designed to encourage learning, conversation, and meaningful connection.'
   },
   {
     id: 14,
@@ -201,7 +201,7 @@ const FRAMES = [
       'Volunteers, nonprofits, educators, and community partners are what actually make this run.',
       'Every visitor should feel welcomed, respected, and valued — and should leave with more than a photo. New knowledge. New friendships. A renewed sense of where they come from.'
     ],
-    tellMore: 'Selassie Fest recognizes that strong communities are built through service — volunteers, nonprofit organizations, educators, civic leaders, and community partners all play an essential role in creating an event that reflects cooperation, generosity, and shared responsibility. Every visitor should feel welcomed, respected, and valued. As the day concludes at the Historic Seven Hills, the hope is that every guest leaves with new knowledge, new friendships, new appreciation for culture, and a renewed understanding that preserving history means carrying its lessons into the future.'
+    tellMore: 'Selassie Fest recognizes that strong communities are built through service — volunteers, nonprofit organizations, educators, civic leaders, and community partners all play an essential role in creating an event that reflects cooperation, generosity, and shared responsibility. Every visitor should feel welcomed, respected, and valued. As the day concludes, the hope is that every guest leaves with new knowledge, new friendships, new appreciation for culture, and a renewed understanding that preserving history means carrying its lessons into the future.'
   },
   {
     id: 17,
@@ -283,7 +283,7 @@ const FRAMES = [
     tellMore: [
       'Ras Tafari Inc. believes that meaningful and lasting community impact is achieved through collaboration — every successful cultural institution is strengthened by the people, organizations, and public partners who believe in its mission.',
       'The City of Chicago plays an essential role in preserving the traditions, public spaces, and cultural experiences that enrich residents’ lives — the invitation is to collaborate on the highest standards of public service, safety, accessibility, and stewardship.',
-      'The Chicago Park District is a direct steward partner for the Historic Seven Hills in Washington Park itself — responsible planning, environmental care, and accessibility depend on that relationship.',
+      'The Chicago Park District is a direct steward partner for the park that hosts the festival — responsible planning, environmental care, and accessibility depend on that relationship.',
       'Educational institutions — schools, colleges, universities, libraries, and museums — are invited to collaborate on educational programming, historical interpretation, research, internships, and youth engagement that extend beyond the annual festival.',
       'Businesses and philanthropic organizations are invited into sponsorship, community investment, and collaborative initiatives that benefit residents while contributing to Chicago’s cultural vitality.',
       'Community organizations — neighborhood groups, nonprofits, faith communities, artists, and volunteers — each contribute unique strengths; the future of Selassie Fest depends on listening, learning, and building together with them.'
@@ -315,7 +315,7 @@ const FRAMES = [
       'To community — an atmosphere where every visitor belongs.',
       'To education, to partnership, and to responsible stewardship of the park entrusted to us.'
     ],
-    tellMore: 'We commit to honoring the history of Selassie Fest with integrity and respect. We commit to creating an annual gathering where every person who attends feels they belong. We commit to preserving history through education, to working collaboratively with the City, the Park District, and every partner listed here, and to responsibly caring for the Historic Seven Hills and every public resource entrusted to us. The greatest success of Selassie Fest will be measured by what future generations inherit because of the work we begin today.'
+    tellMore: 'We commit to honoring the history of Selassie Fest with integrity and respect. We commit to creating an annual gathering where every person who attends feels they belong. We commit to preserving history through education, to working collaboratively with the City, the Park District, and every partner listed here, and to responsibly caring for every park and public resource entrusted to us. The greatest success of Selassie Fest will be measured by what future generations inherit because of the work we begin today.'
   },
   {
     id: 25,
@@ -328,14 +328,14 @@ const FRAMES = [
       'Resolution No. 2026-01 — the Ras Tafari Inc. Board of Directors has already adopted this Vision Proposal as the organization’s guiding framework.',
       'The commitment to restoration is already on the record. What’s needed now are partners.'
     ],
-    tellMore: 'WHEREAS Selassie Fest was held from 1981 through 1997 at the Historic Seven Hills in Washington Park, becoming one of Chicago’s most recognized celebrations of Caribbean and African Diaspora culture, the Board of Directors of Ras Tafari Inc. has resolved to adopt this Vision Proposal as the organization’s guiding framework for the restoration, preservation, and future growth of Selassie Fest — affirming its commitment to preserving the historic legacy, promoting education and community engagement, strengthening partnerships throughout Chicago, practicing responsible stewardship of the Historic Seven Hills, and supporting annual planning for Selassie Fest on the weekend of, or nearest, July 23 each year.'
+    tellMore: 'WHEREAS Selassie Fest was held from 1981 through 1997 in Washington Park, becoming one of Chicago’s most recognized celebrations of Caribbean and African Diaspora culture, the Board of Directors of Ras Tafari Inc. has resolved to adopt this Vision Proposal as the organization’s guiding framework for the restoration, preservation, and future growth of Selassie Fest — affirming its commitment to preserving the historic legacy, promoting education and community engagement, strengthening partnerships throughout Chicago, practicing responsible stewardship of the parks that host it, and supporting annual planning for Selassie Fest on the weekend of, or nearest, July 23 each year.'
   },
   {
     id: 26,
     image: 'assets/images/frame-26.jpg',
     batch: 'close',
     personalize: 'close',
-    visual: "Return to frame 1's shot of the Seven Hills — now lit at dusk, tents up, a crowd gathered.",
+    visual: "A festival field at dusk, tents up, a crowd gathered.",
     headline: 'Selassie Fest — Restoring a Chicago Legacy. Together, we carry it forward.',
     voice: [
       '{{name}}, this is the vision.',
