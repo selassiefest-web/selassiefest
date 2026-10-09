@@ -256,7 +256,7 @@ Any media involving participants is arranged by Ras Tafari under signed consent.
 
 ### 10.1 Disclosure
 
-Q-Ality's principals disclose annually, in writing, any family, business or financial relationship to Ras Tafari board members, officers, advisory council members, trainers or SelassieFest, using the disclosure form in the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+Q-Ality's principals disclose annually, in writing, any family, business or financial relationship to Ras Tafari board members, officers, trainers or SelassieFest, using the disclosure form in the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ### 10.2 Recusal
 

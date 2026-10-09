@@ -5,7 +5,7 @@ description: Every adult at Rainbow DJ Lab is trained as an Illinois mandated re
 
 ## Status
 
-No staff have been hired, so no certificates are on file yet. "DCFS mandated reporter training certificates on file for every adult" is item 5 on the [launch checklist](/dj-lab/governance/index.html). This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
+No staff have been hired, so no certificates are on file yet. "DCFS mandated reporter training certificates on file for every adult" is item 4 on the [launch checklist](/dj-lab/governance/index.html). This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
 
 ## Who is a mandated reporter
 

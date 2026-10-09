@@ -6,10 +6,10 @@ description: Straight answers to the questions parents ask most about the Rainbo
 ## Status and basics
 
 ### 1. Is this program actually happening?
-It's **proposed**. The curriculum is written and runs in our class app. The Chicago Park District has **not** approved or permitted the program yet, the Rainbow Beach Park Advisory Council vote is pending, no class dates are set, and no staff are hired. **No class runs until every item on our [launch checklist](/dj-lab/governance/index.html) is done.**
+It's **proposed**. The curriculum is written and runs in our class app. The Chicago Park District has **not** approved or permitted the program yet, no class dates are set, and no staff are hired. **No class runs until every item on our [launch checklist](/dj-lab/governance/index.html) is done.**
 
 ### 2. Who runs it?
-**Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago. Its President, **Stephen Henry**, leads the Lab and is your contact. The other officers are Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary). Ras Tafari Inc. also produces SelassieFest (which makes its own decisions about its lineup) and is a member of the Rainbow Beach Park Advisory Council; it is recused from that council's vote on the Lab. **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** See [about](/dj-lab/about/index.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+**Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago. Its President, **Stephen Henry**, leads the Lab and is your contact. The other officers are Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary). Ras Tafari Inc. also produces SelassieFest (which makes its own decisions about its lineup). The Lab is a Ras Tafari Inc. program, proposed to the Chicago Park District for Rainbow Beach Park. **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** See [about](/dj-lab/about/index.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ### 3. How much does it cost?
 **Nothing.** There's no tuition, and all equipment is provided. The DJ gear was donated to Ras Tafari Inc. and is used only for its programs.

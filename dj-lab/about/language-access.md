@@ -9,7 +9,7 @@ Every family should be able to understand the forms they sign, the rules that pr
 
 ## English and Spanish forms are a launch requirement
 
-**Parent forms in English and Spanish** is item 9 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it's done. That includes:
+**Parent forms in English and Spanish** is item 8 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it's done. That includes:
 
 - [Registration](/dj-lab/enroll/forms/registration.html)
 - [Emergency contacts](/dj-lab/enroll/forms/emergency-contacts.html)

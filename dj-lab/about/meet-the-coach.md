@@ -7,7 +7,7 @@ description: Meet Stephen Henry, the Lab's program lead and family contact, and 
 
 Stephen Henry is President of **Ras Tafari Inc.**, the Chicago not-for-profit that runs Rainbow DJ Lab. He leads the Lab and is the person to call with any question, before enrollment or after.
 
-Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festival, and is a member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council.
+Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festival.
 
 **How to reach Stephen:**
 

@@ -7,7 +7,7 @@ description: Who can speak to the work of Ras Tafari Inc. and Rainbow DJ Lab, an
 
 A careful parent should be able to check us out with people who aren't us. We take that seriously. That's also why we won't list references here until they've agreed to be contacted and our agreements are in place. We will not list anyone who hasn't agreed.
 
-> **Status:** The Lab is proposed and not running yet. The Chicago Park District has not approved or permitted it, the Rainbow Beach Park Advisory Council vote is pending, and no staff are hired. There are no past Lab families to refer you to yet.
+> **Status:** The Lab is proposed and not running yet. The Chicago Park District has not approved or permitted it, and no staff are hired. There are no past Lab families to refer you to yet.
 
 ## What we can tell you now
 
@@ -18,13 +18,11 @@ A careful parent should be able to check us out with people who aren't us. We ta
 - Officers: Stephen Henry, President (Lab lead and family contact); Paul Kelly, Vice President and Treasurer; Albert Harris, Corporate Secretary.
 - Produces SelassieFest, Chicago's roots reggae and cultural festival. SelassieFest makes its own decisions about its lineup.
 - No officer, director or staff member is paid for work on the Lab. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
-- A member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council. Ras Tafari Inc. is recused from that council's vote on the Lab.
 
 ## References that will be available
 
 **On request, once agreements are in place**, we expect to be able to put you in touch with:
 
-- **The park advisory council.** Someone from the Rainbow Beach Park Advisory Council, once it has voted on the program.
 - **The Chicago Park District.** The Rainbow Beach Park office, (312) 745-1479, is also where any concern about an adult at the Lab goes.
 - **Partner organizations.** Organizations that sign agreements to work with the Lab or with Full Spectrum at Rainbow Beach.
 - **Community references** who know Ras Tafari Inc.'s work.

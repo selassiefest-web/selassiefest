@@ -8,7 +8,6 @@ description: How enrollment works from start to finish, who can join, what it co
 The Rainbow DJ Lab is a **proposed** program. Ras Tafari Inc. has written the full curriculum, and it already runs in our class app. Several things are still pending:
 
 - The Chicago Park District has **not** yet approved or permitted the program.
-- The Rainbow Beach Park Advisory Council vote is still pending.
 - **No class dates are set.**
 - No staff are hired yet.
 

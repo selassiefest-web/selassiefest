@@ -5,7 +5,7 @@ description: How adults are cleared before working with children at Rainbow DJ L
 
 ## Status
 
-No staff or volunteers have been hired yet, and no one has been screened. This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. "CPD background checks complete for every adult under CPD rules" is item 4 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it is checked.
+No staff or volunteers have been hired yet, and no one has been screened. This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. "CPD background checks complete for every adult under CPD rules" is item 3 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it is checked.
 
 ## Who runs background checks
 

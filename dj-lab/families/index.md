@@ -10,7 +10,6 @@ Rainbow DJ Lab is a free DJ class run by Ras Tafari Inc., a Chicago not-for-prof
 > **Status: Proposed. The Lab is not running yet.**
 >
 > - The Chicago Park District has **not** approved or permitted the program.
-> - The Rainbow Beach Park Advisory Council vote is still pending.
 > - No class dates are set, and no staff have been hired.
 >
 > No class runs until every item on the [launch checklist](/dj-lab/governance/index.html) is checked. Where a page below says "to be confirmed," that's why.

@@ -8,14 +8,14 @@ description: How the Rainbow DJ Lab keeps decisions about children, money, vendo
 ## Our disclosure
 
 - **"Ras Tafari Inc. Consultants"** is the name Ras Tafari Inc. uses for its proposal work. It is not a separate company.
-- **Ras Tafari Inc. wrote the Full Spectrum proposal, would run the Lab, and is a member of the Rainbow Beach Park Advisory Council** that is asked to present it. Ras Tafari Inc. and its representatives are **recused from the council's vote on the Lab** and from any Chicago Park District decision about it, and say so in writing (Appendix C).
+- **Ras Tafari Inc. wrote the Full Spectrum proposal and would run the Lab as its own program.**
 - **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.**
 - **Ras Tafari Inc. also produces SelassieFest.** SelassieFest makes its own decisions about its lineup, and Lab performers reach SelassieFest only by **audience vote**, counted by someone with no interest in the result (section 9).
 - **Q-Ality Sound** provides sound, stage and lighting only, chosen as a documented sole source (section 7).
 
 ## 1. Purpose
 
-This policy keeps the Rainbow DJ Lab (the "Lab") free of conflicts of interest, and of the appearance of them. The Lab is a free youth DJ program at Rainbow Beach Park, run in cooperation with the Chicago Park District (CPD). Families, CPD, funders and the Rainbow Beach Park Advisory Council should be able to see that decisions about children, money, vendors and stage time are made fairly and by people with nothing to gain.
+This policy keeps the Rainbow DJ Lab (the "Lab") free of conflicts of interest, and of the appearance of them. The Lab is a free youth DJ program at Rainbow Beach Park, run in cooperation with the Chicago Park District (CPD). Families, CPD, funders and the public should be able to see that decisions about children, money, vendors and stage time are made fairly and by people with nothing to gain.
 
 ## 2. How the Lab is set up
 
@@ -27,14 +27,12 @@ This policy is written for the following arrangement. If any of it changes, the 
 - **DJ trainers.** Trainers are not members of Ras Tafari Inc. They train. They do not influence or recommend who performs, who graduates or who receives any opportunity.
 - **Background checks and complaints.** CPD runs background checks for adults who work with children. Day-to-day complaints about any adult go to CPD.
 - **SelassieFest.** SelassieFest is produced by Ras Tafari Inc. but makes its own decisions about its lineup, separate from the Lab. Lab participants are chosen to perform at SelassieFest by event audience vote only.
-- **Council vote.** Ras Tafari Inc. is recused from the advisory council's vote on the Lab.
 
 ## 3. Who is covered
 
 This policy applies to:
 
 - Directors, officers and anyone at Ras Tafari Inc. who plans, runs or administers the Lab, including those who handle contracts, the website and registration, and its records;
-- Ras Tafari Inc. representatives who sit on the Rainbow Beach Park Advisory Council;
 - DJ trainers working in the Lab;
 - The owners and principals of Q-Ality Sound, as to their work for the Lab.
 
@@ -53,15 +51,15 @@ A conflict exists when a covered person's own interest, or the interest of a rel
 - Every covered person completes the disclosure form (Appendix A) before starting and every year after, within 30 days of the board's annual meeting.
 - Anyone whose situation changes updates their form within 14 days.
 - A covered person who is unsure whether something is a conflict discloses it and lets the board decide.
-- The board chair, or a director with no stake in the matter, keeps a register of all disclosures. The register is available to CPD, funders and the advisory council on request.
+- The board chair, or a director with no stake in the matter, keeps a register of all disclosures. The register is available to CPD and funders on request.
 - **If no conflict exists, the form says so.** A blank form is not accepted.
 
 ## 6. Recusal
 
 - A covered person with a conflict on a matter leaves the discussion after answering questions, does not vote, and does not try to influence the outcome.
 - The minutes record the conflict, who recused, and the time they left and returned.
-- Ras Tafari Inc. and its representatives are recused from the advisory council's vote on the Lab and from any CPD decision about it, and say so in writing (Appendix C).
-- If recusal leaves too few decision-makers, the board adds a disinterested director or asks CPD or the advisory council to decide.
+- Each recusal is written up on the recusal record (Appendix C).
+- If recusal leaves too few decision-makers, the board adds a disinterested director or asks CPD to decide.
 
 ## 7. Q-Ality Sound
 
@@ -130,7 +128,7 @@ Answer each question Yes or No. Explain every Yes on the back.
 - Do you or a relative own, work for or advise Q-Ality Sound, or any other Lab vendor or sponsor?
 - Do you or a relative have a business or personal relationship with Q-Ality Sound's owners or any trainer?
 - Are you, a relative or your business seeking stage time, bookings or an audience through the Lab?
-- Do you hold a role at SelassieFest, the advisory council or any other organization that deals with the Lab?
+- Do you hold a role at SelassieFest or any other organization that deals with the Lab?
 - Have you received a gift or hospitality over $50 from a Lab vendor or sponsor this year?
 - Is there anything else that could look like a conflict?
 

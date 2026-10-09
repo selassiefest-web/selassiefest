@@ -11,7 +11,7 @@ Every child who graduates from the Rainbow DJ Lab is **guaranteed an Open Decks 
 
 **Rainbow Wednesdays is proposed.** It isn't approved yet. The guarantee applies **when Rainbow Wednesdays runs**. If the series doesn't run, there is no slot to give, and we'll tell families plainly.
 
-The Rainbow DJ Lab itself is also proposed. The Chicago Park District hasn't approved or permitted it yet, the Rainbow Beach Park Advisory Council vote is pending, and no class dates are set.
+The Rainbow DJ Lab itself is also proposed. The Chicago Park District hasn't approved or permitted it yet, and no class dates are set.
 
 ## What the guarantee means
 

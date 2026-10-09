@@ -5,7 +5,7 @@ description: How Rainbow DJ Lab children use the restroom safely: buddy pairs, a
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. Exact restroom locations and walking routes will be confirmed during the site walk with Chicago Park District staff (launch checklist item 7). Park restrooms are public, which is why these rules matter.
+These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. Exact restroom locations and walking routes will be confirmed during the site walk with Chicago Park District staff (launch checklist item 6). Park restrooms are public, which is why these rules matter.
 
 ## The rules
 

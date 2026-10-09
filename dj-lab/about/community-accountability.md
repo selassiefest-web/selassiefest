@@ -1,6 +1,6 @@
 ---
 title: Community Accountability
-description: How parents, the Rainbow Beach Park Advisory Council and the wider community can hold Rainbow DJ Lab to its word.
+description: How parents, the Chicago Park District and the wider community can hold Rainbow DJ Lab to its word.
 ---
 
 ## Why this matters
@@ -11,9 +11,6 @@ A program for children has to earn trust in public, not just ask for it. This pa
 
 ### Families
 You are the first check. You can watch class, ask questions, read every policy on this site, and tell us when something doesn't match what you see.
-
-### The Rainbow Beach Park Advisory Council
-Park advisory councils are community groups that work with the Chicago Park District on what happens in their park. Ras Tafari Inc. is a member of the Rainbow Beach PAC. **A PAC vote to present the program is a launch requirement, and it is still pending.** The Lab won't run without it. See [Advisory council vote](/dj-lab/governance/advisory-council-vote.html).
 
 ### The Chicago Park District
 The program needs the Park District's approval, a permit or agreement for space, and a written memorandum of understanding (MOU) before any class runs. **None of these is in place yet.** See [MOU with the Park District](/dj-lab/governance/mou-park-district.html) and [Park District permits](/dj-lab/governance/park-district-permits.html).

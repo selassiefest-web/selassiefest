@@ -35,7 +35,7 @@ for dirpath, dirs, files in os.walk(LAB):
                 problems.append("BROKEN %s -> %s" % (os.path.relpath(f, SITE), u))
 
 ALLOWED_PHONES = {"911", "1-800-25-ABUSE", "1-800-252-2873", "1-800-222-1222", "414-909-3279", "(312) 744-6833", "(312) 745-1479", "312-745-1479"}
-BANNED = [(r"(?i)night out in the parks", "Night Out"), (r"(?i)seven hills|7 hills", "Seven Hills"),
+BANNED = [(r"(?i)night out in the parks", "Night Out"), (r"(?i)seven hills|7 hills", "Seven Hills"), (r"(?i)rainbow beach (park )?(advisory council|pac)|PAC vote", "Rainbow Beach PAC"),
           (r"(?i)\b(we are|we're|the lab is|is) (fully )?(licensed|insured|permitted|approved)\b", "status claim"),
           (r"(?i)\bCPD[- ]approved\b", "status claim")]
 PHONE = re.compile(r"(?<![\d-])(?:\(\d{3}\)\s?|\d{3}-)\d{3}-\d{4}|1-800-[0-9A-Z-]{7,}")

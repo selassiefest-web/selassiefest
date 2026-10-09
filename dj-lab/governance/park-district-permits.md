@@ -26,9 +26,8 @@ We will apply for exactly what the Park District tells us is required. We will n
 
 ## Related requirements
 
-- A written [MOU with the Chicago Park District](/dj-lab/governance/mou-park-district.html) (item 8 on the checklist).
-- A [Rainbow Beach Park Advisory Council vote](/dj-lab/governance/advisory-council-vote.html) to present the program (item 2).
-- An [insurance certificate](/dj-lab/governance/insurance-certificate.html) naming the Chicago Park District as additional insured (item 3).
+- A written [MOU with the Chicago Park District](/dj-lab/governance/mou-park-district.html) (item 7 on the checklist).
+- An [insurance certificate](/dj-lab/governance/insurance-certificate.html) naming the Chicago Park District as additional insured (item 2).
 
 ## When permits are issued
 

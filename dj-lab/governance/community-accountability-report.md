@@ -7,7 +7,7 @@ description: The template for the public report Ras Tafari Inc. will publish aft
 
 **Status: Template.** The Lab has not run any classes, so there is nothing to report yet. The first report will be published after the first season ends.
 
-After every season, Ras Tafari Inc. will publish a report to families, Rainbow Beach Park, the park advisory council and the public. It will tell you what happened, including what went wrong, and what we changed.
+After every season, Ras Tafari Inc. will publish a report to families, the Chicago Park District and Rainbow Beach Park staff, funders and the public. It will tell you what happened, including what went wrong, and what we changed.
 
 **No child or family is ever identified in this report.** Where a number is so small it could identify someone (fewer than 5), we will report it as "fewer than 5" while still describing what happened in general terms.
 
@@ -116,7 +116,6 @@ A summary, as the [conflict of interest policy](/dj-lab/governance/conflict-of-i
 | Covered persons with a current disclosure form on file | _[ ] of [ ]_ |
 | Disclosures reporting a possible conflict | _[ ]_ |
 | Recusals recorded (meeting or decision, and who stepped aside) | _[list, without private details]_ |
-| Ras Tafari Inc.'s recusal from the Rainbow Beach Park Advisory Council vote on the Lab | _[recorded / date]_ |
 | Gifts or hospitality over $50 offered by a vendor or sponsor, and reported within 14 days | _[ ]_ |
 | Conflict-of-interest concerns received, and outcome | _[ ]_ |
 

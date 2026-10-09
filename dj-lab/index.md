@@ -12,7 +12,6 @@ The Lab is the free DJ-class part of **Full Spectrum at Rainbow Beach**, a propo
 > **Status: Proposed. The Lab is not running yet.**
 >
 > - The Chicago Park District has **not** approved or permitted the program.
-> - The Rainbow Beach Park Advisory Council (PAC) vote is still pending.
 > - No class dates are set, and no staff have been hired.
 >
 > **No class runs until every launch requirement is met.** You can follow each item on the [launch checklist](/dj-lab/governance/index.html).

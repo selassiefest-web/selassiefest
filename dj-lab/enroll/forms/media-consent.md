@@ -25,7 +25,7 @@ You can check any, all or none:
 
 > **Media Consent: Rainbow DJ Lab, Ras Tafari Inc.**
 >
-> I am the parent or legal guardian of the child named on this registration. By checking the boxes above, I give Ras Tafari Inc. permission to photograph, video record and/or audio record my child during Rainbow DJ Lab activities, and to use those images and recordings, without payment, to describe and promote the Rainbow DJ Lab, Full Spectrum at Rainbow Beach, and the nonprofit work of Ras Tafari Inc. This may include its websites, social media, printed materials, reports to funders, and presentations to the Chicago Park District and the Rainbow Beach Park Advisory Council.
+> I am the parent or legal guardian of the child named on this registration. By checking the boxes above, I give Ras Tafari Inc. permission to photograph, video record and/or audio record my child during Rainbow DJ Lab activities, and to use those images and recordings, without payment, to describe and promote the Rainbow DJ Lab, Full Spectrum at Rainbow Beach, and the nonprofit work of Ras Tafari Inc. This may include its websites, social media, printed materials, reports to funders, and presentations to the Chicago Park District.
 >
 > Ras Tafari Inc. agrees that:
 > 1. It will **never** publish my child's last name, school, home address, or any other information that would help a stranger locate my child.

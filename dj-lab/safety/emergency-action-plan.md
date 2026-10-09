@@ -7,7 +7,7 @@ description: Who does what at Rainbow DJ Lab in a fire, medical emergency, sever
 
 This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
 
-**Pending:** the site-specific parts of this plan (exit routes, shelter rooms, the outdoor meeting point, the reunification point, and drawn maps) will be set during a **site walk with Chicago Park District staff at Rainbow Beach Park** (3111 E. 77th St.). That walk has not happened yet. "Emergency action plan finalized after a site walk with park staff, with maps drawn" is item 7 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it is done. Where this page says "to be set at the site walk," that is why.
+**Pending:** the site-specific parts of this plan (exit routes, shelter rooms, the outdoor meeting point, the reunification point, and drawn maps) will be set during a **site walk with Chicago Park District staff at Rainbow Beach Park** (3111 E. 77th St.). That walk has not happened yet. "Emergency action plan finalized after a site walk with park staff, with maps drawn" is item 6 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it is done. Where this page says "to be set at the site walk," that is why.
 
 ## Roles in every class
 

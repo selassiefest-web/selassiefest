@@ -7,7 +7,7 @@ description: A visit before the first class where families try the gear, meet th
 
 Before the first class of each season, we'll hold a **family orientation**. It's a chance for you and your child to see the space, meet the adults, put your hands on a controller and ask anything, before you ever drop your child off.
 
-> **Date: to be announced.** No class dates are set yet, and the Lab is still proposed: the Chicago Park District has not approved or permitted it, and the Rainbow Beach Park Advisory Council vote is pending. Orientation will be scheduled once the [launch requirements](/dj-lab/governance/index.html) are met. Registered families will be told the date by email.
+> **Date: to be announced.** No class dates are set yet, and the Lab is still proposed: the Chicago Park District has not approved or permitted it. Orientation will be scheduled once the [launch requirements](/dj-lab/governance/index.html) are met. Registered families will be told the date by email.
 
 ## Who should come
 

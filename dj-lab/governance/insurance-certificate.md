@@ -32,7 +32,7 @@ Policy numbers may be redacted from the posted copy. Park officials can request 
 
 ## Q-Ality Sound's certificates
 
-Q-Ality Sound provides sound, stage and lighting under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) (a draft for board approval). It carries **its own insurance** and names **Ras Tafari Inc. as additional insured**. Its certificates must be on file before the first session; that's item 19 on the [Launch Readiness Checklist](/dj-lab/governance/index.html). Ras Tafari Inc. also plans coverage for the donated DJ gear (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)).
+Q-Ality Sound provides sound, stage and lighting under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) (a draft for board approval). It carries **its own insurance** and names **Ras Tafari Inc. as additional insured**. Its certificates must be on file before the first session; that's item 17 on the [Launch Readiness Checklist](/dj-lab/governance/index.html). Ras Tafari Inc. also plans coverage for the donated DJ gear (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)).
 
 | Certificate | On file |
 |---|---|
@@ -50,7 +50,7 @@ The limits Q-Ality must carry are set in the vendor agreement when the board app
 
 If any required coverage expires or is cancelled, **classes stop** until it is replaced, and this page will say so.
 
-This is item 3 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).
+This is item 2 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).
 
 ## Questions
 

@@ -5,7 +5,7 @@ description: What to do, sign and talk about with your child before their first 
 
 ## First: the Lab isn't running yet
 
-Rainbow DJ Lab is proposed. The Chicago Park District has not approved it, the Rainbow Beach PAC vote is pending, no dates are set, and no staff are hired. **No class runs until every item on the [launch checklist](/dj-lab/governance/index.html) is met.** Everything below describes how it will work once it does.
+Rainbow DJ Lab is proposed. The Chicago Park District has not approved it, no dates are set, and no staff are hired. **No class runs until every item on the [launch checklist](/dj-lab/governance/index.html) is met.** Everything below describes how it will work once it does.
 
 ## Your checklist
 

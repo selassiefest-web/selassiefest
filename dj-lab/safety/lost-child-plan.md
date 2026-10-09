@@ -5,7 +5,7 @@ description: The Code Adam–style plan Rainbow DJ Lab follows, minute by minute
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. Exact exits, search zones and the meeting point at Rainbow Beach Park will be set during the site walk with park staff, which has not happened yet (launch checklist item 7, [Governance](/dj-lab/governance/index.html)). Until then, this page gives the steps; the site map comes later.
+This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. Exact exits, search zones and the meeting point at Rainbow Beach Park will be set during the site walk with park staff, which has not happened yet (launch checklist item 6, [Governance](/dj-lab/governance/index.html)). Until then, this page gives the steps; the site map comes later.
 
 ## How we prevent it
 

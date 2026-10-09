@@ -85,9 +85,8 @@ A schedule to the MOU lists every outside vendor that works on site:
 |---|---|---|
 | Q-Ality Sound | Sound, stage and lighting only, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) chosen as a documented [sole source](/dj-lab/governance/sole-source-justification-qality.html) | Never supervises children or has unsupervised contact with them; no participant data; no photos or recordings; no role in selecting performers; carries its own insurance |
 
-### 9. Recusal
+### 9. Independent vote counting
 
-- Ras Tafari Inc. and its representatives are recused, in writing, from the Rainbow Beach Park Advisory Council's vote on the Lab and from any Park District decision about it. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 - Ras Tafari Inc. asks Park District staff, or an outside party named in advance, to count any event audience vote that selects Lab performers for SelassieFest.
 
 ### 10. Other proposed terms
@@ -105,4 +104,4 @@ We will post on this page:
 - a copy of the MOU, or a summary of its terms if the Park District prefers that the full document not be posted;
 - any differences from the terms proposed above.
 
-This is item 8 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).
+This is item 7 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).

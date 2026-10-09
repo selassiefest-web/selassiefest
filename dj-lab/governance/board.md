@@ -12,7 +12,7 @@ description: Who leads Ras Tafari Inc., the organization behind the Rainbow DJ L
 **Ras Tafari Inc.** is an Illinois not-for-profit corporation and a 501(c)(3) public charity.
 
 - Address: 7700 S. Stony Island Ave., Chicago, IL 60649
-- Other work: Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festival, and is a member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council.
+- Other work: Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festival.
 
 ## Officers
 
@@ -53,7 +53,7 @@ When the vote is held, we will post here:
 
 ## Why a board vote matters
 
-A policy written on a website is a promise. A policy adopted by the board is an official rule of the organization, recorded in its minutes, which the board can hold leadership to. That is why "a board vote adopting these policies" is item 11 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).
+A policy written on a website is a promise. A policy adopted by the board is an official rule of the organization, recorded in its minutes, which the board can hold leadership to. That is why "a board vote adopting these policies" is item 10 on the [Launch Readiness Checklist](/dj-lab/governance/index.html).
 
 ## Sources
 

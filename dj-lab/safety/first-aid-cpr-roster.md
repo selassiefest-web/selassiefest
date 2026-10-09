@@ -7,7 +7,7 @@ description: The Rainbow DJ Lab's requirement for pediatric first aid/CPR/AED ce
 
 **No one is listed yet, because no one is hired yet.** The Rainbow DJ Lab is proposed. This page explains the requirement and what will be posted. The roster stays empty until each adult has passed screening and their certification has been checked.
 
-Having pediatric first aid/CPR/AED certification for at least one adult per class is item 6 on the [launch checklist](/dj-lab/governance/index.html). No class runs until every item is checked.
+Having pediatric first aid/CPR/AED certification for at least one adult per class is item 5 on the [launch checklist](/dj-lab/governance/index.html). No class runs until every item is checked.
 
 These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
 

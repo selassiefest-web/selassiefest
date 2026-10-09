@@ -7,7 +7,7 @@ description: The complete guide for Rainbow DJ Lab families, covering what to br
 
 This handbook tells you how a Rainbow DJ Lab class works for your family, from the first day to the last. Each section is short, and links to the full policy if you want the details.
 
-> **Status: Proposed. The Lab is not running yet.** The Chicago Park District has not approved or permitted the program, the Rainbow Beach Park Advisory Council vote is pending, no class dates are set, and no staff are hired. The policies here are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. See the [launch checklist](/dj-lab/governance/index.html).
+> **Status: Proposed. The Lab is not running yet.** The Chicago Park District has not approved or permitted the program, no class dates are set, and no staff are hired. The policies here are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. See the [launch checklist](/dj-lab/governance/index.html).
 
 **Questions about anything here?** Contact Stephen Henry, President of Ras Tafari Inc.: 414-909-3279 or stephen@selassiefest.com.
 
