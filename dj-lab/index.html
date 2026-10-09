@@ -662,13 +662,26 @@ function TOTAL(){ var b=blocks(); return b[b.length-1].b*60; }
 function unit(){ return fast() ? (W[(live.ws||1)-1]||W[0]) : (S[(live.session||1)-1]||S[0]); }
 function uk(){ return (fast()?"w":"s")+(fast()?live.ws:live.session); }
 function unitLabel(){ return fast() ? "Workshop "+live.ws+" of 6" : "Session "+live.session+" of 14"; }
-function liveT(){ var t = live.base + (live.running ? (Date.now()-live.markAt)/1000 : 0); return Math.min(TOTAL(), Math.max(0,t)); }
+// Class time runs on the server's clock, not the device's: every poll
+// returns the server time, and the round trip gives this device's offset
+// (NTP-style; the fastest recent round trip wins, so one slow request
+// can't skew it). Coaches stamp markAt in server time; every screen counts
+// from the same instant regardless of how wrong its own clock is.
+var CLOCK_OFFSET = 0, bestRtt = Infinity;
+function sNow(){ return Date.now() + CLOCK_OFFSET; }
+function syncClock(t0, t1, serverNow){
+  if(!serverNow) return;
+  var rtt = t1 - t0;
+  bestRtt = Math.min(bestRtt * 1.02 + 1, Infinity);
+  if(rtt <= bestRtt){ bestRtt = rtt; CLOCK_OFFSET = Number(serverNow) - (t0 + t1) / 2; }
+}
+function liveT(){ var t = live.base + (live.running ? (sNow()-live.markAt)/1000 : 0); return Math.min(TOTAL(), Math.max(0,t)); }
 function shownT(){ return previewT!=null ? Math.min(previewT,TOTAL()) : liveT(); }
 function blockAt(t){ var bs=blocks(), m=t/60; for(var i=0;i<bs.length;i++){ if(m < bs[i].b) return i; } return bs.length-1; }
 function stateName(){ var t=liveT(); if(t>=TOTAL()) return "done"; if(live.running) return "live"; if(t>0) return "paused"; return "idle"; }
 function wallAt(minute){
   var st=stateName(); if(st!=="live") return null;
-  var d=new Date(Date.now()-liveT()*1000+minute*60000);
+  var d=new Date(sNow()-liveT()*1000+minute*60000);
   return d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
 }
 function roleFor(kid,t){
@@ -732,10 +745,10 @@ function saveCheckin(kidKey, patchFn, op, payload){
 function note(msg){ document.getElementById("coachGate").textContent=msg; }
 
 // ---------- coach actions ----------
-function setT(t){ t=Math.max(0,Math.min(TOTAL(),t)); saveLive({base:t, markAt:Date.now()}); }
+function setT(t){ t=Math.max(0,Math.min(TOTAL(),t)); saveLive({base:t, markAt:sNow()}); }
 function startPause(){
   var t=liveT(); if(t>=TOTAL()) return;
-  saveLive({running:!live.running, base:t, markAt:Date.now()});
+  saveLive({running:!live.running, base:t, markAt:sNow()});
 }
 function jumpBlock(dir){
   var bs=blocks(), t=liveT(), bi=blockAt(t), into=t-bs[bi].a*60, target;
@@ -1048,14 +1061,14 @@ $("cNext").addEventListener("click",function(){ jumpBlock(1); });
 $("cAdd").addEventListener("click",function(){ setT(liveT()-60); toast("One more minute added to this block."); });
 $("cReset").addEventListener("click",function(){
   var b=this;
-  if(b.dataset.armed){ delete b.dataset.armed; b.textContent="Reset"; saveLive({running:false, base:0, markAt:Date.now(), spot:null}); }
+  if(b.dataset.armed){ delete b.dataset.armed; b.textContent="Reset"; saveLive({running:false, base:0, markAt:sNow(), spot:null}); }
   else { b.dataset.armed="1"; b.textContent="Tap again to reset"; setTimeout(function(){ if(b.dataset.armed){ delete b.dataset.armed; b.textContent="Reset"; } },3000); }
 });
-$("cMode").addEventListener("change",function(){ previewT=null; saveLive({mode:this.value, running:false, base:0, markAt:Date.now(), spot:null}); });
-$("cSession").addEventListener("change",function(){ previewT=null; var n=Number(this.value); saveLive(fast()?{ws:n,running:false,base:0,markAt:Date.now(),spot:null}:{session:n,running:false,base:0,markAt:Date.now(),spot:null}); });
+$("cMode").addEventListener("change",function(){ previewT=null; saveLive({mode:this.value, running:false, base:0, markAt:sNow(), spot:null}); });
+$("cSession").addEventListener("change",function(){ previewT=null; var n=Number(this.value); saveLive(fast()?{ws:n,running:false,base:0,markAt:sNow(),spot:null}:{session:n,running:false,base:0,markAt:sNow(),spot:null}); });
 $("castSend").addEventListener("click",function(){
   var v=$("castIn").value.trim(); if(!v) return;
-  saveLive({msg:v, msgAt:Date.now(), feed:(live.feed||[]).concat([{text:v, at:Date.now()}]).slice(-20)}); $("castIn").value=""; toast("Sent to every screen.");
+  saveLive({msg:v, msgAt:sNow(), feed:(live.feed||[]).concat([{text:v, at:sNow()}]).slice(-20)}); $("castIn").value=""; toast("Sent to every screen.");
 });
 $("castIn").addEventListener("keydown",function(e){ if(e.key==="Enter") $("castSend").click(); });
 $("castClear").addEventListener("click",function(){ saveLive({msg:""}); });
@@ -1075,7 +1088,7 @@ $("roster").addEventListener("click",function(e){
 $("roster").addEventListener("change",function(e){
   var c=e.target; if(!c.dataset||!c.dataset.here) return;
   var k=c.dataset.here, kid=roster.kids[k]; if(!kid) return;
-  var here=Object.assign({},kid.here||{}); if(c.checked) here[uk()]=Date.now(); else delete here[uk()];
+  var here=Object.assign({},kid.here||{}); if(c.checked) here[uk()]=sNow(); else delete here[uk()];
   patchKid(k,{here:here});
 });
 $("coachStamps").addEventListener("change",function(e){
@@ -1114,7 +1127,7 @@ $("kidNextSave").addEventListener("click",function(){
 });
 $("logSave").addEventListener("click",function(){
   var tgt=logTarget(); if(!tgt){ $("logMsg").textContent="Pick a name or station first."; return; }
-  var e={pair:$("logPair").value.trim().slice(0,80), what:$("logWhat").value.trim().slice(0,120), fix:$("logFix").value.trim().slice(0,120), at:Date.now()};
+  var e={pair:$("logPair").value.trim().slice(0,80), what:$("logWhat").value.trim().slice(0,120), fix:$("logFix").value.trim().slice(0,120), at:sNow()};
   if(!e.pair&&!e.what){ $("logMsg").textContent="Write the song pair or what happened."; return; }
   saveCheckin(tgt.key,function(cur){ return {mixlog:(cur.mixlog||[]).concat([e]).slice(-10)}; },"append_mixlog",{pair:e.pair,what:e.what,fix:e.fix}).then(function(ok){ $("logMsg").textContent=ok?"Logged.":"Couldn’t save. Tell your coach."; });
   $("logPair").value=""; $("logWhat").value=""; $("logFix").value="";
@@ -1131,7 +1144,7 @@ window.addEventListener("hashchange",function(){ var h=location.hash.slice(1); i
 
 // ---------- demo data (only until the shared store connects) ----------
 function demoSeed(){
-  var now=Date.now();
+  var now=sNow();
   roster.kids={
     d1:{name:"Example: Jada M.",station:1,seat:0,stamps:{s1:[true,true,false]},here:{s1:now-1500000},glow:{s1:"Faded song 2 in right on the chorus. Ask her to show you!"}},
     d2:{name:"Example: Marcus T.",station:1,seat:1,stamps:{},here:{s1:now-1440000},glow:{}},
@@ -1163,15 +1176,17 @@ function applyState(d){
   if(d.unchanged) return;
   COHORT=d.cohort;
   var L=d.live||{};
-  live={mode:L.mode==="fast"?"fast":"course", session:L.session||1, ws:L.ws||1, running:!!L.running, base:Number(L.base)||0, markAt:Number(L.markAt)||Date.now(), msg:L.msg||"", msgAt:L.msgAt||0, feed:Array.isArray(L.feed)?L.feed:[], spot:L.spot||null};
+  live={mode:L.mode==="fast"?"fast":"course", session:L.session||1, ws:L.ws||1, running:!!L.running, base:Number(L.base)||0, markAt:Number(L.markAt)||sNow(), msg:L.msg||"", msgAt:L.msgAt||0, feed:Array.isArray(L.feed)?L.feed:[], spot:L.spot||null};
   var m={}; (d.kids||[]).forEach(function(k){ m[k.id]={name:k.name, station:k.station, seat:k.seat, stamps:k.stamps||{}, here:k.here||{}, glow:k.glow||{}, recap:!!k.recap}; });
   roster={kids:m}; checkins=d.checkins||{};
   renderData();
 }
-function poll(){ if(CODE) rpc("djlab_state",{p_code:CODE, p_since:VERSION}).then(applyState).catch(function(){}); }
+function poll(){ if(!CODE) return; var t0=Date.now(); rpc("djlab_state",{p_code:CODE, p_since:VERSION}).then(function(d){ syncClock(t0, Date.now(), d&&d.now); applyState(d); }).catch(function(){}); }
 function joinClass(code){
   code=String(code||"").trim().toUpperCase(); if(!code) return;
+  var t0=Date.now();
   rpc("djlab_state",{p_code:code, p_since:0}).then(function(d){
+    syncClock(t0, Date.now(), d&&d.now);
     if(!d || d.error){ toast("That class code isn't active. Check it with your coach."); return; }
     CODE=code; connected=true; VERSION=0; previewT=null; try{ localStorage.setItem("djlab-code", code); }catch(e){}
     roster={kids:{}}; checkins={}; ["pWho","kidWho","gKid"].forEach(function(id){ $(id)._h=""; });
@@ -1180,7 +1195,7 @@ function joinClass(code){
   }).catch(function(){ toast("Couldn't reach the class. Check your connection."); });
 }
 function leaveClass(){
-  CODE=null; COHORT=null; connected=false; VERSION=0; clearInterval(pollTimer);
+  CODE=null; COHORT=null; connected=false; VERSION=0; clearInterval(pollTimer); CLOCK_OFFSET=0; bestRtt=Infinity;
   try{ localStorage.removeItem("djlab-code"); }catch(e){}
   ["pWho","kidWho","gKid"].forEach(function(id){ $(id)._h=""; });
   demoSeed(); setCoach(coachSess);

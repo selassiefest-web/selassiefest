@@ -157,13 +157,14 @@ revoke all on function djlab_bump(uuid) from public, anon, authenticated;
 -- ---- reads ----
 create or replace function djlab_state(p_code text, p_since bigint default 0)
 returns jsonb language plpgsql security definer set search_path = public stable as $$
-declare c djlab_cohorts;
+declare c djlab_cohorts; v_now bigint := (extract(epoch from clock_timestamp()) * 1000)::bigint;  -- server clock for client time sync
 begin
   select * into c from djlab_cohorts where code = upper(trim(p_code)) and not archived;
   if c.id is null then return jsonb_build_object('error','unknown_code'); end if;
-  if c.version <= coalesce(p_since,0) then return jsonb_build_object('version', c.version, 'unchanged', true); end if;
+  if c.version <= coalesce(p_since,0) then return jsonb_build_object('version', c.version, 'unchanged', true, 'now', v_now); end if;
   return jsonb_build_object(
     'version', c.version,
+    'now', v_now,
     'cohort', jsonb_build_object('id', c.id, 'name', c.name),
     'live', c.live,
     'kids', coalesce((select jsonb_agg(jsonb_build_object('id',k.id,'name',k.name,'station',k.station,'seat',k.seat,
