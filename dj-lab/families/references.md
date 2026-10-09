@@ -16,14 +16,16 @@ A careful parent should be able to check us out with people who aren't us. We ta
 - An Illinois not-for-profit corporation and 501(c)(3) public charity.
 - Address: 7700 S. Stony Island Ave., Chicago, IL 60649.
 - Officers: Stephen Henry, President (Lab lead and family contact); Paul Kelly, Vice President and Treasurer; Albert Harris, Corporate Secretary.
-- Produces SelassieFest, Chicago's roots reggae and cultural festival.
-- A member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council.
+- Produces SelassieFest, Chicago's roots reggae and cultural festival. SelassieFest makes its own decisions about its lineup.
+- No officer, director or staff member is paid for work on the Lab. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+- A member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council. Ras Tafari Inc. is recused from that council's vote on the Lab.
 
 ## References that will be available
 
 **On request, once agreements are in place**, we expect to be able to put you in touch with:
 
 - **The park advisory council.** Someone from the Rainbow Beach Park Advisory Council, once it has voted on the program.
+- **The Chicago Park District.** The Rainbow Beach Park office, (312) 745-1479, is also where any concern about an adult at the Lab goes.
 - **Partner organizations.** Organizations that sign agreements to work with the Lab or with Full Spectrum at Rainbow Beach.
 - **Community references** who know Ras Tafari Inc.'s work.
 - **After the first season:** Lab families who have agreed to talk with prospective families.
@@ -32,7 +34,7 @@ We'll update this page as references agree to be contacted.
 
 ## What we can't share
 
-- **Staff screening references.** Every adult who works with children gives references as part of screening. Those are confidential and aren't shared.
+- **Staff screening references.** Every adult who works with children gives references as part of hiring. Those are confidential and aren't shared. Background checks are run by the Chicago Park District under its rules, and their results aren't shared either.
 - **Other families' contact details**, unless that family has agreed.
 
 ## Check us yourself

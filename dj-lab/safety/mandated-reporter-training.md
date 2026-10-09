@@ -18,7 +18,7 @@ Under the Illinois Abused and Neglected Child Reporting Act (325 ILCS 5/4), pers
 1. Every adult completes the **Illinois DCFS mandated reporter training** (the free online course from DCFS) **before working with children**.
 2. They save the completion certificate and give a copy to the Lab lead.
 3. The Lab lead records the completion date in the screening file.
-4. Training is renewed every 2 years, with each adult's re-screening. Illinois law also requires mandated reporters to repeat the training on a regular cycle; our 2-year cycle is meant to be at least as frequent.
+4. Training is renewed every 2 years. Illinois law also requires mandated reporters to repeat the training on a regular cycle; our 2-year cycle is meant to be at least as frequent.
 5. At the start of each season, the team reviews this page and walks through one scenario together.
 
 ## What a mandated reporter must do

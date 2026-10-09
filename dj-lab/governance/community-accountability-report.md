@@ -68,20 +68,22 @@ What happened and what we did, in general terms: _[text]_
 
 Summary of themes and outcomes, without names: _[text]_
 Whistleblower reports (count and outcome): _[text]_
+Concerns about adults passed to the Chicago Park District (count, and whether each went the same day): _[text]_
 
 ### 5. Screening completion
 
 | Measure | Result |
 |---|---|
 | Adults who worked with children | |
-| Fingerprint background check complete before first class | _[ ] of [ ]_ |
-| Illinois Sex Offender Registry and NSOPW.gov checks complete | _[ ] of [ ]_ |
+| Chicago Park District background check complete (under CPD rules) before first class | _[ ] of [ ]_ |
 | References checked | _[ ] of [ ]_ |
 | Youth-protection training complete | _[ ] of [ ]_ |
 | DCFS mandated reporter training on file | _[ ] of [ ]_ |
-| Due for re-screening next season | |
+| Pediatric first aid/CPR/AED-certified adult at every class | _[yes / no]_ |
+| Due for CPD background-check renewal next season (on CPD's schedule) | |
 
 Any adult who worked before screening was complete (target: zero), and what we did about it: _[text]_
+Any time vendor staff supervised children or had unsupervised contact with them (target: zero): _[ ]_
 
 ### 6. Data requests
 
@@ -94,11 +96,38 @@ Any adult who worked before screening was complete (target: zero), and what we d
 | Requests from outside parties (e.g., law enforcement) | | | |
 
 Child activity data deleted within 90 days after the season ended: _[yes / no, date]_
-Any use of Lab data for SelassieFest (target: zero): _[ ]_
+Any use of Lab data for SelassieFest beyond an audience-vote winner's first name, last initial, performance details and guardian consent (target: zero): _[ ]_
+Any participant data given to Q-Ality Sound, or photos or recordings made by it (target: zero): _[ ]_
 
 ### 7. Money
 
 Season budget vs. actual spending, by source and category. See [Financial transparency](/dj-lab/governance/financial-transparency.html). _[table]_
+
+Payments to Ras Tafari Inc. officers, directors or staff for Lab work (target: none; reimbursed expenses listed separately): _[ ]_
+Payments to or donations from Q-Ality Sound, and the board's sole-source memo date: _[ ]_
+Quarterly board reviews of Lab payments held: _[ ] of 4_
+
+### 7a. Conflicts of interest: disclosures and recusals
+
+A summary, as the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) requires.
+
+| Measure | Result |
+|---|---|
+| Covered persons with a current disclosure form on file | _[ ] of [ ]_ |
+| Disclosures reporting a possible conflict | _[ ]_ |
+| Recusals recorded (meeting or decision, and who stepped aside) | _[list, without private details]_ |
+| Ras Tafari Inc.'s recusal from the Rainbow Beach Park Advisory Council vote on the Lab | _[recorded / date]_ |
+| Gifts or hospitality over $50 offered by a vendor or sponsor, and reported within 14 days | _[ ]_ |
+| Conflict-of-interest concerns received, and outcome | _[ ]_ |
+
+### 7b. Fair selection
+
+| Measure | Result |
+|---|---|
+| Graduation criteria published before the first class | _[date]_ |
+| Children who met the criteria and graduated | _[ ] of [ ]_ |
+| Any criterion waived or added (target: zero) | _[ ]_ |
+| SelassieFest audience votes held, who counted them, and whether guardian consent was on file before each vote was announced | _[text]_ |
 
 ### 8. What we changed
 
@@ -114,4 +143,4 @@ _[The reviewer's own words, unedited.]_
 
 ### 10. Contact
 
-Questions about this report: Stephen Henry, President, 414-909-3279, stephen@selassiefest.com. Concerns about leadership can go to the other officers or the independent reviewer; see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
+Questions about this report: Stephen Henry, President, 414-909-3279, stephen@selassiefest.com. Concerns about any adult go to the Chicago Park District, Rainbow Beach Park office, (312) 745-1479. Other concerns about leadership can go to the other officers or the independent reviewer; see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).

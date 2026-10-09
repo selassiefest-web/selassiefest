@@ -25,7 +25,7 @@ SECTIONS = [
     ("performing", "Performing", ["index", "pathway", "opt-out", "event-day-supervision", "sound-crowd-exposure", "transportation", "stage-freeze-protocol", "graduation-guarantee"]),
     ("kids", "For kids", ["index", "first-day", "rules-for-me", "if-you-feel-unsafe", "data-mistakes", "bathroom-and-buddy", "who-to-talk-to", "promises-to-you"]),
     ("journey", "The journey", ["index", "before-day-one", "week-1", "week-4", "week-8", "graduation", "after"]),
-    ("governance", "Governance", ["index", "board", "conflict-of-interest", "whistleblower", "financial-transparency", "mou-park-district", "park-district-permits", "data-sharing-agreement-selassiefest", "insurance-certificate", "501c3-letter", "advisory-council-vote", "enforcement-self-accountability", "annual-safety-review", "community-accountability-report"]),
+    ("governance", "Governance", ["index", "board", "conflict-of-interest", "whistleblower", "financial-transparency", "mou-park-district", "park-district-permits", "data-sharing-agreement-selassiefest", "qality-vendor-agreement", "sole-source-justification-qality", "equipment-use-agreement-qality", "insurance-certificate", "501c3-letter", "advisory-council-vote", "enforcement-self-accountability", "annual-safety-review", "community-accountability-report"]),
 ]
 FORMS_ORDER = ["index", "registration", "emergency-contacts", "medical-allergy", "authorized-pickup", "media-consent", "performance-consent", "digital-tracking-consent", "code-of-conduct"]
 SECTION_COLOR = {"about": "--r5", "enroll": "--r4", "safety": "--r1", "families": "--r2", "privacy": "--r6", "performing": "--r7", "kids": "--r3", "journey": "--r4", "governance": "--r6"}

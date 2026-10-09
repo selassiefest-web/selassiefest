@@ -27,11 +27,12 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is itself a
 
 - **Two screened adults, always.** No adult is ever alone with a child out of sight.
 - **No more than 6 children per screened adult** (12 children to 2 adults).
-- **Every adult is screened before their first class:** a fingerprint-based background check, the Illinois and national sex offender registries, references, and youth-protection training.
+- **Every adult passes a Chicago Park District background check before their first class,** run by the Park District under its own rules. That includes sound and stage crew who are on site.
+- **Concerns about any adult go to the Park District:** the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member. See [Report a concern](/dj-lab/safety/report-a-concern.html).
 - **Every adult completes Illinois DCFS mandated reporter training** before working with children.
 - **Your child goes home only with an adult on your authorized-pickup list**, after a photo ID check. Every release is logged.
 - **Restroom buddy system**, with an adult waiting at the entrance. Staff never enter a stall area with a child.
-- **Headphone volume is capped** on every laptop, and earplugs are free.
+- **Headphone volume is capped** on every laptop, and earplugs are free. The Lab's safety lead controls the main-speaker volume.
 - **Clean lyrics only.** Every song is a radio edit, checked when crates are built.
 
 Read the full picture in [Safety](/dj-lab/safety/index.html), starting with the [Youth protection policy](/dj-lab/safety/youth-protection-policy.html).
@@ -45,6 +46,8 @@ See the [Curriculum](/dj-lab/about/curriculum.html) for every session, or [The j
 ### 3. What does it cost?
 
 **Nothing.** There's no tuition, and all equipment is provided: controllers, laptops, headphones and earplugs. You don't need to buy anything.
+
+The DJ gear was donated to Ras Tafari Inc. and belongs to the Lab's programs. No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab. See [Financial transparency](/dj-lab/governance/financial-transparency.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ## Find what you need
 

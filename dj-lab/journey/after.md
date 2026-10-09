@@ -11,7 +11,9 @@ Graduation isn't the end. Kids who want to keep playing have a path:
 2. **Youth Showcase open call.** Graduates can answer the open call for the Youth Showcase.
 3. **Theme Clash semifinals and Finale.** The Theme Clash your child learned in session 11 becomes a competition.
 
-The Youth Showcase and the Theme Clash semifinals and Finale are proposed stage shows too, with no dates set. Every step is optional. See [Performing](/dj-lab/performing/index.html) and the [pathway](/dj-lab/performing/pathway.html).
+The Youth Showcase and the Theme Clash semifinals and Finale are proposed stage shows too, with no dates set. Every step is optional.
+
+**SelassieFest** is produced by Ras Tafari Inc., but it makes its own decisions about its lineup. A Lab child reaches the SelassieFest stage **only by event audience vote**, counted by someone with no interest in the result, and only with your written consent given before the vote is announced. Ballots show first name and last initial only, and SelassieFest never receives Lab roster, contact or attendance data. Trainers never recommend or rank children for any of these steps. See [Performing](/dj-lab/performing/index.html) and the [pathway](/dj-lab/performing/pathway.html).
 
 ## Plans for public events
 

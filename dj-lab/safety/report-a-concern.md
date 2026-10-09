@@ -19,18 +19,31 @@ These are policies Ras Tafari Inc. commits to; formal board adoption is a launch
 - You don't need proof. Reasonable suspicion is enough. DCFS decides what happens next.
 - Our staff are mandated reporters and will call the hotline themselves too ([Mandated Reporter Training](/dj-lab/safety/mandated-reporter-training.html)). Your call doesn't replace theirs, and theirs doesn't replace yours.
 
+## If your concern is about an adult
+
+**Concerns about any adult at the Lab go to the Chicago Park District (CPD).** That includes coaches, mentors, guest DJs, Ras Tafari Inc. officers, Q-Ality Sound's sound and stage crew, and volunteers. Contact the Chicago Park District: the **Rainbow Beach Park office, (312) 745-1479**, or any Park District staff member.
+
+- CPD runs background checks for adults who work with children at the park, under its own rules, and it receives complaints about adults.
+- If you tell us instead, Ras Tafari Inc. **passes it to CPD** and cooperates fully. We don't investigate in place of CPD.
+- Suspected abuse or neglect still goes **straight to DCFS** (above), and immediate danger to **911**.
+
+## If your concern is about a conflict of interest
+
+If you think someone is breaking the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) (for example, a trainer promoting their business to students, a vendor getting special treatment, or someone influencing who performs), tell a Ras Tafari Inc. director with no stake in the Lab, or tell CPD. That director will be named in the policy once the board appoints one; until then, use CPD or the officers' mailing address below.
+
 ## Other ways to raise a concern
 
 | Way | How | Best for |
 |---|---|---|
+| **Chicago Park District** | Rainbow Beach Park office: **(312) 745-1479**, or any Park District staff member | Any concern about an adult |
 | **In person** | Tell the lead adult at sign-in or pickup, or ask to speak with Stephen Henry | Something you saw in class; a quick question |
-| **Phone** | Stephen Henry, President, Ras Tafari Inc.: **414-909-3279** | Anything urgent that isn't an emergency |
+| **Phone** | Stephen Henry, President, Ras Tafari Inc.: **414-909-3279** | Program questions and anything urgent that isn't an emergency |
 | **Email** | **stephen@selassiefest.com** | Anything you'd like in writing |
 | **Mail** | Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649 | A formal written complaint |
 | **Anonymous form** | **Coming before launch.** It doesn't exist yet. Until it does, you can mail an unsigned letter to the address above | When you don't want to give your name |
 | **Poison emergency** | Illinois Poison Center: **1-800-222-1222** | A child swallowed or touched something harmful |
 
-**If your concern is about Stephen Henry,** you can write to the other officers of Ras Tafari Inc., Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary), at the mailing address above, or go straight to DCFS or 911. A direct contact route for the board officers will be posted before launch.
+**If your concern is about Stephen Henry's conduct with children,** it goes to CPD like any concern about an adult. For other concerns about him, you can write to the other officers of Ras Tafari Inc., Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary), at the mailing address above, or go straight to DCFS or 911. A direct contact route for the board officers will be posted before launch.
 
 ## Kids can report too
 
@@ -38,10 +51,11 @@ Children are told at the first session, and on the [kids' pages](/dj-lab/kids/),
 
 ## What happens after you report to us
 
-1. **Safety first.** If a child may be at risk, we act right away: separate people, call 911 or the DCFS hotline as required, and remove an adult from contact with children while it's looked at ([Enforcement](/dj-lab/safety/enforcement.html)).
-2. **Acknowledge.** We confirm we received your concern within 2 business days (sooner if urgent).
-3. **Look into it** following the [Grievance Procedure](/dj-lab/safety/grievance-procedure.html), unless DCFS or the police are investigating. In that case, we cooperate with them and don't run our own interviews of children.
-4. **Tell you what we can.** You'll hear the outcome and any changes, within the limits of other children's privacy and any outside investigation.
+1. **Safety first.** If a child may be at risk, we act right away: separate people, call 911 or the DCFS hotline as required, and keep an adult away from children while it's looked at ([Enforcement](/dj-lab/safety/enforcement.html)).
+2. **Pass concerns about adults to CPD.** Any concern about an adult goes to the Chicago Park District the same day, and we cooperate fully with CPD. We don't run our own investigation in its place.
+3. **Acknowledge.** We confirm we received your concern within 2 business days (sooner if urgent).
+4. **Look into program concerns** (not concerns about an adult) following the [Grievance Procedure](/dj-lab/safety/grievance-procedure.html). If CPD, DCFS or the police are investigating, we cooperate with them and don't run our own interviews of children.
+5. **Tell you what we can.** You'll hear the outcome and any changes, within the limits of other children's privacy and any outside investigation.
 
 ## No retaliation
 
@@ -49,11 +63,12 @@ No one, whether a child, parent, staff member, volunteer or neighbor, will be pu
 
 ## Privacy
 
-We share what you tell us only with the people who need it to keep children safe, and with DCFS or the police when required. We don't name you to the person you reported unless the law requires it.
+We share what you tell us only with the people who need it to keep children safe, with CPD for any concern about an adult, and with DCFS or the police when required. We don't name you to the person you reported unless the law requires it.
 
 ## Sources
 
 - Illinois DCFS, Child Abuse Hotline and how to report: https://dcfs.illinois.gov
 - Illinois Abused and Neglected Child Reporting Act, 325 ILCS 5: https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=1460&ChapterID=32
 - Illinois Poison Center: https://illinoispoisoncenter.org
+- Chicago Park District, Rainbow Beach Park: https://www.chicagoparkdistrict.com
 - U.S. Center for SafeSport, Minor Athlete Abuse Prevention Policies: https://uscenterforsafesport.org

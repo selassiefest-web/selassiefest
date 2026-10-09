@@ -19,7 +19,17 @@ The Lab is run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation an
 | Paul Kelly | Vice President and Treasurer |
 | Albert Harris | Corporate Secretary |
 
-Ras Tafari Inc. also produces SelassieFest, Chicago's roots reggae and cultural festival. It is a member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council. No coaches or other staff have been hired yet. See [Instructors](/dj-lab/about/instructors.html) for how they will be chosen.
+Ras Tafari Inc. also produces SelassieFest, Chicago's roots reggae and cultural festival; SelassieFest makes its own decisions about its lineup. It is a member of several South Side park advisory councils, including the Rainbow Beach Park Advisory Council. No coaches or other staff have been hired yet. See [Instructors](/dj-lab/about/instructors.html) for how they will be chosen.
+
+**How Ras Tafari Inc. keeps the Lab fair:**
+
+- No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.
+- DJ trainers are not members of Ras Tafari Inc. They train only, and never select or recommend children for anything.
+- The DJ gear was donated to Ras Tafari Inc. and is used only for its programs.
+- **Q-Ality Sound** provides sound, stage and lighting only. Its staff never supervise children, get no family data and take no photos or recordings.
+- Ras Tafari Inc. is recused from the Rainbow Beach PAC's vote on the Lab.
+
+See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) and the [Q-Ality Sound vendor agreement](/dj-lab/governance/qality-vendor-agreement.html).
 
 ## Where it will meet
 

@@ -118,7 +118,7 @@ Coaches see the whole class. These are stored privately and **never sent to a fa
 
 During class, a coach's **Safety now** panel shows allergy, EpiPen, medical and custody flags for the children checked in, guardian phone and emergency numbers, and links to the sign-out tool and emergency plans.
 
-Coaches sign in with a one-time link emailed to an address already on the Lab's coach list. Only adults who have completed screening will be added to that list.
+Coaches sign in with a one-time link emailed to an address already on the Lab's coach list. Only adults who have cleared the Chicago Park District's background check and completed the Lab's training will be added to that list.
 
 ### Stephen Henry
 
@@ -128,7 +128,9 @@ When an interest-list entry or a registration is submitted, Stephen Henry gets a
 
 We don't sell, rent, trade or share your family's information. We share it only:
 
-- with the [service providers](/dj-lab/privacy/third-party-vendors.html) that run the app and send email, to do that job
+- with the [service providers](/dj-lab/privacy/third-party-vendors.html) that run the app and send email, to do that job (our on-site sound, stage and lighting vendor, Q-Ality Sound, gets **no** family or child data and makes no recordings)
+- with the Chicago Park District, only what it needs, when a concern about an adult is reported (the Park District receives those concerns)
+- with SelassieFest, **only if your child wins an event audience vote and you gave written consent first:** your child's first name and last initial, the performance details and your consent. Never the roster, contact details or attendance. See the [data-sharing agreement](/dj-lab/governance/data-sharing-agreement-selassiefest.html)
 - with emergency services (911, medical responders) when a child needs help
 - with the Illinois DCFS Hotline, police or other authorities when the law requires, including mandated reports of suspected abuse or neglect
 

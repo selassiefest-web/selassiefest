@@ -1,110 +1,169 @@
 ---
-title: Conflict of Interest Policy
-description: The proposed conflict of interest policy for Ras Tafari Inc., covering the Rainbow DJ Lab.
+title: Conflict of interest policy
+description: How the Rainbow DJ Lab keeps decisions about children, money, vendors and stage time free of conflicts of interest, and our own disclosure.
 ---
 
-# Conflict of Interest Policy
-
-**Status: Proposed, for adoption by the Ras Tafari Inc. board.** It has not been adopted yet. Board adoption is required before the first class.
-
-This policy follows standard nonprofit practice. It is modeled on the questions the IRS asks on Form 990, Part VI, lines 12a–12c, about whether an organization has a written conflict of interest policy, requires annual disclosures, and monitors and enforces the policy.
+**Status: Draft for board and counsel review (version 1).** Ras Tafari Inc. commits to this policy; formal board adoption, with every covered person's disclosure on file, is on the [launch checklist](/dj-lab/governance/index.html).
 
 ## Our disclosure
 
-We want families and the Rainbow Beach Park Advisory Council to see plainly where Ras Tafari Inc. stands.
+- **"Ras Tafari Inc. Consultants"** is the name Ras Tafari Inc. uses for its proposal work. It is not a separate company.
+- **Ras Tafari Inc. wrote the Full Spectrum proposal, would run the Lab, and is a member of the Rainbow Beach Park Advisory Council** that is asked to present it. Ras Tafari Inc. and its representatives are **recused from the council's vote on the Lab** and from any Chicago Park District decision about it, and say so in writing (Appendix C).
+- **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.**
+- **Ras Tafari Inc. also produces SelassieFest.** SelassieFest makes its own decisions about its lineup, and Lab performers reach SelassieFest only by **audience vote**, counted by someone with no interest in the result (section 9).
+- **Q-Ality Sound** provides sound, stage and lighting only, chosen as a documented sole source (section 7).
 
-- **"Ras Tafari Inc. Consultants"** is the name Ras Tafari Inc. uses for its proposal work. It is **not** a separate company.
-- **Ras Tafari Inc. wrote the proposal** for Full Spectrum at Rainbow Beach, including the Rainbow DJ Lab.
-- **Ras Tafari Inc. would produce the program** if it is approved.
-- **Ras Tafari Inc. is a member of the Rainbow Beach Park Advisory Council (PAC)**, the council being asked to present the program.
-- **Our proposed commitment:** Ras Tafari Inc.'s representative will disclose this at the PAC and **abstain from the PAC vote** on the program.
-- **Any payment to Ras Tafari Inc. or its officers** will appear in each program budget. See [financial transparency](/dj-lab/governance/financial-transparency.html).
+## 1. Purpose
 
-This disclosure is item 16 on the [launch checklist](/dj-lab/governance/index.html). It is not yet complete.
+This policy keeps the Rainbow DJ Lab (the "Lab") free of conflicts of interest, and of the appearance of them. The Lab is a free youth DJ program at Rainbow Beach Park, run in cooperation with the Chicago Park District (CPD). Families, CPD, funders and the Rainbow Beach Park Advisory Council should be able to see that decisions about children, money, vendors and stage time are made fairly and by people with nothing to gain.
 
----
+## 2. How the Lab is set up
 
-## Proposed policy text
+This policy is written for the following arrangement. If any of it changes, the board reviews this policy before the change takes effect.
 
-### Article 1. Purpose
+- **No compensation.** No officer, director or staff member of Ras Tafari Inc. is paid for work on the Lab.
+- **Equipment.** The DJ equipment is owned by Ras Tafari Inc. through donations. It plugs into the sound system provided by Q-Ality Sound.
+- **Q-Ality Sound.** Q-Ality Sound provides sound, stage and lighting only. Its people do nothing else for the Lab.
+- **DJ trainers.** Trainers are not members of Ras Tafari Inc. They train. They do not influence or recommend who performs, who graduates or who receives any opportunity.
+- **Background checks and complaints.** CPD runs background checks for adults who work with children. Day-to-day complaints about any adult go to CPD.
+- **SelassieFest.** SelassieFest is produced by Ras Tafari Inc. but makes its own decisions about its lineup, separate from the Lab. Lab participants are chosen to perform at SelassieFest by event audience vote only.
+- **Council vote.** Ras Tafari Inc. is recused from the advisory council's vote on the Lab.
 
-The purpose of this policy is to protect the interests of Ras Tafari Inc. (the "Corporation") when it is considering a transaction or arrangement that might benefit the private interest of an officer, director, committee member, staff member or volunteer leader. It supplements, and does not replace, any applicable state or federal law governing conflicts of interest for nonprofit and charitable organizations.
+## 3. Who is covered
 
-### Article 2. Definitions
+This policy applies to:
 
-1. **Interested Person.** Any director, officer, member of a committee with board-delegated powers, key staff member, or volunteer with authority over spending, hiring or program decisions, who has a direct or indirect Financial Interest.
-2. **Financial Interest.** A person has a Financial Interest if the person has, directly or indirectly, through business, investment or a Family Member:
-   - an ownership or investment interest in any entity with which the Corporation has a transaction or arrangement;
-   - a compensation arrangement with the Corporation or with any entity or individual with which the Corporation has a transaction or arrangement; or
-   - a potential ownership, investment or compensation arrangement with any entity or individual with which the Corporation is negotiating a transaction or arrangement.
+- Directors, officers and anyone at Ras Tafari Inc. who plans, runs or administers the Lab, including those who handle contracts, the website and registration, and its records;
+- Ras Tafari Inc. representatives who sit on the Rainbow Beach Park Advisory Council;
+- DJ trainers working in the Lab;
+- The owners and principals of Q-Ality Sound, as to their work for the Lab.
 
-   "Compensation" includes direct and indirect pay, and gifts or favors that are not insubstantial.
-3. **Family Member.** A spouse or domestic partner, parent, child, sibling, grandparent or grandchild, and the spouse or domestic partner of any of them.
-4. A Financial Interest is not necessarily a conflict of interest. Under Article 3, a person with a Financial Interest has a conflict only if the board or committee decides that one exists.
+## 4. What counts as a conflict
 
-### Article 3. Procedures
+A conflict exists when a covered person's own interest, or the interest of a relative, business partner or business they own or work for, could affect, or could reasonably look like it affects, a decision about the Lab. Examples:
 
-1. **Duty to disclose.** An Interested Person must disclose the existence of the Financial Interest, and all material facts, to the board or committee considering the transaction or arrangement, before it is considered.
-2. **Deciding whether a conflict exists.** After disclosure, the Interested Person leaves the meeting while the remaining disinterested members discuss and vote on whether a conflict of interest exists.
-3. **Addressing the conflict.**
-   - The Interested Person may present information, but then leaves the meeting during the discussion of, and the vote on, the transaction or arrangement.
-   - The chair may appoint a disinterested person or committee to investigate alternatives.
-   - After exercising due diligence, the board decides whether the Corporation can obtain an equally or more advantageous arrangement, with reasonable effort, from someone who would not give rise to a conflict.
-   - If not, the board decides by a majority vote of the disinterested members present whether the transaction is in the Corporation's best interest, for its own benefit, and fair and reasonable. It then decides whether to enter into it.
-4. **Violations.** If the board has reasonable cause to believe a person has failed to disclose an actual or possible conflict, it will tell the person and give them a chance to explain. If, after hearing the response and investigating as needed, the board finds a failure to disclose, it will take appropriate disciplinary and corrective action. This may include removal from office or from any role with the Lab.
+- **Financial:** payment, a fee, a discount, a loan, a job or any other benefit connected to the Lab.
+- **Family or close personal:** a spouse, partner, relative or close friend who stands to benefit from a Lab decision.
+- **Business:** an ownership, employment or advisory role at a vendor, sponsor, venue or competing program.
+- **Performance:** a covered person or their relative or business seeking stage time, a booking or an audience for their own work through the Lab.
+- **Organizational:** a benefit to Ras Tafari Inc. or another organization of which a covered person is a leader, such as promotion, fundraising or talent pipelines. Organizational benefit is allowed. It must be disclosed.
 
-### Article 4. Records of proceedings
+## 5. Disclosure
 
-The minutes of the board and of any committee will record:
+- Every covered person completes the disclosure form (Appendix A) before starting and every year after, within 30 days of the board's annual meeting.
+- Anyone whose situation changes updates their form within 14 days.
+- A covered person who is unsure whether something is a conflict discloses it and lets the board decide.
+- The board chair, or a director with no stake in the matter, keeps a register of all disclosures. The register is available to CPD, funders and the advisory council on request.
+- **If no conflict exists, the form says so.** A blank form is not accepted.
 
-- the names of persons who disclosed or were found to have a Financial Interest, the nature of the interest, any action taken to decide whether a conflict existed, and the board's decision;
-- the names of persons present for discussions and votes on the transaction, the content of the discussion including alternatives considered, and a record of the vote.
+## 6. Recusal
 
-### Article 5. Compensation
+- A covered person with a conflict on a matter leaves the discussion after answering questions, does not vote, and does not try to influence the outcome.
+- The minutes record the conflict, who recused, and the time they left and returned.
+- Ras Tafari Inc. and its representatives are recused from the advisory council's vote on the Lab and from any CPD decision about it, and say so in writing (Appendix C).
+- If recusal leaves too few decision-makers, the board adds a disinterested director or asks CPD or the advisory council to decide.
 
-1. A voting member of the board who receives compensation, directly or indirectly, from the Corporation for services may not vote on matters about that compensation.
-2. A voting member of any committee whose jurisdiction includes compensation matters, and who receives compensation from the Corporation, may not vote on matters about that compensation.
-3. Neither may provide information to the board or committee about compensation except when asked to.
+## 7. Q-Ality Sound
 
-### Article 6. Annual statements
+Q-Ality Sound was selected without competitive bidding because it has the equipment and skills the Lab needs, and because the donated DJ gear plugs into its system. A sole-source choice is acceptable when it is documented. To keep it that way:
 
-Each director, officer, committee member and key staff member will sign a statement each year affirming that they:
+- Before the first event, the board approves a written sole-source memo (Appendix B) by a vote of directors with no tie to Q-Ality Sound.
+- The memo records whether Q-Ality is paid, donating or both, the amount and source of any payment, how price reasonableness was checked, and any relationship between Q-Ality and anyone covered by this policy. "None" is a valid answer and must be written.
+- Q-Ality Sound's role stays limited to sound, stage and lighting. It does not take part in selecting performers, participants, trainers or other vendors.
+- The arrangement is re-reviewed every 24 months, whenever annual payments to Q-Ality for Lab-related events exceed an amount the board sets, and whenever a new program part is added. A re-review either renews the memo or opens the work to competing quotes.
+- Approval of the Lab does not make Q-Ality the permanent vendor for other programs or events.
 
-1. received a copy of this policy;
-2. read and understand it;
-3. agreed to comply with it;
-4. understand that the Corporation is charitable and, to keep its federal tax exemption, must engage primarily in activities that accomplish its exempt purposes.
+## 8. DJ trainers
 
-The statement also discloses the person's interests and those of their Family Members that could give rise to a conflict, including business holdings, other organizational roles, and relationships with vendors, sponsors and partners.
+- Trainers sign an agreement directly with the program that includes this policy.
+- **Trainers train only.** They do not select, recommend, rank or vouch for any child, performer or opportunity, and they do not sit on selection panels or count votes.
+- During a cohort and for 6 months after it ends, a trainer does not offer paid private lessons to enrolled students or book them for the trainer's own paid work, unless a parent starts the request in writing and the board has approved it.
+- Trainers do not promote their own music, products or businesses to students through the Lab.
+- Trainers disclose any paid work they receive from other Lab events or vendors.
 
-### Article 7. Periodic reviews
+## 9. Graduation, selection and voting
 
-The board will review, at least once a year, whether compensation arrangements and benefits are reasonable and result from arm's-length bargaining, and whether partnerships, joint ventures and arrangements with outside organizations further the Corporation's charitable purposes and do not result in private benefit or an excess benefit transaction.
+Graduation. Graduation, and the guaranteed Open Decks slot, depends on published criteria: attendance at a published number of sessions and completion of a published number of skill checks. A coach records the criteria as met or not met, and the program coordinator confirms them. No one uses discretion to add or waive a criterion.
 
-### Article 8. Use of outside experts
+Audience vote. Selection of Lab talent to perform at SelassieFest is by event audience vote only. To keep the vote fair:
 
-The board may use outside advisors for these reviews. Using them does not relieve the board of its responsibility to see that periodic reviews are done.
+- The votes are counted by a person or group with no interest in the result, such as CPD staff or an outside party named in advance.
+- Each person gets one vote per ballot, and the voting method is announced before voting opens.
+- **Performing at SelassieFest is optional.** A child performs only with written consent from a parent or guardian given before the vote is announced.
+- Public ballots show first name and last initial only. They show no photos, ages, schools or contact details.
+- The results, vote counts and counter's name are recorded and kept with the Lab records.
 
-### Article 9. Rules specific to the Rainbow DJ Lab
+## 10. Separation from SelassieFest
 
-These additional rules apply to the Lab:
+- SelassieFest makes its own decisions about its lineup, vendors and venue.
+- Lab roster, contact and attendance information is not shared with SelassieFest. SelassieFest receives only a winner's first name, last initial, performance details and the guardian's consent.
+- Anyone who serves in both the Lab and SelassieFest discloses it on Appendix A and recuses from any matter that involves both.
+- Public materials describe the Lab and SelassieFest as separate, and say how they are related.
 
-1. **Equipment and vendors.** Any purchase of Lab equipment, software, food, transport or services from a business connected to an Interested Person or a Family Member must be disclosed and handled under Article 3 before the purchase.
-2. **Hiring.** An Interested Person may not make, or vote on, a decision to hire, pay, screen or supervise a Family Member as a Lab coach, mentor or volunteer. Every Family Member goes through the same screening as every other adult.
-3. **SelassieFest.** Ras Tafari Inc. also produces SelassieFest. Any decision that moves money, staff time, equipment or opportunities between the Lab and SelassieFest is recorded in the minutes. Child and family data is never shared with SelassieFest (see the [data-sharing agreement](/dj-lab/governance/data-sharing-agreement-selassiefest.html)).
-4. **Sponsors.** A sponsor gets no say over which children enroll, which children perform, or any child's personal information. Any person with a Financial Interest in a sponsor discloses it.
-5. **Enrollment and opportunities.** Children of Interested Persons may enroll on the same terms as every other child. An Interested Person does not decide Spotlight, showcase or Open Decks opportunities for their own Family Member.
-6. **Advisory council.** Ras Tafari Inc. is a member of the Rainbow Beach Park Advisory Council. When the council considers the Lab, Ras Tafari Inc. representatives disclose the Corporation's interest and follow the council's rules for interested members.
-7. **Gifts.** No officer, coach or volunteer accepts a gift of more than nominal value from a Lab family, sponsor or vendor.
+## 11. Gifts and benefits
 
-### Article 10. Publication
+Covered persons do not accept gifts, favors or hospitality worth more than $50 in a year from a vendor, sponsor or anyone seeking a Lab decision. They report any larger offer to the board chair within 14 days. Donations of equipment to Ras Tafari Inc. are recorded as donations and are not gifts to an individual.
 
-Once adopted, this policy, its adoption date and the number of annual statements signed will be posted on this page each year.
+## 12. Handling money
 
----
+- No Ras Tafari Inc. officer, director or staff member is paid for the Lab. They may be reimbursed for documented, pre-approved expenses.
+- The person who selects a vendor is not the person who approves that vendor's invoice, and neither is the person who signs the payment.
+- Grant and sponsor funds are used only as the grant or sponsor agreement allows, and the board reviews a summary of Lab payments every quarter.
 
-## Sources
+## 13. Reporting and complaints
 
-- IRS, [Instructions for Form 990](https://www.irs.gov/instructions/i990), Part VI, Section B, lines 12a–12c. The instructions define a conflict of interest policy as one that "defines conflicts of interest, identifies the classes of individuals within the organization covered by the policy, facilitates disclosure of information that can help identify conflicts of interest, and specifies procedures to be followed in managing conflicts of interest." They also note that these policies "generally [aren't] required under the Code," but that the IRS considers them to generally improve tax compliance.
-- The structure of this policy follows the sample conflict of interest policy the IRS has published with the Form 1023 instructions. See [irs.gov](https://www.irs.gov/).
-- Illinois General Not For Profit Corporation Act of 1986 (805 ILCS 105), which includes rules on director conflicts of interest. See [ilga.gov](https://www.ilga.gov/).
+- Concerns about any adult working with children go to CPD. Anyone, including parents and children, can make them. Ras Tafari Inc. also passes along anything it receives.
+- Concerns that someone is breaking this policy go to a director with no stake in the Lab (named here once the board appoints one), or to CPD.
+- No one is penalized for reporting a concern in good faith.
+
+## 14. Enforcement, records and review
+
+The board decides how to respond to a breach, which can include removing a person from a role, ending an agreement or reporting the matter to CPD or a funder. The register, recusal records, the Q-Ality memo and vote records are kept for at least 7 years. The board reviews this policy every year and publishes a short summary of disclosures and recusals.
+
+## Appendix A: Annual disclosure form
+
+Name: __________  Role: __________  Date: __________
+
+Answer each question Yes or No. Explain every Yes on the back.
+
+- Do you or a relative receive or expect any payment or benefit connected to the Lab?
+- Do you or a relative own, work for or advise Q-Ality Sound, or any other Lab vendor or sponsor?
+- Do you or a relative have a business or personal relationship with Q-Ality Sound's owners or any trainer?
+- Are you, a relative or your business seeking stage time, bookings or an audience through the Lab?
+- Do you hold a role at SelassieFest, the advisory council or any other organization that deals with the Lab?
+- Have you received a gift or hospitality over $50 from a Lab vendor or sponsor this year?
+- Is there anything else that could look like a conflict?
+
+I have read the Rainbow DJ Lab Conflict of Interest Policy and the information above is complete and accurate.
+
+Signature: __________  Date: __________
+
+## Appendix B: Sole-source memo (Q-Ality Sound)
+
+| Item | Entry |
+|---|---|
+| Vendor | Q-Ality Sound |
+| Services | Sound, stage and lighting |
+| Events covered | [LIST] |
+| Why this vendor (skills, equipment, compatibility with donated DJ gear) | &nbsp; |
+| Payment | Paid / In-kind / Both |
+| Amount and funding source | &nbsp; |
+| How price reasonableness was checked (published rates, comparison, other) | &nbsp; |
+| Relationships between the vendor and anyone covered by this policy | None / [DESCRIBE] |
+| Approved by (directors with no tie to the vendor) | &nbsp; |
+| Date approved | &nbsp; |
+| Re-review date | &nbsp; |
+
+The full vendor terms are in the [Q-Ality Sound vendor and equipment agreement](/dj-lab/governance/qality-vendor-agreement.html).
+
+## Appendix C: Recusal record
+
+| Item | Entry |
+|---|---|
+| Meeting or decision | &nbsp; |
+| Date | &nbsp; |
+| Person or organization recused | &nbsp; |
+| Nature of the conflict | &nbsp; |
+| Time left and returned | &nbsp; |
+| Decision made by | &nbsp; |
+| Recorded by | &nbsp; |

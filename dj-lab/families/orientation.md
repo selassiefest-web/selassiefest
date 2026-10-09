@@ -20,7 +20,7 @@ Before the first class of each season, we'll hold a **family orientation**. It's
 
 ### 1. Meet the adults
 
-You'll meet the adults who will work with your child. Every one of them must finish screening before their first class: a fingerprint-based background check, the Illinois Sex Offender Registry and NSOPW.gov, references, youth-protection training, and Illinois DCFS mandated reporter training. No staff are hired yet, so we can't name them here.
+You'll meet the adults who will work with your child. Every one of them must finish screening before their first class: the Chicago Park District's background check (run by the Park District under its rules), references, youth-protection training, and Illinois DCFS mandated reporter training. You'll also hear who to call about any adult: the Chicago Park District, at the Rainbow Beach Park office, (312) 745-1479. No staff are hired yet, so we can't name them here.
 
 ### 2. Try the gear
 

@@ -16,7 +16,8 @@ Every policy in this section is a commitment that takes effect **before the firs
 | **Two adults, always** | At least two screened adults are with the children at all times. No adult is ever alone with a child out of sight. |
 | **Observable and interruptible** | Any one-on-one moment (for example, a mentor reviewing a recording) happens where another person can see it and walk up to it. This standard is modeled on the U.S. Center for SafeSport's Minor Athlete Abuse Prevention Policies. |
 | **Ratio 1 to 6** | No more than 6 children per screened adult: 12 children need 2 adults. Little DJs (ages 5–7) also have their own grown-up in the room. |
-| **Every adult screened first** | Fingerprint background check, sex offender registry checks, references and youth-protection training, all done before a person's first class, and repeated every 2 years. |
+| **Every adult cleared first** | A Chicago Park District background check, run by the Park District under its rules, plus references and youth-protection training, all done before a person's first class. CPD's process covers every adult on site, including sound and stage crew. |
+| **Sound crew stay with the sound** | Q-Ality Sound provides sound, stage and lighting only. Its staff never supervise children, have no unsupervised contact with them, get no family data and take no photos or recordings. |
 | **Every adult is a mandated reporter** | Everyone completes Illinois DCFS mandated reporter training before working with children, and reports concerns directly. |
 | **First aid in every class** | At least one adult per class holds current pediatric first aid/CPR/AED certification (American Red Cross or American Heart Association). |
 | **Signed in, signed out** | A parent or guardian signs each child in. Children leave only with an adult on your authorized-pickup list, after a photo ID check, and every release is recorded. |
@@ -32,14 +33,15 @@ Every policy in this section is a commitment that takes effect **before the firs
 | Emergency (police, fire, ambulance) | **911** | Any immediate danger, serious injury or medical emergency |
 | Illinois DCFS Child Abuse Hotline | **1-800-25-ABUSE (1-800-252-2873)** | Any suspicion that a child is being abused or neglected |
 | Illinois Poison Center | **1-800-222-1222** | Possible poisoning or exposure |
-| Rainbow DJ Lab (Stephen Henry, President) | **414-909-3279** | Questions, absences, late pickup, concerns |
+| Rainbow Beach Park office (Chicago Park District) | **(312) 745-1479** | A concern about any adult at the Lab |
+| Rainbow DJ Lab (Stephen Henry, President) | **414-909-3279** | Questions, absences, late pickup, other concerns |
 
 ## Every safety page
 
 ### People and screening
 - [Youth protection policy](/dj-lab/safety/youth-protection-policy.html): the core rules on abuse, grooming, boundaries, one-on-one time, messaging, gifts, photos, touch and transportation.
 - [How the policy is enforced](/dj-lab/safety/enforcement.html): who watches, spot checks, and what happens on a violation.
-- [Staff and volunteer screening](/dj-lab/safety/staff-screening.html)
+- [Staff and volunteer screening](/dj-lab/safety/staff-screening.html): Chicago Park District background checks plus Lab training
 - [Mandated reporter training](/dj-lab/safety/mandated-reporter-training.html)
 - [Substance-free policy](/dj-lab/safety/substance-free-policy.html)
 - [First aid and CPR roster](/dj-lab/safety/first-aid-cpr-roster.html)
@@ -75,13 +77,15 @@ Every policy in this section is a commitment that takes effect **before the firs
 - [Report a concern](/dj-lab/safety/report-a-concern.html)
 - [Grievance procedure](/dj-lab/safety/grievance-procedure.html)
 - [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html)
+- [Conflict of interest policy](/dj-lab/governance/conflict-of-interest.html)
 - [Privacy](/dj-lab/privacy/index.html)
 
 ## What you can always do
 
 1. Ask any question about safety at any time. Call or email Stephen Henry: 414-909-3279, stephen@selassiefest.com.
-2. Ask to see the dates each adult working with your child completed screening and training (dates, not the records themselves). See [Staff screening](/dj-lab/safety/staff-screening.html).
-3. Call 911 or the DCFS Hotline yourself. You never need our permission.
+2. Ask for confirmation that each adult working with your child cleared the Park District's background check, and the dates they completed Lab training (not the records themselves). See [Staff screening](/dj-lab/safety/staff-screening.html).
+3. Take a concern about any adult straight to the Chicago Park District at the Rainbow Beach Park office, (312) 745-1479.
+4. Call 911 or the DCFS Hotline yourself. You never need our permission.
 
 ## Sources
 

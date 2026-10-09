@@ -19,10 +19,14 @@ description: Who leads Ras Tafari Inc., the organization behind the Rainbow DJ L
 | Name | Office | Role in the Lab |
 |---|---|---|
 | Stephen Henry | President | Leads the Lab. He is the contact for parents and families. |
-| Paul Kelly | Vice President and Treasurer | Financial oversight. A second officer who can receive concerns about the President. |
+| Paul Kelly | Vice President and Treasurer | Financial oversight. A second officer who can receive concerns about the President (concerns about anyone's conduct with children go to the Chicago Park District). |
 | Albert Harris | Corporate Secretary | Keeps the corporation's records, including board minutes and adopted policies. |
 
-No coaches, staff or volunteers have been hired or named for the Lab yet. When they are, they will be screened before their first class (see [Staff screening](/dj-lab/safety/staff-screening.html)). We will not post their personal information.
+## No pay for officers, directors or staff
+
+**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** They may be reimbursed for documented, pre-approved expenses. DJ trainers, who are not members of Ras Tafari Inc., may be paid from the class budget. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) and [Financial transparency](/dj-lab/governance/financial-transparency.html).
+
+No coaches, staff or volunteers have been hired or named for the Lab yet. When they are, they must clear the Chicago Park District's background check, run under the Park District's rules, before their first class (see [Staff screening](/dj-lab/safety/staff-screening.html)). We will not post their personal information.
 
 ## Board of directors
 
@@ -34,7 +38,8 @@ The board must hold a formal vote to adopt the Lab's policies. Until it does, th
 
 - the safety policies in [Safety](/dj-lab/safety/index.html)
 - the [privacy policy](/dj-lab/privacy/index.html)
-- the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html)
+- the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), with every covered person's disclosure on file
+- the [Q-Ality Sound vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) and its [sole-source memo](/dj-lab/governance/sole-source-justification-qality.html), voted on only by directors with no tie to Q-Ality
 - the [whistleblower policy](/dj-lab/governance/whistleblower.html)
 - the [data-sharing agreement with SelassieFest](/dj-lab/governance/data-sharing-agreement-selassiefest.html)
 - the [enforcement and self-accountability commitments](/dj-lab/governance/enforcement-self-accountability.html)
@@ -43,7 +48,7 @@ When the vote is held, we will post here:
 
 - the date of the meeting
 - the list of policies adopted, with their versions
-- the vote result
+- the vote result, and any recusals
 - an excerpt of the minutes, signed by the Corporate Secretary
 
 ## Why a board vote matters

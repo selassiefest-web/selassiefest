@@ -15,7 +15,8 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch
 
 - At least **two screened adults** are with performing children at all times.
 - There are **no more than 6 children per screened adult**, the same ratio as class.
-- Every Lab adult completes the same screening before working with children: a fingerprint-based background check through an Illinois State Police–approved vendor, checks of the Illinois Sex Offender Registry and NSOPW.gov, references, youth-protection training and Illinois DCFS mandated reporter training.
+- Every Lab adult clears the same steps before working with children: the Chicago Park District's background check, run by the Park District under its rules, plus references, youth-protection training and Illinois DCFS mandated reporter training. See [Staff screening](/dj-lab/safety/staff-screening.html).
+- Sound and stage crew never count toward the ratio.
 
 ### A named Lab adult for your child
 
@@ -39,6 +40,14 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch
 
 - Children are never left alone backstage, in the performer area or near equipment.
 - Children do not go backstage with adults who are not Lab staff. That includes other performers, sound crew and event organizers.
+
+### Sound, stage and lighting crew
+
+- **Q-Ality Sound** provides sound, stage and lighting **only**, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html).
+- Q-Ality staff **never supervise children** on stage, backstage or during transitions, and never have unsupervised contact with them. Children are on stage only with a Lab adult present.
+- Q-Ality staff take **no photos or recordings** of children and get **no family or child data**.
+- **Ras Tafari Inc.'s safety lead has final authority** over volume, stage access, lighting and stopping a set. Q-Ality complies immediately, or the event pauses until it does. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
+- The Park District's background-check process applies to Q-Ality staff on site during program hours.
 - Performer-area restroom trips follow the [restroom supervision](/dj-lab/safety/restroom-supervision.html) rules: children go in pairs, and a Lab adult waits at the entrance.
 
 ### Guardians are welcome
@@ -87,4 +96,4 @@ See [Lakefront weather](/dj-lab/safety/lakefront-weather.html).
 
 - [Transportation](/dj-lab/performing/transportation.html)
 - [Sound and crowd exposure](/dj-lab/performing/sound-crowd-exposure.html)
-- [Report a concern](/dj-lab/safety/report-a-concern.html)
+- [Report a concern](/dj-lab/safety/report-a-concern.html): concerns about any adult go to the Chicago Park District, Rainbow Beach Park office, (312) 745-1479

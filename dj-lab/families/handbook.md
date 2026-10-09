@@ -147,18 +147,21 @@ We **never** use physical punishment or shaming, and we **never** withhold food,
 
 ## Safety summary
 
-- **Two adults, always.** At least two screened adults are present with children at all times. No adult is ever alone with a child out of sight. Any one-on-one moment must be observable and interruptible.
+- **Two adults, always.** At least two screened adults (cleared by the Chicago Park District's background check) are present with children at all times. No adult is ever alone with a child out of sight. Any one-on-one moment must be observable and interruptible.
 - **Ratio:** no more than 6 children per screened adult.
-- **Screening before the first class:** fingerprint-based background check through an Illinois State Police–approved vendor; the Illinois Sex Offender Registry and NSOPW.gov; references; youth-protection training. Re-screened every 2 years.
+- **Screening before the first class:** a Chicago Park District background check, run by the Park District under its own rules, for every adult who works with children (and for sound and stage crew on site); references; youth-protection training.
 - **Mandated reporters:** every staff member and volunteer completes Illinois DCFS mandated reporter training.
 - **First aid:** at least one adult per class holds current pediatric first aid/CPR/AED certification.
 - **Restrooms:** kids go in pairs, and an adult waits at the restroom entrance. Staff never enter a stall area with a child. Little DJs go with their own grown-up.
 - **Lost child:** a Code Adam–style plan. We alert the whole team, cover the exits, search, and call 911 if the child isn't found within 10 minutes. We call you at once.
-- **Hearing:** capped headphone volume, free earplugs, a main speaker checked with a sound meter, and kids kept out of the zone in front of the speakers.
+- **Hearing:** capped headphone volume, free earplugs, a main speaker checked with a sound meter, and kids kept out of the zone in front of the speakers. The Lab's safety lead has final say over the main-speaker volume.
+- **Sound crew:** Q-Ality Sound provides sound, stage and lighting only. Its staff never supervise children, never have unsupervised contact with them, get no family data and take no photos or recordings.
 
 None of this is in place yet. Screening, training and first-aid certification are all [launch requirements](/dj-lab/governance/index.html).
 
-To raise a worry: [report a concern](/dj-lab/safety/report-a-concern.html). To make a formal complaint: [grievance procedure](/dj-lab/safety/grievance-procedure.html).
+**A worry about any adult** goes to the Chicago Park District: the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member. Suspected abuse: DCFS Hotline, 1-800-25-ABUSE. Danger: 911.
+
+To raise any other worry: [report a concern](/dj-lab/safety/report-a-concern.html). To make a formal complaint: [grievance procedure](/dj-lab/safety/grievance-procedure.html).
 
 ## Health
 
@@ -201,7 +204,9 @@ Details: [photos and recordings](/dj-lab/privacy/photos-recordings.html).
 - **Spotlight** in class is always voluntary, and needs your performance consent.
 - **Session 14, the Rainbow Showcase,** is for families. You're invited.
 - **Graduates get an Open Decks slot at Rainbow Wednesdays**, the free summer DJ series. Rainbow Wednesdays is also proposed, so this applies when the series runs.
+- **Graduation uses published criteria:** attendance at a published number of sessions and a published number of skill checks, recorded as met or not met. The numbers will be published before the first class, and no one can waive them.
 - After that, the path continues: Open Decks → Youth Showcase open call → Theme Clash semifinals and Finale.
+- **SelassieFest**, which Ras Tafari Inc. produces, makes its own decisions about its lineup. Lab performers reach it only by event audience vote, counted by someone with no interest in the result, and only with your written consent.
 
 Details: [performing](/dj-lab/performing/).
 

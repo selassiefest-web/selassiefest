@@ -21,6 +21,16 @@ Rainbow DJ Lab is a small program, so we use a few established outside services 
 | **cdnjs** | Supplies icons used by some pages | Standard web-request information when the page loads. No family data | cdnjs is delivered over Cloudflare's network; see [cloudflare.com/privacypolicy](https://www.cloudflare.com/privacypolicy/) |
 | **jsDelivr** | Supplies the code library the class app uses to talk to the database | Standard web-request information when the page loads. No family data | [jsdelivr.com](https://www.jsdelivr.com/) |
 
+## Program vendor with no data access
+
+One vendor works at the Lab in person rather than running its technology:
+
+| Vendor | What it does for us | What data it touches |
+|---|---|---|
+| **Q-Ality Sound** | Sound, stage and lighting at Lab sessions and events, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) (a draft for board approval) | **None.** No names, rosters, contact details, medical information, check-ins, ratings or logs. **No photos, video, audio recordings or streams** of children, and no rights to any media the Lab arranges |
+
+Q-Ality Sound's staff never supervise children, never have unsupervised contact with them, and don't solicit families. See the [youth protection policy](/dj-lab/safety/youth-protection-policy.html).
+
 ## What "standard web-request information" means
 
 Whenever your phone or computer loads any web page, it tells the server delivering each file its IP address and basic browser details, so the file can be sent back. Our hosting, font, icon and code-library providers get that, the same as for any website. They don't get your child's name, anything typed into the app, or anything the class app shows.
@@ -36,6 +46,7 @@ Whenever your phone or computer loads any web page, it tells the server deliveri
 - **Only what's needed.** A vendor gets only the data required for its job.
 - **Locked-down database.** The database tables are closed to the public page. A family link gets only that family's own child, an in-room screen gets only the station-board fields while its room code is live, and private fields go only to a signed-in coach.
 - **Reviewing contracts before launch.** Under the federal COPPA Rule, we must take reasonable steps to release children's information only to providers that can keep it confidential and secure. Confirming each provider's data-protection terms is part of our launch work.
+- **Program vendors get nothing.** Vendors who work on site, like Q-Ality Sound, get no access to family or child data, and agree in writing not to photograph or record children.
 - **We'll tell you about changes.** If we add or replace a vendor that touches family data, we'll update this page and email registered families first.
 
 ## Questions

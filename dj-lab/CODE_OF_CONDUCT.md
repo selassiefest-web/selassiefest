@@ -18,7 +18,7 @@ This code applies to everyone who contributes to the Rainbow DJ Lab: people who 
 
 ## Reporting
 
-Report concerns to Stephen Henry, President, at stephen@selassiefest.com or 414-909-3279. Concerns about the President can go to the other officers. See the [whistleblower policy](https://selassiefest.com/dj-lab/governance/whistleblower.html). Good-faith reporters are protected from retaliation.
+Concerns about any adult's conduct with children go to the Chicago Park District: the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member. Report other concerns to Stephen Henry, President, at stephen@selassiefest.com or 414-909-3279. Concerns about the President can go to the other officers. Conflict-of-interest concerns follow the [conflict of interest policy](https://selassiefest.com/dj-lab/governance/conflict-of-interest.html). See the [whistleblower policy](https://selassiefest.com/dj-lab/governance/whistleblower.html). Good-faith reporters are protected from retaliation.
 
 ## Consequences
 

@@ -5,48 +5,53 @@ description: How the free Rainbow DJ Lab is paid for, what we will publish each 
 
 # Financial Transparency
 
-**Status: Commitment.** No Lab budget has been set yet. A budget will be published for each season before that season starts.
+**Status: Commitment.** The one-page class budget below is a planning budget. A final budget will be published for each season before that season starts.
 
 ## A one-page class budget is a launch requirement
 
-Here is the **one-page budget for the DJ classes** (item 15 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: instructor rates match the Rainbow Wednesdays budget, equipment prices are typical retail and will be re-quoted before purchase, and insurance and music-licensing quotes are still pending.
+Here is the **one-page budget for the DJ classes** (item 15 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: instructor rates match the Rainbow Wednesdays budget, the donated gear is valued at typical retail, and insurance, music-licensing and sound, stage and lighting amounts are still to be set.
+
+**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** They may be reimbursed for documented, pre-approved expenses. The instructors and the second adult are **paid DJ trainers who are not members of Ras Tafari Inc.**
 
 ### One cohort: up to 12 children, 14 weekly 90-minute sessions
 
 | Line | Basis | Cash | In-kind |
 |---|---|---:|---:|
-| Lead DJ instructor | 14 sessions × $200 | $2,800 | |
-| Second screened adult (two-adult rule) | 14 sessions × $100 | $1,400 | |
-| Rainbow Showcase extra staffing (session 14) | 1 × $200 | $200 | |
-| DJ controllers, 3 stations | 3 × about $300 | $900 | |
-| Laptops, 3 stations | sought from partners first; purchase only if not donated | up to $1,500 | or donated |
-| Volume-limited headphones | 12 × about $25 | $300 | |
+| Lead DJ instructor (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $200 | $2,800 | |
+| Second adult for the two-adult rule (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $100 | $1,400 | |
+| Rainbow Showcase extra staffing (session 14), paid trainer | 1 × $200 | $200 | |
+| DJ controllers, 3 stations | **Donated** to Ras Tafari Inc.; valued at about 3 × $300 | | about $900 |
+| Laptops, 3 stations | **Donated** to Ras Tafari Inc.; valued at about $1,500 | | about $1,500 |
+| Volume-limited headphones | **Donated** to Ras Tafari Inc.; valued at about 12 × $25 | | about $300 |
 | Earplugs, free to every child | | $50 | |
-| Main speaker and sound | Ras Tafari Inc. equipment | | $1,050 |
-| Background checks (fingerprint + registries) | 3 adults × about $50 | $150 | |
+| Q-Ality Sound: sound, stage and lighting | Paid, donated or both, per the board's [sole-source memo](/dj-lab/governance/sole-source-justification-qality.html) | amount to be set | amount to be set |
+| CPD background checks | Per CPD rules | per CPD rules | |
 | Pediatric first aid/CPR/AED certification | 2 adults × about $100 | $200 | |
 | Mandated reporter training | Illinois DCFS online course | $0 | |
 | Insurance share (general liability + abuse and molestation) | quote pending | $500 placeholder | |
 | Music public-performance licensing | quote pending, or park coverage | to be confirmed | |
 | Printing: forms, Passports, flyers in English and Spanish | | $150 | |
 | Spanish review by a native speaker | | $200 | |
-| Program coordination | Ras Tafari Inc. | | $1,500 |
-| **Total** | | **about $8,350, plus licensing** | **about $2,550** |
+| Program coordination | Ras Tafari Inc. officers, unpaid | | $1,500 |
+| **Total** | | **about $5,500, plus licensing, sound, stage and lighting, and any CPD check costs** | **about $4,200** |
 
-- **About $700 per child** for a 12-child, 14-week course. The gear (about $2,700) is reused, so later cohorts cost less.
+- **About $460 per child in cash** for a 12-child, 14-week course ($5,500 ÷ 12), before licensing, any payment to Q-Ality Sound and any CPD background-check costs. Counting the donated gear and unpaid coordination, the full value is about $9,700, or about $810 per child.
+- **The DJ gear is donated and owned by Ras Tafari Inc.** It's a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused, so later cohorts don't need it again.
 - **The spring fast track** (6 workshops × 2 hours) needs about 43% of the instructor cost and the same gear.
 - **No stipends in classes.** Stipends for young performers are paid at Rainbow Wednesdays, which has its own budget.
 - **Funding:** arts and youth grants, sponsors and Ras Tafari Inc. The class is free to families. No class starts until its funding is in place.
-- **Ras Tafari Inc.'s role:** its equipment and coordination are contributed in-kind. Any payment to Ras Tafari Inc. or its officers will be shown here.
+- **Ras Tafari Inc.'s role:** it owns the donated gear and its officers coordinate the Lab without pay. Any payment to Ras Tafari Inc., its officers or any vendor will be shown here.
 
-- instructors
-- gear and the lending library
+Every season's budget will show:
+
+- instructors (paid trainers who are not Ras Tafari Inc. members)
+- donated gear and the lending library
 - ear protection
-- background checks
+- any CPD background-check costs
 - the Lab's share of insurance
-- stipends, if any
+- sound, stage and lighting (Q-Ality Sound), paid or donated
 
-It will also show **any payment to Ras Tafari Inc. or its officers**, as our [conflict-of-interest disclosure](/dj-lab/governance/conflict-of-interest.html) commits. **No figures are posted yet.** Proposed figures are pending confirmation, and we won't publish numbers until they are confirmed.
+It will also show **any payment to Ras Tafari Inc., its officers or a vendor**, as our [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) commits. The figures above are proposed planning figures, not final.
 
 ## The Lab is free
 
@@ -71,7 +76,7 @@ Sponsors get recognition. They do **not** get any child's or family's informatio
 Before each season starts, we will post a season budget showing:
 
 1. **Expected income** by source type (grants, sponsors, Ras Tafari Inc.), naming each grant maker and sponsor.
-2. **Planned spending** by category, such as equipment, background checks and training, insurance, coach and mentor pay, supplies, and family communications.
+2. **Planned spending** by category, such as equipment, training, insurance, trainer pay, sound, stage and lighting, supplies, and family communications.
 
 After each season ends, we will post:
 
@@ -84,7 +89,10 @@ These reports will be part of the [community accountability report](/dj-lab/gove
 ## Who oversees the money
 
 - **Paul Kelly, Vice President and Treasurer,** oversees Lab finances.
-- Spending decisions involving a possible conflict follow the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+- **Separation of duties:** the person who selects a vendor doesn't approve its invoice, and neither of them signs the payment.
+- **The board reviews Lab payments every quarter.**
+- **Gifts:** no one covered by the policy accepts gifts or hospitality worth more than $50 a year from a vendor or sponsor, and any larger offer is reported within 14 days.
+- Spending decisions involving a possible conflict follow the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html). Q-Ality Sound's terms are approved only by directors with no tie to Q-Ality.
 - Concerns about misuse of funds can be raised under the [whistleblower policy](/dj-lab/governance/whistleblower.html).
 
 ## Your right to inspect our IRS filings

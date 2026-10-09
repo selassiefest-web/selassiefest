@@ -1,6 +1,6 @@
 ---
 title: Insurance Certificate
-description: The status of liability and abuse coverage for the Rainbow DJ Lab, which is required before the first class.
+description: The status of liability and abuse coverage for the Rainbow DJ Lab, and of Q-Ality Sound's own certificates, all required before the first class.
 ---
 
 # Insurance Certificate
@@ -29,6 +29,22 @@ When coverage is bound, we will post:
 - the renewal date.
 
 Policy numbers may be redacted from the posted copy. Park officials can request the full certificate from Stephen Henry.
+
+## Q-Ality Sound's certificates
+
+Q-Ality Sound provides sound, stage and lighting under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) (a draft for board approval). It carries **its own insurance** and names **Ras Tafari Inc. as additional insured**. Its certificates must be on file before the first session; that's item 19 on the [Launch Readiness Checklist](/dj-lab/governance/index.html). Ras Tafari Inc. also plans coverage for the donated DJ gear (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)).
+
+| Certificate | On file |
+|---|---|
+| Ras Tafari Inc. general liability (Chicago Park District as additional insured) | No |
+| Ras Tafari Inc. sexual abuse and molestation coverage | No |
+| Ras Tafari Inc. coverage for the donated DJ gear | No |
+| Q-Ality Sound general liability, naming Ras Tafari Inc. as additional insured | No |
+| Q-Ality Sound automobile liability (if vehicles are used) | No |
+| Q-Ality Sound workers' compensation | No |
+| Q-Ality Sound umbrella/excess | No |
+
+The limits Q-Ality must carry are set in the vendor agreement when the board approves it. If a Q-Ality certificate lapses, Q-Ality may not work the program until it is restored.
 
 ## If coverage lapses
 

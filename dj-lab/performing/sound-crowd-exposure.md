@@ -33,7 +33,7 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch
 
 | Moment | What we do |
 |---|---|
-| Before the event | We pass on the speaker-level plan and the no-go zone to the event's sound crew. |
+| Before the event | We pass on the speaker-level plan and the no-go zone to the sound crew (Q-Ality Sound at Lab events). The Lab's safety lead has final authority over volume and stage access; the crew complies at once, or the set pauses. See [Hearing safety](/dj-lab/safety/hearing-safety.html). |
 | Check-in | Earplugs are offered. The child's headphones are checked on a capped Lab laptop. |
 | Waiting to perform | Children wait in a quieter spot with their named Lab adult, away from the speakers. |
 | On stage | The DJ listens through capped headphones. The Lab adult watches for signs of discomfort, such as covering ears or wincing. |

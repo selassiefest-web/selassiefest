@@ -12,6 +12,9 @@ These are policies Ras Tafari Inc. commits to; formal board adoption is a launch
 - **A child in danger right now:** call **911**.
 - **Suspected abuse or neglect:** call the **DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873)**. You don't have to use this procedure first, or at all.
 
+- **A concern about any adult** (a coach, trainer, volunteer, officer or sound crew member): contact the Chicago Park District: the **Rainbow Beach Park office, (312) 745-1479**, or any Park District staff member. The Park District handles complaints about adults; Ras Tafari Inc. passes along anything it receives and cooperates fully, but doesn't investigate in place of the Park District.
+- **A conflict-of-interest concern:** a Ras Tafari Inc. director with no stake in the Lab (named in the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) once appointed), or the Park District.
+
 This procedure is for everything else: a decision you disagree with (such as a discipline step or a pause), a safety practice you think isn't being followed, how a concern was handled, treatment of your child, or anything about the program.
 
 ## Timeline at a glance
@@ -33,7 +36,7 @@ If more time is truly needed (for example, while DCFS or police investigate), we
 
 Tell us in person, by phone (Stephen Henry, 414-909-3279), by email (stephen@selassiefest.com), or by mail (Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649). Writing helps but isn't required. If you tell us by phone, we'll write it down and send it back so you can check it's right. See [Report a Concern](/dj-lab/safety/report-a-concern.html).
 
-**If the grievance is about Stephen Henry,** send it to the other board officers, Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary), at the mailing address. They handle steps 2–4, and Stephen Henry is not involved in deciding it. (A direct contact route for the officers will be posted before launch.)
+**If the grievance is about Stephen Henry** (other than his conduct with children, which goes to the Park District), send it to the other board officers, Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary), at the mailing address. They handle steps 2–4, and Stephen Henry is not involved in deciding it. (A direct contact route for the officers will be posted before launch.)
 
 ### 2. Acknowledgment (2 business days)
 
@@ -42,8 +45,8 @@ You get a reply confirming we received it, who is handling it, and when you'll h
 ### 3. Review
 
 - We talk with the people involved and any witnesses, and look at records (sign-in/out log, incident reports, class log).
-- If the grievance is about a staff member or volunteer and involves child safety, that person is kept away from children while it's reviewed ([Enforcement](/dj-lab/safety/enforcement.html)).
-- If DCFS or the police are involved, we cooperate and do not interview children ourselves.
+- If it turns out to be about an adult's conduct, we pass it to the Chicago Park District the same day and tell you we did. If it involves child safety, that person is kept away from children while CPD looks at it ([Enforcement](/dj-lab/safety/enforcement.html)).
+- If CPD, DCFS or the police are involved, we cooperate and do not interview children ourselves.
 - You can share anything you'd like us to consider, and bring a support person to any meeting.
 
 ### 4. Written response (10 business days)
@@ -70,7 +73,7 @@ You can go outside the Lab at any point, before, during or after this procedure:
 |---|---|
 | **911** | Immediate danger |
 | **Illinois DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873)** | Suspected child abuse or neglect |
-| **Chicago Park District** | Concerns about use of the park or fieldhouse (the Lab would operate on park property) |
+| **Chicago Park District:** Rainbow Beach Park office, (312) 745-1479, or any Park District staff | Any concern about an adult at the Lab, and concerns about use of the park or fieldhouse |
 | **Illinois Attorney General, Charitable Trust Bureau** | Concerns about how a charity is run |
 
 ## No retaliation

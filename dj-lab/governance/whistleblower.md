@@ -54,7 +54,8 @@ You may also report directly to outside authorities at any time, without telling
 - **Crimes:** the Chicago Police Department (911 in an emergency).
 - **Misuse of charitable assets:** the Illinois Attorney General's Charitable Trust Bureau.
 - **Federal tax-exempt status concerns:** the IRS, using Form 13909 (Tax-Exempt Organization Complaint (Referral) Form), available at irs.gov.
-- **Park safety concerns:** Chicago Park District staff at Rainbow Beach Park.
+- **Concerns about any adult at the Lab, and park safety concerns:** the Chicago Park District, Rainbow Beach Park office, (312) 745-1479, or any Park District staff member. The Park District receives complaints about adults; Ras Tafari Inc. passes along anything it receives and does not investigate in place of the Park District.
+- **Conflict-of-interest breaches:** a director with no stake in the Lab, as named in the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) once appointed, or the Chicago Park District.
 
 See also [Report a concern](/dj-lab/safety/report-a-concern.html) and the [grievance procedure](/dj-lab/safety/grievance-procedure.html).
 

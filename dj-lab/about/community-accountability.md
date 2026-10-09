@@ -25,7 +25,8 @@ The board is responsible for the organization. **A board vote adopting the Lab's
 
 - **Open door.** Parents and guardians are welcome to observe. See the [Open door policy](/dj-lab/families/open-door-policy.html).
 - **The launch checklist.** Every requirement and its status is posted on the [Governance](/dj-lab/governance/index.html) page. Nothing is marked done until it is.
-- **Coach screening dates.** Each coach's screening completion dates will be posted on [Meet the coach](/dj-lab/about/meet-the-coach.html).
+- **Coach screening dates.** Each coach's Chicago Park District background-check clearance and training completion dates will be posted on [Meet the coach](/dj-lab/about/meet-the-coach.html).
+- **Conflicts of interest.** Each year we publish a summary of disclosures and recusals under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 - **Feedback.** Tell us what's working and what isn't. See the [feedback loop](/dj-lab/families/feedback-loop.html) and the [mid-season check-in](/dj-lab/families/mid-season-checkin.html).
 - **Public reports.** We plan to publish an [annual safety review](/dj-lab/governance/annual-safety-review.html) and a [community accountability report](/dj-lab/governance/community-accountability-report.html), which share what happened in plain numbers without identifying any child.
 - **How we hold ourselves to our rules.** See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
@@ -33,6 +34,7 @@ The board is responsible for the organization. **A board vote adopting the Lab's
 ## If something is wrong
 
 - **For a safety concern about a child,** you never need to go through us first. Call 911 in an emergency, or the Illinois DCFS Hotline at 1-800-25-ABUSE (1-800-252-2873).
+- **For a concern about any adult,** contact the Chicago Park District: the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member.
 - **For anything else,** see [Report a concern](/dj-lab/safety/report-a-concern.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html). You can also contact Stephen Henry directly at 414-909-3279 or stephen@selassiefest.com.
 - **For concerns about leadership,** see the [Whistleblower policy](/dj-lab/governance/whistleblower.html).
 

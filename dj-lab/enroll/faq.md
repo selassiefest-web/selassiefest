@@ -9,10 +9,10 @@ description: Straight answers to the questions parents ask most about the Rainbo
 It's **proposed**. The curriculum is written and runs in our class app. The Chicago Park District has **not** approved or permitted the program yet, the Rainbow Beach Park Advisory Council vote is pending, no class dates are set, and no staff are hired. **No class runs until every item on our [launch checklist](/dj-lab/governance/index.html) is done.**
 
 ### 2. Who runs it?
-**Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago. Its President, **Stephen Henry**, leads the Lab and is your contact. The other officers are Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary). Ras Tafari Inc. also produces SelassieFest and is a member of the Rainbow Beach Park Advisory Council. See [about](/dj-lab/about/index.html).
+**Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago. Its President, **Stephen Henry**, leads the Lab and is your contact. The other officers are Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary). Ras Tafari Inc. also produces SelassieFest (which makes its own decisions about its lineup) and is a member of the Rainbow Beach Park Advisory Council; it is recused from that council's vote on the Lab. **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** See [about](/dj-lab/about/index.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ### 3. How much does it cost?
-**Nothing.** There's no tuition, and all equipment is provided.
+**Nothing.** There's no tuition, and all equipment is provided. The DJ gear was donated to Ras Tafari Inc. and is used only for its programs.
 
 ### 4. When are classes?
 **Dates are not set.** They'll be posted after the park approves the program. The full course is 14 weekly sessions of 90 minutes each, and there's also a spring fast track of 6 two-hour workshops. See [schedule](/dj-lab/enroll/schedule.html).
@@ -27,7 +27,7 @@ They're planned for **Rainbow Beach Park, 3111 E. 77th St.**: indoors at the fie
 **Junior DJs (ages 8–11).** Drop-off is allowed once you've signed an authorized-pickup list. Girls about 9–17 may also choose **Empress Decks**, a girls-only track taught by women DJs. Rainbow Beach Park staff welcome the girls' focus (girls' participation has long trailed boys' across the Park District); written confirmation will be part of the park agreement. Every group learns the same core curriculum, adapted by age group and challenge level.
 
 ### 8. Does my child need experience or equipment?
-No. We provide controllers (Hercules DJControl Inpulse 300 MK2), laptops, headphones and earplugs. The lights under the jog wheels help beginners learn to beatmatch.
+No. We provide controllers (Hercules DJControl Inpulse 300 MK2), laptops, headphones and earplugs. The DJ gear was donated to Ras Tafari Inc. The lights under the jog wheels help beginners learn to beatmatch.
 
 ## Safety
 
@@ -35,7 +35,10 @@ No. We provide controllers (Hercules DJControl Inpulse 300 MK2), laptops, headph
 At least **two screened adults at all times**, with **no more than 6 children per adult** and no more than 12 children in a class. No adult is ever alone with a child out of sight. Staff haven't been hired yet, so we can't name them. We will introduce them before the first class.
 
 ### 10. How are adults screened?
-Before their first class, every adult who works with children goes through a fingerprint-based criminal background check through an Illinois State Police–approved vendor, checks of the Illinois Sex Offender Registry and the national registry at NSOPW.gov, references, and youth-protection training. They're re-screened every 2 years. Every adult also completes Illinois DCFS mandated reporter training. **None of this is done yet, because no one is hired yet.** It's on the launch checklist.
+**The Chicago Park District runs background checks** for adults who work with children, under its own rules, and every adult must clear it before their first class. That includes sound and stage crew on site. Ras Tafari Inc. doesn't run a separate process of its own. On top of that, every adult gives references and completes youth-protection training and Illinois DCFS mandated reporter training. **None of this is done yet, because no one is hired yet.** It's on the launch checklist. See [staff screening](/dj-lab/safety/staff-screening.html).
+
+### 10a. Who do I tell if I'm worried about an adult?
+The **Chicago Park District**: the Rainbow Beach Park office, **(312) 745-1479**, or any Park District staff member. If you tell us instead, we pass it to the Park District and cooperate fully; we don't investigate in its place. Suspected abuse or neglect goes straight to the **DCFS Hotline, 1-800-25-ABUSE**, and immediate danger to **911**. See [report a concern](/dj-lab/safety/report-a-concern.html).
 
 ### 11. Is there someone trained in first aid?
 That's required. **At least one adult per class** will hold current pediatric first aid/CPR/AED certification from the American Red Cross or American Heart Association. This is a launch requirement and isn't done yet.
@@ -65,7 +68,7 @@ We follow your child's **Food Allergy & Anaphylaxis Emergency Care Plan** (the F
 We have a Code Adam–style lost-child plan: the whole team is alerted, the exits are covered, staff search, and we call 911 if the child isn't found within 10 minutes. You're called at once. If there's any incident, you're told **the same day by phone**, and a written report follows within 24 hours. Coaches log every incident in the class app, and each entry is emailed to Stephen Henry. See the [lost child plan](/dj-lab/safety/lost-child-plan.html).
 
 ### 20. Will loud music hurt my child's hearing?
-Headphone volume is **capped on every laptop**, earplugs are free, the main speaker level is checked with a sound meter, and children stay out of the zone right in front of the speakers. We also coach kids on healthy listening habits.
+Headphone volume is **capped on every laptop**, earplugs are free, the main speaker level is checked with a sound meter, and children stay out of the zone right in front of the speakers. The main speaker and stage come from **Q-Ality Sound**, but the Lab's safety lead has the final say on volume: Q-Ality turns it down at once, or the session pauses. Q-Ality's crew never supervise children, get no family data and take no photos or recordings. We also coach kids on healthy listening habits.
 
 ### 21. What music will they hear?
 **Clean lyrics only:** radio edits, checked when crates (music collections) are built.
@@ -82,7 +85,7 @@ No. **Spotlight is volunteers only.** Coaches never call on a child who didn't s
 There's never physical punishment or shaming, and we never withhold food, water or the restroom. The steps are: reminder, redirect, cool-down with an adult in view, parent call, and finally a pause from the program. See [withdrawing or pausing](/dj-lab/enroll/exit-withdrawal.html) and the [code of conduct](/dj-lab/enroll/forms/code-of-conduct.html).
 
 ### 25. Will my child perform in public?
-Only with your [performance consent](/dj-lab/enroll/forms/performance-consent.html) and your child's own choice. Graduates get a guaranteed Open Decks slot at Rainbow Wednesdays, our free summer DJ series. **That series is also proposed,** so the slot applies when Rainbow Wednesdays runs. See [performing](/dj-lab/performing/index.html).
+Only with your [performance consent](/dj-lab/enroll/forms/performance-consent.html) and your child's own choice. Graduates get a guaranteed Open Decks slot at Rainbow Wednesdays, our free summer DJ series. **That series is also proposed,** so the slot applies when Rainbow Wednesdays runs. Graduation uses published criteria (attendance at a published number of sessions and a published number of skill checks), with the numbers published before the first class. SelassieFest, which Ras Tafari Inc. produces, makes its own decisions about its lineup; Lab performers reach it only by event audience vote, and only with your written consent. See [performing](/dj-lab/performing/index.html).
 
 ## Privacy and technology
 
@@ -105,7 +108,7 @@ No. There are no ads, no tracking pixels, no biometrics and no location tracking
 No. Families provide transportation, and **staff never drive children in their personal vehicles.** See [transportation and parking](/dj-lab/enroll/transportation-parking.html).
 
 ### 30. What if we miss a class?
-There's no penalty. Just let us know. Your child catches up through Passport skills. See [attendance](/dj-lab/enroll/attendance-absence.html).
+There's no penalty. Just let us know. Your child catches up through Passport skills. Graduation does require attendance at a published number of sessions; the number will be published before the first class. See [attendance](/dj-lab/enroll/attendance-absence.html).
 
 ### 31. Can we quit?
 Yes, at any time, at no cost. See [withdrawing](/dj-lab/enroll/exit-withdrawal.html).

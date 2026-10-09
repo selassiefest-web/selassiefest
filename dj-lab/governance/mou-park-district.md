@@ -33,12 +33,12 @@ The Park District decides its own agreement terms and forms. The list below is w
 
 The Lab's safety commitments become terms of the agreement, including:
 
-- at least two screened adults present with children at all times, and no adult alone with a child out of sight;
+- at least two adults cleared by the Park District's background check present with children at all times, and no adult alone with a child out of sight;
 - no more than 6 children per screened adult;
 - sign-in and sign-out by a parent or guardian, with release only to adults on the authorized-pickup list after a photo ID check;
 - at least one adult per class holding current pediatric first aid/CPR/AED certification;
 - no alcohol, tobacco, vaping or cannabis at any Lab activity;
-- sound levels checked with a meter, and headphone volume capped;
+- sound levels checked with a meter, and headphone volume capped, with Ras Tafari Inc.'s safety lead holding final authority over volume, stage access and stopping a session;
 - an emergency action plan finalized after a site walk with park staff, with maps.
 
 ### 4. Insurance
@@ -49,9 +49,15 @@ The Lab's safety commitments become terms of the agreement, including:
 
 ### 5. Background checks
 
-- Every adult who works with children completes, before their first class: a fingerprint-based criminal background check through an Illinois State Police–approved vendor; checks of the Illinois Sex Offender Registry and NSOPW.gov; references; youth-protection training; and Illinois DCFS mandated reporter training.
-- Re-screening every 2 years.
-- Ras Tafari Inc. confirms in writing to the Park District that screening is complete, and meets any additional screening requirements the Park District sets.
+- **The Chicago Park District runs background checks** for every adult who works with children at the Lab, **under the Park District's rules**, including renewal. Ras Tafari Inc. does not substitute its own process.
+- The Park District's process also applies to vendor staff on site during program hours, including Q-Ality Sound's crew.
+- No adult works with children until the Park District's check is complete. On top of it, Lab adults give references and complete youth-protection training, Illinois DCFS mandated reporter training and, for at least one adult per class, pediatric first aid/CPR/AED.
+
+### 5a. Complaints about adults
+
+- **The Park District receives complaints about any adult at the Lab.** Families and staff are told to contact the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member.
+- Ras Tafari Inc. passes along anything it receives, the same day, and cooperates fully with any Park District inquiry. It does not investigate in place of the Park District.
+- Suspected abuse or neglect still goes directly to the DCFS Hotline, 1-800-25-ABUSE, and immediate danger to 911.
 
 See [Staff screening](/dj-lab/safety/staff-screening.html).
 
@@ -71,7 +77,20 @@ See [Incident reporting](/dj-lab/safety/incident-reporting.html).
 
 See the [privacy policy](/dj-lab/privacy/index.html).
 
-### 8. Other proposed terms
+### 8. Vendor schedule
+
+A schedule to the MOU lists every outside vendor that works on site:
+
+| Vendor | Role | Limits |
+|---|---|---|
+| Q-Ality Sound | Sound, stage and lighting only, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) chosen as a documented [sole source](/dj-lab/governance/sole-source-justification-qality.html) | Never supervises children or has unsupervised contact with them; no participant data; no photos or recordings; no role in selecting performers; carries its own insurance |
+
+### 9. Recusal
+
+- Ras Tafari Inc. and its representatives are recused, in writing, from the Rainbow Beach Park Advisory Council's vote on the Lab and from any Park District decision about it. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+- Ras Tafari Inc. asks Park District staff, or an outside party named in advance, to count any event audience vote that selects Lab performers for SelassieFest.
+
+### 10. Other proposed terms
 
 - Ras Tafari Inc. is responsible for the program, its staff and volunteers. The Park District is responsible for its facilities.
 - A named contact on each side.

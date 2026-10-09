@@ -13,10 +13,11 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 |---|---|---|
 | At once | **911** for any immediate danger or medical emergency; **DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873)**, for suspected abuse or neglect | Any adult |
 | At once | Parent called for serious injury, 911 call, epinephrine use, lost child, or refused pickup | Lead coach |
+| **Same day** | Any concern about an adult (staff, volunteer, officer or vendor crew) reported to the Chicago Park District: Rainbow Beach Park office, (312) 745-1479, or any Park District staff member | Lab lead |
 | **Same day** | Parent or guardian told **by phone** about any incident involving their child | Lead coach or Lab lead |
 | Same day | Incident written in the log (coaches use the class app's incident log, which emails Stephen Henry: kind, child, what happened, action taken, whether the parent was called, whether 911 was called); Stephen Henry (Lab lead) told | Lead coach |
 | **Within 24 hours** | **Written incident report** sent to the parent or guardian | Lab lead |
-| **Within 7 days** | **Internal review** completed and written up | Lab lead plus a Ras Tafari Inc. officer not involved |
+| **Within 7 days** | **Internal review** completed and written up (for a concern about an adult, the Park District handles it and our review covers only what the Lab should change) | Lab lead plus a Ras Tafari Inc. officer not involved |
 | As required | Report to the Chicago Park District and the insurance carrier, under the terms of the park agreement and insurance policy once they are in place | Lab lead |
 | Kept | Incident log retained (see "Records" below) | Lab lead |
 
@@ -39,6 +40,7 @@ Anything that hurt, could have hurt, or broke a safety rule:
 | Situation | Who is called | Timing |
 |---|---|---|
 | Suspected abuse or neglect | DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873), by the adult with the concern | Immediately (see [Mandated reporter training](/dj-lab/safety/mandated-reporter-training.html)) |
+| Any concern about an adult's conduct | Chicago Park District, Rainbow Beach Park office, (312) 745-1479 | Same day. Ras Tafari Inc. cooperates fully and doesn't investigate in place of the Park District |
 | Immediate danger, crime, serious injury, missing child after 10 minutes, epinephrine use | 911 | At once |
 | Possible poisoning | Illinois Poison Center, 1-800-222-1222 (or 911) | At once |
 
@@ -49,9 +51,9 @@ Calling the authorities never waits for the Lab lead's approval.
 1. **Make it safe.** Care for the child, keep the group supervised by two adults, call 911 or DCFS if needed.
 2. **Call the parent.** Same day, by phone, before the child goes home if possible. If the parent cannot be reached, keep trying and leave a message asking for a call back (no sensitive details on voicemail).
 3. **Write it down the same day.** What happened, when, where, who was there, what the child said (in their words), what was done, who was called and when. Facts, not opinions.
-4. **Tell the Lab lead the same day.** If the incident involves the Lab lead, tell another Ras Tafari Inc. officer instead. See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
+4. **Tell the Lab lead the same day.** If the incident involves the Lab lead, tell another Ras Tafari Inc. officer instead. If it involves an adult's conduct, it also goes to the Chicago Park District the same day. See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
 5. **Send the written report within 24 hours** to the parent or guardian, by email (or on paper, if the family prefers).
-6. **Review within 7 days.** What happened, why, and what changes. The reviewers are people who were not involved. If DCFS or police are investigating, our review does not interview children or interfere; it waits for their direction.
+6. **Review within 7 days.** What happened, why, and what changes. The reviewers are people who were not involved. If the Park District, DCFS or police are looking into it, our review does not interview children or interfere; it waits for their direction.
 7. **Fix and follow up.** Changes are made before the next class where possible. The family is told what changed.
 
 ## What the written report includes
@@ -77,11 +79,11 @@ Another child's name or details are never shared in your child's report. If your
 - **The same day, by phone**, about any incident involving your child.
 - **Within 24 hours, in writing**, the full report.
 - **After the 7-day review**, what we found and what we changed.
-- If DCFS or police are involved, we follow their direction about what can be shared and when.
+- If the Park District, DCFS or police are involved, we follow their direction about what can be shared and when.
 
 ## If you have a concern about how an incident was handled
 
-See [Report a concern](/dj-lab/safety/report-a-concern.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html). You may also contact DCFS or 911 directly at any time.
+See [Report a concern](/dj-lab/safety/report-a-concern.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html). For a concern about an adult, contact the Chicago Park District at the Rainbow Beach Park office, (312) 745-1479. You may also contact DCFS or 911 directly at any time.
 
 ## Sources
 

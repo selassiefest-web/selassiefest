@@ -28,14 +28,23 @@ Our classes are 90 minutes to 2 hours, once a week. We still keep levels well un
 | **Quiet spot** | Children can step away from the speakers to rest their ears. The [Cool-Down Space](/dj-lab/safety/cooldown-space.html) is out of the speaker zone |
 | **Showcase** | Same limits, with the meter checked at the families' seats too |
 
+## Who controls the main speaker
+
+The main speaker, stage and lights are provided by **Q-Ality Sound**, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html). The Lab's DJ controllers plug into its system. But **Ras Tafari Inc.'s safety lead has final authority** over the main-speaker volume, stage access and stopping a session.
+
+- Q-Ality operates within the Lab's limit and turns it down on request.
+- If the safety lead asks for a change for safety reasons, **Q-Ality complies immediately, or the session pauses** until it does.
+- The safety lead can lower the limit at any time.
+- Q-Ality staff work the sound system only. They never supervise children.
+
 ## Sound-meter checks
 
 | When | Who | What |
 |---|---|---|
-| Before children arrive | Lead adult | Sets the main speaker and measures at the nearest child position |
-| Start of Watch Me Think and Spotlight (when the main speaker is used) | Lead adult | Re-measures; turns down if over the limit |
-| Any time a child or adult says it's too loud | Any adult | Turns it down first, then measures |
-| Each session | Lead adult | Notes the reading in the class log |
+| Before children arrive | Safety lead | Has the main speaker set and measures at the nearest child position |
+| Start of Watch Me Think and Spotlight (when the main speaker is used) | Safety lead | Re-measures; has it turned down if over the limit |
+| Any time a child or adult says it's too loud | Any adult | Turns it down first (or asks the sound crew to, at once), then measures |
+| Each session | Safety lead | Notes the reading in the class log |
 
 ## Kids are taught to ask for quieter
 

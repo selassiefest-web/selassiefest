@@ -13,15 +13,17 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 |---|---|---|
 | **Every adult in the room** | Each other. Two adults are present so each can see what the other is doing. | Every minute of every class |
 | **Lead coach** (one per class) | Ratio, two-adult rule, sign-in and sign-out, one-on-one moments stay in the open, restroom procedure | Every class, using the opening and closing checklist below |
-| **Lab lead** (Stephen Henry) | Screening and training dates, sign-out log, incident log, family concerns | Weekly review of logs; checks before each season |
+| **Lab lead** (Stephen Henry) | Confirmation of Chicago Park District background checks, training dates, sign-out log, incident log, family concerns | Weekly review of logs; checks before each season |
 | **A Ras Tafari Inc. officer who is not the Lab lead** | Spot checks of classes; any concern about the Lab lead | At least once per season, unannounced |
+| **Safety lead** (one per session) | Volume, stage access, and the line between sound crew and children (see [Hearing safety](/dj-lab/safety/hearing-safety.html)) | Every session that uses Q-Ality Sound's system |
+| **Chicago Park District** | Background checks for every adult, under its rules, and complaints about any adult | Any time: Rainbow Beach Park office, (312) 745-1479 |
 | **Parents** | Anything at all | Parents may observe any class |
 
 ## Every-class checklist (lead coach)
 
-1. **Before children arrive:** confirm at least two screened adults are present. If not, class does not start.
+1. **Before children arrive:** confirm at least two adults cleared by the Park District's background check are present. If not, class does not start.
 2. Confirm the first-aid-certified adult is present and the first aid kit and rescue medicines are in place (see [First aid roster](/dj-lab/safety/first-aid-cpr-roster.html)).
-3. Confirm the headcount will stay within 6 children per adult.
+3. Confirm the headcount will stay within 6 children per adult. Sound and stage crew never count toward the ratio.
 4. During class: one-on-one reviews happen in the open; restroom trips follow the buddy procedure.
 5. **At close:** every child signed out in the [sign-out tool](/dj-lab/portal/signout.html) with photo ID checked; any incident logged the same day.
 6. Note any deviation, even a small one, in the incident log.
@@ -38,13 +40,12 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 
 1. **Make the child safe first.** The other adult separates the adult from children right away if there is any risk.
 2. **Call for help if needed.** Immediate danger: **911**. Suspected abuse or neglect: **DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873)**, made directly by the adult who has the concern. See [Mandated reporter training](/dj-lab/safety/mandated-reporter-training.html).
-3. **Tell the Lab lead the same day.** If the concern is about the Lab lead, tell another Ras Tafari Inc. officer instead (see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html)).
+3. **Report a concern about any adult to the Chicago Park District (the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member) the same day,** and tell the Lab lead. If the concern is about the Lab lead, tell another Ras Tafari Inc. officer instead, and CPD as always (see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html)).
 4. **Call the parent the same day**, and send a written report within 24 hours. See [Incident reporting](/dj-lab/safety/incident-reporting.html).
-5. **Suspend first, review second.** The adult is removed from contact with children while the matter is reviewed. Suspension is not a finding of guilt; it is how we keep children safe while we look.
-6. **Do not interfere with authorities.** If DCFS or police are involved, the Lab cooperates, preserves records, and does not run its own interviews of children.
-7. **Internal review within 7 days**, by people who were not involved. The result is written down.
-8. **Decision:** reinstate with written warning and retraining, or remove permanently. Zero-tolerance items always mean permanent removal.
-9. **Fix the system.** If a gap in the process allowed it, the process changes and families are told.
+5. **Suspend first.** The adult is removed from contact with children while CPD (and DCFS or police, if involved) look into it. Suspension is not a finding of guilt; it is how we keep children safe in the meantime.
+6. **CPD handles complaints about adults.** Ras Tafari Inc. passes along everything it has, preserves records, cooperates fully, and does not investigate in place of CPD or run its own interviews of children.
+7. **Decision about the Lab role,** made in writing by Ras Tafari Inc. officers who were not involved, taking account of CPD's outcome: reinstate with written warning and retraining, or remove permanently. Zero-tolerance items always mean permanent removal. If CPD bars someone, they don't return.
+8. **Fix the system.** If a gap in the process allowed it, the process changes and families are told.
 
 ## Zero tolerance: permanent removal, no second chance
 
@@ -55,22 +56,22 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 - Private messaging with a child, or giving a child a ride.
 - Being under the influence of alcohol, cannabis or drugs at a Lab activity (see [Substance-free policy](/dj-lab/safety/substance-free-policy.html)).
 - Failing to report, or trying to stop someone else from reporting, suspected abuse.
-- Lying on a screening application, or not disclosing an arrest or charge that arises after screening.
+- Lying on an application, or to the Park District during its background check.
 - Retaliating against any child, parent or adult who raised a concern.
 
 ## Independence from program pressure
 
-- **Safety beats the schedule.** A class is cancelled rather than run without two screened adults, a first-aid-certified adult, or a safe space. No exceptions for showcases or funders.
-- **No one is "too important."** The rules apply to guest DJs, popular coaches, donors' relatives and Ras Tafari Inc. officers, including the President.
+- **Safety beats the schedule.** A class is cancelled rather than run without two cleared adults, a first-aid-certified adult, or a safe space. No exceptions for showcases or funders.
+- **No one is "too important."** The rules apply to guest DJs, popular coaches, donors' relatives, vendors such as Q-Ality Sound, and Ras Tafari Inc. officers, including the President. The safety lead's call on volume, stage access or pausing a session stands; Q-Ality complies immediately or the session pauses.
 - **No permission needed to report.** Any adult may call 911 or the DCFS Hotline directly. No one at the Lab may require that they be told first, or change or stop a report.
 - **No retaliation.** Raising a concern in good faith never costs anyone their place, job or volunteer role.
-- **Concerns about the Lab lead** go to another officer, and directly to the authorities when required. See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html).
+- **Concerns about the Lab lead** go to CPD like any concern about an adult, and to another officer, and directly to DCFS or 911 when required. Conflict-of-interest concerns go to a director with no stake in the Lab or to CPD ([Conflict of interest policy](/dj-lab/governance/conflict-of-interest.html)). See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html).
 
 ## What you'll be told
 
 - A phone call the same day if your child was involved in, or witnessed, a violation.
 - A written report within 24 hours.
-- The outcome of the internal review, to the extent we can share it without harming another child's privacy or an investigation.
+- The outcome, to the extent we can share it without harming another child's privacy or an investigation.
 - A season summary, on request, of how many spot checks were done and whether any gaps were found (no names).
 
 ## Sources

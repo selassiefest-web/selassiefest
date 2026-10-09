@@ -1,6 +1,6 @@
 ---
 title: Data-Sharing Agreement with SelassieFest
-description: Ras Tafari Inc.'s commitment that Rainbow DJ Lab family and child data is never used for or shared with SelassieFest.
+description: Ras Tafari Inc.'s commitment that Rainbow DJ Lab family and child data is never used for or shared with SelassieFest, except the bare details of an audience-vote winner whose guardian consented.
 ---
 
 # Data-Sharing Agreement with SelassieFest
@@ -9,7 +9,7 @@ description: Ras Tafari Inc.'s commitment that Rainbow DJ Lab family and child d
 
 ## Why this exists
 
-Ras Tafari Inc. runs the Rainbow DJ Lab. Ras Tafari Inc. also produces **SelassieFest**, Chicago's roots reggae and cultural festival. Because one organization runs both, families deserve a clear, written rule that information given to the Lab stays with the Lab.
+Ras Tafari Inc. runs the Rainbow DJ Lab. Ras Tafari Inc. also produces **SelassieFest**, Chicago's roots reggae and cultural festival. Because one organization runs both, families deserve a clear, written rule that information given to the Lab stays with the Lab. SelassieFest makes its own decisions about its lineup, and Lab performers reach it **only by event audience vote** (see section 3a).
 
 SelassieFest and the Lab are not separate companies, so this is not a contract between two parties. It is an internal policy that binds Ras Tafari Inc., its officers, staff and volunteers. It is written below as the agreement text.
 
@@ -28,7 +28,7 @@ SelassieFest and the Lab are not separate companies, so this is not a contract b
 ### 2. Commitments
 
 1. **No marketing use.** Lab Data is never used to market SelassieFest, sell SelassieFest tickets, recruit SelassieFest volunteers, or ask for donations to SelassieFest.
-2. **No sharing.** Lab Data is never copied, exported, transferred or made available to SelassieFest, its staff, volunteers, vendors, sponsors or service providers.
+2. **No sharing.** Lab Data is never copied, exported, transferred or made available to SelassieFest, its staff, volunteers, vendors, sponsors or service providers. The only exception is the audience-vote winner details in section 3a. **Lab roster, contact and attendance data are never shared with SelassieFest.**
 3. **No list merging.** Lab contact lists are never combined with SelassieFest mailing lists, ticket buyer lists or any other list.
 4. **Separate systems.** Lab Data is stored only in the Lab's own systems, with access limited to Lab coaches and the officers responsible for the Lab.
 5. **No images.** No photo, video or audio of a Lab child is used in SelassieFest promotion. This includes listen-back recordings and the Rainbow Showcase.
@@ -41,6 +41,17 @@ SelassieFest and the Lab are not separate companies, so this is not a contract b
 3. A family that opts in gives SelassieFest only the email address they choose to provide for that purpose, in a form the family fills out themselves. No other Lab Data goes with it.
 4. A family can withdraw the Opt-In at any time by contacting Stephen Henry. Withdrawal takes effect within 5 business days.
 5. Children are never asked to opt in. Only a parent or guardian can.
+
+### 3a. Audience-vote winners
+
+Lab performers are chosen to perform at SelassieFest **by event audience vote only**, under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 9:
+
+1. Performing is optional. A child is on a ballot only with a parent or guardian's **written consent, given before the vote is announced.**
+2. The votes are counted by a person or group with **no interest in the result**, such as Chicago Park District staff or an outside party named in advance. Each person gets one vote, and the method is announced before voting opens. Lab trainers, Ras Tafari Inc. staff and Q-Ality Sound have no role in counting.
+3. Ballots show **first name and last initial only**: no photos, ages, schools or contact details.
+4. For a winner, SelassieFest receives **only**: the child's first name and last initial, the performance details (such as date, time and set length), and the guardian's consent. Nothing else.
+5. SelassieFest contacts the family only through the Lab, unless the guardian chooses to give SelassieFest their own contact details.
+6. The results, vote counts and the counter's name are recorded and kept with the Lab records.
 
 General announcements that anyone can see, such as a public flyer or website post about SelassieFest, are not use of Lab Data and are not covered by this agreement.
 
@@ -56,7 +67,7 @@ Lab Data may be disclosed only:
 - to the Lab's own service providers, only to run the Lab, as listed in the [privacy policy](/dj-lab/privacy/index.html);
 - with the parent or guardian's specific written permission for a specific disclosure.
 
-None of these exceptions allow use for SelassieFest.
+None of these exceptions allow use for SelassieFest. The only Lab information SelassieFest ever receives is the audience-vote winner details in section 3a.
 
 ### 6. Breach
 

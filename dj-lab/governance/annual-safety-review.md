@@ -27,9 +27,10 @@ Once a year, and after every season, Ras Tafari Inc. will look back at how safe 
 ## What we review
 
 ### People
-- Screening: was every adult screened before their first class? Is anyone due for re-screening (every 2 years)?
+- Background checks: did every adult clear the Chicago Park District's background check, under its rules, before their first class? Is anyone due for renewal on the Park District's schedule?
 - Training: DCFS mandated reporter training and youth-protection training on file for every adult.
 - First aid: was a pediatric first aid/CPR/AED-certified adult present at every class?
+- Trainers: did any trainer select, recommend or rank a child, promote their own business to students, or offer paid private lessons against the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html)?
 
 ### Supervision
 - Was the two-adult rule met at every class?
@@ -41,9 +42,11 @@ Once a year, and after every season, Ras Tafari Inc. will look back at how safe 
 - Were parents told the same day, and did written reports follow within 24 hours?
 - Every complaint and grievance, and how it was resolved.
 - Every whistleblower report, with names removed.
+- Every concern about an adult passed to the Chicago Park District, and whether it went the same day.
 
 ### Environment
 - Sound meter checks of the main speaker; headphone volume caps on every laptop.
+- Q-Ality Sound: did its staff stay within sound, stage and lighting? Did they comply at once with every safety-lead request on volume or stage access? Were there any pauses? Were its insurance certificates current?
 - Lightning and heat decisions: were they made by the rules?
 - Emergency action plan: is it current? Was a drill held? Does it need updating after any change to the fieldhouse or lawn?
 
@@ -53,7 +56,13 @@ Once a year, and after every season, Ras Tafari Inc. will look back at how safe 
 ### Privacy
 - Requests from families to see, correct or delete data, and how fast we answered.
 - Was child activity data deleted within 90 days after the season ended (unless a family asked to keep their child's Passport)?
-- Any privacy incidents, and whether the [data-sharing agreement with SelassieFest](/dj-lab/governance/data-sharing-agreement-selassiefest.html) was followed.
+- Any privacy incidents, and whether the [data-sharing agreement with SelassieFest](/dj-lab/governance/data-sharing-agreement-selassiefest.html) was followed (only an audience-vote winner's first name, last initial, performance details and guardian consent may go to SelassieFest).
+- Confirmation that Q-Ality Sound received no participant data and made no photos or recordings.
+
+### Fairness
+- Were graduation decisions made only against the published criteria, with none waived?
+- Were any SelassieFest audience votes counted by someone with no interest in the result, with consent on file before the vote was announced?
+- Conflict-of-interest disclosures and recusals for the year, and the quarterly board reviews of Lab payments.
 
 ### Policies
 - Did any policy prove unclear, impractical or too weak in practice?

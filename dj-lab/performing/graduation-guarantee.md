@@ -24,13 +24,23 @@ The Rainbow DJ Lab itself is also proposed. The Chicago Park District hasn't app
 
 - It doesn't guarantee a date, time, set length or stage. Those are confirmed only once Rainbow Wednesdays is scheduled.
 - It doesn't guarantee a place in later proposed shows. The Youth Showcase is an open call, and the Theme Clash semifinals and Finale are proposed stage shows.
+- It isn't a slot at SelassieFest. Lab performers reach SelassieFest only by event audience vote; see the [performance pathway](/dj-lab/performing/pathway.html).
 
 ## Who graduates
 
-Graduation comes at the end of the course. The full course has 14 sessions and ends with session 14, the Rainbow Showcase. The exact completion rules for the full course and the 6-workshop spring fast track will be confirmed before the first class. Here's what we can say now:
+Graduation comes at the end of the course. The full course has 14 sessions and ends with session 14, the Rainbow Showcase. **Graduation, and the Open Decks slot that comes with it, depends only on published criteria:**
 
+- attendance at a published number of sessions, and
+- completion of a published number of skill checks.
+
+The numbers, for the full course and for the 6-workshop spring fast track, will be **published before the first class**. Publishing them is on the [launch checklist](/dj-lab/governance/index.html).
+
+- A coach records each criterion as **met or not met**, and the program coordinator confirms it.
+- **No one can waive a criterion or add one.** Nobody's opinion of your child decides graduation.
 - There are no grades and no tests.
 - Performing at the Rainbow Showcase isn't required to graduate.
+
+See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 9.
 
 ## Related pages
 

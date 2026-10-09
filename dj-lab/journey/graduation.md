@@ -45,7 +45,8 @@ The showcase is a busier day, with more adults in the room. The same rules apply
 
 - You sign your child in. They're released only to an adult on the authorized-pickup list, after a photo ID check.
 - Restroom buddy system, with an adult at the entrance.
-- Children stay out of the zone in front of the speakers, and the main speaker is kept at a level checked with a sound meter. Earplugs are free.
+- Children stay out of the zone in front of the speakers, and the main speaker is kept at a level checked with a sound meter. The Lab's safety lead has the final say on volume and the stage. Earplugs are free.
+- Sound and stage crew (Q-Ality Sound) run the sound and lights only. They never supervise children and take no photos or recordings.
 - Clean lyrics only.
 - No alcohol, tobacco, vaping or cannabis, for anyone.
 
@@ -70,6 +71,8 @@ Also try:
 ## The graduation guarantee
 
 Every graduate is **guaranteed an Open Decks slot at Rainbow Wednesdays**, the free summer DJ series. Rainbow Wednesdays is also proposed, so **the guarantee applies when Rainbow Wednesdays runs.** See the [Graduation guarantee](/dj-lab/performing/graduation-guarantee.html).
+
+**Who graduates is decided by published criteria,** not anyone's opinion: attendance at a published number of sessions and completion of a published number of skill checks. The numbers will be published before the first class. A coach records each one as met or not met, the program coordinator confirms it, and no one can waive a criterion. Performing at the showcase isn't one of them.
 
 ## Next stop
 

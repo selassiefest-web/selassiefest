@@ -5,7 +5,7 @@ description: The core rules every adult at Rainbow DJ Lab follows to prevent abu
 
 ## Status of this policy
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. It takes effect before the first class and applies to every adult who takes part in a Lab activity: coaches, mentors, volunteers, guest DJs, and Ras Tafari Inc. officers, including the President. No staff have been hired yet. Every person who is hired or volunteers must read and sign this policy before their first class.
+This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. It takes effect before the first class and applies to every adult who takes part in a Lab activity: coaches, mentors, volunteers, guest DJs, and Ras Tafari Inc. officers, including the President. Its conduct rules also bind vendor staff on site, such as Q-Ality Sound's sound and stage crew (see Rule 10). No staff have been hired yet. Every person who is hired or volunteers must read and sign this policy before their first class.
 
 The policy covers every Lab activity: classes, Spotlight, listen-back days, the Rainbow Showcase, and any messages or online contact connected to the Lab.
 
@@ -25,7 +25,7 @@ The policy covers every Lab activity: classes, Spotlight, listen-back days, the 
 
 ## Grooming: warning signs we watch for
 
-Any of these is reported at once to the Lab lead (Stephen Henry), and is a violation of this policy even if nothing else has happened:
+Any of these is reported at once to the Chicago Park District (the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member) and to the Lab lead (Stephen Henry), and is a violation of this policy even if nothing else has happened:
 
 - Singling out one child for special attention, gifts, privileges or "extra lessons."
 - Asking a child to keep a secret, or saying "this is just between us."
@@ -37,7 +37,7 @@ Any of these is reported at once to the Lab lead (Stephen Henry), and is a viola
 
 ## Rule 1: Two adults, always
 
-1. At least **two screened adults** are present with children at all times.
+1. At least **two screened adults** (cleared by the Chicago Park District's background check, under its rules) are present with children at all times. Vendor staff never count as one of them.
 2. **No adult is ever alone with a child out of sight.** Not in a closet, office, gear room, car, or behind a closed door.
 3. **Ratio:** no more than 6 children per screened adult. Little DJs (ages 5–7) also have their own grown-up in the room.
 4. If one adult must leave the room, the class pauses or the children stay with the other adult in view. One adult never takes one child somewhere alone.
@@ -108,6 +108,19 @@ Children go in pairs, an adult waits at the restroom entrance, and staff never e
 
 Adults do not babysit, tutor, give private DJ lessons to, or spend time with an enrolled child outside Lab activities, unless the adult is a relative or the arrangement is disclosed in writing to the Lab lead in advance. Even then, Lab adults do not use Lab materials or the Lab's name for it.
 
+DJ trainers have a stricter rule under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html): no paid private lessons for enrolled students during a cohort or for 6 months after it, unless a parent asks in writing and the board approves, and no promoting their own business to students.
+
+## Rule 10: Sound, stage and lighting crew
+
+Q-Ality Sound provides sound, stage and lighting **only**, under a written [vendor agreement](/dj-lab/governance/qality-vendor-agreement.html).
+
+1. **Q-Ality staff never supervise children** and are never counted in the ratio. They don't coach, discipline or escort children, on stage, backstage or during transitions.
+2. **No unsupervised contact.** If Q-Ality staff must be in a space with children, a Lab adult cleared by the Park District is present.
+3. **No photos or recordings** of children, and no access to any family or child data.
+4. **No soliciting families** for lessons, gear or any paid service.
+5. **The safety lead decides.** Ras Tafari Inc.'s safety lead has final authority over volume, stage access and stopping a session. Q-Ality complies immediately, or the session pauses until it does.
+6. The Park District's background-check process applies to Q-Ality staff on site during program hours.
+
 ## Consequences
 
 | Violation | Consequence |
@@ -127,7 +140,7 @@ Details on who decides and how are in [How the policy is enforced](/dj-lab/safet
 
 ## How your child can speak up
 
-We teach children in the first session, in kid words: "If any grown-up makes you feel weird or asks you to keep a secret, tell your parent or another coach. You will never be in trouble for telling." Parents can use [Report a concern](/dj-lab/safety/report-a-concern.html).
+We teach children in the first session, in kid words: "If any grown-up makes you feel weird or asks you to keep a secret, tell your parent or another coach. You will never be in trouble for telling." Parents can take any concern about an adult to the Chicago Park District (the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member), and see [Report a concern](/dj-lab/safety/report-a-concern.html).
 
 ## Sources
 

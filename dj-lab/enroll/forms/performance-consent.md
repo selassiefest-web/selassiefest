@@ -18,6 +18,9 @@ Inside class, playing for the group is always the child's choice. **Spotlight is
 | **Open Decks at Rainbow Wednesdays** | Graduates get a guaranteed Open Decks slot. **Rainbow Wednesdays is also proposed,** so the slot applies when the series runs. |
 | **Youth Showcase open call, Theme Clash semifinals and Finale** | Optional next steps after graduation. |
 | **Fast-track Dress Rehearsal on the Beach** (W6) | Held outdoors at the park, where the public may be nearby. |
+| **SelassieFest** | **Not covered by this form.** Ras Tafari Inc. produces SelassieFest, but it makes its own decisions about its lineup. Lab performers reach it only by event audience vote, and a child goes on a ballot only with a **separate written consent** from you, given before the vote is announced. See [the performance pathway](/dj-lab/performing/pathway.html). |
+
+At every performance, the sound, stage and lighting crew (Q-Ality Sound) never supervise children and never photograph or record them.
 
 See [performing](/dj-lab/performing/index.html) and [the journey](/dj-lab/journey/index.html).
 
