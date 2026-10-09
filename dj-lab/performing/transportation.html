@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Transportation to performances | Rainbow DJ Lab</title>
+<meta name="description" content="Families bring their children to and from every Lab event. The Lab never transports children in personal vehicles.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r7); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/performing/" aria-current="page">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/performing/">Performing</a> &rsaquo; Transportation to performances</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Performing pages"><div class="lbl">Performing</div><a href="/dj-lab/performing/">Performing at the Rainbow DJ Lab</a><a href="/dj-lab/performing/pathway.html">The performance pathway</a><a href="/dj-lab/performing/opt-out.html">Opting out of performing</a><a href="/dj-lab/performing/event-day-supervision.html">Event-day supervision</a><a href="/dj-lab/performing/sound-crowd-exposure.html">Sound and crowd exposure</a><a href="/dj-lab/performing/transportation.html" aria-current="page">Transportation to performances</a><a href="/dj-lab/performing/stage-freeze-protocol.html">Stage freeze protocol</a><a href="/dj-lab/performing/graduation-guarantee.html">Graduation guarantee</a></nav>
+    <article id="main">
+<h1>Transportation to performances</h1>
+<p class="lede">Families bring their children to and from every Lab event. The Lab never transports children in personal vehicles.</p>
+<h2 id="the-rule">The rule</h2>
+<ul>
+<li><strong>Families transport.</strong> A parent, guardian or adult you choose brings your child to each performance and takes them home.</li>
+<li><strong>The Lab never transports children in personal vehicles.</strong> No Lab adult, volunteer or officer will drive your child anywhere, even for a short trip, even in an emergency that isn't life-threatening, and even if you ask. In a medical emergency, we call 911.</li>
+<li><strong>No informal rides.</strong> Lab adults won't offer, arrange or accept a ride with a child, including on public transit or by rideshare.</li>
+</ul>
+<p>This is a policy Ras Tafari Inc. commits to. Formal board adoption is a launch requirement.</p>
+<h2 id="why-we-are-stricter-than-the-national-standard">Why we are stricter than the national standard</h2>
+<p>The U.S. Center for SafeSport's Minor Athlete Abuse Prevention Policies (MAAPP) recognize that rides to and from activities can put children "in vulnerable positions where they are susceptible to abuse." MAAPP allows an adult to drive a minor one-on-one only with advance written parent consent, or when another adult or at least two other minors aged 8 or older are in the car.</p>
+<p>We go further. The Lab doesn't drive children at all, so the question never comes up.</p>
+<h2 id="getting-there">Getting there</h2>
+<ul>
+<li>We share the event location, check-in time and performer-area entrance once they are confirmed. None are set yet. Public stage events, including Rainbow Wednesdays, are <strong>proposed</strong>.</li>
+<li>Please arrive at the time given for check-in. Your child is in the Lab's care only <strong>after</strong> a parent or guardian signs them in at the performer area.</li>
+</ul>
+<h2 id="going-home">Going home</h2>
+<ul>
+<li>Children are released only to adults on the <strong>authorized-pickup list</strong>, after a photo ID check. Every release is logged.</li>
+<li>Children aged 8–11 are never released to walk home alone unless a parent or guardian gives written permission in advance.</li>
+<li>If the adult picking up appears impaired, we don't release the child. Staff call another authorized adult. If the child is in danger, staff call 911 and make a DCFS hotline report as required.</li>
+<li>To add someone to your pickup list, contact Stephen Henry <strong>before</strong> the event.</li>
+</ul>
+<h2 id="carpools-between-families">Carpools between families</h2>
+<p>Families may choose to carpool with one another. That is a private arrangement between families. It isn't organized, supervised or vetted by the Lab. The Lab's care starts at sign-in and ends at sign-out.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>U.S. Center for SafeSport, <em>2025 MAAPP</em>, Model Policy: Transportation. https://uscenterforsafesport.org/2025-maapp/</li>
+</ul>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="/dj-lab/safety/arrival-signout.html">Arrival and sign-out</a></li>
+<li><a href="/dj-lab/performing/event-day-supervision.html">Event-day supervision</a></li>
+</ul>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# The Rainbow DJ Lab deploys as part of the selassiefest.com site, through the
+# repository's root workflow (.github/workflows/pages.yml), on every push to
+# main. This file documents that; GitHub only runs workflows in the root
+# .github folder, so it is not executed from here.
+# To rebuild pages before committing:
+#   python dj-lab/_build/build.py
+#   python dj-lab/_build/build_forms.py
+name: Rainbow DJ Lab (documentation only)
+on: workflow_dispatch
+jobs:
+  note:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deployed by the root pages.yml workflow."

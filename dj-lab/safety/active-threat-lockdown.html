@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Active Threat and Lockdown | Rainbow DJ Lab</title>
+<meta name="description" content="How Rainbow DJ Lab adults lead children through &quot;Run, Hide, Fight&quot; adapted for kids, lock down in the fieldhouse, and reunite children with families.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r1); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/" aria-current="page">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/performing/">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/safety/">Safety</a> &rsaquo; Active Threat and Lockdown</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Safety pages"><div class="lbl">Safety</div><a href="/dj-lab/safety/">Safety at Rainbow DJ Lab</a><a href="/dj-lab/safety/youth-protection-policy.html">Youth Protection Policy</a><a href="/dj-lab/safety/enforcement.html">How the Youth Protection Policy Is Enforced</a><a href="/dj-lab/safety/staff-screening.html">Staff and Volunteer Screening</a><a href="/dj-lab/safety/mandated-reporter-training.html">Mandated Reporter Training and Reporting</a><a href="/dj-lab/safety/substance-free-policy.html">Substance-Free Policy</a><a href="/dj-lab/safety/arrival-signout.html">Arrival and Sign-Out</a><a href="/dj-lab/safety/id-check-protocol.html">Photo ID Check Protocol</a><a href="/dj-lab/safety/impaired-parent-protocol.html">If a Pickup Adult Appears Impaired</a><a href="/dj-lab/safety/lost-child-plan.html">Lost Child Plan</a><a href="/dj-lab/safety/emergency-action-plan.html">Emergency Action Plan</a><a href="/dj-lab/safety/active-threat-lockdown.html" aria-current="page">Active Threat and Lockdown</a><a href="/dj-lab/safety/incident-reporting.html">Incident Reporting</a><a href="/dj-lab/safety/medical-allergy-plan.html">Medical &amp; Allergy Plan</a><a href="/dj-lab/safety/epinephrine-protocol.html">Epinephrine Protocol</a><a href="/dj-lab/safety/medication-storage.html">Medication Storage &amp; Administration</a><a href="/dj-lab/safety/first-aid-cpr-roster.html">First Aid &amp; CPR Roster</a><a href="/dj-lab/safety/lakefront-weather.html">Lakefront Weather &amp; Air Quality</a><a href="/dj-lab/safety/sunscreen-hydration.html">Sunscreen &amp; Hydration</a><a href="/dj-lab/safety/restroom-supervision.html">Restroom Supervision</a><a href="/dj-lab/safety/hearing-safety.html">Hearing Safety</a><a href="/dj-lab/safety/behavior-emotional-safety.html">Behavior &amp; Emotional Safety</a><a href="/dj-lab/safety/discipline-ladder.html">Discipline Ladder</a><a href="/dj-lab/safety/cooldown-space.html">Cool-Down Space</a><a href="/dj-lab/safety/peer-harm-protocol.html">Peer-Harm Protocol</a><a href="/dj-lab/safety/report-a-concern.html">Report a Concern</a><a href="/dj-lab/safety/grievance-procedure.html">Grievance Procedure</a></nav>
+    <article id="main">
+<h1>Active Threat and Lockdown</h1>
+<p class="lede">How Rainbow DJ Lab adults lead children through &quot;Run, Hide, Fight&quot; adapted for kids, lock down in the fieldhouse, and reunite children with families.</p>
+<h2 id="status">Status</h2>
+<p>This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.</p>
+<p><strong>Pending:</strong> the lockdown plan for the Rainbow Beach Park fieldhouse (which rooms lock, which doors to block, hiding places, and the outdoor escape routes and rally point) is <strong>to be finalized with park staff</strong> during the site walk, which has not happened yet. That is part of item 7 on the <a href="/dj-lab/governance/index.html">launch checklist</a>. No class runs until it is done.</p>
+<h2 id="the-guidance-we-follow">The guidance we follow</h2>
+<p>We follow the U.S. Department of Homeland Security and FBI public guidance, <strong>"Run, Hide, Fight,"</strong> adapted for children: <strong>adults lead, children follow.</strong> Children are never asked to decide on their own where to go, and children are never asked to fight.</p>
+<h2 id="run-hide-fight-adapted-for-children">Run, Hide, Fight, adapted for children</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What the adults do</th>
+<th>What the children do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run</strong> (first choice, if there is a safe way out)</td>
+<td>The adult nearest the threat-free exit says <strong>"Follow me"</strong> and leads the children out, away from the danger. Leave the gear and bags. The other adult brings up the rear and makes sure no child is left. Little DJs go with their own grown-up. Once safe, call <strong>911</strong>.</td>
+<td>Hold a buddy's hand, follow the coach, stay quiet, leave everything behind.</td>
+</tr>
+<tr>
+<td><strong>Hide</strong> (if running is not safe)</td>
+<td>Move the children into the nearest room that locks, out of sight of the door. <strong>Lock and block</strong> the door, turn off lights, close blinds, silence all phones. Stay away from doors and windows. Call or text <strong>911</strong> if it is safe to do so.</td>
+<td>Sit down low, out of sight, perfectly quiet. Stay with your buddy.</td>
+</tr>
+<tr>
+<td><strong>Fight</strong> (adults only, last resort)</td>
+<td>Only if the attacker reaches the children and there is no other choice, adults act together to disrupt and stop the attacker, using whatever is at hand.</td>
+<td>Children do <strong>not</strong> fight. They stay hidden or run when an adult tells them to.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lockdown-in-the-fieldhouse">Lockdown in the fieldhouse</h2>
+<p>The specific rooms and doors are to be finalized with park staff. The steps are:</p>
+<ol>
+<li>Whoever learns of a threat (from park staff, police, an alert, or what they see or hear) says <strong>"Lockdown"</strong> clearly.</li>
+<li>Children in the hallway or restroom are brought into the nearest lockable room with an adult. The adult at the restroom entrance brings the restroom buddies with them.</li>
+<li>Lock and block the door. Lights off. Out of sight of the door's window.</li>
+<li>Silence phones. Text <strong>911</strong> if calling would make noise.</li>
+<li>The children lead takes a <strong>whispered headcount</strong> against the roster, and tells responders of any missing child once it is safe.</li>
+<li><strong>Do not open the door</strong> for anyone, including someone saying they are police, until park staff or police confirm through an agreed method (to be set with park staff) that it is safe.</li>
+<li>When police arrive: stay calm, follow instructions, keep hands visible and empty, and go where police direct.</li>
+</ol>
+<h2 id="outdoors-summer-on-the-lawn">Outdoors (summer, on the lawn)</h2>
+<ol>
+<li>The incident lead says <strong>"Follow me"</strong> and leads the children <strong>away</strong> from the danger toward the escape route and rally point (to be set at the site walk).</li>
+<li>If running is not possible, get the children down and behind solid cover.</li>
+<li>Headcount at the rally point; call <strong>911</strong>.</li>
+</ol>
+<h2 id="reunification">Reunification</h2>
+<ol>
+<li>Police direct when and where children may be released. We follow them.</li>
+<li>At the reunification point, each child is released <strong>only to an authorized adult, with photo ID checked</strong>, and recorded, exactly as at normal pickup. See <a href="/dj-lab/safety/id-check-protocol.html">ID check protocol</a> and <a href="/dj-lab/safety/emergency-action-plan.html">Emergency action plan</a>.</li>
+<li>Two screened adults stay until the last child is released.</li>
+<li>Families are contacted by phone or text as soon as it is safe to share where to come.</li>
+</ol>
+<h2 id="how-we-talk-about-this-with-children">How we talk about this with children</h2>
+<ul>
+<li>We practice a calm, short "hide quietly" drill within the first two classes of each season, framed as "practicing being super quiet and following the coach," without scary details. Families are told in advance.</li>
+<li>Children who are upset by a drill can sit with an adult in view. See <a href="/dj-lab/safety/behavior-emotional-safety.html">Behavior and emotional safety</a>.</li>
+<li>After any real event, we will share support resources with families.</li>
+</ul>
+<h2 id="what-youll-be-told">What you'll be told</h2>
+<ul>
+<li>Before each season: when the lockdown drill will happen.</li>
+<li>During an event: a message as soon as it is safe to send, saying your child is safe (or that we are working with police) and where to go.</li>
+<li>Afterward: a written report within 24 hours. See <a href="/dj-lab/safety/incident-reporting.html">Incident reporting</a>.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Ready.gov, Attacks in Crowded and Public Spaces / Active Shooter (Run, Hide, Fight; what to do when law enforcement arrives): https://www.ready.gov/active-shooter</li>
+<li>Cybersecurity and Infrastructure Security Agency (CISA), Active Shooter Preparedness: https://www.cisa.gov/topics/physical-security/active-shooter-preparedness</li>
+</ul>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>

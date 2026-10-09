@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Rainbow DJ Lab</title>
+<meta name="description" content="Rainbow DJ Lab: the live classroom for Full Spectrum's free DJ classes at Rainbow Beach Park.">
+<style>:root{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/dj-lab/live/assets/app.css">
+
+<div class="stripe"></div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Rainbow DJ Lab</h1>
+      <div class="sub">Rainbow Beach Park &middot; Rainbow DJ Academy &middot; <a href="/dj-lab/" style="color:inherit">Family guide</a> &middot; <a href="/dj-lab/enroll/register.html" style="color:inherit">Register</a> &middot; <a href="/dj-lab/safety/" style="color:inherit">Safety</a></div>
+    </div>
+    <span class="sess" id="sessPill"><b>1</b><span>Red &middot; Meet the Machine</span></span>
+    <div class="clockbox">
+      <span class="status" id="status"><i></i><span>Not started</span></span>
+      <span class="clock" id="clock">0:00 <small>/ 90:00</small></span>
+    </div>
+    <nav class="views" role="tablist" aria-label="Choose a view">
+      <button role="tab" id="tab-kid" data-v="kid">Kid</button>
+      <button role="tab" id="tab-coach" data-v="coach">Coach</button>
+      <button role="tab" id="tab-parent" data-v="parent">Parent</button>
+    </nav>
+  </header>
+
+  <div class="joinbar" id="joinBar"></div>
+  <div class="cast" id="cast" hidden><span class="lbl">Coach</span><span id="castText"></span></div>
+  <div class="spotban" id="spotBan" hidden><span class="lbl">On the main speaker</span><span id="spotText"></span></div>
+  <div class="listenban" id="listenBan" hidden>Listen-back day: every kid records 2 minutes and reviews it with a mentor. One glow, one grow, one goal.</div>
+
+  <section class="wavecard" aria-label="Session timeline">
+    <div class="wavehead">
+      <span class="lbl" id="waveLbl">90-minute session &middot; one bar per minute</span>
+      <span class="hint" id="waveHint">Tap any minute to preview it</span>
+    </div>
+    <div class="wave" id="wave"></div>
+    <div class="blocks" id="blocks"></div>
+    <div class="preview" id="previewBar" hidden><span id="previewText"></span><button class="btn sm" id="backLive">Back to live</button></div>
+  </section>
+
+  <!-- KID -->
+  <main id="view-kid" class="stack" hidden>
+    <div class="controls">
+      <label class="lbl" for="kidWho">This screen is</label>
+      <select class="pick" id="kidWho"></select>
+      <span class="faint" id="kidSpot"></span>
+    </div>
+    <section class="card kidnow" id="kidNow"></section>
+    <div class="grid2">
+      <div class="stack">
+        <section class="card" id="kidJob"></section>
+        <section class="card" id="kidAct" hidden>
+          <div id="kidActInner"></div>
+          <div id="kidNextWrap" hidden style="margin-top:14px">
+            <label class="lbl" for="kidNext">Next time I'll&hellip;</label>
+            <div class="row" style="margin-top:6px; flex-wrap:nowrap">
+              <input class="field" id="kidNext" maxlength="140" placeholder="loop the hook to buy time">
+              <button class="btn primary" id="kidNextSave">Save</button>
+            </div>
+            <div class="faint" id="kidSaveMsg" style="margin-top:6px"></div>
+          </div>
+        </section>
+        <section class="card" id="kidLog" hidden>
+          <span class="lbl" id="kidLogLbl">Mix Log</span>
+          <div class="mixlog">
+            <input class="field" id="logPair" maxlength="80" placeholder="Song pair: song A + song B">
+            <input class="field" id="logWhat" maxlength="120" placeholder="What we tried and what happened">
+            <input class="field" id="logFix" maxlength="120" placeholder="What we'd change next time">
+            <div class="row"><button class="btn primary" id="logSave">Save to Mix Log</button><span class="faint" id="logMsg"></span></div>
+          </div>
+          <ul class="logs" id="logList"></ul>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="card" id="kidBrain"></section>
+        <section class="card" id="kidUp"></section>
+      </div>
+    </div>
+  </main>
+
+  <!-- COACH -->
+  <main id="view-coach" class="stack" hidden>
+    <section class="card" id="coachClass"></section>
+    <section class="card">
+      <div class="controls">
+        <select class="pick" id="cMode" aria-label="Course or fast track">
+          <option value="course">Full course &middot; 14 &times; 90 min</option>
+          <option value="fast">Spring fast track &middot; 6 &times; 2 hr</option>
+        </select>
+        <select class="pick" id="cSession" aria-label="Session"></select>
+        <span class="sp"></span>
+        <button class="btn" id="cBack" title="Back one block">&larr; Block</button>
+        <button class="btn primary" id="cStart">Start</button>
+        <button class="btn" id="cNext" title="Skip to next block">Block &rarr;</button>
+        <button class="btn" id="cAdd" title="Give this block one more minute">+1 min</button>
+        <button class="btn" id="cReset">Reset</button>
+      </div>
+      <div class="row" style="margin-top:10px; justify-content:space-between">
+        <span class="keys"><kbd>Space</kbd> start/pause &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> blocks</span>
+        <span class="faint" id="coachGate"></span>
+      </div>
+    </section>
+    <div class="grid2">
+      <div class="stack">
+        <section class="card script" id="coachNow"></section>
+        <section class="card">
+          <div class="row" style="justify-content:space-between">
+            <span class="lbl">Station board</span>
+            <span class="faint">Spot puts a kid on every family's screen</span>
+          </div>
+          <div class="tablewrap" style="margin-top:8px"><table class="r" id="roster"></table></div>
+          <div class="addrow">
+            <input class="field" id="rName" maxlength="24" placeholder="First name + last initial">
+            <select class="pick" id="rStation" aria-label="Station"><option value="1">Station 1</option><option value="2">Station 2</option><option value="3">Station 3</option></select>
+            <select class="pick" id="rSeat" aria-label="Seat"><option value="0">Seat A</option><option value="1">Seat B</option><option value="2">Seat C</option><option value="3">Seat D</option></select>
+            <button class="btn" id="rAdd">Add kid</button>
+          </div>
+          <p class="faint" style="margin:8px 0 0">First name and last initial only. Every family with the class code can see the board.</p>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="card" id="coachRoom"></section>
+        <section class="card">
+          <label class="lbl" for="castIn">Message every screen</label>
+          <div class="row" style="margin-top:6px; flex-wrap:nowrap">
+            <input class="field" id="castIn" maxlength="160" placeholder="Great Spotlight, Station 2!">
+            <button class="btn primary" id="castSend">Send</button>
+          </div>
+          <button class="btn sm" id="castClear" style="margin-top:8px">Clear banner</button>
+        </section>
+        <section class="card">
+          <span class="lbl">Glow note to one family</span>
+          <div class="row" style="margin-top:8px; flex-wrap:nowrap">
+            <select class="pick" id="gKid" aria-label="Kid"></select>
+          </div>
+          <textarea class="field" id="gText" maxlength="200" rows="2" style="margin-top:8px" placeholder="Swapped the bass right on the phrase. Ask her to show you!"></textarea>
+          <div class="row" style="margin-top:8px"><button class="btn primary" id="gSave">Save glow</button><span class="faint" id="gMsg"></span></div>
+        </section>
+        <section class="card" id="coachFamilies" hidden></section>
+        <section class="card" id="coachUp"></section>
+        <section class="card" id="coachStamps"></section>
+      </div>
+    </div>
+  </main>
+
+  <!-- PARENT -->
+  <main id="view-parent" class="stack" hidden>
+    <div class="controls">
+      <label class="lbl" for="pWho">Following</label>
+      <select class="pick" id="pWho"></select>
+      <span class="faint" id="pHere"></span>
+    </div>
+    <div class="grid2">
+      <div class="stack">
+        <section class="card pnow" id="parentNow"></section>
+        <section class="card">
+          <span class="lbl">Minute by minute</span>
+          <ol class="tl" id="parentTl" style="margin-top:8px"></ol>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="card" id="parentKid"></section>
+        <section class="card" id="parentPass"></section>
+        <section class="card" id="parentRecap"></section>
+        <section class="card">
+          <span class="lbl">Messages from the coach</span>
+          <ul class="feed" id="feed" style="margin-top:8px"></ul>
+        </section>
+        <section class="card">
+          <details class="about">
+            <summary>How the Lab works</summary>
+            <h4>The shape of every session</h4>
+            <ul>
+              <li>Nine short blocks with a movement break in the middle. Short and predictable is by design: it frees attention for the music.</li>
+              <li>Groups of four share a controller. Jobs (DJ, Co-pilot, Hype, Logger) rotate every 3 minutes 45 seconds, so everyone gets a turn on the decks.</li>
+              <li>Mistakes are called &ldquo;Data!&rdquo; When a mix crashes, the DJ names one reason and tries again.</li>
+              <li>No grades and no paper tests. Kids rate themselves and show skills to a mentor for Passport stamps.</li>
+            </ul>
+            <h4>Safety</h4>
+            <ul>
+              <li>Headphone volume is capped on every laptop. Earplugs are available.</li>
+              <li>Clean lyrics only: radio edits, checked when crates are built.</li>
+              <li>Every adult mentor is background-checked. Two adults are always in the room.</li>
+            </ul>
+            <h4>The gear</h4>
+            <ul>
+              <li>Hercules DJControl Inpulse 300 MK2 controllers. Lights under the jog wheels show kids which way to adjust, so they learn by eye before ear.</li>
+            </ul>
+            <h4>Where it leads</h4>
+            <ul>
+              <li>Graduation gives a guaranteed Open Decks slot at Rainbow Wednesdays, then the Youth Showcase open call, then the Theme Clash semifinals and Finale.</li>
+            </ul>
+          </details>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div>
+    <h2 id="ovTitle">STAND UP</h2>
+    <p id="ovText"></p>
+    <div class="big" id="ovTime"></div>
+    <button class="btn primary" id="ovClose">Back to the decks</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/dj-lab/live/assets/session-data.js"></script>
+<script src="/dj-lab/live/assets/app.js"></script>
+
+</body></html>

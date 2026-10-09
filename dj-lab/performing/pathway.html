@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>The performance pathway | Rainbow DJ Lab</title>
+<meta name="description" content="Each performance step from in-class Spotlight to the Theme Clash Finale. Every step is opt-in, and a child can stop at any one of them.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r7); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/performing/" aria-current="page">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/performing/">Performing</a> &rsaquo; The performance pathway</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Performing pages"><div class="lbl">Performing</div><a href="/dj-lab/performing/">Performing at the Rainbow DJ Lab</a><a href="/dj-lab/performing/pathway.html" aria-current="page">The performance pathway</a><a href="/dj-lab/performing/opt-out.html">Opting out of performing</a><a href="/dj-lab/performing/event-day-supervision.html">Event-day supervision</a><a href="/dj-lab/performing/sound-crowd-exposure.html">Sound and crowd exposure</a><a href="/dj-lab/performing/transportation.html">Transportation to performances</a><a href="/dj-lab/performing/stage-freeze-protocol.html">Stage freeze protocol</a><a href="/dj-lab/performing/graduation-guarantee.html">Graduation guarantee</a></nav>
+    <article id="main">
+<h1>The performance pathway</h1>
+<p class="lede">Each performance step from in-class Spotlight to the Theme Clash Finale. Every step is opt-in, and a child can stop at any one of them.</p>
+<h2 id="how-the-pathway-works">How the pathway works</h2>
+<p>The pathway is a ladder, not a requirement. Each step is a little bigger than the one before. A child can stay on any step for as long as they like, skip a step, or step off completely. Going further is never needed to finish the course or to earn Passport stamps.</p>
+<p>Before your child takes <strong>any</strong> step beyond in-class Spotlight, a parent or guardian must have signed the <a href="/dj-lab/enroll/forms/performance-consent.html">performance consent form</a>. Your child then says yes again, in their own words, before each performance.</p>
+<h2 id="the-steps">The steps</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Where</th>
+<th>Who watches</th>
+<th>How long</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Spotlight</td>
+<td>In class, every session (minutes 70–82)</td>
+<td>Classmates and coaches</td>
+<td>60 seconds on the main speaker</td>
+<td>Part of the written curriculum</td>
+</tr>
+<tr>
+<td>2. Rainbow Showcase</td>
+<td>Session 14, the last class</td>
+<td>Classmates, coaches and families</td>
+<td>5 minutes with a partner, or a 10-minute set</td>
+<td>Part of the written curriculum</td>
+</tr>
+<tr>
+<td>3. Open Decks</td>
+<td>Rainbow Wednesdays, the free summer DJ series</td>
+<td>The public at the park</td>
+<td>Set length confirmed before the event</td>
+<td>Guaranteed slot <strong>when Rainbow Wednesdays runs</strong>. The series itself is proposed.</td>
+</tr>
+<tr>
+<td>4. Youth Showcase open call</td>
+<td>A proposed stage show</td>
+<td>The public</td>
+<td>Confirmed before the event</td>
+<td><strong>Proposed.</strong> Not yet approved.</td>
+</tr>
+<tr>
+<td>5. Theme Clash semifinals and Finale</td>
+<td>Proposed stage shows</td>
+<td>The public</td>
+<td>Confirmed before the event</td>
+<td><strong>Proposed.</strong> Not yet approved.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step-1-spotlight-in-class">Step 1: Spotlight (in class)</h2>
+<ul>
+<li>Spotlight happens near the end of each 90-minute session.</li>
+<li><strong>Volunteers only.</strong> A child raises their hand to play 60 seconds on the main speaker. Coaches never call on a child who didn't sign up.</li>
+<li>Classmates give each performer one <strong>glow</strong> (something that worked) and one <strong>grow</strong> (one idea).</li>
+<li>Children who don't play still take part by listening and giving glows.</li>
+</ul>
+<h2 id="step-2-rainbow-showcase-session-14">Step 2: Rainbow Showcase (session 14)</h2>
+<ul>
+<li>Families are invited to watch the last class.</li>
+<li>Children choose their own challenge level:</li>
+<li><strong>Mild:</strong> play 5 minutes with a partner.</li>
+<li><strong>Medium:</strong> play your own 10-minute set.</li>
+<li><strong>Spicy:</strong> play your set with a Theme Clash and an MC line.</li>
+<li>A child who doesn't want to play can still be part of the day. They can be the Hype or Logger for a friend, or write glow cards for the performers. They still graduate.</li>
+<li>Every performer gets glow cards.</li>
+</ul>
+<h2 id="step-3-open-decks-at-rainbow-wednesdays">Step 3: Open Decks at Rainbow Wednesdays</h2>
+<ul>
+<li>Graduating from the course earns a <strong>guaranteed Open Decks slot</strong> at Rainbow Wednesdays. The guarantee applies when Rainbow Wednesdays runs. That series is still <strong>proposed</strong>. See <a href="/dj-lab/performing/graduation-guarantee.html">Graduation guarantee</a>.</li>
+<li>Using the slot is optional. A family can decline it, or save it for later in the season if one is offered.</li>
+<li>All <a href="/dj-lab/performing/event-day-supervision.html">event-day supervision</a> rules apply.</li>
+</ul>
+<h2 id="step-4-youth-showcase-open-call">Step 4: Youth Showcase open call</h2>
+<ul>
+<li>An open call is an invitation to apply. It is not an assignment.</li>
+<li>The Youth Showcase is a <strong>proposed</strong> stage show and is not yet approved. We will not share dates, a venue or a lineup until they are confirmed.</li>
+</ul>
+<h2 id="step-5-theme-clash-semifinals-and-finale">Step 5: Theme Clash semifinals and Finale</h2>
+<ul>
+<li>The Theme Clash is the creative heart of the course: a DJ drops a cartoon or game theme into a hit song. Kids practice it in session 11 (Indigo: Theme Clash Lab).</li>
+<li>The semifinals and Finale are <strong>proposed</strong> stage shows and are not yet approved.</li>
+<li>"Clash" here means a friendly music contest. No child is ever put down, booed or ranked in front of the crowd by Lab staff.</li>
+</ul>
+<h2 id="rules-that-apply-at-every-step">Rules that apply at every step</h2>
+<ul>
+<li><strong>Consent first:</strong> a signed <a href="/dj-lab/enroll/forms/performance-consent.html">performance consent form</a> for anything beyond class Spotlight.</li>
+<li><strong>The child's yes, every time:</strong> asked privately, so no one says yes because of peer pressure.</li>
+<li><strong>Stop any time:</strong> see <a href="/dj-lab/performing/opt-out.html">Opting out</a>.</li>
+<li><strong>A named Lab adult nearby:</strong> see <a href="/dj-lab/performing/event-day-supervision.html">Event-day supervision</a>.</li>
+<li><strong>Clean lyrics only:</strong> radio edits, checked when crates are built.</li>
+<li><strong>A safety plan for hard moments:</strong> see <a href="/dj-lab/performing/stage-freeze-protocol.html">Stage freeze protocol</a>.</li>
+<li><strong>Photos and video are separate:</strong> they are covered by the <a href="/dj-lab/enroll/forms/media-consent.html">media consent form</a>. Saying yes to performing is not saying yes to being filmed or photographed by the Lab.</li>
+</ul>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="/dj-lab/about/curriculum.html">Curriculum</a></li>
+<li><a href="/dj-lab/journey/">The student journey</a></li>
+<li><a href="/dj-lab/families/">For families</a></li>
+</ul>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>

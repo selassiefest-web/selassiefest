@@ -1,0 +1,13 @@
+# Link check for the Rainbow DJ Lab pages. Documentation copy: to activate,
+# move it to the repository's root .github/workflows folder. Locally, run
+#   python dj-lab/_build/check_links.py
+name: Rainbow DJ Lab link check
+on: workflow_dispatch
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install markdown && python dj-lab/_build/build.py && python dj-lab/_build/check_links.py

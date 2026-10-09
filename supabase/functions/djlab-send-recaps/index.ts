@@ -61,7 +61,7 @@ function recapHtml(kidName: string, guardian: string | null, l: Lesson, ci: Reco
       <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#1F7A3E;">Ask at dinner</div>
       <div style="font-size:15px;font-weight:bold;">${esc(l.home)}</div>
     </div>
-    <p style="font-size:13px;color:#555;">Follow the next class live at <a href="https://selassiefest.com/dj-lab/#parent">selassiefest.com/dj-lab</a>. Questions? Reply to this email or call Stephen Henry at 414-909-3279.</p>
+    <p style="font-size:13px;color:#555;">Follow the next class live at <a href="https://selassiefest.com/dj-lab/live/#parent">selassiefest.com/dj-lab/live</a>. Questions? Reply to this email or call Stephen Henry at 414-909-3279.</p>
     <p style="font-size:11px;color:#999;">Rainbow DJ Lab &middot; Full Spectrum at Rainbow Beach &middot; Ras Tafari Inc., a 501(c)(3) nonprofit. You're getting this because you asked for session recaps when you registered. Reply "stop" to opt out.</p>
   </div>`;
 }

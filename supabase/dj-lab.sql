@@ -336,3 +336,132 @@ language sql security definer set search_path = public stable as $$
 $$;
 revoke all on function djlab_recap_rows(uuid, text) from public, anon, authenticated;
 grant execute on function djlab_recap_rows(uuid, text) to service_role;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Safety upgrade (10/8/2026): fuller registration (authorized pickup,
+-- medical/allergy, two emergency contacts, consents) and a sign-out log.
+-- All of it is coach-only; none of it is ever returned by djlab_state.
+-- ─────────────────────────────────────────────────────────────────────────
+alter table djlab_registrations add column if not exists details jsonb not null default '{}'::jsonb;
+  -- {age_group, medical, allergies, epinephrine, emergency:[{name,relationship,phone}x2],
+  --  pickup:[{name,relationship,phone}], self_signout, media_consent, performance_consent,
+  --  tracking_consent, conduct_agreed, custody_note}
+alter table djlab_kids add column if not exists details jsonb not null default '{}'::jsonb;
+
+-- Copy the registration details onto the kid at approval.
+create or replace function djlab_coach_approve(p_session uuid, p_cohort uuid, p_reg uuid, p_station int, p_seat int, p_approve boolean)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; r djlab_registrations; k djlab_kids;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into r from djlab_registrations where id = p_reg and status = 'pending';
+  if r.id is null then raise exception 'registration not found'; end if;
+  if not p_approve then
+    update djlab_registrations set status = 'declined' where id = p_reg;
+    return jsonb_build_object('declined', true);
+  end if;
+  insert into djlab_kids (cohort_id, name, station, seat, guardian_name, guardian_email, guardian_phone, recap_opt_in, registration_id, details)
+  values (p_cohort, left(r.kid_first_name || coalesce(' ' || nullif(upper(left(r.kid_last_initial,1)),'') || '.',''),24), coalesce(p_station,1), coalesce(p_seat,0),
+          r.guardian_name, lower(trim(r.guardian_email)), r.guardian_phone, r.recap_opt_in, r.id,
+          r.details || jsonb_build_object('age', r.kid_age, 'accommodations', r.accommodations, 'emergency_contact_legacy', r.emergency_contact,
+                                          'photo_consent', r.photo_consent))
+  returning * into k;
+  update djlab_registrations set status = 'approved' where id = p_reg;
+  perform djlab_bump(p_cohort);
+  return jsonb_build_object('id', k.id, 'name', k.name);
+end;
+$$;
+grant execute on function djlab_coach_approve(uuid, uuid, uuid, int, int, boolean) to anon, authenticated;
+
+-- Coach-only safety roster: everything needed at the door and in an emergency.
+create or replace function djlab_coach_safety_roster(p_session uuid, p_cohort uuid)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record;
+begin
+  select * into u from djlab_coach(p_session);
+  return coalesce((select jsonb_agg(jsonb_build_object(
+      'id', k.id, 'name', k.name, 'station', k.station, 'here', k.here,
+      'guardian', k.guardian_name, 'guardian_phone', k.guardian_phone,
+      'pickup', coalesce(k.details->'pickup','[]'::jsonb), 'self_signout', coalesce((k.details->>'self_signout')::boolean,false),
+      'emergency', coalesce(k.details->'emergency','[]'::jsonb), 'custody_note', k.details->>'custody_note',
+      'medical', k.details->>'medical', 'allergies', k.details->>'allergies', 'epinephrine', coalesce((k.details->>'epinephrine')::boolean,false),
+      'accommodations', k.details->>'accommodations',
+      'performance_consent', coalesce((k.details->>'performance_consent')::boolean,false),
+      'media_consent', coalesce((k.details->>'media_consent')::boolean, coalesce((k.details->>'photo_consent')::boolean,false)),
+      'signouts', coalesce((select jsonb_agg(jsonb_build_object('unit',s.unit,'by',s.picked_up_by,'rel',s.relationship,'id_checked',s.id_checked,'self',s.self_signout,'coach',s.coach_name,'at',s.created_at) order by s.created_at desc)
+                            from djlab_signouts s where s.kid_id = k.id), '[]'::jsonb)
+    ) order by k.station, k.seat, k.name) from djlab_kids k where k.cohort_id = p_cohort), '[]'::jsonb);
+end;
+$$;
+
+create table if not exists djlab_signouts (
+  id uuid primary key default gen_random_uuid(),
+  kid_id uuid not null references djlab_kids(id) on delete cascade,
+  cohort_id uuid not null,
+  unit text not null,
+  picked_up_by text not null,
+  relationship text,
+  id_checked boolean not null default false,
+  self_signout boolean not null default false,
+  coach_name text not null,
+  kid_name text,               -- stamped for the parent email
+  guardian_email text,         -- stamped for the parent email; private table
+  guardian_name text,
+  created_at timestamptz not null default now()
+);
+alter table djlab_signouts enable row level security;
+drop trigger if exists djlab_signouts_notify on djlab_signouts;
+create trigger djlab_signouts_notify after insert on djlab_signouts
+  for each row execute function notify_submission_webhook();
+grant execute on function djlab_coach_safety_roster(uuid, uuid) to anon, authenticated;
+
+-- Record a release. Refuses anyone not on the authorized list, refuses a
+-- release without an ID check, and refuses self sign-out without written
+-- permission on file.
+create or replace function djlab_coach_signout(p_session uuid, p_cohort uuid, p_kid uuid, p_unit text,
+                                               p_picked_up_by text, p_id_checked boolean, p_self boolean)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; k djlab_kids; v_rel text; v_ok boolean := false;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into k from djlab_kids where id = p_kid and cohort_id = p_cohort;
+  if k.id is null then raise exception 'unknown child'; end if;
+  if coalesce(p_self,false) then
+    if not coalesce((k.details->>'self_signout')::boolean,false) then raise exception 'no written permission on file for this child to sign out alone'; end if;
+    v_ok := true;
+  else
+    if not coalesce(p_id_checked,false) then raise exception 'check photo ID before release'; end if;
+    select e->>'relationship' into v_rel from jsonb_array_elements(coalesce(k.details->'pickup','[]'::jsonb)) e
+      where lower(trim(e->>'name')) = lower(trim(p_picked_up_by)) limit 1;
+    if v_rel is null and lower(trim(coalesce(k.guardian_name,''))) = lower(trim(p_picked_up_by)) then v_rel := 'Parent/guardian'; end if;
+    if v_rel is null then raise exception 'not on the authorized pickup list: do not release; call the parent'; end if;
+    v_ok := true;
+  end if;
+  insert into djlab_signouts (kid_id, cohort_id, unit, picked_up_by, relationship, id_checked, self_signout, coach_name, kid_name, guardian_email, guardian_name)
+  values (k.id, p_cohort, p_unit, case when p_self then k.name || ' (self sign-out)' else trim(p_picked_up_by) end, coalesce(v_rel,'Self'),
+          coalesce(p_id_checked,false), coalesce(p_self,false), u.v_name, k.name, k.guardian_email, k.guardian_name);
+  return jsonb_build_object('ok', v_ok);
+end;
+$$;
+grant execute on function djlab_coach_signout(uuid, uuid, uuid, text, text, boolean, boolean) to anon, authenticated;
+
+-- Add an adult to a child's authorized-pickup list after the parent asks IN
+-- WRITING (email or text from the number on file) and the coach has called
+-- back to confirm. The request source is stored with the entry.
+create or replace function djlab_coach_add_pickup(p_session uuid, p_cohort uuid, p_kid uuid, p_name text, p_relationship text, p_phone text, p_written_request text)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; k djlab_kids;
+begin
+  select * into u from djlab_coach(p_session);
+  if coalesce(trim(p_name),'') = '' or coalesce(trim(p_written_request),'') = '' then
+    raise exception 'name and the written request (how and when the parent asked) are required';
+  end if;
+  update djlab_kids set details = jsonb_set(details, '{pickup}', coalesce(details->'pickup','[]'::jsonb) || jsonb_build_array(jsonb_build_object(
+      'name', left(trim(p_name),80), 'relationship', left(coalesce(p_relationship,''),40), 'phone', left(coalesce(p_phone,''),30),
+      'added_by', u.v_name, 'added_at', now(), 'written_request', left(p_written_request,200))))
+  where id = p_kid and cohort_id = p_cohort returning * into k;
+  if k.id is null then raise exception 'unknown child'; end if;
+  return jsonb_build_object('ok', true);
+end;
+$$;
+grant execute on function djlab_coach_add_pickup(uuid, uuid, uuid, text, text, text, text) to anon, authenticated;

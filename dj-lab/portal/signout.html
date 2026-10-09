@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rainbow DJ Lab Sign-out</title>
+<meta name="description" content="Coach tool: release each child only to an authorized adult after a photo ID check; every release is logged and emailed to the parent.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/dj-lab/portal/assets/portal.css">
+</head>
+<body>
+<div class="stripe"></div>
+<div class="wrap">
+  <header>
+    <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/portal/">Portal</a> &rsaquo; Sign-out</div>
+    <h1>Sign-out &amp; safety roster</h1>
+    <p class="muted" id="sub">Coaches only.</p>
+  </header>
+  <div class="note"><b>The rule:</b> release a child only to their parent/guardian or an adult on their list, after checking photo ID. Not on the list? <b>Do not release.</b> Keep the child with two adults and call the parent. Adult seems impaired? See the <a href="/dj-lab/safety/impaired-parent-protocol.html">impaired adult protocol</a>.</div>
+  <div class="row" style="margin:6px 0 4px">
+    <input id="q" placeholder="Find a child" style="flex:1; min-width:180px; padding:9px 12px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--surface); color:inherit; font:inherit">
+    <label class="faint"><input type="checkbox" id="onlyHere" checked> Checked in today only</label>
+    <button class="btn" id="refresh">Refresh</button>
+  </div>
+  <div id="list"><div class="card"><p class="faint">Loading&hellip;</p></div></div>
+</div>
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/dj-lab/portal/assets/auth.js"></script>
+<script src="/dj-lab/portal/assets/db.js"></script>
+<script src="/dj-lab/portal/assets/portal.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); }, esc=DJLabPortal.esc;
+  var coach=DJLabAuth.coach(), code=DJLabAuth.code(), cohort=null, unit=null, kids=[];
+  if(!coach || !code){
+    $("list").innerHTML='<div class="card"><p>Sign in as a coach and open your class first, in the <a href="/dj-lab/live/#coach">live class app</a>. Then come back here on the same device.</p></div>';
+    return;
+  }
+  function today(ts){ var d=new Date(ts), n=new Date(); return d.toDateString()===n.toDateString(); }
+  function load(){
+    DJLabDB.state(code).then(function(st){
+      if(!st || st.error) throw new Error("That class code isn't active.");
+      cohort=st.cohort; var L=st.live||{}; unit=(L.mode==="fast"?"w"+(L.ws||1):"s"+(L.session||1));
+      $("sub").textContent="Class: "+cohort.name+" · code "+code+" · "+(L.mode==="fast"?"Workshop "+(L.ws||1):"Session "+(L.session||1))+" · signed in as "+coach.name;
+      return DJLabDB.safetyRoster(coach.token, cohort.id);
+    }).then(function(r){ kids=r||[]; render(); }).catch(function(e){
+      var m=(e&&e.message)||"error";
+      $("list").innerHTML='<div class="card alert">'+esc(/session/i.test(m)?"Your coach sign-in ended. Sign in again in the live app.":m)+'</div>';
+    });
+  }
+  function render(){
+    var q=$("q").value.trim().toLowerCase(), only=$("onlyHere").checked;
+    var rows=kids.filter(function(k){ return (!q || k.name.toLowerCase().indexOf(q)>=0) && (!only || (k.here && k.here[unit])); });
+    if(!rows.length){ $("list").innerHTML='<div class="card"><p class="faint">'+(only?"No one is checked in for this session yet. Uncheck \"Checked in today only\" to see everyone.":"No children match.")+'</p></div>'; return; }
+    $("list").innerHTML=rows.map(function(k){
+      var out=(k.signouts||[]).filter(function(s){ return s.unit===unit && today(s.at); })[0];
+      var adults=[]; if(k.guardian) adults.push({name:k.guardian, relationship:"Parent/guardian"}); (k.pickup||[]).forEach(function(p){ if(p.name) adults.push(p); });
+      var badges=(k.here&&k.here[unit]?'<span class="badge good">Checked in '+new Date(k.here[unit]).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+'</span>':'<span class="badge">Not checked in</span>')+
+        (k.allergies && !/^none$/i.test(k.allergies)?'<span class="badge bad">Allergy: '+esc(k.allergies)+'</span>':'')+
+        (k.epinephrine?'<span class="badge bad">EpiPen</span>':'')+(k.medical?'<span class="badge warn">Medical note</span>':'')+
+        (!k.performance_consent?'<span class="badge">No performing</span>':'')+(!k.media_consent?'<span class="badge">No photos</span>':'');
+      var body = out ? '<p class="badge good" style="font-size:.9rem;margin-top:10px">Signed out '+new Date(out.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+' to '+esc(out.by)+(out.id_checked?' · ID checked':'')+' · by '+esc(out.coach)+'</p>'
+        : '<label class="chk"><input type="checkbox" data-id-check="'+esc(k.id)+'"> I checked this adult\'s photo ID</label>'+
+          '<div class="who">'+adults.map(function(a){ return '<button class="btn good" data-release="'+esc(k.id)+'" data-name="'+esc(a.name)+'" disabled>'+esc(a.name)+' <span style="font-weight:500">('+esc(a.relationship||"")+')</span></button>'; }).join("")+
+          (k.self_signout?'<button class="btn" data-self="'+esc(k.id)+'">Leaves on own (written permission)</button>':'')+
+          '<button class="btn" data-stranger="'+esc(k.id)+'">Someone else is here</button></div><div data-msg="'+esc(k.id)+'"></div>';
+      return '<div class="card kid"><div class="row" style="justify-content:space-between"><h3>'+esc(k.name)+'</h3><span class="faint">Station '+k.station+'</span></div>'+
+        '<div style="margin-top:6px">'+badges+'</div>'+(k.custody_note?'<div class="alert">Custody note: '+esc(k.custody_note)+'</div>':'')+body+
+        (out?'':'<details><summary>Add an authorized adult (parent asked in writing)</summary><div class="row" style="margin-top:8px"><input data-pn="'+esc(k.id)+'" placeholder="Adult&#39;s full name" style="flex:2;min-width:150px;padding:8px;border-radius:8px;border:1.5px solid var(--line-strong);background:var(--bg);color:inherit"><input data-pr="'+esc(k.id)+'" placeholder="Relationship" style="flex:1;min-width:110px;padding:8px;border-radius:8px;border:1.5px solid var(--line-strong);background:var(--bg);color:inherit"><input data-pp="'+esc(k.id)+'" placeholder="Phone" style="flex:1;min-width:110px;padding:8px;border-radius:8px;border:1.5px solid var(--line-strong);background:var(--bg);color:inherit"></div><input data-pw="'+esc(k.id)+'" placeholder="Written request: e.g. text from parent&#39;s number on file, 5:40 pm; I called back to confirm" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1.5px solid var(--line-strong);background:var(--bg);color:inherit"><button class="btn" style="margin-top:8px" data-addpu="'+esc(k.id)+'">Add to pickup list</button><p class="faint">Only after a written request (email or text from the number on file) and a call back to that number. Never on a phone call alone, and never on the word of the adult at the door.</p></details>')+
+        '<details><summary>Emergency info</summary><dl class="info"><dt>Parent/guardian</dt><dd>'+esc(k.guardian||"")+(k.guardian_phone?' · <a href="tel:'+esc(String(k.guardian_phone).replace(/[^0-9+]/g,""))+'">'+esc(k.guardian_phone)+'</a>':'')+'</dd>'+
+        (k.emergency||[]).map(function(e,i){ return '<dt>Emergency '+(i+1)+'</dt><dd>'+esc(e.name)+' ('+esc(e.relationship||"")+') · <a href="tel:'+esc(String(e.phone||"").replace(/[^0-9+]/g,""))+'">'+esc(e.phone||"")+'</a></dd>'; }).join("")+
+        (k.medical?'<dt>Medical</dt><dd>'+esc(k.medical)+'</dd>':'')+(k.accommodations?'<dt>Learns best</dt><dd>'+esc(k.accommodations)+'</dd>':'')+'</dl></details></div>';
+    }).join("");
+  }
+  document.addEventListener("change", function(e){
+    var id=e.target.getAttribute && e.target.getAttribute("data-id-check"); if(!id) return;
+    document.querySelectorAll('[data-release="'+id+'"]').forEach(function(b){ b.disabled=!e.target.checked; });
+  });
+  document.addEventListener("click", function(e){
+    var ad=e.target.closest("[data-addpu]");
+    if(ad){ var kid=ad.getAttribute("data-addpu"), g=function(a){ var el=document.querySelector('['+a+'="'+kid+'"]'); return el?el.value.trim():""; };
+      if(!g("data-pn")||!g("data-pw")){ alert("Enter the adult's name and how the parent asked in writing."); return; }
+      DJLabDB.rpc("djlab_coach_add_pickup",{p_session:coach.token,p_cohort:cohort.id,p_kid:kid,p_name:g("data-pn"),p_relationship:g("data-pr"),p_phone:g("data-pp"),p_written_request:g("data-pw")})
+        .then(load).catch(function(err){ alert(err.message||"Couldn't add."); }); return; }
+    var b=e.target.closest("[data-release],[data-self],[data-stranger]"); if(!b) return;
+    var id=b.getAttribute("data-release")||b.getAttribute("data-self")||b.getAttribute("data-stranger"), k=kids.filter(function(x){ return x.id===id; })[0], box=document.querySelector('[data-msg="'+id+'"]');
+    if(b.hasAttribute("data-stranger")){
+      box.innerHTML='<div class="alert">Do not release '+esc(k.name)+'. Keep them with two adults and call '+esc(k.guardian||"the parent")+(k.guardian_phone?' at <a href="tel:'+esc(String(k.guardian_phone).replace(/[^0-9+]/g,""))+'">'+esc(k.guardian_phone)+'</a>':'')+'. A parent can only add an adult in writing, not by phone on the spot.</div>';
+      return;
+    }
+    var self=b.hasAttribute("data-self"), name=b.getAttribute("data-name")||"", idc=self?false:!!document.querySelector('[data-id-check="'+id+'"]').checked;
+    if(!self && !idc){ box.innerHTML='<div class="alert">Check photo ID first.</div>'; return; }
+    if(self && !confirm(k.name+" will leave on their own under the parent's written permission. Continue?")) return;
+    b.disabled=true;
+    DJLabDB.signout(coach.token, cohort.id, id, unit, name, idc, self).then(function(){ load(); }).catch(function(err){
+      b.disabled=false; box.innerHTML='<div class="alert">'+esc(err.message||"Couldn't record the sign-out.")+'</div>';
+    });
+  });
+  $("q").addEventListener("input", render); $("onlyHere").addEventListener("change", render); $("refresh").addEventListener("click", load);
+  load();
+})();
+</script>
+</body>
+</html>

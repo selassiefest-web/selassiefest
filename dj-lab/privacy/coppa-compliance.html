@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>COPPA Compliance | Rainbow DJ Lab</title>
+<meta name="description" content="How Rainbow DJ Lab follows the federal Children&#x27;s Online Privacy Protection Act for children under 13.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r6); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/" aria-current="page">Privacy</a><a href="/dj-lab/performing/">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/privacy/">Privacy</a> &rsaquo; COPPA Compliance</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Privacy pages"><div class="lbl">Privacy</div><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/privacy/data-privacy-statement.html">Data Privacy Statement</a><a href="/dj-lab/privacy/coppa-compliance.html" aria-current="page">COPPA Compliance</a><a href="/dj-lab/privacy/third-party-vendors.html">Third-Party Vendors</a><a href="/dj-lab/privacy/breach-notification.html">Breach Notification</a><a href="/dj-lab/privacy/retention-deletion.html">Retention and Deletion</a><a href="/dj-lab/privacy/parent-data-rights.html">Your Data Rights</a><a href="/dj-lab/privacy/audit-log.html">Access Records and Audit Log</a><a href="/dj-lab/privacy/photos-recordings.html">Photos and Recordings</a></nav>
+    <article id="main">
+<h1>COPPA Compliance</h1>
+<p class="lede">How Rainbow DJ Lab follows the federal Children&#x27;s Online Privacy Protection Act for children under 13.</p>
+<h2 id="what-coppa-is">What COPPA is</h2>
+<p>The <strong>Children's Online Privacy Protection Act (COPPA)</strong> is a federal law enforced by the Federal Trade Commission (FTC). Its rule applies to websites and online services that collect personal information from children under 13. In general, it requires:</p>
+<ul>
+<li>a clear privacy notice</li>
+<li><strong>verifiable parental consent</strong> before collecting personal information from a child under 13</li>
+<li>letting parents <strong>review</strong> their child's information, <strong>have it deleted</strong>, and <strong>stop further use or collection</strong></li>
+<li>not making a child give more information than is reasonably necessary to take part in an activity</li>
+<li>keeping children's information only as long as reasonably necessary, then deleting it securely</li>
+<li>keeping it confidential and secure, and releasing it only to providers that can do the same</li>
+</ul>
+<p>The FTC amended the COPPA Rule in 2025. According to the FTC, the amendments include requiring <strong>separate</strong> parental consent before children's information is disclosed to third parties (for example, for advertising), and making clear that information can't be kept indefinitely.</p>
+<p>Children in the Lab, including Junior DJs (8–11) and some Little DJs (5–7) and Empress Decks members, are under 13 and enter activity into our class app. So we treat the Lab as covered by COPPA and follow it.</p>
+<blockquote>
+<p><strong>Status:</strong> The Lab is proposed and not running yet. These are policies Ras Tafari Inc. commits to; formal board adoption is a <a href="/dj-lab/governance/index.html">launch requirement</a>.</p>
+</blockquote>
+<h2 id="how-we-comply">How we comply</h2>
+<h3 id="1-notice">1. Notice</h3>
+<p>Our <a href="/dj-lab/privacy/data-privacy-statement.html">data privacy statement</a> explains what we collect, how we use it, who sees it, and your rights. You see it before you register.</p>
+<h3 id="2-verifiable-parental-consent-before-the-child-uses-the-app">2. Verifiable parental consent, before the child uses the app</h3>
+<ul>
+<li>A <strong>parent or guardian</strong> registers the child and gives consent. Children don't register themselves.</li>
+<li>A child doesn't appear on the class board until a coach <strong>approves the registration</strong>. Before approval, a coach confirms the registration with the parent or guardian directly, by phone or in person at check-in with photo ID.</li>
+<li>The Lab's forms are also available on paper with a signature. See <a href="/dj-lab/enroll/forms/">enrollment forms</a>.</li>
+</ul>
+<h3 id="3-collecting-only-whats-needed">3. Collecting only what's needed</h3>
+<p>From the child, the app collects only in-class learning activity: station, check-in time, prediction, challenge level, self-rating, "Next time I'll…", "Data!" count, Mix Log, Passport stamps and coach notes.</p>
+<p>Children <strong>don't</strong> create accounts or give their full name, address, phone number, email, photo, voice recording or location in the app. Kids appear by <strong>first name and last initial</strong>. Coaches remind kids not to type personal details in free-text lines.</p>
+<h3 id="4-no-disclosure-to-third-parties">4. No disclosure to third parties</h3>
+<ul>
+<li>We <strong>don't</strong> sell or share children's information, and don't use it for advertising.</li>
+<li>Children's information goes only to the service providers that run the app (see <a href="/dj-lab/privacy/third-party-vendors.html">third-party vendors</a>), to emergency services when a child needs help, and to authorities when the law requires.</li>
+<li>If we ever wanted to share children's information with a third party for any other purpose, we would first ask for your <strong>separate</strong> consent. We have no such plans.</li>
+</ul>
+<p><strong>About the class board.</strong> Families in the same class who have the class code can see each child's first name, last initial and in-class activity. This is part of the class activity, and we explain it before you give consent. If you'd rather your child's entries weren't visible to other families, tell us before class starts and we'll talk through options with you.</p>
+<h3 id="5-your-rights-as-a-parent">5. Your rights as a parent</h3>
+<p>You may <strong>review</strong> your child's information, <strong>correct</strong> it, <strong>have it deleted</strong>, and <strong>withdraw consent</strong> to further collection at any time. We respond within 10 business days. See <a href="/dj-lab/privacy/parent-data-rights.html">your data rights</a>.</p>
+<h3 id="6-retention-and-deletion">6. Retention and deletion</h3>
+<p>Child activity data is deleted within 90 days after the season ends, unless your family asks to keep your child's Passport. See <a href="/dj-lab/privacy/retention-deletion.html">retention and deletion</a>.</p>
+<h3 id="7-security">7. Security</h3>
+<ul>
+<li>Database tables are locked to the public. The family page gets only the class-board fields.</li>
+<li>Private family data goes only to coaches who sign in with a one-time emailed link.</li>
+<li>Every adult with coach access completes screening before their first class.</li>
+<li>A written information-security and data-retention program, with a full access audit log, is part of our launch work. See <a href="/dj-lab/privacy/audit-log.html">access records and audit log</a>.</li>
+</ul>
+<h2 id="what-we-dont-do">What we don't do</h2>
+<ul>
+<li>ads or behavioral advertising</li>
+<li>tracking pixels or analytics cookies</li>
+<li>photos or video in the app</li>
+<li>biometrics (we collect none, so the Illinois Biometric Information Privacy Act, 740 ILCS 14, doesn't come into play)</li>
+<li>location tracking</li>
+</ul>
+<h2 id="questions-or-concerns">Questions or concerns</h2>
+<p>Stephen Henry, 414-909-3279, stephen@selassiefest.com, Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649.</p>
+<p>You can also contact the FTC directly about any website's COPPA practices at <a href="https://www.ftc.gov/">ftc.gov</a>.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Federal Trade Commission, <a href="https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions">Complying with COPPA: Frequently Asked Questions</a>: consent methods, parents' rights to review and delete, limits on collection and retention, security, and service providers. The FAQ notes that the COPPA Rule was amended on April 22, 2025.</li>
+<li>Federal Trade Commission, <a href="https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa">Children's Online Privacy Protection Rule ("COPPA")</a>: the Rule and its text.</li>
+<li>Federal Trade Commission, <a href="https://www.ftc.gov/news-events/news/press-releases/2025/01/ftc-finalizes-changes-childrens-privacy-rule-limiting-companies-ability-monetize-kids-data">FTC Finalizes Changes to Children's Privacy Rule Limiting Companies' Ability to Monetize Kids' Data</a> (January 2025): separate consent for third-party disclosure and limits on retention.</li>
+<li>Illinois Biometric Information Privacy Act, 740 ILCS 14, on the <a href="https://www.ilga.gov/">Illinois General Assembly website</a>.</li>
+</ul>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>

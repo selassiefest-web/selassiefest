@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Arrival and Sign-Out | Rainbow DJ Lab</title>
+<meta name="description" content="How children are signed in and released at Rainbow DJ Lab, who may pick up, what happens if pickup is late, and how custody orders are handled.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r1); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/" aria-current="page">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/performing/">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; <a href="/dj-lab/safety/">Safety</a> &rsaquo; Arrival and Sign-Out</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Safety pages"><div class="lbl">Safety</div><a href="/dj-lab/safety/">Safety at Rainbow DJ Lab</a><a href="/dj-lab/safety/youth-protection-policy.html">Youth Protection Policy</a><a href="/dj-lab/safety/enforcement.html">How the Youth Protection Policy Is Enforced</a><a href="/dj-lab/safety/staff-screening.html">Staff and Volunteer Screening</a><a href="/dj-lab/safety/mandated-reporter-training.html">Mandated Reporter Training and Reporting</a><a href="/dj-lab/safety/substance-free-policy.html">Substance-Free Policy</a><a href="/dj-lab/safety/arrival-signout.html" aria-current="page">Arrival and Sign-Out</a><a href="/dj-lab/safety/id-check-protocol.html">Photo ID Check Protocol</a><a href="/dj-lab/safety/impaired-parent-protocol.html">If a Pickup Adult Appears Impaired</a><a href="/dj-lab/safety/lost-child-plan.html">Lost Child Plan</a><a href="/dj-lab/safety/emergency-action-plan.html">Emergency Action Plan</a><a href="/dj-lab/safety/active-threat-lockdown.html">Active Threat and Lockdown</a><a href="/dj-lab/safety/incident-reporting.html">Incident Reporting</a><a href="/dj-lab/safety/medical-allergy-plan.html">Medical &amp; Allergy Plan</a><a href="/dj-lab/safety/epinephrine-protocol.html">Epinephrine Protocol</a><a href="/dj-lab/safety/medication-storage.html">Medication Storage &amp; Administration</a><a href="/dj-lab/safety/first-aid-cpr-roster.html">First Aid &amp; CPR Roster</a><a href="/dj-lab/safety/lakefront-weather.html">Lakefront Weather &amp; Air Quality</a><a href="/dj-lab/safety/sunscreen-hydration.html">Sunscreen &amp; Hydration</a><a href="/dj-lab/safety/restroom-supervision.html">Restroom Supervision</a><a href="/dj-lab/safety/hearing-safety.html">Hearing Safety</a><a href="/dj-lab/safety/behavior-emotional-safety.html">Behavior &amp; Emotional Safety</a><a href="/dj-lab/safety/discipline-ladder.html">Discipline Ladder</a><a href="/dj-lab/safety/cooldown-space.html">Cool-Down Space</a><a href="/dj-lab/safety/peer-harm-protocol.html">Peer-Harm Protocol</a><a href="/dj-lab/safety/report-a-concern.html">Report a Concern</a><a href="/dj-lab/safety/grievance-procedure.html">Grievance Procedure</a></nav>
+    <article id="main">
+<h1>Arrival and Sign-Out</h1>
+<p class="lede">How children are signed in and released at Rainbow DJ Lab, who may pick up, what happens if pickup is late, and how custody orders are handled.</p>
+<h2 id="status">Status</h2>
+<p>This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. Class dates and times are not set yet, so the times below are counted from the scheduled end of class.</p>
+<h2 id="the-short-version">The short version</h2>
+<ul>
+<li>A parent or guardian <strong>signs each child in</strong>, in person.</li>
+<li>Children leave <strong>only with an adult on your authorized-pickup list</strong>, <strong>after a photo ID check</strong>, every time.</li>
+<li><strong>Every release is recorded</strong> in the Lab's sign-out log.</li>
+<li>Children aged 8–11 <strong>never walk home alone</strong> unless you give written permission in advance.</li>
+<li><strong>Little DJs (ages 5–7)</strong> have their own grown-up with them all class, so they arrive and leave with that grown-up, who still signs in and out.</li>
+</ul>
+<h2 id="before-the-first-class">Before the first class</h2>
+<ol>
+<li>Complete the <a href="/dj-lab/enroll/forms/authorized-pickup.html">Authorized pickup form</a>. List every adult (18 or older) who may pick up your child, with full legal name as it appears on their photo ID, relationship, and phone number.</li>
+<li>Tell each person on your list to bring a photo ID every time.</li>
+<li>If any court order limits who may have contact with your child, give us a copy (see "Custody orders" below).</li>
+<li>If you want your child (age 8 or older) to leave on their own, complete the written permission described below. Without it, the answer is no.</li>
+<li>Only coaches can see the pickup list. It is stored privately and never shown on the class board. See <a href="/dj-lab/privacy/index.html">Privacy</a>.</li>
+</ol>
+<h2 id="sign-in-step-by-step">Sign-in, step by step</h2>
+<ol>
+<li>Arrive during the drop-off window (to be posted with the class schedule). Children are not left before two screened adults are present.</li>
+<li>The parent or guardian walks the child to the coach at the sign-in point. No curbside drop-offs.</li>
+<li>The coach records the child's arrival and time. Families also check in on the class app with the class code; that check-in does not replace the in-person sign-in.</li>
+<li>The parent tells the coach about anything that matters today: a different pickup adult (who must already be on the list), medicine, an injury, a hard day.</li>
+<li>The child joins the group. From this moment until sign-out, the child is in the care of the Lab's adults.</li>
+</ol>
+<h2 id="sign-out-step-by-step">Sign-out, step by step</h2>
+<ol>
+<li>Children stay inside the class area with the coaches until their adult arrives. They do not wait outside, in the parking lot, or at the park entrance.</li>
+<li>The adult comes to the coach at the sign-out point.</li>
+<li>The coach checks the adult's photo ID against the authorized-pickup list. See <a href="/dj-lab/safety/id-check-protocol.html">ID check protocol</a>.</li>
+<li>The coach checks the adult seems able to safely take the child. If not, see <a href="/dj-lab/safety/impaired-parent-protocol.html">Impaired adult protocol</a>.</li>
+<li>The coach records the release in the <a href="/dj-lab/portal/signout.html">sign-out tool</a>: who picked up, the time, and that photo ID was checked against the authorized list.</li>
+<li>The coach says goodbye to the child by name. Release is complete.</li>
+</ol>
+<h2 id="someone-not-on-the-list">Someone not on the list</h2>
+<ol>
+<li>The child is <strong>not released</strong>, even if the child knows the person and wants to go.</li>
+<li>The coach calls the enrolling parent or guardian.</li>
+<li>A parent may add someone <strong>only in writing</strong> (email or text from the number on file, followed by an updated form), and the coach confirms by calling back the number on file. A phone call alone from an unknown number is not enough.</li>
+<li>The new adult still shows photo ID that matches the name the parent gave.</li>
+</ol>
+<h2 id="late-pickup">Late pickup</h2>
+<p>Times count from the scheduled end of class. Two screened adults stay with any child still waiting. A child is <strong>never</strong> left alone, never left with one adult out of sight of another, and never driven home by staff.</p>
+<table>
+<thead>
+<tr>
+<th>Time after class ends</th>
+<th>What happens</th>
+<th>Who</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–5 minutes</td>
+<td>Child waits with the group inside the class area</td>
+<td>Coaches</td>
+</tr>
+<tr>
+<td>5 minutes</td>
+<td>Coach calls and texts the parent or guardian</td>
+<td>Lead coach</td>
+</tr>
+<tr>
+<td>15 minutes</td>
+<td>No answer: coach calls each other adult on the authorized-pickup list and each emergency contact</td>
+<td>Lead coach</td>
+</tr>
+<tr>
+<td>30 minutes</td>
+<td>Still no one reached: coach calls Stephen Henry (Lab lead), keeps calling all numbers, and logs every attempt</td>
+<td>Lead coach</td>
+</tr>
+<tr>
+<td>60 minutes</td>
+<td>No authorized adult reached and none on the way: coaches call <strong>911</strong> and follow the police's direction. If required by law, a DCFS Hotline report (1-800-25-ABUSE) is made.</td>
+<td>Lead coach</td>
+</tr>
+</tbody>
+</table>
+<p>If the park building closes before then, the two adults and the child wait together in the safest lit public spot agreed with park staff, still within sight of each other.</p>
+<p><strong>If you are running late, call 414-909-3279.</strong> If you have called and an authorized adult is on the way, the 60-minute step is not used. There is no late fee.</p>
+<p>Repeated late pickups lead to a conversation about a plan that works for your family, not a penalty for your child.</p>
+<h2 id="walking-home-or-leaving-alone">Walking home or leaving alone</h2>
+<ul>
+<li><strong>Ages 8–11:</strong> never released to walk home, take transit, or leave alone, unless a parent or guardian gives <strong>written permission in advance</strong>. Permission must name the child, the route or destination, and be signed and dated. It can be withdrawn at any time.</li>
+<li><strong>Teen DJs (12–17):</strong> may leave alone only with the same written permission on file.</li>
+<li>With permission, the coach still records the time the child left in the sign-out log, marked "left with written permission."</li>
+<li>In bad weather or after dark, we may call you before letting a child with permission leave alone.</li>
+<li><strong>Little DJs (5–7)</strong> always leave with their grown-up.</li>
+</ul>
+<h2 id="custody-orders">Custody orders</h2>
+<ol>
+<li>If a court order limits a parent's or another person's contact with your child, give us <strong>a copy</strong> at enrollment or as soon as it changes. It is kept privately with your child's pickup list.</li>
+<li>Coaches follow the order. A person the order bars from pickup is not released the child.</li>
+<li>If that person arrives, the coach stays calm, keeps the child inside with the other adult, does not argue, and calls the enrolling parent. If the person refuses to leave, threatens anyone, or tries to take the child, the coach calls <strong>911</strong>. Coaches do not physically struggle with an adult.</li>
+<li><strong>Without a court order on file,</strong> we may not have legal grounds to keep a child from a parent with parental rights. If a parent who is not on your list arrives and there is no order, we will not release the child on the spot; we call you at once, and call 911 if there is any safety concern. Please give us any order that applies.</li>
+</ol>
+<h2 id="what-youll-be-told">What you'll be told</h2>
+<ul>
+<li>At sign-out: who picked up your child and when is in our log. You may ask for your own child's sign-out records at any time.</li>
+<li>If anyone not on your list tries to pick up your child: a call at once.</li>
+<li>If your child is still waiting after class: calls starting 5 minutes after class ends.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>U.S. Center for SafeSport, MAAPP (supervision of minors, transportation): https://maapp.uscenterforsafesport.org/</li>
+<li>Illinois DCFS, child abuse and neglect reporting: https://dcfs.illinois.gov/</li>
+</ul>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>

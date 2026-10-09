@@ -724,7 +724,7 @@ function formatFsPartnerResponse(record: Record<string, any>) {
 
 // Rainbow DJ Lab (/dj-lab/) -- see supabase/dj-lab.sql.
 function formatDjlabCoachLoginLink(record: Record<string, any>) {
-  const url = `https://selassiefest.com/dj-lab/?coach_token=${encodeURIComponent(record.id)}#coach`;
+  const url = `https://selassiefest.com/dj-lab/live/?coach_token=${encodeURIComponent(record.id)}#coach`;
   return {
     subject: `Your Rainbow DJ Lab coach sign-in link`,
     html: `
@@ -750,10 +750,10 @@ function formatDjlabRegistration(record: Record<string, any>) {
       <table style="border-collapse:collapse;">
         ${row('Kid', djlabKidName(record))}${row('Age', record.kid_age)}${row('Class code', record.cohort_code)}
         ${row('Guardian', record.guardian_name)}${row('Email', record.guardian_email)}${row('Phone', record.guardian_phone)}
-        ${row('Emergency contact', record.emergency_contact)}${row('Accommodations', record.accommodations)}
-        ${row('Consent', record.consent ? 'Yes' : 'No')}${row('Photo/video consent', record.photo_consent ? 'Yes' : 'No')}${row('Session recap emails', record.recap_opt_in ? 'Yes' : 'No')}
+        ${row('Emergency contacts given', record.emergency_contact ? 'Yes' : 'No')}${row('Accommodations note', record.accommodations ? 'Yes (see coach roster)' : 'No')}
+        ${row('Allergy listed', (record.details || {}).allergies && !/^none$/i.test((record.details || {}).allergies) ? 'Yes (see coach roster)' : 'No')}${row('Epinephrine auto-injector', (record.details || {}).epinephrine ? 'Yes (see coach roster)' : 'No')}${row('Medical note', (record.details || {}).medical ? 'Yes (see coach roster)' : 'No')}${row('Authorized pickup adults', String(((record.details || {}).pickup || []).length))}${row('May sign out alone', (record.details || {}).self_signout ? 'YES (written permission)' : 'No')}${row('Custody note', (record.details || {}).custody_note ? 'YES (see coach roster)' : 'No')}${row('Consent', record.consent ? 'Yes' : 'No')}${row('Photo/video consent', record.photo_consent ? 'Yes' : 'No')}${row('Session recap emails', record.recap_opt_in ? 'Yes' : 'No')}
       </table>
-      <p style="margin-top:16px;">Approve them onto a station from the Coach tab: <a href="https://selassiefest.com/dj-lab/#coach">Rainbow DJ Lab</a></p>
+      <p style="margin-top:16px;">Approve them onto a station from the Coach tab: <a href="https://selassiefest.com/dj-lab/live/#coach">Rainbow DJ Lab</a></p>
     `,
   };
 }
@@ -766,9 +766,26 @@ function formatDjlabRegistrationConfirmation(record: Record<string, any>) {
       <h2>Thank you, ${escapeHtml(record.guardian_name || '')}!</h2>
       <p>We received ${kid}'s registration for the free Rainbow DJ Lab at Rainbow Beach Park, part of Full Spectrum at Rainbow Beach.</p>
       <p>A coach will confirm ${kid}'s spot and station. ${record.recap_opt_in ? `After each class you'll get a short recap by email: today's mission, how ${kid} rated their progress, the coach's note, and one question to ask at dinner.` : ''}</p>
-      <p>During class you can follow along live at <a href="https://selassiefest.com/dj-lab/#parent">selassiefest.com/dj-lab</a> with the class code.</p>
+      <p>During class you can follow along live at <a href="https://selassiefest.com/dj-lab/live/#parent">selassiefest.com/dj-lab/live</a> with the class code. Everything about safety, pickup and privacy is at <a href="https://selassiefest.com/dj-lab/">selassiefest.com/dj-lab</a>.</p>
       <p>Questions? Call Stephen Henry at 414-909-3279 or reply to this email.</p>
       <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Full Spectrum at Rainbow Beach &middot; Ras Tafari Inc., a 501(c)(3) nonprofit</p>
+    `,
+  };
+}
+
+function formatDjlabSignout(record: Record<string, any>) {
+  const kid = escapeHtml(String(record.kid_name || 'Your child').split(' ')[0]);
+  const at = new Date(record.created_at || Date.now()).toLocaleString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', weekday: 'short', month: 'short', day: 'numeric' });
+  const who = record.self_signout ? `${kid} signed out to go home on their own, as you authorized in writing.`
+    : `${kid} was picked up by <b>${escapeHtml(record.picked_up_by)}</b>${record.relationship ? ' (' + escapeHtml(record.relationship) + ')' : ''}. Photo ID was checked.`;
+  return {
+    subject: `${String(record.kid_name || 'Your child').split(' ')[0]} was signed out of the Rainbow DJ Lab`,
+    html: `
+      <h2>Signed out: ${at}</h2>
+      <p>${who}</p>
+      <p>Recorded by ${escapeHtml(record.coach_name || 'the coach')} on the Lab's sign-out log.</p>
+      <p style="background:#FBE4E2;padding:10px 12px;border-radius:8px;"><b>If this wasn't expected, call Stephen Henry right away at 414-909-3279.</b> In an emergency, call 911.</p>
+      <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Ras Tafari Inc. You get this email every time your child is signed out.</p>
     `,
   };
 }
@@ -822,6 +839,10 @@ async function countRows(table: string, filter: string): Promise<number | null> 
 
 async function selfAddressedAllowed(table: string, record: Record<string, any>, to: string): Promise<{ ok: boolean; reason?: string }> {
   if (STAFF_INBOXES.has(String(to).toLowerCase()) || table.endsWith('_login_links')) return { ok: true };
+  // DJ Lab sign-outs are inserted only through a signed-in coach's RPC, never
+  // by the public, and every parent must get one at the end of class (a full
+  // class of 12 would trip the per-hour cap).
+  if (table === 'djlab_signouts') return { ok: true };
   const column = Object.keys(record).find((k) => typeof record[k] === 'string' && record[k].toLowerCase() === String(to).toLowerCase());
   const hourAgo = new Date(Date.now() - 3600_000).toISOString();
   const dayAgo = new Date(Date.now() - 86400_000).toISOString();
@@ -921,6 +942,9 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
+  },
+  djlab_signouts: {
+    notifications: [{ to: (record) => record.guardian_email, format: formatDjlabSignout, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
   },
   djlab_registrations: {
     notifications: [

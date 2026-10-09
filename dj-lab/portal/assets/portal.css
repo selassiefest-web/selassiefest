@@ -1,0 +1,41 @@
+/* Rainbow DJ Lab portal styles (shared by the portal pages). */
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --good:#1F7A3E; --good-soft:#E1F1E6; --bad:#C23B33; --bad-soft:#FBE4E2; --warn:#9A6400; --warn-soft:#FCEFD2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --good:#5BD08A; --good-soft:rgba(91,208,138,.14); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.14); --warn:#F5B53A; --warn-soft:rgba(245,181,58,.14); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --good:#5BD08A; --good-soft:rgba(91,208,138,.14); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.14); --warn:#F5B53A; --warn-soft:rgba(245,181,58,.14); }
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55}
+h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; font-weight:800; margin:0; letter-spacing:-.01em}
+a{color:var(--accent)}
+.stripe{height:8px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:900px; margin:0 auto; padding:0 16px 56px}
+header{padding:22px 0 8px}
+.crumbs{font-size:.85rem; color:var(--ink-faint)} .crumbs a{color:inherit}
+h1{font-size:clamp(1.5rem,5vw,2rem); margin:8px 0 4px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin:12px 0}
+.grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.tile{display:block; text-decoration:none; color:inherit; border-top:6px solid var(--c,var(--accent))}
+.tile h2{font-size:1.15rem; margin-bottom:4px}
+.tile p{margin:0; color:var(--ink-soft); font-size:.92rem}
+.btn{display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--line-strong); background:var(--surface); border-radius:999px; padding:8px 14px; font-weight:700; font-size:.9rem; cursor:pointer; color:inherit; font-family:inherit; text-decoration:none}
+.btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.btn.good{background:var(--good); color:#fff; border-color:var(--good)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.badge{display:inline-block; font-size:.74rem; font-weight:800; padding:2px 8px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); margin-right:4px}
+.badge.bad{background:var(--bad-soft); color:var(--bad)} .badge.good{background:var(--good-soft); color:var(--good)} .badge.warn{background:var(--warn-soft); color:var(--warn)}
+.alert{background:var(--bad-soft); border-radius:12px; padding:10px 12px; font-weight:600; margin:8px 0}
+.note{background:var(--warn-soft); border-radius:12px; padding:10px 12px; font-size:.92rem; margin:8px 0}
+.muted{color:var(--ink-soft)} .faint{color:var(--ink-faint); font-size:.86rem}
+.row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.kid h3{font-size:1.15rem}
+.kid .who{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.chk{display:flex; gap:8px; align-items:center; font-weight:700; margin-top:10px}
+.chk input{width:22px; height:22px; accent-color:var(--good)}
+details summary{cursor:pointer; font-weight:700; margin-top:10px}
+dl.info{display:grid; grid-template-columns:150px 1fr; gap:4px 12px; margin:8px 0 0; font-size:.92rem}
+dl.info dt{color:var(--ink-faint); font-weight:700}
+dl.info dd{margin:0; overflow-wrap:anywhere}
+@media (max-width:520px){ dl.info{grid-template-columns:1fr} }

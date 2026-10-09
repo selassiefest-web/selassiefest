@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Governance and Launch Readiness | Rainbow DJ Lab</title>
+<meta name="description" content="Who runs the Rainbow DJ Lab, what must be finished before the first class, and where the proof will be posted.">
+<link rel="icon" href="/dj-lab/assets/logo/rainbow-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  --accent:#2F3DB5; --accent-ink:#FFFFFF; --warn:#8A5A00; --warn-soft:#FCEFD2; --bad:#C23B33; --bad-soft:#FBE4E2;
+  --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --sec:var(--r6); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); } }
+:root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
+  --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --warn:#F5B53A; --warn-soft:rgba(245,181,58,.13); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.13); }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:16.5px; line-height:1.65}
+a{color:var(--accent)}
+.skip{position:absolute; left:-999px} .skip:focus{left:12px; top:12px; background:var(--surface); padding:8px 12px; border-radius:8px; z-index:9}
+.stripe{height:6px; background:linear-gradient(90deg,var(--r1) 0 14.3%,var(--r2) 0 28.6%,var(--r3) 0 42.9%,var(--r4) 0 57.1%,var(--r5) 0 71.4%,var(--r6) 0 85.7%,var(--r7) 0)}
+.wrap{max-width:1140px; margin:0 auto; padding:0 16px}
+.top{display:flex; align-items:center; gap:12px; padding:14px 0 6px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; margin-right:auto}
+.brand img{width:36px; height:36px}
+.brand b{font-family:"Montserrat",sans-serif; font-weight:900; font-size:1.15rem; letter-spacing:-.01em; display:block; line-height:1.1}
+.brand span{font-size:.76rem; color:var(--ink-faint)}
+.tt{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem}
+nav.main{display:flex; gap:4px 2px; flex-wrap:wrap; padding:6px 0 10px; border-bottom:1px solid var(--line)}
+nav.main a{text-decoration:none; color:var(--ink-soft); font-weight:600; font-size:.9rem; padding:6px 10px; border-radius:999px}
+nav.main a:hover{background:var(--surface-2); color:var(--ink)}
+nav.main a[aria-current="page"]{background:var(--ink); color:var(--bg)}
+nav.main a.live{background:var(--accent); color:var(--accent-ink); margin-left:auto}
+.status{display:flex; gap:10px; align-items:flex-start; background:var(--warn-soft); border-radius:12px; padding:9px 14px; margin:12px 0 0; font-size:.88rem}
+.status b{white-space:nowrap}
+.crumbs{font-size:.84rem; color:var(--ink-faint); margin:14px 0 0} .crumbs a{color:inherit}
+.layout{display:grid; gap:28px; margin:10px 0 40px}
+.layout.with-side{grid-template-columns:240px minmax(0,1fr)}
+@media (max-width:880px){ .layout.with-side{grid-template-columns:1fr} .side{order:2} }
+.side{align-self:start; position:sticky; top:12px; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--sec); border-radius:14px; padding:12px; max-height:calc(100vh - 24px); overflow:auto}
+@media (max-width:880px){ .side{position:static; max-height:none} }
+.side .lbl{font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin:2px 6px 6px}
+.side a{display:block; text-decoration:none; color:var(--ink-soft); font-size:.88rem; padding:5px 8px; border-radius:8px; line-height:1.35}
+.side a.sub{padding-left:20px; font-size:.84rem}
+.side a:hover{background:var(--surface-2); color:var(--ink)}
+.side a[aria-current="page"]{background:color-mix(in srgb,var(--sec) 16%,transparent); color:var(--ink); font-weight:700}
+article{min-width:0; max-width:760px}
+article h1{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.4rem); line-height:1.15; letter-spacing:-.02em; margin:.3em 0 .4em; text-wrap:balance}
+article .lede{font-size:1.12rem; color:var(--ink-soft); margin:0 0 1em}
+article h1 + .lede + h2, article h1 + h2{border-top:0}
+article h2{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.35rem; margin:1.8em 0 .5em; padding-top:.6em; border-top:1px solid var(--line); text-wrap:balance}
+article h3{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.08rem; margin:1.4em 0 .4em}
+article p, article li{max-width:70ch}
+article ul, article ol{padding-left:1.3em} article li{margin:.25em 0}
+article table{width:100%; border-collapse:collapse; font-size:.92rem; margin:1em 0; display:block; overflow-x:auto}
+article th, article td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+article th{font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2)}
+article blockquote{margin:1em 0; padding:10px 16px; background:var(--surface); border-left:5px solid var(--sec); border-radius:0 12px 12px 0}
+article code{background:var(--surface-2); padding:1px 5px; border-radius:5px; font-size:.9em}
+article hr{border:0; border-top:1px solid var(--line); margin:2em 0}
+article strong{font-weight:700}
+.kids article{font-size:1.12rem} .kids article h1{color:var(--sec)}
+footer{border-top:1px solid var(--line); padding:20px 0 40px; font-size:.86rem; color:var(--ink-soft)}
+footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+footer b{display:block; color:var(--ink); margin-bottom:4px}
+footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
+@media print{ nav.main, .side, .tt, .status, footer .em{display:none} body{background:#fff; color:#000; font-size:11.5pt} .layout.with-side{grid-template-columns:1fr} a{color:#000} }
+</style>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/dj-lab/"><img src="/dj-lab/assets/logo/rainbow-mark.svg" alt=""><span><b>Rainbow DJ Lab</b><span>Ras Tafari Inc. &middot; Rainbow Beach Park, Chicago</span></span></a>
+    <button class="tt" id="tt" aria-label="Switch light or dark theme">&#9681;</button>
+  </div>
+  <nav class="main" aria-label="Sections"><a href="/dj-lab/">Home</a><a href="/dj-lab/about/">About</a><a href="/dj-lab/enroll/">Enroll</a><a href="/dj-lab/safety/">Safety</a><a href="/dj-lab/families/">Families</a><a href="/dj-lab/privacy/">Privacy</a><a href="/dj-lab/performing/">Performing</a><a href="/dj-lab/kids/">For kids</a><a href="/dj-lab/journey/">The journey</a><a href="/dj-lab/governance/" aria-current="page">Governance</a><a class="live" href="/dj-lab/live/">Live class</a></nav>
+  <div class="status" role="note"><b>Proposed:</b><span>The Lab is not running yet. No class runs until every item on the <a href="/dj-lab/governance/">launch checklist</a> is complete.</span></div>
+  <div class="crumbs"><a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; Governance and Launch Readiness</div>
+  <div class="layout with-side">
+    <nav class="side" aria-label="Governance pages"><div class="lbl">Governance</div><a href="/dj-lab/governance/" aria-current="page">Governance and Launch Readiness</a><a href="/dj-lab/governance/board.html">Board and Officers</a><a href="/dj-lab/governance/conflict-of-interest.html">Conflict of Interest Policy</a><a href="/dj-lab/governance/whistleblower.html">Whistleblower Policy</a><a href="/dj-lab/governance/financial-transparency.html">Financial Transparency</a><a href="/dj-lab/governance/mou-park-district.html">MOU with the Chicago Park District</a><a href="/dj-lab/governance/park-district-permits.html">Park District Permits</a><a href="/dj-lab/governance/data-sharing-agreement-selassiefest.html">Data-Sharing Agreement with SelassieFest</a><a href="/dj-lab/governance/insurance-certificate.html">Insurance Certificate</a><a href="/dj-lab/governance/501c3-letter.html">501(c)(3) Determination Letter</a><a href="/dj-lab/governance/advisory-council-vote.html">Advisory Council Vote</a><a href="/dj-lab/governance/enforcement-self-accountability.html">Enforcement and Self-Accountability</a><a href="/dj-lab/governance/annual-safety-review.html">Annual Safety Review</a><a href="/dj-lab/governance/community-accountability-report.html">Community Accountability Report</a></nav>
+    <article id="main">
+<h1 id="governance-and-launch-readiness">Governance and Launch Readiness</h1>
+<p>The Rainbow DJ Lab is a free DJ class program proposed by <strong>Ras Tafari Inc.</strong>, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago, IL 60649. It is the DJ-class part of <strong>Full Spectrum at Rainbow Beach</strong>, a proposed year-round music and culture program at Rainbow Beach Park.</p>
+<p><strong>The Lab is proposed, not running.</strong> The Chicago Park District has not approved or permitted it. The Rainbow Beach Park Advisory Council vote is pending. No class dates are set and no staff are hired.</p>
+<p>This section is where we show our work. Where a document exists, we say so. Where it does not exist yet, we say that too, and we say what has to happen before it does.</p>
+<h2 id="our-promise">Our promise</h2>
+<blockquote>
+<p><strong>No class runs until every item is complete. This page will show the date each item was completed.</strong></p>
+</blockquote>
+<p>When an item is finished, its Status will change to "Complete" with the date, and the Evidence link will lead to the proof (or, for private records such as background checks, a summary that confirms completion without revealing anyone's personal information).</p>
+<h2 id="launch-readiness-checklist">Launch Readiness Checklist</h2>
+<p>As of today, <strong>none of these items is complete.</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Requirement</th>
+<th>Why it matters</th>
+<th>Status</th>
+<th>Evidence (where proof will be posted)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Chicago Park District approval and the permit or agreement for space</td>
+<td>The Lab may only use park space with the Park District's written permission.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/governance/park-district-permits.html">Park District permits</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>A Rainbow Beach Park Advisory Council vote to present the program</td>
+<td>The neighbors and park users who serve on the council should have a say before a new program starts in their park.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/governance/advisory-council-vote.html">Advisory council vote</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>General liability insurance ($1,000,000 per occurrence, naming the Chicago Park District as additional insured) plus sexual abuse and molestation coverage</td>
+<td>If something goes wrong, families and the park need to know there is coverage in place, including coverage specific to abuse claims.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/governance/insurance-certificate.html">Insurance certificate</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Background checks complete for every adult</td>
+<td>No adult works with children until screening is finished: fingerprint-based check, sex offender registries, references and youth-protection training.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/safety/staff-screening.html">Staff screening</a> (completion summary; no personal data posted)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>DCFS mandated reporter training certificates on file for every adult</td>
+<td>Every adult in the program is a mandated reporter under Illinois law and must know how to report suspected abuse or neglect.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/safety/staff-screening.html">Staff screening</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Pediatric first aid/CPR/AED certification for at least one adult per class</td>
+<td>Someone trained must be in the room every class, ready to act in the first minutes of an emergency.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/safety/staff-screening.html">Staff screening</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Emergency action plan finalized after a site walk with park staff, with maps drawn</td>
+<td>Exits, shelter spots, lockdown rooms and meeting points must be planned for the actual building and lawn, with the people who run the park.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/safety/index.html">Safety overview</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>A written MOU with the Chicago Park District</td>
+<td>A signed agreement spells out who is responsible for what: space, schedule, safety, insurance, screening and incident reporting.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/governance/mou-park-district.html">MOU with the Park District</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Parent forms available in English and Spanish</td>
+<td>Every family must be able to read and understand what they are signing.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/families/index.html">For families</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Dates and the schedule posted</td>
+<td>Families need to know exactly when and where their child will be before they enroll.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/families/index.html">For families</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>A board vote adopting these policies</td>
+<td>Policies only bind an organization once its board formally adopts them.</td>
+<td>Not yet complete</td>
+<td><a href="/dj-lab/governance/board.html">Board and officers</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-an-item-gets-marked-complete">How an item gets marked complete</h3>
+<ol>
+<li>The proof exists in writing (a signed agreement, a certificate, meeting minutes, a completed screening record).</li>
+<li>A second Ras Tafari Inc. officer, not the person who did the work, checks the proof.</li>
+<li>We update this table with the completion date and link the evidence.</li>
+<li>Only when all eleven rows say "Complete" is a first class date confirmed.</li>
+</ol>
+<p>If any item later lapses (for example, an insurance policy expires or a screening comes due), classes pause until it is fixed, and this table will show that too.</p>
+<h2 id="policy-status">Policy status</h2>
+<p>The safety, privacy and governance policies on this site are <strong>policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement</strong> (item 11 above). The Ras Tafari Inc. board has not yet voted on them.</p>
+<h2 id="document-status-at-a-glance">Document status at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="/dj-lab/governance/501c3-letter.html">501(c)(3) determination letter</a></td>
+<td>Available on request</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/board.html">Board and officers</a></td>
+<td>Officers listed; policy adoption vote not yet held</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/conflict-of-interest.html">Conflict of interest policy</a></td>
+<td>Proposed, for adoption by the board</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/whistleblower.html">Whistleblower policy</a></td>
+<td>Proposed, for adoption by the board</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/financial-transparency.html">Financial transparency</a></td>
+<td>Commitment; season budget to be published</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/mou-park-district.html">MOU with the Chicago Park District</a></td>
+<td>Not yet drafted or signed</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/park-district-permits.html">Park District permits</a></td>
+<td>Pending</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/advisory-council-vote.html">Advisory council vote</a></td>
+<td>Pending</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/insurance-certificate.html">Insurance certificate</a></td>
+<td>Not yet in place</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/data-sharing-agreement-selassiefest.html">Data-sharing agreement with SelassieFest</a></td>
+<td>Proposed internal policy</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/enforcement-self-accountability.html">Enforcement and self-accountability</a></td>
+<td>Commitment; adopted with the policy vote</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/annual-safety-review.html">Annual safety review</a></td>
+<td>Process defined; first review after the first season</td>
+</tr>
+<tr>
+<td><a href="/dj-lab/governance/community-accountability-report.html">Community accountability report</a></td>
+<td>Template; first report after the first season</td>
+</tr>
+</tbody>
+</table>
+<h2 id="questions">Questions</h2>
+<p>Contact Stephen Henry, President, Ras Tafari Inc.: 414-909-3279 or stephen@selassiefest.com.</p>
+<p>To raise a safety concern, see <a href="/dj-lab/safety/report-a-concern.html">Report a concern</a>. If a child is in immediate danger, call <strong>911</strong>. To report suspected child abuse or neglect, call the <strong>DCFS Hotline at 1-800-25-ABUSE (1-800-252-2873)</strong>. You do not need our permission.</p>
+    </article>
+  </div>
+</div>
+<footer>
+  <div class="wrap cols">
+    <div><b>Rainbow DJ Lab</b>A free DJ program of Ras Tafari Inc., a 501(c)(3) nonprofit, 7700 S. Stony Island Ave., Chicago, IL 60649. Part of Full Spectrum at Rainbow Beach.</div>
+    <div><b>Questions</b>Stephen Henry, President<br><a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+    <div class="em"><b>Emergency or a child in danger</b>Call 911. To report suspected abuse or neglect: Illinois DCFS Hotline <a href="tel:18002522873">1-800-25-ABUSE (1-800-252-2873)</a>. Poison Center <a href="tel:18002221222">1-800-222-1222</a>.</div>
+  </div>
+</footer>
+<script>
+(function(){ var r=document.documentElement; try{ var t=localStorage.getItem("djlab-site-theme"); if(t) r.setAttribute("data-theme",t); }catch(e){}
+  document.getElementById("tt").addEventListener("click",function(){ var c=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); var n=c==="dark"?"light":"dark"; r.setAttribute("data-theme",n); try{ localStorage.setItem("djlab-site-theme",n); }catch(e){} }); })();
+</script>
+</body>
+</html>
