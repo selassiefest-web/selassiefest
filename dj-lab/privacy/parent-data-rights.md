@@ -49,7 +49,7 @@ We send you everything we hold about your child and your family: registration de
 
 ### To delete your information
 
-- We remove your child from the class board and delete their activity data.
+- We remove your child from the class roster and the in-room station board, and delete their activity data.
 - Some registration and safety records (such as the sign-out log and any incident report) may need to be kept for safety, insurance or legal reasons. We'll tell you exactly what we're keeping, why and until when, and we'll delete it after that. See [retention and deletion](/dj-lab/privacy/retention-deletion.html).
 
 ### To withdraw consent

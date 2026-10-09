@@ -24,6 +24,7 @@ This handbook tells you how a Rainbow DJ Lab class works for your family, from t
 | **Class size** | Up to 12 kids, in stations of 4 kids sharing one controller |
 | **Adults** | At least two screened adults at all times; no more than 6 children per screened adult |
 | **Dates** | Not set yet. They will be posted before registration opens |
+| **Signing up now** | Until launch, the online form is an [interest list](/dj-lab/enroll/register.html), not enrollment. Full registration opens only when every [launch-checklist](/dj-lab/governance/index.html) item is complete |
 
 ### Age groups
 
@@ -33,7 +34,9 @@ This handbook tells you how a Rainbow DJ Lab class works for your family, from t
 | Junior DJs | 8–11 | Drop-off allowed with a signed authorized-pickup list. **A 9-year-old is in this group** |
 | Teen DJs | 12–17 | |
 | Grown-Up & Elder DJs | 18 and up | |
-| Empress Decks | about 9–17 | A girls-only track taught by women DJs |
+| Empress Decks | about 9–17 | **Proposed.** A girls-only track taught by women DJs, running the same curriculum. Rainbow Beach Park staff welcome the girls' focus (girls' participation has long trailed boys' across the Park District); written confirmation will be part of the park agreement. |
+
+Every group learns the same core curriculum, adapted by age group and by the Mild, Medium and Spicy challenge levels.
 
 ## What a session looks like
 
@@ -46,12 +49,12 @@ Every 90-minute session follows the same 9 blocks, so kids always know what come
 5. **Move Break** (35–40)
 6. **Deck Time 2** (40–55): kids choose Mild, Medium or Spicy challenge
 7. **Wordplay Lab** (55–70)
-8. **Spotlight** (70–82): volunteers only play 60 seconds on the main speaker
+8. **Spotlight** (70–82): volunteers only play 60 seconds on the main speaker, and only with your performance consent
 9. **Check Out** (82–90): self-rating and "Next time I'll…"
 
 At each station, jobs rotate every 3 minutes 45 seconds: **DJ, Co-pilot, Hype and Logger**. Everyone gets turns.
 
-There are **no grades and no tests**. Kids rate themselves with a traffic light (I got it / Getting there / Not yet), and mentors award **Passport stamps** for skills. When a mix goes wrong, we call it **"Data!"**: the DJ names one reason and tries again. More in [your child's journey](/dj-lab/journey/).
+There are **no grades and no tests**. Kids rate themselves with a traffic light (I got it / Getting there / Not yet), and mentors award **Passport stamps** for skills: 3 per session, so 42 for the full course and 18 for the spring fast track (6 workshops × 3 stamps). When a mix goes wrong, we call it **"Data!"**: the DJ names one reason and tries again. More in [your child's journey](/dj-lab/journey/).
 
 ## What to bring
 
@@ -79,12 +82,15 @@ There are **no grades and no tests**. Kids rate themselves with a traffic light 
 - Water is welcome. Please send it in a bottle with a lid.
 - Drinks and food stay away from the controllers and laptops.
 - No food is shared without parent permission.
-- Tell us about every allergy on the registration form. We follow your child's Food Allergy & Anaphylaxis Emergency Care Plan (the FARE form).
+- Tell us about every allergy on the registration form (part of full registration after launch). We follow your child's Food Allergy & Anaphylaxis Emergency Care Plan (the FARE form).
 
 ## Phones and devices
 
 - Kids do **not** need a phone or tablet to take part. All the gear is provided.
-- The class uses an app at [/dj-lab/live/](/dj-lab/live/) for the timer, station board, self-ratings and Passport stamps. Kids and families join it with a 6-character class code.
+- The class uses an app at [/dj-lab/live/](/dj-lab/live/) for the timer, station board, self-ratings and Passport stamps.
+- **In the room,** kids use screens opened with a **room code** the coach issues for each class. It expires (after 4 hours by default), and the coach can end it any time.
+- **At home,** you follow along with your **private family link**, emailed when your child is approved for a class. It shows **only your own child**. Families don't use a class code. If the link is lost or shared, the coach re-issues it.
+- Without your digital-tracking consent, nothing your child does in the app is saved; they tell the coach their answers instead.
 - Phones stay put away during class unless a coach asks kids to open the class app.
 - **No photos or videos of other children.** Please help us by reminding your child. See [photos and recordings](/dj-lab/privacy/photos-recordings.html).
 
@@ -98,7 +104,7 @@ There are **no grades and no tests**. Kids rate themselves with a traffic light 
 
 ## Pickup and sign-out
 
-- Children are released **only to adults on the authorized-pickup list**, after a **photo ID check**. Every release is recorded in the Lab's sign-out log, with the time and who checked the ID.
+- Children are released **only to adults on the authorized-pickup list**, after a **photo ID check**. Every release is recorded in the Lab's sign-out log, with the time and who checked the ID. The app won't record a release to anyone who isn't on the list. **You get an email every time your child is signed out.**
 - **Please bring your ID every time**, even when staff know you.
 - Children aged 8–11 are **never released to walk home alone** unless a parent or guardian has given written permission in advance.
 - To change your pickup list, contact Stephen Henry in writing (email is fine) before the session. A phone call at pickup is not enough to add a new adult.
@@ -113,7 +119,9 @@ Full details: [safety policies](/dj-lab/safety/).
 |---|---|
 | Registration confirmation | Email, sent when you register |
 | Session recap | Optional email after each class if you opt in at registration |
-| Same-day incident notice | Phone call the same day, then a written report within 24 hours |
+| Family link | Email when your child is approved for a class: your private link to follow your own child in the class app |
+| Sign-out notice | Email every time your child is signed out |
+| Same-day incident notice | Phone call the same day, then a written report within 24 hours. Coaches log every incident in the app, and each entry is emailed to Stephen Henry |
 | Questions any time | Stephen Henry, 414-909-3279 or stephen@selassiefest.com |
 | Weekly family digest | **Planned, not built yet.** See [weekly digest](/dj-lab/families/weekly-digest.html) |
 
@@ -135,7 +143,7 @@ Safety violations go straight to a parent call.
 
 We **never** use physical punishment or shaming, and we **never** withhold food, water or restroom access.
 
-**Spotlight is volunteers only.** Coaches never call on a child who didn't sign up to play.
+**Spotlight is volunteers only.** Coaches never call on a child who didn't sign up to play, and the app won't put a child in the Spotlight without your performance consent.
 
 ## Safety summary
 
@@ -171,8 +179,10 @@ How we tell you about a cancellation: [weather and cancellation](/dj-lab/enroll/
 
 ## Privacy summary
 
-- **Kids appear on the class board by first name and last initial only.** Anyone with your class code can see the whole class's board: names, stations, check-in times, in-class activity, Passport stamps and coach notes. Please share the code only with your own family.
-- **Your contact details, emergency contacts, medical and allergy notes, pickup list and consents are coach-only.** They're stored privately and never sent to the family page.
+- **Your private family link shows only your own child.** It never shows other children. If it's lost or shared, the coach re-issues it.
+- **In-room screens** use a room code the coach issues for each class, which expires. They show each child's **first name and last initial**, station, job, check-in time and in-class activity, never coach notes or private details.
+- **Your contact details, emergency contacts, medical and allergy notes, pickup list and consents are coach-only.** They're stored privately and never sent to a family link or an in-room screen.
+- **Your consents are enforced by the app:** no in-class activity is saved without digital-tracking consent, and no Spotlight without performance consent.
 - **No ads, no tracking pixels, no selling or sharing data, no photos or video in the app, no biometrics, no location tracking.**
 - For children under 13, we collect limited information only with your verifiable consent at registration. You can review, correct or delete your child's information, or withdraw consent, at any time.
 
@@ -188,7 +198,7 @@ Details: [photos and recordings](/dj-lab/privacy/photos-recordings.html).
 
 ## Performing
 
-- **Spotlight** in class is always voluntary.
+- **Spotlight** in class is always voluntary, and needs your performance consent.
 - **Session 14, the Rainbow Showcase,** is for families. You're invited.
 - **Graduates get an Open Decks slot at Rainbow Wednesdays**, the free summer DJ series. Rainbow Wednesdays is also proposed, so this applies when the series runs.
 - After that, the path continues: Open Decks → Youth Showcase open call → Theme Clash semifinals and Finale.
@@ -200,7 +210,7 @@ Details: [performing](/dj-lab/performing/).
 You can withdraw your child at any time, for any reason. There's no cost and no penalty.
 
 1. Tell Stephen Henry by phone or email.
-2. Your child's name comes off the class board.
+2. Your child's name comes off the class roster and the in-room station board.
 3. Tell us if you'd like to keep a copy of your child's Passport.
 4. You can ask us to delete your child's information. See [retention and deletion](/dj-lab/privacy/retention-deletion.html) for what we must keep for safety and insurance purposes and for how long.
 

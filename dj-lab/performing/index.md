@@ -11,7 +11,7 @@ When a child does want to perform, these rules apply every time:
 
 - **It is opt-in.** A parent or guardian must sign the [performance consent form](/dj-lab/enroll/forms/performance-consent.html) first. Without that form on file, your child does not perform. That holds even if your child asks to.
 - **The child chooses too.** Your consent opens the door, and your child still decides on the day. They can say no at any point, even on the stage steps. See [Opting out](/dj-lab/performing/opt-out.html).
-- **Spotlight is volunteers only.** In class, coaches never call on a child who didn't sign up.
+- **Spotlight is volunteers only.** In class, coaches never call on a child who didn't sign up, and the class app won't put a child in the Spotlight without performance consent on file.
 - **A Lab adult is always with them.** At any event, a Lab adult you've been told about is assigned to your child. Your child is never alone with one adult out of sight. See [Event-day supervision](/dj-lab/performing/event-day-supervision.html).
 - **Ears are protected.** Headphones are capped, earplugs are free, and children stay out of the zone in front of the speakers. See [Sound and crowd exposure](/dj-lab/performing/sound-crowd-exposure.html).
 
@@ -27,6 +27,7 @@ We want you to know exactly where things stand.
 | Rainbow Wednesdays (free summer DJ series) | **Proposed. Not yet approved.** |
 | Open Decks slot for graduates | Guaranteed **when Rainbow Wednesdays runs.** See [Graduation guarantee](/dj-lab/performing/graduation-guarantee.html). |
 | Youth Showcase open call, Theme Clash semifinals and Finale | **Proposed** stage shows. Not yet approved. |
+| Music licensing (public performance rights for Spotlight, the Showcase and any public performance) | **Not yet in place.** It's a [launch requirement](/dj-lab/governance/index.html): the Lab needs public performance rights (through ASCAP, BMI, SESAC and GMR, or confirmation that Chicago Park District licenses cover it) before kids play for an audience. |
 
 The safety rules on these pages are policies Ras Tafari Inc. commits to. Formal board adoption is a launch requirement, and no class runs until every launch requirement is met.
 

@@ -50,7 +50,7 @@ Your answers also feed our [feedback loop](/dj-lab/families/feedback-loop.html).
 - **About 10–15 minutes**, at pickup or by phone, whichever is easier.
 - **Your child is welcome to join**, and we encourage it. It's their progress.
 - The conversation happens **in view of others**, never in a closed room alone with a child, in line with our [safety policies](/dj-lab/safety/).
-- You can see the same information any time on the class board at [/dj-lab/live/](/dj-lab/live/).
+- You can see the same information any time with your private family link to [/dj-lab/live/](/dj-lab/live/). It shows only your own child.
 
 ## Want to talk sooner?
 

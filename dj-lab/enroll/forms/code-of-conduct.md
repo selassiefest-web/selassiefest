@@ -7,8 +7,8 @@ description: The full Rainbow DJ Lab code of conduct for kids and grown-ups, whi
 
 Everyone in the Lab follows the same simple rules, kids and grown-ups alike. Agreeing to this code is a **required** part of registration. Please read it together with your child.
 
-**Agree online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [code-of-conduct.pdf](/dj-lab/assets/forms/code-of-conduct.pdf)
+**Agree online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [code-of-conduct.pdf](/dj-lab/assets/forms/code-of-conduct.pdf)
 
 These are policies Ras Tafari Inc. commits to. Formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
 
@@ -81,7 +81,7 @@ As a parent, guardian or authorized pickup adult, I agree to:
 ### Respect
 8. Treat children, families, staff, volunteers and park staff with respect. I won't yell at, threaten, or physically discipline any child at a Lab activity, including my own.
 9. I won't correct or discipline other people's children. I'll bring concerns to Lab staff.
-10. Respect privacy. I'll share the class code only within my household, and I'll photograph only my own child.
+10. Respect privacy. I'll keep my private family link within my household and tell the Lab if it gets shared so a coach can re-issue it, and I'll photograph only my own child.
 
 ### A safe, substance-free space
 11. Never bring or use **alcohol, tobacco, vaping products or cannabis** at any Lab activity, and never arrive impaired. I understand staff will not release a child to an adult who appears impaired and will call another authorized adult instead, or 911 if the child is in danger.

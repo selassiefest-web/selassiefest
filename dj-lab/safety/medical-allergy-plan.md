@@ -36,7 +36,9 @@ If a care plan or medicine is missing on a class day, the lead adult talks with 
 
 ## Who can see your child's health information
 
-Medical and allergy notes are stored privately in the Lab's app and are **only visible to coaches**. They are never sent to the class board that families see with the class code. (Families with the class code see first names and last initials, stations and in-class activity, and nothing medical.)
+Medical and allergy notes are stored privately in the Lab's app and are **only visible to coaches**. They are never sent to a family's private link or to the in-room screens. (A family link shows only that family's own child. In-room screens, opened with the coach's expiring room code, show first names and last initials, stations, jobs and in-class activity, and nothing medical.)
+
+During class, a signed-in coach's **Safety now** panel shows allergy, EpiPen, medical and custody flags for the children checked in, plus guardian phone and emergency numbers, so the adults in the room can act fast. If anything happens, the coach logs it in the app's incident log, which emails Stephen Henry: what happened, the action taken, whether you were called, and whether 911 was called. You're still told the same day by phone.
 
 On class days, the adults in the room have what they need to act fast: each child's care plan and any rescue medicine travel with the trained adult in a closed bag or binder, never left out in view of other families.
 

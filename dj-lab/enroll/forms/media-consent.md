@@ -7,8 +7,8 @@ description: Optional permission for Ras Tafari Inc. to photograph or record you
 
 This **optional** form asks whether we may take photos, video or audio recordings of your child during Lab activities and use them to share what the program does. **The default is no.** Saying no never affects your child's place, their jobs at the station, or their chance to perform.
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [media-consent.pdf](/dj-lab/assets/forms/media-consent.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [media-consent.pdf](/dj-lab/assets/forms/media-consent.pdf)
 
 **Please note:** the class app **does not store photos or video**. This consent is about photos and recordings that Ras Tafari Inc. takes for its own program materials. In-class listen-back recordings (2-minute practice mixes that children review with a mentor) are learning tools, not media for publication, and they're covered here only if they're shared outside class.
 

@@ -17,13 +17,14 @@ Any time Lab information is accessed, seen, copied or lost without permission. F
 - a Lab email (a registration notice, recap or sign-out notice) goes to the wrong person
 - a paper form or device with family information is lost or stolen
 - a service provider tells us its systems were breached
-- a private field is found showing on the family page by mistake
+- a private field is found showing on a family link or an in-room screen by mistake
+- a family link reaches someone outside that family
 
-**About the class code:** the class board (first name and last initial, in-class activity, stamps and coach notes) is visible to anyone with the code by design. If a code spreads beyond enrolled families, we'll treat it as a privacy incident: we'll change the code, tell families in that class, and explain what was visible.
+**About family links and room codes:** each private family link shows only one child, so a shared link exposes only that child's class activity. If a link is lost or shared, the coach re-issues it. The room code for in-room screens shows the station board for one class (first names and last initials, stations, jobs, check-in times and in-class activity, never glow notes or private data). It expires (4 hours by default) and the coach can end it any time, so a leaked room code stops working when the class ends. If a room code leaks during class, the coach ends it and issues a new one, and we tell families in that class what was visible.
 
 ## What we do
 
-1. **Contain it.** Stop the exposure: revoke sign-in links, change class codes, fix the fault, and ask the wrong recipient to delete what they got.
+1. **Contain it.** Stop the exposure: revoke sign-in links, end room codes, re-issue family links, fix the fault, and ask the wrong recipient to delete what they got.
 2. **Find out what happened:** what information, whose, and for how long.
 3. **Tell affected families** without unreasonable delay, by phone and email.
 4. **Tell the right authorities** where the law requires.
@@ -47,7 +48,7 @@ The federal **COPPA Rule** also requires us to keep children's information confi
 
 ## Keeping breaches from happening
 
-- Private family data is never sent to the family page. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
+- Private family data is never sent to a family link or an in-room screen. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
 - Coaches sign in with one-time emailed links. Only adults on the Lab's coach list can request one.
 - We collect as little as we can, and [delete it on schedule](/dj-lab/privacy/retention-deletion.html).
 - A full access audit log is being built and is a launch requirement. See [access records and audit log](/dj-lab/privacy/audit-log.html).

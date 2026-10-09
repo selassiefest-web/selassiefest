@@ -5,10 +5,10 @@ description: Optional permission for your child to perform at public events beyo
 
 ## Purpose
 
-Inside class, playing for the group is always the child's choice. **Spotlight is volunteers only,** and coaches never call on a child who didn't sign up. This **optional** form covers performing **outside the classroom, in front of the public**. **The default is no.**
+Inside class, playing for the group is always the child's choice. **Spotlight is volunteers only,** and coaches never call on a child who didn't sign up. The class app also won't put a child in the Spotlight on the main speaker unless this consent is on file. This **optional** form covers the in-class Spotlight and performing **outside the classroom, in front of the public**. **The default is no.**
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [performance-consent.pdf](/dj-lab/assets/forms/performance-consent.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [performance-consent.pdf](/dj-lab/assets/forms/performance-consent.pdf)
 
 ## What it covers
 

@@ -5,7 +5,7 @@ description: The full Rainbow DJ Lab privacy statement, covering what we collect
 
 ## Who we are
 
-Rainbow DJ Lab is a free DJ class run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity, 7700 S. Stony Island Ave., Chicago, IL 60649. This statement covers the Lab's registration form, the class app at [/dj-lab/live/](/dj-lab/live/), and the emails the Lab sends.
+Rainbow DJ Lab is a free DJ class run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity, 7700 S. Stony Island Ave., Chicago, IL 60649. This statement covers the Lab's interest list and registration form, the class app at [/dj-lab/live/](/dj-lab/live/), and the emails the Lab sends.
 
 **Privacy contact:** Stephen Henry, President. 414-909-3279, stephen@selassiefest.com.
 
@@ -14,29 +14,43 @@ Rainbow DJ Lab is a free DJ class run by **Ras Tafari Inc.**, an Illinois not-fo
 ## The short version
 
 - We collect only what we need to teach your child and keep them safe.
-- On the class board, children appear by **first name and last initial** only.
+- Before launch, we keep only a short **interest list**, deleted if the Lab hasn't started within 12 months.
+- Your **private family link** shows only your own child. On in-room screens, children appear by **first name and last initial** only.
 - Your contact details, medical information and pickup list are **coach-only**.
+- Your consent choices are **enforced by the app**.
 - **No ads. No tracking pixels. No selling or sharing of data. No photos or video in the app. No biometrics. No location tracking.**
 - You can see, correct or delete your child's information at any time.
 
 ## What we collect
 
-### From you, the parent or guardian, at registration
+### Before launch: the interest list
+
+Until every item on the [launch checklist](/dj-lab/governance/index.html) is complete, the online form is an **interest list**, not enrollment. It collects only:
 
 | Information | Why we need it |
 |---|---|
-| Your name, email and phone | To confirm registration, reach you during class, and send recaps if you opt in |
-| Emergency contacts | To reach someone if we can't reach you |
-| Your child's first name, last initial and age | To place your child in the right age group and show them on the class board |
+| Your child's first name, last initial, age and age group | To know who the interest is for and which groups families want |
+| Your name, email and phone | To contact you when dates are set and full registration opens |
+| Your permission to contact you | To record that you agreed to be contacted |
+
+It collects **no** health, allergy, pickup, custody or emergency-contact details, **no** consents, and **no** free-text notes. The list is deleted if the Lab hasn't started within 12 months, or sooner if you ask. An interest-list entry can never be approved onto a class.
+
+### From you, the parent or guardian, at full registration (after launch)
+
+| Information | Why we need it |
+|---|---|
+| Your name, email and phone | To confirm registration, email your private family link, reach you during class, email you at every sign-out, and send recaps if you opt in |
+| Two emergency contacts | To reach someone if we can't reach you |
+| Your child's first name, last initial and age | To place your child in the right age group and show them on the in-room station board |
 | Accommodations, allergies, medical notes, and whether your child carries an epinephrine auto-injector | To keep your child safe and follow their care plan |
 | Authorized-pickup list (names, relationship, phone) and any custody note | So we release your child only to the right adults |
 | Written permission for a child to sign out alone, if you give it | Children 8–11 never leave alone without it |
-| Your consents: participation, media (photo/video) consent, and session-recap emails | To record what you have and haven't agreed to |
-| The class code you registered with | To place your child in the right class |
+| Your consents, each asked separately: participation, code of conduct, digital tracking (in-class app activity), performance, media (photo, video, audio, name), and session-recap emails | To record what you have and haven't agreed to. The app enforces them: no in-class activity is saved without digital-tracking consent, and no Spotlight without performance consent |
+| A class identifier, if you were given one | To place your child in the right class |
 
 ### From your child, during class
 
-Children use the class app for in-class activity. The app stores:
+Children use the class app for in-class activity, on in-room screens opened with the coach's room code. **Only if you gave digital-tracking consent,** the app stores:
 
 - their **station** and seat
 - **check-in time** for each session
@@ -44,12 +58,15 @@ Children use the class app for in-class activity. The app stores:
 - **Passport stamps** awarded by mentors
 - the coach's **glow notes**
 
+Without that consent, nothing your child does in the app is saved; they tell the coach their answers instead.
+
 Children don't type their full name, address, phone, email or a photo into the app, and they don't create accounts. Coaches remind kids not to put personal details in free-text lines like "Next time I'll…".
 
 ### From staff, about your child
 
 - **Sign-out records:** for each release, who picked up the child, their relationship, whether photo ID was checked, whether it was a written-permission self sign-out, which coach released the child, and the time.
-- Incident reports, if anything happens. See [incident reporting](/dj-lab/safety/incident-reporting.html).
+- Incident reports, if anything happens. Coaches log incidents in the class app (kind, child, what happened, action taken, whether the parent was called, whether 911 was called), and each entry is emailed to Stephen Henry. See [incident reporting](/dj-lab/safety/incident-reporting.html).
+- If a coach adds a child from paper forms, which consents are on paper.
 
 ### What we never collect
 
@@ -62,26 +79,35 @@ Children don't type their full name, address, phone, email or a photo into the a
 
 This is the most important part of this statement. Please read it.
 
-### Anyone with the class code
+### You, through your private family link
 
-Families and kids join the class app with a **6-character class code**. **Anyone who has the code can see the whole class's board**, for every child in the class:
+Families never use a class code. When a coach approves your child, we email you a **private family link** (`/dj-lab/live/?f=…`). It shows **only your own child**:
+
+- the live class clock and block
+- your child's station and job
+- their self-ratings, "Next time I'll…" and Mix Log
+- their Passport
+- the coach's glow note for your child
+- coach messages
+
+It **never shows other children**, and the Spotlight banner appears only when it's your own child. Please keep the link within your household. If it's lost or shared, tell Stephen Henry and the coach will re-issue it.
+
+### In-room Kid/Station screens (room code)
+
+Screens in the room use a **room code** the coach issues for each class. It **expires** (4 hours by default), and the coach can end it at any time, so a leaked code stops working when the class ends. These screens show the station board for that class:
 
 - first name and last initial
-- station
+- station and job
 - check-in time
 - in-class activity (prediction, level, self-rating, "Next time I'll…", "Data!" count, Mix Log)
-- Passport stamps
-- the coach's glow notes
 
-This lets families follow along live and lets kids see their station. It also means **other families in your class can see your child's board entries, and you can see theirs.** The code isn't a password for one family; it opens the class board.
+They **never** show glow notes or private data. Room-code screens show only the Kid tab and the read-only coach script.
 
-**Please share the class code only with your own household.** If you think the code has spread beyond enrolled families, tell Stephen Henry and we'll issue a new code.
-
-Your browser remembers the code on that device so you don't have to retype it. Choosing to leave the class in the app clears it.
+Your browser remembers your family link or the room code on that device so you don't have to retype it. Choosing to leave the class in the app clears it.
 
 ### Coaches only
 
-These are stored privately and **never sent to the family page**:
+Coaches see the whole class. These are stored privately and **never sent to a family link or an in-room screen**:
 
 - guardian name, email and phone
 - emergency contacts
@@ -90,11 +116,13 @@ These are stored privately and **never sent to the family page**:
 - consents
 - sign-out records
 
+During class, a coach's **Safety now** panel shows allergy, EpiPen, medical and custody flags for the children checked in, guardian phone and emergency numbers, and links to the sign-out tool and emergency plans.
+
 Coaches sign in with a one-time link emailed to an address already on the Lab's coach list. Only adults who have completed screening will be added to that list.
 
 ### Stephen Henry
 
-When a registration is submitted, Stephen Henry gets an email notice so he can review and approve it. The notice includes the child's first name and last initial, age and class code, and the guardian's name, email and phone. For medical, allergy, pickup and custody information it shows only **yes/no flags** (for example, "Allergy listed: Yes"). The details themselves stay in the protected coach roster and are never sent by email. A separate email goes to the parent each time their child is signed out, naming the adult who picked them up. See [retention and deletion](/dj-lab/privacy/retention-deletion.html).
+When an interest-list entry or a registration is submitted, Stephen Henry gets an email notice so he can review it. The notice includes the child's first name and last initial, age and class identifier (if any), and the guardian's name, email and phone. For medical, allergy, pickup and custody information it shows only **yes/no flags** (for example, "Allergy listed: Yes"). The details themselves stay in the protected coach roster and are never sent by email. A separate email goes to the parent **each time their child is signed out**, naming the adult who picked them up. Stephen Henry also gets an email for every incident a coach logs. See [retention and deletion](/dj-lab/privacy/retention-deletion.html).
 
 ### No one else
 
@@ -111,7 +139,7 @@ We don't sell, rent, trade or share your family's information. We share it only:
 | **Database** | Supabase, our database provider |
 | **Email** | Resend, our email provider |
 | **Website** | GitHub Pages hosts the pages themselves, which contain no family data |
-| **Protections** | Database tables are locked so the public page can't read them directly. The family page only gets the class-board fields listed above. Private fields are returned only to a signed-in coach. The registration form uses a bot check (Cloudflare Turnstile) |
+| **Protections** | Database tables are locked so the public page can't read them directly. A family link gets only that family's own child. An in-room screen gets only the station-board fields listed above, and only while its room code is live. Private fields are returned only to a signed-in coach. The registration form uses a bot check (Cloudflare Turnstile) |
 
 Full list: [third-party vendors](/dj-lab/privacy/third-party-vendors.html).
 
@@ -119,9 +147,13 @@ Full list: [third-party vendors](/dj-lab/privacy/third-party-vendors.html).
 
 | Email | To | Contains |
 |---|---|---|
+| Interest-list confirmation | The guardian email on the interest list | That your child is on the interest list, that it is not enrollment, and that the list is deleted if the Lab hasn't started within 12 months |
 | Registration confirmation | The guardian email given at registration | Your child's first name, a link to the class app and to these policies, and whether you chose recaps |
+| Private family link | The guardian email, when a coach approves your child | Your child's private link to the class app |
+| Sign-out notice | The guardian email, every time your child is signed out | Who picked your child up, and when |
 | Session recap (optional) | Guardian email, only if you opted in | Today's mission, your child's self-rating, the coach's note, and a question to ask at dinner |
-| Registration notice | Stephen Henry | The full registration, including medical and pickup details |
+| Registration or interest-list notice | Stephen Henry | Child's first name and last initial, age, guardian contact details, and yes/no flags for medical, allergy, pickup and custody information |
+| Incident log entry | Stephen Henry | Kind of incident, child, what happened, action taken, whether the parent was called, whether 911 was called |
 | Coach sign-in link | The coach | A one-time sign-in link |
 
 A [weekly digest](/dj-lab/families/weekly-digest.html) is planned but **not built**. We send no marketing email from the Lab.
@@ -135,6 +167,7 @@ A [weekly digest](/dj-lab/families/weekly-digest.html) is planned but **not buil
 ## How long we keep it
 
 - **Child activity data** (board entries, self-ratings, stamps, notes): deleted within 90 days after the season ends, unless your family asks to keep your child's Passport.
+- **Interest-list entries:** deleted if the Lab hasn't started within 12 months, or sooner if you ask.
 - **Registration records:** kept 3 years for safety and insurance purposes, then deleted.
 - **Listen-back recordings:** kept only until the session review, then deleted unless your family asks for a copy.
 

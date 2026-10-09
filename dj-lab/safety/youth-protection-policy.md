@@ -58,7 +58,7 @@ Some teaching is naturally one-on-one, for example listen-back days (sessions 6,
 1. **No private messaging with children.** Adults never text, DM, email, call, video-chat, or game-chat with a child one-on-one, on any app.
 2. Lab messages go **to parents and guardians**. For Teen DJs (ages 12–17), a message to a teen is only sent to a group that includes the parent, or with the parent copied.
 3. **No social media connections** with children. Adults do not friend, follow, or accept follow requests from enrolled children on personal accounts.
-4. **The live app is group-visible.** Coach "glow notes" and stamps appear on the class board that every family with the class code can see. Coaches write nothing to a child they would not want every parent to read. See [Privacy](/dj-lab/privacy/index.html).
+4. **The live app is not a private channel to a child.** A coach's "glow note" for a child goes to that child's own family through their private family link, and every coach can see it. Glow notes never appear on the in-room screens. Coaches write nothing to a child they would not want that child's parent and the other coaches to read. Coach messages in the app go to the whole class at once, never privately to one child. See [Privacy](/dj-lab/privacy/index.html).
 5. **Quiet hours:** no Lab messages to families between 9 p.m. and 7 a.m., except for an emergency.
 6. If a child messages an adult privately, the adult does not continue the conversation, replies only to tell the child to go through their parent, tells the parent, and tells the Lab lead.
 7. Emails are kept. Nothing is deleted to hide a conversation.
@@ -91,7 +91,7 @@ Contact is always brief, in the open, for the child's benefit, and something the
 | A handshake or dap at Spotlight | | Touching any area a swimsuit covers |
 | | | Any touch a child says no to, or pulls away from |
 
-Exception: an adult may hold or move a child to stop immediate danger (for example, pulling them back from a falling speaker) or to give first aid. That is recorded as an incident. See [Incident reporting](/dj-lab/safety/incident-reporting.html).
+Exception: an adult may hold or move a child to stop immediate danger (for example, pulling them back from a falling speaker) or to give first aid. That is recorded as an incident in the class app's incident log, which emails Stephen Henry. See [Incident reporting](/dj-lab/safety/incident-reporting.html).
 
 ## Rule 7: Restrooms and changing
 

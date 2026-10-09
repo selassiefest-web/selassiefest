@@ -42,7 +42,7 @@ The emergency action plan and the fieldhouse lockdown plan will be finalized aft
 
 - Check that your forms are complete: authorized-pickup list, emergency contacts, medical and allergy information, medication authorization and FARE plan if needed, and consents.
 - Bring photo ID so staff can see it for the first time.
-- See the class app at [/dj-lab/live/](/dj-lab/live/) and what the class board shows. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
+- See the class app at [/dj-lab/live/](/dj-lab/live/): what your private family link shows (only your own child) and what the in-room station board shows. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
 - Forms: [enrollment forms](/dj-lab/enroll/forms/).
 
 ### 5. Questions and answers

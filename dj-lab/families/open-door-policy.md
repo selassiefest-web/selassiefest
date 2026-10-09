@@ -46,7 +46,7 @@ If we ever ask you to step out, a staff member will tell you why, and you can ra
 
 ## The class app
 
-Families can follow the class board live from anywhere by joining [/dj-lab/live/](/dj-lab/live/) with the class code. It shows each child's first name and last initial, station, check-in time, in-class activity, Passport stamps and coach notes. Contact details, medical notes and pickup lists are never shown. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
+You can follow your own child live from anywhere with your **private family link** to [/dj-lab/live/](/dj-lab/live/), emailed when your child is approved for a class. It shows **only your own child**: the class clock and block, their station and job, self-ratings, "Next time I'll…", Mix Log, Passport, the coach's glow note for your child, and coach messages. It never shows other children. Families don't use a class code. If your link is lost or shared, the coach re-issues it. Contact details, medical notes and pickup lists are never shown. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
 
 ## Questions
 

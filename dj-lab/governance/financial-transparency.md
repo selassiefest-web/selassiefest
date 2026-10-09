@@ -7,6 +7,47 @@ description: How the free Rainbow DJ Lab is paid for, what we will publish each 
 
 **Status: Commitment.** No Lab budget has been set yet. A budget will be published for each season before that season starts.
 
+## A one-page class budget is a launch requirement
+
+Here is the **one-page budget for the DJ classes** (item 15 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: instructor rates match the Rainbow Wednesdays budget, equipment prices are typical retail and will be re-quoted before purchase, and insurance and music-licensing quotes are still pending.
+
+### One cohort: up to 12 children, 14 weekly 90-minute sessions
+
+| Line | Basis | Cash | In-kind |
+|---|---|---:|---:|
+| Lead DJ instructor | 14 sessions × $200 | $2,800 | |
+| Second screened adult (two-adult rule) | 14 sessions × $100 | $1,400 | |
+| Rainbow Showcase extra staffing (session 14) | 1 × $200 | $200 | |
+| DJ controllers, 3 stations | 3 × about $300 | $900 | |
+| Laptops, 3 stations | sought from partners first; purchase only if not donated | up to $1,500 | or donated |
+| Volume-limited headphones | 12 × about $25 | $300 | |
+| Earplugs, free to every child | | $50 | |
+| Main speaker and sound | Ras Tafari Inc. equipment | | $1,050 |
+| Background checks (fingerprint + registries) | 3 adults × about $50 | $150 | |
+| Pediatric first aid/CPR/AED certification | 2 adults × about $100 | $200 | |
+| Mandated reporter training | Illinois DCFS online course | $0 | |
+| Insurance share (general liability + abuse and molestation) | quote pending | $500 placeholder | |
+| Music public-performance licensing | quote pending, or park coverage | to be confirmed | |
+| Printing: forms, Passports, flyers in English and Spanish | | $150 | |
+| Spanish review by a native speaker | | $200 | |
+| Program coordination | Ras Tafari Inc. | | $1,500 |
+| **Total** | | **about $8,350, plus licensing** | **about $2,550** |
+
+- **About $700 per child** for a 12-child, 14-week course. The gear (about $2,700) is reused, so later cohorts cost less.
+- **The spring fast track** (6 workshops × 2 hours) needs about 43% of the instructor cost and the same gear.
+- **No stipends in classes.** Stipends for young performers are paid at Rainbow Wednesdays, which has its own budget.
+- **Funding:** arts and youth grants, sponsors and Ras Tafari Inc. The class is free to families. No class starts until its funding is in place.
+- **Ras Tafari Inc.'s role:** its equipment and coordination are contributed in-kind. Any payment to Ras Tafari Inc. or its officers will be shown here.
+
+- instructors
+- gear and the lending library
+- ear protection
+- background checks
+- the Lab's share of insurance
+- stipends, if any
+
+It will also show **any payment to Ras Tafari Inc. or its officers**, as our [conflict-of-interest disclosure](/dj-lab/governance/conflict-of-interest.html) commits. **No figures are posted yet.** Proposed figures are pending confirmation, and we won't publish numbers until they are confirmed.
+
 ## The Lab is free
 
 - No tuition and no fees to enroll.

@@ -47,7 +47,7 @@ DJ class involves music, lights and a busy room. We plan for that.
 
 If your child has an IEP or a 504 plan, you're welcome to share the parts that help us support them, such as what calms them, how they take in instructions best, or what to avoid. **It is entirely optional.** We'll never require a plan, a diagnosis or medical records for your child to join.
 
-Anything you share is treated as private. It's kept with the coach-only records and never shown on the class board. See [Privacy](/dj-lab/privacy/index.html).
+Anything you share is treated as private. It's kept with the coach-only records and never shown on a family link or an in-room screen. See [Privacy](/dj-lab/privacy/index.html).
 
 ## Medical needs
 

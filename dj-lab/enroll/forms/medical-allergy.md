@@ -7,8 +7,8 @@ description: The health information the adults in the room need to keep your chi
 
 This form tells the adults in the room what to watch for and what to do. It covers allergies, medical conditions and medication. If your child has none, simply answer "none."
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [medical-allergy.pdf](/dj-lab/assets/forms/medical-allergy.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [medical-allergy.pdf](/dj-lab/assets/forms/medical-allergy.pdf)
 
 ## Every field
 

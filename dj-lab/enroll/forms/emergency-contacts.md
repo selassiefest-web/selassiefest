@@ -7,8 +7,8 @@ description: Two adults we call if something happens and we can't reach you.
 
 If your child is hurt, gets sick, or needs to be picked up and **we can't reach you**, we call these adults. In a medical emergency we call **911 first**, then you, then your emergency contacts.
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [emergency-contacts.pdf](/dj-lab/assets/forms/emergency-contacts.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [emergency-contacts.pdf](/dj-lab/assets/forms/emergency-contacts.pdf)
 
 ## Every field
 

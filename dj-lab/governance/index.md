@@ -34,13 +34,18 @@ As of today, **none of these items is complete.**
 | 9 | Parent forms available in English and Spanish | Every family must be able to read and understand what they are signing. | Not yet complete | [For families](/dj-lab/families/index.html) |
 | 10 | Dates and the schedule posted | Families need to know exactly when and where their child will be before they enroll. | Not yet complete | [For families](/dj-lab/families/index.html) |
 | 11 | A board vote adopting these policies | Policies only bind an organization once its board formally adopts them. | Not yet complete | [Board and officers](/dj-lab/governance/board.html) |
+| 12 | Music licensing: public performance rights for Spotlight, the Rainbow Showcase and any public performance (through ASCAP, BMI, SESAC and GMR, or written confirmation that Chicago Park District licenses cover it) | Playing recorded music for an audience needs public performance rights, and the Lab must have them before kids play for anyone. | Not yet complete | [Performing](/dj-lab/performing/index.html) |
+| 13 | Empress Decks: written confirmation in the park agreement | Rainbow Beach Park staff welcome the girls' focus, since girls' participation has long trailed boys' across the Park District. We'll put the girls-only track in writing in the MOU. | Not yet complete | [Age groups](/dj-lab/about/age-groups.html) |
+| 14 | Records match: the Ras Tafari Inc. name and address match across the IRS determination letter, the Illinois Secretary of State, the insurance certificate and the park paperwork | Every Lab and proposal document uses 7700 S. Stony Island Ave., Chicago, IL 60649; the IRS, state, insurance and park records must show the same. | Not yet complete | [501(c)(3) determination letter](/dj-lab/governance/501c3-letter.html) |
+| 15 | A published one-page budget for the DJ classes (instructors, gear and lending library, ear protection, background checks, insurance share, stipends if any) | Families, the PAC and the park should see where the money goes. Proposed figures are pending confirmation. | Draft published; insurance and music-licensing quotes pending | [Financial transparency](/dj-lab/governance/financial-transparency.html) |
+| 16 | Conflict-of-interest disclosure: Ras Tafari Inc.'s representative discloses its role and abstains from the Rainbow Beach PAC vote | Ras Tafari Inc. wrote the proposal, would produce the program, and is a member of the PAC asked to present it. | Not yet complete | [Conflict of interest](/dj-lab/governance/conflict-of-interest.html) |
 
 ### How an item gets marked complete
 
 1. The proof exists in writing (a signed agreement, a certificate, meeting minutes, a completed screening record).
 2. A second Ras Tafari Inc. officer, not the person who did the work, checks the proof.
 3. We update this table with the completion date and link the evidence.
-4. Only when all eleven rows say "Complete" is a first class date confirmed.
+4. Only when all seventeen rows say "Complete" is a first class date confirmed.
 
 If any item later lapses (for example, an insurance policy expires or a screening comes due), classes pause until it is fixed, and this table will show that too.
 
@@ -54,9 +59,9 @@ The safety, privacy and governance policies on this site are **policies Ras Tafa
 |---|---|
 | [501(c)(3) determination letter](/dj-lab/governance/501c3-letter.html) | Available on request |
 | [Board and officers](/dj-lab/governance/board.html) | Officers listed; policy adoption vote not yet held |
-| [Conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) | Proposed, for adoption by the board |
+| [Conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) | Proposed, for adoption by the board; includes our disclosure (item 16) |
 | [Whistleblower policy](/dj-lab/governance/whistleblower.html) | Proposed, for adoption by the board |
-| [Financial transparency](/dj-lab/governance/financial-transparency.html) | Commitment; season budget to be published |
+| [Financial transparency](/dj-lab/governance/financial-transparency.html) | Commitment; the one-page class budget is published (item 15) |
 | [MOU with the Chicago Park District](/dj-lab/governance/mou-park-district.html) | Not yet drafted or signed |
 | [Park District permits](/dj-lab/governance/park-district-permits.html) | Pending |
 | [Advisory council vote](/dj-lab/governance/advisory-council-vote.html) | Pending |

@@ -9,6 +9,19 @@ description: The proposed conflict of interest policy for Ras Tafari Inc., cover
 
 This policy follows standard nonprofit practice. It is modeled on the questions the IRS asks on Form 990, Part VI, lines 12a–12c, about whether an organization has a written conflict of interest policy, requires annual disclosures, and monitors and enforces the policy.
 
+## Our disclosure
+
+We want families and the Rainbow Beach Park Advisory Council to see plainly where Ras Tafari Inc. stands.
+
+- **"Ras Tafari Inc. Consultants"** is the name Ras Tafari Inc. uses for its proposal work. It is **not** a separate company.
+- **Ras Tafari Inc. wrote the proposal** for Full Spectrum at Rainbow Beach, including the Rainbow DJ Lab.
+- **Ras Tafari Inc. would produce the program** if it is approved.
+- **Ras Tafari Inc. is a member of the Rainbow Beach Park Advisory Council (PAC)**, the council being asked to present the program.
+- **Our proposed commitment:** Ras Tafari Inc.'s representative will disclose this at the PAC and **abstain from the PAC vote** on the program.
+- **Any payment to Ras Tafari Inc. or its officers** will appear in each program budget. See [financial transparency](/dj-lab/governance/financial-transparency.html).
+
+This disclosure is item 16 on the [launch checklist](/dj-lab/governance/index.html). It is not yet complete.
+
 ---
 
 ## Proposed policy text

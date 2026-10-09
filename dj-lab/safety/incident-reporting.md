@@ -14,7 +14,7 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 | At once | **911** for any immediate danger or medical emergency; **DCFS Hotline, 1-800-25-ABUSE (1-800-252-2873)**, for suspected abuse or neglect | Any adult |
 | At once | Parent called for serious injury, 911 call, epinephrine use, lost child, or refused pickup | Lead coach |
 | **Same day** | Parent or guardian told **by phone** about any incident involving their child | Lead coach or Lab lead |
-| Same day | Incident written in the log; Stephen Henry (Lab lead) told | Lead coach |
+| Same day | Incident written in the log (coaches use the class app's incident log, which emails Stephen Henry: kind, child, what happened, action taken, whether the parent was called, whether 911 was called); Stephen Henry (Lab lead) told | Lead coach |
 | **Within 24 hours** | **Written incident report** sent to the parent or guardian | Lab lead |
 | **Within 7 days** | **Internal review** completed and written up | Lab lead plus a Ras Tafari Inc. officer not involved |
 | As required | Report to the Chicago Park District and the insurance carrier, under the terms of the park agreement and insurance policy once they are in place | Lab lead |

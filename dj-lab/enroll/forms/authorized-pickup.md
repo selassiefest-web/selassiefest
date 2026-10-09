@@ -9,8 +9,8 @@ description: The list of adults allowed to pick up your child, and whether your 
 
 For Junior DJs (ages 8–11), drop-off is allowed **only** once this form is signed.
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [authorized-pickup.pdf](/dj-lab/assets/forms/authorized-pickup.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [authorized-pickup.pdf](/dj-lab/assets/forms/authorized-pickup.pdf)
 
 ## Every field
 

@@ -14,7 +14,7 @@ description: How Rainbow DJ Lab handles listen-back audio recordings, media cons
 
 ## In the class app
 
-The app at [/dj-lab/live/](/dj-lab/live/) has no way to take, upload or store photos, video or audio. Kids appear on the class board by first name and last initial only. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
+The app at [/dj-lab/live/](/dj-lab/live/) has no way to take, upload or store photos, video or audio. Kids appear on the in-room station board by first name and last initial only, and a family's private link shows only their own child. See [data privacy](/dj-lab/privacy/data-privacy-statement.html).
 
 ## Listen-back recordings
 

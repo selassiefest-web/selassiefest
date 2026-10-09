@@ -56,7 +56,9 @@ Also try:
 
 ## If you opted in to recap emails
 
-You'll get a short recap after class. If you have the class code, you can see your child's activity on the [live class app](/dj-lab/live/): their station, check-in time, level, self-rating, "Next time I'll…" line and Passport stamps. Please share the class code only with enrolled families. Everyone with the code sees the whole class's board. See [Privacy](/dj-lab/privacy/index.html).
+You'll get a short recap after class. You can also see your child's activity with your **private family link** to the [live class app](/dj-lab/live/), emailed when your child was approved for the class: their station and job, level, self-rating, "Next time I'll…" line, Mix Log and Passport stamps. The link shows **only your own child**, never other children. If it's lost or shared, the coach re-issues it. (If you didn't give digital-tracking consent, your child's in-class answers aren't saved in the app; they tell the coach instead.)
+
+You'll also get an email when your child is signed out at the end of class. See [Privacy](/dj-lab/privacy/index.html).
 
 ## Next stop
 

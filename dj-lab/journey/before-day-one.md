@@ -9,30 +9,33 @@ Rainbow DJ Lab is proposed. The Chicago Park District has not approved it, the R
 
 ## Your checklist
 
-### 1. Register
-Registration will be on the [Register](/dj-lab/enroll/register.html) page. At registration you give verifiable parental consent for the limited information the Lab collects about your child. See [COPPA compliance](/dj-lab/privacy/coppa-compliance.html). You'll get a confirmation email.
+### 1. Now: join the interest list (optional)
+Until launch, the form on the [Register](/dj-lab/enroll/register.html) page is an **interest list**, not enrollment. It asks only your child's first name and last initial, age and age group; your name, email and phone; and your permission for us to contact you. It asks nothing about health, pickup, custody or emergency contacts, no consents, and no free-text notes. If the Lab hasn't started within 12 months, we delete the list. You can ask to come off it any time.
 
-### 2. Fill in the forms
-All parent forms will be available in English and Spanish. See [Forms](/dj-lab/enroll/forms/index.html).
+### 2. After launch: complete full registration
+Full registration opens only when every launch-checklist item is complete. At registration you give verifiable parental consent for the limited information the Lab collects about your child. See [COPPA compliance](/dj-lab/privacy/coppa-compliance.html). You'll get a confirmation email, and when a coach approves your child for a class, your **private family link** to the class app. It shows only your own child.
+
+### 3. Fill in the forms
+These are part of full registration, after launch. Each consent is asked separately. The printable [Forms](/dj-lab/enroll/forms/index.html) are for full registration too. All parent forms will be available in English and Spanish.
 
 - [ ] [Registration](/dj-lab/enroll/forms/registration.html)
 - [ ] [Emergency contacts](/dj-lab/enroll/forms/emergency-contacts.html)
 - [ ] [Medical and allergy](/dj-lab/enroll/forms/medical-allergy.html), plus your child's FARE Food Allergy & Anaphylaxis Emergency Care Plan if they have one
 - [ ] [Authorized pickup](/dj-lab/enroll/forms/authorized-pickup.html): every adult who may collect your child. For a 9-year-old (Junior DJs), drop-off requires this signed list.
 - [ ] [Media consent](/dj-lab/enroll/forms/media-consent.html)
-- [ ] [Performance consent](/dj-lab/enroll/forms/performance-consent.html)
-- [ ] [Digital tracking consent](/dj-lab/enroll/forms/digital-tracking-consent.html)
+- [ ] [Performance consent](/dj-lab/enroll/forms/performance-consent.html) (without it, your child isn't put in the Spotlight)
+- [ ] [Digital tracking consent](/dj-lab/enroll/forms/digital-tracking-consent.html) (without it, nothing your child does in the class app is saved)
 - [ ] [Code of conduct](/dj-lab/enroll/forms/code-of-conduct.html): read it together with your child
 
 If your child takes medication during class time, it must come in its original pharmacy container with a signed authorization. See [Medication storage](/dj-lab/safety/medication-storage.html).
 
-### 3. Tell us what helps
+### 4. Tell us what helps
 If your child has sensory needs, a disability, or a learning difference, tell us now. IEP or 504 information is welcome but never required. See [Accessibility](/dj-lab/about/accessibility.html).
 
-### 4. Come to orientation
+### 5. Come to orientation
 See [Orientation](/dj-lab/families/orientation.html). It's your chance to see the space, meet the adults, and ask anything.
 
-### 5. Plan the trip
+### 6. Plan the trip
 See [Locations](/dj-lab/enroll/locations.html) and [Transportation and parking](/dj-lab/enroll/transportation-parking.html). Bring a photo ID every time you pick up. Every adult on your pickup list must bring one too.
 
 ## What your child needs to bring

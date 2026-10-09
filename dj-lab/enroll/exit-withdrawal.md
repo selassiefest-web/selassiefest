@@ -11,7 +11,7 @@ The program is free, so withdrawing costs nothing, and there are no fees or form
 
 When you withdraw:
 
-- We take your child off the class roster and the class board.
+- We take your child off the class roster and the in-room station board.
 - You stop getting class emails and recaps.
 - If your child is holding any Lab equipment, please return it. Kids don't take gear home during the course.
 

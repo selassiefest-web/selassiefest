@@ -29,8 +29,10 @@ Our [data privacy statement](/dj-lab/privacy/data-privacy-statement.html) explai
 ### 2. Verifiable parental consent, before the child uses the app
 
 - A **parent or guardian** registers the child and gives consent. Children don't register themselves.
-- A child doesn't appear on the class board until a coach **approves the registration**. Before approval, a coach confirms the registration with the parent or guardian directly, by phone or in person at check-in with photo ID.
-- The Lab's forms are also available on paper with a signature. See [enrollment forms](/dj-lab/enroll/forms/).
+- Interest-list entries collected before launch hold no consents and can never be approved onto a class. Every family completes full registration first.
+- A child doesn't appear in the class app until a coach **approves the registration**. Before approval, a coach confirms the registration with the parent or guardian directly, by phone or in person at check-in with photo ID.
+- The Lab's forms are also available on paper with a signature, for full registration after launch. See [enrollment forms](/dj-lab/enroll/forms/). If a coach adds a child from paper forms, the coach records which consents are on paper.
+- **Consent is enforced by the server.** No in-class app activity is saved without the family's digital-tracking consent (the child tells the coach their answer instead), and no child can be put in the Spotlight without performance consent.
 
 ### 3. Collecting only what's needed
 
@@ -44,7 +46,7 @@ Children **don't** create accounts or give their full name, address, phone numbe
 - Children's information goes only to the service providers that run the app (see [third-party vendors](/dj-lab/privacy/third-party-vendors.html)), to emergency services when a child needs help, and to authorities when the law requires.
 - If we ever wanted to share children's information with a third party for any other purpose, we would first ask for your **separate** consent. We have no such plans.
 
-**About the class board.** Families in the same class who have the class code can see each child's first name, last initial and in-class activity. This is part of the class activity, and we explain it before you give consent. If you'd rather your child's entries weren't visible to other families, tell us before class starts and we'll talk through options with you.
+**Who sees your child's activity.** Your **private family link** shows only your own child; other families never see it. In the room, screens opened with the coach's expiring room code show the station board for that class: first names and last initials, stations, jobs, check-in times and in-class activity, never glow notes or private data. Children in the room can see that board during class. We explain this before you give consent. If you'd rather your child's entries weren't saved or shown, you can say no to digital-tracking consent, and your child tells the coach their answers instead.
 
 ### 5. Your rights as a parent
 
@@ -56,7 +58,7 @@ Child activity data is deleted within 90 days after the season ends, unless your
 
 ### 7. Security
 
-- Database tables are locked to the public. The family page gets only the class-board fields.
+- Database tables are locked to the public. A family link gets only that family's own child, and an in-room screen gets only the station-board fields while its room code is live.
 - Private family data goes only to coaches who sign in with a one-time emailed link.
 - Every adult with coach access completes screening before their first class.
 - A written information-security and data-retention program, with a full access audit log, is part of our launch work. See [access records and audit log](/dj-lab/privacy/audit-log.html).

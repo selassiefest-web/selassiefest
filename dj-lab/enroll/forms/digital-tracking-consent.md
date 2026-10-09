@@ -7,8 +7,8 @@ description: Optional permission for the class app to record your child's in-cla
 
 The Rainbow DJ Lab runs a class app at [/dj-lab/live/](/dj-lab/live/). During class it can record what your child does, such as the Passport stamps they earn and their "Next time I'll…" notes, so kids and families can see progress. After class, we can email you a short recap. **Both are optional, and the default is no.**
 
-**Fill it out online:** part of the [registration form](/dj-lab/enroll/register.html)
-**Printable version:** [digital-tracking-consent.pdf](/dj-lab/assets/forms/digital-tracking-consent.pdf)
+**Fill it out online:** part of full registration, which opens only after every [launch-checklist](/dj-lab/governance/index.html) item is complete. Until then the [online form](/dj-lab/enroll/register.html) is an interest list that doesn't ask for this.
+**Printable version (for full registration after launch):** [digital-tracking-consent.pdf](/dj-lab/assets/forms/digital-tracking-consent.pdf)
 
 ## The choices
 
@@ -19,7 +19,7 @@ The Rainbow DJ Lab runs a class app at [/dj-lab/live/](/dj-lab/live/). During cl
 
 | Recorded | Not recorded |
 |---|---|
-| First name and last initial | Full last name on the board |
+| First name and last initial | Full last name on any screen |
 | Station and check-in time | Photos or video |
 | Prediction, challenge level (Mild, Medium or Spicy), and traffic-light self-rating | Biometrics (face, voice prints, fingerprints) |
 | "Next time I'll…" line | Location |
@@ -29,13 +29,15 @@ The Rainbow DJ Lab runs a class app at [/dj-lab/live/](/dj-lab/live/). During cl
 
 ## Who can see it
 
-**Anyone with your class's 6-character code sees the whole class board**: each child's first name and last initial and the in-class activity above. That's why the code is shared only with enrolled families. Please don't share it outside your household.
+- **You, through your private family link.** When your child is approved for a class, we email you a private link that shows **only your own child**: their station and job, self-ratings, "Next time I'll…", Mix Log, Passport, the coach's glow note for your child, and coach messages. It never shows other children. If the link is lost or shared, the coach re-issues it.
+- **In-room Kid/Station screens.** These use a room code the coach issues for each class. The code expires (after 4 hours by default) and the coach can end it any time, so it stops working when the class ends. These screens show the station board for that class: each child's first name and last initial, station, job, check-in time and in-class activity. They **never** show glow notes or private data.
+- **Coaches**, who see the whole class.
 
-Your guardian contact details, emergency contacts, medical notes, pickup list and consents are **never** shown on the board. Those are coaches only.
+Your guardian contact details, emergency contacts, medical notes, pickup list and consents are **never** shown on a family link or an in-room screen. Those are coaches only.
 
 ## If you say no
 
-Your child **still takes full part** in every activity, earns Passport stamps, and gets the same coaching. Coaches track their progress without saving their activity in the app. Saying no never affects your child's place.
+The app enforces your choice: **without this consent, none of your child's in-class app activity is saved.** Your child tells the coach their answers instead. Your child **still takes full part** in every activity, earns Passport stamps, and gets the same coaching. Saying no never affects your child's place.
 
 ## Full consent wording
 
@@ -43,7 +45,7 @@ Your child **still takes full part** in every activity, earns Passport stamps, a
 >
 > I am the parent or legal guardian of the child named on this registration.
 >
-> **In-class app activity.** By checking this box, I consent to Ras Tafari Inc. recording my child's first name and last initial, station, check-in time, and in-class activity (prediction, challenge level, self-rating, "Next time I'll…" line, "Data!" count and Mix Log), plus Passport stamps and coach notes, in the Rainbow DJ Lab class app. I understand that this information is visible to anyone who has my child's class code, which is shared only with enrolled families.
+> **In-class app activity.** By checking this box, I consent to Ras Tafari Inc. recording my child's first name and last initial, station, check-in time, and in-class activity (prediction, challenge level, self-rating, "Next time I'll…" line, "Data!" count and Mix Log), plus Passport stamps and coach notes, in the Rainbow DJ Lab class app. I understand that my child's first name and last initial, station, job, check-in time and in-class activity appear on the in-room station board during class (on screens opened with the coach's expiring room code), and that my private family link shows only my own child.
 >
 > **Recap emails.** By checking this box, I ask Ras Tafari Inc. to email me a short recap after each class at the email address on my registration.
 >

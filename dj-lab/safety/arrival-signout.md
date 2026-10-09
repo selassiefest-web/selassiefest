@@ -21,13 +21,13 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 2. Tell each person on your list to bring a photo ID every time.
 3. If any court order limits who may have contact with your child, give us a copy (see "Custody orders" below).
 4. If you want your child (age 8 or older) to leave on their own, complete the written permission described below. Without it, the answer is no.
-5. Only coaches can see the pickup list. It is stored privately and never shown on the class board. See [Privacy](/dj-lab/privacy/index.html).
+5. Only coaches can see the pickup list. It is stored privately and never shown on a family link or an in-room screen. See [Privacy](/dj-lab/privacy/index.html).
 
 ## Sign-in, step by step
 
 1. Arrive during the drop-off window (to be posted with the class schedule). Children are not left before two screened adults are present.
 2. The parent or guardian walks the child to the coach at the sign-in point. No curbside drop-offs.
-3. The coach records the child's arrival and time. Families also check in on the class app with the class code; that check-in does not replace the in-person sign-in.
+3. The coach records the child's arrival and time. Kids may also check in on the in-room class app (on a screen opened with the coach's expiring room code); that check-in does not replace the in-person sign-in.
 4. The parent tells the coach about anything that matters today: a different pickup adult (who must already be on the list), medicine, an injury, a hard day.
 5. The child joins the group. From this moment until sign-out, the child is in the care of the Lab's adults.
 
@@ -37,14 +37,15 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 2. The adult comes to the coach at the sign-out point.
 3. The coach checks the adult's photo ID against the authorized-pickup list. See [ID check protocol](/dj-lab/safety/id-check-protocol.html).
 4. The coach checks the adult seems able to safely take the child. If not, see [Impaired adult protocol](/dj-lab/safety/impaired-parent-protocol.html).
-5. The coach records the release in the [sign-out tool](/dj-lab/portal/signout.html): who picked up, the time, and that photo ID was checked against the authorized list.
+5. The coach records the release in the [sign-out tool](/dj-lab/portal/signout.html): who picked up, the time, and that photo ID was checked against the authorized list. The server enforces the rule: the tool records a release only to an adult on the child's list, after the ID check.
 6. The coach says goodbye to the child by name. Release is complete.
+7. **You get an email every time your child is signed out**, naming the adult who picked them up. If you get one you don't expect, call 414-909-3279 right away (or 911 in an emergency).
 
 ## Someone not on the list
 
 1. The child is **not released**, even if the child knows the person and wants to go.
 2. The coach calls the enrolling parent or guardian.
-3. A parent may add someone **only in writing** (email or text from the number on file, followed by an updated form), and the coach confirms by calling back the number on file. A phone call alone from an unknown number is not enough.
+3. A parent may add someone **only in writing** (email or text from the number on file, followed by an updated form), and the coach confirms by calling back the number on file. A phone call alone is never enough, and neither is the word of the adult at the door. The coach records the written request in the sign-out tool when adding the adult.
 4. The new adult still shows photo ID that matches the name the parent gave.
 
 ## Late pickup
