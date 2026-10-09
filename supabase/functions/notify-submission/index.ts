@@ -30,7 +30,7 @@ function ccFor(table: string, to: string): string[] | undefined {
   if (table.startsWith('clrwf_') || table.endsWith('_login_links')) return undefined;
   // DJ Lab registrations carry children's details (age, accommodations,
   // guardian contacts): Stephen only until he decides otherwise (10/8/2026).
-  if (table === 'djlab_registrations') return undefined;
+  if (table === 'djlab_registrations' || table === 'djlab_incidents') return undefined;
   return STEPHEN_CC;
 }
 // selassiefest.com is verified with Resend, so mail now sends from a real
@@ -744,7 +744,7 @@ function djlabKidName(record: Record<string, any>) {
 function formatDjlabRegistration(record: Record<string, any>) {
   const row = (k: string, v: unknown) => (v !== null && v !== undefined && v !== '' ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
   return {
-    subject: `DJ Lab registration: ${djlabKidName(record)} (${record.cohort_code || 'no class code'})`,
+    subject: `DJ Lab ${(record.details || {}).interest_only ? 'interest list' : 'registration'}: ${djlabKidName(record)} (${record.cohort_code || 'no class code'})`,
     html: `
       <h2>New Rainbow DJ Lab registration</h2>
       <table style="border-collapse:collapse;">
@@ -760,6 +760,19 @@ function formatDjlabRegistration(record: Record<string, any>) {
 
 function formatDjlabRegistrationConfirmation(record: Record<string, any>) {
   const kid = escapeHtml(record.kid_first_name || 'your child');
+  if ((record.details || {}).interest_only) {
+    return {
+      subject: `You're on the Rainbow DJ Lab interest list`,
+      html: `
+        <h2>Thank you, ${escapeHtml(record.guardian_name || '')}!</h2>
+        <p>${kid} is on the interest list for the free Rainbow DJ Lab, a <b>proposed</b> program of Ras Tafari Inc. at Rainbow Beach Park.</p>
+        <p><b>This is not enrollment.</b> The program is pending approval by the Chicago Park District and funding, and no dates are set. When it is approved and every item on our <a href="https://selassiefest.com/dj-lab/governance/">launch checklist</a> is complete, we'll invite you to finish registration (health, pickup and permissions). If the Lab hasn't started within 12 months, we'll delete your information.</p>
+        <p>Meanwhile you can read how the Lab will work, including safety, pickup and privacy, at <a href="https://selassiefest.com/dj-lab/">selassiefest.com/dj-lab</a>.</p>
+        <p>Questions, or want off the list? Reply to this email or call Stephen Henry at 414-909-3279.</p>
+        <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Ras Tafari Inc., a 501(c)(3) nonprofit</p>
+      `,
+    };
+  }
   return {
     subject: `${record.kid_first_name || 'Your child'} is registered for the Rainbow DJ Lab`,
     html: `
@@ -786,6 +799,38 @@ function formatDjlabSignout(record: Record<string, any>) {
       <p>Recorded by ${escapeHtml(record.coach_name || 'the coach')} on the Lab's sign-out log.</p>
       <p style="background:#FBE4E2;padding:10px 12px;border-radius:8px;"><b>If this wasn't expected, call Stephen Henry right away at 414-909-3279.</b> In an emergency, call 911.</p>
       <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Ras Tafari Inc. You get this email every time your child is signed out.</p>
+    `,
+  };
+}
+
+function formatDjlabIncident(record: Record<string, any>) {
+  const kinds: Record<string, string> = { injury: 'Injury', illness: 'Illness', allergic_reaction: 'Allergic reaction', behavior: 'Behavior',
+    peer_harm: 'Peer harm', safeguarding: 'Safeguarding concern', lost_child: 'Lost child', pickup: 'Pickup issue', other: 'Other' };
+  const row = (k: string, v: unknown) => (v !== null && v !== undefined && v !== '' ? `<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  return {
+    subject: `DJ Lab incident: ${kinds[record.kind] || record.kind}${record.kid_name ? ' (' + record.kid_name + ')' : ''}`,
+    html: `
+      <h2>Incident logged: ${escapeHtml(kinds[record.kind] || record.kind)}</h2>
+      <table style="border-collapse:collapse;">${row('Class', record.cohort_name)}${row('Session', record.unit)}${row('Child', record.kid_name)}
+        ${row('What happened', record.what_happened)}${row('Action taken', record.action_taken)}
+        ${row('Parent notified', record.parent_notified ? 'Yes' : 'NOT YET')}${row('911 called', record.called_911 ? 'Yes' : 'No')}
+        ${row('Logged by', record.coach_name)}${row('At', new Date(record.created_at || Date.now()).toLocaleString('en-US', { timeZone: 'America/Chicago' }))}</table>
+      <p style="margin-top:14px;">Policy: parent phone call the same day, written report within 24 hours, internal review within 7 days. Suspected abuse or neglect goes to the DCFS Hotline, 1-800-25-ABUSE, by the mandated reporter directly.</p>
+    `,
+  };
+}
+
+function formatDjlabFamilyLink(record: Record<string, any>) {
+  const url = `https://selassiefest.com/dj-lab/live/?f=${encodeURIComponent(record.family_key)}#parent`;
+  const kid = escapeHtml(String(record.kid_name || 'your child').split(' ')[0]);
+  return {
+    subject: `Your private Rainbow DJ Lab link for ${String(record.kid_name || 'your child').split(' ')[0]}`,
+    html: `
+      <h2>${kid}'s spot is confirmed${record.cohort_name ? ' in ' + escapeHtml(record.cohort_name) : ''}</h2>
+      <p>This is your family's private link to follow ${kid} during class: what's happening now, ${kid}'s station and job, the coach's notes and Passport stamps. It shows only ${kid}, never other children.</p>
+      <p style="margin:20px 0;"><a href="${url}" style="background:#2F3DB5;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Open ${kid}'s family view</a></p>
+      <p style="font-size:0.85rem;color:#888;">Please don't share this link outside your family. Lost it or think it was shared? Reply and we'll issue a new one.</p>
+      <p>Before day one: <a href="https://selassiefest.com/dj-lab/journey/before-day-one.html">what to expect</a> &middot; <a href="https://selassiefest.com/dj-lab/families/handbook.html">family handbook</a> &middot; <a href="https://selassiefest.com/dj-lab/safety/arrival-signout.html">pickup rules</a>.</p>
     `,
   };
 }
@@ -842,7 +887,7 @@ async function selfAddressedAllowed(table: string, record: Record<string, any>, 
   // DJ Lab sign-outs are inserted only through a signed-in coach's RPC, never
   // by the public, and every parent must get one at the end of class (a full
   // class of 12 would trip the per-hour cap).
-  if (table === 'djlab_signouts') return { ok: true };
+  if (table === 'djlab_signouts' || table === 'djlab_family_links_sent') return { ok: true };
   const column = Object.keys(record).find((k) => typeof record[k] === 'string' && record[k].toLowerCase() === String(to).toLowerCase());
   const hourAgo = new Date(Date.now() - 3600_000).toISOString();
   const dayAgo = new Date(Date.now() - 86400_000).toISOString();
@@ -942,6 +987,10 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
+  },
+  djlab_incidents: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatDjlabIncident }] },
+  djlab_family_links_sent: {
+    notifications: [{ to: (record) => record.guardian_email, format: formatDjlabFamilyLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
   },
   djlab_signouts: {
     notifications: [{ to: (record) => record.guardian_email, format: formatDjlabSignout, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],

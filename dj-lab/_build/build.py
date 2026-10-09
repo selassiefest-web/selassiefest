@@ -150,7 +150,26 @@ def main():
         out = os.path.join(ROOT, out_path(rel))
         io.open(out, "w", encoding="utf-8", newline="\n").write(render(pages, rel, page, tpl))
         n += 1
-    print("built", n, "pages")
+    # Human-readable site map (the family site is noindex while proposed, so
+    # there is no sitemap.xml for search engines).
+    blocks = ['<h1>Site map</h1>\n<p class="lede">Every page of the Rainbow DJ Lab family site.</p>\n<ul><li><a href="/dj-lab/">Home</a></li><li><a href="/dj-lab/live/">Live class app</a></li><li><a href="/dj-lab/portal/">Portal</a></li><li><a href="/dj-lab/enroll/register.html">Interest list / registration</a></li></ul>']
+    for key, label, order in SECTIONS:
+        items = []
+        for slug in order:
+            r = "%s/%s.md" % (key, slug)
+            if r in pages:
+                items.append('<li><a href="%s">%s</a></li>' % (url_for(r), html.escape(title_of(pages, r, slug))))
+            if key == "enroll" and slug == "forms/index":
+                for fslug in FORMS_ORDER[1:]:
+                    fr = "enroll/forms/%s.md" % fslug
+                    if fr in pages:
+                        items.append('<li style="margin-left:1.2em"><a href="%s">%s</a> (<a href="/dj-lab/assets/forms/%s.pdf">PDF</a>)</li>' % (url_for(fr), html.escape(title_of(pages, fr, fslug)), fslug))
+        blocks.append("<h2>%s</h2>\n<ul>%s</ul>" % (label, "".join(items)))
+    page = (tpl.replace("{{TITLE}}", "Site map").replace("{{DESC}}", "Every page of the Rainbow DJ Lab family site.")
+               .replace("{{NAV}}", nav_html(pages, "")).replace("{{SIDE}}", "").replace("{{CRUMBS}}", '<a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; Site map')
+               .replace("{{BODY}}", "\n".join(blocks)).replace("{{SECCOLOR}}", "--r5").replace("{{KIDS}}", "").replace("{{LAYOUT}}", "no-side"))
+    io.open(os.path.join(ROOT, "sitemap.html"), "w", encoding="utf-8", newline="\n").write(page)
+    print("built", n, "pages + sitemap.html")
 
 
 if __name__ == "__main__":

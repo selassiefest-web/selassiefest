@@ -33,17 +33,17 @@
 <script>
 (function(){
   var $=function(id){ return document.getElementById(id); }, esc=DJLabPortal.esc;
-  var coach=DJLabAuth.coach(), code=DJLabAuth.code(), cohort=null, unit=null, kids=[];
-  if(!coach || !code){
+  var coach=DJLabAuth.coach(), cls=DJLabAuth.coachClass(), cohort=null, unit=null, kids=[];
+  if(!coach || !cls){
     $("list").innerHTML='<div class="card"><p>Sign in as a coach and open your class first, in the <a href="/dj-lab/live/#coach">live class app</a>. Then come back here on the same device.</p></div>';
     return;
   }
   function today(ts){ var d=new Date(ts), n=new Date(); return d.toDateString()===n.toDateString(); }
   function load(){
-    DJLabDB.state(code).then(function(st){
-      if(!st || st.error) throw new Error("That class code isn't active.");
+    DJLabDB.coachState(coach.token, cls.id).then(function(st){
+      if(!st || st.error) throw new Error("That class isn't available. Open it again in the live app.");
       cohort=st.cohort; var L=st.live||{}; unit=(L.mode==="fast"?"w"+(L.ws||1):"s"+(L.session||1));
-      $("sub").textContent="Class: "+cohort.name+" · code "+code+" · "+(L.mode==="fast"?"Workshop "+(L.ws||1):"Session "+(L.session||1))+" · signed in as "+coach.name;
+      $("sub").textContent="Class: "+cohort.name+" · "+(L.mode==="fast"?"Workshop "+(L.ws||1):"Session "+(L.session||1))+" · signed in as "+coach.name;
       return DJLabDB.safetyRoster(coach.token, cohort.id);
     }).then(function(r){ kids=r||[]; render(); }).catch(function(e){
       var m=(e&&e.message)||"error";

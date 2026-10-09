@@ -7,7 +7,7 @@ window.DJLabDB = {
     return window.sfSupabaseReady.then(function (c) { return c.rpc(name, args); })
       .then(function (r) { if (r.error) throw r.error; return r.data; });
   },
-  state: function (code) { return this.rpc("djlab_state", { p_code: code, p_since: 0 }); },
+  coachState: function (session, cohort) { return this.rpc("djlab_coach_state", { p_session: session, p_cohort: cohort, p_since: 0 }); },
   safetyRoster: function (session, cohort) { return this.rpc("djlab_coach_safety_roster", { p_session: session, p_cohort: cohort }); },
   signout: function (session, cohort, kid, unit, by, idChecked, self) {
     return this.rpc("djlab_coach_signout", { p_session: session, p_cohort: cohort, p_kid: kid, p_unit: unit,

@@ -8,5 +8,6 @@ window.DJLabAuth = {
     if (q) { try { localStorage.setItem("djlab-code", q.toUpperCase()); } catch (e) {} return q.toUpperCase(); }
     try { return localStorage.getItem("djlab-code"); } catch (e) { return null; }
   },
+  coachClass: function () { try { return JSON.parse(localStorage.getItem("djlab-coach-class") || "null"); } catch (e) { return null; } },
   signOutCoach: function () { try { localStorage.removeItem("djlab-coach"); } catch (e) {} }
 };

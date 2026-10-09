@@ -465,3 +465,333 @@ begin
 end;
 $$;
 grant execute on function djlab_coach_add_pickup(uuid, uuid, uuid, text, text, text, text) to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Access & consent hardening (10/8/2026, after external review).
+--  * Families no longer use the class code. Each approved child gets a
+--    private family link (family_key) emailed to the guardian; it shows ONLY
+--    that child (djlab_family_state).
+--  * In-room Kid/Station screens use a ROOM CODE the coach issues for each
+--    class; it expires (default 4 hours), so a leaked code dies the same day.
+--    The permanent cohort code is now only a registration/class identifier
+--    and no longer opens the class board.
+--  * Consent is enforced server-side: no app check-ins without digital
+--    tracking consent; no Spotlight without performance consent.
+--  * Incidents can be logged from the coach screen (djlab_incidents) and
+--    are emailed to Stephen.
+-- ─────────────────────────────────────────────────────────────────────────
+create or replace function djlab_new_key(n int, alphabet text) returns text language plpgsql as $$
+declare k text := '';
+begin
+  for i in 1..n loop k := k || substr(alphabet, 1 + floor(random()*length(alphabet))::int, 1); end loop;
+  return k;
+end;
+$$;
+
+alter table djlab_kids add column if not exists family_key text unique;
+update djlab_kids set family_key = djlab_new_key(10, 'abcdefghjkmnpqrstuvwxyz23456789') where family_key is null;
+alter table djlab_kids alter column family_key set default djlab_new_key(10, 'abcdefghjkmnpqrstuvwxyz23456789');
+
+alter table djlab_cohorts add column if not exists room_code text unique;
+alter table djlab_cohorts add column if not exists room_expires_at timestamptz;
+
+-- Coach: get (or renew) today's room code.
+create or replace function djlab_coach_room_code(p_session uuid, p_cohort uuid, p_renew boolean default false, p_hours int default 4)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; c djlab_cohorts; k text;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into c from djlab_cohorts where id = p_cohort;
+  if c.id is null then raise exception 'unknown class'; end if;
+  if p_renew or c.room_code is null or c.room_expires_at is null or c.room_expires_at < now() then
+    loop
+      k := djlab_new_key(6, 'ABCDEFGHJKMNPQRSTUVWXYZ23456789');
+      exit when not exists (select 1 from djlab_cohorts where room_code = k or code = k);
+    end loop;
+    update djlab_cohorts set room_code = k, room_expires_at = now() + make_interval(hours => greatest(1, least(coalesce(p_hours,4), 12))),
+      version = version + 1 where id = p_cohort returning * into c;
+  end if;
+  return jsonb_build_object('room_code', c.room_code, 'expires_at', c.room_expires_at, 'code', c.code, 'name', c.name);
+end;
+$$;
+grant execute on function djlab_coach_room_code(uuid, uuid, boolean, int) to anon, authenticated;
+
+create or replace function djlab_coach_end_room(p_session uuid, p_cohort uuid) returns void
+language plpgsql security definer set search_path = public as $$
+declare u record;
+begin
+  select * into u from djlab_coach(p_session);
+  update djlab_cohorts set room_expires_at = now(), version = version + 1 where id = p_cohort;
+end;
+$$;
+grant execute on function djlab_coach_end_room(uuid, uuid) to anon, authenticated;
+
+create or replace function djlab_room_cohort(p_code text) returns uuid
+language sql security definer set search_path = public stable as $$
+  select id from djlab_cohorts where room_code = upper(trim(p_code)) and room_expires_at > now() and not archived;
+$$;
+revoke all on function djlab_room_cohort(text) from public, anon, authenticated;
+
+-- Room-screen state: only with a live room code; no glow notes, no consents beyond the tracking flag.
+create or replace function djlab_state(p_code text, p_since bigint default 0)
+returns jsonb language plpgsql security definer set search_path = public stable as $$
+declare c djlab_cohorts; v_now bigint := (extract(epoch from clock_timestamp()) * 1000)::bigint;
+begin
+  select * into c from djlab_cohorts where id = djlab_room_cohort(p_code);
+  if c.id is null then return jsonb_build_object('error','unknown_code', 'now', v_now); end if;
+  if c.version <= coalesce(p_since,0) then return jsonb_build_object('version', c.version, 'unchanged', true, 'now', v_now); end if;
+  return jsonb_build_object(
+    'version', c.version, 'now', v_now, 'expires_at', c.room_expires_at,
+    'cohort', jsonb_build_object('id', c.id, 'name', c.name),
+    'live', c.live,
+    'kids', coalesce((select jsonb_agg(jsonb_build_object('id',k.id,'name',k.name,'station',k.station,'seat',k.seat,
+                     'stamps',k.stamps,'here',k.here,'glow','{}'::jsonb,
+                     'tracking', coalesce((k.details->>'tracking_consent')::boolean,false)) order by k.station,k.seat,k.name)
+                     from djlab_kids k where k.cohort_id = c.id), '[]'::jsonb),
+    'checkins', coalesce((select jsonb_object_agg(ch.kid_id::text || '_' || ch.unit, ch.data || jsonb_build_object('kid', ch.kid_id, 'unit', ch.unit))
+                     from djlab_checkins ch join djlab_kids k on k.id = ch.kid_id where k.cohort_id = c.id), '{}'::jsonb));
+end;
+$$;
+
+-- Coach state: full class board, by coach session.
+create or replace function djlab_coach_state(p_session uuid, p_cohort uuid, p_since bigint default 0)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; c djlab_cohorts; v_now bigint := (extract(epoch from clock_timestamp()) * 1000)::bigint;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into c from djlab_cohorts where id = p_cohort and not archived;
+  if c.id is null then return jsonb_build_object('error','unknown_class', 'now', v_now); end if;
+  if c.version <= coalesce(p_since,0) then return jsonb_build_object('version', c.version, 'unchanged', true, 'now', v_now); end if;
+  return jsonb_build_object(
+    'version', c.version, 'now', v_now, 'room_code', c.room_code, 'expires_at', c.room_expires_at,
+    'cohort', jsonb_build_object('id', c.id, 'name', c.name, 'code', c.code),
+    'live', c.live,
+    'kids', coalesce((select jsonb_agg(jsonb_build_object('id',k.id,'name',k.name,'station',k.station,'seat',k.seat,
+                     'stamps',k.stamps,'here',k.here,'glow',k.glow,'recap',k.recap_opt_in and k.guardian_email is not null,
+                     'tracking', coalesce((k.details->>'tracking_consent')::boolean,false),
+                     'perform', coalesce((k.details->>'performance_consent')::boolean,false)) order by k.station,k.seat,k.name)
+                     from djlab_kids k where k.cohort_id = c.id), '[]'::jsonb),
+    'checkins', coalesce((select jsonb_object_agg(ch.kid_id::text || '_' || ch.unit, ch.data || jsonb_build_object('kid', ch.kid_id, 'unit', ch.unit))
+                     from djlab_checkins ch join djlab_kids k on k.id = ch.kid_id where k.cohort_id = c.id), '{}'::jsonb));
+end;
+$$;
+grant execute on function djlab_coach_state(uuid, uuid, bigint) to anon, authenticated;
+
+-- Family state: ONE child, by that family's private key.
+create or replace function djlab_family_state(p_key text, p_since bigint default 0)
+returns jsonb language plpgsql security definer set search_path = public stable as $$
+declare k djlab_kids; c djlab_cohorts; v_now bigint := (extract(epoch from clock_timestamp()) * 1000)::bigint;
+begin
+  select * into k from djlab_kids where family_key = lower(trim(p_key));
+  if k.id is null then return jsonb_build_object('error','unknown_key', 'now', v_now); end if;
+  select * into c from djlab_cohorts where id = k.cohort_id;
+  if c.version <= coalesce(p_since,0) then return jsonb_build_object('version', c.version, 'unchanged', true, 'now', v_now); end if;
+  return jsonb_build_object(
+    'version', c.version, 'now', v_now, 'family', true,
+    'cohort', jsonb_build_object('id', c.id, 'name', c.name),
+    'live', (c.live - 'spot') || jsonb_build_object('spot', case when c.live->>'spot' = k.id::text then k.id::text else null end),
+    'kids', jsonb_build_array(jsonb_build_object('id',k.id,'name',k.name,'station',k.station,'seat',k.seat,'stamps',k.stamps,'here',k.here,'glow',k.glow,
+                              'tracking', coalesce((k.details->>'tracking_consent')::boolean,false))),
+    'checkins', coalesce((select jsonb_object_agg(ch.kid_id::text || '_' || ch.unit, ch.data || jsonb_build_object('kid', ch.kid_id, 'unit', ch.unit))
+                     from djlab_checkins ch where ch.kid_id = k.id), '{}'::jsonb));
+end;
+$$;
+grant execute on function djlab_family_state(text, bigint) to anon, authenticated;
+
+-- Kid check-ins: only with a live room code AND the family's tracking consent.
+create or replace function djlab_checkin(p_code text, p_kid uuid, p_unit text, p_op text, p jsonb)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare v_cohort uuid; v_ok boolean; cur jsonb; nxt jsonb; arr jsonb;
+begin
+  select k.cohort_id, coalesce((k.details->>'tracking_consent')::boolean,false) into v_cohort, v_ok
+  from djlab_kids k where k.id = p_kid and k.cohort_id = djlab_room_cohort(p_code);
+  if v_cohort is null then raise exception 'room code expired or child not in this class'; end if;
+  if not v_ok then raise exception 'this family has not turned on the class app for this child'; end if;
+  if p_unit !~ '^(s([1-9]|1[0-4])|w[1-6])$' then raise exception 'bad unit'; end if;
+  select data into cur from djlab_checkins where kid_id = p_kid and unit = p_unit;
+  cur := coalesce(cur, '{}'::jsonb);
+  if p_op = 'inc_data' then
+    nxt := cur || jsonb_build_object('data', least(coalesce((cur->>'data')::int,0) + 1, 999));
+  elsif p_op = 'append_mixlog' then
+    arr := coalesce(cur->'mixlog','[]'::jsonb) || jsonb_build_array(jsonb_build_object(
+          'pair', left(coalesce(p->>'pair',''),80), 'what', left(coalesce(p->>'what',''),120), 'fix', left(coalesce(p->>'fix',''),120),
+          'at', (extract(epoch from now())*1000)::bigint));
+    nxt := cur || jsonb_build_object('mixlog', (select jsonb_agg(e order by n) from jsonb_array_elements(arr) with ordinality t(e, n)
+                                                where n > jsonb_array_length(arr) - 10));
+  else
+    nxt := cur;
+    if p ? 'predict' and p->>'predict' in ('easy','medium','hard') then nxt := nxt || jsonb_build_object('predict', p->>'predict'); end if;
+    if p ? 'level' and p->>'level' in ('mild','medium','spicy') then nxt := nxt || jsonb_build_object('level', p->>'level'); end if;
+    if p ? 'light' and p->>'light' in ('green','yellow','red') then nxt := nxt || jsonb_build_object('light', p->>'light'); end if;
+    if p ? 'next' then nxt := nxt || jsonb_build_object('next', left(p->>'next',140)); end if;
+  end if;
+  insert into djlab_checkins (kid_id, unit, data, updated_at) values (p_kid, p_unit, nxt, now())
+  on conflict (kid_id, unit) do update set data = excluded.data, updated_at = now();
+  perform djlab_bump(v_cohort);
+  return nxt;
+end;
+$$;
+
+-- Spotlight only for children with performance consent.
+create or replace function djlab_coach_set_live(p_session uuid, p_cohort uuid, p_live jsonb)
+returns bigint language plpgsql security definer set search_path = public as $$
+declare u record; v bigint;
+begin
+  select * into u from djlab_coach(p_session);
+  if nullif(p_live->>'spot','') is not null and not exists (
+      select 1 from djlab_kids where id::text = p_live->>'spot' and cohort_id = p_cohort
+        and coalesce((details->>'performance_consent')::boolean,false)) then
+    raise exception 'no performance consent on file for this child, so they cannot be put in the Spotlight';
+  end if;
+  update djlab_cohorts set live = p_live, version = version + 1 where id = p_cohort returning version into v;
+  return v;
+end;
+$$;
+
+-- Coach-added kids (paper registration only): record which consents are on paper.
+create or replace function djlab_coach_kid(p_session uuid, p_cohort uuid, p_kid uuid, p jsonb)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; r djlab_kids;
+begin
+  select * into u from djlab_coach(p_session);
+  if p_kid is null then
+    if not coalesce((p->>'paper_forms')::boolean,false) then
+      raise exception 'add children through online registration, or confirm their paper registration and consents are on file';
+    end if;
+    insert into djlab_kids (cohort_id, name, station, seat, details) values (p_cohort, left(coalesce(nullif(trim(p->>'name'),''),'New kid'),24),
+      coalesce((p->>'station')::int,1), coalesce((p->>'seat')::int,0),
+      jsonb_build_object('paper_forms', true, 'tracking_consent', coalesce((p->>'tracking_consent')::boolean,false),
+                         'performance_consent', coalesce((p->>'performance_consent')::boolean,false),
+                         'media_consent', coalesce((p->>'media_consent')::boolean,false), 'added_by', u.v_name))
+      returning * into r;
+  else
+    update djlab_kids set
+      name = case when p ? 'name' then left(coalesce(nullif(trim(p->>'name'),''),name),24) else name end,
+      station = case when p ? 'station' then (p->>'station')::int else station end,
+      seat = case when p ? 'seat' then (p->>'seat')::int else seat end,
+      stamps = case when p ? 'stamps' then p->'stamps' else stamps end,
+      here = case when p ? 'here' then p->'here' else here end,
+      glow = case when p ? 'glow' then p->'glow' else glow end
+    where id = p_kid and cohort_id = p_cohort returning * into r;
+  end if;
+  perform djlab_bump(p_cohort);
+  return jsonb_build_object('id', r.id);
+end;
+$$;
+
+-- Incidents, logged from the coach screen; emailed to Stephen only.
+create table if not exists djlab_incidents (
+  id uuid primary key default gen_random_uuid(),
+  cohort_id uuid not null references djlab_cohorts(id) on delete cascade,
+  kid_id uuid references djlab_kids(id) on delete set null,
+  kid_name text,
+  unit text,
+  kind text not null check (kind in ('injury','illness','allergic_reaction','behavior','peer_harm','safeguarding','lost_child','pickup','other')),
+  what_happened text not null,
+  action_taken text,
+  parent_notified boolean not null default false,
+  called_911 boolean not null default false,
+  coach_name text not null,
+  cohort_name text,
+  created_at timestamptz not null default now()
+);
+alter table djlab_incidents enable row level security;
+drop trigger if exists djlab_incidents_notify on djlab_incidents;
+create trigger djlab_incidents_notify after insert on djlab_incidents for each row execute function notify_submission_webhook();
+
+create or replace function djlab_coach_incident(p_session uuid, p_cohort uuid, p_kid uuid, p_unit text, p_kind text,
+                                                p_what text, p_action text, p_parent boolean, p_911 boolean)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; v_name text; v_cname text; r djlab_incidents;
+begin
+  select * into u from djlab_coach(p_session);
+  if coalesce(trim(p_what),'') = '' then raise exception 'describe what happened'; end if;
+  select name into v_name from djlab_kids where id = p_kid and cohort_id = p_cohort;
+  select name into v_cname from djlab_cohorts where id = p_cohort;
+  insert into djlab_incidents (cohort_id, kid_id, kid_name, unit, kind, what_happened, action_taken, parent_notified, called_911, coach_name, cohort_name)
+  values (p_cohort, p_kid, v_name, p_unit, p_kind, left(p_what,2000), left(coalesce(p_action,''),2000), coalesce(p_parent,false), coalesce(p_911,false), u.v_name, v_cname)
+  returning * into r;
+  return jsonb_build_object('id', r.id, 'at', r.created_at);
+end;
+$$;
+grant execute on function djlab_coach_incident(uuid, uuid, uuid, text, text, text, text, boolean, boolean) to anon, authenticated;
+
+-- Family link emails (notify-submission formats them).
+create table if not exists djlab_family_links_sent (
+  id uuid primary key default gen_random_uuid(),
+  kid_id uuid not null references djlab_kids(id) on delete cascade,
+  kid_name text, guardian_name text, guardian_email text not null, family_key text not null, cohort_name text,
+  created_at timestamptz not null default now()
+);
+alter table djlab_family_links_sent enable row level security;
+drop trigger if exists djlab_family_links_notify on djlab_family_links_sent;
+create trigger djlab_family_links_notify after insert on djlab_family_links_sent for each row execute function notify_submission_webhook();
+
+create or replace function djlab_coach_send_family_link(p_session uuid, p_cohort uuid, p_kid uuid) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare u record; k djlab_kids; c djlab_cohorts;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into k from djlab_kids where id = p_kid and cohort_id = p_cohort;
+  if k.id is null or k.guardian_email is null then raise exception 'no guardian email on file for this child'; end if;
+  select * into c from djlab_cohorts where id = p_cohort;
+  insert into djlab_family_links_sent (kid_id, kid_name, guardian_name, guardian_email, family_key, cohort_name)
+  values (k.id, k.name, k.guardian_name, k.guardian_email, k.family_key, c.name);
+  return jsonb_build_object('ok', true);
+end;
+$$;
+grant execute on function djlab_coach_send_family_link(uuid, uuid, uuid) to anon, authenticated;
+
+-- Approval now also emails the family link.
+create or replace function djlab_coach_approve(p_session uuid, p_cohort uuid, p_reg uuid, p_station int, p_seat int, p_approve boolean)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; r djlab_registrations; k djlab_kids; c djlab_cohorts;
+begin
+  select * into u from djlab_coach(p_session);
+  select * into r from djlab_registrations where id = p_reg and status = 'pending';
+  if r.id is null then raise exception 'registration not found'; end if;
+  if not p_approve then
+    update djlab_registrations set status = 'declined' where id = p_reg;
+    return jsonb_build_object('declined', true);
+  end if;
+  insert into djlab_kids (cohort_id, name, station, seat, guardian_name, guardian_email, guardian_phone, recap_opt_in, registration_id, details)
+  values (p_cohort, left(r.kid_first_name || coalesce(' ' || nullif(upper(left(r.kid_last_initial,1)),'') || '.',''),24), coalesce(p_station,1), coalesce(p_seat,0),
+          r.guardian_name, lower(trim(r.guardian_email)), r.guardian_phone, r.recap_opt_in, r.id,
+          r.details || jsonb_build_object('age', r.kid_age, 'accommodations', r.accommodations, 'emergency_contact_legacy', r.emergency_contact,
+                                          'photo_consent', r.photo_consent))
+  returning * into k;
+  update djlab_registrations set status = 'approved' where id = p_reg;
+  select * into c from djlab_cohorts where id = p_cohort;
+  insert into djlab_family_links_sent (kid_id, kid_name, guardian_name, guardian_email, family_key, cohort_name)
+  values (k.id, k.name, k.guardian_name, k.guardian_email, k.family_key, c.name);
+  perform djlab_bump(p_cohort);
+  return jsonb_build_object('id', k.id, 'name', k.name);
+end;
+$$;
+
+-- Interest-list entries (collected before launch, with no health/pickup
+-- data) can never be approved onto a class: the family must complete full
+-- registration first.
+create or replace function djlab_coach_registrations(p_session uuid, p_cohort uuid)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare u record; v_code text;
+begin
+  select * into u from djlab_coach(p_session);
+  select code into v_code from djlab_cohorts where id = p_cohort;
+  return coalesce((select jsonb_agg(jsonb_build_object('id',r.id,'kid',r.kid_first_name || coalesce(' ' || nullif(upper(left(r.kid_last_initial,1)),'') || '.',''),
+            'age',r.kid_age,'guardian',r.guardian_name,'accommodations',r.accommodations,'photo',r.photo_consent,'recap',r.recap_opt_in,'at',r.created_at) order by r.created_at)
+          from djlab_registrations r where r.status = 'pending' and not coalesce((r.details->>'interest_only')::boolean,false)
+            and (r.cohort_code is null or upper(r.cohort_code) = v_code)), '[]'::jsonb);
+end;
+$$;
+
+create or replace function djlab_reg_guard() returns trigger language plpgsql as $$
+begin
+  if new.status = 'approved' and coalesce((new.details->>'interest_only')::boolean,false) then
+    raise exception 'interest-list entries cannot be approved; the family must complete full registration';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists djlab_reg_guard on djlab_registrations;
+create trigger djlab_reg_guard before update on djlab_registrations for each row execute function djlab_reg_guard();
