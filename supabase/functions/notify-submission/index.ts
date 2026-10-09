@@ -28,6 +28,9 @@ const STEPHEN_CC = ['paksipras@gmail.com'];
 function ccFor(table: string, to: string): string[] | undefined {
   if (String(to).toLowerCase() !== 'stephen@selassiefest.com') return undefined;
   if (table.startsWith('clrwf_') || table.endsWith('_login_links')) return undefined;
+  // DJ Lab registrations carry children's details (age, accommodations,
+  // guardian contacts): Stephen only until he decides otherwise (10/8/2026).
+  if (table === 'djlab_registrations') return undefined;
   return STEPHEN_CC;
 }
 // selassiefest.com is verified with Resend, so mail now sends from a real
@@ -719,6 +722,57 @@ function formatFsPartnerResponse(record: Record<string, any>) {
   };
 }
 
+// Rainbow DJ Lab (/dj-lab/) -- see supabase/dj-lab.sql.
+function formatDjlabCoachLoginLink(record: Record<string, any>) {
+  const url = `https://selassiefest.com/dj-lab/?coach_token=${encodeURIComponent(record.id)}#coach`;
+  return {
+    subject: `Your Rainbow DJ Lab coach sign-in link`,
+    html: `
+      <h2>Sign in to coach the Rainbow DJ Lab</h2>
+      <p>This link signs you in as a coach on this device. It works for 30 minutes.</p>
+      <p style="margin:20px 0;"><a href="${url}" style="background:#2F3DB5;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Coach sign-in</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${url}</p>
+    `,
+  };
+}
+
+function djlabKidName(record: Record<string, any>) {
+  const li = String(record.kid_last_initial || '').trim().charAt(0).toUpperCase();
+  return `${record.kid_first_name || ''}${li ? ' ' + li + '.' : ''}`.trim();
+}
+
+function formatDjlabRegistration(record: Record<string, any>) {
+  const row = (k: string, v: unknown) => (v !== null && v !== undefined && v !== '' ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  return {
+    subject: `DJ Lab registration: ${djlabKidName(record)} (${record.cohort_code || 'no class code'})`,
+    html: `
+      <h2>New Rainbow DJ Lab registration</h2>
+      <table style="border-collapse:collapse;">
+        ${row('Kid', djlabKidName(record))}${row('Age', record.kid_age)}${row('Class code', record.cohort_code)}
+        ${row('Guardian', record.guardian_name)}${row('Email', record.guardian_email)}${row('Phone', record.guardian_phone)}
+        ${row('Emergency contact', record.emergency_contact)}${row('Accommodations', record.accommodations)}
+        ${row('Consent', record.consent ? 'Yes' : 'No')}${row('Photo/video consent', record.photo_consent ? 'Yes' : 'No')}${row('Session recap emails', record.recap_opt_in ? 'Yes' : 'No')}
+      </table>
+      <p style="margin-top:16px;">Approve them onto a station from the Coach tab: <a href="https://selassiefest.com/dj-lab/#coach">Rainbow DJ Lab</a></p>
+    `,
+  };
+}
+
+function formatDjlabRegistrationConfirmation(record: Record<string, any>) {
+  const kid = escapeHtml(record.kid_first_name || 'your child');
+  return {
+    subject: `${record.kid_first_name || 'Your child'} is registered for the Rainbow DJ Lab`,
+    html: `
+      <h2>Thank you, ${escapeHtml(record.guardian_name || '')}!</h2>
+      <p>We received ${kid}'s registration for the free Rainbow DJ Lab at Rainbow Beach Park, part of Full Spectrum at Rainbow Beach.</p>
+      <p>A coach will confirm ${kid}'s spot and station. ${record.recap_opt_in ? `After each class you'll get a short recap by email: today's mission, how ${kid} rated their progress, the coach's note, and one question to ask at dinner.` : ''}</p>
+      <p>During class you can follow along live at <a href="https://selassiefest.com/dj-lab/#parent">selassiefest.com/dj-lab</a> with the class code.</p>
+      <p>Questions? Call Stephen Henry at 414-909-3279 or reply to this email.</p>
+      <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Full Spectrum at Rainbow Beach &middot; Ras Tafari Inc., a 501(c)(3) nonprofit</p>
+    `,
+  };
+}
+
 type Notification = {
   to: (record: Record<string, any>) => string | null | undefined;
   format: (record: Record<string, any>) => { subject: string; html: string };
@@ -865,6 +919,15 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     ],
   },
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
+  djlab_coach_login_links: {
+    notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
+  },
+  djlab_registrations: {
+    notifications: [
+      { to: () => 'stephen@selassiefest.com', format: formatDjlabRegistration },
+      { to: (record) => record.guardian_email, format: formatDjlabRegistrationConfirmation, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' },
+    ],
+  },
   fs_partner_login_links: {
     notifications: [
       {
