@@ -213,6 +213,11 @@ const FRAMES = [
     voice:['Full Spectrum is a Ras Tafari Incorporated program.','Our next steps are a review with park leadership and a walk-through of the spaces.','Thank you. We would love to bring the full spectrum to Rainbow Beach.'] }
 ];
 
+// Slides with a recorded narration file; others fall back to the browser voice.
+const AUDIO = { 2:'/full-spectrum/audio/slide-02.mp3' };
+const player = new Audio();
+function stopAudio(){ player.pause(); player.removeAttribute('src'); }
+
 const state = { index:0, name:'', muted:false, seen:new Set(), voice:null };
 
 function renderFrames(){
@@ -268,9 +273,12 @@ function pickVoice(){
 }
 
 function speak(f){
-  if (!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
+  stopAudio();
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
   if (state.muted) return;
+  const src = AUDIO[FRAMES.indexOf(f) + 1];
+  if (src) { player.src = src; player.play().catch(() => {}); return; }
+  if (!('speechSynthesis' in window)) return;
   let i = 0;
   const next = () => {
     if (i >= f.voice.length || state.muted) return;
@@ -296,7 +304,7 @@ function goTo(index){
 function setMuted(m){
   state.muted = m;
   document.querySelector('#nav-mute i').className = m ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-  if (m && 'speechSynthesis' in window) speechSynthesis.cancel();
+  if (m) { stopAudio(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 }
 
 function begin(withSound){
