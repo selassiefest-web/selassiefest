@@ -81,12 +81,19 @@
   .cta-btn.primary{background:var(--sun); border-color:var(--sun); color:#1a1200;}
   .cta-btn:hover{border-color:var(--sun);}
 
-  .controls{flex-shrink:0; display:flex; align-items:center; justify-content:center; gap:16px; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(7,8,15,0.92);}
-  .controls button{width:46px; height:46px; border-radius:50%; border:1px solid var(--line); font-size:1.05rem; display:flex; align-items:center; justify-content:center; transition:.2s;}
+  .controls{flex-shrink:0; display:flex; flex-direction:column; gap:8px; padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(7,8,15,0.92);}
+  .seek-row{display:flex; align-items:center; gap:10px; width:100%; max-width:760px; margin:0 auto; font-size:0.72rem; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .seek-row input[type=range]{flex:1; accent-color:var(--sun); height:6px; cursor:pointer;}
+  .seek-row .slide-count{min-width:54px; text-align:right;}
+  .btn-row{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .controls button{width:42px; height:42px; border-radius:50%; border:1px solid var(--line); font-size:0.95rem; display:flex; align-items:center; justify-content:center; transition:.2s;}
   .controls button:hover{border-color:var(--sun); color:var(--sun);}
   .controls button:disabled{opacity:0.3; cursor:default;}
-  #nav-next, #nav-prev{width:54px; height:54px; font-size:1.3rem;}
-  .controls .spacer{flex:1; max-width:24px;}
+  .controls button.on{border-color:var(--sun); color:var(--sun);}
+  #nav-next, #nav-prev{width:50px; height:50px; font-size:1.2rem;}
+  #nav-play{width:60px; height:60px; font-size:1.4rem; background:var(--sun); border-color:var(--sun); color:#1a1200;}
+  #nav-play:hover{color:#1a1200; filter:brightness(1.1);}
+  .controls button.pill{width:auto; border-radius:999px; padding:0 14px; font-size:0.75rem; font-weight:700; letter-spacing:0.06em; gap:6px;}
 
   @media (min-width:820px){
     .frame{flex-direction:row;}
@@ -109,7 +116,7 @@
     <div class="start-form"><input type="text" id="viewer-name" placeholder="Your name (optional)" autocomplete="off"></div>
     <button class="start-begin" id="begin-btn"><i class="fa-solid fa-play"></i> Begin with narration</button>
     <button class="start-quiet" id="begin-quiet">or click through without sound</button>
-    <div class="start-note">Narration uses your browser's built-in voice; Chrome or Edge on a laptop sounds best. Use the arrow keys, swipe, or the buttons to move between slides.</div>
+    <div class="start-note">Narration plays slide by slide and moves on by itself; pause, skip or turn off Auto any time. Space plays or pauses; arrow keys or swipe change slides.</div>
     <div class="start-links"><a href="/full-spectrum/">Read the full proposal</a><a href="/full-spectrum/full-spectrum-proposal.pdf" download>Download the PDF</a></div>
   </div>
 </div>
@@ -120,11 +127,21 @@
   <div id="progress-dots"></div>
   <div id="frame-viewer"></div>
   <div class="controls">
-    <button id="nav-prev" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
-    <button id="nav-mute" aria-label="Mute narration"><i class="fa-solid fa-volume-high"></i></button>
-    <button id="nav-replay" aria-label="Replay narration"><i class="fa-solid fa-rotate-right"></i></button>
-    <div class="spacer"></div>
-    <button id="nav-next" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="seek-row">
+      <span id="time-cur">0:00</span>
+      <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Narration position">
+      <span id="time-dur">0:00</span>
+      <span class="slide-count" id="slide-count">1 / 15</span>
+    </div>
+    <div class="btn-row">
+      <button id="nav-replay" aria-label="Restart this slide's narration" title="Restart this slide"><i class="fa-solid fa-rotate-left"></i></button>
+      <button id="nav-prev" aria-label="Previous slide" title="Previous slide"><i class="fa-solid fa-backward-step"></i></button>
+      <button id="nav-play" aria-label="Play or pause narration" title="Play / pause (space)"><i class="fa-solid fa-play"></i></button>
+      <button id="nav-next" aria-label="Next slide" title="Next slide"><i class="fa-solid fa-forward-step"></i></button>
+      <button id="nav-mute" aria-label="Mute narration" title="Mute"><i class="fa-solid fa-volume-high"></i></button>
+      <button id="nav-auto" class="pill on" aria-pressed="true" title="Automatically go to the next slide when narration ends"><i class="fa-solid fa-forward"></i> Auto</button>
+      <button id="nav-speed" class="pill" title="Narration speed">1x</button>
+    </div>
   </div>
 </div>
 
@@ -216,9 +233,11 @@ const FRAMES = [
 // Slides with a recorded narration file; others fall back to the browser voice.
 const AUDIO = { 1:'/full-spectrum/audio/slide-01.mp3', 2:'/full-spectrum/audio/slide-02.mp3', 3:'/full-spectrum/audio/slide-03.mp3', 4:'/full-spectrum/audio/slide-04.mp3?v=2', 5:'/full-spectrum/audio/slide-05.mp3?v=2', 6:'/full-spectrum/audio/slide-06.mp3', 7:'/full-spectrum/audio/slide-07.mp3', 8:'/full-spectrum/audio/slide-08.mp3', 9:'/full-spectrum/audio/slide-09.mp3', 10:'/full-spectrum/audio/slide-10.mp3', 11:'/full-spectrum/audio/slide-11.mp3', 12:'/full-spectrum/audio/slide-12.mp3', 13:'/full-spectrum/audio/slide-13.mp3', 14:'/full-spectrum/audio/slide-14.mp3', 15:'/full-spectrum/audio/slide-15.mp3' };
 const player = new Audio();
-function stopAudio(){ player.pause(); player.removeAttribute('src'); }
+const ADVANCE_DELAY = 1200;
+let advanceTimer = null;
+const clearAdvance = () => { clearTimeout(advanceTimer); advanceTimer = null; };
 
-const state = { index:0, name:'', muted:false, seen:new Set(), voice:null };
+const state = { index:0, name:'', playing:false, auto:true, rate:1, seen:new Set() };
 
 function renderFrames(){
   const viewer = document.getElementById('frame-viewer');
@@ -264,66 +283,82 @@ function renderDots(){
   });
 }
 
-function pickVoice(){
-  if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
-  if (!voices.length) return null;
-  const score = v => { const n = v.name.toLowerCase(); return n.includes('natural') || n.includes('neural') ? 3 : n.includes('google') ? 2 : v.lang === 'en-US' ? 1 : 0; };
-  return voices.sort((a, b) => score(b) - score(a))[0];
+const $ = id => document.getElementById(id);
+const fmt = t => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+
+function syncUI(){
+  $('nav-play').innerHTML = '<i class="fa-solid fa-' + (state.playing ? 'pause' : 'play') + '"></i>';
+  $('nav-prev').disabled = state.index === 0;
+  $('nav-next').disabled = state.index === FRAMES.length - 1;
+  $('slide-count').textContent = (state.index + 1) + ' / ' + FRAMES.length;
+  $('nav-auto').classList.toggle('on', state.auto);
+  $('nav-auto').setAttribute('aria-pressed', state.auto);
+  $('nav-speed').textContent = state.rate + 'x';
+  $('nav-mute').innerHTML = '<i class="fa-solid fa-volume-' + (player.muted ? 'xmark' : 'high') + '"></i>';
+  $('nav-mute').classList.toggle('on', player.muted);
 }
 
-function speak(f){
-  stopAudio();
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-  if (state.muted) return;
-  const src = AUDIO[FRAMES.indexOf(f) + 1];
-  if (src) { player.src = src; player.play().catch(() => {}); return; }
-  if (!('speechSynthesis' in window)) return;
-  let i = 0;
-  const next = () => {
-    if (i >= f.voice.length || state.muted) return;
-    const u = new SpeechSynthesisUtterance(f.voice[i]);
-    if (state.voice) u.voice = state.voice;
-    u.rate = 0.95;
-    u.onend = () => { i += 1; setTimeout(next, 350); };
-    speechSynthesis.speak(u);
-  };
-  next();
+function playCurrent(){
+  clearAdvance();
+  if (!player.src) { state.playing = false; syncUI(); return; }
+  player.play().catch(() => { state.playing = false; syncUI(); });
 }
 
 function goTo(index){
   if (index < 0 || index >= FRAMES.length) return;
+  clearAdvance();
   state.index = index; state.seen.add(index);
   document.querySelectorAll('.frame').forEach((el, i) => el.classList.toggle('active', i === index));
   document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i === index); d.classList.toggle('seen', state.seen.has(i) && i !== index); });
-  document.getElementById('nav-prev').disabled = index === 0;
-  document.getElementById('nav-next').disabled = index === FRAMES.length - 1;
-  speak(FRAMES[index]);
+  player.pause();
+  const src = AUDIO[index + 1];
+  if (src) { player.src = src; player.defaultPlaybackRate = state.rate; player.playbackRate = state.rate; } else { player.removeAttribute('src'); }
+  $('seek').value = 0; $('time-cur').textContent = '0:00'; $('time-dur').textContent = '0:00';
+  syncUI();
+  if (state.playing) playCurrent();
 }
 
-function setMuted(m){
-  state.muted = m;
-  document.querySelector('#nav-mute i').className = m ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-  if (m) { stopAudio(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+function togglePlay(){
+  if (state.playing) { state.playing = false; clearAdvance(); player.pause(); syncUI(); return; }
+  state.playing = true; syncUI();
+  if (player.ended) player.currentTime = 0;
+  playCurrent();
 }
+
+player.addEventListener('loadedmetadata', () => { $('time-dur').textContent = fmt(player.duration); });
+player.addEventListener('timeupdate', () => {
+  $('time-cur').textContent = fmt(player.currentTime);
+  if (player.duration) $('seek').value = Math.round(player.currentTime / player.duration * 1000);
+});
+player.addEventListener('ended', () => {
+  if (!state.playing) return;
+  if (state.auto && state.index < FRAMES.length - 1) { advanceTimer = setTimeout(() => goTo(state.index + 1), ADVANCE_DELAY); }
+  else { state.playing = false; syncUI(); }
+});
+$('seek').addEventListener('input', e => { if (player.duration) player.currentTime = e.target.value / 1000 * player.duration; });
 
 function begin(withSound){
-  state.name = document.getElementById('viewer-name').value;
+  state.name = $('viewer-name').value;
+  state.playing = withSound;
   document.getElementById('start-screen').hidden = true;
   document.getElementById('deck').hidden = false;
-  renderFrames(); renderDots(); setMuted(!withSound); goTo(0);
+  renderFrames(); renderDots(); goTo(0);
   FRAMES.forEach(f => { if (f.image) { const im = new Image(); im.src = f.image; } });
 }
 
 document.getElementById('begin-btn').addEventListener('click', () => begin(true));
 document.getElementById('begin-quiet').addEventListener('click', () => begin(false));
-document.getElementById('nav-next').addEventListener('click', () => goTo(state.index + 1));
-document.getElementById('nav-prev').addEventListener('click', () => goTo(state.index - 1));
-document.getElementById('nav-replay').addEventListener('click', () => { if (state.muted) setMuted(false); speak(FRAMES[state.index]); });
-document.getElementById('nav-mute').addEventListener('click', () => { setMuted(!state.muted); if (!state.muted) speak(FRAMES[state.index]); });
+$('nav-next').addEventListener('click', () => goTo(state.index + 1));
+$('nav-prev').addEventListener('click', () => goTo(state.index - 1));
+$('nav-play').addEventListener('click', togglePlay);
+$('nav-replay').addEventListener('click', () => { clearAdvance(); player.currentTime = 0; state.playing = true; syncUI(); playCurrent(); });
+$('nav-mute').addEventListener('click', () => { player.muted = !player.muted; syncUI(); });
+$('nav-auto').addEventListener('click', () => { state.auto = !state.auto; if (!state.auto) clearAdvance(); syncUI(); });
+$('nav-speed').addEventListener('click', () => { const r = [1, 1.25, 1.5, 0.75]; state.rate = r[(r.indexOf(state.rate) + 1) % r.length]; player.defaultPlaybackRate = state.rate; player.playbackRate = state.rate; syncUI(); });
 document.addEventListener('keydown', e => {
   if (document.getElementById('deck').hidden) return;
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(state.index + 1); }
+  if (e.key === ' ') { if (e.target.closest('button, input, a')) return; e.preventDefault(); togglePlay(); }
+  if (e.key === 'ArrowRight') goTo(state.index + 1);
   if (e.key === 'ArrowLeft') goTo(state.index - 1);
 });
 let tx = null;
@@ -334,7 +369,6 @@ document.addEventListener('touchend', e => {
   if (Math.abs(dx) > 60) goTo(state.index + (dx < 0 ? 1 : -1));
   tx = null;
 }, { passive:true });
-if ('speechSynthesis' in window) { speechSynthesis.onvoiceschanged = () => { state.voice = pickVoice(); }; state.voice = pickVoice(); }
 </script>
 </body>
 </html>
