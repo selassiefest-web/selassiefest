@@ -727,6 +727,21 @@ function formatFsPartnerResponse(record: Record<string, any>) {
   };
 }
 
+// Full Spectrum cash gift paid by card on a partner page -- see
+// supabase/fs-partner-pay.sql.
+function formatFsPartnerGift(record: Record<string, any>) {
+  const biz = record.partner_name || 'A partner';
+  const amt = Number(record.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return {
+    subject: `GIFT $${amt}: ${biz} paid on their Full Spectrum page`,
+    html: `
+      <h2>${escapeHtml(biz)} gave $${escapeHtml(amt)}</h2>
+      <p>${escapeHtml(record.summary || '')}</p>
+      <p>Paid by card through Stripe${record.email ? ' (receipt to ' + escapeHtml(record.email) + ')' : ''}. It is logged on the partner as confirmed. <a href="https://selassiefest.com/full-spectrum/partners.html">Open the Partner Tracker</a></p>
+    `,
+  };
+}
+
 // Rainbow DJ Lab (/dj-lab/) -- see supabase/dj-lab.sql.
 function formatDjlabCoachLoginLink(record: Record<string, any>) {
   const url = `https://selassiefest.com/dj-lab/live/?coach_token=${encodeURIComponent(record.id)}#coach`;
@@ -990,6 +1005,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     ],
   },
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
+  fs_partner_gifts: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerGift }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
   },

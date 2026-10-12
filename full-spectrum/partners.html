@@ -250,8 +250,8 @@
   <div class="f"><label for="eAsk">The ask (one clear yes/no request)</label><textarea id="eAsk"></textarea></div>
   <div class="f"><label for="eItems">Pick-list for their personal page</label>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px"><select id="eTemplate" style="flex:1 1 200px"><option value="">Add a template&hellip;</option></select><button class="btn small" id="eTemplateBtn" type="button">Add</button></div>
-    <textarea id="eItems" style="min-height:120px" placeholder="One per line: What | Detail | Qty | Unit | $ each"></textarea>
-    <span class="hint">One per line: What | Detail | Qty | Unit | $ each (detail, unit and $ optional). They tick what they will give on their page.</span></div>
+    <textarea id="eItems" style="min-height:120px" placeholder="One per line: What | Detail | Qty | Unit | $ each | cash"></textarea>
+    <span class="hint">One per line: What | Detail | Qty | Unit | $ each | cash. Detail, unit and $ are optional. Type <b>cash</b> as the last field to let them pay it on the page by card or PayPal: with a $ amount it is a fixed price (qty x $); with no $ they type their own amount. Without <b>cash</b> it is an in-kind pledge and $ is only an estimated value.</span></div>
   <div class="f"><label for="eIntro">Line above the pick-list (optional)</label><input id="eIntro" placeholder="Choose what you would like to provide"></div>
   <div class="row2">
     <div class="f"><label for="eCommit">What they've committed</label><input id="eCommit"></div>
@@ -300,6 +300,8 @@
       'Beginner DJ controller | | 1 | controller\nComplete student DJ station | Controller, headphones, stand and cables | 1 | station\nDJ headphones | | 1 | pair\nStudent headphone bank | | 8 | pairs\nVinyl turntables | | 1 | pair\nComplete vinyl learning station | Two turntables plus accessories | 1 | station\nPowered studio monitors | | 1 | pair\nClassroom speaker package | | 1 | package\nAudio cables and adapters | | 1 | kit\nFull startup equipment sponsor | All agreed startup equipment | 1 | kit'],
     general: ['Neighborhood businesses',
       'Sponsor a Child DJ | Support one student\u2019s participation: equipment share, meals, workbooks | 1 | student\nSponsor one class lesson | Cover agreed lesson expenses | 1 | lesson\nSponsor the DJ equipment library | Contribute toward shared equipment | 1 | gift\nSponsor ear protection | Hearing-protection items for students | 1 | set\nSponsor student transportation | Agreed transit support | 1 | gift\nSponsor a Rainbow Wednesday | Support one weekly event | 1 | event\nBecome a season sponsor | Support an agreed portion of the season | 1 | season'],
+    cash: ['Cash gifts (card or PayPal on their page)',
+      'Sponsor a Child DJ | Support one student\u2019s participation in the free class; matched privately by the program | 1 | student | | cash\nSupport the DJ equipment library | Any amount toward shared controllers, headphones and monitors | 1 | gift | | cash\nSponsor a Rainbow Wednesday | Any amount toward one free summer music night | 1 | event | | cash\nSponsor the whole program | A larger gift of your choosing | 1 | gift | | cash'],
     print: ['Printing, marketing and technology',
       'Student laptop | | 1 | laptop\nDJ software license | One station license or a classroom plan | 1 | license\nStudent workbook printing | 13 copies for a lesson | 13 | copies\nCourse workbook package | One agreed class set | 1 | set\nBusiness-card printing | Sponsor QR-code cards, one campaign batch | 1 | batch\nStudent certificates | One class set | 1 | set\nDesign, hosting or technical services | | 1 | service']
   };
@@ -434,11 +436,11 @@
 
   // Pick-list helpers: "What | Detail | Qty | Unit | $ each" per line <-> ask_items jsonb
   function slug(t, n){ return (String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40) || 'item') + '-' + n; }
-  function itemsToText(items){ return (items || []).map(function(i){ return [i.label || '', i.detail || '', i.qty || '', i.unit || '', i.value || ''].join(' | ').replace(/( \| )+$/,''); }).join('\n'); }
+  function itemsToText(items){ return (items || []).map(function(i){ return [i.label || '', i.detail || '', i.qty || '', i.unit || '', i.value || '', i.cash ? 'cash' : ''].join(' | ').replace(/( \| )+$/,''); }).join('\n'); }
   function textToItems(t){
     return String(t || '').split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l, n){
       var f = l.split('|').map(function(x){ return x.trim(); }); var it = { id: slug(f[0], n + 1), label: f[0] };
-      if (f[1]) it.detail = f[1]; if (Number(f[2]) > 0) it.qty = Number(f[2]); if (f[3]) it.unit = f[3]; if (Number(f[4]) > 0) it.value = Number(f[4]); return it; });
+      if (f[1]) it.detail = f[1]; if (Number(f[2]) > 0) it.qty = Number(f[2]); if (f[3]) it.unit = f[3]; if (Number(f[4]) > 0) it.value = Number(f[4]); if (/^cash$/i.test(f[5] || '')) it.cash = true; return it; });
   }
   $('eTemplate').innerHTML += Object.keys(TEMPLATES).map(function(k){ return '<option value="' + k + '">' + TEMPLATES[k][0] + '</option>'; }).join('');
   $('eTemplateBtn').addEventListener('click', function(){ var k = $('eTemplate').value; if (!k) return;

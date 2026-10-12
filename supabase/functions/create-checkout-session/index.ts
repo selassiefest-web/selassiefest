@@ -10,6 +10,7 @@
 // session; nothing is treated as a real order/donation until Stripe says so.
 
 import Stripe from 'npm:stripe@17';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
   apiVersion: '2024-06-20',
@@ -171,6 +172,51 @@ Deno.serve(async (req: Request) => {
         cancel_url: `${SITE_URL}${cancelPath}`,
       });
 
+      return json({ url: session.url });
+    }
+
+    // Cash ask on a partner's personal page (/partner/?k=...). The browser
+    // sends only the partner key and item ids/quantities (plus an amount for
+    // open-amount items); every price is decided here from the partner's own
+    // stored menu -- see supabase/fs-partner-pay.sql.
+    if (mode === 'partner_gift') {
+      const key = String(body.key || '').trim().toLowerCase();
+      if (!/^[a-z0-9]{6,12}$/.test(key)) return json({ error: 'Invalid link' }, 400);
+      const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+      const { data: menu, error: menuErr } = await admin.rpc('fs_partner_cash_menu', { p_key: key });
+      if (menuErr || !menu || !menu.length) return json({ error: 'Invitation not found' }, 404);
+      const partner = menu[0];
+      const catalog: Record<string, any> = {};
+      for (const i of Array.isArray(partner.ask_items) ? partner.ask_items : []) if (i && i.cash && i.id) catalog[String(i.id)] = i;
+
+      const lines: { name: string; cents: number; qty: number }[] = [];
+      for (const r of Array.isArray(body.items) ? body.items.slice(0, 20) : []) {
+        const it = catalog[String(r && r.id)];
+        if (!it) return json({ error: 'Unknown item' }, 400);
+        const qty = Math.max(1, Math.min(1000, Math.round(Number(r.qty) || 1)));
+        const unit = Number(it.value) > 0 ? Number(it.value) : Number(r.amount);
+        const cents = Math.round(unit * 100);
+        if (!cents || cents < 100) return json({ error: 'Each gift must be at least $1' }, 400);
+        lines.push({ name: String(it.label).slice(0, 120), cents, qty: Number(it.value) > 0 ? qty : 1 });
+      }
+      if (!lines.length) return json({ error: 'Choose a gift first' }, 400);
+      const total = lines.reduce((s, l) => s + l.cents * l.qty, 0);
+      if (total > 5_000_000) return json({ error: 'For gifts over $50,000 please call Stephen at 414-909-3279' }, 400);
+
+      const summary = lines.map((l) => `${l.name} x${l.qty}`).join('; ').slice(0, 480);
+      const metadata = { order_type: 'partner_gift', pitch_key: key, partner_name: String(partner.name).slice(0, 100), summary };
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        line_items: lines.map((l) => ({
+          price_data: { currency: 'usd', product_data: { name: `Full Spectrum: ${l.name}` }, unit_amount: l.cents },
+          quantity: l.qty,
+        })),
+        customer_email: body.donorEmail || undefined,
+        metadata,
+        payment_intent_data: { metadata },
+        success_url: `${SITE_URL}/partner/?k=${key}&paid=1`,
+        cancel_url: `${SITE_URL}/partner/?k=${key}`,
+      });
       return json({ url: session.url });
     }
 

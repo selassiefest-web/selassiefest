@@ -60,6 +60,18 @@
   .qty{display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--ink-soft);}
   .qty input{width:64px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
   .tally{margin-top:10px; font-weight:700;}
+  .price{font-size:0.82rem; font-weight:700; color:var(--green);}
+  .amt{display:flex; align-items:center; gap:4px;}
+  .amt input{width:92px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
+  #pay{display:none; margin-top:14px; padding:14px 16px; border-radius:14px; background:var(--green-soft); border:2px solid var(--green);}
+  #pay.show{display:block;}
+  #pay .total{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.25rem;}
+  .payrow{display:grid; gap:8px; margin-top:10px;}
+  .paybtn{display:flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:13px; border-radius:999px; border:none; font-weight:800; font-size:1rem; cursor:pointer; text-decoration:none;}
+  .paybtn.card{background:var(--accent); color:var(--accent-ink);}
+  .paybtn.pp{background:#FFC439; color:#16182B;}
+  .paybtn[disabled]{opacity:0.6; cursor:default;}
+  .paid{background:var(--green-soft); border:2px solid var(--green); border-radius:14px; padding:14px 16px; margin:16px 0; font-weight:700; text-align:center;}
   .privacy{margin-top:10px; font-size:0.82rem; color:var(--ink-faint);}
   .parts{list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px;}
   .parts li{display:flex; gap:10px; align-items:baseline;}
@@ -116,6 +128,10 @@
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   var key = (new URLSearchParams(location.search).get('k') || '').trim().toLowerCase();
   var decision = null;
+  if (new URLSearchParams(location.search).get('paid') === '1'){
+    var pb = document.createElement('div'); pb.className = 'paid'; pb.textContent = 'Thank you! Your gift was received. A receipt is on its way to your email.';
+    document.addEventListener('DOMContentLoaded', function(){ var m = document.getElementById('main'); if (m) m.parentNode.insertBefore(pb, m); });
+  }
 
   function notFound(){
     $('main').innerHTML = '<div class="card"><p>We couldn’t find this invitation. You can still read about Full Spectrum below, or call Stephen directly at <a href="tel:4149093279">414-909-3279</a>.</p></div>';
@@ -175,31 +191,80 @@
         var q = Number(i.qty) > 0 ? Number(i.qty) : 1;
         return '<label class="item" data-id="' + esc(i.id) + '"><input type="checkbox" aria-label="' + esc(i.label) + '">' +
           '<span><b>' + esc(i.label) + '</b>' + (i.detail ? '<span class="d">' + esc(i.detail) + '</span>' : '') + '</span>' +
-          '<span class="qty">Qty <input type="number" min="1" max="100000" value="' + q + '" aria-label="Quantity for ' + esc(i.label) + '">' + (i.unit ? esc(i.unit) : '') + '</span></label>';
+          (i.cash && !(Number(i.value) > 0)
+            ? '<span class="amt">$ <input class="amtin" type="number" min="1" max="50000" step="1" placeholder="Amount" aria-label="Gift amount for ' + esc(i.label) + '"></span>'
+            : '<span class="qty">' + (i.cash ? '<span class="price">$' + Number(i.value).toLocaleString() + (i.unit ? ' / ' + esc(i.unit) : '') + '</span> ' : '') + 'Qty <input type="number" min="1" max="100000" value="' + q + '" aria-label="Quantity for ' + esc(i.label) + '">' + (!i.cash && i.unit ? esc(i.unit) : '') + '</span>') + '</label>';
       }).join('') + '</div><div class="tally" id="tally"></div>' +
+      '<div id="pay"><div>Your gift today: <span class="total" id="payTotal"></span></div>' +
+        '<p class="small" style="margin:4px 0 0">Secure payment. Ras Tafari Inc. is a 501(c)(3) nonprofit; keep your receipt for your records.</p>' +
+        '<div class="payrow"><button class="paybtn card" id="payCard" type="button"><i class="fa-solid fa-credit-card"></i> Pay by card</button>' +
+        '<a class="paybtn pp" id="payPal" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-paypal"></i> Pay with PayPal</a></div>' +
+        '<p class="msg" id="payMsg"></p></div>' +
       '<p class="privacy">Sponsoring a child DJ supports a student’s participation in a free class. We never share a child’s name, photo or personal details with sponsors.</p></div>';
   }
   function wireMenu(){
     document.querySelectorAll('.item').forEach(function(el){
       var cb = el.querySelector('input[type=checkbox]');
       cb.addEventListener('change', function(){ el.classList.toggle('on', cb.checked); tally(); });
-      el.querySelector('.qty input').addEventListener('input', function(){ if (!cb.checked){ cb.checked = true; el.classList.add('on'); } tally(); });
+      var qi = el.querySelector('.qty input') || el.querySelector('.amtin');
+      if (qi) qi.addEventListener('input', function(){ if (!cb.checked){ cb.checked = true; el.classList.add('on'); } tally(); });
     });
+    var pc = $('payCard'); if (pc) pc.addEventListener('click', payCard);
+    var pp = $('payPal'); if (pp) pp.addEventListener('click', payPal);
   }
   function picked(){
     var out = [];
     document.querySelectorAll('.item').forEach(function(el){
       if (!el.querySelector('input[type=checkbox]').checked) return;
       var it = items.find(function(x){ return String(x.id) === el.getAttribute('data-id'); }); if (!it) return;
-      var q = Math.max(1, Math.min(100000, Math.round(Number(el.querySelector('.qty input').value) || 1)));
-      out.push({ id: String(it.id), label: String(it.label), qty: q });
+      var qin = el.querySelector('.qty input'), ain = el.querySelector('.amtin');
+      var q = qin ? Math.max(1, Math.min(100000, Math.round(Number(qin.value) || 1))) : 1;
+      var row = { id: String(it.id), label: String(it.label), qty: q };
+      if (it.cash){ row.cash = true; if (ain) row.amount = Math.max(0, Math.min(50000, Number(ain.value) || 0)); }
+      out.push(row);
     });
     return out;
   }
   function tally(){
     var sel = picked(), t = $('tally'); if (!t) return;
     var total = sel.reduce(function(s, x){ var it = items.find(function(i){ return String(i.id) === x.id; }); return s + x.qty * (Number(it && it.value) || 0); }, 0);
+    var cash = cashLines(sel), pay = $('pay');
+    if (pay){ pay.classList.toggle('show', cash.total > 0); if (cash.total > 0) $('payTotal').textContent = '$' + cash.total.toLocaleString(undefined, {maximumFractionDigits: 2}); }
     t.textContent = sel.length ? sel.length + (sel.length === 1 ? ' item selected' : ' items selected') + (total ? ' · about $' + Math.round(total).toLocaleString() + ' estimated value' : '') : '';
+  }
+
+  // Cash gifts: items flagged "cash" in the partner's menu. Fixed-price items use qty x value;
+  // open-amount items use what the partner typed. The server recomputes every price from the stored menu.
+  function cashLines(sel){
+    var lines = [], total = 0;
+    sel.forEach(function(x){
+      if (!x.cash) return; var it = items.find(function(i){ return String(i.id) === x.id; }); if (!it) return;
+      var fixed = Number(it.value) > 0, amt = fixed ? Number(it.value) * x.qty : x.amount;
+      if (amt >= 1){ lines.push({ id: x.id, label: x.label, qty: fixed ? x.qty : 1, amount: fixed ? undefined : x.amount }); total += amt; }
+    });
+    return { lines: lines, total: total };
+  }
+  async function payCard(){
+    var cash = cashLines(picked()); if (!cash.lines.length) return;
+    var btn = $('payCard'), msg = $('payMsg'); btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Opening secure checkout…';
+    try {
+      var c = await window.sfSupabaseReady;
+      var r = await c.functions.invoke('create-checkout-session', { body: { mode: 'partner_gift', key: key, items: cash.lines } });
+      if (r.error || !r.data || !r.data.url) throw (r.error || new Error((r.data && r.data.error) || 'Could not start checkout'));
+      location.href = r.data.url;
+    } catch(err){ btn.disabled = false; msg.className = 'msg err'; msg.textContent = 'Sorry, checkout could not start. Please try PayPal or call Stephen at 414-909-3279.'; }
+  }
+  function payPal(e){
+    var cash = cashLines(picked()); if (!cash.total){ e.preventDefault(); return; }
+    var amt = (Math.round(cash.total * 100) / 100).toFixed(2).replace(/\.00$/, '');
+    $('payPal').href = 'https://paypal.me/RASTAFARIINC/' + amt + 'USD';
+    // Open the answer form so they can tell us they sent it; PayPal.me has no webhook, so we confirm in PayPal.
+    decision = 'yes';
+    document.querySelectorAll('.choice').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-d') === 'yes'); });
+    $('form').classList.add('open'); $('go').textContent = 'I sent it';
+    if (!$('m').value) $('m').value = 'Sent $' + amt + ' via PayPal for: ' + cash.lines.map(function(l){ return l.label; }).join(', ');
+    $('payMsg').className = 'msg'; $('payMsg').textContent = 'After you pay in PayPal, come back and tap “I sent it” below so we can thank you.';
+    setTimeout(function(){ $('answer').scrollIntoView({behavior:'smooth', block:'start'}); }, 400);
   }
 
   async function submit(e){
