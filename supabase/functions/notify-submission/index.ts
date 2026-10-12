@@ -714,7 +714,7 @@ function formatFsPartnerResponse(record: Record<string, any>) {
   const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
   const picks = Array.isArray(record.selections) ? record.selections.slice(0, 40) : [];
   const pickList = picks.length
-    ? `<h3 style="margin:16px 0 4px;">What they chose</h3><ul>${picks.map((s: any) => `<li>${escapeHtml(s && s.label ? s.label : s && s.id)} &times; ${escapeHtml(s && s.qty != null ? s.qty : 1)}</li>`).join('')}</ul>`
+    ? `<h3 style="margin:16px 0 4px;">What they chose</h3><ul>${picks.map((s: any) => `<li>${escapeHtml(s && s.label ? s.label : s && s.id)} &times; ${escapeHtml(s && s.qty != null ? s.qty : 1)}${s && s.tier ? ' &mdash; ' + escapeHtml(s.tier === 'sponsor' ? '100% sponsored' : s.tier === 'rw' ? 'Rainbow Wednesday price' : 'regular price') + (s.regular ? ', regular $' + escapeHtml(s.regular) : '') + (s.tier === 'rw' && s.rw ? ', RW $' + escapeHtml(s.rw) : '') : ''}</li>`).join('')}</ul>`
     : '';
   return {
     subject: `${record.decision === 'yes' ? 'YES' : record.decision === 'call_me' ? 'Call back' : 'Not now'}: ${biz} answered your Full Spectrum pitch`,

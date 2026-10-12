@@ -60,6 +60,17 @@
   .qty{display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--ink-soft);}
   .qty input{width:64px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
   .tally{margin-top:10px; font-weight:700;}
+  .tiers{grid-column:1 / -1; display:none; margin-top:6px; padding-top:10px; border-top:1px dashed var(--line-strong);}
+  .item.on .tiers{display:block;}
+  .tiers .th{font-size:0.8rem; font-weight:700; color:var(--ink-soft); margin-bottom:6px;}
+  .tier{display:flex; gap:8px; align-items:flex-start; padding:7px 0; font-size:0.92rem; cursor:pointer;}
+  .tier input{margin-top:4px; accent-color:var(--green);}
+  .tier b{display:block;}
+  .tier .d2{display:block; font-size:0.8rem; color:var(--ink-soft);}
+  .prices{display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:6px; font-size:0.84rem; color:var(--ink-soft);}
+  .prices label{display:flex; align-items:center; gap:6px;}
+  .prices input{width:90px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
+  .tgift{margin-top:6px; font-weight:700; font-size:0.88rem; color:var(--green);}
   .price{font-size:0.82rem; font-weight:700; color:var(--green);}
   .amt{display:flex; align-items:center; gap:4px;}
   .amt input{width:92px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
@@ -189,11 +200,11 @@
       '<p class="small" style="margin:4px 0 0">' + esc(p.ask_intro || 'Tick one item, several, or all of them. You can change quantities. Pledges are never charged. If you give by card or PayPal, you only pay when you tap the pay button.') + '</p>' +
       '<div class="menu">' + items.map(function(i){
         var q = Number(i.qty) > 0 ? Number(i.qty) : 1;
-        return '<label class="item" data-id="' + esc(i.id) + '"><input type="checkbox" aria-label="' + esc(i.label) + '">' +
+        return '<div class="item" data-id="' + esc(i.id) + '"><input type="checkbox" aria-label="' + esc(i.label) + '">' +
           '<span><b>' + esc(i.label) + '</b>' + (i.detail ? '<span class="d">' + esc(i.detail) + '</span>' : '') + '</span>' +
           (i.cash && !(Number(i.value) > 0)
             ? '<span class="amt">$ <input class="amtin" type="number" min="1" max="50000" step="1" placeholder="Amount" aria-label="Gift amount for ' + esc(i.label) + '"></span>'
-            : '<span class="qty">' + (i.cash ? '<span class="price">$' + Number(i.value).toLocaleString() + (i.unit ? ' / ' + esc(i.unit) : '') + '</span> ' : '') + 'Qty <input type="number" min="1" max="100000" value="' + q + '" aria-label="Quantity for ' + esc(i.label) + '">' + (!i.cash && i.unit ? esc(i.unit) : '') + '</span>') + '</label>';
+            : '<span class="qty">' + (i.cash ? '<span class="price">$' + Number(i.value).toLocaleString() + (i.unit ? ' / ' + esc(i.unit) : '') + '</span> ' : '') + 'Qty <input type="number" min="1" max="100000" value="' + q + '" aria-label="Quantity for ' + esc(i.label) + '">' + (!i.cash && i.unit ? esc(i.unit) : '') + '</span>') + (i.tiers ? tiersHtml(i) : '') + '</div>';
       }).join('') + '</div><div class="tally" id="tally"></div>' +
       '<div id="pay"><div>Your gift today: <span class="total" id="payTotal"></span></div>' +
         '<p class="small" style="margin:4px 0 0">Secure payment. Ras Tafari Inc. is a 501(c)(3) nonprofit; keep your receipt for your records.</p>' +
@@ -202,10 +213,22 @@
         '<p class="msg" id="payMsg"></p></div>' +
       '<p class="privacy">Sponsoring a child DJ supports a student’s participation in a free class. We never share a child’s name, photo or personal details with sponsors.</p></div>';
   }
+  function tiersHtml(i){
+    var n = 't-' + esc(i.id);
+    return '<div class="tiers"><div class="th">How would you like to support this?</div>' +
+      '<label class="tier"><input type="radio" name="' + n + '" value="sponsor"><span><b>Sponsor it 100%</b><span class="d2">You provide this at no cost to the program.</span></span></label>' +
+      '<label class="tier"><input type="radio" name="' + n + '" value="rw" checked><span><b>Rainbow Wednesday price</b><span class="d2">A community price below your regular price.</span></span></label>' +
+      '<label class="tier"><input type="radio" name="' + n + '" value="regular"><span><b>Regular price</b><span class="d2">Just so we can budget; we will take it from there.</span></span></label>' +
+      '<div class="prices"><label>Your regular price each $ <input class="t-reg" type="number" min="0" max="100000" step="0.01" aria-label="Regular price each for ' + esc(i.label) + '"></label>' +
+      '<label class="t-rwl">Rainbow Wednesday price each $ <input class="t-rw" type="number" min="0" max="100000" step="0.01" aria-label="Rainbow Wednesday price each for ' + esc(i.label) + '"></label></div>' +
+      '<div class="tgift"></div></div>';
+  }
   function wireMenu(){
     document.querySelectorAll('.item').forEach(function(el){
       var cb = el.querySelector('input[type=checkbox]');
       cb.addEventListener('change', function(){ el.classList.toggle('on', cb.checked); tally(); });
+      el.addEventListener('click', function(e){ if (e.target.closest('input,select,button,a,.tiers,.qty,.amt')) return; cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); });
+      el.querySelectorAll('.tiers input').forEach(function(x){ x.addEventListener('input', tally); x.addEventListener('change', tally); });
       var qi = el.querySelector('.qty input') || el.querySelector('.amtin');
       if (qi) qi.addEventListener('input', function(){ if (!cb.checked){ cb.checked = true; el.classList.add('on'); } tally(); });
     });
@@ -221,13 +244,37 @@
       var q = qin ? Math.max(1, Math.min(100000, Math.round(Number(qin.value) || 1))) : 1;
       var row = { id: String(it.id), label: String(it.label), qty: q };
       if (it.cash){ row.cash = true; if (ain) row.amount = Math.max(0, Math.min(50000, Number(ain.value) || 0)); }
+      if (it.tiers){
+        var tr = el.querySelector('.tiers input[type=radio]:checked');
+        row.tier = tr ? tr.value : 'rw';
+        row.regular = Math.max(0, Math.min(100000, Number(el.querySelector('.t-reg').value) || 0));
+        row.rw = Math.max(0, Math.min(100000, Number(el.querySelector('.t-rw').value) || 0));
+      }
       out.push(row);
     });
     return out;
   }
+  function tierValue(x){
+    if (x.tier === 'sponsor') return x.qty * (x.regular || 0);
+    if (x.tier === 'rw') return Math.max(0, (x.regular || 0) - (x.rw || 0)) * x.qty;
+    return 0;
+  }
+  function tierNote(x){
+    var v = tierValue(x);
+    if (x.tier === 'sponsor') return v ? 'Your gift to the program: about $' + Math.round(v).toLocaleString() : 'Thank you for sponsoring this in full.';
+    if (x.tier === 'rw') return v ? 'Your community discount: about $' + Math.round(v).toLocaleString() : 'Add both prices to see your community discount.';
+    return '';
+  }
   function tally(){
     var sel = picked(), t = $('tally'); if (!t) return;
-    var total = sel.reduce(function(s, x){ var it = items.find(function(i){ return String(i.id) === x.id; }); return s + x.qty * (Number(it && it.value) || 0); }, 0);
+    var total = sel.reduce(function(s, x){ var it = items.find(function(i){ return String(i.id) === x.id; }); return s + (x.tier ? tierValue(x) : (x.cash ? 0 : x.qty * (Number(it && it.value) || 0))); }, 0);
+    document.querySelectorAll('.item').forEach(function(el){
+      var tg = el.querySelector('.tgift'); if (!tg) return;
+      var tr = el.querySelector('.tiers input[type=radio]:checked'), t = tr ? tr.value : 'rw';
+      el.querySelector('.t-rwl').style.display = t === 'rw' ? '' : 'none';
+      var row = sel.find(function(x){ return x.id === el.getAttribute('data-id'); });
+      tg.textContent = row ? tierNote(row) : '';
+    });
     var cash = cashLines(sel), pay = $('pay');
     if (pay){ pay.classList.toggle('show', cash.total > 0); if (cash.total > 0) $('payTotal').textContent = '$' + cash.total.toLocaleString(undefined, {maximumFractionDigits: 2}); }
     t.textContent = sel.length ? sel.length + (sel.length === 1 ? ' item selected' : ' items selected') + (total ? ' · about $' + Math.round(total).toLocaleString() + ' estimated value' : '') : '';

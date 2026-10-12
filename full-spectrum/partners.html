@@ -251,7 +251,7 @@
   <div class="f"><label for="eItems">Pick-list for their personal page</label>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px"><select id="eTemplate" style="flex:1 1 200px"><option value="">Add a template&hellip;</option></select><button class="btn small" id="eTemplateBtn" type="button">Add</button></div>
     <textarea id="eItems" style="min-height:120px" placeholder="One per line: What | Detail | Qty | Unit | $ each | cash"></textarea>
-    <span class="hint">One per line: What | Detail | Qty | Unit | $ each | cash. Detail, unit and $ are optional. Type <b>cash</b> as the last field to let them pay it on the page by card or PayPal: with a $ amount it is a fixed price (qty x $); with no $ they type their own amount. Without <b>cash</b> it is an in-kind pledge and $ is only an estimated value.</span></div>
+    <span class="hint">One per line: What | Detail | Qty | Unit | $ each | flags. Detail, unit and $ are optional. Flags (comma-separated): <b>tiers</b> lets the partner choose Sponsor 100% / Rainbow Wednesday price / Regular price and type both prices; <b>cash</b> as below. Type <b>cash</b> as the last field to let them pay it on the page by card or PayPal: with a $ amount it is a fixed price (qty x $); with no $ they type their own amount. Without <b>cash</b> it is an in-kind pledge and $ is only an estimated value.</span></div>
   <div class="f"><label for="eIntro">Line above the pick-list (optional)</label><input id="eIntro" placeholder="Choose what you would like to provide"></div>
   <div class="row2">
     <div class="f"><label for="eCommit">What they've committed</label><input id="eCommit"></div>
@@ -436,11 +436,11 @@
 
   // Pick-list helpers: "What | Detail | Qty | Unit | $ each" per line <-> ask_items jsonb
   function slug(t, n){ return (String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40) || 'item') + '-' + n; }
-  function itemsToText(items){ return (items || []).map(function(i){ return [i.label || '', i.detail || '', i.qty || '', i.unit || '', i.value || '', i.cash ? 'cash' : ''].join(' | ').replace(/( \| )+$/,''); }).join('\n'); }
+  function itemsToText(items){ return (items || []).map(function(i){ return [i.label || '', i.detail || '', i.qty || '', i.unit || '', i.value || '', [i.cash ? 'cash' : '', i.tiers ? 'tiers' : ''].filter(Boolean).join(',')].join(' | ').replace(/( \| )+$/,''); }).join('\n'); }
   function textToItems(t){
     return String(t || '').split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l, n){
       var f = l.split('|').map(function(x){ return x.trim(); }); var it = { id: slug(f[0], n + 1), label: f[0] };
-      if (f[1]) it.detail = f[1]; if (Number(f[2]) > 0) it.qty = Number(f[2]); if (f[3]) it.unit = f[3]; if (Number(f[4]) > 0) it.value = Number(f[4]); if (/^cash$/i.test(f[5] || '')) it.cash = true; return it; });
+      if (f[1]) it.detail = f[1]; if (Number(f[2]) > 0) it.qty = Number(f[2]); if (f[3]) it.unit = f[3]; if (Number(f[4]) > 0) it.value = Number(f[4]); var fl = String(f[5] || '').toLowerCase().split(/[\s,]+/); if (fl.indexOf('cash') >= 0) it.cash = true; if (fl.indexOf('tiers') >= 0) it.tiers = true; return it; });
   }
   $('eTemplate').innerHTML += Object.keys(TEMPLATES).map(function(k){ return '<option value="' + k + '">' + TEMPLATES[k][0] + '</option>'; }).join('');
   $('eTemplateBtn').addEventListener('click', function(){ var k = $('eTemplate').value; if (!k) return;
