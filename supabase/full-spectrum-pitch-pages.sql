@@ -29,6 +29,7 @@ $$;
 alter table fs_partners alter column pitch_key set default fs_new_pitch_key();
 update fs_partners set pitch_key = fs_new_pitch_key() where pitch_key is null;
 
+-- (Superseded by fs-partner-asks.sql, which also returns ask_items/ask_intro and logs chosen items.)
 -- Public read of one pitch by key; counts the scan. Returns nothing for an
 -- unknown key. Only safe, already-public-facing fields leave the database.
 create or replace function fs_pitch_view(p_key text)

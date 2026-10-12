@@ -82,6 +82,14 @@
   .log li{padding:6px 0; border-top:1px solid var(--line);}
   .log .when{font-size:0.76rem; color:var(--ink-faint);}
 
+  .tabs{display:flex; gap:6px; margin:4px 0 12px; border-bottom:1px solid var(--line);}
+  .tab{border:none; background:none; padding:9px 16px; font-weight:700; cursor:pointer; color:var(--ink-faint); border-bottom:3px solid transparent;}
+  .tab.on{color:var(--ink); border-bottom-color:var(--accent);}
+  .gstat{display:flex; flex-wrap:wrap; gap:14px; margin:0 0 12px; font-size:0.88rem; color:var(--ink-soft);}
+  .gstat b{color:var(--ink);}
+  .g-meta{margin-top:6px; font-size:0.88rem; color:var(--ink-soft);}
+  .gstatus{padding:4px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--surface); font-size:0.8rem; font-weight:700;}
+  .warn{background:var(--red-soft); color:var(--red); padding:8px 12px; border-radius:10px; font-size:0.86rem; margin-bottom:12px;}
   dialog{border:none; border-radius:16px; padding:0; width:min(640px,calc(100vw - 24px)); background:var(--surface); color:var(--ink); box-shadow:0 20px 60px rgba(0,0,0,0.35);}
   dialog::backdrop{background:rgba(10,12,24,0.55);}
   dialog form{padding:20px;}
@@ -130,6 +138,11 @@
     </div>
   </header>
 
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabPartners" data-tab="partners" role="tab">Partners</button>
+    <button class="tab" id="tabGrants" data-tab="grants" role="tab">Grants <span class="p-cat" id="grantBadge"></span></button>
+  </div>
+  <div id="partnersView">
   <div class="stages" id="stages"></div>
   <div class="filters">
     <input type="search" id="q" placeholder="Search name, contact, ask, notes&hellip;">
@@ -141,6 +154,23 @@
   </div>
   <p class="count" id="count"></p>
   <div class="list" id="list"></div>
+  </div>
+
+  <div id="grantsView" hidden>
+    <div id="grantWarn"></div>
+    <div class="gstat" id="gstat"></div>
+    <div class="stages" id="gstages"></div>
+    <div class="filters">
+      <input type="search" id="gq" placeholder="Search funder, program, notes&hellip;">
+      <select id="gLevel"><option value="">All levels</option></select>
+      <select id="gProject"><option value="">All projects</option></select>
+      <select id="gKind"><option value="">Any window</option></select>
+      <select id="gDue"><option value="">Any date</option><option value="soon">Closing in 60 days</option><option value="over">Next step overdue</option></select>
+      <button class="btn small primary" id="gAdd"><i class="fa-solid fa-plus"></i> Add funder</button>
+    </div>
+    <p class="count" id="gcount"></p>
+    <div class="list" id="glist"></div>
+  </div>
   <footer>Private to Ras Tafari Inc. Consultants. Contact details here are never published.</footer>
 </div>
 
@@ -159,6 +189,54 @@
   <div class="dlg-actions"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" id="logSave" value="save">Save</button></div>
 </form></dialog>
 
+<dialog id="grantDlg"><form method="dialog" id="grantForm">
+  <h2 id="grantTitle">Edit funder</h2>
+  <div class="row2">
+    <div class="f"><label for="gFunder">Funder</label><input id="gFunder" required></div>
+    <div class="f"><label for="gProgram">Program</label><input id="gProgram"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gStatus">Where we are</label><select id="gStatus"></select></div>
+    <div class="f"><label for="gKindE">Application window</label><select id="gKindE"></select></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gOpens">Opens (or est.)</label><input id="gOpens" type="date"></div>
+    <div class="f"><label for="gDeadline">Closes (or est.)</label><input id="gDeadline" type="date"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gLevelE">Level</label><select id="gLevelE"></select></div>
+    <div class="f"><label for="gProjectE">Funds which project</label><select id="gProjectE"></select></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gAmount">Award range</label><input id="gAmount" placeholder="e.g. up to $12,000"></div>
+    <div class="f"><label for="gPriority">Priority</label><select id="gPriority"><option value="1">1 - High</option><option value="2">2 - Normal</option><option value="3">3 - Low</option></select></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gReq">We are asking ($)</label><input id="gReq" type="number" min="0" step="0.01"></div>
+    <div class="f"><label for="gAwd">Awarded ($)</label><input id="gAwd" type="number" min="0" step="0.01"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gSubmitted">Submitted on</label><input id="gSubmitted" type="date"></div>
+    <div class="f"><label for="gDecision">Decision expected / made</label><input id="gDecision" type="date"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gNext">Next step</label><input id="gNext" placeholder="e.g. Pull the guidelines"></div>
+    <div class="f"><label for="gNextDue">Next step due</label><input id="gNextDue" type="date"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gOwner">Who owns it</label><input id="gOwner" placeholder="Stephen, Kirk, Paksipras"></div>
+    <div class="f"><label for="gUrl">Link</label><input id="gUrl" type="url"></div>
+  </div>
+  <div class="f"><label for="gElig">Who can apply / what blocks us</label><input id="gElig"></div>
+  <div class="f"><label for="gMatch">Match required</label><input id="gMatch"></div>
+  <div class="f"><label for="gNotes">Notes</label><textarea id="gNotes"></textarea></div>
+  <div class="checks" style="margin-bottom:10px"><label><input type="checkbox" id="gVerified"> Dates and rules confirmed on the funder's own site</label><label><input type="checkbox" id="gActive"> Show in the weekly email</label></div>
+  <div class="dlg-actions">
+    <button class="btn" id="gDelete" type="button" style="margin-right:auto; color:var(--red)">Delete</button>
+    <button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="save">Save</button>
+  </div>
+</form></dialog>
+
 <dialog id="editDlg"><form method="dialog" id="editForm">
   <h2 id="editTitle">Edit partner</h2>
   <div class="f"><label for="eName">Name</label><input id="eName" required></div>
@@ -170,6 +248,11 @@
   <div class="f"><label>Program parts</label><div class="checks" id="eParts"></div></div>
   <div class="f"><label for="ePitch">Elevator pitch</label><textarea id="ePitch" style="min-height:110px"></textarea></div>
   <div class="f"><label for="eAsk">The ask (one clear yes/no request)</label><textarea id="eAsk"></textarea></div>
+  <div class="f"><label for="eItems">Pick-list for their personal page</label>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px"><select id="eTemplate" style="flex:1 1 200px"><option value="">Add a template&hellip;</option></select><button class="btn small" id="eTemplateBtn" type="button">Add</button></div>
+    <textarea id="eItems" style="min-height:120px" placeholder="One per line: What | Detail | Qty | Unit | $ each"></textarea>
+    <span class="hint">One per line: What | Detail | Qty | Unit | $ each (detail, unit and $ optional). They tick what they will give on their page.</span></div>
+  <div class="f"><label for="eIntro">Line above the pick-list (optional)</label><input id="eIntro" placeholder="Choose what you would like to provide"></div>
   <div class="row2">
     <div class="f"><label for="eCommit">What they've committed</label><input id="eCommit"></div>
     <div class="f"><label for="eValue">Value ($, cash or in-kind)</label><input id="eValue" type="number" step="0.01" min="0"></div>
@@ -201,11 +284,27 @@
   var STAGES = [['not_contacted','Not contacted','var(--line-strong)'],['reached_out','Reached out','var(--r5)'],['in_conversation','In conversation','var(--r6)'],
     ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)']];
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
-  var TYPES = {in_kind:'In-kind', financial:'Financial / sponsor', programming:'Strategic programming', marketing:'Marketing & promotion'};
+  var TYPES = {in_kind:'In-kind', financial:'Financial / sponsor', grant:'Grant funder', programming:'Strategic programming', marketing:'Marketing & promotion'};
   var PARTS = {classes:'DJ classes', wednesdays:'Rainbow Wednesdays', stage:'Stage shows', festivals:'Festivals', parties:'Fall & holiday parties', empress:'Empress Decks', all:'Whole program'};
   var KIND = {call:'Call', email:'Email', visit:'Visit', meeting:'Meeting', text:'Text', note:'Note', stage:'Stage'};
+  var GSTATUS = [['to_research','To research','var(--line-strong)'],['drafting','Drafting','var(--r5)'],['ready','Ready to submit','var(--r6)'],['submitted','Submitted','var(--r2)'],['awarded','Awarded','var(--r4)'],['declined','Declined','var(--r1)'],['not_eligible','Not eligible','var(--ink-faint)'],['skip','Skip','var(--ink-faint)']];
+  var GST = {}; GSTATUS.forEach(function(x){ GST[x[0]] = {label:x[1], color:x[2]}; });
+  var GKIND = {dated:'Has a deadline', expected:'Expected window', rolling:'Apply any time', paused:'Closed - check back', relationship:'Relationship only'};
+  var GLEVEL = {federal:'Federal', state:'Illinois', county:'Cook County', city:'City of Chicago', corporate:'Corporate', foundation:'Foundation'};
+  var GPROJECT = {djclass:'DJ classes', wednesdays:'Rainbow Wednesdays', selassiefest:'SelassieFest', heritage:'Caribbean heritage', parties:'Fall & holiday parties', org:'Whole organization'};
+  var GDONE = ['submitted','awarded','declined','not_eligible','skip'];
+  var TEMPLATES = {
+    restaurant: ['Restaurants, cafes and bakeries',
+      'Sponsor Lesson 1 meals | 13 student meals for one lesson | 13 | meals\nSponsor an entire lesson | Meals for the class on a lesson date we agree on | 1 | lesson\nBecome the official meal sponsor | Meals through a course or season: per lesson, monthly or full program | 1 | season\nStudent refreshments | Water, fruit or snacks for one lesson or event | 1 | lesson\nSponsor a Child DJ | Cover a student\u2019s meals and materials; matched privately by the program | 1 | student'],
+    dj: ['DJ equipment and audio',
+      'Beginner DJ controller | | 1 | controller\nComplete student DJ station | Controller, headphones, stand and cables | 1 | station\nDJ headphones | | 1 | pair\nStudent headphone bank | | 8 | pairs\nVinyl turntables | | 1 | pair\nComplete vinyl learning station | Two turntables plus accessories | 1 | station\nPowered studio monitors | | 1 | pair\nClassroom speaker package | | 1 | package\nAudio cables and adapters | | 1 | kit\nFull startup equipment sponsor | All agreed startup equipment | 1 | kit'],
+    general: ['Neighborhood businesses',
+      'Sponsor a Child DJ | Support one student\u2019s participation: equipment share, meals, workbooks | 1 | student\nSponsor one class lesson | Cover agreed lesson expenses | 1 | lesson\nSponsor the DJ equipment library | Contribute toward shared equipment | 1 | gift\nSponsor ear protection | Hearing-protection items for students | 1 | set\nSponsor student transportation | Agreed transit support | 1 | gift\nSponsor a Rainbow Wednesday | Support one weekly event | 1 | event\nBecome a season sponsor | Support an agreed portion of the season | 1 | season'],
+    print: ['Printing, marketing and technology',
+      'Student laptop | | 1 | laptop\nDJ software license | One station license or a classroom plan | 1 | license\nStudent workbook printing | 13 copies for a lesson | 13 | copies\nCourse workbook package | One agreed class set | 1 | set\nBusiness-card printing | Sponsor QR-code cards, one campaign batch | 1 | batch\nStudent certificates | One class set | 1 | set\nDesign, hosting or technical services | | 1 | service']
+  };
   var KEY = 'fsPartnerSession';
-  var state = { session:null, partners:[], activity:[], stageFilter:'', open:{} };
+  var state = { session:null, partners:[], activity:[], grants:[], grantsOk:true, stageFilter:'', gStatusFilter:'active', tab:'partners', open:{} };
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function loadSession(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
@@ -239,7 +338,9 @@
   async function load(){
     var data = await rpc('fs_partners_load', { p_session: state.session.sessionToken });
     state.partners = data.partners || []; state.activity = data.activity || [];
-    buildFilters(); render();
+    try { state.grants = await rpc('fs_grants_load', { p_session: state.session.sessionToken }) || []; state.grantsOk = true; }
+    catch(err){ if (/session/i.test(err.message)) throw err; state.grants = []; state.grantsOk = false; }
+    buildFilters(); render(); renderGrants();
   }
 
   function buildFilters(){
@@ -301,6 +402,7 @@
           (p.email ? '<a class="btn small" href="mailto:' + esc(p.email) + '"><i class="fa-solid fa-envelope"></i> Email</a>' : '') +
           '<button class="btn small" data-act="toggle" data-id="' + p.id + '">' + (state.open[p.id] ? 'Hide' : 'Details') + (log.length ? ' (' + log.length + ')' : '') + '</button>' +
           '<button class="btn small" data-act="edit" data-id="' + p.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
+          (p.pitch_key ? '<button class="btn small" data-act="copy" data-id="' + p.id + '"><i class="fa-solid fa-link"></i> Copy link</button>' : '') +
           (p.pitch_key ? '<a class="btn small" href="' + pitchUrl(p) + '" target="_blank" rel="noopener"><i class="fa-solid fa-qrcode"></i> Pitch page' + (p.pitch_views ? ' &middot; ' + p.pitch_views + ' view' + (p.pitch_views === 1 ? '' : 's') : '') + '</a>' : '') +
         '</div>' +
         '<div class="details' + (state.open[p.id] ? ' open' : '') + '"><dl>' +
@@ -325,6 +427,123 @@
     if (act === 'toggle'){ state.open[id] = !state.open[id]; render(); }
     if (act === 'log') openLog(id);
     if (act === 'edit') openEdit(id);
+    if (act === 'copy'){ var pp = state.partners.find(function(x){ return x.id === id; });
+      if (navigator.clipboard) navigator.clipboard.writeText(pitchUrl(pp)).then(function(){ b.textContent = 'Copied'; setTimeout(render, 1200); }, function(){ prompt('Copy this link', pitchUrl(pp)); });
+      else prompt('Copy this link', pitchUrl(pp)); }
+  });
+
+  // Pick-list helpers: "What | Detail | Qty | Unit | $ each" per line <-> ask_items jsonb
+  function slug(t, n){ return (String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40) || 'item') + '-' + n; }
+  function itemsToText(items){ return (items || []).map(function(i){ return [i.label || '', i.detail || '', i.qty || '', i.unit || '', i.value || ''].join(' | ').replace(/( \| )+$/,''); }).join('\n'); }
+  function textToItems(t){
+    return String(t || '').split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l, n){
+      var f = l.split('|').map(function(x){ return x.trim(); }); var it = { id: slug(f[0], n + 1), label: f[0] };
+      if (f[1]) it.detail = f[1]; if (Number(f[2]) > 0) it.qty = Number(f[2]); if (f[3]) it.unit = f[3]; if (Number(f[4]) > 0) it.value = Number(f[4]); return it; });
+  }
+  $('eTemplate').innerHTML += Object.keys(TEMPLATES).map(function(k){ return '<option value="' + k + '">' + TEMPLATES[k][0] + '</option>'; }).join('');
+  $('eTemplateBtn').addEventListener('click', function(){ var k = $('eTemplate').value; if (!k) return;
+    $('eItems').value = ($('eItems').value.trim() ? $('eItems').value.trim() + '\n' : '') + TEMPLATES[k][1]; $('eTemplate').value = ''; });
+
+  // ---- Grants tab
+  var effDate = function(g){ return g.deadline_date || g.next_step_due || g.opens_date || '9999'; };
+  function daysTo(s){ var d = parseDate(String(s).slice(0,10)); return d ? Math.round((d - today()) / 86400000) : null; }
+  function money(n){ return n ? '$' + Number(n).toLocaleString() : ''; }
+  function fillSel(sel, pairs){ sel.innerHTML = pairs.map(function(p){ return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + '</option>'; }).join(''); }
+  fillSel($('gStatus'), GSTATUS.map(function(x){ return [x[0], x[1]]; }));
+  fillSel($('gKindE'), Object.keys(GKIND).map(function(k){ return [k, GKIND[k]]; }));
+  fillSel($('gLevelE'), [['','-']].concat(Object.keys(GLEVEL).map(function(k){ return [k, GLEVEL[k]]; })));
+  fillSel($('gProjectE'), [['','-']].concat(Object.keys(GPROJECT).map(function(k){ return [k, GPROJECT[k]]; })));
+  [['gLevel',GLEVEL],['gProject',GPROJECT],['gKind',GKIND]].forEach(function(x){ $(x[0]).innerHTML += Object.keys(x[1]).map(function(k){ return '<option value="' + k + '">' + x[1][k] + '</option>'; }).join(''); });
+
+  function gFiltered(){
+    var q = $('gq').value.trim().toLowerCase(), lv = $('gLevel').value, pj = $('gProject').value, kd = $('gKind').value, du = $('gDue').value;
+    var rows = state.grants.filter(function(g){
+      if (state.gStatusFilter === 'active' ? (GDONE.indexOf(g.status) >= 0 || !g.active) : (state.gStatusFilter && g.status !== state.gStatusFilter)) return false;
+      if (lv && g.level !== lv) return false; if (pj && g.project !== pj) return false; if (kd && g.kind !== kd) return false;
+      if (du === 'soon'){ var n = g.deadline_date ? daysTo(g.deadline_date) : null; if (n === null || n < 0 || n > 60) return false; }
+      if (du === 'over'){ var m = g.next_step_due ? daysTo(g.next_step_due) : null; if (m === null || m >= 0) return false; }
+      if (q && [g.funder, g.program, g.notes, g.next_step, g.eligibility, g.owner].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    rows.sort(function(a, b){ return (a.priority - b.priority) || effDate(a).localeCompare(effDate(b)) || a.funder.localeCompare(b.funder); });
+    return rows;
+  }
+
+  function renderGrants(){
+    $('grantWarn').innerHTML = state.grantsOk ? '' : '<div class="warn">The grant pipeline is not set up in the database yet. Apply supabase/fs-grants-pipeline.sql, then reload.</div>';
+    var gs = state.grants, counts = {}; gs.forEach(function(g){ counts[g.status] = (counts[g.status] || 0) + 1; });
+    var open = gs.filter(function(g){ return GDONE.indexOf(g.status) < 0 && g.active; });
+    var closing = gs.filter(function(g){ var n = g.deadline_date ? daysTo(g.deadline_date) : null; return n !== null && n >= 0 && n <= 30 && GDONE.indexOf(g.status) < 0 && g.kind === 'dated'; });
+    var reqd = gs.filter(function(g){ return g.status === 'submitted'; }).reduce(function(s, g){ return s + (Number(g.amount_requested) || 0); }, 0);
+    var awd = gs.reduce(function(s, g){ return s + (Number(g.amount_awarded) || 0); }, 0);
+    $('grantBadge').textContent = closing.length ? '(' + closing.length + ' closing)' : '';
+    $('gstat').innerHTML = '<span><b>' + open.length + '</b> open to work on</span><span><b>' + closing.length + '</b> closing within 30 days</span>' +
+      (reqd ? '<span><b>' + money(reqd) + '</b> submitted, awaiting decision</span>' : '') + (awd ? '<span><b>' + money(awd) + '</b> awarded</span>' : '');
+    $('gstages').innerHTML = '<button class="stage-chip' + (state.gStatusFilter === 'active' ? ' on' : '') + '" data-gs="active"><b>' + open.length + '</b><span>Open pipeline</span></button>' +
+      '<button class="stage-chip' + (!state.gStatusFilter ? ' on' : '') + '" data-gs=""><b>' + gs.length + '</b><span>All funders</span></button>' +
+      GSTATUS.map(function(x){ return '<button class="stage-chip' + (state.gStatusFilter === x[0] ? ' on' : '') + '" data-gs="' + x[0] + '" style="border-left:5px solid ' + x[2] + '"><b>' + (counts[x[0]] || 0) + '</b><span>' + x[1] + '</span></button>'; }).join('');
+    var rows = gFiltered();
+    $('gcount').textContent = 'Showing ' + rows.length + ' of ' + gs.length + ' funders';
+    $('glist').innerHTML = rows.map(function(g){
+      var st = GST[g.status] || {label:g.status, color:'var(--line-strong)'};
+      var dn = g.deadline_date ? daysTo(g.deadline_date) : null;
+      var dl = g.deadline_date ? (g.kind === 'expected' ? 'Expected to close ~' : 'Closes ') + fmtDate(g.deadline_date) + (dn !== null && dn >= 0 && g.kind === 'dated' ? ' (' + (dn === 0 ? 'TODAY' : dn + ' day' + (dn === 1 ? '' : 's')) + ')' : (dn !== null && dn < 0 ? ' (passed)' : '')) :
+        (g.opens_date ? 'Opens ~' + fmtDate(g.opens_date) : '');
+      var nd = g.next_step_due ? daysTo(g.next_step_due) : null, ncls = nd === null ? '' : (nd < 0 ? 'over' : (nd <= 7 ? 'soon' : ''));
+      return '<div class="card p" style="--sc:' + st.color + '">' +
+        '<div class="p-top"><div><span class="p-name">' + esc(g.funder) + '</span> <span class="p-cat">' + esc(g.program || '') + '</span></div>' +
+          '<select class="gstatus" data-gid="' + g.id + '" aria-label="Status for ' + esc(g.funder) + '">' + GSTATUS.map(function(x){ return '<option value="' + x[0] + '"' + (x[0] === g.status ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select></div>' +
+        '<div class="chips">' + (g.priority === 1 ? '<span class="chip part">High priority</span>' : '') + '<span class="chip">' + esc(GKIND[g.kind] || g.kind) + '</span>' +
+          (g.level ? '<span class="chip">' + esc(GLEVEL[g.level] || g.level) + '</span>' : '') + (g.project ? '<span class="chip part">' + esc(GPROJECT[g.project] || g.project) + '</span>' : '') +
+          (g.verified ? '' : '<span class="chip" style="background:var(--red-soft);color:var(--red)">Unverified</span>') + '</div>' +
+        '<div class="g-meta">' + [esc(dl), g.amount ? 'Award: ' + esc(g.amount) : '', g.amount_requested ? 'Asking ' + money(g.amount_requested) : '', g.amount_awarded ? 'Awarded ' + money(g.amount_awarded) : '', g.owner ? 'Owner: ' + esc(g.owner) : ''].filter(Boolean).join(' &middot; ') + '</div>' +
+        (g.eligibility ? '<div class="g-meta"><strong>Eligibility:</strong> ' + esc(g.eligibility) + (g.match_required ? ' &middot; <strong>Match:</strong> ' + esc(g.match_required) : '') + '</div>' : '') +
+        (g.notes ? '<div class="g-meta">' + esc(g.notes) + '</div>' : '') +
+        '<div class="next">' + (g.next_step ? '<strong>Next:</strong> ' + esc(g.next_step) + (nd !== null ? ' &middot; <span class="due ' + ncls + '">' + (ncls === 'over' ? 'overdue, ' : 'due ') + fmtDate(g.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') + '</div>' +
+        '<div class="p-actions"><button class="btn small primary" data-gact="edit" data-gid="' + g.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
+          (g.url && /^https?:/.test(g.url) ? '<a class="btn small" href="' + esc(g.url) + '" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Funder page</a>' : '') + '</div></div>';
+    }).join('') || '<p class="count">No funders match these filters.</p>';
+  }
+
+  $('gstages').addEventListener('click', function(e){ var b = e.target.closest('[data-gs]'); if (!b) return; state.gStatusFilter = b.getAttribute('data-gs'); renderGrants(); });
+  ['gq','gLevel','gProject','gKind','gDue'].forEach(function(id){ $(id).addEventListener('input', renderGrants); });
+  $('glist').addEventListener('click', function(e){ var b = e.target.closest('[data-gact]'); if (b) openGrant(b.getAttribute('data-gid')); });
+  $('glist').addEventListener('change', async function(e){
+    var sel = e.target.closest('.gstatus'); if (!sel) return;
+    try { await rpc('fs_grant_save', { p_session: state.session.sessionToken, p_id: sel.getAttribute('data-gid'), p: { status: sel.value } }); await load(); }
+    catch(err){ alert('Could not save: ' + err.message); }
+  });
+  ['tabPartners','tabGrants'].forEach(function(id){ $(id).addEventListener('click', function(){
+    state.tab = $(id).getAttribute('data-tab');
+    $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants');
+    $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants';
+    $('addBtn').style.display = state.tab === 'partners' ? '' : 'none'; }); });
+
+  var grantId = null;
+  function openGrant(id){
+    var g = id ? state.grants.find(function(x){ return x.id === id; }) : { status:'to_research', kind:'rolling', priority:2, verified:false, active:true };
+    grantId = id || null; $('grantTitle').textContent = id ? 'Edit: ' + g.funder : 'Add funder';
+    var set = function(k, v){ $(k).value = v == null ? '' : v; };
+    set('gFunder', g.funder); set('gProgram', g.program); set('gStatus', g.status); set('gKindE', g.kind); set('gOpens', g.opens_date); set('gDeadline', g.deadline_date);
+    set('gLevelE', g.level); set('gProjectE', g.project); set('gAmount', g.amount); set('gPriority', g.priority || 2); set('gReq', g.amount_requested); set('gAwd', g.amount_awarded);
+    set('gSubmitted', g.submitted_on); set('gDecision', g.decision_on); set('gNext', g.next_step); set('gNextDue', g.next_step_due); set('gOwner', g.owner); set('gUrl', g.url);
+    set('gElig', g.eligibility); set('gMatch', g.match_required); set('gNotes', g.notes);
+    $('gVerified').checked = !!g.verified; $('gActive').checked = g.active !== false; $('gDelete').style.display = id ? '' : 'none';
+    $('grantDlg').showModal();
+  }
+  $('gAdd').addEventListener('click', function(){ openGrant(null); });
+  $('grantDlg').addEventListener('close', async function(){
+    if ($('grantDlg').returnValue !== 'save') return;
+    var v = function(k){ return $(k).value; };
+    var payload = { funder:v('gFunder'), program:v('gProgram'), status:v('gStatus'), kind:v('gKindE'), opens_date:v('gOpens'), deadline_date:v('gDeadline'), level:v('gLevelE'), project:v('gProjectE'),
+      amount:v('gAmount'), priority:v('gPriority'), amount_requested:v('gReq'), amount_awarded:v('gAwd'), submitted_on:v('gSubmitted'), decision_on:v('gDecision'), next_step:v('gNext'),
+      next_step_due:v('gNextDue'), owner:v('gOwner'), url:v('gUrl'), eligibility:v('gElig'), match_required:v('gMatch'), notes:v('gNotes'), verified:$('gVerified').checked, active:$('gActive').checked };
+    try { await rpc('fs_grant_save', { p_session: state.session.sessionToken, p_id: grantId, p: payload }); await load(); } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  $('gDelete').addEventListener('click', async function(){
+    if (!grantId || !confirm('Delete this funder? This cannot be undone.')) return;
+    $('grantDlg').close('cancel');
+    try { await rpc('fs_grant_delete', { p_session: state.session.sessionToken, p_id: grantId }); await load(); } catch(err){ alert('Could not delete: ' + err.message); }
   });
 
   var stageOptions = STAGES.map(function(s){ return '<option value="' + s[0] + '">' + s[1] + '</option>'; }).join('');
@@ -355,7 +574,7 @@
     editId = id || null;
     $('editTitle').textContent = id ? 'Edit: ' + p.name : 'Add partner';
     $('eName').value = p.name || ''; $('eCat').value = p.category || ''; $('eStage').value = p.stage;
-    $('eAsk').value = p.ask || ''; $('ePitch').value = p.pitch || ''; $('eCommit').value = p.commitment || ''; $('eValue').value = p.commitment_value || '';
+    $('eAsk').value = p.ask || ''; $('eItems').value = itemsToText(p.ask_items); $('eIntro').value = p.ask_intro || ''; $('ePitch').value = p.pitch || ''; $('eCommit').value = p.commitment || ''; $('eValue').value = p.commitment_value || '';
     $('eNext').value = p.next_step || ''; $('eDue').value = p.next_step_due || '';
     $('ePhone').value = p.phone || ''; $('eEmail').value = p.email || ''; $('eAddr').value = p.address || ''; $('eWeb').value = p.website || ''; $('eHours').value = p.hours_note || '';
     $('eNotes').value = p.notes || '';
@@ -371,7 +590,7 @@
     var checked = function(sel){ return Array.from(document.querySelectorAll(sel + ' input:checked')).map(function(i){ return i.value; }); };
     var contacts = $('eContacts').value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
       var f = l.split('|').map(function(x){ return x.trim(); }); var c = { name: f[0] || '', role: f[1] || '' }; if (f[2]) c.email = f[2]; if (f[3]) c.phone = f[3]; return c; });
-    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ask: $('eAsk').value, pitch: $('ePitch').value, commitment: $('eCommit').value,
+    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ask: $('eAsk').value, ask_items: textToItems($('eItems').value), ask_intro: $('eIntro').value, pitch: $('ePitch').value, commitment: $('eCommit').value,
       commitment_value: $('eValue').value, next_step: $('eNext').value, next_step_due: $('eDue').value, phone: $('ePhone').value, email: $('eEmail').value,
       address: $('eAddr').value, website: $('eWeb').value, hours_note: $('eHours').value, notes: $('eNotes').value, contacts: contacts,
       partner_types: checked('#eTypes'), program_parts: checked('#eParts') };

@@ -52,6 +52,15 @@
   .submit[disabled]{opacity:0.6; cursor:default;}
   .msg{margin-top:10px; font-size:0.92rem;} .msg.err{color:var(--red);}
   .done{text-align:center;} .done i{font-size:2.4rem; color:var(--green); margin-bottom:8px;}
+  .menu{display:grid; gap:8px; margin-top:12px;}
+  .item{display:grid; grid-template-columns:auto 1fr auto; gap:4px 12px; align-items:start; padding:12px 14px; border:2px solid var(--line-strong); border-radius:14px; background:var(--surface); cursor:pointer;}
+  .item.on{border-color:var(--green); background:var(--green-soft);}
+  .item input[type=checkbox]{width:22px; height:22px; margin-top:2px; accent-color:var(--green);}
+  .item b{display:block;} .item .d{font-size:0.88rem; color:var(--ink-soft);}
+  .qty{display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--ink-soft);}
+  .qty input{width:64px; padding:6px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg);}
+  .tally{margin-top:10px; font-weight:700;}
+  .privacy{margin-top:10px; font-size:0.82rem; color:var(--ink-faint);}
   .parts{list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px;}
   .parts li{display:flex; gap:10px; align-items:baseline;}
   .parts b{display:inline-grid; place-items:center; width:26px; height:26px; flex:none; border-radius:8px; color:#fff; font-family:"Montserrat",sans-serif; font-size:0.85rem;}
@@ -128,6 +137,7 @@
     $('main').innerHTML =
       '<div class="card"><div class="pitch">' + esc(p.pitch) + '</div>' +
         (p.ask ? '<div class="ask"><span class="lbl">Our ask</span><p>' + esc(p.ask) + '</p></div>' : '') + '</div>' +
+      menuHtml(p) +
       '<div class="card" id="answer"><h2 style="font-size:1.15rem; margin-bottom:10px">Your answer</h2>' +
         '<div class="choices">' +
           '<button class="choice yes" data-d="yes"><i class="fa-solid fa-circle-check"></i> Yes, count us in</button>' +
@@ -152,12 +162,51 @@
       });
     });
     $('form').addEventListener('submit', submit);
+    wireMenu();
+  }
+
+  var items = [];
+  function menuHtml(p){
+    items = Array.isArray(p.ask_items) ? p.ask_items.filter(function(i){ return i && i.id && i.label; }) : [];
+    if (!items.length) return '';
+    return '<div class="card" id="menu"><h2 style="font-size:1.15rem">Choose what you would like to provide</h2>' +
+      '<p class="small" style="margin:4px 0 0">' + esc(p.ask_intro || 'Tick one item, several, or all of them. You can change quantities. Nothing is charged; Stephen will call to confirm.') + '</p>' +
+      '<div class="menu">' + items.map(function(i){
+        var q = Number(i.qty) > 0 ? Number(i.qty) : 1;
+        return '<label class="item" data-id="' + esc(i.id) + '"><input type="checkbox" aria-label="' + esc(i.label) + '">' +
+          '<span><b>' + esc(i.label) + '</b>' + (i.detail ? '<span class="d">' + esc(i.detail) + '</span>' : '') + '</span>' +
+          '<span class="qty">Qty <input type="number" min="1" max="100000" value="' + q + '" aria-label="Quantity for ' + esc(i.label) + '">' + (i.unit ? esc(i.unit) : '') + '</span></label>';
+      }).join('') + '</div><div class="tally" id="tally"></div>' +
+      '<p class="privacy">Sponsoring a child DJ supports a student’s participation in a free class. We never share a child’s name, photo or personal details with sponsors.</p></div>';
+  }
+  function wireMenu(){
+    document.querySelectorAll('.item').forEach(function(el){
+      var cb = el.querySelector('input[type=checkbox]');
+      cb.addEventListener('change', function(){ el.classList.toggle('on', cb.checked); tally(); });
+      el.querySelector('.qty input').addEventListener('input', function(){ if (!cb.checked){ cb.checked = true; el.classList.add('on'); } tally(); });
+    });
+  }
+  function picked(){
+    var out = [];
+    document.querySelectorAll('.item').forEach(function(el){
+      if (!el.querySelector('input[type=checkbox]').checked) return;
+      var it = items.find(function(x){ return String(x.id) === el.getAttribute('data-id'); }); if (!it) return;
+      var q = Math.max(1, Math.min(100000, Math.round(Number(el.querySelector('.qty input').value) || 1)));
+      out.push({ id: String(it.id), label: String(it.label), qty: q });
+    });
+    return out;
+  }
+  function tally(){
+    var sel = picked(), t = $('tally'); if (!t) return;
+    var total = sel.reduce(function(s, x){ var it = items.find(function(i){ return String(i.id) === x.id; }); return s + x.qty * (Number(it && it.value) || 0); }, 0);
+    t.textContent = sel.length ? sel.length + (sel.length === 1 ? ' item selected' : ' items selected') + (total ? ' · about $' + Math.round(total).toLocaleString() + ' estimated value' : '') : '';
   }
 
   async function submit(e){
     e.preventDefault();
     var rec = { pitch_key: key, decision: decision, contact_name: $('n').value.trim(), contact_title: $('t').value.trim(),
                 phone: $('ph').value.trim(), email: $('em').value.trim(), message: $('m').value.trim() };
+    var sel = picked(); if (sel.length && decision !== 'not_now') rec.selections = sel;
     if (decision !== 'not_now' && (!rec.contact_name || (!rec.phone && !rec.email))){
       $('msg').className = 'msg err'; $('msg').textContent = 'Please add your name and a phone number or email so we can follow up.'; return;
     }

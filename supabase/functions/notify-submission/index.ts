@@ -712,10 +712,15 @@ function formatFsPartnerResponse(record: Record<string, any>) {
   const label = record.decision === 'yes' ? 'YES, count us in' : record.decision === 'call_me' ? 'Call me, I have questions' : 'Not right now';
   const biz = record.partner_name || 'A partner';
   const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  const picks = Array.isArray(record.selections) ? record.selections.slice(0, 40) : [];
+  const pickList = picks.length
+    ? `<h3 style="margin:16px 0 4px;">What they chose</h3><ul>${picks.map((s: any) => `<li>${escapeHtml(s && s.label ? s.label : s && s.id)} &times; ${escapeHtml(s && s.qty != null ? s.qty : 1)}</li>`).join('')}</ul>`
+    : '';
   return {
     subject: `${record.decision === 'yes' ? 'YES' : record.decision === 'call_me' ? 'Call back' : 'Not now'}: ${biz} answered your Full Spectrum pitch`,
     html: `
       <h2>${escapeHtml(biz)}: ${escapeHtml(label)}</h2>
+      ${pickList}
       <table style="border-collapse:collapse;">${row('Name', record.contact_name)}${row('Title', record.contact_title)}${row('Phone', record.phone)}${row('Email', record.email)}${row('Message', record.message)}</table>
       <p style="margin-top:18px;">It's logged on the partner, and their contact details were added. <a href="https://selassiefest.com/full-spectrum/partners.html">Open the Partner Tracker</a></p>
     `,

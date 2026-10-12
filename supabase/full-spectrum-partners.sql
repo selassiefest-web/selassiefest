@@ -90,7 +90,7 @@ create table if not exists fs_partners (
   email text,
   website text,
   contacts jsonb not null default '[]'::jsonb,      -- [{name, role, email, phone}]
-  partner_types text[] not null default '{}',        -- in_kind | financial | programming | marketing
+  partner_types text[] not null default '{}',        -- in_kind | financial | grant | programming | marketing
   program_parts text[] not null default '{}',        -- classes | wednesdays | stage | festivals | parties | empress | all
   stage text not null default 'not_contacted'
     check (stage in ('not_contacted','reached_out','in_conversation','meeting_set','committed','confirmed','declined','on_hold')),
@@ -139,6 +139,7 @@ $$;
 grant execute on function fs_partners_load(uuid) to anon, authenticated;
 
 -- Create (p_id null) or update a partner from a jsonb of editable fields.
+-- (Superseded by the copy in fs-partner-asks.sql, which adds ask_items/ask_intro.)
 create or replace function fs_partner_save(p_session uuid, p_id uuid, p jsonb)
 returns fs_partners language plpgsql security definer set search_path = public as $$
 declare u record; r fs_partners; v_old_stage text;

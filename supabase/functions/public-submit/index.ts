@@ -60,7 +60,7 @@ const FORMS: Record<string, FormConfig> = {
       "filmed_location", "filmed_date", "release_version", "electronic_consent", "signature_typed_name", "user_agent", "source_page"],
   },
   djlab_registrations: { columns: ["cohort_code", "kid_first_name", "kid_last_initial", "kid_age", "guardian_name", "guardian_email", "guardian_phone", "emergency_contact", "accommodations", "consent", "photo_consent", "recap_opt_in", "details"] },
-  fs_partner_responses: { columns: ["pitch_key", "decision", "contact_name", "contact_title", "phone", "email", "message"] },
+  fs_partner_responses: { columns: ["pitch_key", "decision", "contact_name", "contact_title", "phone", "email", "message", "selections"] },
   yawd_waitlist: { columns: ["full_name", "email", "phone", "zip", "customer_type", "business_name", "interests", "message", "source"] },
   // trcevent.com
   event_notify_signups: { columns: ["event_slug", "event_name", "brand", "email"] },
