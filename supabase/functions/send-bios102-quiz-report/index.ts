@@ -155,8 +155,33 @@ Deno.serve(async (req) => {
       // to Stephen instead, to proof it before the real send.
       const recipients = body.test ? [{ email: TO, name: "Preview Student" }] : students;
       const failed: string[] = [];
+      // {"lesson":"spores"} announces the Studio vs. Duplex lesson instead of a quiz.
+      const spores = body.lesson === "spores";
+      // {"lesson":"arrived"} announces the Exercise 6 study guide, live slides and Lab Exam 1 mock.
+      const arrived = body.lesson === "arrived";
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
+        const subject = arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
+        const html = arrived ? `
+              <p>Hi ${first},</p>
+              <p><strong>The door is unlocked.</strong></p>
+              <p>Log in to the Lab Companion to see:</p>
+              <ul>
+                <li>how to earn the 3 lab points</li>
+                <li>how to study</li>
+                <li>the mock exam, open <strong>Tuesday, Oct 13, 11:00 AM to 6:00 PM Central</strong></li>
+              </ul>
+              <p><a href="https://selassiefest.com/BIOS102/dashboard.html">Log in to the dashboard</a></p>
+              <p>Professor Harris</p>` : spores ? `
+              <p>Hi ${first},</p>
+              <p>There is a new short lesson on the Lab Companion dashboard: <strong>Studio vs. Duplex</strong>, homosporous vs. heterosporous. It takes about 5 minutes, one small screen at a time, and it remembers where you stopped.</p>
+              <p>You will rate how well you know it, sort organisms, and set up quick calendar reminders for reviews over the next few weeks. Short, spaced reviews are what move this into long-term memory.</p>
+              <p><a href="https://selassiefest.com/BIOS102/homosporous-heterosporous.html">Start the lesson</a></p>
+              <p>Professor Harris</p>` : `
+              <p>Hi ${first},</p>
+              <p>${Q} (${quiz.topic}) is up on the Lab Companion dashboard. Every question comes from the lab manual, and you can retry as often as you like.</p>
+              <p><a href="https://selassiefest.com/BIOS102/dashboard.html">Open the dashboard</a></p>
+              <p>Professor Harris</p>`;
         const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -164,12 +189,8 @@ Deno.serve(async (req) => {
             from: FROM,
             to: s.email,
             reply_to: INSTRUCTOR,
-            subject: `BIOS102 ${Q} is ready`,
-            html: `
-              <p>Hi ${first},</p>
-              <p>${Q} (${quiz.topic}) is up on the Lab Companion dashboard. Every question comes from the lab manual, and you can retry as often as you like.</p>
-              <p><a href="https://selassiefest.com/BIOS102/dashboard.html">Open the dashboard</a></p>
-              <p>Professor Harris</p>`,
+            subject,
+            html,
           }),
         });
         if (!res.ok) failed.push(`${s.email}: ${await res.text()}`);
