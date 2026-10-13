@@ -614,6 +614,26 @@ window.sfSupabase = {
     return (data && data[0]) || null;
   },
 
+  // Study-session calendar and Lab Exam 1 mock exam (/BIOS102/study-guide.html,
+  // /BIOS102/mock-exam.html) -- see supabase/bios102-study-session-mock-exam.sql.
+  // Every call is session-token-scoped; the exam's questions only come back
+  // from bios102MockStart while the window is open or access was granted.
+  async bios102Rpc(fn, args) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc(fn, args);
+    if (error) throw error;
+    return data;
+  },
+  bios102StudyLoad(sessionToken) { return this.bios102Rpc('bios102_study_load', { p_session: sessionToken }); },
+  bios102StudyToggle(sessionToken, slot, on) { return this.bios102Rpc('bios102_study_toggle', { p_session: sessionToken, p_slot: slot, p_on: on }); },
+  bios102StudyDecide(sessionToken, slot, status) { return this.bios102Rpc('bios102_study_decide', { p_session: sessionToken, p_slot: slot, p_status: status }); },
+  bios102MockState(sessionToken) { return this.bios102Rpc('bios102_mock_state', { p_session: sessionToken }); },
+  bios102MockRequestAccess(sessionToken) { return this.bios102Rpc('bios102_mock_request_access', { p_session: sessionToken }); },
+  bios102MockStart(sessionToken) { return this.bios102Rpc('bios102_mock_start', { p_session: sessionToken }); },
+  bios102MockGrade(sessionToken, answers) { return this.bios102Rpc('bios102_mock_grade', { p_session: sessionToken, p_answers: answers }); },
+  bios102MockAdminLoad(sessionToken) { return this.bios102Rpc('bios102_mock_admin_load', { p_session: sessionToken }); },
+  bios102MockSetAccess(sessionToken, email, mode) { return this.bios102Rpc('bios102_mock_set_access', { p_session: sessionToken, p_email: email, p_mode: mode }); },
+
   // Uploads a photo (drawing or specimen snapshot) for one row of a
   // student's BIOS102 comparison table, compressed the same way as every
   // other photo upload on this site. Returns the public URL, which the

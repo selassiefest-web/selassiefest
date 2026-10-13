@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS 102 Mock Exam</title>
+  <style>
+    /* Plain black-on-white on purpose: easy to read, easy to follow. */
+    :root{--bg:#fff;--fg:#000;--muted:#333;--rule:#000;--soft:#f2f2f2;--good:#005a1e;--bad:#b00020;--focus:#0b3d91}
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,"Segoe UI",sans-serif;font-size:19px;line-height:1.55;margin:0;padding:0 16px 80px}
+    .wrap{max-width:44rem;margin:0 auto}
+    .bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;padding:10px 0;font-size:.9rem;border-bottom:1px solid #bbb}
+    .bar a{color:var(--fg)}
+    header{padding:24px 0 12px;border-bottom:3px solid var(--rule)}
+    h1{font-size:2rem;line-height:1.2;margin:0 0 6px}
+    h2{font-size:1.4rem;margin:36px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--rule)}
+    p{margin:.5em 0}
+    .sub{color:var(--muted);margin:0}
+    .box{border:2px solid var(--rule);padding:14px 18px;margin:18px 0}
+    .q{padding:16px 0;border-bottom:1px solid #bbb}
+    .q .t{margin:0 0 8px}
+    .q .t b{display:inline-block;min-width:2.2em}
+    .opt{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+    .opt input{width:22px;height:22px;margin-top:3px;flex:none}
+    input[type=text],select{font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--rule);padding:8px 10px;border-radius:0;max-width:100%}
+    input[type=text]{width:100%;max-width:26rem}
+    select{min-width:11rem}
+    input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+    .btn{font:inherit;font-weight:700;color:var(--bg);background:var(--fg);border:2px solid var(--fg);padding:10px 20px;cursor:pointer;border-radius:0}
+    .btn.alt{color:var(--fg);background:var(--bg)}
+    .btn.sm{padding:5px 10px;font-size:.85rem;margin:2px 6px 2px 0}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .res{margin:8px 0 0;font-weight:700}
+    .res.ok{color:var(--good)}.res.no{color:var(--bad)}
+    .note{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .cycle li{margin:10px 0}
+    .bank{background:var(--soft);padding:8px 12px;margin:10px 0;font-size:.95rem}
+    table{border-collapse:collapse;width:100%}
+    th,td{border:1px solid var(--rule);padding:6px 8px;text-align:left;vertical-align:middle;font-size:.9rem}
+    .scroll{overflow-x:auto}
+    .sumrow{display:flex;flex-wrap:wrap;gap:6px 24px}
+    .big{font-size:2.4rem;font-weight:700;line-height:1.1}
+    [hidden]{display:none!important}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><a href="/BIOS102/dashboard.html">&larr; Back to your chapters</a><span id="who"></span></div>
+  <header>
+    <h1>BIOS 102 Mock Exam</h1>
+    <p class="sub">Lab Exam 1 practice. It covers the same topics as the exam, with different questions.</p>
+  </header>
+
+  <div id="prof" class="box" hidden>
+    <b>Instructor panel</b>
+    <p class="note">Students who started the mock or asked for access are listed first. Mark a student as attended when they show up, or grant temporary access (24 hours) to an excused student. Revoke removes access.</p>
+    <div class="scroll"><table id="roster"><thead><tr><th>Student</th><th>Asked / started</th><th>Access</th><th>Best score</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <div id="gate" class="box" aria-live="polite">Loading&hellip;</div>
+
+  <div id="exam" hidden>
+    <div id="summary" class="box" hidden></div>
+    <div id="sections"></div>
+    <p style="margin-top:28px"><button id="submit" class="btn" type="button">Submit and see my score</button></p>
+    <p id="submitMsg" class="note"></p>
+  </div>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
+<script>
+(function () {
+  const session = BIOS.requireSession();
+  if (!session) return;
+  const API = window.sfSupabase;
+  const tok = session.sessionToken;
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const fmtT = (ms) => new Date(ms).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  $('who').textContent = session.displayName || session.email;
+
+  let state = null, exam = null, started = false, asked = false, fields = [];
+  const WIN = 'Tuesday, October 13, 11:00 AM to 6:00 PM Central';
+
+  function msg(t) { $('submitMsg').textContent = t || ''; }
+
+  async function refreshState() {
+    try { state = await API.bios102MockState(tok); }
+    catch (e) { state = null; }
+    drawGate();
+  }
+
+  function drawGate() {
+    const g = $('gate'); g.textContent = '';
+    if (started) { g.hidden = true; return; }
+    g.hidden = false;
+    if (!state) { g.appendChild(el('p', null, 'Your sign-in expired. Go back to the login page and request a new link.')); return; }
+    asked = asked || state.asked;
+    if (state.allowed) {
+      g.appendChild(el('p', null, state.instructor ? 'Instructor preview. You can take the mock at any time.' : 'You have access to the mock.'));
+      g.appendChild(el('p', 'note', '70 points: 30 practical stations, 10 fill-in-the-blank, 10 true/false, 6 matching, 14 life cycle blanks. No notes. Your score is shown when you submit.'));
+      const b = el('button', 'btn', 'Start the mock exam'); b.type = 'button';
+      b.addEventListener('click', start);
+      g.appendChild(b);
+    } else if (Date.parse(state.now) < Date.parse(state.opens)) {
+      g.appendChild(el('p', null, 'The mock opens ' + fmtT(Date.parse(state.opens)) + '.'));
+      g.appendChild(el('p', 'note', 'Open window: ' + WIN + '.'));
+    } else {
+      g.appendChild(el('p', null, 'The mock is closed.'));
+      g.appendChild(el('p', 'note', 'It reopens only for students who attended the study session or have an approved excuse. Tap Ask for access, then see your instructor in person to be checked in.'));
+      const a = el('button', 'btn', asked ? 'Request sent' : 'Ask for access'); a.type = 'button'; a.disabled = asked;
+      a.addEventListener('click', async () => {
+        a.disabled = true; a.textContent = 'Sending...';
+        try { await API.bios102MockRequestAccess(tok); asked = true; a.textContent = 'Request sent'; }
+        catch (e) { a.disabled = false; a.textContent = 'Ask for access'; g.appendChild(el('p', 'res no', 'That did not send. Try again.')); }
+      });
+      g.appendChild(a);
+    }
+  }
+
+  async function start() {
+    const g = $('gate');
+    try {
+      exam = await API.bios102MockStart(tok);
+    } catch (e) {
+      await refreshState();
+      return;
+    }
+    started = true; drawGate(); buildExam(); $('exam').hidden = false; window.scrollTo(0, 0);
+  }
+
+  function section(title, intro) {
+    const s = el('section'); s.appendChild(el('h2', null, title)); if (intro) s.appendChild(el('p', 'sub', intro));
+    $('sections').appendChild(s); return s;
+  }
+
+  function buildExam() {
+    $('sections').textContent = ''; fields = [];
+    $('summary').hidden = true; $('submit').disabled = false; msg('');
+    let uid = 0;
+    exam.sections.forEach((sec) => {
+      const s = section(sec.title, sec.intro);
+      sec.items.forEach((it, idx) => {
+        if (it.kind === 'cycle') { buildCycle(s, it); return; }
+        const box = el('div', 'q'); const t = el('p', 't');
+        t.appendChild(el('b', null, (idx + 1) + '.'));
+        t.appendChild(document.createTextNode(' ' + it.prompt)); box.appendChild(t);
+        const id = 'q' + (++uid);
+        if (it.kind === 'text') {
+          const inp = el('input'); inp.type = 'text'; inp.id = id; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Answer to ' + it.id);
+          box.appendChild(inp); fields.push({ id: it.id, get: () => inp.value, lock: [inp], box });
+        } else if (it.kind === 'choice') {
+          const radios = [];
+          it.options.forEach((o, i) => {
+            const lab = el('label', 'opt'); const r = el('input'); r.type = 'radio'; r.name = id; r.value = i; radios.push(r);
+            lab.appendChild(r); lab.appendChild(el('span', null, o)); box.appendChild(lab);
+          });
+          fields.push({ id: it.id, get: () => { const c = radios.find((r) => r.checked); return c ? String(c.value) : ''; }, lock: radios, box });
+        } else {
+          const sel = selectEl(it.options, 'Match ' + it.prompt); box.appendChild(sel);
+          fields.push({ id: it.id, get: () => sel.value, lock: [sel], box });
+        }
+        s.appendChild(box);
+      });
+    });
+  }
+
+  function selectEl(options, label) {
+    const sel = el('select'); sel.setAttribute('aria-label', label);
+    sel.appendChild(new Option('Choose...', ''));
+    options.forEach((o) => sel.appendChild(new Option(o, o)));
+    return sel;
+  }
+
+  function buildCycle(s, cy) {
+    const wrap = el('div', 'q'); wrap.appendChild(el('p', 't')).appendChild(el('b', null, cy.title));
+    wrap.appendChild(el('div', 'bank', 'Word bank: ' + cy.bank.join(', ')));
+    const ol = el('ol', 'cycle');
+    cy.steps.forEach((st) => {
+      const li = el('li');
+      st.forEach((part) => {
+        if (typeof part === 'string') { li.appendChild(document.createTextNode(part)); return; }
+        const sel = selectEl(cy.bank, cy.title + ' blank'); li.appendChild(sel);
+        fields.push({ id: part.b, get: () => sel.value, lock: [sel], inline: sel });
+      });
+      ol.appendChild(li);
+    });
+    wrap.appendChild(ol); s.appendChild(wrap);
+  }
+
+  const NAMES = { A: 'A. Practical', B: 'B. Fill in the blank', C: 'C. True or false', D: 'D. Matching', E: 'E. Life cycles' };
+
+  async function submit() {
+    const btn = $('submit'); btn.disabled = true; msg('Scoring...');
+    const answers = {}; fields.forEach((f) => { answers[f.id] = f.get(); });
+    let r;
+    try { r = await API.bios102MockGrade(tok, answers); }
+    catch (e) { btn.disabled = false; msg('That did not score. The mock may have closed. Check your connection and try again.'); return; }
+    msg('');
+    fields.forEach((f) => {
+      const res = r.results[f.id]; if (!res) return;
+      f.lock.forEach((x) => { x.disabled = true; });
+      if (f.inline) { f.inline.insertAdjacentElement('afterend', el('span', 'res ' + (res.ok ? 'ok' : 'no'), res.ok ? ' ✓' : ' ✗ ' + res.ans)); return; }
+      f.box.appendChild(el('p', 'res ' + (res.ok ? 'ok' : 'no'), res.ok ? 'Correct' : 'Not yet. Answer: ' + res.ans));
+      if (res.note) f.box.appendChild(el('p', 'note', res.note));
+    });
+    const pct = Math.round(100 * r.score / r.total);
+    const sm = $('summary'); sm.textContent = ''; sm.hidden = false;
+    sm.appendChild(el('div', 'big', r.score + ' / ' + r.total + ' (' + pct + '%)'));
+    sm.appendChild(el('p', null, pct >= 90 ? 'High confidence. You know this material well.' : pct >= 75 ? 'Good. Review the items marked Not yet, then try again.' : 'Keep studying. Go over each item marked Not yet and explain why the answer is correct.'));
+    const row = el('div', 'sumrow');
+    Object.keys(NAMES).forEach((k) => { const p = r.parts[k] || [0, 0]; row.appendChild(el('span', null, NAMES[k] + ': ' + p[0] + '/' + p[1])); });
+    sm.appendChild(row);
+    const again = el('button', 'btn alt', 'Try again with a fresh sheet'); again.type = 'button'; again.style.marginTop = '12px';
+    again.addEventListener('click', () => { buildExam(); window.scrollTo(0, 0); });
+    sm.appendChild(again);
+    window.scrollTo(0, 0);
+  }
+  $('submit').addEventListener('click', submit);
+
+  /* ---------- instructor roster ---------- */
+  async function loadRoster() {
+    let rows;
+    try { rows = await API.bios102MockAdminLoad(tok); } catch (e) { return; }
+    $('prof').hidden = false;
+    const tb = document.querySelector('#roster tbody'); tb.textContent = '';
+    const now = Date.now();
+    rows.forEach((s) => {
+      const tr = el('tr');
+      tr.appendChild(el('td', null, s.name));
+      tr.appendChild(el('td', null, s.kind ? fmtT(Date.parse(s.requested_at)) + (s.kind === 'asked' ? ' (asked)' : ' (started)') : '—'));
+      const temp = s.until && Date.parse(s.until) > now;
+      tr.appendChild(el('td', null, s.attended ? 'Attended' : temp ? 'Temporary until ' + fmtT(Date.parse(s.until)) : s.until ? 'Expired' : 'None'));
+      tr.appendChild(el('td', null, s.best != null ? s.best + ' / ' + s.total : '—'));
+      const td = el('td');
+      const act = (label, mode) => {
+        const b = el('button', 'btn alt sm', label); b.type = 'button';
+        b.addEventListener('click', async () => { b.disabled = true; try { await API.bios102MockSetAccess(tok, s.email, mode); } catch (e) {} loadRoster(); });
+        td.appendChild(b);
+      };
+      act('Mark attended', 'attended'); act('Grant 24 h', 'temp');
+      if (s.attended || s.until) act('Revoke', 'revoke');
+      tr.appendChild(td); tb.appendChild(tr);
+    });
+  }
+
+  refreshState().then(() => { if (state && state.instructor) loadRoster(); });
+  setInterval(() => { if (!started) refreshState(); if (state && state.instructor && !document.hidden) loadRoster(); }, 20000);
+})();
+</script>
+</body>
+</html>
