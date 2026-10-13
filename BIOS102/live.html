@@ -73,6 +73,8 @@
     .dark table.cmp td{background:var(--card-dk)}
     .num{font-family:'Rubik',Arial,sans-serif;font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.1;display:block}
     .small{font-size:.8em;color:var(--muted-lt);display:block;margin-top:2px}
+    table.cmp td.hl{background:var(--amber)!important;color:var(--ink)!important;font-weight:700;border-top-color:var(--amber)}
+    table.cmp td.hl::before{color:var(--ink)!important}
     tr.total th,tr.total td{background:var(--amber)!important;color:var(--ink)!important}
     @media (max-width:640px){
       table.cmp,table.cmp thead,table.cmp tbody,table.cmp tr,table.cmp th,table.cmp td{display:block}
@@ -121,7 +123,7 @@
   const $ = (id) => document.getElementById(id);
 
   const card = (h, p) => `<div class="card"><h3>${h}</h3><p>${p}</p></div>`;
-  const cmp = (cols, rows, cls) => `<div class="tw"><table class="cmp ${cls || ''}"><thead><tr><th></th>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr class="${r.total ? 'total' : ''}"><th scope="row">${r.label}</th>${r.cells.map((c, i) => `<td data-label="${cols[i]}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const cmp = (cols, rows, cls) => `<div class="tw"><table class="cmp ${cls || ''}"><thead><tr><th></th>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr class="${r.total ? 'total' : ''}"><th scope="row">${r.label}</th>${r.cells.map((c, i) => (typeof c === 'object' ? `<td class="hl" data-label="${cols[i]}">${c.h}</td>` : `<td data-label="${cols[i]}">${c}</td>`)).join('')}</tr>`).join('')}</tbody></table></div>`;
   const COLS = ['Fern', 'Gymnosperm', 'Angiosperm'];
   const cnt = (n, list) => `<span class="num">${n}</span>${list ? `<span class="small">${list}</span>` : ''}`;
 
@@ -177,9 +179,9 @@
       { label: 'Spores made', cells: ['One type (homosporous)', 'Two types: micro and mega (heterosporous)', 'Two types: micro and mega (heterosporous)'] },
       { label: 'Gametophyte', cells: ['Small heart-shaped prothallus with both archegonia and antheridia', 'Pollen grain (male); female gametophyte inside the ovule', 'Pollen grain (male); embryo sac with 8 nuclei (female)'] }
     ])}` },
-    { t: 'dark', h: `<h2>Check your table, part 2: fertilization to the next generation</h2>${cmp(COLS, [
+    { t: 'dark', h: `<h2>Fertilization to the next generation</h2>${cmp(COLS, [
       { label: 'How sperm reach the egg', cells: ['Swim through water', 'Pollen tube delivers the sperm nucleus; no water needed', 'Pollen tube grows through the style; no water needed'] },
-      { label: 'Fertilization', cells: ['Single: sperm and egg', 'Single: sperm and egg', 'Double: a zygote and endosperm (3n)'] },
+      { label: 'Fertilization', cells: ['Single: sperm and egg', 'Single: sperm and egg', { h: 'Double fertilization: a zygote (2n) and endosperm (3n)' }] },
       { label: 'What develops', cells: ['Embryo on the prothallus, then a young sporophyte', 'Seeds exposed on the cone scales', 'Seeds enclosed in a fruit'] },
       { label: 'Dominant generation', cells: ['Sporophyte', 'Sporophyte', 'Sporophyte'] }
     ])}` },
