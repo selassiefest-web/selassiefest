@@ -196,6 +196,17 @@ Deno.serve(async (req) => {
         if (!res.ok) failed.push(`${s.email}: ${await res.text()}`);
         await new Promise((r) => setTimeout(r, 600)); // stay under Resend's rate limit
       }
+      // {"notify":true} emails Stephen a confirmation once the batch is done (used by the scheduled send).
+      if (body.notify) {
+        const sentCount = recipients.length - failed.length;
+        await send(
+          failed.length ? `${arrived ? "ARRIVED" : "BIOS102 invite"}: sent to ${sentCount}, ${failed.length} failed` : `${arrived ? "ARRIVED" : "BIOS102 invite"} was sent to ${sentCount} students`,
+          `<p>The ${arrived ? "ARRIVED" : "BIOS102"} email went out at ${when(Date.now())}.</p>
+           <p>Delivered to Resend for <strong>${sentCount}</strong> of ${recipients.length} students.</p>
+           ${failed.length ? `<p>These failed:</p>${list(failed.map((f) => escapeHtml(f)))}` : ""}
+           ${footer}`,
+        );
+      }
       return new Response(JSON.stringify({ ok: failed.length === 0, sent: recipients.length - failed.length, failed }), { status: 200 });
     }
 
