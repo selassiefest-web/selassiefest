@@ -634,6 +634,10 @@ window.sfSupabase = {
   bios102MockAdminLoad(sessionToken) { return this.bios102Rpc('bios102_mock_admin_load', { p_session: sessionToken }); },
   bios102MockSetAccess(sessionToken, email, mode) { return this.bios102Rpc('bios102_mock_set_access', { p_session: sessionToken, p_email: email, p_mode: mode }); },
 
+  // Live presentation (/BIOS102/live.html) -- see supabase/bios102-live-presentation.sql.
+  bios102LiveGet(sessionToken) { return this.bios102Rpc('bios102_live_get', { p_session: sessionToken }); },
+  bios102LiveSet(sessionToken, slide, active) { return this.bios102Rpc('bios102_live_set', { p_session: sessionToken, p_slide: slide, p_active: active }); },
+
   // Uploads a photo (drawing or specimen snapshot) for one row of a
   // student's BIOS102 comparison table, compressed the same way as every
   // other photo upload on this site. Returns the public URL, which the

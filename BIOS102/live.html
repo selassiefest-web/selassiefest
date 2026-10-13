@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS 102 Live Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Follow-along view of the instructor's slides. The instructor steps through; each student's page follows. */
+    :root{--ink:#14231C;--paper:#F6F7F2;--amber:#E9B949;--green:#2F7D5B;--card-dk:#1F3429;--line-dk:#36503F;--muted-dk:#B8C9BF;--muted-lt:#4A5A50;--line-lt:#D5DDD6}
+    *{box-sizing:border-box}
+    html,body{margin:0;background:#0E1A14}
+    body{font-family:'Nunito Sans',Arial,sans-serif;color:var(--paper);min-height:100vh;display:flex;flex-direction:column}
+    .bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 16px;background:#0E1A14;border-bottom:1px solid var(--line-dk);font-size:16px}
+    .bar a{color:var(--muted-dk)}
+    .bar .status{flex:1 1 220px;color:var(--paper);font-weight:600}
+    .bar .status.live::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:#E5484D;margin-right:8px}
+    .bar button{font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;border:2px solid var(--amber);background:transparent;color:var(--amber);cursor:pointer}
+    .bar button.solid{background:var(--amber);color:var(--ink)}
+    .bar button:disabled{opacity:.4;cursor:not-allowed}
+    .bar button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    .count{font-variant-numeric:tabular-nums;color:var(--muted-dk)}
+    #stage{flex:1;display:flex}
+    .slide{flex:1;padding:clamp(20px,5vw,72px);display:flex;flex-direction:column;gap:clamp(18px,3vw,36px);justify-content:center;font-size:clamp(17px,2vw,26px);line-height:1.45}
+    .dark{background:var(--ink);color:var(--paper)}
+    .light{background:var(--paper);color:var(--ink)}
+    .amber{background:var(--amber);color:var(--ink)}
+    .slide > *{max-width:1200px;width:100%;margin-left:auto;margin-right:auto}
+    h1,h2,h3,p,ul,ol{margin:0}
+    h1,h2{font-family:'Rubik',Arial,sans-serif;font-weight:600;line-height:1.1;text-wrap:balance}
+    h1{font-size:clamp(34px,6.2vw,84px)}
+    h2{font-size:clamp(28px,4.4vw,58px)}
+    h3{font-size:clamp(19px,2.3vw,30px);font-weight:700}
+    .eyebrow{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(13px,1.5vw,20px);color:var(--amber)}
+    .light .eyebrow{color:var(--green)}
+    .lede{font-size:clamp(18px,2.4vw,32px);color:var(--muted-dk);max-width:900px}
+    .foot{color:var(--muted-lt)}
+    .dark .foot{color:var(--muted-dk)}
+    .cards{display:flex;flex-wrap:wrap;gap:16px}
+    .card{flex:1 1 230px;min-width:0;padding:clamp(18px,2.4vw,32px);border-radius:14px;display:flex;flex-direction:column;gap:10px}
+    .light .card{background:#fff;border:2px solid var(--line-lt)}
+    .light .card h3{color:var(--green)}
+    .dark .card{background:var(--card-dk);border:2px solid var(--line-dk)}
+    .dark .card h3{color:var(--amber)}
+    .card ul{padding-left:1.2em;color:var(--muted-dk)}
+    .callout{padding:clamp(16px,2.4vw,30px) clamp(18px,3vw,40px);border-radius:14px;font-family:'Rubik',Arial,sans-serif;font-weight:600;font-size:clamp(18px,2.4vw,32px);line-height:1.25}
+    .callout.amber{background:var(--amber);color:var(--ink)}
+    .callout.ink{background:var(--ink);color:var(--paper)}
+    .steps{padding-left:1.3em;display:flex;flex-direction:column;gap:.35em}
+    .rows{display:flex;flex-direction:column;gap:16px}
+    .row{display:flex;flex-wrap:wrap;gap:4px 24px;border-left:8px solid var(--amber);padding-left:20px}
+    .row b{flex:0 0 150px;color:var(--amber);font-size:1.1em}
+    .row span{flex:1 1 260px}
+    .fill{display:flex;flex-direction:column;gap:18px}
+    .fill p{border-bottom:4px solid var(--ink);padding-bottom:10px;font-size:clamp(20px,2.6vw,36px)}
+    /* tables */
+    .tw{overflow-x:auto}
+    table.cmp{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;font-size:clamp(16px,1.8vw,24px)}
+    table.cmp th,table.cmp td{padding:14px 16px;text-align:left;vertical-align:top;border-top:2px solid var(--line-dk)}
+    table.cmp thead th{background:#0E1A14;color:var(--amber);border-top:0}
+    table.cmp tbody th{color:var(--amber);width:22%}
+    .light table.cmp thead th{background:var(--ink)}
+    .light table.cmp th,.light table.cmp td{border-top-color:var(--line-lt)}
+    .light table.cmp tbody th{color:var(--green)}
+    .light table.cmp tbody td{background:#fff}
+    table.cmp td+td,table.cmp td{border-left:2px solid var(--line-dk)}
+    .light table.cmp td{border-left-color:var(--line-lt)}
+    .dark table.cmp td{background:var(--card-dk)}
+    .num{font-family:'Rubik',Arial,sans-serif;font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.1;display:block}
+    .small{font-size:.8em;color:var(--muted-lt);display:block;margin-top:2px}
+    tr.total th,tr.total td{background:var(--amber)!important;color:var(--ink)!important}
+    @media (max-width:640px){
+      table.cmp,table.cmp thead,table.cmp tbody,table.cmp tr,table.cmp th,table.cmp td{display:block}
+      table.cmp thead{position:absolute;left:-9999px}
+      table.cmp tr{border-radius:12px;margin-bottom:12px;overflow:hidden;border:2px solid var(--line-dk)}
+      .light table.cmp tr{border-color:var(--line-lt)}
+      table.cmp tbody th{width:auto;background:#0E1A14}
+      .light table.cmp tbody th{background:#fff}
+      table.cmp td{border-left:0}
+      table.cmp td::before{content:attr(data-label);display:block;font-weight:700;color:var(--amber);font-size:.8em}
+      .light table.cmp td::before{color:var(--green)}
+    }
+    /* life-cycle diagram */
+    .wide{display:block}.narrow{display:none}
+    @media (max-width:760px){.wide{display:none}.narrow{display:block}}
+    .loop{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+    .loop li{padding:12px 16px;border-radius:10px;font-weight:700;display:flex;gap:10px;align-items:center}
+    .loop li.ev{background:var(--amber);color:var(--ink)}
+    .loop li.n{background:var(--green);color:#fff}
+    .loop li.dp{background:var(--paper);color:var(--ink)}
+    .loop .arr{background:none;color:var(--amber);padding:0 0 0 18px;font-size:1.2em}
+    .legend{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:.9em}
+    .sw{display:inline-block;width:16px;height:16px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="/BIOS102/dashboard.html">&larr; Dashboard</a>
+    <span class="status" id="status" role="status">Loading&hellip;</span>
+    <span class="count" id="count"></span>
+    <button id="prev" type="button">Back</button>
+    <button id="next" type="button">Next</button>
+    <button id="follow" type="button" class="solid" hidden>Follow presenter</button>
+    <button id="present" type="button" class="solid" hidden>Start presenting</button>
+  </div>
+  <div id="stage"></div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
+<script>
+(function () {
+  const session = BIOS.requireSession();
+  if (!session) return;
+  const API = window.sfSupabase;
+  const tok = session.sessionToken;
+  const $ = (id) => document.getElementById(id);
+
+  const card = (h, p) => `<div class="card"><h3>${h}</h3><p>${p}</p></div>`;
+  const cmp = (cols, rows, cls) => `<div class="tw"><table class="cmp ${cls || ''}"><thead><tr><th></th>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr class="${r.total ? 'total' : ''}"><th scope="row">${r.label}</th>${r.cells.map((c, i) => `<td data-label="${cols[i]}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const COLS = ['Fern', 'Gymnosperm', 'Angiosperm'];
+  const cnt = (n, list) => `<span class="num">${n}</span>${list ? `<span class="small">${list}</span>` : ''}`;
+
+  // Wide life-cycle diagram (viewBox coordinates), narrow version is a vertical list.
+  const boxes = [
+    [0, 130, 'ev', '1 · Meiosis'], [350, 130, 'n', '2 · Spores'], [700, 130, 'n', '3 · Gametophyte'],
+    [1050, 50, 'n', '4 · Egg'], [1050, 210, 'n', '5 · Sperm'], [1400, 130, 'ev', '6 · Fertilization'],
+    [1400, 390, 'dp', '7 · Zygote'], [1050, 390, 'dp', '8 · Embryo'], [0, 390, 'dp', '9 · Mature sporophyte']
+  ];
+  const fills = { ev: '#E9B949', n: '#2F7D5B', dp: '#F6F7F2' };
+  const txt = { ev: '#14231C', n: '#FFFFFF', dp: '#14231C' };
+  const paths = [
+    'M260,185 H350', 'M610,185 H700', 'M960,185 H1005 V105 H1050', 'M960,185 H1005 V265 H1050',
+    'M1310,105 H1355 V185 H1400', 'M1310,265 H1355 V185 H1400', 'M1530,240 V390', 'M1400,445 H1310',
+    'M1050,445 H260', 'M130,390 V240'
+  ];
+  const diagram = `<svg class="wide" viewBox="-10 20 1700 520" role="img" aria-label="Arrow diagram of the nine shared stages: meiosis, spores, gametophyte, egg and sperm, fertilization, zygote, embryo, mature sporophyte, back to meiosis" style="width:100%;height:auto;max-width:1200px">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E9B949"/></marker></defs>
+    ${paths.map((d) => `<path d="${d}" fill="none" stroke="#E9B949" stroke-width="5" marker-end="url(#ah)"/>`).join('')}
+    ${boxes.map((b) => `<rect x="${b[0]}" y="${b[1]}" width="260" height="110" rx="14" fill="${fills[b[2]]}"/><text x="${b[0] + 130}" y="${b[1] + 65}" text-anchor="middle" font-size="28" font-weight="700" font-family="Nunito Sans, Arial, sans-serif" fill="${txt[b[2]]}">${b[3]}</text>`).join('')}
+  </svg>
+  <ol class="loop narrow">
+    <li class="ev">1 · Meiosis</li><li class="arr">&darr;</li><li class="n">2 · Spores</li><li class="arr">&darr;</li><li class="n">3 · Gametophyte</li><li class="arr">&darr;</li>
+    <li class="n">4 · Egg</li><li class="n">5 · Sperm</li><li class="arr">&darr;</li><li class="ev">6 · Fertilization</li><li class="arr">&darr;</li>
+    <li class="dp">7 · Zygote</li><li class="arr">&darr;</li><li class="dp">8 · Embryo</li><li class="arr">&darr;</li><li class="dp">9 · Mature sporophyte</li><li class="arr">&circlearrowleft; back to 1</li>
+  </ol>`;
+
+  const SLIDES = [
+    { t: 'dark', h: `<p class="eyebrow">Exercise 6 · A metacognitive Pomodoro</p><h1>Draw both life cycles from a blank page</h1><p class="lede">Short timed rounds. For every stage, check two things: its structure and its function.</p>` },
+    { t: 'light', h: `<h2>Why a blank page works</h2><div class="cards">${card('You must recall', 'Nothing to look at, so you pull the whole sequence out of memory.')}${card('Gaps show up', 'Wherever you freeze, the page has a hole. You can point at it.')}${card('Easy to start', 'A pen and a blank sheet. No reading, no setup, no decisions.')}</div><p class="foot">Rereading the handout only tells you what looks familiar. Drawing tells you what you can produce.</p>` },
+    { t: 'dark', h: `<h2>Look at every stage two ways</h2><div class="cards"><div class="card"><h3>Structure</h3><p>What is it?</p><ul><li>Its name</li><li>Where it sits in the cycle</li><li>Haploid (n) or diploid (2n)</li></ul></div><div class="card"><h3>Function</h3><p>What does it do?</p><ul><li>The job it performs</li><li>What it becomes next</li><li>Why the cycle needs it</li></ul></div></div>` },
+    { t: 'dark', h: `<h2>A 12-minute round: before, during, after</h2><div class="cards">${card('Before · 1 min', 'Predict: how many stages can I draw from memory? Write the number.')}${card('During · 10 min', 'Draw. When you hesitate, put a star and keep going.')}${card('After · 1 min', 'Count your stars. Compare with your prediction.')}</div><p class="callout amber">Then a 3-minute break. Stand up. Do not open the manual.</p>` },
+    { t: 'light', h: `<p class="eyebrow">Round 1 · Structure</p><h2>Draw the stages</h2><ol class="steps"><li>Predict how many stages you can draw. Write the number.</li><li>Start at the stage you know best. Draw a box, then arrows around the cycle.</li><li>Name each stage. Mark n or 2n with two colors.</li><li>No functions yet. Star every place you hesitate.</li></ol><p class="callout ink">Timer rings, pen down. A stage you could not name stays blank.</p>` },
+    { t: 'dark', h: `<p class="eyebrow">Round 2 · Function</p><h2>Add what each stage does</h2><ol class="steps"><li>Predict how many stages you can explain. Write the number.</li><li>Next to each stage write what it does and what it becomes. Five words or fewer.</li><li>Unsure? Guess, then circle the guess.</li><li>Still no manual. Star every place you hesitate.</li></ol><p class="callout amber">Circled guesses are honest data. Do not erase them.</p>` },
+    { t: 'dark', h: `<h2>Do it again for the other cycle, then space it out</h2><div class="rows"><div class="row"><b>Session 1</b><span>Gymnosperm cycle, Rounds 1 and 2, then check it against the handout.</span></div><div class="row"><b>Session 2</b><span>Flowering plant cycle, Rounds 1 and 2, then check it. A different day, or after a long break.</span></div><div class="row"><b>Next day</b><span>One round on each cycle. Redraw only the stages you starred or missed.</span></div><div class="row"><b>Day 7</b><span>Draw both from blank, side by side. Find three differences.</span></div><div class="row"><b>Day 13</b><span>One round on your weakest cycle.</span></div></div>` },
+    { t: 'amber', h: `<h2>Set up Round 1 before you leave</h2><div class="fill"><p><b>Round 1 starts at:</b></p><p><b>My visible timer:</b></p><p><b>Who sits with me:</b></p><p><b>My 3-minute break:</b></p></div><p style="font-weight:700;font-size:1.2em">Missed a session? Do the next one. Do not restart.</p><p>Need accommodations or extra support? Contact your campus disability services office.</p>` },
+    { t: 'dark', h: `<h2>Check your table, part 1: meiosis to gametophyte</h2>${cmp(COLS, [
+      { label: 'Where meiosis happens', cells: ['Sporangia in the sori on the fronds', 'Microsporangia (male cone) and the megasporangium in the ovule (female cone)', 'Anther (microspores) and the ovule in the ovary (megaspore)'] },
+      { label: 'Spores made', cells: ['One type (homosporous)', 'Two types: micro and mega (heterosporous)', 'Two types: micro and mega (heterosporous)'] },
+      { label: 'Gametophyte', cells: ['Small heart-shaped prothallus with both archegonia and antheridia', 'Pollen grain (male); female gametophyte inside the ovule', 'Pollen grain (male); embryo sac with 8 nuclei (female)'] }
+    ])}` },
+    { t: 'dark', h: `<h2>Check your table, part 2: fertilization to the next generation</h2>${cmp(COLS, [
+      { label: 'How sperm reach the egg', cells: ['Swim through water', 'Pollen tube delivers the sperm nucleus; no water needed', 'Pollen tube grows through the style; no water needed'] },
+      { label: 'Fertilization', cells: ['Single: sperm and egg', 'Single: sperm and egg', 'Double: a zygote and endosperm (3n)'] },
+      { label: 'What develops', cells: ['Embryo on the prothallus, then a young sporophyte', 'Seeds exposed on the cone scales', 'Seeds enclosed in a fruit'] },
+      { label: 'Dominant generation', cells: ['Sporophyte', 'Sporophyte', 'Sporophyte'] }
+    ])}` },
+    { t: 'dark', h: `<h2>The 9 stages all three cycles share</h2>${diagram}<div class="legend"><span><i class="sw" style="background:#E9B949"></i>event</span><span><i class="sw" style="background:#2F7D5B"></i>haploid (n)</span><span><i class="sw" style="background:#F6F7F2"></i>diploid (2n)</span></div><p class="foot">Read the arrows from 1 to 9, then arrow 9 loops back to 1. Every plant you studied in Exercises 5 and 6 goes around this loop.</p>` },
+    { t: 'light', h: `<h2>Count the stages: common and unique</h2>${cmp(COLS, [
+      { label: 'Common to all three', cells: [cnt(9), cnt(9), cnt(9)] },
+      { label: 'Unique stages', cells: [cnt(4, 'archegonium, antheridium, sori, fiddlehead'), cnt(5, 'archegonium, cones, pollination, pollen tube, seed'), cnt(6, 'flower, pollination, pollen tube, endosperm, seed, fruit')] },
+      { label: 'Total stages', cells: [cnt(13), cnt(14), cnt(15)], total: true }
+    ])}<p class="foot">The 9 common stages are on the previous slide. Unique means not part of that shared loop.</p>` }
+  ];
+
+  let idx = 0, following = true, browsed = false, isProf = false, live = { slide: 0, active: false };
+  let presenting = false, chain = Promise.resolve(), firstPoll = true, lostLink = false;
+
+  function render() {
+    const s = SLIDES[idx];
+    $('stage').innerHTML = `<section class="slide ${s.t}" aria-live="polite">${s.h}</section>`;
+    $('count').textContent = (idx + 1) + ' / ' + SLIDES.length;
+    $('prev').disabled = idx === 0;
+    $('next').disabled = idx === SLIDES.length - 1;
+    window.scrollTo(0, 0);
+    drawBar();
+  }
+
+  function drawBar() {
+    const st = $('status');
+    st.className = 'status';
+    if (isProf) {
+      st.textContent = presenting ? 'Presenting live. Students are following you.' : 'Presenter view. Students see nothing until you start.';
+      if (presenting) st.className = 'status live';
+      $('present').hidden = false;
+      $('present').textContent = presenting ? 'Stop presenting' : 'Start presenting';
+      $('follow').hidden = true;
+    } else {
+      $('present').hidden = true;
+      if (lostLink) { st.textContent = 'Reconnecting. You can keep browsing.'; }
+      else if (live.active && following) { st.textContent = 'Following Professor Harris live'; st.className = 'status live'; }
+      else if (live.active) { st.textContent = 'You are browsing on your own. The presenter is on slide ' + (live.slide + 1) + '.'; }
+      else { st.textContent = 'Waiting for the presentation to start. You can browse the slides.'; }
+      $('follow').hidden = !(live.active && !following);
+    }
+  }
+
+  function broadcast() {
+    if (!isProf || !presenting) return;
+    const slide = idx;
+    chain = chain.then(() => API.bios102LiveSet(tok, slide, true)).catch(() => {});
+  }
+
+  function go(i) {
+    idx = Math.max(0, Math.min(SLIDES.length - 1, i));
+    render();
+    broadcast();
+  }
+
+  $('prev').addEventListener('click', () => { if (!isProf) { following = false; browsed = true; } go(idx - 1); });
+  $('next').addEventListener('click', () => { if (!isProf) { following = false; browsed = true; } go(idx + 1); });
+  $('follow').addEventListener('click', () => { following = true; browsed = false; idx = live.slide; render(); });
+  $('present').addEventListener('click', () => {
+    presenting = !presenting;
+    const slide = idx, active = presenting;
+    chain = chain.then(() => API.bios102LiveSet(tok, slide, active)).catch(() => {});
+    drawBar();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') $('next').click();
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') $('prev').click();
+  });
+
+  async function poll() {
+    if (document.hidden && !firstPoll) return;
+    try {
+      const r = await API.bios102LiveGet(tok);
+      lostLink = false;
+      isProf = !!r.instructor;
+      const was = live;
+      live = { slide: r.slide, active: r.active };
+      if (firstPoll) {
+        firstPoll = false;
+        if (isProf) { presenting = false; idx = Math.min(r.slide, SLIDES.length - 1); render(); return; }
+        if (live.active) { idx = Math.min(live.slide, SLIDES.length - 1); following = true; render(); return; }
+        drawBar(); return;
+      }
+      if (!isProf) {
+        if (live.active && !was.active) { following = !browsed; }
+        if (live.active && following && idx !== live.slide) { idx = Math.min(live.slide, SLIDES.length - 1); render(); return; }
+      }
+      drawBar();
+    } catch (e) {
+      lostLink = true;
+      drawBar();
+    }
+  }
+
+  render();
+  poll();
+  setInterval(poll, 3000);
+})();
+</script>
+</body>
+</html>
