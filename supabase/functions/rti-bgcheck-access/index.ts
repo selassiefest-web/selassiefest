@@ -6,10 +6,13 @@
 //       reply is the same either way, so the page can't be used to test who
 //       is on the list.
 //   { action: "verify", email, code }    On a correct code, issues a pass: a
-//       random token (only its hash is stored) good for 4 hours. The page
+//       random token (only its hash is stored) good for 14 days. The page
 //       sends it with the application; rti-background-check checks it again.
+//   { action: "load" | "save" | "clear" | "check", pass, data? }  Saved
+//       progress, one draft per member email (rti_bgcheck_drafts), encrypted
+//       with RTI_DRAFT_KEY so the table only holds ciphertext.
 //
-// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY.
+// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY, RTI_DRAFT_KEY.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -23,7 +26,35 @@ const ALLOWED_HOSTNAMES = ["selassiefest.com", "www.selassiefest.com"];
 const CODE_TTL_MINUTES = 10;
 const COOLDOWN_SECONDS = 60;
 const MAX_ATTEMPTS = 5;
-const SESSION_HOURS = 4;
+const SESSION_HOURS = 14 * 24; // stays signed in on that device for 14 days (Sign out ends it)
+const DRAFT_KEY = Deno.env.get("RTI_DRAFT_KEY") ?? ""; // base64 of 32 random bytes (AES-256-GCM)
+const MAX_DRAFT_CHARS = 400_000; // answers plus a signature image
+const DRAFT_KEEP_DAYS = 180;
+
+// Saved answers are encrypted before they reach the database. Keep in step with rti-background-check.
+let aesKey: CryptoKey | null = null;
+async function key() {
+  if (!aesKey) aesKey = await crypto.subtle.importKey("raw", Uint8Array.from(atob(DRAFT_KEY), (c) => c.charCodeAt(0)), "AES-GCM", false, ["encrypt", "decrypt"]);
+  return aesKey;
+}
+const b64 = (u: Uint8Array) => { let s = ""; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
+const unb64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+async function encrypt(text: string) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await key(), new TextEncoder().encode(text)));
+  return { iv: b64(iv), ciphertext: b64(ct) };
+}
+async function decrypt(iv: string, ciphertext: string) {
+  return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(iv) }, await key(), unb64(ciphertext)));
+}
+// A pass is good if it's unexpired and its email is still an active member
+async function sessionFor(supabase: any, pass: string) {
+  if (!/^[0-9a-f]{64}$/.test(pass)) return null;
+  const { data: s } = await supabase.from("rti_bgcheck_sessions").select("*").eq("token_hash", await sha256(pass)).maybeSingle();
+  if (!s || new Date(s.expires_at) < new Date()) return null;
+  const { data: m } = await supabase.from("rti_members").select("active").eq("email", s.email).maybeSingle();
+  return m?.active ? s : null;
+}
 const IP_WINDOW_MINUTES = 15;
 const IP_MAX_REQUESTS = 5;
 
@@ -63,13 +94,50 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return reply({ ok: false, error: "Use POST." }, 405);
   if (!RESEND_API_KEY || !TURNSTILE_SECRET_KEY) return reply({ ok: false, error: "Sign-in is paused right now." }, 500);
 
+  const raw = await req.text();
+  if (raw.length > MAX_DRAFT_CHARS + 2000) return reply({ ok: false, error: "That's too much to save at once." }, 413);
   let body: Record<string, any>;
-  try { body = await req.json(); } catch { return reply({ ok: false, error: "Couldn't read the request." }, 400); }
+  try { body = JSON.parse(raw || "{}"); } catch { return reply({ ok: false, error: "Couldn't read the request." }, 400); }
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+
+  // ---- Saved progress (needs a pass; no code or Turnstile, since autosave runs often) ----
+  if (["load", "save", "clear", "check"].includes(body.action)) {
+    const session = await sessionFor(supabase, String(body.pass ?? ""));
+    if (!session) return reply({ ok: false, relogin: true, error: "Your sign-in expired. Confirm your email again; your saved answers will come back." }, 401);
+    const email = session.email as string;
+    if (!DRAFT_KEY) return reply({ ok: false, error: "Saving is paused right now." }, 500);
+
+    if (body.action === "check") return reply({ ok: true, email });
+
+    if (body.action === "save") {
+      const json = JSON.stringify(body.data ?? {});
+      if (json.length > MAX_DRAFT_CHARS) return reply({ ok: false, error: "That's too much to save at once." }, 413);
+      const { iv, ciphertext } = await encrypt(json);
+      const { error } = await supabase.from("rti_bgcheck_drafts")
+        .upsert({ email, iv, ciphertext, updated_at: new Date().toISOString() }, { onConflict: "email" });
+      if (error) { console.error("rti-bgcheck-access: draft save failed", error.code); return reply({ ok: false, error: "Couldn't save just now." }, 500); }
+      return reply({ ok: true, savedAt: new Date().toISOString() });
+    }
+
+    if (body.action === "clear") {
+      await supabase.from("rti_bgcheck_drafts").delete().eq("email", email);
+      return reply({ ok: true });
+    }
+
+    // load
+    await supabase.from("rti_bgcheck_drafts").delete().lt("updated_at", new Date(Date.now() - DRAFT_KEEP_DAYS * 864e5).toISOString());
+    const { data: row } = await supabase.from("rti_bgcheck_drafts").select("*").eq("email", email).maybeSingle();
+    if (!row) return reply({ ok: true, data: null });
+    let data: unknown = null;
+    try { data = JSON.parse(await decrypt(row.iv, row.ciphertext)); }
+    catch { console.error("rti-bgcheck-access: draft decrypt failed"); return reply({ ok: true, data: null }); }
+    return reply({ ok: true, data, savedAt: row.updated_at, sentAt: row.sent_at });
+  }
+
+  // ---- Sign-in: request a code / verify it ----
   const email = String(body.email ?? "").trim().toLowerCase().slice(0, 200);
   if (!isEmail(email)) return reply({ ok: false, error: "That email address doesn't look right." }, 400);
-
   const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
-  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
   // Both actions share one per-IP throttle, so a script can neither spray codes nor guess them quickly
   const since = new Date(Date.now() - IP_WINDOW_MINUTES * 60 * 1000).toISOString();

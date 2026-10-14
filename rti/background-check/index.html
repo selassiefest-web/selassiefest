@@ -138,7 +138,8 @@ a{color:var(--accent)}
   <div class="route">
     <div><b>Goes to:</b> <code>volunteers@chicagoparkdistrict.com</code>, with a copy to you</div>
     <div><b>Ras Tafari Inc. sees:</b> only your name, email, phone and role, so we know you've applied. Your date of birth, ID number and emergency contacts go only to the Park District.</div>
-    <div class="note">Nothing you type is saved on this site. The Park District runs the background check under its own rules. Questions? Email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>.</div>
+    <div><b>Your progress saves as you go.</b> Stop any time and pick up on any phone or computer: sign in with your email again and your answers come back. They're stored encrypted and used only to fill in your application. After you send it, your SSN or license digits are erased from the saved copy.</div>
+    <div class="note">The Park District runs the background check under its own rules. Questions? Email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>.</div>
   </div>
 </header>
 
@@ -157,9 +158,12 @@ a{color:var(--accent)}
     <p class="note" id="gMsg" aria-live="polite" style="margin:12px 0 0"></p>
     <p class="note" style="margin:8px 0 0">No code? Check the spelling and your spam folder. If it still doesn't come, email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> to be added to the member list.</p>
   </div>
-  <div id="gateOk" hidden class="sigprev" style="justify-content:space-between">
-    <span>Signed in as <b id="gWho"></b></span>
-    <button type="button" class="ghost" id="gOut">Sign out</button>
+  <div id="gateOk" hidden>
+    <div class="sigprev" style="justify-content:space-between">
+      <span>Signed in as <b id="gWho"></b></span>
+      <span style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="ghost" id="gReset">Start over</button><button type="button" class="ghost" id="gOut">Sign out</button></span>
+    </div>
+    <p class="note" id="gSaved" aria-live="polite" style="margin:8px 0 0">Your answers save automatically.</p>
   </div>
 </section>
 
@@ -738,7 +742,7 @@ $("sigFile").addEventListener("change", async e=>{
   const f=e.target.files&&e.target.files[0]; if(!f) return;
   if(!/^image\/(png|jpeg)$/.test(f.type)){ setStatus("Choose a PNG or JPG image of your signature.", true); e.target.value=""; return; }
   setStatus("Preparing your signature…");
-  try{ sigImage=await toTransparentPng(f); $("sigImg").src=sigImage.preview; $("sigPrev").hidden=false; setStatus("Signature ready. It will appear on both signature lines."); }
+  try{ sigImage=await toTransparentPng(f); $("sigImg").src=sigImage.preview; $("sigPrev").hidden=false; setStatus("Signature ready. It will appear on both signature lines."); scheduleSave(); }
   catch{ sigImage=null; $("sigPrev").hidden=true; setStatus("No signature found in that image. Try a closer photo of dark ink on white paper.", true); }
 });
 $("sigClear").addEventListener("click", ()=>{ sigImage=null; $("sigFile").value=""; $("sigPrev").hidden=true; });
@@ -767,8 +771,15 @@ function showManual(open){ $("manual").hidden=false; if(open) $("manual").open=t
 // A pass from rti-bgcheck-access unlocks the form; rti-background-check checks it again on Send.
 const ACCESS_FUNCTION = "rti-bgcheck-access";
 let pass = null;
-function saveSession(p){ try{ p ? sessionStorage.setItem("rtiBgPass", JSON.stringify(p)) : sessionStorage.removeItem("rtiBgPass"); }catch{} }
-function loadSession(){ try{ const p=JSON.parse(sessionStorage.getItem("rtiBgPass")||"null"); return p && new Date(p.expires)>new Date() ? p : null; }catch{ return null; } }
+function saveSession(p){
+  for(const st of ["localStorage","sessionStorage"]){ try{ p ? window[st].setItem("rtiBgPass", JSON.stringify(p)) : window[st].removeItem("rtiBgPass"); }catch{} }
+}
+function loadSession(){
+  for(const st of ["localStorage","sessionStorage"]){
+    try{ const p=JSON.parse(window[st].getItem("rtiBgPass")||"null"); if(p && new Date(p.expires)>new Date()) return p; }catch{}
+  }
+  return null;
+}
 function gateMsg(m, err){ $("gMsg").textContent=m; $("gMsg").style.color = err ? "var(--warn)" : ""; }
 async function access(payload){
   const res=await fetch(`${SUPABASE_URL}/functions/v1/${ACCESS_FUNCTION}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
@@ -782,8 +793,10 @@ function unlock(p){
   $("email").value=p.email;
   $("app").hidden=false; $("bar").hidden=false;
   padFit();
+  loadDraft();
 }
 function lock(msg){
+  clearTimeout(saveTimer); saveTimer=null;
   pass=null; saveSession(null);
   $("app").hidden=true; $("bar").hidden=true; $("sendPanel").hidden=true;
   $("gateIn").hidden=false; $("gateOk").hidden=true; $("gCodeRow").hidden=true; $("gCode").value="";
@@ -812,7 +825,82 @@ $("gVerify").addEventListener("click", async()=>{
 });
 $("gCode").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("gVerify").click(); } });
 $("gEmail").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("gSend").click(); } });
-$("gOut").addEventListener("click", ()=>lock());
+$("gOut").addEventListener("click", async()=>{ await flushSave(); lock(); });
+$("gReset").addEventListener("click", async()=>{
+  if(!confirm("Erase all your answers and start a blank application?")) return;
+  clearTimeout(saveTimer); saveTimer=null;
+  try{ await access({action:"clear", pass:pass.pass}); }catch{}
+  location.reload(); // still signed in; the form comes back blank
+});
+
+// ===== Saved progress, kept with the member's login (encrypted on the server) =====
+let saveTimer=null, restoring=false, lastSaved="";
+function collectDraft(){
+  const d={v:1, fields:{}, checks:{}, radios:{}, sig:{}};
+  for(const el of $("app").querySelectorAll("input,select,textarea")){
+    if(el.type==="file" || el.id==="website" || el.id==="email") continue;
+    if(el.type==="radio"){ if(el.checked) d.radios[el.name]=el.value; }
+    else if(el.type==="checkbox"){ if(el.id) d.checks[el.id]=el.checked; }
+    else if(el.id) d.fields[el.id]=el.value;
+  }
+  if(padInk) d.sig.pad=pad.toDataURL("image/png");
+  if(sigImage) d.sig.img=sigImage.preview;
+  return d;
+}
+function setSaved(m, err){ $("gSaved").textContent=m; $("gSaved").style.color = err ? "var(--warn)" : ""; }
+async function saveNow(keepalive){
+  if(!pass || restoring) return;
+  const data=collectDraft(), json=JSON.stringify(data);
+  if(json===lastSaved) return;
+  const body=JSON.stringify({action:"save", pass:pass.pass, data});
+  try{
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/${ACCESS_FUNCTION}`,{method:"POST",headers:{"Content-Type":"application/json"},body, keepalive: keepalive && body.length<60000});
+    const out=await res.json().catch(()=>({}));
+    if(out.relogin){ lock(out.error); return; }
+    if(!res.ok||!out.ok) throw new Error(out.error||"save");
+    lastSaved=json;
+    setSaved("Saved "+new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})+". You can stop and come back any time.");
+  }catch{ setSaved("Couldn't save just now. We'll keep trying. Don't close the page yet.", true); scheduleSave(8000); }
+}
+function scheduleSave(ms){ if(!pass||restoring) return; clearTimeout(saveTimer); setSaved("Saving…"); saveTimer=setTimeout(()=>{ saveTimer=null; saveNow(false); }, ms||1200); }
+async function flushSave(){ if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; } await saveNow(false); }
+$("app").addEventListener("input", e=>{ if(e.target.id!=="website") scheduleSave(); });
+$("app").addEventListener("change", e=>{ if(e.target.id!=="website") scheduleSave(); });
+pad.addEventListener("pointerup", ()=>scheduleSave());
+$("padClear").addEventListener("click", ()=>scheduleSave());
+$("sigClear").addEventListener("click", ()=>scheduleSave());
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden" && saveTimer){ clearTimeout(saveTimer); saveTimer=null; saveNow(true); } });
+window.addEventListener("pagehide", ()=>{ if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; saveNow(true); } });
+
+const dataUrlBytes=u=>Uint8Array.from(atob(u.split(",")[1]), c=>c.charCodeAt(0));
+async function loadDraft(){
+  if(!pass) return;
+  setSaved("Loading your saved answers…");
+  let out;
+  try{
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/${ACCESS_FUNCTION}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"load", pass:pass.pass})});
+    out=await res.json().catch(()=>({}));
+    if(out.relogin){ lock(out.error); return; }
+    if(!res.ok||!out.ok) throw new Error();
+  }catch{ setSaved("Couldn't load your saved answers. Reload the page to try again before typing.", true); return; }
+  if(!out.data){ setSaved("Your answers save automatically as you type."); return; }
+  restoring=true;
+  try{
+    const d=out.data;
+    for(const [id,v] of Object.entries(d.fields||{})){ const el=$(id); if(el && el.type!=="file") el.value=v; }
+    for(const [id,v] of Object.entries(d.checks||{})){ const el=$(id); if(el) el.checked=!!v; }
+    for(const [n,v] of Object.entries(d.radios||{})){ const el=document.querySelector(`input[name="${n}"][value="${CSS.escape(v)}"]`); if(el) el.checked=true; }
+    sync(); padFit();
+    if(d.sig && d.sig.img){ sigImage={bytes:dataUrlBytes(d.sig.img), type:"png", preview:d.sig.img}; $("sigImg").src=d.sig.img; $("sigPrev").hidden=false; }
+    if(d.sig && d.sig.pad){
+      const img=new Image(); await new Promise(r=>{ img.onload=r; img.onerror=r; img.src=d.sig.pad; });
+      if(img.naturalWidth){ const r=pad.getBoundingClientRect(); pctx.drawImage(img,0,0,r.width,r.height); padInk=true; padImage=null; $("padPh").hidden=true; }
+    }
+    lastSaved=JSON.stringify(collectDraft());
+  }finally{ restoring=false; }
+  const when=new Date(out.savedAt).toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+  setSaved(out.sentAt ? `Welcome back. These are the answers from the application you sent (${new Date(out.sentAt).toLocaleDateString()}). Your SSN or license digits were erased after sending.` : `Welcome back. Your answers from ${when} are filled in.`);
+}
 { const p=loadSession(); if(p) unlock(p); }
 
 async function sendApplication(){

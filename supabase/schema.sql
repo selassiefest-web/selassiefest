@@ -7314,3 +7314,21 @@ alter table public.rti_bgcheck_sessions enable row level security;
 revoke all on public.rti_members from anon, authenticated;
 revoke all on public.rti_bgcheck_codes from anon, authenticated;
 revoke all on public.rti_bgcheck_sessions from anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Saved progress: one draft per member email, so a member can stop and pick
+-- up on any device after signing in again. The answers are AES-GCM encrypted
+-- by the edge functions (secret RTI_DRAFT_KEY) before they reach this table,
+-- so the table only ever holds ciphertext. After a live send the SSN / license
+-- digits are removed from the draft; drafts untouched for 180 days are deleted.
+-- ---------------------------------------------------------------------------
+create table if not exists public.rti_bgcheck_drafts (
+  email       text primary key,
+  iv          text not null,
+  ciphertext  text not null,
+  sent_at     timestamptz,
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.rti_bgcheck_drafts enable row level security;
+revoke all on public.rti_bgcheck_drafts from anon, authenticated;

@@ -5,7 +5,7 @@
 // volunteer office, which then sends the member background check instructions.
 //
 // Recipients are fixed here on the server, so the page can't be used to mail
-// anyone else. The application is never stored or logged: only the member's
+// anyone else. The PDF is never stored or logged: only the member's
 // name, email, phone, RTI role and park go into rti_bgcheck_submissions, and a
 // short notice (no PDF) goes to Stephen so RTI can see who has applied.
 //
@@ -38,6 +38,27 @@ const ALLOWED_HOSTNAMES = ["selassiefest.com", "www.selassiefest.com"];
 const PER_IP_PER_HOUR = 6;
 const MAX_PDF_BYTES = 6 * 1024 * 1024;
 const MAX_SENDS_PER_PASS = 2; // a send plus one corrected resend
+const DRAFT_KEY = Deno.env.get("RTI_DRAFT_KEY") ?? "";
+
+// After a live send, the member's saved draft (rti_bgcheck_drafts, encrypted by
+// rti-bgcheck-access with the same key) keeps their answers but drops the SSN /
+// license digits, and is marked sent.
+async function scrubDraftAfterSend(supabase: any, email: string) {
+  try {
+    const { data: row } = await supabase.from("rti_bgcheck_drafts").select("*").eq("email", email).maybeSingle();
+    if (!row || !DRAFT_KEY) return;
+    const k = await crypto.subtle.importKey("raw", Uint8Array.from(atob(DRAFT_KEY), (c) => c.charCodeAt(0)), "AES-GCM", false, ["encrypt", "decrypt"]);
+    const unb64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    const b64 = (u: Uint8Array) => { let s = ""; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
+    const draft = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(row.iv) }, k, unb64(row.ciphertext))));
+    if (draft?.fields) { delete draft.fields.ssn; delete draft.fields.dl; }
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, new TextEncoder().encode(JSON.stringify(draft))));
+    await supabase.from("rti_bgcheck_drafts").update({ iv: b64(iv), ciphertext: b64(ct), sent_at: new Date().toISOString() }).eq("email", email);
+  } catch {
+    console.error("rti-background-check: draft scrub failed");
+  }
+}
 
 async function sha256(text: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -185,6 +206,7 @@ Deno.serve(async (req) => {
   const sent = await resend(payload);
   if (!sent) return reply({ ok: false, error: "The email service didn't accept the message." }, 502);
   await supabase.from("rti_bgcheck_sessions").update({ sends: session.sends + 1 }).eq("token_hash", session.token_hash);
+  if (!testing) await scrubDraftAfterSend(supabase, email);
 
   // Who's done: a row for the tracker and a short notice to Stephen. Neither carries the application.
   const { error: logError } = await supabase.from("rti_bgcheck_submissions").insert({
@@ -205,10 +227,10 @@ Deno.serve(async (req) => {
     subject: `${testing ? "[TEST] " : ""}CPD background check application sent: ${name}`,
     text: `${name} sent their Chicago Park District volunteer application.\n\n` +
       rows.map(([k, v]) => `${k}: ${v}`).join("\n") +
-      `\n\nThe application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't stored or copied here.\n`,
+      `\n\nThe application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't copied here.\n`,
     html: `<p><b>${esc(name)}</b> sent their Chicago Park District volunteer application.</p><table cellpadding="4">` +
       rows.map(([k, v]) => `<tr><td style="color:#666">${esc(k)}</td><td>${esc(v)}</td></tr>`).join("") +
-      `</table><p style="color:#666;font-size:13px">The application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't stored or copied here.</p>`,
+      `</table><p style="color:#666;font-size:13px">The application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't copied here.</p>`,
   });
 
   return reply({ ok: true, id: sent?.id ?? null, test: testing, to: payload.to, cc: testing ? [] : liveCc, liveTo: [...liveTo, ...liveCc] });
