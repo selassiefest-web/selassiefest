@@ -130,7 +130,8 @@ a{color:var(--accent)}
   <h1>Your Park District background check, in about 10 minutes</h1>
   <p class="lede">Every Ras Tafari Inc. member and associate completes the Chicago Park District's background check. It starts with the Park District's volunteer application. Fill in this page and it types your answers into the Park District's own form for you, then emails it to their volunteer office.</p>
   <ol class="steps3">
-    <li>Fill in the form below. Starred fields are required. It takes about 10 minutes.</li>
+    <li>Confirm your email with the 6-digit code we send you. This page is for Ras Tafari Inc. members only.</li>
+    <li>Fill in the form. Starred fields are required. It takes about 10 minutes.</li>
     <li>Sign with your finger or mouse, then press <b>Review application</b> and download a copy to check it.</li>
     <li>Press <b>Send</b>. The Park District emails you the background check instructions.</li>
   </ol>
@@ -141,7 +142,28 @@ a{color:var(--accent)}
   </div>
 </header>
 
-<form id="app" novalidate>
+<section id="gate">
+  <h2><span class="n">🔒</span>Members only: confirm your email</h2>
+  <div id="gateIn">
+    <p class="hint">Enter the email Ras Tafari Inc. has for you. We'll email you a 6-digit code to open your application.</p>
+    <div class="grid">
+      <label class="f c4"><span>Your email</span><input id="gEmail" type="email" autocomplete="email" inputmode="email"></label>
+      <div class="c2" style="align-self:end"><button class="primary" id="gSend" type="button" style="width:100%">Email me a code</button></div>
+    </div>
+    <div class="grid" id="gCodeRow" hidden style="margin-top:14px">
+      <label class="f c4"><span>6-digit code</span><input id="gCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="\d{6}"></label>
+      <div class="c2" style="align-self:end"><button class="primary" id="gVerify" type="button" style="width:100%">Open my application</button></div>
+    </div>
+    <p class="note" id="gMsg" aria-live="polite" style="margin:12px 0 0"></p>
+    <p class="note" style="margin:8px 0 0">No code? Check the spelling and your spam folder. If it still doesn't come, email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> to be added to the member list.</p>
+  </div>
+  <div id="gateOk" hidden class="sigprev" style="justify-content:space-between">
+    <span>Signed in as <b id="gWho"></b></span>
+    <button type="button" class="ghost" id="gOut">Sign out</button>
+  </div>
+</section>
+
+<form id="app" novalidate hidden>
 <div class="hp" aria-hidden="true"><label>Leave this empty <input id="website" type="text" tabindex="-1" autocomplete="off"></label></div>
 
 <section>
@@ -171,7 +193,7 @@ a{color:var(--accent)}
     <label class="f c2" style="grid-column:span 1"><span class="req">State</span><input id="state" type="text" value="IL" maxlength="2" required></label>
     <label class="f c2"><span class="req">ZIP</span><input id="zip" type="text" inputmode="numeric" pattern="\d{5}(-\d{4})?" autocomplete="postal-code" required></label>
     <label class="f c3"><span class="req">Best contact number</span><input id="phone" type="tel" autocomplete="tel" required></label>
-    <label class="f c3"><span class="req">Email</span><input id="email" type="email" autocomplete="email" required></label>
+    <label class="f c3"><span class="req">Email</span><input id="email" type="email" autocomplete="email" required readonly title="This is the email you confirmed. Sign out to use a different one."></label>
     <label class="f c3"><span class="req">Date of birth</span><input id="dob" type="date" required></label>
     <div class="f c3" style="display:grid;gap:5px"><span class="lbl">Gender</span>
       <div class="seg" role="radiogroup" aria-label="Gender">
@@ -353,7 +375,7 @@ a{color:var(--accent)}
 </form>
 </div>
 
-<div class="bar"><div class="in">
+<div class="bar" id="bar" hidden><div class="in">
   <div class="status" id="status" aria-live="polite">Fill in the starred fields, then review your application.</div>
   <button class="primary" id="go" type="button">Review application</button>
 </div></div>
@@ -741,6 +763,58 @@ function blobToBase64(blob){
   return new Promise((ok,bad)=>{ const r=new FileReader(); r.onload=()=>ok(String(r.result).split(",")[1]); r.onerror=bad; r.readAsDataURL(blob); });
 }
 function showManual(open){ $("manual").hidden=false; if(open) $("manual").open=true; }
+// ===== Members-only gate =====
+// A pass from rti-bgcheck-access unlocks the form; rti-background-check checks it again on Send.
+const ACCESS_FUNCTION = "rti-bgcheck-access";
+let pass = null;
+function saveSession(p){ try{ p ? sessionStorage.setItem("rtiBgPass", JSON.stringify(p)) : sessionStorage.removeItem("rtiBgPass"); }catch{} }
+function loadSession(){ try{ const p=JSON.parse(sessionStorage.getItem("rtiBgPass")||"null"); return p && new Date(p.expires)>new Date() ? p : null; }catch{ return null; } }
+function gateMsg(m, err){ $("gMsg").textContent=m; $("gMsg").style.color = err ? "var(--warn)" : ""; }
+async function access(payload){
+  const res=await fetch(`${SUPABASE_URL}/functions/v1/${ACCESS_FUNCTION}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const out=await res.json().catch(()=>({}));
+  if(!res.ok||!out.ok) throw new Error(out.error||"Something went wrong. Please try again.");
+  return out;
+}
+function unlock(p){
+  pass=p; saveSession(p);
+  $("gateIn").hidden=true; $("gateOk").hidden=false; $("gWho").textContent=p.email;
+  $("email").value=p.email;
+  $("app").hidden=false; $("bar").hidden=false;
+  padFit();
+}
+function lock(msg){
+  pass=null; saveSession(null);
+  $("app").hidden=true; $("bar").hidden=true; $("sendPanel").hidden=true;
+  $("gateIn").hidden=false; $("gateOk").hidden=true; $("gCodeRow").hidden=true; $("gCode").value="";
+  gateMsg(msg||"", !!msg);
+  $("gate").scrollIntoView({block:"start", behavior:"smooth"});
+}
+$("gSend").addEventListener("click", async()=>{
+  const em=$("gEmail").value.trim();
+  if(!$("gEmail").checkValidity()||!em){ gateMsg("Enter your email address.", true); $("gEmail").focus(); return; }
+  const b=$("gSend"); b.disabled=true; gateMsg("Running a quick security check…");
+  try{
+    const token=await sfTurnstileToken();
+    gateMsg("Sending your code…");
+    const out=await access({action:"request", email:em, token});
+    gateMsg(out.message); $("gCodeRow").hidden=false; $("gCode").focus(); b.textContent="Send a new code";
+  }catch(e){ gateMsg(e.message, true); }
+  setTimeout(()=>{ b.disabled=false; }, 30000);
+});
+$("gVerify").addEventListener("click", async()=>{
+  const code=$("gCode").value.replace(/\D/g,"");
+  if(code.length!==6){ gateMsg("Enter the 6-digit code from the email.", true); $("gCode").focus(); return; }
+  const b=$("gVerify"); b.disabled=true; gateMsg("Checking your code…");
+  try{ const out=await access({action:"verify", email:$("gEmail").value.trim(), code}); gateMsg(""); unlock({pass:out.pass, email:out.email, expires:out.expires}); }
+  catch(e){ gateMsg(e.message, true); }
+  b.disabled=false;
+});
+$("gCode").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("gVerify").click(); } });
+$("gEmail").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); $("gSend").click(); } });
+$("gOut").addEventListener("click", ()=>lock());
+{ const p=loadSession(); if(p) unlock(p); }
+
 async function sendApplication(){
   if(!lastBlob||sent) return;
   if(!SENDING_READY){ setStatus("Sending isn't set up on this site yet. Use “Send it from your own email instead.”", true); showManual(true); return; }
@@ -752,7 +826,7 @@ async function sendApplication(){
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
-        token, filename:fileName(), pdfBase64:await blobToBase64(lastBlob), rtiRole:$("rtiRole").value,
+        token, pass: pass && pass.pass, filename:fileName(), pdfBase64:await blobToBase64(lastBlob), rtiRole:$("rtiRole").value,
         applicant:{name:fullName(), email:val("email"), phone:val("phone")},
         park:val("park"),
         stewardshipRole: radio("csp")==="YES" ? $("cspRole").value : "",
@@ -760,7 +834,8 @@ async function sendApplication(){
       })
     });
     const out=await res.json().catch(()=>({}));
-    if(!res.ok||!out.ok) throw new Error(out.error||`HTTP ${res.status}`);
+    if(out.relogin){ btn.disabled=false; btn.textContent="Send application"; lock(out.error); return; }
+    if(!res.ok||!out.ok){ const err=new Error(out.error||`HTTP ${res.status}`); err.server=!!out.error; throw err; }
     sent=true; btn.textContent="Sent";
     const box=$("sentBox"); box.hidden=false;
     const when=new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
@@ -772,7 +847,7 @@ async function sendApplication(){
     setStatus(out.test ? "Test send complete." : "Application sent.");
   }catch(e){
     btn.disabled=false; btn.textContent="Send application";
-    setStatus("Your application didn't send. Try again, or send it from your own email below.", true);
+    setStatus((e.server ? e.message+" " : "Your application didn't send. ")+"You can also send it from your own email below.", true);
     showManual(true);
   }
 }

@@ -9,8 +9,10 @@
 // name, email, phone, RTI role and park go into rti_bgcheck_submissions, and a
 // short notice (no PDF) goes to Stephen so RTI can see who has applied.
 //
-// Deploy with --no-verify-jwt (the page has no user session; it's protected by
-// Turnstile, the honeypot, an origin check and a per-IP throttle instead).
+// Members only: every send needs a pass from rti-bgcheck-access (an emailed code
+// to an rti_members address), and the member's copy goes to that verified email.
+// Deploy with --no-verify-jwt; also protected by Turnstile, the honeypot, an
+// origin check, a per-IP throttle and per-pass / per-day send limits.
 //
 // Secrets:
 //   RESEND_API_KEY, TURNSTILE_SECRET_KEY (shared with other functions)
@@ -35,6 +37,12 @@ const ALLOWED_ORIGINS = ["https://selassiefest.com", "https://www.selassiefest.c
 const ALLOWED_HOSTNAMES = ["selassiefest.com", "www.selassiefest.com"];
 const PER_IP_PER_HOUR = 6;
 const MAX_PDF_BYTES = 6 * 1024 * 1024;
+const MAX_SENDS_PER_PASS = 2; // a send plus one corrected resend
+
+async function sha256(text: string) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 // The member picks one of these on the page; it completes "I am ___ with Ras Tafari Inc."
 const RTI_ROLES = [
@@ -118,8 +126,24 @@ Deno.serve(async (req) => {
   const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
   if (!(await turnstileOk(String(body.token), ip))) return reply({ ok: false, error: "We couldn't verify you're a person. Please try again." }, 400);
 
+  // Members only: a pass from rti-bgcheck-access (code emailed to an rti_members address).
+  // The member's copy always goes to that verified address, never to one typed in the form.
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+  const pass = clean(body.pass, 100);
+  if (!/^[0-9a-f]{64}$/.test(pass)) return reply({ ok: false, error: "Please confirm your email again before sending.", relogin: true }, 401);
+  const { data: session } = await supabase.from("rti_bgcheck_sessions").select("*").eq("token_hash", await sha256(pass)).maybeSingle();
+  if (!session || new Date(session.expires_at) < new Date()) return reply({ ok: false, error: "Your sign-in expired. Confirm your email again, then send.", relogin: true }, 401);
+  if (session.sends >= MAX_SENDS_PER_PASS) return reply({ ok: false, error: "This sign-in has already sent the most applications allowed. Email stephen@selassiefest.com if you need to resend." }, 429);
+  const { data: member } = await supabase.from("rti_members").select("active").eq("email", session.email).maybeSingle();
+  if (!member?.active) return reply({ ok: false, error: "This email isn't on the member list." }, 403);
+
+  // And per member across sign-ins: at most 3 live sends a day (test sends don't count)
+  const { count: todays } = await supabase.from("rti_bgcheck_submissions").select("*", { count: "exact", head: true })
+    .eq("email", session.email).eq("test_mode", false).gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+  if ((todays || 0) >= 3) return reply({ ok: false, error: "You've already sent your application today. Email stephen@selassiefest.com if you need to resend." }, 429);
+
   const name = clean(body.applicant?.name, 120);
-  const email = clean(body.applicant?.email, 200);
+  const email = session.email as string;
   const phone = clean(body.applicant?.phone, 40);
   const park = clean(body.park, 120);
   const rtiRole = clean(body.rtiRole, 80);
@@ -133,7 +157,6 @@ Deno.serve(async (req) => {
   if (!pdf.startsWith("JVBER")) return reply({ ok: false, error: "The attachment isn't a PDF." }, 400); // "%PDF" in base64
   if ((pdf.length * 3) / 4 > MAX_PDF_BYTES) return reply({ ok: false, error: "The PDF is too large." }, 413);
 
-  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const { count } = await supabase.from("verification_ip_rate_limits").select("*", { count: "exact", head: true })
     .eq("purpose", "rti-bgcheck").eq("ip", ip).gte("created_at", since);
@@ -161,6 +184,7 @@ Deno.serve(async (req) => {
 
   const sent = await resend(payload);
   if (!sent) return reply({ ok: false, error: "The email service didn't accept the message." }, 502);
+  await supabase.from("rti_bgcheck_sessions").update({ sends: session.sends + 1 }).eq("token_hash", session.token_hash);
 
   // Who's done: a row for the tracker and a short notice to Stephen. Neither carries the application.
   const { error: logError } = await supabase.from("rti_bgcheck_submissions").insert({
