@@ -1,0 +1,191 @@
+// Supabase Edge Function: rti-background-check
+// Receives a Ras Tafari Inc. member's filled-in Chicago Park District Long Term
+// Adult Volunteer Application (PDF, built in the browser by
+// /rti/background-check/) and emails it through Resend to the Park District's
+// volunteer office, which then sends the member background check instructions.
+//
+// Recipients are fixed here on the server, so the page can't be used to mail
+// anyone else. The application is never stored or logged: only the member's
+// name, email, phone, RTI role and park go into rti_bgcheck_submissions, and a
+// short notice (no PDF) goes to Stephen so RTI can see who has applied.
+//
+// Deploy with --no-verify-jwt (the page has no user session; it's protected by
+// Turnstile, the honeypot, an origin check and a per-IP throttle instead).
+//
+// Secrets:
+//   RESEND_API_KEY, TURNSTILE_SECRET_KEY (shared with other functions)
+//   RTI_BGCHECK_TEST_RECIPIENT  optional. While set, every application goes ONLY
+//                               to this address, marked [TEST]; nothing reaches
+//                               the Park District and the member gets no copy.
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY") ?? "";
+const TEST_RECIPIENT = (Deno.env.get("RTI_BGCHECK_TEST_RECIPIENT") ?? "").trim();
+
+const FROM_EMAIL = "Ras Tafari Inc. <hello@selassiefest.com>";
+const VOLUNTEERS = "volunteers@chicagoparkdistrict.com";
+const STEWARDSHIP = "stewardship@chicagoparkdistrict.com";
+const STAFF_TO = "stephen@selassiefest.com";
+const STAFF_CC = ["paksipras@gmail.com"];
+
+const ALLOWED_ORIGINS = ["https://selassiefest.com", "https://www.selassiefest.com"];
+const ALLOWED_HOSTNAMES = ["selassiefest.com", "www.selassiefest.com"];
+const PER_IP_PER_HOUR = 6;
+const MAX_PDF_BYTES = 6 * 1024 * 1024;
+
+// The member picks one of these on the page; it completes "I am ___ with Ras Tafari Inc."
+const RTI_ROLES = [
+  "an officer or board member",
+  "a program coach or instructor",
+  "a volunteer",
+  "a member of the sound and stage crew",
+  "an associate",
+];
+
+function cors(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    Vary: "Origin",
+  };
+}
+
+// One line, trimmed, length-capped: keeps form text out of email headers safely
+const clean = (v: unknown, max = 200) => String(v ?? "").replace(/[\r\n\t]+/g, " ").trim().slice(0, max);
+const isEmail = (s: string) => /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:]+$/.test(s);
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+
+async function turnstileOk(token: string, ip: string): Promise<boolean> {
+  const form = new FormData();
+  form.append("secret", TURNSTILE_SECRET_KEY);
+  form.append("response", token);
+  if (ip !== "unknown") form.append("remoteip", ip);
+  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+  const out = await res.json();
+  if (!out.success) console.warn("rti-background-check: turnstile failed", out["error-codes"]);
+  return out.success === true && ALLOWED_HOSTNAMES.includes(out.hostname);
+}
+
+async function resend(payload: Record<string, unknown>) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    // Log only the status and Resend's error, never the application contents
+    console.error("rti-background-check: resend error", res.status, (await res.text()).slice(0, 500));
+    return null;
+  }
+  return await res.json().catch(() => ({}));
+}
+
+// Keep in step with emailBody() in /rti/background-check/index.html (the "send it yourself" fallback)
+function emailBody(name: string, phone: string, email: string, rtiRole: string, park: string, stewardshipRole: string) {
+  return `Hello,\n\n` +
+    `Attached is my completed Long Term Adult Volunteer Application for the Park District background check. ` +
+    `I am ${rtiRole} with Ras Tafari Inc., a 501(c)(3) nonprofit proposing youth and cultural programs at ${park}. ` +
+    `Ras Tafari Inc. has asked all of its members and associates to complete the Park District's background check.` +
+    (stewardshipRole
+      ? ` I am also applying for a Community Stewardship role${stewardshipRole === "Not sure yet" ? "" : ` (${stewardshipRole})`}, so I've copied the Stewardship Program Manager and only need one background check.`
+      : ``) +
+    `\n\nPlease send me the background check instructions when you're ready.\n\n` +
+    `Thank you,\n${name}\n${phone}\n${email}\n`;
+}
+
+Deno.serve(async (req) => {
+  const headers = { ...cors(req), "Content-Type": "application/json" };
+  const reply = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors(req) });
+  if (req.method !== "POST") return reply({ ok: false, error: "Use POST." }, 405);
+  if (!RESEND_API_KEY || !TURNSTILE_SECRET_KEY) {
+    console.error("rti-background-check: RESEND_API_KEY or TURNSTILE_SECRET_KEY is not set");
+    return reply({ ok: false, error: "Sending is paused right now." }, 500);
+  }
+
+  let body: Record<string, any>;
+  try { body = await req.json(); } catch { return reply({ ok: false, error: "Couldn't read the request." }, 400); }
+
+  // Honeypot: real people never fill the hidden "website" field. Pretend success so bots move on.
+  if (clean(body.website)) return reply({ ok: true, to: [VOLUNTEERS], cc: [] });
+
+  if (!body.token) return reply({ ok: false, error: "Please wait for the security check to finish, then try again." }, 400);
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
+  if (!(await turnstileOk(String(body.token), ip))) return reply({ ok: false, error: "We couldn't verify you're a person. Please try again." }, 400);
+
+  const name = clean(body.applicant?.name, 120);
+  const email = clean(body.applicant?.email, 200);
+  const phone = clean(body.applicant?.phone, 40);
+  const park = clean(body.park, 120);
+  const rtiRole = clean(body.rtiRole, 80);
+  const stewardshipRole = clean(body.stewardshipRole, 60);
+
+  if (!name || !park) return reply({ ok: false, error: "Name and park are required." }, 400);
+  if (!isEmail(email)) return reply({ ok: false, error: "That email address doesn't look right." }, 400);
+  if (!RTI_ROLES.includes(rtiRole)) return reply({ ok: false, error: "Choose your role with Ras Tafari Inc." }, 400);
+
+  const pdf = String(body.pdfBase64 ?? "").replace(/\s+/g, "");
+  if (!pdf.startsWith("JVBER")) return reply({ ok: false, error: "The attachment isn't a PDF." }, 400); // "%PDF" in base64
+  if ((pdf.length * 3) / 4 > MAX_PDF_BYTES) return reply({ ok: false, error: "The PDF is too large." }, 413);
+
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count } = await supabase.from("verification_ip_rate_limits").select("*", { count: "exact", head: true })
+    .eq("purpose", "rti-bgcheck").eq("ip", ip).gte("created_at", since);
+  if ((count || 0) >= PER_IP_PER_HOUR) return reply({ ok: false, error: "Too many applications from this network. Please try again in an hour." }, 429);
+  await supabase.from("verification_ip_rate_limits").insert({ ip, purpose: "rti-bgcheck" });
+
+  let filename = clean(body.filename, 120).replace(/[^\w .,()'-]/g, "") || "Volunteer Application";
+  if (!/\.pdf$/i.test(filename)) filename += ".pdf";
+
+  const subject = `Long Term Adult Volunteer Application - ${name} - ${park} (Ras Tafari Inc.)`;
+  const text = emailBody(name, phone, email, rtiRole, park, stewardshipRole);
+  const liveTo = [VOLUNTEERS];
+  const liveCc = [...(stewardshipRole ? [STEWARDSHIP] : []), email];
+  const testing = TEST_RECIPIENT !== "";
+
+  const payload: Record<string, unknown> = {
+    from: FROM_EMAIL,
+    to: testing ? [TEST_RECIPIENT] : liveTo,
+    reply_to: email, // replies from the Park District go straight to the member
+    subject: (testing ? "[TEST] " : "") + subject,
+    text: testing ? `TEST MODE. In live mode this goes to ${liveTo.join(", ")}, cc ${liveCc.join(", ")}.\n\n${text}` : text,
+    attachments: [{ filename, content: pdf }],
+  };
+  if (!testing) payload.cc = liveCc;
+
+  const sent = await resend(payload);
+  if (!sent) return reply({ ok: false, error: "The email service didn't accept the message." }, 502);
+
+  // Who's done: a row for the tracker and a short notice to Stephen. Neither carries the application.
+  const { error: logError } = await supabase.from("rti_bgcheck_submissions").insert({
+    full_name: name, email, phone, rti_role: rtiRole, park, stewardship_role: stewardshipRole || null,
+    test_mode: testing, resend_id: sent?.id ?? null,
+  });
+  if (logError) console.error("rti-background-check: log insert failed", logError.code);
+
+  const when = new Date().toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: "medium", timeStyle: "short" });
+  const rows: [string, string][] = [
+    ["Name", name], ["Email", email], ["Phone", phone || "-"], ["Role", `${rtiRole} with Ras Tafari Inc.`],
+    ["Park", park], ["Stewardship", stewardshipRole || "No"], ["Sent", `${when} (Chicago)`],
+    ["Went to", testing ? `${TEST_RECIPIENT} only (test mode)` : [...liveTo, ...liveCc].join(", ")],
+  ];
+  await resend({
+    from: "Ras Tafari Inc. <hello@selassiefest.com>",
+    to: [STAFF_TO], cc: STAFF_CC,
+    subject: `${testing ? "[TEST] " : ""}CPD background check application sent: ${name}`,
+    text: `${name} sent their Chicago Park District volunteer application.\n\n` +
+      rows.map(([k, v]) => `${k}: ${v}`).join("\n") +
+      `\n\nThe application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't stored or copied here.\n`,
+    html: `<p><b>${esc(name)}</b> sent their Chicago Park District volunteer application.</p><table cellpadding="4">` +
+      rows.map(([k, v]) => `<tr><td style="color:#666">${esc(k)}</td><td>${esc(v)}</td></tr>`).join("") +
+      `</table><p style="color:#666;font-size:13px">The application itself (date of birth, ID numbers, emergency contacts) went only to the Park District and the member. It isn't stored or copied here.</p>`,
+  });
+
+  return reply({ ok: true, id: sent?.id ?? null, test: testing, to: payload.to, cc: testing ? [] : liveCc, liveTo: [...liveTo, ...liveCc] });
+});

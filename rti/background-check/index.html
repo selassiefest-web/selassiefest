@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Background Check Application | Ras Tafari Inc.</title>
+<meta name="description" content="Ras Tafari Inc. members and associates: fill in and send the Chicago Park District volunteer application that starts your background check.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-size:14px;font-family:system-ui,sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: one narrow column of numbered form sections, a sticky send bar at the bottom */
+:root{
+  --bg:#f3f6f4; --surface:#ffffff; --fg:#17231d; --muted:#56665d; --line:#cfdad3;
+  --accent:#1f5f45; --accent-ink:#ffffff; --accent-soft:#e1efe7; --warn:#9a3b12; --warn-soft:#fbe9df;
+  --display:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101714; --surface:#17211c; --fg:#e4ece7; --muted:#9db0a5; --line:#2c3b33;
+  --accent:#6fc59b; --accent-ink:#0d1a13; --accent-soft:#1d3329; --warn:#f0a07c; --warn-soft:#3a2219; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101714; --surface:#17211c; --fg:#e4ece7; --muted:#9db0a5; --line:#2c3b33;
+  --accent:#6fc59b; --accent-ink:#0d1a13; --accent-soft:#1d3329; --warn:#f0a07c; --warn-soft:#3a2219; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px);line-height:1.15;margin:6px 0 10px;text-wrap:balance}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+.route{margin-top:16px;display:grid;gap:6px;font-size:14px;background:var(--accent-soft);border-radius:10px;padding:14px 16px}
+.route b{font-weight:600}
+.route code{font-family:var(--mono);font-size:13px}
+section{margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+section h2{font-family:var(--display);font-size:18px;font-weight:700;margin:0 0 4px;display:flex;gap:10px;align-items:baseline}
+section h2 .n{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+.hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(6,1fr)}
+.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.c2{grid-column:span 2}
+@media (max-width:560px){.c4,.c3,.c2{grid-column:span 6}}
+label.f{display:grid;gap:5px;min-width:0}
+label.f>span,.lbl{font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.req::after{content:" *";color:var(--warn)}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=time],select,textarea{
+  width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;min-width:0}
+textarea{min-height:84px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.chip input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.yn{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.yn:first-of-type{border-top:0}
+.yn .q{flex:1 1 260px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg label{cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;padding:6px 16px;font-size:13px;font-weight:600}
+.seg input:checked+span{background:var(--accent);color:var(--accent-ink)}
+.seg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:-2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-block;padding:7px 13px;border:1px solid var(--line);border-radius:999px;font-size:13.5px;background:var(--bg)}
+.chip input:checked+span{background:var(--accent-soft);border-color:var(--accent);color:var(--fg);font-weight:600}
+.chip input:checked+span::before{content:"✓ ";color:var(--accent)}
+.days{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.days td{padding:6px 4px;border-top:1px solid var(--line);vertical-align:middle}
+.days tr:first-child td{border-top:0}
+.days td:first-child{width:130px}
+.days input[type=time]{max-width:140px}
+.daybox{display:flex;align-items:center;gap:8px;font-weight:600}
+.daybox input{width:18px;height:18px;accent-color:var(--accent)}
+.tablewrap{overflow-x:auto}
+.exp{width:100%;border-collapse:collapse;min-width:460px}
+.exp th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:0 6px 6px 0;font-weight:600}
+.exp td{padding:0 6px 8px 0}
+details{border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:var(--bg)}
+details summary{cursor:pointer;font-weight:600}
+details ol,details ul{padding-left:20px;font-size:13.5px;color:var(--muted)}
+details p{font-size:13.5px;color:var(--muted)}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:14px}
+.agree input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);flex:none}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar .in{max-width:760px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar .status{font-size:13px;color:var(--muted);flex:1 1 220px;min-width:0}
+.bar .status.err{color:var(--warn)}
+button{font:inherit;cursor:pointer;border-radius:8px}
+.primary{background:var(--accent);color:var(--accent-ink);border:0;padding:11px 20px;font-weight:700}
+.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);padding:7px 12px;font-size:13px;font-weight:600}
+#sendPanel{border-color:var(--accent)}
+.preview{display:grid;gap:12px;margin-top:14px;max-height:75vh;overflow:auto;background:#6b736e;border-radius:8px;padding:12px}
+.preview canvas{display:block;width:100%;height:auto;background:#ffffff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.preview .note{color:#ffffff;margin:0}
+.addr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.addr:first-of-type{border-top:0}
+.addr .k{width:64px;font-size:12px;font-weight:600;text-transform:uppercase;color:var(--muted)}
+.addr .v{flex:1 1 220px;min-width:0;font-family:var(--mono);font-size:13.5px;word-break:break-word;user-select:all}
+pre.v{white-space:pre-wrap;margin:0}
+.steps{margin:0 0 14px;padding-left:20px}
+.steps li{margin:4px 0}
+a{color:var(--accent)}
+.note{font-size:13px;color:var(--muted)}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:13.5px}
+.sigup{margin-top:12px;display:grid;gap:10px}
+.sigprev{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sigprev img{max-width:100%;max-height:90px;padding:8px 12px;border:1px dashed var(--line);border-radius:8px;
+  background-color:#ffffff;background-image:linear-gradient(45deg,#eceff0 25%,transparent 25%),linear-gradient(-45deg,#eceff0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eceff0 75%),linear-gradient(-45deg,transparent 75%,#eceff0 75%);
+  background-size:14px 14px;background-position:0 0,0 7px,7px -7px,-7px 0}
+.sendrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.okbox{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-size:14px;margin-top:14px}
+.okbox b{font-weight:700}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.steps3{margin:14px 0 0;padding-left:20px;display:grid;gap:4px}
+.pad{position:relative;border:1px dashed var(--line);border-radius:8px;background:#ffffff;touch-action:none}
+.pad canvas{display:block;width:100%;height:150px;cursor:crosshair;touch-action:none}
+.pad .base{position:absolute;left:16px;right:16px;bottom:34px;border-bottom:1px solid #b9c4be;pointer-events:none}
+.pad .ph{position:absolute;left:18px;bottom:40px;color:#9aa69f;font-size:13px;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ras Tafari Inc. · Chicago Park District background check</div>
+  <h1>Your Park District background check, in about 10 minutes</h1>
+  <p class="lede">Every Ras Tafari Inc. member and associate completes the Chicago Park District's background check. It starts with the Park District's volunteer application. Fill in this page and it types your answers into the Park District's own form for you, then emails it to their volunteer office.</p>
+  <ol class="steps3">
+    <li>Fill in the form below. Starred fields are required. It takes about 10 minutes.</li>
+    <li>Sign with your finger or mouse, then press <b>Review application</b> and download a copy to check it.</li>
+    <li>Press <b>Send</b>. The Park District emails you the background check instructions.</li>
+  </ol>
+  <div class="route">
+    <div><b>Goes to:</b> <code>volunteers@chicagoparkdistrict.com</code>, with a copy to you</div>
+    <div><b>Ras Tafari Inc. sees:</b> only your name, email, phone and role, so we know you've applied. Your date of birth, ID number and emergency contacts go only to the Park District.</div>
+    <div class="note">Nothing you type is saved on this site. The Park District runs the background check under its own rules. Questions? Email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>.</div>
+  </div>
+</header>
+
+<form id="app" novalidate>
+<div class="hp" aria-hidden="true"><label>Leave this empty <input id="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+
+<section>
+  <h2><span class="n">00</span>You and Ras Tafari Inc.</h2>
+  <p class="hint">This goes in the email to the Park District, so they know why you're applying.</p>
+  <label class="f"><span class="req">I am…</span>
+    <select id="rtiRole" required>
+      <option value="">Choose one</option>
+      <option value="an officer or board member">an officer or board member</option>
+      <option value="a program coach or instructor">a program coach or instructor</option>
+      <option value="a volunteer">a volunteer</option>
+      <option value="a member of the sound and stage crew">a member of the sound and stage crew</option>
+      <option value="an associate">an associate</option>
+    </select></label>
+  <p class="note" style="margin:6px 0 0">…with Ras Tafari Inc.</p>
+</section>
+
+<section>
+  <h2><span class="n">01</span>About you</h2>
+  <p class="hint">Use a street address. P.O. boxes are not accepted.</p>
+  <div class="grid">
+    <label class="f c3"><span class="req">Last name</span><input id="last" type="text" autocomplete="family-name" required></label>
+    <label class="f c2"><span class="req">First name</span><input id="first" type="text" autocomplete="given-name" required></label>
+    <label class="f c2" style="grid-column:span 1"><span>M.I.</span><input id="mi" type="text" maxlength="1"></label>
+    <label class="f c6"><span class="req">Street address (include N/S/E/W and apt.)</span><input id="addr" type="text" autocomplete="street-address" required></label>
+    <label class="f c3"><span class="req">City</span><input id="city" type="text" value="Chicago" autocomplete="address-level2" required></label>
+    <label class="f c2" style="grid-column:span 1"><span class="req">State</span><input id="state" type="text" value="IL" maxlength="2" required></label>
+    <label class="f c2"><span class="req">ZIP</span><input id="zip" type="text" inputmode="numeric" pattern="\d{5}(-\d{4})?" autocomplete="postal-code" required></label>
+    <label class="f c3"><span class="req">Best contact number</span><input id="phone" type="tel" autocomplete="tel" required></label>
+    <label class="f c3"><span class="req">Email</span><input id="email" type="email" autocomplete="email" required></label>
+    <label class="f c3"><span class="req">Date of birth</span><input id="dob" type="date" required></label>
+    <div class="f c3" style="display:grid;gap:5px"><span class="lbl">Gender</span>
+      <div class="seg" role="radiogroup" aria-label="Gender">
+        <label><input type="radio" name="gender" value="Male"><span>Male</span></label>
+        <label><input type="radio" name="gender" value="Female"><span>Female</span></label>
+        <label><input type="radio" name="gender" value="Other"><span>Other</span></label>
+      </div>
+    </div>
+    <label class="f c3"><span class="req">Last 4 of SSN</span><input id="ssn" type="text" inputmode="numeric" maxlength="4" pattern="\d{4}" autocomplete="off"></label>
+    <label class="f c3"><span>or Driver's license #</span><input id="dl" type="text" autocomplete="off"></label>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>Employer</h2>
+  <div class="grid">
+    <label class="f c6"><span>Employer</span><input id="emp" type="text" autocomplete="organization"></label>
+    <label class="f c6"><span>Employer address</span><input id="empAddr" type="text"></label>
+    <label class="f c3"><span>Employer phone</span><input id="empPhone" type="tel"></label>
+    <div class="f c3" style="display:grid;gap:5px"><span class="lbl">May we contact you there?</span>
+      <div class="seg"><label><input type="radio" name="empContact" value="YES"><span>Yes</span></label><label><input type="radio" name="empContact" value="NO"><span>No</span></label></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">03</span>Background and Park Advisory Council</h2>
+  <div class="yn"><span class="q req">Have you ever been convicted of a crime?</span>
+    <div class="seg"><label><input type="radio" name="convicted" value="YES" required><span>Yes</span></label><label><input type="radio" name="convicted" value="NO"><span>No</span></label></div></div>
+  <div class="yn"><span class="q req">Are any criminal prosecutions currently pending against you?</span>
+    <div class="seg"><label><input type="radio" name="pending" value="YES" required><span>Yes</span></label><label><input type="radio" name="pending" value="NO"><span>No</span></label></div></div>
+  <div class="yn"><span class="q req">Have you volunteered for the Chicago Park District before?</span>
+    <div class="seg"><label><input type="radio" name="before" value="YES" required><span>Yes</span></label><label><input type="radio" name="before" value="NO"><span>No</span></label></div></div>
+  <div class="yn"><span class="q req">Are you a member of a Park Advisory Council?</span>
+    <div class="seg"><label><input type="radio" name="pac" value="YES" required><span>Yes</span></label><label><input type="radio" name="pac" value="NO"><span>No</span></label></div></div>
+  <div class="grid" id="pacRoleRow">
+    <div class="f c6" style="display:grid;gap:8px"><span class="lbl req">Which councils? Tick every one you belong to</span>
+      <div class="chips" id="pacs"></div></div>
+    <label class="f c6" id="pacOtherRow" hidden><span>Other council's name</span><input id="pacOther" type="text" placeholder="e.g. Bessemer Park Advisory Council"></label>
+    <label class="f c6"><span>Your role on the council</span>
+      <select id="pacRole">
+        <option>Board member</option><option>President</option><option>Vice President</option><option>Treasurer</option><option>Secretary</option><option selected>General member</option><option value="__other">Other…</option>
+      </select></label>
+    <label class="f c6" id="pacRoleOtherRow" hidden><span>Describe your role</span><input id="pacRoleOther" type="text"></label>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">04</span>Experience</h2>
+  <p class="hint">List any volunteer experience you have.</p>
+  <div class="tablewrap">
+    <table class="exp">
+      <thead><tr><th>Agency</th><th>Date of service</th><th>Type of service you provided</th></tr></thead>
+      <tbody>
+        <tr><td><input id="ag1" type="text"></td><td><input id="ad1" type="text"></td><td><input id="at1" type="text"></td></tr>
+        <tr><td><input id="ag2" type="text"></td><td><input id="ad2" type="text"></td><td><input id="at2" type="text"></td></tr>
+        <tr><td><input id="ag3" type="text"></td><td><input id="ad3" type="text"></td><td><input id="at3" type="text"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <label class="f c6"><span class="req">Why are you interested in becoming a Chicago Park District volunteer?</span><textarea id="why" required></textarea></label>
+    <label class="f c6"><span>Experience working with children, persons with disabilities, etc.</span><textarea id="kids"></textarea></label>
+    <label class="f c6"><span>Experience working with the public / customer service</span><textarea id="public"></textarea></label>
+    <label class="f c6"><span>Special skills or interests that would contribute to volunteer activities</span><textarea id="skills"></textarea></label>
+    <p class="note c6" style="margin:0">Each answer prints on the form's three lines. Longer answers print in smaller type, so keep each one to a few sentences.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">05</span>Where you'll volunteer</h2>
+  <p class="hint">Ras Tafari Inc.'s programs are proposed for Rainbow Beach Park, so that's filled in. Change it if you'll be at a different park.</p>
+  <div class="grid">
+    <label class="f c6"><span class="req">Park</span><input id="park" type="text" value="Rainbow Beach Park" required></label>
+  </div>
+  <div class="yn" style="margin-top:6px"><span class="q">Have you spoken with the Park Supervisor of this park?</span>
+    <div class="seg"><label><input type="radio" name="spoke" value="YES"><span>Yes</span></label><label><input type="radio" name="spoke" value="NO"><span>No</span></label></div></div>
+  <div class="grid" style="margin-top:6px">
+    <div class="f c3" style="display:grid;gap:5px"><span class="lbl">Preferred region, if no park</span>
+      <div class="seg"><label><input type="radio" name="region" value="North"><span>North</span></label><label><input type="radio" name="region" value="Central"><span>Central</span></label><label><input type="radio" name="region" value="South" checked><span>South</span></label></div>
+    </div>
+    <label class="f c3"><span>Neighborhood</span><input id="hood" type="text" value="South Shore"></label>
+  </div>
+  <div class="yn" style="margin-top:6px"><span class="q req">Any medical, physical or other concerns that would limit your activities?</span>
+    <div class="seg"><label><input type="radio" name="medical" value="YES" required><span>Yes</span></label><label><input type="radio" name="medical" value="NO"><span>No</span></label></div></div>
+  <label class="f" id="medRow" hidden><span>Please indicate</span><input id="medText" type="text"></label>
+</section>
+
+<section>
+  <h2><span class="n">06</span>Emergency contacts</h2>
+  <div class="grid">
+    <label class="f c4"><span class="req">Name</span><input id="ecName" type="text" required></label>
+    <label class="f c2"><span class="req">Phone</span><input id="ecPhone" type="tel" required></label>
+    <label class="f c4"><span>Alternate contact</span><input id="ecAlt" type="text"></label>
+    <label class="f c2"><span>Phone</span><input id="ecAltPhone" type="tel"></label>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Programs and availability</h2>
+  <p class="hint">Special events and Cultural Programs are already selected. If you'll work with young people (the DJ Lab, for example), add Park Kids/Afterschool.</p>
+  <div class="chips" id="programs"></div>
+  <label class="f" id="progOtherRow" hidden style="margin-top:10px"><span>Other (specify, a few words)</span><input id="progOther" type="text" maxlength="24"></label>
+
+  <div style="margin-top:20px;display:grid;gap:8px"><span class="lbl">Availability</span>
+    <div class="seg"><label><input type="radio" name="avail" value="Occasional"><span>Occasional</span></label><label><input type="radio" name="avail" value="Regular"><span>Regular</span></label><label><input type="radio" name="avail" value="Daily"><span>Daily</span></label><label><input type="radio" name="avail" value="Other"><span>Other</span></label></div>
+    <label class="f" id="availOtherRow" hidden><span>Other (a word or two)</span><input id="availOther" type="text" maxlength="12"></label>
+  </div>
+
+  <div style="margin-top:20px;display:grid;gap:8px"><span class="lbl">Preferred days and hours</span>
+    <p class="note" style="margin:0">Tick the days you could help and set the hours. Leave them all unticked if you're not sure yet.</p>
+    <div class="tablewrap"><table class="days"><tbody id="days"></tbody></table></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">08</span>Community Stewardship</h2>
+  <p class="hint">Ras Tafari Inc. members also apply for the Park District's Community Stewardship program (nature areas and park care). The email copies the Stewardship Program Manager, so one background check covers both.</p>
+  <div class="yn"><span class="q">Also applying for a Community Stewardship role?</span>
+    <div class="seg"><label><input type="radio" name="csp" value="YES" checked><span>Yes</span></label><label><input type="radio" name="csp" value="NO"><span>No</span></label></div></div>
+  <label class="f" id="cspRow"><span>Role you're interested in</span>
+    <select id="cspRole"><option>Lead Steward</option><option>Assistant Steward</option><option>Greeter</option><option>Apprentice Steward</option><option>Nature Ambassador</option><option selected>Not sure yet</option></select></label>
+</section>
+
+<section>
+  <h2><span class="n">09</span>Agreement and signature</h2>
+  <details>
+    <summary>Read the agreement and terms and conditions</summary>
+    <p><b>Please read before continuing.</b> I agree to notify and update the Park District of any changes to the information provided. I understand that:</p>
+    <ul id="understand"></ul>
+    <p id="verify"></p>
+    <p><b>Volunteer Staff Member Terms and Conditions.</b> <span id="termsIntro"></span></p>
+    <ol id="terms"></ol>
+  </details>
+  <label class="agree"><input id="agree" type="checkbox" required><span class="req">I have read and understood the agreement and the terms and conditions, and the information I've given is true and complete.</span></label>
+  <div class="grid" style="margin-top:14px">
+    <label class="f c4"><span class="req">Your full name</span><input id="sig" type="text" required></label>
+    <label class="f c2"><span class="req">Date</span><input id="sigDate" type="date" required></label>
+  </div>
+  <div style="margin-top:16px;display:grid;gap:8px"><span class="lbl">What goes on the two signature lines</span>
+    <div class="seg"><label><input type="radio" name="sigMode" value="draw" checked><span>Sign here</span></label><label><input type="radio" name="sigMode" value="image"><span>Upload image</span></label><label><input type="radio" name="sigMode" value="typed"><span>Typed name</span></label><label><input type="radio" name="sigMode" value="blank"><span>Leave blank</span></label></div>
+  </div>
+  <div id="sigDrawRow" class="sigup">
+    <span class="lbl req">Sign with your finger or mouse</span>
+    <div class="pad"><canvas id="pad" aria-label="Signature pad"></canvas><div class="base"></div><div class="ph" id="padPh">Sign above the line</div></div>
+    <div><button type="button" class="ghost" id="padClear">Clear and sign again</button></div>
+  </div>
+  <div id="sigImageRow" class="sigup" hidden>
+    <label class="f"><span class="req">Upload your signature (PNG or JPG)</span><input id="sigFile" type="file" accept="image/png,image/jpeg"></label>
+    <div class="sigprev" id="sigPrev" hidden><img id="sigImg" alt="Your uploaded signature"><button type="button" class="ghost" id="sigClear">Remove</button></div>
+    <p class="note" style="margin:0">Sign in dark ink on white paper and take a close, well-lit photo, cropped to just the signature. A PNG with a transparent background looks best.</p>
+  </div>
+  <p class="note" id="blankNote" hidden style="margin-top:6px">The signature lines stay blank so you can print, sign by hand and scan. The date fills in either way.</p>
+</section>
+
+<section id="sendPanel" hidden>
+  <h2><span class="n">10</span>Review and send</h2>
+  <p class="hint">This is exactly what will be sent: the email below with your filled-in Park District application attached. Scroll through all five pages. If anything is wrong, fix it above and press Review application again.</p>
+  <div class="addr"><span class="k">To</span><span class="v">volunteers@chicagoparkdistrict.com</span></div>
+  <div class="addr" id="ccRow" hidden><span class="k">CC</span><span class="v">stewardship@chicagoparkdistrict.com</span></div>
+  <div class="addr"><span class="k">Copy</span><span class="v" id="meVal"></span></div>
+  <div class="addr"><span class="k">Subject</span><span class="v" id="subjVal"></span></div>
+  <div class="addr"><span class="k">Message</span><pre class="v" id="bodyVal"></pre></div>
+  <div class="addr"><span class="k">Attached</span><span class="v" id="fileVal"></span></div>
+  <div class="preview" id="preview" aria-label="Preview of your application"><p class="note" id="previewMsg">Loading the preview…</p></div>
+  <div class="sendrow">
+    <button type="button" class="ghost" id="download">Download a copy</button>
+    <button type="button" class="primary" id="send">Send application</button>
+  </div>
+  <div class="okbox" id="sentBox" hidden></div>
+  <details id="manual" style="margin-top:14px" hidden>
+    <summary>Send it from your own email instead</summary>
+    <p class="note">Download the PDF, start a new email with these details, and attach the PDF.</p>
+    <div id="emailBox"></div>
+    <p style="margin:12px 0 0"><a id="mailto" href="#">Open in my email app</a></p>
+  </details>
+</section>
+
+</form>
+</div>
+
+<div class="bar"><div class="in">
+  <div class="status" id="status" aria-live="polite">Fill in the starred fields, then review your application.</div>
+  <button class="primary" id="go" type="button">Review application</button>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+// SUPABASE_URL and sfTurnstileToken() come from /assets/js/supabase-client.js.
+// The rti-background-check edge function fixes the recipients and logs who applied (never the application).
+const SEND_FUNCTION = "rti-background-check";
+const SENDING_READY = typeof SUPABASE_URL === "string" && typeof sfTurnstileToken === "function";
+const TO = "volunteers@chicagoparkdistrict.com";
+const CC = "stewardship@chicagoparkdistrict.com";
+const PROGRAMS = ["Special events","Park Maintenance/Stewardship","Gardening","Park Kids/Afterschool","Office Support","Sports/Games","Arts/Crafts","Cultural Programs","Dance/Fitness","Day Camp/Holiday Camp","Adaptive Sports","Deaf/Hard of hearing programs (Camp Sign)","Special Olympics","Special Recreation Day Camp","Greeter/Guide","Other"];
+const PRESET = ["Special events","Cultural Programs"];
+// Councils Ras Tafari Inc. members belong to: [short name for the PDF, full name]
+const PACS = [["RBPAC","Rainbow Beach Park Advisory Council"],["SSCCPAC","South Shore Cultural Center Park Advisory Council"],["WPAC","Washington Park Advisory Council"],["JPAC","Jackson Park Advisory Council"],["Other","Another council"]];
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const UNDERSTAND = [
+ "The Park District will conduct a criminal background check to verify the information provided;",
+ "The decision of the Park District to accept or reject my application is final;",
+ "The position of volunteer is an “at will” relationship and may be terminated at any time;",
+ "I will receive no compensation for my services from the Park District;",
+ "This form must be completed in full for my application to be considered;",
+ "Parent volunteers must submit a copy of a state issued photo identification card;",
+ "A volunteer position does not lead to consideration of full-time, part-time or seasonal paid employment; and"];
+const VERIFY = "By my signature below, I verify that I have read and understood the above. Further, I verify that the information I have given is true and complete. I also confirm that I have read and understood the terms and conditions on the reverse side of this application and agree to be bound by them. I understand that providing false information or not updating my information as necessary will terminate my volunteer relationship with the Chicago Park District.";
+const TERMS_INTRO = "Your acceptance of a volunteer assignment must carry with it your understanding that the assignment is offered pending final clearances and may be terminated at any time with or without cause, or changed at any time by the Chicago Park District. By accepting a volunteer assignment, you also agree to the following Terms and Conditions.";
+const TERMS = [
+ "I understand and agree that the Chicago Park District (“Park District”) is relying on my promise to volunteer as scheduled and accordingly, I must be available for my particular assignment as scheduled. I shall attend any on-the-job-training sessions as requested or required by the Park District.",
+ "I understand that as a volunteer staff member, I will receive no compensation for my services. I understand that I may be assigned to work together with paid employees of the Park District.",
+ "While on assignment as a volunteer, I shall not engage in religious or political activities, or any unauthorized commercial activity. I shall abide by all other standards of conduct as outlined in policies established by the Park District.",
+ "I hereby confirm that I do not, and shall not, have the authority to incur obligations on behalf, or otherwise bind the Park District.",
+ "I understand that there may be media coverage of certain events at Park District facilities. I agree that I shall not grant radio, television or press interviews, or otherwise initiate or accept media contact relating in any way to the Park District. Should my likeness be photographed, taped or otherwise recorded by the Park District or media, I irrevocably consent to the reproduction and use of such photography, tapes or other recordings without compensation to me and hereby assign any rights I may have to the Park District.",
+ "I acknowledge that law enforcement agencies and private investigators will perform background checks on volunteer staff members. I hereby consent to such inquiries and agree to comply with all security and access policies and practices with the Park District. I understand that access credentials are the property of the Chicago Park District and I will surrender them upon demand.",
+ "I agree to hold in confidence any information disclosed to me concerning the business activities of the Park District, and relating to any confidential or proprietary data, and agree not to divulge such information to any person or persons unless I have received written authorization from the Park District. I agree not to remove any documents or materials (whether computer-generated, hard copy, audio or otherwise) from any of the offices or other locations in which the Park District conducts business without prior written consent from the General Superintendent of the Park District. I agree not to use any photographic or recording equipment within any of the offices or other locations in which the Park District conducts business, and I expressly agree that any such photographs or records, if made, may be retrieved without notice by the Park District and/or enjoined from use by the Park District.",
+ "I hereby assign to the Park District all right, title and interest in and to any work product developed or created by me for the Park District in connection with my services as a volunteer staff member. I acknowledge that this assignment further extends to any and all profits derived from the sale, use or other application of any such work product or part thereof.",
+ "I agree that I will not hold the Park District, its employees, agents, sponsors, donors, volunteers, Arts Partners, or Board of Commissioners responsible for any injuries or losses I might incur while performing volunteer assignments for the Park District. I hereby release and agree to indemnify and hold harmless the Park District, its employees, agents, sponsors, donors, volunteers, Arts Partners or Board of Commissioners against any and all claims, demands, and causes of action for damages brought by me or by any party on my behalf. The release is intended to be binding on my heirs and assigns."];
+
+const $ = id => document.getElementById(id);
+const val = id => ($(id)?.value || "").trim();
+const radio = n => (document.querySelector(`input[name="${n}"]:checked`)||{}).value || "";
+
+// Build static pieces
+UNDERSTAND.forEach(t=>{const li=document.createElement("li");li.textContent=t;$("understand").append(li)});
+$("verify").textContent = VERIFY; $("termsIntro").textContent = TERMS_INTRO;
+TERMS.forEach(t=>{const li=document.createElement("li");li.textContent=t;$("terms").append(li)});
+PROGRAMS.forEach((p,i)=>{
+  const l=document.createElement("label");l.className="chip";
+  l.innerHTML=`<input type="checkbox" id="prog${i}" value="${p}"><span></span>`;
+  l.querySelector("span").textContent=p; l.querySelector("input").checked=PRESET.includes(p);
+  $("programs").append(l);
+});
+PACS.forEach(([short,full],i)=>{
+  const l=document.createElement("label");l.className="chip";
+  l.innerHTML=`<input type="checkbox" id="pacc${i}"><span></span>`;
+  l.querySelector("span").textContent= short==="Other" ? full : `${full} (${short})`;
+  $("pacs").append(l);
+});
+DAYS.forEach((d,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><label class="daybox"><input type="checkbox" id="day${i}">${d}</label></td>
+   <td><input type="time" id="from${i}" value="09:00" aria-label="${d} start"></td>
+   <td style="color:var(--muted);font-size:13px;width:24px;text-align:center">to</td>
+   <td><input type="time" id="to${i}" value="17:00" aria-label="${d} end"></td>`;
+  $("days").append(tr);
+});
+const today = new Date(); $("sigDate").value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+
+// Show/hide dependent fields
+function sync(){
+  $("pacRoleRow").hidden = radio("pac")!=="YES";
+  $("pacRoleOtherRow").hidden = $("pacRole").value!=="__other";
+  $("pacOtherRow").hidden = !$("pacc"+(PACS.length-1)).checked;
+  $("medRow").hidden = radio("medical")!=="YES";
+  $("progOtherRow").hidden = !$("prog"+(PROGRAMS.length-1)).checked;
+  $("cspRow").hidden = radio("csp")!=="YES";
+  $("availOtherRow").hidden = radio("avail")!=="Other";
+  $("sigImageRow").hidden = radio("sigMode")!=="image";
+  $("sigDrawRow").hidden = radio("sigMode")!=="draw";
+  $("blankNote").hidden = radio("sigMode")!=="blank";
+  DAYS.forEach((_,i)=>{ $("from"+i).disabled=$("to"+i).disabled=!$("day"+i).checked; });
+}
+document.addEventListener("change", sync); sync();
+$("app").addEventListener("submit", e=>e.preventDefault());
+
+function setStatus(msg, err){ const s=$("status"); s.textContent=msg; s.className="status"+(err?" err":""); }
+
+function validate(){
+  const missing=[];
+  const need = {rtiRole:"Your role with Ras Tafari Inc.",last:"Last name",first:"First name",addr:"Street address",city:"City",state:"State",zip:"ZIP",phone:"Contact number",email:"Email",dob:"Date of birth",why:"Why you're interested",park:"Park",ecName:"Emergency contact",ecPhone:"Emergency phone",sig:"Signature",sigDate:"Signature date"};
+  let first=null;
+  for(const [id,label] of Object.entries(need)){ if(!val(id)){missing.push(label); first=first||$(id);} }
+  if(val("zip") && !/^\d{5}(-\d{4})?$/.test(val("zip"))){missing.push("ZIP format"); first=first||$("zip");}
+  if(val("email") && !$("email").checkValidity()){missing.push("Email format"); first=first||$("email");}
+  if(!/^\d{4}$/.test(val("ssn")) && !val("dl")){missing.push("Last 4 of SSN or driver's license"); first=first||$("ssn");}
+  for(const [n,label] of [["convicted","Conviction question"],["pending","Pending prosecution question"],["before","Volunteered before"],["pac","Park Advisory Council question"],["medical","Medical concerns question"]]){
+    if(!radio(n)){missing.push(label); first=first||document.querySelector(`input[name="${n}"]`);}
+  }
+  if(radio("pac")==="YES" && !pacNames().length){missing.push("Which Park Advisory Council"); first=first||$("pacc0");}
+  if(!$("agree").checked){missing.push("Agreement checkbox"); first=first||$("agree");}
+  if(radio("sigMode")==="draw" && !padInk){missing.push("Your signature"); first=first||$("pad");}
+  if(radio("sigMode")==="image" && !sigImage){missing.push("Signature image"); first=first||$("sigFile");}
+  return {missing, first};
+}
+
+function fmtDate(s){ if(!s) return ""; const [y,m,d]=s.split("-"); return `${m}/${d}/${y}`; }
+function fullName(){ return [val("first"), val("mi")?val("mi")+".":"", val("last")].filter(Boolean).join(" "); }
+function pacRole(){ return $("pacRole").value==="__other" ? val("pacRoleOther") : $("pacRole").value; }
+// Ticked councils as [short, full]; "Other" uses whatever the member typed
+function pacNames(){
+  return PACS.map((p,i)=>$("pacc"+i).checked ? (p[0]==="Other" ? (val("pacOther") ? [val("pacOther"), val("pacOther")] : null) : p) : null).filter(Boolean);
+}
+// What prints in the form's small "role" blank: full council name for one, short names for several
+function pacLine(){
+  const names=pacNames(), role=pacRole();
+  if(!names.length) return role;
+  return names.length===1 ? `${role}, ${names[0][1]}` : `${role}: ${names.map(n=>n[0]).join(", ")}`;
+}
+
+// Fills the Chicago Park District adult volunteer application (fillable PAC version).
+// Shared between the page and the local test. Expects PDFLib global (pdf-lib 1.17.1).
+async function fillForm(PDFLib, bytes, d) {
+  const { PDFDocument, StandardFonts, PDFName, PDFTextField, rgb } = PDFLib;
+  const pdf = await PDFDocument.load(bytes);
+  const form = pdf.getForm();
+  const helv = await pdf.embedFont(StandardFonts.Helvetica);
+  const helvI = await pdf.embedFont(StandardFonts.HelveticaOblique);
+  const pages = pdf.getPages();
+  const has = n => { try { form.getField(n); return true; } catch { return false; } };
+
+  // Single-line text: shrink to fit the box width, 11pt max
+  function line(name, value, max = 11) {
+    if (!has(name)) return;
+    const f = form.getTextField(name);
+    const v = String(value || "");
+    const w = f.acroField.getWidgets()[0].getRectangle().width - 6;
+    let size = max;
+    while (size > 6 && helv.widthOfTextAtSize(v, size) > w) size -= 0.5;
+    f.setText(v); f.setFontSize(size);
+  }
+  // Multi-line text box
+  function block(name, value, size = 10) {
+    if (!has(name)) return;
+    const f = form.getTextField(name);
+    f.enableMultiline(); f.setText(String(value || "")); f.setFontSize(size);
+  }
+  // Buttons: turn on the widget whose on-state matches `on` (e.g. "Choice1", "Yes"); others off
+  function pick(name, on) {
+    if (!has(name)) return;
+    const af = form.getField(name).acroField;
+    let hit = null;
+    for (const w of af.getWidgets()) {
+      const ov = w.getOnValue();
+      if (on && ov && ov.decodeText() === on) { w.setAppearanceState(ov); hit = ov; }
+      else w.setAppearanceState(PDFName.of("Off"));
+    }
+    af.dict.set(PDFName.of("V"), hit || PDFName.of("Off"));
+  }
+  const yn = v => v === "YES" ? "Choice1" : v === "NO" ? "Choice2" : null;
+  const box = (name, checked) => pick(name, checked ? "Yes" : null);
+  // Draw text straight onto a page inside a rectangle [x1,y1,x2,y2]
+  function draw(pageNo, rect, text, { size = 10, font = helv } = {}) {
+    if (!text) return;
+    const [x1, y1, x2, y2] = rect; let s = size;
+    while (s > 6 && font.widthOfTextAtSize(text, s) > x2 - x1 - 4) s -= 0.5;
+    pages[pageNo - 1].drawText(text, { x: x1 + 2, y: y1 + (y2 - y1 - s) / 2 + 1.5, size: s, font, color: rgb(0, 0, 0) });
+  }
+
+  // Page 1 and 2: signature date (one field, both pages) and typed signatures
+  line("Date", d.sigDate);
+  for (const n of ["Signature1", "Signature2"]) { if (has(n)) form.removeField(form.getField(n)); }
+  if (d.sigMode === "typed") {
+    draw(1, [79, 137, 364, 167], d.signature, { size: 14, font: helvI });
+    draw(2, [75, 85, 353, 116], d.signature, { size: 14, font: helvI });
+  } else if ((d.sigMode === "image" || d.sigMode === "draw") && d.sigImage) {
+    const img = d.sigImage.type === "png" ? await pdf.embedPng(d.sigImage.bytes) : await pdf.embedJpg(d.sigImage.bytes);
+    // Sit the signature on each line: bottom just above the rule; page 2 has text close above, so it's shorter
+    for (const [pg, x, y, maxH] of [[0, 82, 135, 46], [1, 78, 85, 31]]) {
+      const s = Math.min(270 / img.width, maxH / img.height);
+      pages[pg].drawImage(img, { x, y, width: img.width * s, height: img.height * s });
+    }
+  }
+
+  // Page 3
+  line("Last Name", d.last); line("First Name", d.first); line("Middle Initial", d.mi);
+  line("Address", d.address); line("City", d.city); line("State", d.state); line("Zip Code", d.zip);
+  line("Phone number", d.phone); line("Email Address", d.email); line("Date of Birth", d.dob);
+  pick("Gender", { Male: "Choice1", Female: "Choice2", Other: "Choice3" }[d.gender] || null);
+  line("SSN", d.ssn); line("Drivers License", d.dl);
+  line("Employer", d.employer); line("Employer Address", d.employerAddress); line("Employer Phone", d.employerPhone);
+  pick("Contact", yn(d.employerContact));
+  pick("Conviction", yn(d.convicted)); pick("Pending", yn(d.pending));
+  pick("Volunteer", yn(d.volunteeredBefore)); pick("PAC", yn(d.pac));
+  line("Text1", d.pac === "YES" ? d.pacRole : "");
+
+  // Page 4: experience table (rows of agency / date / type) and essays
+  const cells = [["Text19", "Text20", "Text21"], ["Text22", "Text24", "Text25"], ["Text23", "Text26", "Text27"]];
+  cells.forEach((row, i) => row.forEach((n, j) => block(n, (d.experience[i] || [])[j], 9)));
+  // Essays: print each answer on the form's own ruled lines (positions measured from the original)
+  function wrap(text, size, width) {
+    const out = []; for (const para of String(text).split(/\n+/)) {
+      let cur = ""; for (const word of para.split(/\s+/).filter(Boolean)) {
+        const t = cur ? cur + " " + word : word;
+        if (helv.widthOfTextAtSize(t, size) <= width) cur = t; else { if (cur) out.push(cur); cur = word; }
+      } if (cur) out.push(cur);
+    } return out;
+  }
+  function onRules(fieldName, ruleTops, text) {
+    if (has(fieldName)) { const f = form.getTextField(fieldName); f.setText(""); f.enableReadOnly(); }
+    if (!text) return;
+    const W = 452, page = pages[3];
+    const bases = ruleTops.map(t => 792 - t + 4); // baseline just above each printed rule
+    let size = 10.5, lines = wrap(text, size, W);
+    while (lines.length > bases.length && size > 7) { size -= 0.5; lines = wrap(text, size, W); }
+    let slots = bases;
+    if (lines.length > bases.length) { // two lines per rule
+      slots = bases.flatMap(b => [b + 11, b]);
+      size = 8; lines = wrap(text, size, W);
+      while (lines.length > slots.length && size > 6) { size -= 0.5; lines = wrap(text, size, W); }
+      if (lines.length > slots.length) { lines = lines.slice(0, slots.length); lines[lines.length - 1] += " …"; }
+    }
+    lines.forEach((l, i) => page.drawText(l, { x: 77, y: slots[i], size, font: helv, color: rgb(0, 0, 0) }));
+  }
+  onRules("Text28", [337.77, 361.67, 385.58], d.why);
+  onRules("Text29", [456.61, 479.83, 503.06], d.children);
+  onRules("Text30", [549.57, 572.80, 596.04], d.publicService);
+  onRules("Text31", [665.72, 688.95, 712.23], d.skills);
+
+  // Page 5
+  line("Park Name", d.park); pick("ParkSupt", yn(d.spokeSupervisor));
+  box("Check Box12", d.region === "North"); box("Check Box13", d.region === "Central"); box("Check Box14", d.region === "South");
+  line("Neighborhood", d.neighborhood);
+  pick("Conditions", yn(d.medical)); line("Text34", d.medical === "YES" ? d.medicalText : "");
+  line("Emergency Contact Name", d.ecName); line("Emergency Contact Phone", d.ecPhone);
+  line("Additional Contact", d.altName); line("Additional Contact Phone", d.altPhone);
+
+  const progFields = {
+    "Special events": "Check Box24", "Park Maintenance/Stewardship": "Check Box28", "Gardening": "Check Box32", "Park Kids/Afterschool": "Check Box36",
+    "Office Support": "Check Box25", "Sports/Games": "Check Box29", "Arts/Crafts": "Check Box33", "Cultural Programs": "Check Box37",
+    "Dance/Fitness": "Check Box26", "Day Camp/Holiday Camp": "Check Box30", "Adaptive Sports": "Check Box34", "Deaf/Hard of hearing programs (Camp Sign)": "Check Box38",
+    "Special Olympics": "Check Box27", "Special Recreation Day Camp": "Check Box31", "Greeter/Guide": "Check Box35", "Other": "Check Box39"
+  };
+  for (const [p, n] of Object.entries(progFields)) box(n, d.programs.includes(p));
+  box("Check Box40", d.programs.includes("Other"));
+  if (d.programs.includes("Other") && d.programOther) draw(5, [462, 316, 525, 330], d.programOther, { size: 7 });
+
+  box("Check Box41", d.availability === "Occasional"); box("Check Box42", d.availability === "Regular"); box("Check Box43", d.availability === "Daily");
+  line("Text44", d.availability === "Other" ? (d.availabilityOther || "Other") : "");
+
+  // Days: all 14 time blanks share one field in the original, so remove it and print each time in its blank
+  if (has("Text45")) { const t45 = form.getTextField("Text45"); t45.setText(""); t45.enableReadOnly(); }
+  const rowsY = [228, 203, 180, 155, 131, 107, 83]; // Sun..Sat (the last row is printed "Sunday" on the form)
+  const dayFields = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  d.days.forEach((day, i) => {
+    const y = rowsY[i];
+    if (day.on) {
+      draw(5, [155, y, 207, y + 22], day.from.text, { size: 10 });
+      draw(5, [352, y, 404, y + 22], day.to.text, { size: 10 });
+      pick(dayFields[i], day.from.pm ? "Choice2" : "Choice1");
+      pick(dayFields[i] + "2", day.to.pm ? "Choice2" : "Choice1");
+    } else { pick(dayFields[i], null); pick(dayFields[i] + "2", null); }
+  });
+
+  // Build appearances for text fields with Helvetica so every viewer shows the answers
+  for (const f of form.getFields()) if (f instanceof PDFTextField) f.updateAppearances(helv);
+  // The original checkbox ticks rely on a font many viewers lack; redraw them as vector check marks
+  // and give each box a black square border, since the original border lived in the replaced appearance
+  for (const f of form.getFields()) if (f instanceof PDFLib.PDFCheckBox) {
+    for (const w of f.acroField.getWidgets()) {
+      w.getOrCreateAppearanceCharacteristics().setBorderColor([0, 0, 0]);
+      w.getOrCreateBorderStyle().setWidth(0.75);
+    }
+    f.defaultUpdateAppearances();
+  }
+  return await pdf.save({ updateFieldAppearances: false });
+}
+
+function timeParts(t){ if(!t) return {text:"",pm:false}; let [h,m]=t.split(":").map(Number); const pm=h>=12; h=h%12||12; return {text:`${h}:${String(m).padStart(2,"0")}`, pm}; }
+function collect(){
+  return {
+    sigDate: fmtDate(val("sigDate")), signature: val("sig"), sigMode: radio("sigMode"), sigImage: radio("sigMode")==="draw" ? padImage : sigImage,
+    last: val("last"), first: val("first"), mi: val("mi"), address: val("addr"), city: val("city"), state: val("state").toUpperCase(), zip: val("zip"),
+    phone: val("phone"), email: val("email"), dob: fmtDate(val("dob")), gender: radio("gender"), ssn: val("ssn"), dl: val("dl"),
+    employer: val("emp"), employerAddress: val("empAddr"), employerPhone: val("empPhone"), employerContact: radio("empContact"),
+    convicted: radio("convicted"), pending: radio("pending"), volunteeredBefore: radio("before"), pac: radio("pac"), pacRole: pacLine(),
+    experience: [1,2,3].map(i=>[val("ag"+i),val("ad"+i),val("at"+i)]),
+    why: val("why"), children: val("kids"), publicService: val("public"), skills: val("skills"),
+    park: val("park"), spokeSupervisor: radio("spoke"), region: radio("region"), neighborhood: val("hood"),
+    medical: radio("medical"), medicalText: val("medText"),
+    ecName: val("ecName"), ecPhone: val("ecPhone"), altName: val("ecAlt"), altPhone: val("ecAltPhone"),
+    programs: PROGRAMS.filter((p,i)=>$("prog"+i).checked), programOther: val("progOther"),
+    availability: radio("avail"), availabilityOther: val("availOther"),
+    days: DAYS.map((_,i)=>({on:$("day"+i).checked, from:timeParts(val("from"+i)), to:timeParts(val("to"+i))}))
+  };
+}
+// Signature upload: turn any PNG/JPG into a transparent-background PNG cropped to the ink
+let sigImage=null;
+async function toTransparentPng(file){
+  const url=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((ok,bad)=>{const i=new Image(); i.onload=()=>ok(i); i.onerror=bad; i.src=url;});
+    const scale=Math.min(1, 1400/img.naturalWidth);
+    const w=Math.max(1,Math.round(img.naturalWidth*scale)), h=Math.max(1,Math.round(img.naturalHeight*scale));
+    const c=document.createElement("canvas"); c.width=w; c.height=h;
+    const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,w,h);
+    const data=ctx.getImageData(0,0,w,h), px=data.data;
+    // Paper brightness: a bright percentile of the image, so shadows on the page don't count as ink
+    const lums=[]; for(let i=0;i<px.length;i+=16) lums.push(0.299*px[i]+0.587*px[i+1]+0.114*px[i+2]);
+    lums.sort((a,b)=>a-b); const paper=Math.max(120, lums[Math.floor(lums.length*0.9)]);
+    const hi=paper-18, lo=paper-90; // above hi: paper (clear); below lo: ink (solid); between: soft edge
+    let minX=w,minY=h,maxX=-1,maxY=-1;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const i=(y*w+x)*4, a0=px[i+3]/255;
+      const L=0.299*px[i]+0.587*px[i+1]+0.114*px[i+2];
+      let a = L>=hi ? 0 : L<=lo ? 1 : (hi-L)/(hi-lo);
+      a*=a0;
+      px[i+3]=Math.round(a*255);
+      if(a>0.15){ if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y; }
+    }
+    if(maxX<0) throw new Error("empty");
+    ctx.putImageData(data,0,0);
+    const pad=6; minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad); maxX=Math.min(w-1,maxX+pad); maxY=Math.min(h-1,maxY+pad);
+    const o=document.createElement("canvas"); o.width=maxX-minX+1; o.height=maxY-minY+1;
+    o.getContext("2d").drawImage(c,minX,minY,o.width,o.height,0,0,o.width,o.height);
+    const blob=await new Promise(r=>o.toBlob(r,"image/png"));
+    return {bytes:new Uint8Array(await blob.arrayBuffer()), type:"png", preview:o.toDataURL("image/png")};
+  } finally { URL.revokeObjectURL(url); }
+}
+// Signature pad: draw in near-black on white, then reuse toTransparentPng() to crop and clear the paper
+let padInk=false, padImage=null;
+const pad=$("pad"), pctx=pad.getContext("2d");
+function padReset(){
+  const r=pad.getBoundingClientRect(), dpr=Math.max(1,window.devicePixelRatio||1);
+  pad.width=Math.max(1,Math.round(r.width*dpr)); pad.height=Math.max(1,Math.round(r.height*dpr));
+  pctx.setTransform(dpr,0,0,dpr,0,0); pctx.fillStyle="#ffffff"; pctx.fillRect(0,0,r.width,r.height);
+  pctx.strokeStyle="#111111"; pctx.lineWidth=2.4; pctx.lineCap=pctx.lineJoin="round";
+  padInk=false; padImage=null; $("padPh").hidden=false;
+}
+let padLast=null;
+const padPt=e=>{const r=pad.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top};};
+pad.addEventListener("pointerdown",e=>{ e.preventDefault(); pad.setPointerCapture(e.pointerId); padLast=padPt(e);
+  pctx.beginPath(); pctx.arc(padLast.x,padLast.y,1.2,0,Math.PI*2); pctx.fillStyle="#111111"; pctx.fill();
+  padInk=true; padImage=null; $("padPh").hidden=true; invalidate(); });
+pad.addEventListener("pointermove",e=>{ if(!padLast) return; const p=padPt(e);
+  pctx.beginPath(); pctx.moveTo(padLast.x,padLast.y); pctx.lineTo(p.x,p.y); pctx.stroke(); padLast=p; });
+for(const ev of ["pointerup","pointercancel"]) pad.addEventListener(ev,()=>{ padLast=null; });
+$("padClear").addEventListener("click",()=>{ padReset(); invalidate(); });
+// Resizing clears the canvas, so only reset when the width really changes (mobile scrolling fires resize too)
+let padW=0; function padFit(){ if(radio("sigMode")!=="draw") return; const w=pad.getBoundingClientRect().width; if(w && Math.abs(w-padW)>1){ padW=w; padReset(); } }
+window.addEventListener("resize", padFit); document.addEventListener("change", padFit); padFit();
+async function padToImage(){
+  if(padImage) return padImage;
+  const blob=await new Promise(r=>pad.toBlob(r,"image/png"));
+  padImage=await toTransparentPng(new File([blob],"signature.png",{type:"image/png"}));
+  return padImage;
+}
+
+$("sigFile").addEventListener("change", async e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  if(!/^image\/(png|jpeg)$/.test(f.type)){ setStatus("Choose a PNG or JPG image of your signature.", true); e.target.value=""; return; }
+  setStatus("Preparing your signature…");
+  try{ sigImage=await toTransparentPng(f); $("sigImg").src=sigImage.preview; $("sigPrev").hidden=false; setStatus("Signature ready. It will appear on both signature lines."); }
+  catch{ sigImage=null; $("sigPrev").hidden=true; setStatus("No signature found in that image. Try a closer photo of dark ink on white paper.", true); }
+});
+$("sigClear").addEventListener("click", ()=>{ sigImage=null; $("sigFile").value=""; $("sigPrev").hidden=true; });
+
+let formBytes=null;
+async function buildPdf(){
+  if(!formBytes){ const r=await fetch("form.pdf"); if(!r.ok) throw new Error("form"); formBytes=await r.arrayBuffer(); }
+  const out=await fillForm(window.PDFLib, formBytes.slice(0), collect());
+  return new Blob([out],{type:"application/pdf"});
+}
+
+function fileName(){ return `Volunteer Application - ${val("last")}, ${val("first")}.pdf`.replace(/[\\/:*?"<>|]/g,""); }
+
+let lastBlob=null, sent=false;
+function downloadPdf(){
+  if(!lastBlob) return;
+  const url=URL.createObjectURL(lastBlob), a=document.createElement("a");
+  a.href=url; a.download=fileName(); document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 10000);
+}
+function blobToBase64(blob){
+  return new Promise((ok,bad)=>{ const r=new FileReader(); r.onload=()=>ok(String(r.result).split(",")[1]); r.onerror=bad; r.readAsDataURL(blob); });
+}
+function showManual(open){ $("manual").hidden=false; if(open) $("manual").open=true; }
+async function sendApplication(){
+  if(!lastBlob||sent) return;
+  if(!SENDING_READY){ setStatus("Sending isn't set up on this site yet. Use “Send it from your own email instead.”", true); showManual(true); return; }
+  const btn=$("send"); btn.disabled=true; btn.textContent="Sending…"; setStatus("Running a quick security check…");
+  try{
+    const token=await sfTurnstileToken();
+    setStatus("Sending your application…");
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/${SEND_FUNCTION}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        token, filename:fileName(), pdfBase64:await blobToBase64(lastBlob), rtiRole:$("rtiRole").value,
+        applicant:{name:fullName(), email:val("email"), phone:val("phone")},
+        park:val("park"),
+        stewardshipRole: radio("csp")==="YES" ? $("cspRole").value : "",
+        website: val("website")
+      })
+    });
+    const out=await res.json().catch(()=>({}));
+    if(!res.ok||!out.ok) throw new Error(out.error||`HTTP ${res.status}`);
+    sent=true; btn.textContent="Sent";
+    const box=$("sentBox"); box.hidden=false;
+    const when=new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+    box.textContent="";
+    const b=document.createElement("b"); b.textContent = out.test ? "Test mode: sent to the site's test address. " : "Sent. ";
+    box.append(b, document.createTextNode(
+      (out.test ? `In live mode it would go to ${out.liveTo.join(", ")}.` : `Your application went to ${out.to.join(", ")}${out.cc&&out.cc.length?`, with a copy to ${out.cc.join(", ")}`:""} at ${when}.`) +
+      " Keep the downloaded copy for your records. The volunteer office will email you background check instructions."));
+    setStatus(out.test ? "Test send complete." : "Application sent.");
+  }catch(e){
+    btn.disabled=false; btn.textContent="Send application";
+    setStatus("Your application didn't send. Try again, or send it from your own email below.", true);
+    showManual(true);
+  }
+}
+
+// Keep in step with emailBody() in supabase/functions/rti-background-check/index.ts
+function emailBody(stewardshipRole){
+  return "Hello,\n\n"+
+    "Attached is my completed Long Term Adult Volunteer Application for the Park District background check. "+
+    `I am ${$("rtiRole").value} with Ras Tafari Inc., a 501(c)(3) nonprofit proposing youth and cultural programs at ${val("park")}. `+
+    "Ras Tafari Inc. has asked all of its members and associates to complete the Park District's background check."+
+    (stewardshipRole ? ` I am also applying for a Community Stewardship role${stewardshipRole==="Not sure yet" ? "" : ` (${stewardshipRole})`}, so I've copied the Stewardship Program Manager and only need one background check.` : "")+
+    "\n\nPlease send me the background check instructions when you're ready.\n\n"+
+    `Thank you,\n${fullName()}\n${val("phone")}\n${val("email")}`;
+}
+// Same subject the edge function uses
+function emailSubject(){ return `Long Term Adult Volunteer Application - ${fullName()} - ${val("park")} (Ras Tafari Inc.)`; }
+function showEmail(){
+  const cc = radio("csp")==="YES" ? CC : "";
+  const subject = emailSubject();
+  const body = emailBody(cc ? $("cspRole").value : "");
+  const box=$("emailBox"); box.innerHTML="";
+  const rows=[["To",TO]]; if(cc) rows.push(["CC",cc]); rows.push(["Subject",subject],["Message",body]);
+  rows.forEach(([k,v])=>{
+    const d=document.createElement("div"); d.className="addr";
+    const kk=document.createElement("span"); kk.className="k"; kk.textContent=k;
+    const vv=document.createElement(k==="Message"?"pre":"span"); vv.className="v"; vv.textContent=v;
+    const b=document.createElement("button"); b.type="button"; b.className="ghost"; b.textContent="Copy";
+    b.addEventListener("click", async()=>{
+      try{ await navigator.clipboard.writeText(v); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy",1500); }
+      catch{ const r=document.createRange(); r.selectNodeContents(vv); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent="Selected, press copy"; }
+    });
+    d.append(kk,vv,b); box.append(d);
+  });
+  $("mailto").href = `mailto:${TO}?${cc?`cc=${encodeURIComponent(cc)}&`:""}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  $("sendPanel").hidden=false;
+}
+
+$("go").addEventListener("click", async()=>{
+  const {missing, first} = validate();
+  if(missing.length){ setStatus("Still needed: "+missing.join(", ")+".", true); first?.focus(); first?.scrollIntoView({block:"center", behavior:"smooth"}); return; }
+  if(!window.PDFLib){ setStatus("The PDF tool didn't load. Check your connection and reload the page.", true); return; }
+  if(radio("sigMode")==="draw"){ try{ await padToImage(); }catch{ setStatus("Your signature didn't come through. Press Clear and sign again.", true); return; } }
+  setStatus("Filling in the Park District form…");
+  try{ lastBlob = await buildPdf(); } catch(e){ setStatus("Something went wrong building the PDF. Reload the page and try again.", true); return; }
+  sent=false; $("send").disabled=false; $("send").textContent="Send application"; $("sentBox").hidden=true;
+  $("ccRow").hidden = radio("csp")!=="YES";
+  $("meVal").textContent = val("email") + " (you)";
+  showEmail();
+  $("subjVal").textContent = emailSubject();
+  $("bodyVal").textContent = emailBody(radio("csp")==="YES" ? $("cspRole").value : "");
+  $("fileVal").textContent = fileName();
+  $("manual").hidden = SENDING_READY;
+  setStatus("Check the preview, then press Send application.");
+  $("sendPanel").scrollIntoView({block:"start", behavior:"smooth"});
+  renderPreview(lastBlob);
+});
+
+// Preview: draw every page of the built PDF (answers and signature included) with pdf.js
+let pdfjsLoad=null;
+function loadPdfjs(){
+  if(!pdfjsLoad) pdfjsLoad=new Promise((ok,bad)=>{
+    const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    s.onload=()=>{ pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; ok(window.pdfjsLib); };
+    s.onerror=()=>{ pdfjsLoad=null; bad(new Error("pdfjs")); }; document.head.append(s);
+  });
+  return pdfjsLoad;
+}
+let previewRun=0;
+async function renderPreview(blob){
+  const run=++previewRun, box=$("preview");
+  box.innerHTML='<p class="note">Loading the preview…</p>';
+  try{
+    const lib=await loadPdfjs();
+    const doc=await lib.getDocument({data:new Uint8Array(await blob.arrayBuffer())}).promise;
+    if(run!==previewRun) return;
+    box.innerHTML="";
+    const dpr=Math.min(2,window.devicePixelRatio||1), w=Math.max(300,box.clientWidth-24);
+    for(let n=1;n<=doc.numPages;n++){
+      const page=await doc.getPage(n), base=page.getViewport({scale:1});
+      const vp=page.getViewport({scale:(w/base.width)*dpr});
+      const c=document.createElement("canvas"); c.width=Math.round(vp.width); c.height=Math.round(vp.height);
+      c.setAttribute("aria-label",`Page ${n} of ${doc.numPages}`); box.append(c);
+      await page.render({canvasContext:c.getContext("2d"), viewport:vp, annotationMode:lib.AnnotationMode.ENABLE}).promise;
+      if(run!==previewRun) return;
+    }
+  }catch{
+    if(run===previewRun) box.innerHTML='<p class="note">The preview couldn\'t load here. Press "Download a copy" to open the PDF and check it before you send.</p>';
+  }
+}
+$("download").addEventListener("click", downloadPdf);
+$("send").addEventListener("click", sendApplication);
+// If someone edits an answer after reviewing, make them rebuild before sending
+function invalidate(){ if(lastBlob && !sent){ lastBlob=null; $("sendPanel").hidden=true; setStatus("You changed an answer. Press Review application again before sending."); } }
+$("app").addEventListener("input", e=>{ if(e.target.id!=="website") invalidate(); });
+$("app").addEventListener("change", e=>{ if(e.target.id!=="website" && e.target.type!=="file") invalidate(); });
+</script>
+
+</body>
+</html>
