@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Lab — Reentry Housing Grants</title>
-<meta name="description" content="Ras Tafari Inc. AI Lab: use six AI tools to turn reentry housing research into grant application links, requirements and a finished HTML guide.">
+<meta name="description" content="Ras Tafari Inc. AI Lab: use six AI tools to turn reentry housing research into grant application guides for 2ND CH INC., and track the real deadlines.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +36,7 @@ header.top{margin-bottom:22px}
 .kicker{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
 h1{font-size:clamp(30px,6vw,44px);line-height:1.1;margin:6px 0 10px;font-weight:800}
 h2{font-size:24px;margin:0 0 8px}
+h3{font-size:20px;margin:18px 0 6px}
 .lede{color:var(--muted);margin:0 0 14px}
 .progress{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
 .bar{flex:1;height:12px;border-radius:99px;background:var(--line);overflow:hidden}
@@ -43,12 +44,18 @@ h2{font-size:24px;margin:0 0 8px}
 .ptext{font-weight:600;white-space:nowrap}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;margin:14px 0}
-.field{display:flex;flex-direction:column;gap:6px;flex:1 1 240px}
+.field{display:flex;flex-direction:column;gap:6px;flex:1 1 240px;min-width:0}
 .field span{font-weight:600;font-size:16px}
-.field input{font:inherit;font-size:20px;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:52px}
-.field input:focus{outline:none;border-color:var(--accent)}
+.field input,.field select,.field textarea{font:inherit;font-size:18px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:50px;width:100%}
+.field textarea{font:14px/1.5 var(--mono);min-height:180px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
 .gmsg{margin:12px 0 0;min-height:1em}
 .signed{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px;color:var(--muted)}
+
+.devbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 4px}
+.devbar b{font-size:17px;margin-right:4px}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:99px;padding:6px 14px;font:600 16px var(--body);cursor:pointer;min-height:42px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 
 .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:14px 0;overflow:hidden}
 .step>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px;min-height:64px}
@@ -62,7 +69,7 @@ h2{font-size:24px;margin:0 0 8px}
 .chev{flex:none;transition:transform .2s;color:var(--muted)}
 .step[open] .chev{transform:rotate(90deg)}
 .body{padding:0 18px 20px;border-top:1px solid var(--line)}
-.body>p:first-child{margin-top:16px}
+.body>:first-child{margin-top:16px}
 
 ol.do,ul.do{padding-left:0;list-style:none;margin:12px 0}
 ol.do li,ul.do li{margin:10px 0}
@@ -79,21 +86,39 @@ ul.docs li{margin:4px 0}
 .app label.tick{padding:4px 0}
 .app label.tick:hover{background:none}
 
+.need{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.need .name{font-weight:700}
+.need p{margin:4px 0;font-size:17px}
+
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border-radius:10px;border:0;
   background:var(--accent);color:var(--accent-ink);font:600 17px var(--body);text-decoration:none;cursor:pointer}
 .btn[disabled]{opacity:.55;cursor:default}
 .btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
 .btn.sm{min-height:40px;padding:6px 14px;font-size:15px}
+.btn.danger{background:transparent;color:var(--warn);border:2px solid var(--warn)}
 .row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;align-items:flex-end}
 
 .copybox{position:relative;margin:12px 0}
 .copybox pre{margin:0;white-space:pre-wrap;word-wrap:break-word;background:var(--bg);border:1px solid var(--line);border-radius:12px;
   padding:16px 16px 60px;font:15px/1.55 var(--mono);max-height:340px;overflow:auto}
+.copybox.short pre{max-height:none;padding-bottom:56px}
 .copybox .btn{position:absolute;right:12px;bottom:12px}
 .note{background:var(--gold-soft);border-left:4px solid var(--gold);padding:12px 14px;border-radius:8px;margin:14px 0}
 .warn{background:var(--warn-soft);border-left:4px solid var(--warn);padding:12px 14px;border-radius:8px;margin:14px 0}
 .why{color:var(--muted);font-size:17px}
 kbd{font:600 15px var(--mono);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;background:var(--surface)}
+iframe.preview{width:100%;height:520px;border:2px solid var(--line);border-radius:12px;background:#fff;margin-top:12px}
+.svmsg{margin:8px 0 0;font-weight:600}
+
+.dl{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.dl.verified{border-left:6px solid var(--accent)}
+.dl .grid{display:flex;flex-wrap:wrap;gap:10px}
+.dl .grid .field{flex:1 1 200px}
+.dl .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.dl .when{font-weight:700}
+.dl .when.soon{color:var(--warn)}
+.dl .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--fg);color:var(--bg);
   padding:12px 20px;border-radius:10px;font-weight:600;transition:transform .25s;z-index:10}
 .toast.show{transform:translateX(-50%) translateY(0)}
@@ -107,7 +132,7 @@ footer{margin-top:36px;color:var(--muted);font-size:16px;text-align:center}
 <header class="top">
   <div class="kicker">Ras Tafari Inc. · AI Lab</div>
   <h1>Paul, let's build a grant guide with AI</h1>
-  <p class="lede">As Grant Development Specialist, you'll take research on how Illinois pays for reentry housing and ask four AI tools where each program's application is and what it requires. Then two more AI tools turn their answers into a web page (HTML) that walks you through each application for <b>2ND CH INC.</b></p>
+  <p class="lede">As Grant Development Specialist, you'll take research on how Illinois pays for reentry housing and ask four AI tools where each funder's application is and what it requires. Then two more AI tools turn their answers into web pages that walk you through each application for <b>2ND CH INC.</b> You'll do all of it without writing any code.</p>
 </header>
 
 <!-- Sign in -->
@@ -133,31 +158,44 @@ footer{margin-top:36px;color:var(--muted);font-size:16px;text-align:center}
 </section>
 
 <main id="lesson" hidden>
-  <p class="why">Open one step at a time and tick each box when you finish it. Your ticks are saved on this computer, so you can stop and pick up later.</p>
+  <div class="card">
+    <div class="devbar" role="group" aria-label="Your device">
+      <b>I'm using:</b>
+      <button class="chip" data-dev="win" type="button">Windows</button>
+      <button class="chip" data-dev="mac" type="button">Mac</button>
+      <button class="chip" data-dev="cros" type="button">Chromebook</button>
+      <button class="chip" data-dev="ios" type="button">iPhone / iPad</button>
+      <button class="chip" data-dev="android" type="button">Android</button>
+    </div>
+    <p class="why" style="margin:6px 0 0">We guessed your device. Tap another one if that's wrong, and the instructions below will change to match.</p>
+    <p class="note" data-only="ios android" style="margin-bottom:0">On a phone or tablet: wherever this page says <b>paste</b>, press and hold in the box and tap <b>Paste</b>. To <b>select all</b>, press and hold, then tap <b>Select All</b>. A computer is easier for Steps 6–8 if you have one.</p>
+  </div>
+
+  <p class="why">Open one step at a time and tick each box when you finish it. Your ticks are saved on this device, so you can stop and pick up later. Bring what you've done to the next meeting.</p>
   <div class="progress"><div class="bar"><span id="barfill"></span></div><div class="ptext" id="ptext">0 of 0 done</div></div>
 
 <!-- STEP 1 -->
-<details class="step" id="s1" open>
+<details class="step" open>
   <summary><span class="num"><b>1</b></span><span class="stitle">Open your six AI accounts<small>Sign up once, then they're yours</small></span><span class="chev">▶</span></summary>
   <div class="body">
-    <p>Each link opens in a new tab. On each site, choose <b>"Continue with Google"</b> (or "Sign up") and use the same Gmail address every time, so you only need one password.</p>
+    <p>Each link opens in a new tab. On each site, choose <b>"Continue with Google"</b> (or "Sign up") and use the same Gmail address every time, so you only need one password. <span data-only="ios android">Each one also has a free app in your app store if you prefer.</span></p>
     <div class="apps">
-      <div class="app"><span class="name">ChatGPT</span><span class="role">Finds links (Step 3)</span>
+      <div class="app"><span class="name">ChatGPT</span><span class="role">Research (Step 4)</span>
         <a class="btn sm" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-chatgpt"> Signed in</label></div>
-      <div class="app"><span class="name">Gemini</span><span class="role">Finds links (Step 3)</span>
+      <div class="app"><span class="name">Gemini</span><span class="role">Research (Step 4)</span>
         <a class="btn sm" href="https://gemini.google.com/" target="_blank" rel="noopener">Open Gemini ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-gemini"> Signed in</label></div>
-      <div class="app"><span class="name">Copilot</span><span class="role">Finds links (Step 3)</span>
+      <div class="app"><span class="name">Copilot</span><span class="role">Research (Step 4)</span>
         <a class="btn sm" href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open Copilot ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-copilot"> Signed in</label></div>
-      <div class="app"><span class="name">Perplexity</span><span class="role">Finds links (Step 3)</span>
+      <div class="app"><span class="name">Perplexity</span><span class="role">Research (Step 4)</span>
         <a class="btn sm" href="https://www.perplexity.ai/" target="_blank" rel="noopener">Open Perplexity ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-perplexity"> Signed in</label></div>
-      <div class="app"><span class="name">Claude</span><span class="role">Builds the HTML (Step 5)</span>
+      <div class="app"><span class="name">Claude</span><span class="role">Builds pages (Step 6)</span>
         <a class="btn sm" href="https://claude.ai/" target="_blank" rel="noopener">Open Claude ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-claude"> Signed in</label></div>
-      <div class="app"><span class="name">DeepSeek</span><span class="role">Builds the HTML (Step 5)</span>
+      <div class="app"><span class="name">DeepSeek</span><span class="role">Builds pages (Step 6)</span>
         <a class="btn sm" href="https://chat.deepseek.com/" target="_blank" rel="noopener">Open DeepSeek ↗</a>
         <label class="tick"><input type="checkbox" data-k="acct-deepseek"> Signed in</label></div>
     </div>
@@ -166,8 +204,8 @@ footer{margin-top:36px;color:var(--muted);font-size:16px;text-align:center}
 </details>
 
 <!-- STEP 2 -->
-<details class="step" id="s2">
-  <summary><span class="num"><b>2</b></span><span class="stitle">Open the For Grants folder and read the research<small>Our documents, plus one new Google Doc for notes</small></span><span class="chev">▶</span></summary>
+<details class="step">
+  <summary><span class="num"><b>2</b></span><span class="stitle">Open the For Grants folder and read the research<small>Our documents, our Illinois name, and a notes doc</small></span><span class="chev">▶</span></summary>
   <div class="body">
     <div class="warn">
       <p style="margin:0 0 8px"><b>Our name in Illinois is 2ND CH INC.</b></p>
@@ -181,21 +219,22 @@ footer{margin-top:36px;color:var(--muted);font-size:16px;text-align:center}
       <li><b>certificate of corporation_2026</b>: Wisconsin certificate of status (good standing)</li>
       <li><b>Bylaws</b></li>
       <li><b>Narrative</b> and <b>2CH_Google_Grant_Narrative</b>: past grant narratives to reuse</li>
-      <li><b>GATA _ Portal</b>: our Illinois GATA grantee portal account (required for state grants)</li>
+      <li><b>GATA _ Portal</b>: our Illinois GATA grantee portal login</li>
       <li><b>STATE CES_2026</b>: Wisconsin sales tax exemption (Wisconsin only)</li>
       <li><b>2nd_Chance_Housing_Illinois_REO_Outreach_Letter</b></li>
     </ul>
     <p class="why"><b>nfp11315</b> and <b>bca1315_p</b> are unfiled draft forms. Don't attach them. The filed, stamped copy is in "ILlinois Nonprofit satus." <b>Draft_Proposal_Selassie_Fest</b> belongs to SelassieFest and isn't part of this.</p>
     <div class="row">
-      <a class="btn" id="folderBtn" href="#" target="_blank" rel="noopener" hidden>Open the For Grants folder ↗</a>
-      <span class="why" id="folderMissing" hidden>Folder link not loaded. Ask Stephen to share the "For Grants" folder with you.</span>
+      <a class="btn folderLink" href="#" target="_blank" rel="noopener" hidden>Open the For Grants folder ↗</a>
+      <span class="why folderMissing" hidden>Folder link not loaded. Ask Stephen to share the "For Grants" folder with you.</span>
     </div>
     <ul class="do">
       <li><label class="tick"><input type="checkbox" data-k="s2-folder"> I opened the For Grants folder (sign in with your Google account if it asks).</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s2-doc"> In the folder, I clicked <b>+ New → Google Docs</b> and named the doc <b>"Reentry housing – AI answers"</b>. Every AI answer goes in here.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s2-doc"> In the folder, I tapped <b>+ New → Google Docs</b> and named the doc <b>"Reentry housing – AI answers"</b>. Every AI answer goes in here.</label></li>
       <li><label class="tick"><input type="checkbox" data-k="s2-read"> I read the research below once, so I know what it says.</label></li>
     </ul>
-    <p>Here's the research. It explains how Illinois pays for reentry housing, through <b>IDOC</b>, the <b>R3 grant program (ICJIA)</b>, <b>IDHS</b> and <b>IHDA</b>, and names the nonprofits that deliver it. The <b>Copy</b> button copies all of it.</p>
+    <p>Here's the research. It explains how Illinois pays for reentry housing (through <b>IDOC</b>, the <b>R3 grant program at ICJIA</b>, <b>IDHS</b> and <b>IHDA</b>) and names the nonprofits that deliver it.</p>
+    <p class="note"><b>Treat this research as a lead, not as fact.</b> It came from an email and may itself have been written by AI. The numbers, program names and steps in it haven't been checked. That's why Step 9 has you confirm everything on the funders' own websites.</p>
     <div class="copybox"><pre id="research">The Illinois Department of Corrections (IDOC), which oversees parole and Mandatory Supervised Release (MSR), does not directly cut rent checks to private landlords or run an ongoing cash housing voucher program directly out of parole field offices.
 
 Instead, the state funds and coordinates rental assistance, transitional placement, and housing stability through legislative appropriations, inter-agency partnerships (IDOC, IDHS, and IHDA), and state-contracted community reentry providers.
@@ -269,98 +308,209 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
 </details>
 
 <!-- STEP 3 -->
-<details class="step" id="s3">
-  <summary><span class="num"><b>3</b></span><span class="stitle">Ask four AIs for the application links and requirements<small>ChatGPT, Gemini, Copilot, Perplexity</small></span><span class="chev">▶</span></summary>
+<details class="step">
+  <summary><span class="num"><b>3</b></span><span class="stitle">Gather the documents we're missing<small>Get each one from Albert, or sign up for it</small></span><span class="chev">▶</span></summary>
   <div class="body">
-    <p>You'll ask all four the <b>same question</b>. Different AIs find different things, and sometimes they're wrong. Asking four lets you compare.</p>
-    <p><b>How to send it:</b> click <b>Copy prompt</b>, go to the AI's tab, click in the message box, press <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste, then press <kbd>Enter</kbd>.</p>
+    <p>Almost every state grant asks for these, and they aren't in the For Grants folder yet. For each one, <b>ask Albert first</b>. He's the President and may already have it. If he doesn't, sign up for it as shown. When you have it, put a copy in the For Grants folder.</p>
+    <div class="need">
+      <div class="name">Illinois Attorney General charitable registration</div>
+      <p>The Secretary of State's approval letter says charitable nonprofits must also register with the Attorney General's <b>Charitable Trust Bureau</b>.</p>
+      <p><a href="https://illinoisattorneygeneral.gov/" target="_blank" rel="noopener">Illinois Attorney General ↗</a> (look for "Charities")</p>
+      <label class="tick"><input type="checkbox" data-k="s3-ag"> Got it from Albert, or registered, and saved a copy in For Grants</label>
+    </div>
+    <div class="need">
+      <div class="name">Illinois Certificate of Good Standing</div>
+      <p>The folder only has the Wisconsin one. The Illinois Secretary of State's letter says you can buy an Illinois certificate at ilsos.gov. Our file number is <b>7552-470-6</b>.</p>
+      <p><a href="https://www.ilsos.gov/" target="_blank" rel="noopener">Illinois Secretary of State ↗</a></p>
+      <label class="tick"><input type="checkbox" data-k="s3-gs"> Got it from Albert, or bought it, and saved a copy in For Grants</label>
+    </div>
+    <div class="need">
+      <div class="name">SAM.gov registration (our UEI number)</div>
+      <p>Federal money and Illinois GATA pre-qualification both depend on it. <b>SAM.gov registration is free.</b> Ignore companies that offer to do it for a fee. SAM uses the name tied to our EIN, so <b>check with Stephen about which name to enter</b> before you start.</p>
+      <p><a href="https://sam.gov/" target="_blank" rel="noopener">SAM.gov ↗</a></p>
+      <label class="tick"><input type="checkbox" data-k="s3-sam"> Got our UEI from Albert, or registered with Stephen's OK</label>
+    </div>
+    <div class="need">
+      <div class="name">GATA pre-qualification (Illinois grantee portal)</div>
+      <p>We have a login on the portal, but that doesn't prove we're pre-qualified. Create your own free Illinois.gov account, ask to be connected to our organization, then check that it shows as <b>pre-qualified</b>.</p>
+      <p><a href="https://grants.illinois.gov/Portal/" target="_blank" rel="noopener">GATA Grantee Portal ↗</a></p>
+      <label class="tick"><input type="checkbox" data-k="s3-gata"> I can see our organization in GATA, and I know whether it's pre-qualified</label>
+    </div>
+    <div class="need">
+      <div class="name">Form 990s (last 3 years), budget, and financial statements</div>
+      <p>Ask Albert for these. Past 990s are also public on the IRS lookup if any are missing.</p>
+      <p><a href="https://apps.irs.gov/app/eos/" target="_blank" rel="noopener">IRS Tax Exempt Organization Search ↗</a> (search EIN 47-5387503)</p>
+      <label class="tick"><input type="checkbox" data-k="s3-fin"> Got them from Albert and saved copies in For Grants</label>
+    </div>
+    <p class="why">You don't have to finish this step before Step 4. Keep going and come back to it. Anything still missing is something to report at the meeting.</p>
+  </div>
+</details>
+
+<!-- STEP 4 -->
+<details class="step">
+  <summary><span class="num"><b>4</b></span><span class="stitle">Ask four AIs about our five funders<small>ChatGPT, Gemini, Copilot, Perplexity</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>We're focusing on the <b>five places 2ND CH INC. can actually apply for money</b>:</p>
+    <ol id="funderList"></ol>
+    <p>You'll ask all four AIs the <b>same question</b>. Different AIs find different things, and sometimes they're wrong. Asking four lets you compare.</p>
+    <p><b>How to send it:</b> tap <b>Copy prompt</b>, go to the AI's tab, click in the message box and <span data-only="win cros">press <kbd>Ctrl</kbd>+<kbd>V</kbd></span><span data-only="mac">press <kbd>⌘ Cmd</kbd>+<kbd>V</kbd></span><span data-only="ios android">paste</span>, then send.</p>
     <div class="copybox"><pre id="prompt1"></pre>
       <button class="btn sm" data-copy="prompt1">Copy prompt</button></div>
-    <p class="note">The prompt already includes the research, so you only paste once.</p>
     <ul class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s3-chatgpt"> Sent to <b>ChatGPT</b>. <a href="https://chatgpt.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s3-gemini"> Sent to <b>Gemini</b>. <a href="https://gemini.google.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s3-copilot"> Sent to <b>Copilot</b>. <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s3-perplexity"> Sent to <b>Perplexity</b>. <a href="https://www.perplexity.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-chatgpt"> Sent to <b>ChatGPT</b>. <a href="https://chatgpt.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-gemini"> Sent to <b>Gemini</b>. <a href="https://gemini.google.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-copilot"> Sent to <b>Copilot</b>. <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-perplexity"> Sent to <b>Perplexity</b>. <a href="https://www.perplexity.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
     </ul>
     <p class="why">Wait for each answer to finish before moving on. In ChatGPT, if you see a "Search" or globe button, turn it on so it checks live websites.</p>
   </div>
 </details>
 
-<!-- STEP 4 -->
-<details class="step" id="s4">
-  <summary><span class="num"><b>4</b></span><span class="stitle">Copy all four answers into your Google Doc<small>One doc, four labeled sections</small></span><span class="chev">▶</span></summary>
+<!-- STEP 5 -->
+<details class="step">
+  <summary><span class="num"><b>5</b></span><span class="stitle">Copy all four answers into your Google Doc<small>One doc, four labeled sections</small></span><span class="chev">▶</span></summary>
   <div class="body">
     <p>For each AI:</p>
     <ol class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s4-how1"> Under the answer, I found the <b>copy icon</b> (two overlapping squares) and clicked it. That copies the whole answer.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s4-how2"> In my Google Doc, I typed a heading for that AI, like <b>=== ChatGPT ===</b>, and pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> under it.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-how1"> Under the answer, I found the <b>copy icon</b> (two overlapping squares) and tapped it. That copies the whole answer.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-how2"> In my Google Doc, I typed a heading for that AI, like <b>=== ChatGPT ===</b>, and pasted under it.</label></li>
     </ol>
     <ul class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s4-chatgpt"> <b>=== ChatGPT ===</b> pasted</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s4-gemini"> <b>=== Gemini ===</b> pasted</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s4-copilot"> <b>=== Copilot ===</b> pasted</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s4-perplexity"> <b>=== Perplexity ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-chatgpt"> <b>=== ChatGPT ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-gemini"> <b>=== Gemini ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-copilot"> <b>=== Copilot ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-perplexity"> <b>=== Perplexity ===</b> pasted</label></li>
     </ul>
-  </div>
-</details>
-
-<!-- STEP 5 -->
-<details class="step" id="s5">
-  <summary><span class="num"><b>5</b></span><span class="stitle">Have Claude and DeepSeek write the HTML guide<small>Same prompt plus all four answers, to both AIs</small></span><span class="chev">▶</span></summary>
-  <div class="body">
-    <p>Now you hand all four answers to two different AIs and ask each one to <b>build a web page</b> that walks you through completing every application for 2ND CH INC.</p>
-    <ol class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s5-copy"> I clicked <b>Copy prompt</b> below and pasted it into Claude, but <b>did not press Enter yet</b>.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s5-doc"> I went to my Google Doc and pressed <kbd>Ctrl</kbd>+<kbd>A</kbd> (select all), then <kbd>Ctrl</kbd>+<kbd>C</kbd> (copy).</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s5-paste"> Back in Claude, I clicked at the very end of the prompt, pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> to add the four answers, then pressed <kbd>Enter</kbd>.</label></li>
-    </ol>
-    <div class="copybox"><pre id="prompt2"></pre>
-      <button class="btn sm" data-copy="prompt2">Copy prompt</button></div>
-    <ul class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s5-claude"> Sent to <b>Claude</b>. <a href="https://claude.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s5-deepseek"> Did the same three steps in <b>DeepSeek</b>. <a href="https://chat.deepseek.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
-    </ul>
-    <p class="why">If an AI says the message is too long, remove the shortest of the four answers and try again.</p>
   </div>
 </details>
 
 <!-- STEP 6 -->
-<details class="step" id="s6">
-  <summary><span class="num"><b>6</b></span><span class="stitle">Save each HTML and open it in your browser<small>Notepad → Save As → .html</small></span><span class="chev">▶</span></summary>
+<details class="step">
+  <summary><span class="num"><b>6</b></span><span class="stitle">Have Claude and DeepSeek build one page per funder<small>One setup message, then five short requests</small></span><span class="chev">▶</span></summary>
   <div class="body">
-    <p>Each AI gives you a block of code that starts with <code>&lt;!DOCTYPE html&gt;</code>. That code <b>is</b> the web page. To turn it into a file:</p>
+    <p>If you ask for all five funders at once, the code gets too long and the AI cuts it off partway. So you'll give each AI everything <b>once</b>, then ask for <b>one page at a time</b>. Do this in Claude first, then repeat it in DeepSeek in a new chat.</p>
+    <h3>A. The setup message (send once per AI)</h3>
     <ol class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s6-1"> I clicked the <b>Copy</b> button on the code block. (In Claude the code may open in a side panel. The copy button is at the top of that panel.)</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s6-2"> I pressed the <kbd>Windows</kbd> key, typed <b>Notepad</b>, pressed <kbd>Enter</kbd>, then pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s6-3"> I clicked <b>File → Save As</b>, picked <b>Desktop</b>, set "Save as type" to <b>All files</b>, named it <b>reentry-grants-claude.html</b>, and clicked Save.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s6-4"> I did the same for DeepSeek's code and named it <b>reentry-grants-deepseek.html</b>.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s6-5"> I double-clicked each file on my Desktop. Each one opened in my browser as a real web page.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s6-6"> I dragged both .html files into the <b>For Grants</b> folder so the team can see them.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-copy"> I tapped <b>Copy setup message</b> and pasted it into the AI, but <b>didn't send it yet</b>.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-doc"> I went to my Google Doc, selected everything (<span data-only="win cros"><kbd>Ctrl</kbd>+<kbd>A</kbd></span><span data-only="mac"><kbd>⌘ Cmd</kbd>+<kbd>A</kbd></span><span data-only="ios android">press and hold, then Select All</span>) and copied it.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-paste"> Back in the AI, I tapped at the very end of the setup message, pasted the four answers under it, and sent it. The AI replied "Ready".</label></li>
     </ol>
-    <p class="note">If a page looks broken or the code got cut off, go back to that AI and type: <i>"Your code got cut off. Send the complete HTML file again in one block."</i></p>
+    <div class="copybox"><pre id="prompt2"></pre>
+      <button class="btn sm" data-copy="prompt2">Copy setup message</button></div>
+    <h3>B. Ask for each page (same chat)</h3>
+    <p>Copy each request in turn and send it in the <b>same chat</b>. After each answer, save the page (Step 7) before you ask for the next.</p>
+    <div id="funderPrompts"></div>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s6-claude"> <b>Claude</b> built all five pages. <a href="https://claude.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-deepseek"> <b>DeepSeek</b> built all five pages (new chat, same setup message). <a href="https://chat.deepseek.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+    </ul>
+    <p class="note">If a page still gets cut off, send: <i>"Your code got cut off. Send the complete HTML for this one funder again in one block, shorter if needed."</i></p>
   </div>
 </details>
 
 <!-- STEP 7 -->
-<details class="step" id="s7">
-  <summary><span class="num"><b>7</b></span><span class="stitle">Check the AI's work before you trust it<small>The most important step</small></span><span class="chev">▶</span></summary>
+<details class="step">
+  <summary><span class="num"><b>7</b></span><span class="stitle">Save each page and look at it<small>Paste here, then preview and download</small></span><span class="chev">▶</span></summary>
   <div class="body">
-    <p>AI tools sometimes make up links, deadlines and phone numbers that look real. Before anyone applies:</p>
+    <p>Each AI answer includes a block of code that starts with <code>&lt;!DOCTYPE html&gt;</code>. That code <b>is</b> the web page. You don't need to read it. Just copy it and paste it into the box below.</p>
+    <ol class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s7-copy"> I tapped the <b>Copy</b> button on the AI's code block. <span class="why">(In Claude the code may open in a side panel. The copy button is at the top of that panel.)</span></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-paste"> I picked the right name below, pasted the code into the box, and tapped <b>Preview</b> to see the page.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-dl"> I tapped <b>Download</b> to save it.</label></li>
+    </ol>
+    <div class="card" style="margin:12px 0">
+      <div class="row">
+        <label class="field"><span>Which page is this?</span><select id="svName"></select></label>
+      </div>
+      <label class="field"><span>Paste the AI's code here</span><textarea id="svCode" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></label>
+      <div class="row">
+        <button class="btn" id="svPreview" type="button">Preview</button>
+        <button class="btn ghost" id="svDownload" type="button">Download</button>
+        <button class="linkbtn" id="svClear" type="button">Clear</button>
+      </div>
+      <p class="svmsg" id="svMsg" aria-live="polite"></p>
+      <iframe class="preview" id="svFrame" title="Page preview" sandbox="allow-scripts allow-popups" hidden></iframe>
+    </div>
+    <h3>Where the file goes, and how to put it in For Grants</h3>
+    <div data-only="win"><p>Downloads land in your <b>Downloads</b> folder. Double-click a file to open it in your browser. To share it, open the For Grants folder in your browser and drag the file in.</p></div>
+    <div data-only="mac"><p>Downloads land in your <b>Downloads</b> folder (in the Dock or in Finder). Double-click a file to open it in your browser. To share it, open the For Grants folder in your browser and drag the file in.</p></div>
+    <div data-only="cros"><p>Downloads land in the <b>Files</b> app under <b>Downloads</b>. Double-click a file to open it. To share it, drag the file into the For Grants folder in your browser, or into <b>Google Drive</b> in the Files app.</p></div>
+    <div data-only="ios"><p>Safari asks whether to download. Tap <b>Download</b>, and the file goes to the <b>Files</b> app → <b>Downloads</b>. To share it, open the <b>Google Drive</b> app, go to For Grants, tap <b>+</b> → <b>Upload</b> → <b>Browse</b>, and pick the file. Use <b>Preview</b> on this page to look at a page.</p></div>
+    <div data-only="android"><p>The file goes to your <b>Downloads</b> (the Files or "My Files" app). To share it, open the <b>Google Drive</b> app, go to For Grants, tap <b>+</b> → <b>Upload</b>, and pick the file. Use <b>Preview</b> on this page to look at a page.</p></div>
     <ul class="do">
-      <li><label class="tick"><input type="checkbox" data-k="s7-links"> I clicked every link in both pages and wrote down any that were broken or went to the wrong place.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s7-name"> I checked that both pages use <b>2ND CH INC.</b> as the applicant and never "2nd Chance Housing Inc." on an Illinois application.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s7-compare"> I compared the two pages. Wherever Claude and DeepSeek disagree, I marked it "check by phone."</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s7-call"> I picked one funder (for example, ICJIA for the R3 program) and called or emailed to confirm when the next application round opens.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s7-fix"> I told Claude what I found ("these links are broken: …, please fix") and saved the updated page.</label></li>
-      <li><label class="tick"><input type="checkbox" data-k="s7-share"> I texted Stephen that the finished pages are in the For Grants folder.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-claude"> All five Claude pages saved and uploaded to For Grants</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-deepseek"> All five DeepSeek pages saved and uploaded to For Grants</label></li>
     </ul>
-    <p class="note"><b>What you just learned:</b> how to <b>research</b> with several AIs, <b>combine</b> their answers, have an AI <b>build</b> a web page, and <b>check</b> the result. You can use the same method for every grant you work on.</p>
   </div>
 </details>
 
+<!-- STEP 8 -->
+<details class="step">
+  <summary><span class="num"><b>8</b></span><span class="stitle">Change a page by asking, not coding<small>This is how web pages get made in 2026</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>You never have to edit code yourself. To change a page, tell the AI what you want in plain English and it sends back a new version. Try it on the R3 page in your Claude chat:</p>
+    <div class="copybox short"><pre id="prompt3"></pre>
+      <button class="btn sm" data-copy="prompt3">Copy request</button></div>
+    <ol class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s8-ask"> I sent the request in the same Claude chat.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s8-save"> I pasted the new code into the Step 7 box, previewed it, and downloaded it again with the same name.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s8-own"> I asked for one change of my own (for example "add a checklist of questions to ask the program officer") and saved that version too.</label></li>
+    </ol>
+    <p class="note">That's the whole skill: <b>describe it, preview it, save it</b>. You can use it for flyers, sign-up pages, reports, anything.</p>
+  </div>
+</details>
+
+<!-- STEP 9 -->
+<details class="step">
+  <summary><span class="num"><b>9</b></span><span class="stitle">Confirm the real deadlines and get alerts<small>Only trust what the funder's own site says</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>AI tools sometimes make up links, deadlines and phone numbers that look real. Before anyone applies:</p>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s9-links"> I tapped every link in the pages and noted any that were broken or went to the wrong place.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-name"> Every page uses <b>2ND CH INC.</b> as the applicant and never "2nd Chance Housing Inc."</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-compare"> I compared Claude's and DeepSeek's page for each funder and marked anything they disagree on.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-confirm"> For each funder, I found the deadline (or when the next round opens) <b>on the funder's own website</b>, or by calling or emailing them.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-track"> I entered each confirmed date in the <b>Deadline tracker</b> below and ticked "Confirmed".</label></li>
+    </ul>
+    <h3>Sign up so funders tell you when money opens</h3>
+    <p>Each funder posts new funding notices on its own site. Sign up for email alerts wherever you see "Subscribe," "Email updates" or "Funding opportunities":</p>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s9-gata"> <a href="https://grants.illinois.gov/Portal/" target="_blank" rel="noopener">GATA Grantee Portal ↗</a>: in your user settings, turn on the alerts (pre-qualification, and notices of state awards).</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-icjia"> <a href="https://icjia.illinois.gov/" target="_blank" rel="noopener">ICJIA ↗</a> (R3 grants): email updates</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-idhs"> <a href="https://www.dhs.state.il.us/" target="_blank" rel="noopener">IDHS ↗</a>: funding opportunities</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-ihda"> <a href="https://www.ihda.org/" target="_blank" rel="noopener">IHDA ↗</a>: email list</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-idoc"> <a href="https://idoc.illinois.gov/" target="_blank" rel="noopener">IDOC ↗</a>: contracting / funding notices</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s9-hud"> <a href="https://www.grants.gov/" target="_blank" rel="noopener">Grants.gov ↗</a>: subscribe to HUD Continuum of Care notices</label></li>
+    </ul>
+    <p class="note">The tracker below emails you every <b>Sunday morning</b> with all the deadlines, plus a reminder <b>7 days</b> and <b>1 day</b> before each one. Stephen gets a copy.</p>
+  </div>
+</details>
+
+<!-- STEP 10 -->
+<details class="step">
+  <summary><span class="num"><b>10</b></span><span class="stitle">Report at the meeting<small>What to bring</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s10-pages"> The funder pages are in For Grants, and I can show one on screen.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s10-dates"> I can say the next confirmed deadline for each funder, or what's still unknown.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s10-docs"> I can say which Step 3 documents we have, and which we still need from Albert.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s10-pick"> I have a recommendation: which funder we should apply to first, and why.</label></li>
+    </ul>
+    <p class="note"><b>What you've learned:</b> <b>research</b> with several AIs, <b>combine</b> their answers, have an AI <b>build</b> a web page, <b>change</b> it by asking, and <b>check</b> the result against the real source. Use the same method for every grant.</p>
+  </div>
+</details>
+
+<!-- Deadline tracker -->
+<section class="card" id="deadlines">
+  <h2>📅 Deadline tracker: 2ND CH INC.</h2>
+  <p class="why">Only enter a date after you've confirmed it on the funder's own website. You and Stephen get a weekly email from this list and reminders before each deadline.</p>
+  <div id="dlList"><p class="why">Loading…</p></div>
+  <div class="row"><button class="btn ghost" id="dlAdd" type="button">+ Add another funder</button></div>
+  <p class="svmsg" id="dlMsg" aria-live="polite"></p>
+</section>
+
   <footer>
-    <p>Questions? Text Stephen.</p>
+    <p>Questions? Text or call Stephen or Albert.</p>
     <button class="linkbtn" id="reset" type="button">Clear my checkmarks and start over</button>
   </footer>
 </main>
@@ -372,38 +522,126 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var research = $('research').textContent;
+
+  // ===== The five funders this lesson covers =====
+  var FUNDERS = [
+    {key:"R3",   name:"ICJIA: R3 (Restore, Reinvest, and Renew) grants"},
+    {key:"IDHS", name:"IDHS: reentry / supportive housing and rapid re-housing funding, including Emergency Solutions Grants (ESG)"},
+    {key:"IHDA", name:"IHDA: Long-Term Operating Support (LTOS) / Home Illinois"},
+    {key:"IDOC", name:"IDOC Division of Reentry: contracts for transitional and residential reentry beds"},
+    {key:"CoC",  name:"HUD Continuum of Care (CoC) funding in Chicago, through the Chicago CoC"}
+  ];
+  var funderLines = FUNDERS.map(function(f, i){ return (i + 1) + ". " + f.name; }).join("\n");
+  FUNDERS.forEach(function(f){ var li = document.createElement('li'); li.textContent = f.name; $('funderList').appendChild(li); });
+
   var WHO = "2ND CH INC. That is the Illinois assumed corporate name of 2nd Chance Housing Inc., a Wisconsin nonprofit corporation and 501(c)(3) public charity (EIN 47-5387503) authorized to conduct affairs in Illinois (Secretary of State file no. 7552-470-6), with its Illinois office in South Holland, Cook County. Our mission is housing, mentoring and supportive services for people returning from incarceration and their families";
-  var NAME_RULE = "IMPORTANT NAME RULE: In Illinois we agreed NOT to use the name \"2nd Chance Housing Inc.\" Every Illinois application must use the applicant name \"2ND CH INC.\" If an application asks for the legal name exactly as it appears on the IRS letter, flag that field \"ASK STEPHEN\" instead of filling it in.";
-  var DOCS = "Illinois authority to conduct affairs plus the 2ND CH INC. assumed-name filing; IRS 501(c)(3) determination letter; Wisconsin certificate of status (good standing); bylaws; two past grant narratives; an active Illinois GATA grantee portal account; Wisconsin sales tax exemption certificate; an Illinois REO outreach letter";
+  var NAME_RULE = "IMPORTANT NAME RULE: In Illinois we agreed NOT to use the name \"2nd Chance Housing Inc.\" Every Illinois application must use the applicant name \"2ND CH INC.\" If an application asks for the legal name exactly as it appears on the IRS letter or in SAM.gov, flag that field \"ASK STEPHEN\" instead of filling it in.";
+  var DOCS = "Illinois authority to conduct affairs plus the 2ND CH INC. assumed-name filing; IRS 501(c)(3) determination letter; Wisconsin certificate of status (good standing); bylaws; two past grant narratives; an Illinois GATA grantee portal login; Wisconsin sales tax exemption certificate; an Illinois REO outreach letter. We may NOT yet have: Illinois Attorney General charitable registration, Illinois certificate of good standing, SAM.gov UEI, GATA pre-qualification, recent Form 990s, a budget, or financial statements";
 
   $('prompt1').textContent =
-"I am the Grant Development Specialist at " + WHO + ". We want funding to provide reentry housing for people coming home from Illinois prisons. Below is research on how Illinois pays for reentry housing.\n\n" +
-"For EVERY funding source, program, and organization named in the research (including IDOC reentry housing / placement contracts, the R3 Restore, Reinvest, and Renew grant program at ICJIA, IDHS supportive housing and rapid re-housing funding, IHDA Long-Term Operating Support and Home Illinois, HUD Continuum of Care and Emergency Solutions Grants, Chicago Coordinated Entry, and the named providers such as St. Leonard's Ministries, Safer Foundation, Inner-Voice, Christian Community Health Center, A Safe Haven Foundation, The Renaissance Collaborative and Featherfist), give me:\n\n" +
-"1. The direct web link (full URL) to its APPLICATION page. For a funder, that is the page where a nonprofit applies for the grant or contract (the funding notice or application portal), not the home page. For a provider, that is the page to become a partner or subcontractor, or to refer a client. If there is no online application, say exactly how to apply (who to contact, phone, email).\n" +
-"2. Who is eligible to apply.\n" +
-"3. Every requirement and document needed to apply (for example: IRS determination letter, state registration, grantee pre-qualification, audited financials, budget, program narrative).\n" +
-"4. The deadline or when the next application round opens.\n" +
+"I am the Grant Development Specialist at " + WHO + ". We want funding to provide reentry housing for people coming home from Illinois prisons.\n\n" +
+"Research ONLY these five funders:\n" + funderLines + "\n\n" +
+"For each one, give me:\n" +
+"1. The direct web link (full URL) to the APPLICATION: the current or most recent funding notice (NOFO) or the application portal page, not the home page.\n" +
+"2. Who is eligible, and whether a Wisconsin nonprofit authorized in Illinois under an assumed name can apply.\n" +
+"3. Every registration and document required (for example GATA pre-qualification, SAM.gov UEI, Illinois Attorney General charitable registration, certificate of good standing, budget, audit or financial statements).\n" +
+"4. The deadline, or when the next round is expected to open, and how to sign up to be notified.\n" +
 "5. A contact name, phone number, or email.\n\n" +
-"Put the answer in a table with one row per funder or program. Include your sources. If you are not sure a link or deadline is correct, write \"not sure\" instead of guessing.\n\n" +
-"RESEARCH:\n\n" + research;
+"Put the answer in a table with one row per funder. Include your sources. If you are not sure a link or date is correct, write \"not sure\" instead of guessing.\n\n" +
+"Background research (it may contain mistakes):\n\n" + research;
 
   $('prompt2').textContent =
-"I am the Grant Development Specialist at " + WHO + ". We want funding to provide reentry housing.\n\n" + NAME_RULE + "\n\nBelow are answers from four AI tools (ChatGPT, Gemini, Copilot and Perplexity). I asked each one for the application links and requirements for Illinois reentry housing funders and programs.\n\n" +
-"Please write ONE complete, self-contained HTML file (all CSS inside the file, nothing else needed) titled for 2ND CH INC. that walks me step by step through completing each application. Put the name rule above in a box at the top of the page. For each funder or program, include:\n\n" +
-"- The name and a clickable link to its application page\n" +
+"I am the Grant Development Specialist at " + WHO + ".\n\n" + NAME_RULE + "\n\n" +
+"Below are answers from four AI tools (ChatGPT, Gemini, Copilot and Perplexity) about these five funders:\n" + funderLines + "\n\n" +
+"DON'T BUILD ANYTHING YET. Read the four answers, compare them, and reply only with \"Ready\". Then I will ask you for ONE web page per funder, one at a time.\n\n" +
+"Rules for every page you build later:\n" +
+"- ONE complete, self-contained HTML file (all CSS inside, nothing else needed), short enough to send in one reply\n" +
+"- Title: the funder name and \"2ND CH INC.\", with the name rule above in a box at the top\n" +
+"- A clickable link to the application page\n" +
 "- Who is eligible, and whether 2ND CH INC. appears to qualify\n" +
-"- The deadline or next application round\n" +
-"- A checklist of documents to attach. We already have these in our grant folder: " + DOCS + ". Mark each required document HAVE or NEED.\n" +
-"- Each question the application is likely to ask, with a short note on how to answer it for our organization, and a blank line wherever I need to fill in our own numbers\n" +
-"- The contact name, phone, or email\n" +
-"- What happens after we submit\n\n" +
-"Compare the four answers. Wherever they disagree on a link, deadline, phone number, or requirement, label it \"VERIFY\" in red. Don't invent links. If none of the four answers gave a link, say so.\n\n" +
-"Put the applications in order from soonest deadline to latest. Use large, easy-to-read text and checkboxes I can tick. Give me the full HTML in a single code block.\n\n" +
+"- The deadline or next round, shown big\n" +
+"- A document checklist, each marked HAVE or NEED. What we have: " + DOCS + "\n" +
+"- The questions the application is likely to ask, each with a short note on how to answer for 2ND CH INC. and a blank line wherever I need to fill in our own numbers\n" +
+"- Contact name, phone, or email, and what happens after we submit\n" +
+"- Wherever the four answers disagree on a link, deadline, phone number or requirement, label it \"VERIFY\" in red. Don't invent links.\n" +
+"- Large, easy-to-read text and checkboxes I can tick\n\n" +
 "HERE ARE THE FOUR AI ANSWERS:\n\n";
+
+  FUNDERS.forEach(function(f, i){
+    var box = document.createElement('div'); box.className = 'copybox short';
+    var pre = document.createElement('pre'); pre.id = 'fp' + i;
+    pre.textContent = "Build the page for funder " + (i + 1) + ": " + f.name + ". Follow all the rules from my first message. Send the complete HTML in one code block.";
+    var b = document.createElement('button'); b.className = 'btn sm'; b.type = 'button'; b.dataset.copy = pre.id; b.textContent = 'Copy request ' + (i + 1);
+    box.appendChild(pre); box.appendChild(b); $('funderPrompts').appendChild(box);
+  });
+
+  var today = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+  $('prompt3').textContent =
+"Change the page for funder 1 (R3): put \"2ND CH INC.\" and \"Prepared by Paul\" at the top, add \"Last checked: " + today + "\" under the title, and make the deadline big, bold and red. Keep everything else the same. Send the complete updated HTML in one code block.";
+
+  // ===== Device: show the right instructions =====
+  var DEV_KEY = 'rti-ai-lab-device';
+  function guessDevice(){
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
+    if (/Android/.test(ua)) return 'android';
+    if (/CrOS/.test(ua)) return 'cros';
+    if (/Mac/.test(ua)) return 'mac';
+    return 'win';
+  }
+  function setDevice(d){
+    try { localStorage.setItem(DEV_KEY, d); } catch(e) {}
+    document.querySelectorAll('.chip[data-dev]').forEach(function(c){ c.setAttribute('aria-pressed', c.dataset.dev === d ? 'true' : 'false'); });
+    document.querySelectorAll('[data-only]').forEach(function(el){ el.hidden = el.dataset.only.split(' ').indexOf(d) < 0; });
+  }
+  var dev = null; try { dev = localStorage.getItem(DEV_KEY); } catch(e) {}
+  setDevice(dev || guessDevice());
+  document.querySelectorAll('.chip[data-dev]').forEach(function(c){ c.addEventListener('click', function(){ setDevice(c.dataset.dev); }); });
+
+  // ===== Save & preview =====
+  FUNDERS.forEach(function(f, i){
+    ['claude','deepseek'].forEach(function(ai){
+      var o = document.createElement('option');
+      o.value = ai + '-' + (i + 1) + '-' + f.key + '.html';
+      o.textContent = (ai === 'claude' ? 'Claude' : 'DeepSeek') + ', funder ' + (i + 1) + ' (' + f.key + ')';
+      $('svName').appendChild(o);
+    });
+  });
+  // Sort so all Claude pages come first, then DeepSeek
+  Array.prototype.slice.call($('svName').options).sort(function(a, b){ return a.value.localeCompare(b.value, undefined, {numeric:true}); })
+    .forEach(function(o){ $('svName').appendChild(o); });
+  $('svName').selectedIndex = 0;
+
+  function svMsg(m, err){ $('svMsg').textContent = m; $('svMsg').style.color = err ? 'var(--warn)' : 'var(--accent)'; }
+  function pastedHtml(){
+    var s = $('svCode').value.trim();
+    s = s.replace(/^```[a-zA-Z]*\s*\n/, '').replace(/\n?```\s*$/, '').trim();   // drop ``` fences if they came along
+    if (!s) { svMsg('Paste the code into the box first.', true); return null; }
+    if (!/<html|<!doctype/i.test(s)) { svMsg("That doesn't look like a web page. Copy the whole code block, starting with <!DOCTYPE html>.", true); return null; }
+    if (!/<\/html>\s*$/i.test(s)) svMsg('This code looks cut off (it doesn\'t end with </html>). Ask the AI to send the complete HTML again.', true);
+    else svMsg('');
+    return s;
+  }
+  $('svPreview').addEventListener('click', function(){
+    var s = pastedHtml(); if (!s) return;
+    $('svFrame').hidden = false; $('svFrame').srcdoc = s;
+    $('svFrame').scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+  $('svDownload').addEventListener('click', function(){
+    var s = pastedHtml(); if (!s) return;
+    var blob = new Blob([s], {type:'text/html'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = $('svName').value;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+    if (!$('svMsg').textContent) svMsg('Saved as ' + $('svName').value + '. Next, upload it to For Grants.');
+  });
+  $('svClear').addEventListener('click', function(){ $('svCode').value = ''; $('svFrame').hidden = true; $('svFrame').srcdoc = ''; svMsg(''); });
 
   // ===== Sign-in (same members-only gate as /rti/background-check/) =====
   var ACCESS_FUNCTION = "rti-bgcheck-access";
   var READY = typeof SUPABASE_URL === "string" && typeof sfTurnstileToken === "function";
+  var EXPIRED = "Your sign-in expired. Sign in again with your email.";
+  var current = null;
   function saveSession(p){
     ["localStorage","sessionStorage"].forEach(function(st){ try{ p ? window[st].setItem("rtiBgPass", JSON.stringify(p)) : window[st].removeItem("rtiBgPass"); }catch(e){} });
   }
@@ -416,31 +654,31 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
     return out;
   }
   function gateMsg(m, err){ $("gMsg").textContent = m; $("gMsg").style.color = err ? "var(--warn)" : ""; }
-  function access(payload){
-    return fetch(SUPABASE_URL + "/functions/v1/" + ACCESS_FUNCTION, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)})
+  function call(fn, payload){
+    return fetch(SUPABASE_URL + "/functions/v1/" + fn, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)})
       .then(function(res){ return res.json().catch(function(){ return {}; }).then(function(out){
         if (!res.ok || !out.ok) { var e = new Error(out.error || "Something went wrong. Please try again."); e.relogin = !!out.relogin; throw e; }
         return out;
       }); });
   }
   function unlock(p, folder){
-    saveSession(p);
+    current = p; saveSession(p);
     $("gateIn").hidden = true; $("gateOk").hidden = false; $("gWho").textContent = p.email;
     $("lesson").hidden = false;
-    if (folder) { $("folderBtn").href = folder; $("folderBtn").hidden = false; $("folderMissing").hidden = true; }
-    else { $("folderBtn").hidden = true; $("folderMissing").hidden = false; }
+    document.querySelectorAll('.folderLink').forEach(function(a){ if (folder) a.href = folder; a.hidden = !folder; });
+    document.querySelectorAll('.folderMissing').forEach(function(s){ s.hidden = !!folder; });
+    loadDeadlines();
   }
   function lock(msg){
-    saveSession(null);
+    current = null; saveSession(null);
     $("lesson").hidden = true; $("gateIn").hidden = false; $("gateOk").hidden = true;
     $("gCodeRow").hidden = true; $("gCode").value = "";
     gateMsg(msg || "", !!msg);
   }
-  // Signed in already? Check the pass is still good and fetch the folder link.
   function resume(p){
-    return access({action:"check", pass:p.pass, page:"ai-lab"})
-      .then(function(out){ unlock(p, out.folder); })
-      .catch(function(e){ if (e.relogin) lock(e.message); else { gateMsg("Couldn't reach the sign-in service. Reload to try again.", true); } });
+    return call(ACCESS_FUNCTION, {action:"check", pass:p.pass, page:"ai-lab"})
+      .then(function(out){ gateMsg(""); unlock(p, out.folder); })
+      .catch(function(e){ if (e.relogin) lock(EXPIRED); else gateMsg("Couldn't reach the sign-in service. Reload to try again.", true); });
   }
   $("gSend").addEventListener("click", function(){
     var em = $("gEmail").value.trim(), b = $("gSend");
@@ -449,7 +687,7 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
     b.disabled = true; gateMsg("Running a quick security check…");
     sfTurnstileToken().then(function(token){
       gateMsg("Sending your code…");
-      return access({action:"request", email:em, token:token, page:"ai-lab"});
+      return call(ACCESS_FUNCTION, {action:"request", email:em, token:token, page:"ai-lab"});
     }).then(function(out){
       gateMsg(out.message); $("gCodeRow").hidden = false; $("gCode").focus(); b.textContent = "Send a new code";
     }).catch(function(e){ gateMsg(e.message, true); });
@@ -459,41 +697,97 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
     var code = $("gCode").value.replace(/\D/g, ""), b = $("gVerify");
     if (code.length !== 6) { gateMsg("Enter the 6-digit code from the email.", true); $("gCode").focus(); return; }
     b.disabled = true; gateMsg("Checking your code…");
-    access({action:"verify", email:$("gEmail").value.trim(), code:code})
-      .then(function(out){ gateMsg(""); return resume({pass:out.pass, email:out.email, expires:out.expires}); })
+    call(ACCESS_FUNCTION, {action:"verify", email:$("gEmail").value.trim(), code:code})
+      .then(function(out){ return resume({pass:out.pass, email:out.email, expires:out.expires}); })
       .catch(function(e){ gateMsg(e.message, true); })
       .then(function(){ b.disabled = false; });
   });
   $("gCode").addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); $("gVerify").click(); } });
   $("gEmail").addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); $("gSend").click(); } });
   $("gOut").addEventListener("click", function(){ lock(); });
+
+  // ===== Deadline tracker =====
+  var DL_FUNCTION = "rti-grant-deadlines";
+  var STATUS = [["to_research","Still researching"],["preparing","Preparing application"],["submitted","Submitted"],["awarded","Awarded"],["declined","Declined"],["skip","Not applying"]];
+  function dlMsg(m, err){ $('dlMsg').textContent = m; $('dlMsg').style.color = err ? 'var(--warn)' : 'var(--accent)'; }
+  function daysTo(d){ return Math.round((Date.parse(d + 'T12:00:00') - Date.parse(new Date().toLocaleDateString('en-CA') + 'T12:00:00')) / 86400000); }
+  function el(tag, attrs, kids){
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function(k){ if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function(c){ e.appendChild(c); });
+    return e;
+  }
+  function field(label, input){ return el('label', {class:'field'}, [el('span', {text:label}), input]); }
+  function renderRow(r){
+    r = r || {status:'to_research', verified:false};
+    var card = el('div', {class:'dl' + (r.verified ? ' verified' : '')});
+    var when = el('span', {class:'when'});
+    if (r.deadline_date) { var d = daysTo(r.deadline_date); when.textContent = d < 0 ? 'Deadline passed' : d === 0 ? 'Due TODAY' : 'Due in ' + d + ' day' + (d === 1 ? '' : 's'); if (d >= 0 && d <= 14) when.className += ' soon'; }
+    else when.textContent = r.id ? 'No deadline yet' : 'New funder';
+    var funder = el('input', {type:'text', value:r.funder || ''}), program = el('input', {type:'text', value:r.program || ''});
+    var url = el('input', {type:'url', inputmode:'url', value:r.url || '', placeholder:'https://'});
+    var opens = el('input', {type:'date', value:r.opens_date || ''}), deadline = el('input', {type:'date', value:r.deadline_date || ''});
+    var status = el('select'); STATUS.forEach(function(s){ var o = el('option', {value:s[0], text:s[1]}); if (s[0] === r.status) o.selected = true; status.appendChild(o); });
+    var notes = el('input', {type:'text', value:r.notes || ''});
+    var ver = el('input', {type:'checkbox'}); ver.checked = !!r.verified;
+    var save = el('button', {class:'btn sm', type:'button', text:'Save'});
+    var del = el('button', {class:'linkbtn', type:'button', text:'Remove'});
+    card.appendChild(el('div', {class:'head'}, [el('b', {text:r.funder || 'New funder'}), when]));
+    card.appendChild(el('div', {class:'grid'}, [field('Funder', funder), field('Program', program)]));
+    card.appendChild(el('div', {class:'grid'}, [field('Application link', url)]));
+    card.appendChild(el('div', {class:'grid'}, [field('Opens', opens), field('Deadline', deadline), field('Status', status)]));
+    card.appendChild(el('div', {class:'grid'}, [field('Notes', notes)]));
+    card.appendChild(el('div', {class:'actions'}, [el('label', {class:'tick'}, [ver, el('span', {text:'Confirmed on the funder\'s own site'})]), save, del]));
+    save.addEventListener('click', function(){
+      if (!current) return;
+      save.disabled = true; dlMsg('Saving…');
+      call(DL_FUNCTION, {action:'save', pass:current.pass, row:{id:r.id || null, funder:funder.value, program:program.value, url:url.value, opens_date:opens.value, deadline_date:deadline.value, status:status.value, notes:notes.value, verified:ver.checked}})
+        .then(function(out){ dlMsg('Saved.'); card.replaceWith(renderRow(out.row)); })
+        .catch(function(e){ if (e.relogin) lock(EXPIRED); else dlMsg(e.message, true); save.disabled = false; });
+    });
+    del.addEventListener('click', function(){
+      if (!r.id) { card.remove(); return; }
+      if (!confirm('Remove ' + (r.funder || 'this funder') + ' from the tracker?')) return;
+      call(DL_FUNCTION, {action:'delete', pass:current.pass, id:r.id})
+        .then(function(){ card.remove(); dlMsg('Removed.'); })
+        .catch(function(e){ if (e.relogin) lock(EXPIRED); else dlMsg(e.message, true); });
+    });
+    return card;
+  }
+  function loadDeadlines(){
+    if (!current) return;
+    call(DL_FUNCTION, {action:'list', pass:current.pass})
+      .then(function(out){ $('dlList').innerHTML = ''; (out.rows || []).forEach(function(r){ $('dlList').appendChild(renderRow(r)); }); if (!out.rows || !out.rows.length) $('dlList').innerHTML = '<p class="why">No funders yet.</p>'; })
+      .catch(function(e){ if (e.relogin) lock(EXPIRED); else $('dlList').innerHTML = '<p class="why">Couldn\'t load the tracker. Reload the page to try again.</p>'; });
+  }
+  $('dlAdd').addEventListener('click', function(){ var c = renderRow(null); $('dlList').appendChild(c); c.querySelector('input').focus(); });
+
   var saved = loadSession();
   if (saved && READY) { gateMsg("Signing you in…"); resume(saved); }
 
   // ===== Copy buttons =====
   var toast = $('toast'), tt;
   function flash(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ toast.classList.remove('show'); }, 1800); }
-  document.querySelectorAll('[data-copy]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var text = $(b.dataset.copy).textContent;
-      function ok(){ var o = b.textContent; b.textContent = 'Copied ✓'; flash('Copied. Now paste with Ctrl+V'); setTimeout(function(){ b.textContent = o; }, 2000); }
-      function fallback(){
-        var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); ok(); } catch(e) { flash('Select the text and press Ctrl+C'); }
-        document.body.removeChild(ta);
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
-      else fallback();
-    });
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-copy]'); if (!b) return;
+    var text = $(b.dataset.copy).textContent;
+    function ok(){ var o = b.textContent; b.textContent = 'Copied ✓'; flash('Copied. Now paste it.'); setTimeout(function(){ b.textContent = o; }, 2000); }
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); } catch(e) { flash('Select the text and copy it'); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
+    else fallback();
   });
 
-  // ===== Checkmarks + progress (kept in this browser) =====
+  // ===== Checkmarks + progress (kept on this device) =====
   var KEY = 'rti-ai-lab-progress';
   var state = {};
   try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) {}
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[data-k]'));
   var steps = Array.prototype.slice.call(document.querySelectorAll('details.step'));
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('details.step input[data-k]'));
   function render(){
     var n = 0;
     boxes.forEach(function(b){ if (b.checked) n++; });
@@ -511,8 +805,7 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
       state[b.dataset.k] = b.checked;
       try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
       render();
-      // finishing a step opens the next one
-      var s = b.closest('details.step');
+      var s = b.closest('details.step');   // finishing a step opens the next one
       if (b.checked && s.classList.contains('done')) {
         var i = steps.indexOf(s);
         if (steps[i + 1]) { s.open = false; steps[i + 1].open = true; steps[i + 1].scrollIntoView({behavior:'smooth', block:'start'}); }
@@ -522,6 +815,7 @@ IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
   render();
   var first = steps.filter(function(s){ return !s.classList.contains('done'); })[0];
   if (first) steps.forEach(function(s){ s.open = (s === first); });
+  if (location.hash === '#deadlines') setTimeout(function(){ $('deadlines').scrollIntoView(); }, 600);
 
   $('reset').addEventListener('click', function(){
     if (!confirm('Clear all your checkmarks?')) return;
