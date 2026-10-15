@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Lab — Reentry Housing Grants</title>
+<meta name="description" content="Ras Tafari Inc. AI Lab: use six AI tools to turn reentry housing research into grant application links, requirements and a finished HTML guide.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f6f4; --surface:#ffffff; --fg:#17231d; --muted:#56665d; --line:#cfdad3;
+  --accent:#1f5f45; --accent-ink:#ffffff; --accent-soft:#e1efe7; --warn:#9a3b12; --warn-soft:#fbe9df;
+  --gold:#a8761c; --gold-soft:#f8eed8;
+  --body:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101714; --surface:#17211c; --fg:#e4ece7; --muted:#9db0a5; --line:#2c3b33;
+  --accent:#6fc59b; --accent-ink:#0d1a13; --accent-soft:#1d3329; --warn:#f0a07c; --warn-soft:#3a2219;
+  --gold:#e5a93c; --gold-soft:#33291a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101714; --surface:#17211c; --fg:#e4ece7; --muted:#9db0a5; --line:#2c3b33;
+  --accent:#6fc59b; --accent-ink:#0d1a13; --accent-soft:#1d3329; --warn:#f0a07c; --warn-soft:#3a2219;
+  --gold:#e5a93c; --gold-soft:#33291a; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:19px;line-height:1.55}
+a{color:var(--accent);font-weight:600}
+.wrap{max-width:820px;margin:0 auto;padding:28px 16px 80px}
+header.top{margin-bottom:22px}
+.kicker{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.1;margin:6px 0 10px;font-weight:800}
+h2{font-size:24px;margin:0 0 8px}
+.lede{color:var(--muted);margin:0 0 14px}
+.progress{display:flex;align-items:center;gap:12px;margin:18px 0 8px}
+.bar{flex:1;height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.ptext{font-weight:600;white-space:nowrap}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;margin:14px 0}
+.field{display:flex;flex-direction:column;gap:6px;flex:1 1 240px}
+.field span{font-weight:600;font-size:16px}
+.field input{font:inherit;font-size:20px;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:52px}
+.field input:focus{outline:none;border-color:var(--accent)}
+.gmsg{margin:12px 0 0;min-height:1em}
+.signed{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px;color:var(--muted)}
+
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:14px 0;overflow:hidden}
+.step>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px;min-height:64px}
+.step>summary::-webkit-details-marker{display:none}
+.num{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--accent-soft);color:var(--accent);font-size:20px}
+.step.done .num{background:var(--accent);color:var(--accent-ink)}
+.step.done .num::after{content:"✓"}
+.step.done .num b{display:none}
+.stitle{flex:1;font-weight:700;font-size:21px;line-height:1.25}
+.stitle small{display:block;font-weight:500;font-size:16px;color:var(--muted)}
+.chev{flex:none;transition:transform .2s;color:var(--muted)}
+.step[open] .chev{transform:rotate(90deg)}
+.body{padding:0 18px 20px;border-top:1px solid var(--line)}
+.body>p:first-child{margin-top:16px}
+
+ol.do,ul.do{padding-left:0;list-style:none;margin:12px 0}
+ol.do li,ul.do li{margin:10px 0}
+label.tick{display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:8px 10px;border-radius:10px}
+label.tick:hover{background:var(--accent-soft)}
+label.tick input{width:24px;height:24px;flex:none;margin-top:3px;accent-color:var(--accent)}
+ul.docs{margin:8px 0 14px;padding-left:22px}
+ul.docs li{margin:4px 0}
+
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:14px 0}
+.app{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.app .name{font-weight:700;font-size:20px}
+.app .role{font-size:15px;color:var(--muted)}
+.app label.tick{padding:4px 0}
+.app label.tick:hover{background:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border-radius:10px;border:0;
+  background:var(--accent);color:var(--accent-ink);font:600 17px var(--body);text-decoration:none;cursor:pointer}
+.btn[disabled]{opacity:.55;cursor:default}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+.btn.sm{min-height:40px;padding:6px 14px;font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;align-items:flex-end}
+
+.copybox{position:relative;margin:12px 0}
+.copybox pre{margin:0;white-space:pre-wrap;word-wrap:break-word;background:var(--bg);border:1px solid var(--line);border-radius:12px;
+  padding:16px 16px 60px;font:15px/1.55 var(--mono);max-height:340px;overflow:auto}
+.copybox .btn{position:absolute;right:12px;bottom:12px}
+.note{background:var(--gold-soft);border-left:4px solid var(--gold);padding:12px 14px;border-radius:8px;margin:14px 0}
+.warn{background:var(--warn-soft);border-left:4px solid var(--warn);padding:12px 14px;border-radius:8px;margin:14px 0}
+.why{color:var(--muted);font-size:17px}
+kbd{font:600 15px var(--mono);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;background:var(--surface)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--fg);color:var(--bg);
+  padding:12px 20px;border-radius:10px;font-weight:600;transition:transform .25s;z-index:10}
+.toast.show{transform:translateX(-50%) translateY(0)}
+footer{margin-top:36px;color:var(--muted);font-size:16px;text-align:center}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;padding:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">Ras Tafari Inc. · AI Lab</div>
+  <h1>Paul, let's build a grant guide with AI</h1>
+  <p class="lede">As our Grant Development Specialist, you'll take research on how Illinois pays for reentry housing and ask four AI tools where each program's application is and what it requires. Then two more AI tools turn their answers into a web page (HTML) that walks you through each application for Ras Tafari Inc.</p>
+</header>
+
+<!-- Sign in -->
+<section class="card" id="gate">
+  <div id="gateIn">
+    <h2>🔒 Sign in with your email</h2>
+    <p class="why">Enter the email Ras Tafari Inc. has for you. We'll email you a 6-digit code.</p>
+    <div class="row">
+      <label class="field"><span>Your email</span><input id="gEmail" type="email" autocomplete="email" inputmode="email"></label>
+      <button class="btn" id="gSend" type="button">Email me a code</button>
+    </div>
+    <div class="row" id="gCodeRow" hidden>
+      <label class="field"><span>6-digit code</span><input id="gCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></label>
+      <button class="btn" id="gVerify" type="button">Open my lesson</button>
+    </div>
+    <p class="gmsg" id="gMsg" aria-live="polite"></p>
+    <p class="why">No code? Check the spelling and your spam folder. Still nothing? Email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a>.</p>
+  </div>
+  <div id="gateOk" class="signed" hidden>
+    <span>Signed in as <b id="gWho"></b></span>
+    <button class="linkbtn" id="gOut" type="button">Sign out</button>
+  </div>
+</section>
+
+<main id="lesson" hidden>
+  <p class="why">Open one step at a time and tick each box when you finish it. Your ticks are saved on this computer, so you can stop and pick up later.</p>
+  <div class="progress"><div class="bar"><span id="barfill"></span></div><div class="ptext" id="ptext">0 of 0 done</div></div>
+
+<!-- STEP 1 -->
+<details class="step" id="s1" open>
+  <summary><span class="num"><b>1</b></span><span class="stitle">Open your six AI accounts<small>Sign up once, then they're yours</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>Each link opens in a new tab. On each site, choose <b>"Continue with Google"</b> (or "Sign up") and use the same Gmail address every time, so you only need one password.</p>
+    <div class="apps">
+      <div class="app"><span class="name">ChatGPT</span><span class="role">Finds links (Step 3)</span>
+        <a class="btn sm" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-chatgpt"> Signed in</label></div>
+      <div class="app"><span class="name">Gemini</span><span class="role">Finds links (Step 3)</span>
+        <a class="btn sm" href="https://gemini.google.com/" target="_blank" rel="noopener">Open Gemini ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-gemini"> Signed in</label></div>
+      <div class="app"><span class="name">Copilot</span><span class="role">Finds links (Step 3)</span>
+        <a class="btn sm" href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open Copilot ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-copilot"> Signed in</label></div>
+      <div class="app"><span class="name">Perplexity</span><span class="role">Finds links (Step 3)</span>
+        <a class="btn sm" href="https://www.perplexity.ai/" target="_blank" rel="noopener">Open Perplexity ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-perplexity"> Signed in</label></div>
+      <div class="app"><span class="name">Claude</span><span class="role">Builds the HTML (Step 5)</span>
+        <a class="btn sm" href="https://claude.ai/" target="_blank" rel="noopener">Open Claude ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-claude"> Signed in</label></div>
+      <div class="app"><span class="name">DeepSeek</span><span class="role">Builds the HTML (Step 5)</span>
+        <a class="btn sm" href="https://chat.deepseek.com/" target="_blank" rel="noopener">Open DeepSeek ↗</a>
+        <label class="tick"><input type="checkbox" data-k="acct-deepseek"> Signed in</label></div>
+    </div>
+    <p class="why">Copilot uses a Microsoft account. If "Continue with Google" isn't offered, tap "Sign in" and create a free Microsoft account with your Gmail address.</p>
+  </div>
+</details>
+
+<!-- STEP 2 -->
+<details class="step" id="s2">
+  <summary><span class="num"><b>2</b></span><span class="stitle">Open the For Grants folder and read the research<small>Our documents, plus one new Google Doc for notes</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>The <b>For Grants</b> folder in Google Drive holds the papers most grant applications ask for:</p>
+    <ul class="docs">
+      <li>IRS Exempt letter (our 501(c)(3) status)</li>
+      <li>Certificate of corporation 2026</li>
+      <li>Illinois Nonprofit status</li>
+      <li>STATE CES 2026</li>
+      <li>2nd Chance Housing Illinois REO Outreach Letter</li>
+    </ul>
+    <div class="row">
+      <a class="btn" id="folderBtn" href="#" target="_blank" rel="noopener" hidden>Open the For Grants folder ↗</a>
+      <span class="why" id="folderMissing" hidden>Folder link not loaded. Ask Stephen to share the "For Grants" folder with you.</span>
+    </div>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s2-folder"> I opened the For Grants folder (sign in with your Google account if it asks).</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s2-doc"> In the folder, I clicked <b>+ New → Google Docs</b> and named the doc <b>"Reentry housing – AI answers"</b>. Every AI answer goes in here.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s2-read"> I read the research below once, so I know what it says.</label></li>
+    </ul>
+    <p>Here's the research. It explains how Illinois pays for reentry housing, through <b>IDOC</b>, the <b>R3 grant program (ICJIA)</b>, <b>IDHS</b> and <b>IHDA</b>, and names the nonprofits that deliver it. The <b>Copy</b> button copies all of it.</p>
+    <div class="copybox"><pre id="research">The Illinois Department of Corrections (IDOC), which oversees parole and Mandatory Supervised Release (MSR), does not directly cut rent checks to private landlords or run an ongoing cash housing voucher program directly out of parole field offices.
+
+Instead, the state funds and coordinates rental assistance, transitional placement, and housing stability through legislative appropriations, inter-agency partnerships (IDOC, IDHS, and IHDA), and state-contracted community reentry providers.
+
+PRIMARY FUNDING SOURCES AND STATE INITIATIVES
+
+1. IDOC Reentry Housing & Halfway House / Placement Contracts
+Funding Stream: State General Revenue Fund (GRF) appropriations allocated to IDOC's Division of Reentry and Specialized Services.
+Mechanism: IDOC contracts directly with licensed adult transitional centers (halfway houses), contracted recovery residences, and non-profit residential reentry centers. This pays for 30- to 90-day transitional bed space to ensure a viable host site for individuals who otherwise lack an approved home site.
+
+2. Restore, Reinvest, and Renew (R3) Grant Program
+Administering Body: Illinois Criminal Justice Information Authority (ICJIA).
+Funding Stream: 25% of all Illinois adult-use cannabis tax revenues.
+Mechanism: R3 awards multimillion-dollar grant cycles directly to community-based non-profits in communities disproportionately impacted by incarceration and disinvestment (especially in Chicago and Cook County). Reentry providers use these funds for emergency housing, short-term rental subsidies, and move-in deposits.
+
+3. Illinois Department of Human Services (IDHS) Supportive Housing Line Items
+Programs: Crisis/Emergency Housing Assistance and the Permanent Supportive Housing (PSH) line.
+Funding Stream: IDHS State Budget appropriations paired with federal Emergency Solutions Grants (ESG) and HUD Continuum of Care (CoC) dollars.
+Mechanism: IDHS funds specialized reentry housing programs that offer scattered-site rapid re-housing (subsidizing private market rent for 6–24 months) while providing case management to help the individual maintain lease compliance.
+
+4. Illinois Housing Development Authority (IHDA) Reentry Housing Allocations
+Programs: Long-Term Operating Support (LTOS) through the Illinois Affordable Housing Trust Fund and the Home Illinois plan (Illinois Interagency Task Force on Homelessness).
+Mechanism: Subsidizes physical rental units reserved specifically for justice-impacted individuals or offers project-based rental assistance to keep rent capped at roughly 30% of adjusted gross income.
+
+KEY COMMUNITY CONTRACTORS & HOUSING PROVIDERS
+
+Because funds are passed through to certified providers, these are the primary networks delivering rental assistance and placement in the region:
+
+- St. Leonard's Ministries (West Side of Chicago): Comprehensive supportive housing, interim housing, and permanent supportive housing for formerly incarcerated men and women.
+- Safer Foundation: Manages transitional housing placements, rapid re-housing funds, and workforce/retention stipends.
+- Inner-Voice & Christian Community Health Center (CCHC): Administer HUD/IDHS rapid re-housing vouchers and scattered-site rental assistance for returning residents experiencing homelessness.
+- A Safe Haven Foundation: Behavioral health, transitional housing, and permanent supportive housing options with direct IDOC linkage.
+- The Renaissance Collaborative (TRC) & Featherfist: Supportive housing and emergency stabilization across the South Side of Chicago.
+
+PROCEDURE TO ACCESS AND MAINTAIN RENT FUNDING
+
+IDOC Facility / Parole Field Office
+  → 1. Pre-Release Screening / Parole Agent Referral (Host Site Verification via Field Services / Parole Officer)
+  → 2. Referral to Contracted Reentry Navigator / Housing Provider (IDHS-funded agency, Safer Foundation, or local CoC intake)
+  → 3. Coordinated Entry System (CES) Assessment (VI-SPDAT / Standardized Housing Vulnerability Indexing)
+  → 4. Housing Placement / Subsidy Execution, either:
+       • Short-Term Rapid Re-Housing (direct landlord subsidy: 3–12 months), or
+       • Transitional / Supportive Facility (on-site housing + wraparound services)
+  → 5. Lease Maintenance & Ongoing Compliance (case management, income verification, parole host-site re-approval)
+
+1. Pre-Release Identification or Parole Officer Referral:
+- Before Exit: Clinical Services or Field Services staff submit an electronic referral if an individual is designated as a "no-host-site" case.
+- On Active Parole/MSR: The parolee informs their supervising Parole Agent of housing vulnerability. The agent submits an internal referral to an IDOC Reentry Coordinator or an affiliated community-based organization.
+
+2. Coordinated Entry Intake:
+- In Chicago/Cook County, the individual must complete a Coordinated Entry System (CES) assessment (often via the Chicago Continuum of Care / 311 or an intake center like Catholic Charities or the Center for Housing and Health). Returning residents receive prioritization points under vulnerability indexing.
+
+3. Provider Enrollment & Landlord Liaison:
+- Once matched with a Rapid Re-Housing or R3-funded agency, a housing navigator assists the client in identifying a private landlord willing to accept justice-impacted tenants.
+- The program issues a direct landlord subsidy (typically paying 70%–100% of the rent initially, stepping down as the participant gains employment).
+
+4. IDOC Host Site Verification:
+- Before the individual can sign the lease or move, the local Parole District office must inspect and approve the physical address to ensure it complies with any special conditions of MSR (e.g., proximity restrictions or exclusion zones).
+
+5. Retention & Independence Transition:
+- To maintain the subsidy, the individual must meet monthly case management benchmarks (income verification, job placement progress, or disability benefit enrollment).
+- As earned income stabilizes, the tenant's share increases until they assume full lease responsibility.
+
+IMMEDIATE ACTION STEPS FOR CLINICIANS AND CASE MANAGERS
+
+- Submit Coordinated Entry Directly: Do not rely solely on the parole officer for housing placement. Link the individual directly to an access point (e.g., Catholic Charities, Safer Foundation, or the Chicago Homelessness Prevention Call Center via 311) to initiate a standardized housing assessment.
+- Request an IDOC Reentry Housing Voucher/Referral: Have the client formally request a consultation with their assigned parole district's Reentry Specialist (distinct from the armed field agent) to identify open, state-contracted beds.
+- Tap R3-Funded Providers: Contact local non-profits funded under the current R3 cycle in the client's home zip code, as these grants frequently maintain flexible emergency rental funds not bound by federal HUD housing disqualifications.</pre>
+      <button class="btn sm" data-copy="research">Copy</button></div>
+  </div>
+</details>
+
+<!-- STEP 3 -->
+<details class="step" id="s3">
+  <summary><span class="num"><b>3</b></span><span class="stitle">Ask four AIs for the application links and requirements<small>ChatGPT, Gemini, Copilot, Perplexity</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>You'll ask all four the <b>same question</b>. Different AIs find different things, and sometimes they're wrong. Asking four lets you compare.</p>
+    <p><b>How to send it:</b> click <b>Copy prompt</b>, go to the AI's tab, click in the message box, press <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste, then press <kbd>Enter</kbd>.</p>
+    <div class="copybox"><pre id="prompt1"></pre>
+      <button class="btn sm" data-copy="prompt1">Copy prompt</button></div>
+    <p class="note">The prompt already includes the research, so you only paste once.</p>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s3-chatgpt"> Sent to <b>ChatGPT</b>. <a href="https://chatgpt.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s3-gemini"> Sent to <b>Gemini</b>. <a href="https://gemini.google.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s3-copilot"> Sent to <b>Copilot</b>. <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s3-perplexity"> Sent to <b>Perplexity</b>. <a href="https://www.perplexity.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
+    </ul>
+    <p class="why">Wait for each answer to finish before moving on. In ChatGPT, if you see a "Search" or globe button, turn it on so it checks live websites.</p>
+  </div>
+</details>
+
+<!-- STEP 4 -->
+<details class="step" id="s4">
+  <summary><span class="num"><b>4</b></span><span class="stitle">Copy all four answers into your Google Doc<small>One doc, four labeled sections</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>For each AI:</p>
+    <ol class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s4-how1"> Under the answer, I found the <b>copy icon</b> (two overlapping squares) and clicked it. That copies the whole answer.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-how2"> In my Google Doc, I typed a heading for that AI, like <b>=== ChatGPT ===</b>, and pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> under it.</label></li>
+    </ol>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s4-chatgpt"> <b>=== ChatGPT ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-gemini"> <b>=== Gemini ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-copilot"> <b>=== Copilot ===</b> pasted</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s4-perplexity"> <b>=== Perplexity ===</b> pasted</label></li>
+    </ul>
+  </div>
+</details>
+
+<!-- STEP 5 -->
+<details class="step" id="s5">
+  <summary><span class="num"><b>5</b></span><span class="stitle">Have Claude and DeepSeek write the HTML guide<small>Same prompt plus all four answers, to both AIs</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>Now you hand all four answers to two different AIs and ask each one to <b>build a web page</b> that walks you through completing every application for Ras Tafari Inc.</p>
+    <ol class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s5-copy"> I clicked <b>Copy prompt</b> below and pasted it into Claude, but <b>did not press Enter yet</b>.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-doc"> I went to my Google Doc and pressed <kbd>Ctrl</kbd>+<kbd>A</kbd> (select all), then <kbd>Ctrl</kbd>+<kbd>C</kbd> (copy).</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-paste"> Back in Claude, I clicked at the very end of the prompt, pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> to add the four answers, then pressed <kbd>Enter</kbd>.</label></li>
+    </ol>
+    <div class="copybox"><pre id="prompt2"></pre>
+      <button class="btn sm" data-copy="prompt2">Copy prompt</button></div>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s5-claude"> Sent to <b>Claude</b>. <a href="https://claude.ai/" target="_blank" rel="noopener">Open ↗</a></label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s5-deepseek"> Did the same three steps in <b>DeepSeek</b>. <a href="https://chat.deepseek.com/" target="_blank" rel="noopener">Open ↗</a></label></li>
+    </ul>
+    <p class="why">If an AI says the message is too long, remove the shortest of the four answers and try again.</p>
+  </div>
+</details>
+
+<!-- STEP 6 -->
+<details class="step" id="s6">
+  <summary><span class="num"><b>6</b></span><span class="stitle">Save each HTML and open it in your browser<small>Notepad → Save As → .html</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>Each AI gives you a block of code that starts with <code>&lt;!DOCTYPE html&gt;</code>. That code <b>is</b> the web page. To turn it into a file:</p>
+    <ol class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s6-1"> I clicked the <b>Copy</b> button on the code block. (In Claude the code may open in a side panel. The copy button is at the top of that panel.)</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-2"> I pressed the <kbd>Windows</kbd> key, typed <b>Notepad</b>, pressed <kbd>Enter</kbd>, then pressed <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-3"> I clicked <b>File → Save As</b>, picked <b>Desktop</b>, set "Save as type" to <b>All files</b>, named it <b>reentry-grants-claude.html</b>, and clicked Save.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-4"> I did the same for DeepSeek's code and named it <b>reentry-grants-deepseek.html</b>.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-5"> I double-clicked each file on my Desktop. Each one opened in my browser as a real web page.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s6-6"> I dragged both .html files into the <b>For Grants</b> folder so the team can see them.</label></li>
+    </ol>
+    <p class="note">If a page looks broken or the code got cut off, go back to that AI and type: <i>"Your code got cut off. Send the complete HTML file again in one block."</i></p>
+  </div>
+</details>
+
+<!-- STEP 7 -->
+<details class="step" id="s7">
+  <summary><span class="num"><b>7</b></span><span class="stitle">Check the AI's work before you trust it<small>The most important step</small></span><span class="chev">▶</span></summary>
+  <div class="body">
+    <p>AI tools sometimes make up links, deadlines and phone numbers that look real. Before anyone applies:</p>
+    <ul class="do">
+      <li><label class="tick"><input type="checkbox" data-k="s7-links"> I clicked every link in both pages and wrote down any that were broken or went to the wrong place.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-compare"> I compared the two pages. Wherever Claude and DeepSeek disagree, I marked it "check by phone."</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-call"> I picked one funder (for example, ICJIA for the R3 program) and called or emailed to confirm when the next application round opens.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-fix"> I told Claude what I found ("these links are broken: …, please fix") and saved the updated page.</label></li>
+      <li><label class="tick"><input type="checkbox" data-k="s7-share"> I texted Stephen that the finished pages are in the For Grants folder.</label></li>
+    </ul>
+    <p class="note"><b>What you just learned:</b> how to <b>research</b> with several AIs, <b>combine</b> their answers, have an AI <b>build</b> a web page, and <b>check</b> the result. You can use the same method for every grant you work on.</p>
+  </div>
+</details>
+
+  <footer>
+    <p>Questions? Text Stephen.</p>
+    <button class="linkbtn" id="reset" type="button">Clear my checkmarks and start over</button>
+  </footer>
+</main>
+</div>
+<div class="toast" id="toast">Copied</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var research = $('research').textContent;
+  var DOCS = "IRS Exempt letter (501(c)(3) determination), Certificate of corporation 2026, Illinois Nonprofit status, STATE CES 2026, and a 2nd Chance Housing Illinois REO Outreach Letter";
+
+  $('prompt1').textContent =
+"I am the Grant Development Specialist at Ras Tafari Inc., a 501(c)(3) nonprofit in Chicago, Illinois. We want to fund and provide reentry housing for people coming home from Illinois prisons. Below is research on how Illinois pays for reentry housing.\n\n" +
+"For EVERY funding source, program, and organization named in the research (including IDOC reentry housing / placement contracts, the R3 Restore, Reinvest, and Renew grant program at ICJIA, IDHS supportive housing and rapid re-housing funding, IHDA Long-Term Operating Support and Home Illinois, HUD Continuum of Care and Emergency Solutions Grants, Chicago Coordinated Entry, and the named providers such as St. Leonard's Ministries, Safer Foundation, Inner-Voice, Christian Community Health Center, A Safe Haven Foundation, The Renaissance Collaborative and Featherfist), give me:\n\n" +
+"1. The direct web link (full URL) to its APPLICATION page. For a funder, that is the page where a nonprofit applies for the grant or contract (the funding notice or application portal), not the home page. For a provider, that is the page to become a partner or subcontractor, or to refer a client. If there is no online application, say exactly how to apply (who to contact, phone, email).\n" +
+"2. Who is eligible to apply.\n" +
+"3. Every requirement and document needed to apply (for example: IRS determination letter, state registration, grantee pre-qualification, audited financials, budget, program narrative).\n" +
+"4. The deadline or when the next application round opens.\n" +
+"5. A contact name, phone number, or email.\n\n" +
+"Put the answer in a table with one row per funder or program. Include your sources. If you are not sure a link or deadline is correct, write \"not sure\" instead of guessing.\n\n" +
+"RESEARCH:\n\n" + research;
+
+  $('prompt2').textContent =
+"I am the Grant Development Specialist at Ras Tafari Inc., a 501(c)(3) nonprofit at 7700 S. Stony Island Ave., Chicago, IL 60649. We want to fund and provide reentry housing. Below are answers from four AI tools (ChatGPT, Gemini, Copilot and Perplexity). I asked each one for the application links and requirements for Illinois reentry housing funders and programs.\n\n" +
+"Please write ONE complete, self-contained HTML file (all CSS inside the file, nothing else needed) that walks me step by step through completing each application. For each funder or program, include:\n\n" +
+"- The name and a clickable link to its application page\n" +
+"- Who is eligible, and whether Ras Tafari Inc. appears to qualify\n" +
+"- The deadline or next application round\n" +
+"- A checklist of documents to attach. We already have these in our grant folder: " + DOCS + ". Mark each required document HAVE or NEED.\n" +
+"- Each question the application is likely to ask, with a short note on how to answer it for our organization, and a blank line wherever I need to fill in our own numbers\n" +
+"- The contact name, phone, or email\n" +
+"- What happens after we submit\n\n" +
+"Compare the four answers. Wherever they disagree on a link, deadline, phone number, or requirement, label it \"VERIFY\" in red. Don't invent links. If none of the four answers gave a link, say so.\n\n" +
+"Put the applications in order from soonest deadline to latest. Use large, easy-to-read text and checkboxes I can tick. Give me the full HTML in a single code block.\n\n" +
+"HERE ARE THE FOUR AI ANSWERS:\n\n";
+
+  // ===== Sign-in (same members-only gate as /rti/background-check/) =====
+  var ACCESS_FUNCTION = "rti-bgcheck-access";
+  var READY = typeof SUPABASE_URL === "string" && typeof sfTurnstileToken === "function";
+  function saveSession(p){
+    ["localStorage","sessionStorage"].forEach(function(st){ try{ p ? window[st].setItem("rtiBgPass", JSON.stringify(p)) : window[st].removeItem("rtiBgPass"); }catch(e){} });
+  }
+  function loadSession(){
+    var out = null;
+    ["localStorage","sessionStorage"].forEach(function(st){
+      if (out) return;
+      try{ var p = JSON.parse(window[st].getItem("rtiBgPass") || "null"); if (p && new Date(p.expires) > new Date()) out = p; }catch(e){}
+    });
+    return out;
+  }
+  function gateMsg(m, err){ $("gMsg").textContent = m; $("gMsg").style.color = err ? "var(--warn)" : ""; }
+  function access(payload){
+    return fetch(SUPABASE_URL + "/functions/v1/" + ACCESS_FUNCTION, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)})
+      .then(function(res){ return res.json().catch(function(){ return {}; }).then(function(out){
+        if (!res.ok || !out.ok) { var e = new Error(out.error || "Something went wrong. Please try again."); e.relogin = !!out.relogin; throw e; }
+        return out;
+      }); });
+  }
+  function unlock(p, folder){
+    saveSession(p);
+    $("gateIn").hidden = true; $("gateOk").hidden = false; $("gWho").textContent = p.email;
+    $("lesson").hidden = false;
+    if (folder) { $("folderBtn").href = folder; $("folderBtn").hidden = false; $("folderMissing").hidden = true; }
+    else { $("folderBtn").hidden = true; $("folderMissing").hidden = false; }
+  }
+  function lock(msg){
+    saveSession(null);
+    $("lesson").hidden = true; $("gateIn").hidden = false; $("gateOk").hidden = true;
+    $("gCodeRow").hidden = true; $("gCode").value = "";
+    gateMsg(msg || "", !!msg);
+  }
+  // Signed in already? Check the pass is still good and fetch the folder link.
+  function resume(p){
+    return access({action:"check", pass:p.pass, page:"ai-lab"})
+      .then(function(out){ unlock(p, out.folder); })
+      .catch(function(e){ if (e.relogin) lock(e.message); else { gateMsg("Couldn't reach the sign-in service. Reload to try again.", true); } });
+  }
+  $("gSend").addEventListener("click", function(){
+    var em = $("gEmail").value.trim(), b = $("gSend");
+    if (!$("gEmail").checkValidity() || !em) { gateMsg("Enter your email address.", true); $("gEmail").focus(); return; }
+    if (!READY) { gateMsg("Sign-in isn't available right now. Email stephen@selassiefest.com.", true); return; }
+    b.disabled = true; gateMsg("Running a quick security check…");
+    sfTurnstileToken().then(function(token){
+      gateMsg("Sending your code…");
+      return access({action:"request", email:em, token:token, page:"ai-lab"});
+    }).then(function(out){
+      gateMsg(out.message); $("gCodeRow").hidden = false; $("gCode").focus(); b.textContent = "Send a new code";
+    }).catch(function(e){ gateMsg(e.message, true); });
+    setTimeout(function(){ b.disabled = false; }, 30000);
+  });
+  $("gVerify").addEventListener("click", function(){
+    var code = $("gCode").value.replace(/\D/g, ""), b = $("gVerify");
+    if (code.length !== 6) { gateMsg("Enter the 6-digit code from the email.", true); $("gCode").focus(); return; }
+    b.disabled = true; gateMsg("Checking your code…");
+    access({action:"verify", email:$("gEmail").value.trim(), code:code})
+      .then(function(out){ gateMsg(""); return resume({pass:out.pass, email:out.email, expires:out.expires}); })
+      .catch(function(e){ gateMsg(e.message, true); })
+      .then(function(){ b.disabled = false; });
+  });
+  $("gCode").addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); $("gVerify").click(); } });
+  $("gEmail").addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); $("gSend").click(); } });
+  $("gOut").addEventListener("click", function(){ lock(); });
+  var saved = loadSession();
+  if (saved && READY) { gateMsg("Signing you in…"); resume(saved); }
+
+  // ===== Copy buttons =====
+  var toast = $('toast'), tt;
+  function flash(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ toast.classList.remove('show'); }, 1800); }
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var text = $(b.dataset.copy).textContent;
+      function ok(){ var o = b.textContent; b.textContent = 'Copied ✓'; flash('Copied. Now paste with Ctrl+V'); setTimeout(function(){ b.textContent = o; }, 2000); }
+      function fallback(){
+        var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); ok(); } catch(e) { flash('Select the text and press Ctrl+C'); }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
+      else fallback();
+    });
+  });
+
+  // ===== Checkmarks + progress (kept in this browser) =====
+  var KEY = 'rti-ai-lab-progress';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) {}
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[data-k]'));
+  var steps = Array.prototype.slice.call(document.querySelectorAll('details.step'));
+  function render(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    $('barfill').style.width = (boxes.length ? n / boxes.length * 100 : 0) + '%';
+    $('ptext').textContent = n + ' of ' + boxes.length + ' done';
+    steps.forEach(function(s){
+      var bs = s.querySelectorAll('input[data-k]'), all = bs.length > 0;
+      bs.forEach(function(b){ if (!b.checked) all = false; });
+      s.classList.toggle('done', all);
+    });
+  }
+  boxes.forEach(function(b){
+    b.checked = !!state[b.dataset.k];
+    b.addEventListener('change', function(){
+      state[b.dataset.k] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+      render();
+      // finishing a step opens the next one
+      var s = b.closest('details.step');
+      if (b.checked && s.classList.contains('done')) {
+        var i = steps.indexOf(s);
+        if (steps[i + 1]) { s.open = false; steps[i + 1].open = true; steps[i + 1].scrollIntoView({behavior:'smooth', block:'start'}); }
+      }
+    });
+  });
+  render();
+  var first = steps.filter(function(s){ return !s.classList.contains('done'); })[0];
+  if (first) steps.forEach(function(s){ s.open = (s === first); });
+
+  $('reset').addEventListener('click', function(){
+    if (!confirm('Clear all your checkmarks?')) return;
+    state = {}; try { localStorage.removeItem(KEY); } catch(e) {}
+    boxes.forEach(function(b){ b.checked = false; });
+    render(); steps.forEach(function(s, i){ s.open = i === 0; });
+  });
+})();
+</script>
+</body>
+</html>

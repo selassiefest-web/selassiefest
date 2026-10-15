@@ -11,8 +11,12 @@
 //   { action: "load" | "save" | "clear" | "check", pass, data? }  Saved
 //       progress, one draft per member email (rti_bgcheck_drafts), encrypted
 //       with RTI_DRAFT_KEY so the table only holds ciphertext.
+//   page: "ai-lab" (optional, on request/check) uses the same gate for
+//       /rti/ai-lab/: the code email names that page, and "check" also returns
+//       the shared Drive folder link (secret AI_LAB_FOLDER_URL) so the link
+//       never sits in the public page source.
 //
-// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY, RTI_DRAFT_KEY.
+// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY, RTI_DRAFT_KEY, AI_LAB_FOLDER_URL.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -27,6 +31,7 @@ const CODE_TTL_MINUTES = 10;
 const COOLDOWN_SECONDS = 60;
 const MAX_ATTEMPTS = 5;
 const SESSION_HOURS = 14 * 24; // stays signed in on that device for 14 days (Sign out ends it)
+const AI_LAB_FOLDER_URL = Deno.env.get("AI_LAB_FOLDER_URL") ?? "";
 const DRAFT_KEY = Deno.env.get("RTI_DRAFT_KEY") ?? ""; // base64 of 32 random bytes (AES-256-GCM)
 const MAX_DRAFT_CHARS = 400_000; // answers plus a signature image
 const DRAFT_KEEP_DAYS = 180;
@@ -105,9 +110,8 @@ Deno.serve(async (req) => {
     const session = await sessionFor(supabase, String(body.pass ?? ""));
     if (!session) return reply({ ok: false, relogin: true, error: "Your sign-in expired. Confirm your email again; your saved answers will come back." }, 401);
     const email = session.email as string;
+    if (body.action === "check") return reply(body.page === "ai-lab" ? { ok: true, email, folder: AI_LAB_FOLDER_URL || null } : { ok: true, email });
     if (!DRAFT_KEY) return reply({ ok: false, error: "Saving is paused right now." }, 500);
-
-    if (body.action === "check") return reply({ ok: true, email });
 
     if (body.action === "save") {
       const json = JSON.stringify(body.data ?? {});
@@ -164,14 +168,16 @@ Deno.serve(async (req) => {
     }, { onConflict: "email" });
     if (error) { console.error("rti-bgcheck-access: code upsert failed", error.code); return reply({ ok: false, error: "Something went wrong. Please try again." }, 500); }
 
+    const page = body.page === "ai-lab" ? "AI Lab" : "background check";
+    const opens = body.page === "ai-lab" ? "open your AI Lab lesson" : "open your application";
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: FROM_EMAIL, to: [email],
-        subject: `${code} is your Ras Tafari Inc. background check code`,
-        text: `Your code for the Ras Tafari Inc. background check page is ${code}\n\nEnter it on the page to open your application. It expires in ${CODE_TTL_MINUTES} minutes.\n\nIf you didn't ask for this, you can ignore this email.\n`,
-        html: `<p>Your code for the Ras Tafari Inc. background check page:</p><p style="font-size:30px;font-weight:700;letter-spacing:5px">${code}</p><p>Enter it on the page to open your application. It expires in ${CODE_TTL_MINUTES} minutes.</p><p style="color:#888;font-size:13px">If you didn't ask for this, you can ignore this email.</p>`,
+        subject: `${code} is your Ras Tafari Inc. ${page} code`,
+        text: `Your code for the Ras Tafari Inc. ${page} page is ${code}\n\nEnter it on the page to ${opens}. It expires in ${CODE_TTL_MINUTES} minutes.\n\nIf you didn't ask for this, you can ignore this email.\n`,
+        html: `<p>Your code for the Ras Tafari Inc. ${page} page:</p><p style="font-size:30px;font-weight:700;letter-spacing:5px">${code}</p><p>Enter it on the page to ${opens}. It expires in ${CODE_TTL_MINUTES} minutes.</p><p style="color:#888;font-size:13px">If you didn't ask for this, you can ignore this email.</p>`,
       }),
     });
     if (!res.ok) console.error("rti-bgcheck-access: resend error", res.status, (await res.text()).slice(0, 300));
