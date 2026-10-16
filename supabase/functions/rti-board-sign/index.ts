@@ -8,6 +8,7 @@
 //   { action: "sign", token, typed_name, signature, doc_hash, esign, attest, conflict }
 //       Records the signature with time, IP and browser. When the last director
 //       signs, the packet is marked complete and everyone is emailed.
+//   { action: "progress", packet }   Public: how many directors have signed (no names).
 //   { action: "invite", token }   Admin signers only: emails a fresh link to every
 //       director who hasn't signed yet (except the admin).
 //   { action: "bootstrap", secret, packet }   From the CLI (RTI_SIGN_ADMIN_SECRET):
@@ -94,6 +95,14 @@ Deno.serve(async (req) => {
     const sent = [];
     for (const s of targets ?? []) if (await invite(supabase, packet, s, "Ras Tafari Inc.")) sent.push(maskEmail(s.email));
     return reply({ ok: true, sent });
+  }
+
+  // ---- Public progress count for a status page: numbers only, no names ----
+  if (body.action === "progress") {
+    const { data: packet } = await supabase.from("rti_sign_packets").select("id, completed_at").eq("id", String(body.packet ?? "")).maybeSingle();
+    if (!packet) return reply({ ok: false, error: "No such packet." }, 404);
+    const { data: rows } = await supabase.from("rti_sign_signers").select("signed_at").eq("packet_id", packet.id);
+    return reply({ ok: true, signed: (rows ?? []).filter((r: any) => r.signed_at).length, total: (rows ?? []).length, complete: !!packet.completed_at });
   }
 
   // ---- Everything else is by personal link ----

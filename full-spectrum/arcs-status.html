@@ -62,7 +62,7 @@
     <li><span class="st done">Done</span><b>2027 calendar</b><p>Class terms, all 14 Rainbow Wednesdays, festival and heritage days, and the fall and holiday parties. <a href="/full-spectrum/full-spectrum-calendar-2027.pdf">PDF</a></p></li>
     <li><span class="st prog">Draft</span><b>ARCS Partnership Proposal form</b><p>CPD&rsquo;s form, filled in as a Service Provider partnership for 2027. <a href="/full-spectrum/arcs-proposal-draft.pdf">Draft PDF</a></p></li>
     <li><span class="st done">In hand</span><b>Proof of nonprofit status</b><p>Ras Tafari Inc.&rsquo;s IRS 501(c)(3) determination letter, June 12, 2026.</p></li>
-    <li><span class="st prog">In progress</span><b>Board approval</b><p>The board reviewed the proposal on October 15. The directors are now signing the resolution that authorizes it.</p></li>
+    <li id="board"><span class="st prog" id="boardSt">In progress</span><b>Board approval</b><p>The board reviewed the proposal on October 15. <span id="boardTxt">The directors are now signing the resolution that authorizes it.</span></p></li>
     <li><span class="st prog">In progress</span><b>CPD volunteer background checks</b><p>Ras Tafari Inc. members are sending CPD&rsquo;s Long Term Adult Volunteer Application; everyone who works with young people completes it first.</p></li>
     <li><span class="st next">Next</span><b>Certificate of Insurance</b><p>General liability naming the Chicago Park District as additional insured, plus abuse and molestation coverage. We submit once it is in hand.</p></li>
     <li><span class="st next">Next</span><b>Submit to CPD</b><p>To partnerships.app@chicagoparkdistrict.com, with you copied.</p></li>
@@ -77,5 +77,21 @@
 
   <footer>Stephen Henry, President, Ras Tafari Inc. &middot; (872) 255-9333 &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> &middot; 7700 S. Stony Island Ave., Chicago, IL 60649</footer>
 </main>
+<script>
+// Live count of board signatures (numbers only), refreshed every 30 seconds
+(function(){
+  var URL = "https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/rti-board-sign";
+  function check(){
+    fetch(URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({action:"progress", packet:"rti-arcs-2026-10-15"})})
+      .then(function(r){ return r.json(); }).then(function(o){
+        if (!o || !o.ok) return;
+        var st = document.getElementById("boardSt"), tx = document.getElementById("boardTxt");
+        if (o.complete) { st.className = "st done"; st.textContent = "Done"; tx.textContent = "All " + o.total + " directors have signed the resolution that authorizes it."; }
+        else { tx.textContent = o.signed + " of " + o.total + " directors have signed the resolution that authorizes it."; }
+      }).catch(function(){});
+  }
+  check(); setInterval(function(){ if (!document.hidden) check(); }, 30000);
+})();
+</script>
 </body>
 </html>

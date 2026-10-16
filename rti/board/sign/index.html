@@ -304,6 +304,23 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 
   $("printBtn").addEventListener("click", () => window.print());
 
+  // Live updates: check for new signatures every 15 seconds while the page is in view,
+  // and redraw only when something changed (a half-drawn signature is left alone)
+  const sigKey = s => JSON.stringify([s.packet.completed_at, s.signers.map(x => [x.signed_at, x.viewed_at, x.invited_at])]);
+  async function poll(){
+    if (!state || document.hidden) return;
+    try {
+      const next = await call({action:"load"});
+      if (sigKey(next) !== sigKey(state)) {
+        const newly = next.signers.filter(n => n.signed_at && !(state.signers.find(o => o.sort === n.sort) || {}).signed_at);
+        state = next; render();
+        if (newly.length) { $("statusMsg").className = "msg ok"; $("statusMsg").textContent = newly.map(n => n.full_name).join(" and ") + " just signed."; }
+      }
+    } catch(e) {}
+  }
+  setInterval(poll, 15000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(); });
+
   load();
 })();
 </script>
