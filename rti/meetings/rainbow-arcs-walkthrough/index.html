@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Ras Tafari Inc. team agenda: a timed walkthrough of every Full Spectrum, Rainbow Wednesdays, DJ Lab, ARCS and partner page.">
+<title>Rainbow &amp; ARCS Walkthrough</title>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a run-of-show. A timed agenda strip up top, then one band per agenda item,
+   each colored by its place in the spectrum, holding a site-map table of the pages covered. */
+:root{
+  --bg:#f5f6f2; --paper:#ffffff; --ink:#1a1e1b; --muted:#5a635c; --line:#dde1da; --field:#eceee9;
+  --accent:#264f9c; --ok:#22744a; --ok-bg:#e1f1e6; --warn:#8a5a00; --warn-bg:#fbf0d6; --priv:#6b3fa0; --priv-bg:#efe7f8; --ext:#3c5a73; --ext-bg:#e4edf3;
+  --c1:#d9363e; --c2:#e9761e; --c3:#d4a40c; --c4:#2b9152; --c5:#1f84b8; --c6:#3c46b3; --c7:#8a3fae;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121513; --paper:#1a1f1c; --ink:#e7ece8; --muted:#9ba69e; --line:#2c342f; --field:#222925;
+    --accent:#8fb0ff; --ok:#6fd08f; --ok-bg:#1c3325; --warn:#f0c46a; --warn-bg:#3a2f14; --priv:#c9a6f2; --priv-bg:#2e2340; --ext:#9fc3df; --ext-bg:#1d2b36;
+    --c1:#f0656b; --c2:#f59a52; --c3:#e8c34a; --c4:#57c07f; --c5:#56b4e6; --c6:#8a92f0; --c7:#c27fe0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121513; --paper:#1a1f1c; --ink:#e7ece8; --muted:#9ba69e; --line:#2c342f; --field:#222925;
+  --accent:#8fb0ff; --ok:#6fd08f; --ok-bg:#1c3325; --warn:#f0c46a; --warn-bg:#3a2f14; --priv:#c9a6f2; --priv-bg:#2e2340; --ext:#9fc3df; --ext-bg:#1d2b36;
+  --c1:#f0656b; --c2:#f59a52; --c3:#e8c34a; --c4:#57c07f; --c5:#56b4e6; --c6:#8a92f0; --c7:#c27fe0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.spec{height:6px;background:linear-gradient(90deg,var(--c1) 0 14.28%,var(--c2) 0 28.57%,var(--c3) 0 42.85%,var(--c4) 0 57.14%,var(--c5) 0 71.42%,var(--c6) 0 85.71%,var(--c7) 0)}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.12}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:800}
+h3{font-size:1rem;font-weight:600}
+.eyebrow{font:500 .74rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+header.top{display:grid;gap:12px;padding-block:28px 8px}
+.lede{margin:0;color:var(--muted);max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem}
+.meta b{font-weight:700}
+.rules{background:var(--warn-bg);border-radius:10px;padding:12px 16px;margin-top:6px;display:grid;gap:4px;font-size:.94rem}
+.rules b{color:var(--warn)}
+.rules ul{margin:0;padding-left:20px}
+
+/* timed agenda strip */
+.runsheet{margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.runsheet ol{list-style:none;margin:0;padding:0}
+.runsheet li a{display:grid;grid-template-columns:62px 14px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.runsheet li:last-child a{border-bottom:0}
+.runsheet li a:hover{background:var(--field)}
+.runsheet .t{font:500 .82rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.runsheet .dot{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.runsheet .nm{font-weight:700;min-width:0}
+.runsheet .nm span{font-weight:400;color:var(--muted)}
+.runsheet .min{font:500 .8rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.runsheet .done .nm{text-decoration:line-through;text-decoration-color:var(--muted)}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.tools input[type=search]{flex:1 1 260px;font:16px var(--body);padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+button{font:600 .88rem var(--display);border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:9px 12px;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--c3);outline-offset:2px}
+
+/* sections */
+section.item{margin-top:28px;border-left:6px solid var(--c);padding-left:16px;display:grid;gap:10px}
+section.item > header{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+section.item .when{font:500 .82rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.purpose{margin:0;color:var(--muted);max-width:75ch}
+.notes{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:grid;gap:4px}
+.notes ul{margin:0;padding-left:20px}
+.notes li{margin:2px 0}
+.grp{display:grid;gap:6px}
+details.grp > summary{cursor:pointer;font:600 1rem var(--display);padding:6px 0;list-style-position:outside}
+details.grp > summary .ct{font:500 .78rem var(--mono);color:var(--muted);margin-left:6px}
+.tw{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--field)}
+td.ck{width:34px}
+td.ck input{width:18px;height:18px;accent-color:var(--ok)}
+td.pg{width:30%;min-width:180px}
+td.pg b{display:block}
+td.pg .u{font:12px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+td.ac{width:120px}
+tr.covered td{color:var(--muted)}
+tr.covered td.pg b{text-decoration:line-through}
+.pill{display:inline-block;font:600 .7rem/1 var(--mono);letter-spacing:.04em;padding:5px 7px;border-radius:999px;white-space:nowrap}
+.p-live{background:var(--ok-bg);color:var(--ok)}
+.p-priv{background:var(--priv-bg);color:var(--priv)}
+.p-draft{background:var(--warn-bg);color:var(--warn)}
+.p-ext{background:var(--ext-bg);color:var(--ext)}
+.p-sys{background:var(--field);color:var(--muted)}
+.empty{color:var(--muted);font-style:italic}
+footer{margin-top:36px;color:var(--muted);font-size:.86rem}
+@media (max-width:620px){
+  .runsheet li a{grid-template-columns:52px 12px minmax(0,1fr)}
+  .runsheet .min{display:none}
+  td.ac{width:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="spec" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Ras Tafari Inc. &middot; team meeting</span>
+    <h1>Rainbow &amp; ARCS Walkthrough</h1>
+    <p class="lede">A guided tour of everything we have built for Full Spectrum at Rainbow Beach and the Chicago Park District ARCS partnership. Each agenda item opens the pages it covers, with one line on what every page does. Tick a row once it has been shown.</p>
+    <div class="meta"><span><b>Presenter:</b> Stephen Henry</span><span><b>Length:</b> about 2 hours</span><span><b>Date and time:</b> to be set</span><span><b>Status as of:</b> Oct. 16, 2026</span></div>
+    <div class="rules"><b>Ground rules for every Rainbow page we show or send</b>
+      <ul>
+        <li>Full Spectrum, Rainbow Wednesdays and the DJ Lab are Ras Tafari Inc. programs. No other organization is named as applicant, presenter or partner in them.</li>
+        <li>Each grant application is its own track. The Full Spectrum and Rainbow Wednesdays pages describe the program, not any one grant.</li>
+        <li>Everything is <i>proposed</i>. Nothing is approved or funded until CPD says so in writing. SelassieFest 2027's venue is not confirmed.</li>
+      </ul>
+    </div>
+  </header>
+
+  <nav class="runsheet" aria-label="Agenda"><ol id="runsheet"></ol></nav>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="Find a page, e.g. calendar, signing, lost child" aria-label="Find a page">
+    <button type="button" id="expand">Open every group</button>
+    <button type="button" id="reset">Clear ticks</button>
+  </div>
+  <div class="legend" style="margin-top:10px">
+    <span class="pill p-live">Live</span><span class="pill p-priv">Private / sign-in</span><span class="pill p-draft">Draft or local file</span><span class="pill p-ext">Outside site</span><span class="pill p-sys">Behind the scenes</span>
+  </div>
+
+  <main id="sections"></main>
+
+  <footer>Built Oct. 16, 2026 from the site's own pages. Links go to selassiefest.com. Private pages need a sign-in or a personal link, and a few files live only on Stephen's computer.</footer>
+</div>
+
+<script>
+(function(){
+  var S = "https://selassiefest.com";
+  // access: live | priv | draft | ext | sys
+  var AGENDA = [
+    { id:"status", c:"--c1", min:5, title:"Where we are", sub:"one-minute status",
+      purpose:"Open with the state of play so everyone knows what is done and what is blocking us.",
+      notes:[
+        "Oct. 14: Rainbow Beach Park Supervisor Ivry Ector told us to submit the partnership proposal through CPD's ARCS program.",
+        "ARCS form drafted and filled. Attachments ready: our IRS letter (June 12, 2026), 2027 calendar, Full Spectrum proposal.",
+        "Board approval: 1 of 3 directors has signed (Albert). Stephen and Paul are next.",
+        "Blocker: no Certificate of Insurance yet ($1M general liability naming CPD, plus abuse and molestation coverage). We submit only once it is in hand.",
+        "CPD background checks: 2 member applications sent so far.",
+        "New this week: Black History Month (Remix the Record) and a Lovers Rock Valentine's Party fill February. RTI's number is now (872) 255-9333."
+      ], groups:[] },
+
+    { id:"proposal", c:"--c2", min:15, title:"The Full Spectrum proposal", sub:"what we are asking the park to approve",
+      purpose:"The documents that describe the program. Everything else points back to these.",
+      groups:[{ name:"Proposal pages and files", items:[
+        ["Full Spectrum proposal", "/full-spectrum/", "live", "The master pitch: one free program in five parts, the girls' focus (Empress Decks), inclusivity, Black History Month, funding and who we are."],
+        ["Proposal PDF", "/full-spectrum/full-spectrum-proposal.pdf", "live", "The 18-page print version of the proposal, regenerated after every edit."],
+        ["Narrated pitch deck", "/full-spectrum/deck.html", "live", "A 15-slide deck with recorded narration. It does not yet show February (Black History Month, Valentine's)."],
+        ["2027 calendar", "/full-spectrum/calendar-2027.html", "live", "Every proposed 2027 date: February first, then classes, the 14 Rainbow Wednesdays, festival days and holiday parties."],
+        ["2027 calendar PDF", "/full-spectrum/full-spectrum-calendar-2027.pdf", "live", "The two-page calendar the ARCS form says is attached."],
+        ["ARCS status page for the park", "/full-spectrum/arcs-status.html", "live", "Unlisted page for Ivry: what is done, what is next, a live count of board signatures and three questions for the park."]
+      ]}] },
+
+    { id:"arcs", c:"--c3", min:15, title:"The ARCS application", sub:"the form, the attachments, the send",
+      purpose:"How the CPD application gets finished and sent, and the one thing still missing.",
+      notes:["Send to partnerships.app@chicagoparkdistrict.com, copying Ivry. CPD asks for at least 30 days to review, and 60 to 90 days before programming starts."],
+      groups:[{ name:"Application pieces", items:[
+        ["ARCS application kit", "https://claude.ai/artifact/Htmv2nQv8FkucTynqLAr8R", "priv", "Every CPD form answer, editable, with fit checks. Fills CPD's own PDF and holds the attachment checklist and the cover email. Only Stephen can open it."],
+        ["Filled ARCS form (draft)", "/full-spectrum/arcs-proposal-draft.pdf", "live", "CPD's form with today's answers: Service Provider, the 2027 term, veterans and LGBTQ+ marked yes, February programs, new phone."],
+        ["Attachments folder", "Dall-E images/partnerlogo (Stephen's computer)", "draft", "The filled form, Ras Tafari Inc.'s IRS letter and the calendar, together for the email. The insurance certificate is still missing."],
+        ["Every-other-day reminder email", "send-arcs-kit-reminder", "sys", "Emails Stephen until the kit is sent. Each email has a stop link."],
+        ["CPD ARCS program page", "https://www.chicagoparkdistrict.com/arcs", "ext", "CPD's own page with the form and guidelines. Service Providers run free programs, and no fees change hands."]
+      ]}] },
+
+    { id:"board", c:"--c4", min:10, title:"Board approval", sub:"agenda, minutes, written consent",
+      purpose:"The board's record that it reviewed and approved the proposal. CPD doesn't require it, but it shows the board is behind the proposal.",
+      notes:["The Oct. 15 discussion happened in the WhatsApp group chat. Text chat doesn't count as a meeting under our bylaws, so the board acts by unanimous written consent.","Each director signs from a personal emailed link. Signatures appear on the documents within 15 seconds for anyone viewing."],
+      groups:[{ name:"Signing system and packet", items:[
+        ["Board signing page", "/rti/board/sign/", "priv", "Each director reads the packet, answers a conflict-of-interest question and signs. Once all three sign, it prints the signed packet with a signature certificate."],
+        ["Agenda (in the packet)", "/rti/board/sign/", "priv", "What the board went over on Oct. 15 at 8 pm, item by item."],
+        ["Minutes (in the packet)", "/rti/board/sign/", "priv", "The record of that discussion and everything agreed. The Secretary certifies it, and all three directors approve it."],
+        ["Unanimous Written Consent, Res. 2026-10-15-01", "/rti/board/sign/", "priv", "Approves the ARCS proposal, lets Stephen submit it, and requires insurance before anything is sent."],
+        ["Unsigned preview PDF", "legal/documents-inbox (Stephen's computer)", "draft", "The three documents with blank signature lines, for reading before signing."]
+      ]}] },
+
+    { id:"rw", c:"--c5", min:10, title:"Rainbow Wednesdays", sub:"the summer series",
+      purpose:"Fourteen free Wednesday evenings on the beach, June 2 to Sept. 1, 2027. The most fully planned part.",
+      groups:[{ name:"Series pages", items:[
+        ["Rainbow Wednesdays", "/rainbow-wednesdays/", "live", "The series at a glance: a color for each week, the 14 themes, Open Decks, the Youth Showcase, the Live Lab and the Theme Clash."],
+        ["Rainbow Wednesdays proposal", "/rainbow-wednesdays/proposal.html", "live", "The full series plan: nightly schedule, season calendar, production plan, safety rules and the $34,220 budget."]
+      ]}] },
+
+    { id:"djlab", c:"--c6", min:25, title:"Rainbow DJ Lab", sub:"the class, 130+ pages",
+      purpose:"The free DJ class and its family site, written so the parent of a 9-year-old can trust it. Status everywhere: proposed, not running yet. Open one group at a time.",
+      groups:[
+        { name:"Front door and site map", items:[
+          ["DJ Lab home", "/dj-lab/", "live", "A free DJ class for Chicago kids and families at Rainbow Beach Park, proposed and not running yet."],
+          ["Site map", "/dj-lab/sitemap.html", "live", "Every DJ Lab page on one list."],
+          ["Interest list", "/dj-lab/enroll/register.html", "live", "Families join the interest list now. Full registration opens at launch."]
+        ]},
+        { name:"About the Lab", items:[
+          ["About the Lab", "/dj-lab/about/", "live", "Who runs the Lab, what it is, where it meets and where it stands."],
+          ["Age groups", "/dj-lab/about/age-groups.html", "live", "The five groups: Little DJs (5 to 7), Junior, Teen, Empress Decks for girls, and Grown-Up and Elder DJs."],
+          ["Curriculum", "/dj-lab/about/curriculum.html", "live", "All 14 sessions, the Passport skills for each, and how a 90-minute class is shaped."],
+          ["Spring fast track", "/dj-lab/about/curriculum-fast-track.html", "live", "Six two-hour workshops that compress the course for spring."],
+          ["Instructors", "/dj-lab/about/instructors.html", "live", "How coaches are chosen and the screening every adult must pass."],
+          ["Meet the coach", "/dj-lab/about/meet-the-coach.html", "live", "Stephen as program lead and family contact; coach profiles once coaches are cleared."],
+          ["Accessibility", "/dj-lab/about/accessibility.html", "live", "How we welcome children with disabilities and sensory needs, and how to ask for an accommodation."],
+          ["Language access", "/dj-lab/about/language-access.html", "live", "English and Spanish, and interpretation in any language on request."],
+          ["Independence", "/dj-lab/about/independence.html", "live", "The choices kids make for themselves, and what they are never left to do alone."],
+          ["Community accountability", "/dj-lab/about/community-accountability.html", "live", "How parents, CPD and neighbors can hold the Lab to its word."]
+        ]},
+        { name:"Enrolling", items:[
+          ["Enrolling", "/dj-lab/enroll/", "live", "How enrollment works start to finish, who can join, cost (free) and what must happen before the first class."],
+          ["Class schedule", "/dj-lab/enroll/schedule.html", "live", "How the course is structured and when dates are announced."],
+          ["Where classes meet", "/dj-lab/enroll/locations.html", "live", "Rainbow Beach Park: the fieldhouse when available, the lawn in summer, no water activities."],
+          ["Getting there and parking", "/dj-lab/enroll/transportation-parking.html", "live", "Families bring their own children; parking, transit, walking and biking tips."],
+          ["Weather and cancellations", "/dj-lab/enroll/weather-cancellation.html", "live", "How cancellations are announced, plus the lightning and heat rules."],
+          ["Attendance and absences", "/dj-lab/enroll/attendance-absence.html", "live", "How to report an absence and how kids catch up with no penalty."],
+          ["Illness and keeping kids home", "/dj-lab/enroll/communicable-disease.html", "live", "When to stay home, when to come back, how shared gear is cleaned."],
+          ["Withdrawing or pausing", "/dj-lab/enroll/exit-withdrawal.html", "live", "Leave any time at no cost and ask us to delete your data."],
+          ["FAQ", "/dj-lab/enroll/faq.html", "live", "Straight answers to parents' most common questions, including what is still pending."],
+          ["About the registration form", "/dj-lab/enroll/register-help.html", "live", "What the interest list asks now, what full registration will ask, and why."]
+        ]},
+        { name:"Enrollment forms", items:[
+          ["All forms", "/dj-lab/enroll/forms/", "live", "Every form in one place, with online and printable versions."],
+          ["Registration", "/dj-lab/enroll/forms/registration.html", "live", "The core form: who the child is, which group, how to reach the family."],
+          ["Emergency contacts", "/dj-lab/enroll/forms/emergency-contacts.html", "live", "Two adults we call if we can't reach the parent."],
+          ["Authorized pickup", "/dj-lab/enroll/forms/authorized-pickup.html", "live", "Who may pick the child up, and whether the child may sign themselves out."],
+          ["Medical and allergy", "/dj-lab/enroll/forms/medical-allergy.html", "live", "Health information the adults in the room need, and how it is protected."],
+          ["Code of conduct", "/dj-lab/enroll/forms/code-of-conduct.html", "live", "The rules for kids and grown-ups that every family agrees to."],
+          ["Media consent", "/dj-lab/enroll/forms/media-consent.html", "live", "Optional permission for photos or recordings, which a family can withdraw any time."],
+          ["Performance consent", "/dj-lab/enroll/forms/performance-consent.html", "live", "Optional permission to perform at public events."],
+          ["Digital tracking consent", "/dj-lab/enroll/forms/digital-tracking-consent.html", "live", "Optional permission for the class app to record progress and email recaps."]
+        ]},
+        { name:"For families", items:[
+          ["For families", "/dj-lab/families/", "live", "Everything a parent needs, from the handbook to how to reach us."],
+          ["Family handbook", "/dj-lab/families/handbook.html", "live", "The complete guide: what to bring, pickup, behavior, health, weather, privacy, performing."],
+          ["Family orientation", "/dj-lab/families/orientation.html", "live", "A visit before class to try the gear and meet the adults."],
+          ["Open-door policy", "/dj-lab/families/open-door-policy.html", "live", "Parents may watch any session, unannounced."],
+          ["Reaching us during a session", "/dj-lab/families/session-contact.html", "live", "How to reach staff mid-class and how fast we answer."],
+          ["Mid-season check-in", "/dj-lab/families/mid-season-checkin.html", "live", "A session-7 conversation about the child's progress."],
+          ["Feedback loop", "/dj-lab/families/feedback-loop.html", "live", "How family feedback is collected, acted on and reported each season."],
+          ["References", "/dj-lab/families/references.html", "live", "Who can speak to our work, and when references will be available."],
+          ["Weekly family digest", "/dj-lab/families/weekly-digest.html", "draft", "A planned opt-in weekly email. Not built yet."]
+        ]},
+        { name:"A child's journey", items:[
+          ["The journey", "/dj-lab/journey/", "live", "What a 9-year-old and their parent experience, before day one to after graduation."],
+          ["Before day one", "/dj-lab/journey/before-day-one.html", "live", "What to sign and talk about before the first class."],
+          ["Week 1: Meet the Machine", "/dj-lab/journey/week-1.html", "live", "The first session, and what to ask at dinner."],
+          ["Week 4: Mix on the One", "/dj-lab/journey/week-4.html", "live", "Timing the second song to start at exactly the right moment."],
+          ["Week 8: Make a Third Song", "/dj-lab/journey/week-8.html", "live", "Blending two songs into a new one, plus the halfway check-in."],
+          ["Graduation: the Rainbow Showcase", "/dj-lab/journey/graduation.html", "live", "Session 14: the child plays a set for a crowd that includes their family."],
+          ["After graduation", "/dj-lab/journey/after.html", "live", "Open Decks at Rainbow Wednesdays, the Theme Clash, and what happens to the child's data."]
+        ]},
+        { name:"Pages for kids", items:[
+          ["Hey, DJ!", "/dj-lab/kids/", "live", "The kids' own pages: what happens, the rules, who to talk to."],
+          ["Your first day", "/dj-lab/kids/first-day.html", "live", "The first day, step by step."],
+          ["Rules for me", "/dj-lab/kids/rules-for-me.html", "live", "A few easy rules that keep it fun and safe."],
+          ["Our promises to you", "/dj-lab/kids/promises-to-you.html", "live", "What every grown-up promises every kid."],
+          ["Who to talk to", "/dj-lab/kids/who-to-talk-to.html", "live", "Grown-ups a child can talk to about anything."],
+          ["If you feel unsafe", "/dj-lab/kids/if-you-feel-unsafe.html", "live", "What to do if something feels wrong. It is never the child's fault."],
+          ["Bathroom and buddy", "/dj-lab/kids/bathroom-and-buddy.html", "live", "How bathroom trips work."],
+          ["What \"Data!\" means", "/dj-lab/kids/data-mistakes.html", "live", "In the Lab a mistake is called \"Data!\" and is part of learning."]
+        ]},
+        { name:"Performing", items:[
+          ["Performing", "/dj-lab/performing/", "live", "Public performance is always opt-in, always supervised, always the child's choice."],
+          ["The performance pathway", "/dj-lab/performing/pathway.html", "live", "Every step from the in-class Spotlight to the Theme Clash Finale."],
+          ["Graduation guarantee", "/dj-lab/performing/graduation-guarantee.html", "live", "Graduates are guaranteed an Open Decks slot at Rainbow Wednesdays."],
+          ["Opting out", "/dj-lab/performing/opt-out.html", "live", "A child can stop performing at any step, no questions asked."],
+          ["Event-day supervision", "/dj-lab/performing/event-day-supervision.html", "live", "How adults supervise kids at public events, check-in to check-out."],
+          ["Stage freeze protocol", "/dj-lab/performing/stage-freeze-protocol.html", "live", "What happens if a child freezes or a mix crashes on stage."],
+          ["Sound and crowd exposure", "/dj-lab/performing/sound-crowd-exposure.html", "live", "Protecting children's hearing and comfort at loud events."],
+          ["Transportation to performances", "/dj-lab/performing/transportation.html", "live", "Families bring their children; the Lab never drives kids in personal cars."]
+        ]},
+        { name:"Safety", items:[
+          ["Safety at a glance", "/dj-lab/safety/", "live", "The safety promises to every family, with links to every policy."],
+          ["Youth protection policy", "/dj-lab/safety/youth-protection-policy.html", "live", "The core rules every adult follows to prevent abuse: one-on-one time, messages, gifts, photos."],
+          ["Staff and volunteer screening", "/dj-lab/safety/staff-screening.html", "live", "Adults are cleared through CPD background checks under CPD's rules before working with children."],
+          ["Mandated reporter training", "/dj-lab/safety/mandated-reporter-training.html", "live", "Every adult is an Illinois mandated reporter and calls the DCFS Hotline directly."],
+          ["How the policy is enforced", "/dj-lab/safety/enforcement.html", "live", "Spot checks, steps when a rule is broken, and safety over program pressure."],
+          ["Arrival and sign-out", "/dj-lab/safety/arrival-signout.html", "live", "Sign-in, release only to listed adults, late pickups and custody orders."],
+          ["Photo ID check protocol", "/dj-lab/safety/id-check-protocol.html", "live", "How a coach checks ID against the pickup list before releasing a child."],
+          ["Impaired pickup adult", "/dj-lab/safety/impaired-parent-protocol.html", "live", "Steps when a pickup adult seems unable to drive or care for the child safely."],
+          ["Lost child plan", "/dj-lab/safety/lost-child-plan.html", "live", "A Code Adam-style plan, minute by minute, if a child can't be found."],
+          ["Emergency action plan", "/dj-lab/safety/emergency-action-plan.html", "live", "Who does what in fire, medical emergency, severe weather or evacuation."],
+          ["Active threat and lockdown", "/dj-lab/safety/active-threat-lockdown.html", "live", "Run, Hide, Fight adapted for kids, fieldhouse lockdown and reunification."],
+          ["Lakefront weather and air quality", "/dj-lab/safety/lakefront-weather.html", "live", "Exact actions for lightning, wind, heat, cold and air quality."],
+          ["Hearing safety", "/dj-lab/safety/hearing-safety.html", "live", "Capped headphones, free earplugs, speaker zones and sound-meter checks."],
+          ["Sunscreen and hydration", "/dj-lab/safety/sunscreen-hydration.html", "live", "Sun and water rules for outdoor summer classes."],
+          ["Medical and allergy plan", "/dj-lab/safety/medical-allergy-plan.html", "live", "How each child's health needs are learned, kept private and followed."],
+          ["Epinephrine protocol", "/dj-lab/safety/epinephrine-protocol.html", "live", "Step by step for a severe allergic reaction."],
+          ["Medication storage", "/dj-lab/safety/medication-storage.html", "live", "Accepting, storing, giving, recording and returning medicine."],
+          ["First aid and CPR roster", "/dj-lab/safety/first-aid-cpr-roster.html", "live", "Pediatric first aid, CPR and AED certification required; roster once staff are cleared."],
+          ["Restroom supervision", "/dj-lab/safety/restroom-supervision.html", "live", "Buddy pairs, an adult at the entrance, no adult ever alone with a child."],
+          ["Behavior and emotional safety", "/dj-lab/safety/behavior-emotional-safety.html", "live", "A calm, predictable, kind room where kids can make mistakes and say no."],
+          ["Discipline ladder", "/dj-lab/safety/discipline-ladder.html", "live", "The exact steps for correcting behavior, and what is never done."],
+          ["Cool-down space", "/dj-lab/safety/cooldown-space.html", "live", "A calm corner always in an adult's view, never locked, with a clear way back."],
+          ["Peer-harm protocol", "/dj-lab/safety/peer-harm-protocol.html", "live", "Steps when one child harms another: bullying, fighting, unwanted touch, online harm."],
+          ["Substance-free policy", "/dj-lab/safety/substance-free-policy.html", "live", "No alcohol, tobacco, vaping or cannabis at any Lab activity."],
+          ["Incident reporting", "/dj-lab/safety/incident-reporting.html", "live", "What counts as an incident, who is told and how fast, and how it is reviewed."],
+          ["Report a concern", "/dj-lab/safety/report-a-concern.html", "live", "How anyone can raise a safety concern, including straight to the park office or DCFS."],
+          ["Grievance procedure", "/dj-lab/safety/grievance-procedure.html", "live", "Steps and deadlines for complaints, up to an appeal to the board."]
+        ]},
+        { name:"Privacy", items:[
+          ["Privacy", "/dj-lab/privacy/", "live", "How we collect, use, protect and delete information about children and families."],
+          ["Data privacy statement", "/dj-lab/privacy/data-privacy-statement.html", "live", "The full statement: what we collect, why, where it is stored, who sees it."],
+          ["Your data rights", "/dj-lab/privacy/parent-data-rights.html", "live", "How parents see, correct or delete their family's data, or withdraw consent."],
+          ["COPPA compliance", "/dj-lab/privacy/coppa-compliance.html", "live", "How we follow the federal children's privacy law for kids under 13."],
+          ["Photos and recordings", "/dj-lab/privacy/photos-recordings.html", "live", "Listen-back audio, media consent and photos of children."],
+          ["Retention and deletion", "/dj-lab/privacy/retention-deletion.html", "live", "How long each kind of data is kept and how it is deleted."],
+          ["Third-party vendors", "/dj-lab/privacy/third-party-vendors.html", "live", "Every outside service we use and exactly what family data it touches."],
+          ["Access records and audit log", "/dj-lab/privacy/audit-log.html", "draft", "What is logged today; the full audit log is a launch requirement still being built."],
+          ["Breach notification", "/dj-lab/privacy/breach-notification.html", "live", "What we do and tell families if data is ever lost or exposed."]
+        ]},
+        { name:"Governance and launch readiness", items:[
+          ["Governance and launch readiness", "/dj-lab/governance/", "live", "Who runs the Lab, the launch checklist, and where the proof will be posted."],
+          ["Board and officers", "/dj-lab/governance/board.html", "live", "Who leads Ras Tafari Inc. and where the board vote on Lab policies stands."],
+          ["501(c)(3) letter", "/dj-lab/governance/501c3-letter.html", "live", "How to get a copy of our IRS determination letter."],
+          ["MOU with the Park District", "/dj-lab/governance/mou-park-district.html", "draft", "Status of a written agreement with CPD and the terms we will propose. The ARCS agreement covers this."],
+          ["Park District permits", "/dj-lab/governance/park-district-permits.html", "draft", "Status of CPD approval and permits."],
+          ["Insurance certificate", "/dj-lab/governance/insurance-certificate.html", "draft", "Status of liability and abuse coverage, required before the first class. Same blocker as ARCS."],
+          ["Financial transparency", "/dj-lab/governance/financial-transparency.html", "live", "How the free Lab is paid for and what we publish each season."],
+          ["Conflict of interest", "/dj-lab/governance/conflict-of-interest.html", "live", "How decisions about children, money, vendors and stage time stay free of conflicts."],
+          ["Q-Ality Sound vendor agreement", "/dj-lab/governance/qality-vendor-agreement.html", "draft", "Draft agreement for sound, stage and lighting only: no supervision, data or photos."],
+          ["Sole-source justification: Q-Ality", "/dj-lab/governance/sole-source-justification-qality.html", "live", "Why Q-Ality Sound was chosen without bidding, and how that is checked."],
+          ["Equipment use agreement", "/dj-lab/governance/equipment-use-agreement-qality.html", "live", "Who owns, stores, insures and uses the donated DJ gear."],
+          ["Data-sharing with SelassieFest", "/dj-lab/governance/data-sharing-agreement-selassiefest.html", "live", "Family and child data is never used for or shared with SelassieFest."],
+          ["Whistleblower policy", "/dj-lab/governance/whistleblower.html", "draft", "Proposed protection for anyone who reports wrongdoing."],
+          ["Enforcement and self-accountability", "/dj-lab/governance/enforcement-self-accountability.html", "live", "How RTI holds itself and its own leaders to the Lab's policies."],
+          ["Annual safety review", "/dj-lab/governance/annual-safety-review.html", "live", "The yearly review of the Lab's safety record, published."],
+          ["Community accountability report", "/dj-lab/governance/community-accountability-report.html", "live", "The template for the public report after each season."]
+        ]},
+        { name:"Classroom app and portal", items:[
+          ["Live classroom app", "/dj-lab/live/", "priv", "The in-class app: the 90-minute block clock, sessions and check-ins on the room screen."],
+          ["Portal", "/dj-lab/portal/", "priv", "Entry point for coaches, families and kids."],
+          ["Coach view", "/dj-lab/portal/coach.html", "priv", "Coaches sign in by magic link to run class, log incidents and email recaps."],
+          ["Family view", "/dj-lab/portal/family.html", "priv", "A family's private link showing only their own child."],
+          ["Kid view", "/dj-lab/portal/kid.html", "priv", "The child's own progress view on an in-room screen code."],
+          ["Sign-out and safety roster", "/dj-lab/portal/signout.html", "priv", "Coaches release children only to listed adults after an ID check; every sign-out emails the parent."]
+        ]}
+      ] },
+
+    { id:"people", c:"--c7", min:5, title:"People and screening", sub:"who may work with kids",
+      purpose:"Every member who works with young people clears CPD's volunteer background check first.",
+      groups:[{ name:"Screening", items:[
+        ["CPD background check", "/rti/background-check/", "priv", "Members-only. Fills CPD's volunteer application in the browser, saves progress encrypted and sends it to CPD. Two sent so far."]
+      ]}] },
+
+    { id:"partners", c:"--c1", min:15, title:"Partners and funding", sub:"who helps pay for it",
+      purpose:"The pipeline of partners and grants, and the dates that can't slip.",
+      notes:[
+        "390 partners on the tracker. Seven funders added Oct. 16, each with verified rules and dates.",
+        "Seabury Foundation: letter of intent due Nov. 6, 2026.",
+        "Springboard Foundation: opens in November; only a weekday after-school class (3 to 7 pm, school year) qualifies.",
+        "My CHI. My Future.: needs a SAM.gov UEI before the next round.",
+        "Later: Fry Foundation (needs an audit), After School Matters (summer 2027), Chicago Youth Works worksite, Creative Schools Fund (a CPS school applies with us)."
+      ],
+      groups:[{ name:"Partner and grant tools", items:[
+        ["Partner tracker", "/full-spectrum/partners.html", "priv", "Sign-in by emailed link. Partners tab: pipeline, activity log and each partner's asks. Grants tab: deadlines, owner and next step."],
+        ["Personal partner pages", "/partner/?k=…", "priv", "Each partner's own invitation, opened from a QR code. They tick items and answer yes, call me or not now; cash gifts by card or PayPal."],
+        ["Monday partner digest", "send-fs-partner-digest", "sys", "Every Monday: partners not contacted, steps due within 7 days, partners quiet for 14+ days."],
+        ["Sunday grant deadlines email", "send-fs-grant-deadlines", "sys", "Every Sunday: every grant by status, with deadlines coming up."]
+      ]}] },
+
+    { id:"system", c:"--c2", min:5, title:"Behind the scenes", sub:"what keeps it running",
+      purpose:"The database and automatic emails behind the pages. Nobody needs to touch these during the meeting; this is where things live.",
+      groups:[{ name:"Database and emails", items:[
+        ["Board signing backend", "rti-board-sign", "sys", "Stores each director's signature, time and IP; emails links and the all-signed notice; feeds the live count on the status page."],
+        ["Background check backend", "rti-background-check · rti-bgcheck-access", "sys", "Sends member applications to CPD; members-only sign-in by 6-digit code."],
+        ["DJ Lab backend", "djlab_* tables · djlab-send-recaps", "sys", "Class state, check-ins, sign-outs, incidents and family recap emails."],
+        ["Partner and grant backend", "fs_partners · fs_grant_deadlines", "sys", "The tracker's data; locked down, read only through signed-in actions."],
+        ["Public form intake", "public-submit", "sys", "Takes partner answers and DJ Lab interest sign-ups and emails Stephen."]
+      ]}] },
+
+    { id:"decide", c:"--c3", min:10, title:"Decisions and next steps", sub:"leave with owners and dates",
+      purpose:"Close with decisions and owners.",
+      notes:[
+        "Insurance: who gets quotes, and by when? It is the only thing stopping the ARCS submission.",
+        "Board: Stephen and Paul sign the packet; Albert confirms his signature.",
+        "February: is a short follow-up written consent wanted to name Black History Month and Valentine's explicitly?",
+        "Deck: update slides and narration for February, or leave as is?",
+        "Springboard: will we run a weekday after-school DJ class (3 to 7 pm) in the school year? It decides eligibility.",
+        "SAM.gov UEI: who registers us?",
+        "Ivry's three questions (rooms, park events, partnership type): who follows up?",
+        "Phone: should (872) 255-9333 replace 414-909-3279 across the website?"
+      ], groups:[] }
+  ];
+
+  // ---------- render ----------
+  var ACCESS = { live:["p-live","Live"], priv:["p-priv","Private"], draft:["p-draft","Draft / local"], ext:["p-ext","Outside site"], sys:["p-sys","Behind the scenes"] };
+  var KEY = "rainbow-arcs-walkthrough-v1";
+  var ticks = {};
+  try { ticks = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { ticks = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(ticks)); } catch (e) {} }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function href(u){ return /^https?:/.test(u) ? u : (u.charAt(0) === "/" ? S + u : null); }
+  function clock(m){ var h = Math.floor(m / 60), mm = m % 60; return h + ":" + (mm < 10 ? "0" : "") + mm; }
+
+  var start = 0, run = "", body = "";
+  AGENDA.forEach(function(a, i){
+    var count = a.groups.reduce(function(n, g){ return n + g.items.length; }, 0);
+    run += '<li data-sec="' + a.id + '"><a href="#' + a.id + '" style="--c:var(' + a.c + ')"><span class="t">' + clock(start) + '</span><span class="dot" aria-hidden="true"></span><span class="nm">' + esc(a.title) + ' <span>&middot; ' + esc(a.sub) + (count ? ' &middot; ' + count + ' page' + (count === 1 ? '' : 's') : '') + '</span></span><span class="min">' + a.min + ' min</span></a></li>';
+    var html = '<section class="item" id="' + a.id + '" style="--c:var(' + a.c + ')"><header><h2>' + esc(a.title) + '</h2><span class="when">' + clock(start) + '&ndash;' + clock(start + a.min) + ' &middot; ' + a.min + ' min</span></header><p class="purpose">' + esc(a.purpose) + '</p>';
+    if (a.notes) html += '<div class="notes"><ul>' + a.notes.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div>';
+    var many = a.groups.length > 1;
+    a.groups.forEach(function(g, gi){
+      var rows = g.items.map(function(it, k){
+        var id = a.id + "-" + gi + "-" + k, h = href(it[1]), ac = ACCESS[it[2]];
+        var where = h ? '<a href="' + esc(h) + '" target="_blank" rel="noopener">' + esc(it[1].replace(/^https?:\/\//, "")) + '</a>' : esc(it[1]);
+        return '<tr data-id="' + id + '"' + (ticks[id] ? ' class="covered"' : '') + '><td class="ck"><input type="checkbox" id="ck-' + id + '" aria-label="Shown: ' + esc(it[0]) + '"' + (ticks[id] ? ' checked' : '') + '></td><td class="pg"><b>' + esc(it[0]) + '</b><span class="u">' + where + '</span></td><td>' + esc(it[3]) + '</td><td class="ac"><span class="pill ' + ac[0] + '">' + ac[1] + '</span></td></tr>';
+      }).join('');
+      var table = '<div class="tw"><table><thead><tr><th></th><th>Page</th><th>What it does</th><th>Access</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+      html += many ? '<details class="grp"><summary>' + esc(g.name) + '<span class="ct">' + g.items.length + '</span></summary>' + table + '</details>' : '<div class="grp">' + table + '</div>';
+    });
+    body += html + '</section>';
+    start += a.min;
+  });
+  document.getElementById("runsheet").innerHTML = run;
+  document.getElementById("sections").innerHTML = body;
+
+  function refreshRun(){
+    AGENDA.forEach(function(a){
+      var rows = document.querySelectorAll('#' + a.id + ' tr[data-id]');
+      var li = document.querySelector('#runsheet li[data-sec="' + a.id + '"]');
+      var done = rows.length && Array.prototype.every.call(rows, function(r){ return r.classList.contains("covered"); });
+      li.classList.toggle("done", !!done);
+    });
+  }
+  document.getElementById("sections").addEventListener("change", function(e){
+    var cb = e.target; if (!cb.matches('td.ck input')) return;
+    var tr = cb.closest("tr"), id = tr.getAttribute("data-id");
+    if (cb.checked) ticks[id] = 1; else delete ticks[id];
+    tr.classList.toggle("covered", cb.checked); save(); refreshRun();
+  });
+  document.getElementById("reset").addEventListener("click", function(){
+    ticks = {}; save();
+    document.querySelectorAll('tr[data-id]').forEach(function(tr){ tr.classList.remove("covered"); tr.querySelector("input").checked = false; });
+    refreshRun();
+  });
+  var open = false;
+  document.getElementById("expand").addEventListener("click", function(){
+    open = !open; document.querySelectorAll("details.grp").forEach(function(d){ d.open = open; });
+    this.textContent = open ? "Close every group" : "Open every group";
+  });
+  document.getElementById("q").addEventListener("input", function(){
+    var q = this.value.trim().toLowerCase();
+    document.querySelectorAll('tr[data-id]').forEach(function(tr){ tr.hidden = !!q && tr.textContent.toLowerCase().indexOf(q) < 0; });
+    document.querySelectorAll("details.grp").forEach(function(d){
+      var any = d.querySelectorAll('tr[data-id]:not([hidden])').length;
+      d.hidden = !!q && !any; if (q && any) d.open = true;
+    });
+  });
+  refreshRun();
+})();
+</script>
+</body>
+</html>

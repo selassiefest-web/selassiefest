@@ -9,6 +9,8 @@
 //       Records the signature with time, IP and browser. When the last director
 //       signs, the packet is marked complete and everyone is emailed.
 //   { action: "progress", packet }   Public: how many directors have signed (no names).
+//   { action: "announce", secret, packet, subject, text }   From the CLI: emails one message to
+//       every director on the packet ({first} becomes their first name).
 //   { action: "invite", token }   Admin signers only: emails a fresh link to every
 //       director who hasn't signed yet (except the admin).
 //   { action: "bootstrap", secret, packet }   From the CLI (RTI_SIGN_ADMIN_SECRET):
@@ -94,6 +96,23 @@ Deno.serve(async (req) => {
     const { data: targets } = await q.order("sort");
     const sent = [];
     for (const s of targets ?? []) if (await invite(supabase, packet, s, "Ras Tafari Inc.")) sent.push(maskEmail(s.email));
+    return reply({ ok: true, sent });
+  }
+
+  // ---- CLI: email one message to every director on a packet (meeting links, notices) ----
+  if (body.action === "announce") {
+    if (!ADMIN_SECRET || String(body.secret ?? "") !== ADMIN_SECRET) return reply({ ok: false, error: "Not allowed." }, 403);
+    const subject = String(body.subject ?? "").trim().slice(0, 200);
+    const text = String(body.text ?? "");
+    if (!subject || !text) return reply({ ok: false, error: "Subject and text are required." }, 400);
+    const { data: signers } = await supabase.from("rti_sign_signers").select("full_name, email").eq("packet_id", String(body.packet ?? "")).order("sort");
+    if (!signers?.length) return reply({ ok: false, error: "No such packet." }, 404);
+    const sent = [];
+    for (const s of signers) {
+      const personal = text.replaceAll("{first}", firstName(s.full_name));
+      const html = personal.split(/\n{2,}/).map((p) => `<p>${esc(p).replace(/\n/g, "<br>").replace(/(https:\/\/[^\s<]+)/g, '<a href="$1">$1</a>')}</p>`).join("");
+      if (await sendEmail(s.email, subject, personal, html)) sent.push(maskEmail(s.email));
+    }
     return reply({ ok: true, sent });
   }
 
