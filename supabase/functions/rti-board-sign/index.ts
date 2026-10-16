@@ -11,7 +11,8 @@
 //   { action: "invite", token }   Admin signers only: emails a fresh link to every
 //       director who hasn't signed yet (except the admin).
 //   { action: "bootstrap", secret, packet }   From the CLI (RTI_SIGN_ADMIN_SECRET):
-//       emails the admin signer(s) their link to start a packet.
+//       emails the admin signer(s) their link to start a packet; with who: "all",
+//       every director who hasn't signed yet.
 //
 // Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, RTI_SIGN_ADMIN_SECRET.
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -86,9 +87,12 @@ Deno.serve(async (req) => {
     if (!ADMIN_SECRET || String(body.secret ?? "") !== ADMIN_SECRET) return reply({ ok: false, error: "Not allowed." }, 403);
     const { data: packet } = await supabase.from("rti_sign_packets").select("*").eq("id", String(body.packet ?? "")).maybeSingle();
     if (!packet) return reply({ ok: false, error: "No such packet." }, 404);
-    const { data: admins } = await supabase.from("rti_sign_signers").select("*").eq("packet_id", packet.id).eq("is_admin", true);
+    // who: "all" emails every director who hasn't signed; otherwise just the admin signer(s)
+    let q = supabase.from("rti_sign_signers").select("*").eq("packet_id", packet.id).is("signed_at", null);
+    if (body.who !== "all") q = q.eq("is_admin", true);
+    const { data: targets } = await q.order("sort");
     const sent = [];
-    for (const s of admins ?? []) if (await invite(supabase, packet, s, "Ras Tafari Inc.")) sent.push(maskEmail(s.email));
+    for (const s of targets ?? []) if (await invite(supabase, packet, s, "Ras Tafari Inc.")) sent.push(maskEmail(s.email));
     return reply({ ok: true, sent });
   }
 
