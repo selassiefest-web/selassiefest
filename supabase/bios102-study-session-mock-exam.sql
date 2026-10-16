@@ -204,7 +204,7 @@ create index if not exists bios102_mock_attempts_email_idx on bios102_mock_attem
 create or replace function bios102_mock_opens() returns timestamptz
 language sql immutable set search_path = '' as $$ select timestamptz '2026-10-13 11:00:00-05'; $$;
 create or replace function bios102_mock_closes() returns timestamptz
-language sql immutable set search_path = '' as $$ select timestamptz '2026-10-13 18:00:00-05'; $$;
+language sql immutable set search_path = '' as $$ select timestamptz '2026-10-20 14:00:00-05'; $$;
 
 create or replace function bios102_mock_allowed(p_session uuid)
 returns boolean
