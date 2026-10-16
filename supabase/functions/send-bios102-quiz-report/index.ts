@@ -159,10 +159,17 @@ Deno.serve(async (req) => {
       const spores = body.lesson === "spores";
       // {"lesson":"arrived"} announces the Exercise 6 study guide, live slides and Lab Exam 1 mock.
       const arrived = body.lesson === "arrived";
+      // {"lesson":"mockopen"} says the Lab Exam 1 mock is open to all until Tue Oct 20, 2pm.
+      const mockopen = body.lesson === "mockopen";
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
-        const subject = arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
-        const html = arrived ? `
+        const subject = mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
+        const html = mockopen ? `
+              <p>Hi ${first},</p>
+              <p>The Lab Exam 1 mock exam is now open to everyone. You don't need to ask for access.</p>
+              <p>It stays open until <strong>Tuesday, Oct 20, 2:00 PM Central</strong>, when the in-person exam starts. It closes at exactly 2:00, so submit before then. You can retake it as many times as you like.</p>
+              <p><a href="https://selassiefest.com/BIOS102/mock-exam.html">Take the mock exam</a></p>
+              <p>Professor Harris</p>` : arrived ? `
               <p>Hi ${first},</p>
               <p><strong>The door is unlocked.</strong></p>
               <p>Log in to the Lab Companion to see:</p>
@@ -200,8 +207,8 @@ Deno.serve(async (req) => {
       if (body.notify) {
         const sentCount = recipients.length - failed.length;
         await send(
-          failed.length ? `${arrived ? "ARRIVED" : "BIOS102 invite"}: sent to ${sentCount}, ${failed.length} failed` : `${arrived ? "ARRIVED" : "BIOS102 invite"} was sent to ${sentCount} students`,
-          `<p>The ${arrived ? "ARRIVED" : "BIOS102"} email went out at ${when(Date.now())}.</p>
+          failed.length ? `${mockopen ? "Mock exam open" : arrived ? "ARRIVED" : "BIOS102 invite"}: sent to ${sentCount}, ${failed.length} failed` : `${mockopen ? "Mock exam open" : arrived ? "ARRIVED" : "BIOS102 invite"} was sent to ${sentCount} students`,
+          `<p>The ${mockopen ? "mock-exam-open" : arrived ? "ARRIVED" : "BIOS102"} email went out at ${when(Date.now())}.</p>
            <p>Delivered to Resend for <strong>${sentCount}</strong> of ${recipients.length} students.</p>
            ${failed.length ? `<p>These failed:</p>${list(failed.map((f) => escapeHtml(f)))}` : ""}
            ${footer}`,
