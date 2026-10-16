@@ -52,7 +52,9 @@ Deno.serve(async (req) => {
 
   const sent = [];
   for (const r of due ?? []) {
-    const paras = String(r.body).split(/\n{2,}/).map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+    // Full https:// addresses in a reminder become clickable links
+    const linkify = (t: string) => t.replace(/(https:\/\/[^\s<]+[^\s<.,;:)])/g, '<a href="$1">$1</a>');
+    const paras = String(r.body).split(/\n{2,}/).map((p) => `<p>${linkify(esc(p)).replace(/\n/g, "<br>")}</p>`).join("");
     const html = `${paras}
       <p style="margin:20px 0;"><a href="${KIT}" style="background:#1c2333;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Open the Night Out kit</a></p>
       <p style="font-size:0.85rem;color:#5d6068;">${KIT}<br>Private link: open it while signed in to claude.ai.</p>
