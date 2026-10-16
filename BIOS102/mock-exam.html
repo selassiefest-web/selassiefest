@@ -108,6 +108,8 @@
     } else if (Date.parse(state.now) < Date.parse(state.opens)) {
       g.appendChild(el('p', null, 'The mock opens ' + fmtT(Date.parse(state.opens)) + '.'));
       g.appendChild(el('p', 'note', 'Open window: ' + WIN + '.'));
+    } else if (Date.parse(state.now) >= Date.parse(state.closes)) {
+      g.appendChild(el('p', null, 'The mock closed ' + fmtT(Date.parse(state.closes)) + ', when the in-person exam started.'));
     } else {
       g.appendChild(el('p', null, 'The mock is closed.'));
       g.appendChild(el('p', 'note', 'It reopens only for students who attended the study session or have an approved excuse. Tap Ask for access, then see your instructor in person to be checked in.'));
@@ -198,7 +200,7 @@
     const answers = {}; fields.forEach((f) => { answers[f.id] = f.get(); });
     let r;
     try { r = await API.bios102MockGrade(tok, answers); }
-    catch (e) { btn.disabled = false; msg('That did not score. The mock may have closed. Check your connection and try again.'); return; }
+    catch (e) { btn.disabled = false; msg('That did not score. The mock closes Tuesday, Oct 20 at 2:00 PM Central. If it is still open, check your connection and try again.'); return; }
     msg('');
     fields.forEach((f) => {
       const res = r.results[f.id]; if (!res) return;

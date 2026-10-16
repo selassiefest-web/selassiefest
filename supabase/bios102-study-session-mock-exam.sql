@@ -222,6 +222,11 @@ begin
   if bios102_session_is_instructor(p_session) then
     return true;
   end if;
+  -- Hard stop: the in-person exam starts at close time, so nobody else
+  -- (attended or granted included) gets in after it.
+  if now() >= bios102_mock_closes() then
+    return false;
+  end if;
   if now() >= bios102_mock_opens() and now() < bios102_mock_closes() then
     return true;
   end if;
@@ -334,6 +339,7 @@ begin
     where lower(q.email) = lower(v_email) and q.kind = 'started'
       and q.requested_at >= bios102_mock_opens() - interval '1 minute'
       and now() < q.requested_at + interval '3 hours'
+      and now() < bios102_mock_closes()
   ) into v_started;
   if not (bios102_mock_allowed(p_session) or v_started) then
     raise exception 'closed';
