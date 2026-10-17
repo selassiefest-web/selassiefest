@@ -62,4 +62,4 @@ This folder deploys with the main **selassiefest.com** site. GitHub Actions (`.g
 
 ## Contact
 
-Stephen Henry, President, Ras Tafari Inc.: stephen@selassiefest.com, 414-909-3279.
+Stephen Henry, President, Ras Tafari Inc.: stephen@selassiefest.com, 872-255-9333.

@@ -37,7 +37,7 @@ If you think someone is breaking the [conflict of interest policy](/dj-lab/gover
 |---|---|---|
 | **Chicago Park District** | Rainbow Beach Park office: **(312) 745-1479**, or any Park District staff member | Any concern about an adult |
 | **In person** | Tell the lead adult at sign-in or pickup, or ask to speak with Stephen Henry | Something you saw in class; a quick question |
-| **Phone** | Stephen Henry, President, Ras Tafari Inc.: **414-909-3279** | Program questions and anything urgent that isn't an emergency |
+| **Phone** | Stephen Henry, President, Ras Tafari Inc.: **872-255-9333** | Program questions and anything urgent that isn't an emergency |
 | **Email** | **stephen@selassiefest.com** | Anything you'd like in writing |
 | **Mail** | Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649 | A formal written complaint |
 | **Anonymous form** | **Coming before launch.** It doesn't exist yet. Until it does, you can mail an unsigned letter to the address above | When you don't want to give your name |

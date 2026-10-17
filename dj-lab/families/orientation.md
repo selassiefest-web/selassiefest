@@ -51,4 +51,4 @@ Ask anything. Nothing is too small. Common questions so far are in the [enrollme
 
 ## Can't make it?
 
-Orientation is strongly encouraged but not required. If you can't come, contact Stephen Henry (414-909-3279, stephen@selassiefest.com) and we'll arrange a short walk-through before or after a class, or answer your questions by phone. You're also welcome to watch any session under our [open-door policy](/dj-lab/families/open-door-policy.html).
+Orientation is strongly encouraged but not required. If you can't come, contact Stephen Henry (872-255-9333, stephen@selassiefest.com) and we'll arrange a short walk-through before or after a class, or answer your questions by phone. You're also welcome to watch any session under our [open-door policy](/dj-lab/families/open-door-policy.html).

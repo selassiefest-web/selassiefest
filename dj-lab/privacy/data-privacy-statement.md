@@ -7,7 +7,7 @@ description: The full Rainbow DJ Lab privacy statement, covering what we collect
 
 Rainbow DJ Lab is a free DJ class run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity, 7700 S. Stony Island Ave., Chicago, IL 60649. This statement covers the Lab's interest list and registration form, the class app at [/dj-lab/live/](/dj-lab/live/), and the emails the Lab sends.
 
-**Privacy contact:** Stephen Henry, President. 414-909-3279, stephen@selassiefest.com.
+**Privacy contact:** Stephen Henry, President. 872-255-9333, stephen@selassiefest.com.
 
 > **Status:** The Lab is proposed and not running yet. The Chicago Park District has not approved or permitted it. The app described here is built. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
 
@@ -201,7 +201,7 @@ If we change how we handle information, we'll update this page and email registe
 ## Contact
 
 Stephen Henry, President, Ras Tafari Inc.
-414-909-3279 · stephen@selassiefest.com
+872-255-9333 · stephen@selassiefest.com
 7700 S. Stony Island Ave., Chicago, IL 60649
 
 ## Sources

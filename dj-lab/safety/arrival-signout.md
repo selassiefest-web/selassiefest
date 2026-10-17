@@ -39,7 +39,7 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 4. The coach checks the adult seems able to safely take the child. If not, see [Impaired adult protocol](/dj-lab/safety/impaired-parent-protocol.html).
 5. The coach records the release in the [sign-out tool](/dj-lab/portal/signout.html): who picked up, the time, and that photo ID was checked against the authorized list. The server enforces the rule: the tool records a release only to an adult on the child's list, after the ID check.
 6. The coach says goodbye to the child by name. Release is complete.
-7. **You get an email every time your child is signed out**, naming the adult who picked them up. If you get one you don't expect, call 414-909-3279 right away (or 911 in an emergency).
+7. **You get an email every time your child is signed out**, naming the adult who picked them up. If you get one you don't expect, call 872-255-9333 right away (or 911 in an emergency).
 
 ## Someone not on the list
 
@@ -62,7 +62,7 @@ Times count from the scheduled end of class. Two screened adults stay with any c
 
 If the park building closes before then, the two adults and the child wait together in the safest lit public spot agreed with park staff, still within sight of each other.
 
-**If you are running late, call 414-909-3279.** If you have called and an authorized adult is on the way, the 60-minute step is not used. There is no late fee.
+**If you are running late, call 872-255-9333.** If you have called and an authorized adult is on the way, the 60-minute step is not used. There is no late fee.
 
 Repeated late pickups lead to a conversation about a plan that works for your family, not a penalty for your child.
 
@@ -84,7 +84,7 @@ Repeated late pickups lead to a conversation about a plan that works for your fa
 ## What you'll be told
 
 - At sign-out: who picked up your child and when is in our log. You may ask for your own child's sign-out records at any time.
-- **Every time your child is signed out, you get an email** saying who picked them up, when, and that photo ID was checked (or that your child left on their own under your written permission). If it wasn't expected, call Stephen Henry right away at 414-909-3279.
+- **Every time your child is signed out, you get an email** saying who picked them up, when, and that photo ID was checked (or that your child left on their own under your written permission). If it wasn't expected, call Stephen Henry right away at 872-255-9333.
 - If anyone not on your list tries to pick up your child: a call at once.
 - If your child is still waiting after class: calls starting 5 minutes after class ends.
 

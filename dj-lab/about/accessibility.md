@@ -39,7 +39,7 @@ DJ class involves music, lights and a busy room. We plan for that.
 ## How to request an accommodation
 
 1. **Tell us at registration.** The [registration form](/dj-lab/enroll/forms/registration.html) and the [medical and allergy form](/dj-lab/enroll/forms/medical-allergy.html) have space for this.
-2. **Or contact Stephen Henry directly:** 414-909-3279, stephen@selassiefest.com.
+2. **Or contact Stephen Henry directly:** 872-255-9333, stephen@selassiefest.com.
 3. **We'll talk with you** about what works at home and at school, and agree on a plan before the first class.
 4. **We'll check in** after the first few sessions and adjust. See the [mid-season check-in](/dj-lab/families/mid-season-checkin.html).
 

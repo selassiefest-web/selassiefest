@@ -14,7 +14,7 @@ We do not post the letter's identifying numbers on this website. This helps prot
 ## How to request a copy
 
 - **Email:** stephen@selassiefest.com
-- **Phone:** 414-909-3279 (Stephen Henry, President)
+- **Phone:** 872-255-9333 (Stephen Henry, President)
 - **In person or by mail:** Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
 
 Please tell us who you are (for example, a parent, park official or grant maker) and how you would like the copy delivered.

@@ -9,7 +9,7 @@ This handbook tells you how a Rainbow DJ Lab class works for your family, from t
 
 > **Status: Proposed. The Lab is not running yet.** The Chicago Park District has not approved or permitted the program, no class dates are set, and no staff are hired. The policies here are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. See the [launch checklist](/dj-lab/governance/index.html).
 
-**Questions about anything here?** Contact Stephen Henry, President of Ras Tafari Inc.: 414-909-3279 or stephen@selassiefest.com.
+**Questions about anything here?** Contact Stephen Henry, President of Ras Tafari Inc.: 872-255-9333 or stephen@selassiefest.com.
 
 ## The Lab at a glance
 
@@ -109,7 +109,7 @@ There are **no grades and no tests**. Kids rate themselves with a traffic light 
 - Children aged 8–11 are **never released to walk home alone** unless a parent or guardian has given written permission in advance.
 - To change your pickup list, contact Stephen Henry in writing (email is fine) before the session. A phone call at pickup is not enough to add a new adult.
 - We do not release a child to an adult who appears impaired. Staff will call another authorized adult. If the child is in danger, staff call 911 and make a DCFS hotline report as required.
-- If you're running late, call 414-909-3279. Two screened adults stay with your child until an authorized adult arrives.
+- If you're running late, call 872-255-9333. Two screened adults stay with your child until an authorized adult arrives.
 
 Full details: [safety policies](/dj-lab/safety/).
 
@@ -122,7 +122,7 @@ Full details: [safety policies](/dj-lab/safety/).
 | Family link | Email when your child is approved for a class: your private link to follow your own child in the class app |
 | Sign-out notice | Email every time your child is signed out |
 | Same-day incident notice | Phone call the same day, then a written report within 24 hours. Coaches log every incident in the app, and each entry is emailed to Stephen Henry |
-| Questions any time | Stephen Henry, 414-909-3279 or stephen@selassiefest.com |
+| Questions any time | Stephen Henry, 872-255-9333 or stephen@selassiefest.com |
 | Weekly family digest | **Planned, not built yet.** See [weekly digest](/dj-lab/families/weekly-digest.html) |
 
 During a session, see [reaching us during a session](/dj-lab/families/session-contact.html). You're welcome to watch any class: see the [open-door policy](/dj-lab/families/open-door-policy.html).
@@ -228,4 +228,4 @@ We'd also value a few words about why you're leaving, if you're willing. See [fe
 | Emergency | 911 |
 | Illinois DCFS Child Abuse Hotline | 1-800-25-ABUSE (1-800-252-2873) |
 | Illinois Poison Center | 1-800-222-1222 |
-| Stephen Henry, Lab lead | 414-909-3279 |
+| Stephen Henry, Lab lead | 872-255-9333 |

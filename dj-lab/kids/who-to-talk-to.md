@@ -34,7 +34,7 @@ Read [If you feel unsafe](/dj-lab/kids/if-you-feel-unsafe.html). It's never your
 
 ## Phone numbers for your grown-up
 
-- **Stephen Henry** (leads the Lab): 414-909-3279, stephen@selassiefest.com
+- **Stephen Henry** (leads the Lab): 872-255-9333, stephen@selassiefest.com
 - **Emergency:** 911
 - **Illinois DCFS Child Abuse Hotline:** 1-800-25-ABUSE (1-800-252-2873)
 - **Illinois Poison Center:** 1-800-222-1222

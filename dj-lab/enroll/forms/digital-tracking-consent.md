@@ -54,7 +54,7 @@ The app enforces your choice: **without this consent, none of your child's in-cl
 > 2. Ras Tafari Inc. stores this information with its service providers: Supabase (database), Resend (email), and GitHub Pages (website hosting). It does not sell or share my child's information, show ads, use tracking pixels, collect biometrics, or track location.
 > 3. Child activity data is deleted **within 90 days after the season ends**, unless I ask Ras Tafari Inc. to keep my child's Passport.
 > 4. If there's a data breach affecting my information, I'll be notified without unreasonable delay, as required by the Illinois Personal Information Protection Act (815 ILCS 530).
-> 5. I may **review, correct or delete** my child's information, or **withdraw this consent at any time**, by contacting Stephen Henry (414-909-3279, stephen@selassiefest.com). Withdrawing will not affect my child's participation.
+> 5. I may **review, correct or delete** my child's information, or **withdraw this consent at any time**, by contacting Stephen Henry (872-255-9333, stephen@selassiefest.com). Withdrawing will not affect my child's participation.
 
 ## How long it's kept
 

@@ -34,6 +34,6 @@ description: How Rainbow DJ Lab collects, uses, protects and deletes information
 
 **Stephen Henry**, President, Ras Tafari Inc.
 
-- 414-909-3279
+- 872-255-9333
 - stephen@selassiefest.com
 - Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649

@@ -48,7 +48,7 @@ If we learn that a child or adult in class has a contagious illness:
 - **We never name the child or adult**, and we don't share details that would identify them. Please don't try to guess who it was.
 - If the **Chicago Department of Public Health** gives us direction, we follow it and pass it along.
 
-If your child is diagnosed with something contagious after being in class, please tell Stephen Henry privately so we can let other families know (without names). Call **414-909-3279** or email **stephen@selassiefest.com**.
+If your child is diagnosed with something contagious after being in class, please tell Stephen Henry privately so we can let other families know (without names). Call **872-255-9333** or email **stephen@selassiefest.com**.
 
 ## Related
 

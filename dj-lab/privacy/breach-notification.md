@@ -36,7 +36,7 @@ Any time Lab information is accessed, seen, copied or lost without permission. F
 - what information was involved
 - what we've done to contain it
 - what you can do to protect yourself and your child
-- who to contact: Stephen Henry, 414-909-3279, stephen@selassiefest.com
+- who to contact: Stephen Henry, 872-255-9333, stephen@selassiefest.com
 
 If a law-enforcement agency asks us to delay notice so it can investigate, we'll follow that request only as long as it applies, then notify you.
 

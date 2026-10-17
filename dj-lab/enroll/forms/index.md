@@ -47,4 +47,4 @@ Registration records (including these forms) are kept for **3 years** for safety
 
 ## Updating a form
 
-Information changes, so tell us any time. Email **stephen@selassiefest.com** or call or text **414-909-3279**. **Changes to the pickup list must be in writing** (email counts) before the class where they apply.
+Information changes, so tell us any time. Email **stephen@selassiefest.com** or call or text **872-255-9333**. **Changes to the pickup list must be in writing** (email counts) before the class where they apply.

@@ -63,7 +63,7 @@ Calling the authorities never waits for the Lab lead's approval.
 - Any injury and first aid given, and any medicine used.
 - Who was called (parent, 911, DCFS, Poison Center) and when.
 - Names of adults present (by role if staff names cannot be shared).
-- What happens next and who to contact: Stephen Henry, 414-909-3279, stephen@selassiefest.com.
+- What happens next and who to contact: Stephen Henry, 872-255-9333, stephen@selassiefest.com.
 
 Another child's name or details are never shared in your child's report. If your child was hurt by another child, you will be told what happened and what we are doing, but not the other child's private information.
 

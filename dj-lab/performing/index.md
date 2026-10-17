@@ -52,4 +52,4 @@ The safety rules on these pages are policies Ras Tafari Inc. commits to. Formal 
 
 ## Questions
 
-Contact Stephen Henry, President of Ras Tafari Inc. and leader of the Lab, at 414-909-3279 or stephen@selassiefest.com.
+Contact Stephen Henry, President of Ras Tafari Inc. and leader of the Lab, at 872-255-9333 or stephen@selassiefest.com.

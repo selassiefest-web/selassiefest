@@ -42,4 +42,4 @@ A single email once a week, for families who would rather get one summary than a
 
 ## When
 
-There's no date. We'll update this page when the digest is built and tested. Until then, if you'd find it useful (or wouldn't), tell us: Stephen Henry, 414-909-3279, stephen@selassiefest.com. See [feedback](/dj-lab/families/feedback-loop.html).
+There's no date. We'll update this page when the digest is built and tested. Until then, if you'd find it useful (or wouldn't), tell us: Stephen Henry, 872-255-9333, stephen@selassiefest.com. See [feedback](/dj-lab/families/feedback-loop.html).

@@ -32,7 +32,7 @@ The board is responsible for the organization. **A board vote adopting the Lab's
 
 - **For a safety concern about a child,** you never need to go through us first. Call 911 in an emergency, or the Illinois DCFS Hotline at 1-800-25-ABUSE (1-800-252-2873).
 - **For a concern about any adult,** contact the Chicago Park District: the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member.
-- **For anything else,** see [Report a concern](/dj-lab/safety/report-a-concern.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html). You can also contact Stephen Henry directly at 414-909-3279 or stephen@selassiefest.com.
+- **For anything else,** see [Report a concern](/dj-lab/safety/report-a-concern.html) and the [Grievance procedure](/dj-lab/safety/grievance-procedure.html). You can also contact Stephen Henry directly at 872-255-9333 or stephen@selassiefest.com.
 - **For concerns about leadership,** see the [Whistleblower policy](/dj-lab/governance/whistleblower.html).
 
 ## Our promise

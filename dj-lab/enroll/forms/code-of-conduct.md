@@ -92,7 +92,7 @@ As a parent, guardian or authorized pickup adult, I agree to:
 14. Understand that every Lab adult is a mandated reporter and must report suspected abuse or neglect directly to the DCFS Hotline (1-800-25-ABUSE) or 911, without anyone's permission.
 
 ### Working it out
-15. Bring concerns to Stephen Henry (414-909-3279, stephen@selassiefest.com) first, calmly. I understand the program's [fair process](/dj-lab/enroll/exit-withdrawal.html) for any pause in participation.
+15. Bring concerns to Stephen Henry (872-255-9333, stephen@selassiefest.com) first, calmly. I understand the program's [fair process](/dj-lab/enroll/exit-withdrawal.html) for any pause in participation.
 
 I understand that serious or repeated violations of this code by an adult may lead to that adult being asked not to attend Lab activities, or to a pause in my child's participation, following the fair process.
 

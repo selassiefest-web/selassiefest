@@ -9,7 +9,7 @@ If a class is cancelled or moved, we'll send **both an email and a text message*
 
 - **Our commitment:** when we can see the problem coming (a forecast heat warning, a storm forecast, or a building issue), we'll notify you **at least 2 hours before class starts**.
 - **Sudden changes:** sometimes weather turns fast. If we have to end a class early, we'll **call or text each family**. **Children stay with two screened adults, indoors, until an authorized adult picks them up.** We never send children home on their own because of a cancellation.
-- **No message means class is on.** If you're unsure, text Stephen Henry at **414-909-3279**.
+- **No message means class is on.** If you're unsure, text Stephen Henry at **872-255-9333**.
 
 Please keep your phone number up to date so these messages reach you.
 

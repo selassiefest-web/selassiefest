@@ -276,7 +276,7 @@ function formatPlatesForPurposeConfirmation(record: Record<string, any>) {
       <p>We've got your "yes" for Plates for Purpose${record.offer_details ? ` — <strong>${escapeHtml(record.offer_details)}</strong>` : ''}.</p>
       <p>Your auction item is being prepared now. Someone from the SelassieFest team will follow up shortly to confirm the details and next steps.</p>
       <p>If you have a logo on file with us, you'll find your official "Proud Plates for Purpose Partner" badge attached — feel free to share it on your own social media!</p>
-      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest. Questions in the meantime? Reply to this email or call (414) 909-3279.</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">Ras Tafari Inc — the 501(c)(3) nonprofit behind SelassieFest. Questions in the meantime? Reply to this email or call (872) 255-9333.</p>
     `,
   };
 }
@@ -379,7 +379,7 @@ function formatAppearanceReleaseSignerCopy(record: Record<string, any>) {
       <p>You gave Ras Tafari Inc. permission to use your name, likeness, image, voice and performance in the film and in connection with it, worldwide and for the life of the copyright, without payment. The full text you agreed to is at
       <a href="https://selassiefest.com/night-out/release.html">selassiefest.com/night-out/release.html</a>.</p>
       <p>Changed your mind? Reply to this email, or write to selassiefest@gmail.com, and we will take you out of the film. No explanation needed.</p>
-      <p style="color:#666;font-size:12px;">Ras Tafari Inc. \u00b7 6227 S. Prairie Ave., Chicago, IL 60637 \u00b7 414-909-3279</p>
+      <p style="color:#666;font-size:12px;">Ras Tafari Inc. \u00b7 6227 S. Prairie Ave., Chicago, IL 60637 \u00b7 872-255-9333</p>
     `,
   };
 }
@@ -818,7 +818,7 @@ function formatDjlabRegistrationConfirmation(record: Record<string, any>) {
         <p>${kid} is on the interest list for the free Rainbow DJ Lab, a <b>proposed</b> program of Ras Tafari Inc. at Rainbow Beach Park.</p>
         <p><b>This is not enrollment.</b> The program is pending approval by the Chicago Park District and funding, and no dates are set. When it is approved and every item on our <a href="https://selassiefest.com/dj-lab/governance/">launch checklist</a> is complete, we'll invite you to finish registration (health, pickup and permissions). If the Lab hasn't started within 12 months, we'll delete your information.</p>
         <p>Meanwhile you can read how the Lab will work, including safety, pickup and privacy, at <a href="https://selassiefest.com/dj-lab/">selassiefest.com/dj-lab</a>.</p>
-        <p>Questions, or want off the list? Reply to this email or call Stephen Henry at 414-909-3279.</p>
+        <p>Questions, or want off the list? Reply to this email or call Stephen Henry at 872-255-9333.</p>
         <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Ras Tafari Inc., a 501(c)(3) nonprofit</p>
       `,
     };
@@ -830,7 +830,7 @@ function formatDjlabRegistrationConfirmation(record: Record<string, any>) {
       <p>We received ${kid}'s registration for the free Rainbow DJ Lab at Rainbow Beach Park, part of Full Spectrum at Rainbow Beach.</p>
       <p>A coach will confirm ${kid}'s spot and station. ${record.recap_opt_in ? `After each class you'll get a short recap by email: today's mission, how ${kid} rated their progress, the coach's note, and one question to ask at dinner.` : ''}</p>
       <p>During class you can follow along live at <a href="https://selassiefest.com/dj-lab/live/#parent">selassiefest.com/dj-lab/live</a> with the class code. Everything about safety, pickup and privacy is at <a href="https://selassiefest.com/dj-lab/">selassiefest.com/dj-lab</a>.</p>
-      <p>Questions? Call Stephen Henry at 414-909-3279 or reply to this email.</p>
+      <p>Questions? Call Stephen Henry at 872-255-9333 or reply to this email.</p>
       <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Full Spectrum at Rainbow Beach &middot; Ras Tafari Inc., a 501(c)(3) nonprofit</p>
     `,
   };
@@ -847,7 +847,7 @@ function formatDjlabSignout(record: Record<string, any>) {
       <h2>Signed out: ${at}</h2>
       <p>${who}</p>
       <p>Recorded by ${escapeHtml(record.coach_name || 'the coach')} on the Lab's sign-out log.</p>
-      <p style="background:#FBE4E2;padding:10px 12px;border-radius:8px;"><b>If this wasn't expected, call Stephen Henry right away at 414-909-3279.</b> In an emergency, call 911.</p>
+      <p style="background:#FBE4E2;padding:10px 12px;border-radius:8px;"><b>If this wasn't expected, call Stephen Henry right away at 872-255-9333.</b> In an emergency, call 911.</p>
       <p style="color:#888;font-size:0.85rem;">Rainbow DJ Lab &middot; Ras Tafari Inc. You get this email every time your child is signed out.</p>
     `,
   };

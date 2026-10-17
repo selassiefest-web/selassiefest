@@ -90,4 +90,4 @@ To be signed by the President on behalf of the Lab program and recorded in the b
 
 ## Questions
 
-Contact Stephen Henry, President: 414-909-3279 or stephen@selassiefest.com. See also the [privacy policy](/dj-lab/privacy/index.html).
+Contact Stephen Henry, President: 872-255-9333 or stephen@selassiefest.com. See also the [privacy policy](/dj-lab/privacy/index.html).

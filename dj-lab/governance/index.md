@@ -77,6 +77,6 @@ The safety, privacy and governance policies on this site are **policies Ras Tafa
 
 ## Questions
 
-Contact Stephen Henry, President, Ras Tafari Inc.: 414-909-3279 or stephen@selassiefest.com.
+Contact Stephen Henry, President, Ras Tafari Inc.: 872-255-9333 or stephen@selassiefest.com.
 
 Concerns about any adult go to the Chicago Park District: the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member. To raise any other safety concern, see [Report a concern](/dj-lab/safety/report-a-concern.html). If a child is in immediate danger, call **911**. To report suspected child abuse or neglect, call the **DCFS Hotline at 1-800-25-ABUSE (1-800-252-2873)**. You do not need our permission.

@@ -47,7 +47,7 @@ If someone is hurt or in danger right now, **call 911**. You can call from any p
 
 If a child tells you about abuse or neglect, call the **Illinois DCFS Child Abuse Hotline: 1-800-25-ABUSE (1-800-252-2873)**. If the child is in immediate danger, call **911**.
 
-You can also contact Stephen Henry, who leads the Lab, at 414-909-3279 or stephen@selassiefest.com. But you don't need anyone's permission to call DCFS or 911. See [Report a concern](/dj-lab/safety/report-a-concern.html).
+You can also contact Stephen Henry, who leads the Lab, at 872-255-9333 or stephen@selassiefest.com. But you don't need anyone's permission to call DCFS or 911. See [Report a concern](/dj-lab/safety/report-a-concern.html).
 
 ## Remember
 

@@ -1,6 +1,6 @@
 const CONFIG = {
   contactEmail: 'stephen@selassiefest.com',
-  contactPhone: '414-909-3279',
+  contactPhone: '872-255-9333',
   backUrl: '/empress-empowerment-village/'
 };
 

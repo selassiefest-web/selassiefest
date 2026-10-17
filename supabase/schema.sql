@@ -6138,7 +6138,7 @@ values
   ('registered_agent', 'Registered agent', 'Stephen Henry'),
   ('officers', 'Officers', 'Stephen Henry, President · Paul Kelly, VP/Treasurer · Albert Harris, Corporate Secretary'),
   ('main_contact_name', 'Main contact', 'Stephen Henry'),
-  ('main_contact_phone', 'Main contact phone', '(262) 344-7075'),
+  ('main_contact_phone', 'Main contact phone', '(872) 255-9333'),
   ('main_contact_email', 'Main contact email', 'selassiefest@gmail.com'),
   ('website', 'Public website', 'selassiefest.com'),
   ('mission_statement', 'Mission statement', ''),

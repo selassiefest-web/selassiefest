@@ -40,7 +40,7 @@ You may report to any of these people. Choose whoever you are comfortable with. 
 
 | To | How |
 |---|---|
-| Stephen Henry, President | 414-909-3279, stephen@selassiefest.com |
+| Stephen Henry, President | 872-255-9333, stephen@selassiefest.com |
 | Paul Kelly, Vice President and Treasurer | Through the Corporation's mailing address below, marked "Confidential: for Paul Kelly" |
 | Albert Harris, Corporate Secretary | Through the Corporation's mailing address below, marked "Confidential: for Albert Harris" |
 

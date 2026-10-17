@@ -11,7 +11,7 @@ Kids get sick, families travel, and school gets busy. **There's no penalty for m
 
 Please let us know **before class starts** if you can:
 
-- **Text or call:** Stephen Henry, 414-909-3279
+- **Text or call:** Stephen Henry, 872-255-9333
 - **Email:** stephen@selassiefest.com
 
 Include your child's first name and last initial, plus the class date. You don't have to give a reason. If your child is sick, see [illness and keeping kids home](/dj-lab/enroll/communicable-disease.html).

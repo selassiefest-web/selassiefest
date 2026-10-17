@@ -75,7 +75,7 @@ You may ask, for each adult who works with your child:
 | The date mandated reporter training was completed | Home address, birth date or other personal data |
 | Whether pediatric first aid/CPR/AED is current, and its expiration date | |
 
-To ask, call or email Stephen Henry: 414-909-3279, stephen@selassiefest.com. We will answer within 3 business days.
+To ask, call or email Stephen Henry: 872-255-9333, stephen@selassiefest.com. We will answer within 3 business days.
 
 ## What you'll be told
 

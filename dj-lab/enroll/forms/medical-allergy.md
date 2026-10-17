@@ -41,4 +41,4 @@ It's kept as part of the registration record for **3 years** for safety and insu
 
 ## What happens after you submit
 
-If you list allergies, medication or a condition, **Stephen Henry will contact you before the first class** to go over the plan and collect any signed authorization or FARE plan. Contact him at **414-909-3279** or **stephen@selassiefest.com**.
+If you list allergies, medication or a condition, **Stephen Henry will contact you before the first class** to go over the plan and collect any signed authorization or FARE plan. Contact him at **872-255-9333** or **stephen@selassiefest.com**.

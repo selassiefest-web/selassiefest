@@ -52,7 +52,7 @@ On **listen-back days** (sessions 6, 10 and 13, and fast-track workshop 6), each
 
 - **Arrive 10 minutes early.** A parent or guardian signs each child in, and the first block starts on time.
 - **Pick up on time.** Children are released only to adults on your authorized-pickup list, after a photo ID check. See [arrival and sign-out](/dj-lab/safety/arrival-signout.html).
-- Running late? Call or text Stephen Henry at **414-909-3279**.
+- Running late? Call or text Stephen Henry at **872-255-9333**.
 
 ## The family Showcase
 

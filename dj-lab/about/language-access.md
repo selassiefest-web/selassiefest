@@ -24,7 +24,7 @@ Every family should be able to understand the forms they sign, the rules that pr
 
 If you'd like to talk with us in Spanish or another language, ask, and we'll arrange an interpreter for registration, orientation, a phone call, or a meeting about your child. You don't need to bring your own interpreter. We won't ask a child to interpret for their parent about safety, medical or behavior matters.
 
-To ask, contact Stephen Henry at 414-909-3279 or stephen@selassiefest.com. You can write in Spanish.
+To ask, contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com. You can write in Spanish.
 
 ## What's not translated yet
 
@@ -49,7 +49,7 @@ If something important is only in English and you need it in another language, t
 - **Formularios.** Todos los formularios para padres estarán en inglés y en español antes de la primera clase.
 - **Intérprete.** Si lo pide, le conseguimos un intérprete.
 
-**Contacto:** Stephen Henry, presidente de Ras Tafari Inc. Teléfono: 414-909-3279. Correo: stephen@selassiefest.com. Puede escribirnos en español.
+**Contacto:** Stephen Henry, presidente de Ras Tafari Inc. Teléfono: 872-255-9333. Correo: stephen@selassiefest.com. Puede escribirnos en español.
 
 **En una emergencia, llame al 911.** Para reportar sospecha de abuso o negligencia infantil en Illinois, llame a la línea directa del DCFS: 1-800-25-ABUSE (1-800-252-2873).
 

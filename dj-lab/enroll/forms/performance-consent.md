@@ -41,7 +41,7 @@ See [performing](/dj-lab/performing/index.html) and [the journey](/dj-lab/journe
 >
 > I understand this consent is **optional** and that refusing it will not affect my child's participation in class.
 >
-> I may **withdraw this consent at any time**, including on the day of an event, by contacting Stephen Henry (414-909-3279, stephen@selassiefest.com) or telling the lead coach in person.
+> I may **withdraw this consent at any time**, including on the day of an event, by contacting Stephen Henry (872-255-9333, stephen@selassiefest.com) or telling the lead coach in person.
 >
 > This consent lasts until I withdraw it or until the end of the season in which it was given, whichever comes first.
 

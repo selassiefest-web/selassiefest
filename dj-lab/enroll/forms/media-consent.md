@@ -36,7 +36,7 @@ You can check any, all or none:
 >
 > I understand this consent is **optional** and that refusing it will not affect my child's participation.
 >
-> I understand I may **withdraw this consent at any time** by contacting Stephen Henry (414-909-3279, stephen@selassiefest.com). After I withdraw, Ras Tafari Inc. will make no new uses of my child's images or recordings and will remove them from websites and social media accounts it controls. Materials already printed or distributed before my request may not be recallable.
+> I understand I may **withdraw this consent at any time** by contacting Stephen Henry (872-255-9333, stephen@selassiefest.com). After I withdraw, Ras Tafari Inc. will make no new uses of my child's images or recordings and will remove them from websites and social media accounts it controls. Materials already printed or distributed before my request may not be recallable.
 >
 > This consent lasts until I withdraw it or until the end of the season in which it was given, whichever comes first. It must be renewed each season.
 

@@ -45,4 +45,4 @@ You don't need our permission to check:
 
 ## Ask for a reference
 
-Contact Stephen Henry at 414-909-3279 or stephen@selassiefest.com. Tell us what you'd like to know, and we'll connect you with the right person once references are available.
+Contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com. Tell us what you'd like to know, and we'll connect you with the right person once references are available.

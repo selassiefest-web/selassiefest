@@ -7,7 +7,7 @@ description: You can withdraw any time at no cost and ask us to delete your data
 
 The program is free, so withdrawing costs nothing, and there are no fees or forms to fill out. You don't need to give a reason.
 
-**To withdraw,** email **stephen@selassiefest.com** or call or text **414-909-3279**. We'll confirm by email.
+**To withdraw,** email **stephen@selassiefest.com** or call or text **872-255-9333**. We'll confirm by email.
 
 When you withdraw:
 

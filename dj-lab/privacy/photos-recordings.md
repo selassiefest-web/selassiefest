@@ -55,7 +55,7 @@ Children with and without media consent take part in exactly the same way.
 
 ## Concerns
 
-If you see an image of your child used in a way you didn't agree to, contact Stephen Henry (414-909-3279, stephen@selassiefest.com) and we'll take it down. Safeguarding concerns about images go through [report a concern](/dj-lab/safety/report-a-concern.html).
+If you see an image of your child used in a way you didn't agree to, contact Stephen Henry (872-255-9333, stephen@selassiefest.com) and we'll take it down. Safeguarding concerns about images go through [report a concern](/dj-lab/safety/report-a-concern.html).
 
 ## Related
 

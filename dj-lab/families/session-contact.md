@@ -11,7 +11,7 @@ description: How to reach Rainbow DJ Lab staff while class is running, how staff
 
 | | |
 |---|---|
-| **Lab phone** | Stephen Henry, 414-909-3279 (call or text) |
+| **Lab phone** | Stephen Henry, 872-255-9333 (call or text) |
 | **Email** | stephen@selassiefest.com (not for anything urgent during class) |
 | **In person** | Come to the check-in table. You're welcome any time under our [open-door policy](/dj-lab/families/open-door-policy.html) |
 

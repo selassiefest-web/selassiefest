@@ -136,7 +136,7 @@ insert into lr_acts (name, kind, is_main, rate_note, website, instagram, sort) v
   ('Ifficial Reggae Movement', 'band', false, '$1,200 per event, or a deal worked out with the club owner', 'https://www.ifficialreggae.com/', null, 1),
   ('JayRebl', 'singer', true, null, null, 'https://www.instagram.com/jayreblmusic/', 10),
   ('Nego Hights', 'singer', true, null, 'https://www.youtube.com/c/NegoHights', null, 11),
-  ('Main act #3 (to be named)', 'singer', true, null, null, null, 12)
+  ('Livingston', 'singer', true, null, 'https://www.ifficialreggae.com/bio', null, 12)
 on conflict (name) do nothing;
 
 -- ── Venues (the pipeline) ────────────────────────────────────────────────

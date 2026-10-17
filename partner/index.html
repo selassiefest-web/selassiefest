@@ -128,7 +128,7 @@
 
   <div class="card sig">
     <div class="who"><b>Stephen Henry</b><span class="small">President, Ras Tafari Inc. &middot; Full Spectrum at Rainbow Beach</span><br>
-      <a href="tel:4149093279">414-909-3279</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
+      <a href="tel:8722559333">872-255-9333</a> &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></div>
   </div>
   <footer>Ras Tafari Inc., a 501(c)(3) nonprofit &middot; 7700 S. Stony Island Ave., Chicago, IL 60649</footer>
 </div>
@@ -146,7 +146,7 @@
   }
 
   function notFound(){
-    $('main').innerHTML = '<div class="card"><p>We couldn’t find this invitation. You can still read about Full Spectrum below, or call Stephen directly at <a href="tel:4149093279">414-909-3279</a>.</p></div>';
+    $('main').innerHTML = '<div class="card"><p>We couldn’t find this invitation. You can still read about Full Spectrum below, or call Stephen directly at <a href="tel:8722559333">872-255-9333</a>.</p></div>';
   }
 
   async function boot(){
@@ -300,7 +300,7 @@
       var r = await c.functions.invoke('create-checkout-session', { body: { mode: 'partner_gift', key: key, items: cash.lines } });
       if (r.error || !r.data || !r.data.url) throw (r.error || new Error((r.data && r.data.error) || 'Could not start checkout'));
       location.href = r.data.url;
-    } catch(err){ btn.disabled = false; msg.className = 'msg err'; msg.textContent = 'Sorry, checkout could not start. Please try PayPal or call Stephen at 414-909-3279.'; }
+    } catch(err){ btn.disabled = false; msg.className = 'msg err'; msg.textContent = 'Sorry, checkout could not start. Please try PayPal or call Stephen at 872-255-9333.'; }
   }
   function payPal(e){
     var cash = cashLines(picked()); if (!cash.total){ e.preventDefault(); return; }
@@ -328,7 +328,7 @@
     if (r.error){ $('go').disabled = false; $('msg').className = 'msg err'; $('msg').textContent = r.error.message; return; }
     $('answer').innerHTML = '<div class="done"><i class="fa-solid fa-circle-check"></i><h2 style="font-size:1.2rem">' +
       (decision === 'yes' ? 'Thank you! Welcome to Full Spectrum.' : decision === 'call_me' ? 'Thank you! Stephen will call you soon.' : 'Thank you for letting us know.') +
-      '</h2><p class="small" style="margin-top:6px">' + (decision === 'not_now' ? 'If anything changes, call Stephen at 414-909-3279.' : 'Expect to hear from Stephen within two days.') + '</p></div>';
+      '</h2><p class="small" style="margin-top:6px">' + (decision === 'not_now' ? 'If anything changes, call Stephen at 872-255-9333.' : 'Expect to hear from Stephen within two days.') + '</p></div>';
   }
 
   boot();

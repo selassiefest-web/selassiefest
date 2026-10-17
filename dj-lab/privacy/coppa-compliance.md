@@ -73,7 +73,7 @@ Child activity data is deleted within 90 days after the season ends, unless your
 
 ## Questions or concerns
 
-Stephen Henry, 414-909-3279, stephen@selassiefest.com, Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649.
+Stephen Henry, 872-255-9333, stephen@selassiefest.com, Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649.
 
 You can also contact the FTC directly about any website's COPPA practices at [ftc.gov](https://www.ftc.gov/).
 

@@ -11,7 +11,7 @@ Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festi
 
 **How to reach Stephen:**
 
-- Phone: 414-909-3279
+- Phone: 872-255-9333
 - Email: stephen@selassiefest.com
 - Mail: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
 

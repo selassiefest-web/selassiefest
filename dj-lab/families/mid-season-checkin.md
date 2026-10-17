@@ -54,4 +54,4 @@ Your answers also feed our [feedback loop](/dj-lab/families/feedback-loop.html).
 
 ## Want to talk sooner?
 
-You don't have to wait for session 7. Contact Stephen Henry at 414-909-3279 or stephen@selassiefest.com.
+You don't have to wait for session 7. Contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com.

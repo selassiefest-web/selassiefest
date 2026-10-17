@@ -70,7 +70,7 @@ For these, adults first **make everyone safe** (separate children, give first ai
 
 If you think a step-4 or step-5 decision was unfair:
 
-1. Tell Stephen Henry (414-909-3279, stephen@selassiefest.com). He'll review it with the adults involved.
+1. Tell Stephen Henry (872-255-9333, stephen@selassiefest.com). He'll review it with the adults involved.
 2. If you're still not satisfied, or the concern is about Stephen Henry himself, use the [Grievance Procedure](/dj-lab/safety/grievance-procedure.html), which goes to the Ras Tafari Inc. board officers.
 
 A child is never treated worse because a family appealed.

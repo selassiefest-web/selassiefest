@@ -86,4 +86,4 @@ All of these are part of full registration, which opens after launch. The intere
 
 ## Questions?
 
-Contact **Stephen Henry**, President of Ras Tafari Inc., at **414-909-3279** or **stephen@selassiefest.com**.
+Contact **Stephen Henry**, President of Ras Tafari Inc., at **872-255-9333** or **stephen@selassiefest.com**.

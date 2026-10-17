@@ -54,4 +54,4 @@ This is item 2 on the [Launch Readiness Checklist](/dj-lab/governance/index.html
 
 ## Questions
 
-Contact Stephen Henry, President: 414-909-3279 or stephen@selassiefest.com.
+Contact Stephen Henry, President: 872-255-9333 or stephen@selassiefest.com.

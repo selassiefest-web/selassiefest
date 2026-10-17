@@ -38,7 +38,7 @@ See [arrival and sign-out](/dj-lab/safety/arrival-signout.html) and the [ID chec
 
 ## Running late?
 
-Call or text **Stephen Henry at 414-909-3279**. Your child stays with two screened adults until an authorized adult arrives.
+Call or text **Stephen Henry at 872-255-9333**. Your child stays with two screened adults until an authorized adult arrives.
 
 ## Sources
 

@@ -142,4 +142,4 @@ _[The reviewer's own words, unedited.]_
 
 ### 10. Contact
 
-Questions about this report: Stephen Henry, President, 414-909-3279, stephen@selassiefest.com. Concerns about any adult go to the Chicago Park District, Rainbow Beach Park office, (312) 745-1479. Other concerns about leadership can go to the other officers or the independent reviewer; see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
+Questions about this report: Stephen Henry, President, 872-255-9333, stephen@selassiefest.com. Concerns about any adult go to the Chicago Park District, Rainbow Beach Park office, (312) 745-1479. Other concerns about leadership can go to the other officers or the independent reviewer; see [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).

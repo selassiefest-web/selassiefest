@@ -60,7 +60,7 @@ Also try:
 
 ## The mid-season check-in
 
-Around now is a good time for a [mid-season check-in](/dj-lab/families/mid-season-checkin.html): how is your child finding it, what's working, and what needs to change? You can always reach Stephen Henry at 414-909-3279 or stephen@selassiefest.com.
+Around now is a good time for a [mid-season check-in](/dj-lab/families/mid-season-checkin.html): how is your child finding it, what's working, and what needs to change? You can always reach Stephen Henry at 872-255-9333 or stephen@selassiefest.com.
 
 ## Next stop
 

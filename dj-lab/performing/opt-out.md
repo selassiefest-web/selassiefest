@@ -36,7 +36,7 @@ No child has to explain why.
 ## How a parent or guardian opts out
 
 - **For one event:** tell the Lab adult at check-in, or contact Stephen Henry before the event.
-- **For all performances:** contact Stephen Henry at 414-909-3279 or stephen@selassiefest.com and say you are withdrawing performance consent. It takes effect as soon as we receive it. We record the withdrawal with your child's consents, which only coaches can see.
+- **For all performances:** contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com and say you are withdrawing performance consent. It takes effect as soon as we receive it. We record the withdrawal with your child's consents, which only coaches can see.
 - You can give consent again later if you change your mind.
 
 ## What happens to a slot you give up

@@ -52,4 +52,4 @@ Empress Decks is a girls-only track taught by women DJs. No coaches have been hi
 
 ## Not sure which group fits?
 
-Call or email Stephen Henry: 414-909-3279, stephen@selassiefest.com. If your child is on the border between two groups, or needs support to take part, we'll talk it through with you. See also [Accessibility](/dj-lab/about/accessibility.html).
+Call or email Stephen Henry: 872-255-9333, stephen@selassiefest.com. If your child is on the border between two groups, or needs support to take part, we'll talk it through with you. See also [Accessibility](/dj-lab/about/accessibility.html).

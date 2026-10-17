@@ -34,7 +34,7 @@ Every policy in this section is a commitment that takes effect **before the firs
 | Illinois DCFS Child Abuse Hotline | **1-800-25-ABUSE (1-800-252-2873)** | Any suspicion that a child is being abused or neglected |
 | Illinois Poison Center | **1-800-222-1222** | Possible poisoning or exposure |
 | Rainbow Beach Park office (Chicago Park District) | **(312) 745-1479** | A concern about any adult at the Lab |
-| Rainbow DJ Lab (Stephen Henry, President) | **414-909-3279** | Questions, absences, late pickup, other concerns |
+| Rainbow DJ Lab (Stephen Henry, President) | **872-255-9333** | Questions, absences, late pickup, other concerns |
 
 ## Every safety page
 
@@ -82,7 +82,7 @@ Every policy in this section is a commitment that takes effect **before the firs
 
 ## What you can always do
 
-1. Ask any question about safety at any time. Call or email Stephen Henry: 414-909-3279, stephen@selassiefest.com.
+1. Ask any question about safety at any time. Call or email Stephen Henry: 872-255-9333, stephen@selassiefest.com.
 2. Ask for confirmation that each adult working with your child cleared the Park District's background check, and the dates they completed Lab training (not the records themselves). See [Staff screening](/dj-lab/safety/staff-screening.html).
 3. Take a concern about any adult straight to the Chicago Park District at the Rainbow Beach Park office, (312) 745-1479.
 4. Call 911 or the DCFS Hotline yourself. You never need our permission.

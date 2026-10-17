@@ -94,4 +94,4 @@ These are policy commitments. You may ask to review, correct or delete your info
 
 ## Need to change something?
 
-Contact **Stephen Henry** at **414-909-3279** or **stephen@selassiefest.com**. Changes to your pickup list must be made **in writing** (email is fine) before the class where they apply.
+Contact **Stephen Henry** at **872-255-9333** or **stephen@selassiefest.com**. Changes to your pickup list must be made **in writing** (email is fine) before the class where they apply.

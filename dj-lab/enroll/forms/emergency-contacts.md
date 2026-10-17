@@ -34,7 +34,7 @@ It's kept as part of the registration record for **3 years** for safety and insu
 
 ## Keeping it current
 
-If a number changes, email **stephen@selassiefest.com** or call or text **414-909-3279**.
+If a number changes, email **stephen@selassiefest.com** or call or text **872-255-9333**.
 
 ## Related
 

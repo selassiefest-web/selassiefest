@@ -201,7 +201,7 @@ Deno.serve(async (req: Request) => {
       }
       if (!lines.length) return json({ error: 'Choose a gift first' }, 400);
       const total = lines.reduce((s, l) => s + l.cents * l.qty, 0);
-      if (total > 5_000_000) return json({ error: 'For gifts over $50,000 please call Stephen at 414-909-3279' }, 400);
+      if (total > 5_000_000) return json({ error: 'For gifts over $50,000 please call Stephen at 872-255-9333' }, 400);
 
       const summary = lines.map((l) => `${l.name} x${l.qty}`).join('; ').slice(0, 480);
       const metadata = { order_type: 'partner_gift', pitch_key: key, partner_name: String(partner.name).slice(0, 100), summary };

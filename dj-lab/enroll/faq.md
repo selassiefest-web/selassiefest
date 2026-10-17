@@ -121,4 +121,4 @@ Little DJs (5–7) always have their grown-up in the room, and families are invi
 
 ## Still have a question?
 
-Contact **Stephen Henry** at **414-909-3279** or **stephen@selassiefest.com**.
+Contact **Stephen Henry** at **872-255-9333** or **stephen@selassiefest.com**.
