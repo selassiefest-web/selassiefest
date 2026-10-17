@@ -742,6 +742,36 @@ function formatFsPartnerGift(record: Record<string, any>) {
   };
 }
 
+// Live Reggae Rotation (/live-reggae/) -- see supabase/live-reggae-rotation.sql.
+function formatLrLoginLink(record: Record<string, any>) {
+  const verifyUrl = `https://selassiefest.com/live-reggae/rotation.html?token=${encodeURIComponent(record.id)}`;
+  return {
+    subject: `Your Live Reggae Rotation sign-in link`,
+    html: `
+      <h2>Sign in to the Rotation board</h2>
+      <p>Click below to sign in to the Live Reggae Rotation booking board.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="background:#1F7A3E;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600;">Sign in</a></p>
+      <p style="font-size:0.85rem;color:#888;">Or copy this link: ${verifyUrl}</p>
+      <p style="margin-top:24px;color:#888;font-size:0.85rem;">If you didn't request this, you can safely ignore this email.</p>
+    `,
+  };
+}
+
+function formatLrVenueResponse(record: Record<string, any>) {
+  const label = record.decision === 'book_trial' ? 'Book a trial night' : record.decision === 'call_me' ? 'Call me' : 'Not right now';
+  const venue = record.venue_name || 'A venue';
+  const deal = record.deal_pref === 'flat' ? '$1,200 flat' : record.deal_pref === 'deal' ? 'Wants to work a deal' : record.deal_pref === 'talk' ? 'Wants to talk it through' : '';
+  const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  return {
+    subject: `${record.decision === 'book_trial' ? 'TRIAL NIGHT' : record.decision === 'call_me' ? 'Call back' : 'Not now'}: ${venue} answered the live reggae pitch`,
+    html: `
+      <h2>${escapeHtml(venue)}: ${escapeHtml(label)}</h2>
+      <table style="border-collapse:collapse;">${row('Name', record.contact_name)}${row('Title', record.contact_title)}${row('Phone', record.phone)}${row('Email', record.email)}${row('City / area', record.city)}${row('Night', record.preferred_night)}${row('How often', record.cadence)}${row('Deal', deal)}${row('Message', record.message)}</table>
+      <p style="margin-top:18px;">It's logged on the venue${record.pitch_key ? '' : ' (added as a new venue)'}. <a href="https://selassiefest.com/live-reggae/rotation.html">Open the Rotation board</a></p>
+    `,
+  };
+}
+
 // Rainbow DJ Lab (/dj-lab/) -- see supabase/dj-lab.sql.
 function formatDjlabCoachLoginLink(record: Record<string, any>) {
   const url = `https://selassiefest.com/dj-lab/live/?coach_token=${encodeURIComponent(record.id)}#coach`;
@@ -1006,6 +1036,10 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   },
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   fs_partner_gifts: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerGift }] },
+  lr_login_links: {
+    notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
+  },
+  lr_venue_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatLrVenueResponse }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
   },

@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Live Reggae Rotation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#F7F6F1; --surface:#FFFFFF; --surface-2:#EFEDE4; --ink:#141A14; --ink-soft:#434B43; --ink-faint:#737B73;
+    --line:#E2DFD3; --line-strong:#CEC9B9; --accent:#1F7A3E; --accent-ink:#FFFFFF;
+    --gold:#B77F00; --gold-soft:#FBF0D3; --red:#B8322A; --red-soft:#FBE3E0; --green:#1F7A3E; --green-soft:#E1F1E6;
+    --blue:#2559A8; --blue-soft:#E2EBF8; --violet:#6D3FA8;
+    --shadow:0 1px 2px rgba(20,26,20,0.05), 0 8px 22px rgba(20,26,20,0.06);
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#0D110D; --surface:#151B15; --surface-2:#1C241C; --ink:#EEF2EC; --ink-soft:#B6C0B4; --ink-faint:#86917F;
+    --line:#263026; --line-strong:#344034; --accent:#5BD08A; --accent-ink:#0D110D;
+    --gold:#F2BE3A; --gold-soft:rgba(242,190,58,0.13); --red:#FF7A70; --red-soft:rgba(255,122,112,0.12); --green:#5BD08A; --green-soft:rgba(91,208,138,0.12);
+    --blue:#7FB0FF; --blue-soft:rgba(127,176,255,0.12); --violet:#B994F0; --shadow:none; } }
+  :root[data-theme="dark"]{
+    --bg:#0D110D; --surface:#151B15; --surface-2:#1C241C; --ink:#EEF2EC; --ink-soft:#B6C0B4; --ink-faint:#86917F;
+    --line:#263026; --line-strong:#344034; --accent:#5BD08A; --accent-ink:#0D110D;
+    --gold:#F2BE3A; --gold-soft:rgba(242,190,58,0.13); --red:#FF7A70; --red-soft:rgba(255,122,112,0.12); --green:#5BD08A; --green-soft:rgba(91,208,138,0.12);
+    --blue:#7FB0FF; --blue-soft:rgba(127,176,255,0.12); --violet:#B994F0; --shadow:none; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15.5px; line-height:1.55;}
+  a{color:var(--blue);}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; font-weight:800; margin:0; letter-spacing:-0.01em;}
+  h3{font-size:1rem;}
+  button,input,select,textarea{font:inherit; color:inherit;}
+  .stripe{height:6px; background:linear-gradient(90deg,#1F7A3E 0 33.3%,#F2BE3A 33.3% 66.6%,#B8322A 66.6%);}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 16px;}
+  header{padding:22px 0 10px; display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; justify-content:space-between;}
+  header h1{font-size:clamp(1.3rem,3.5vw,1.8rem);}
+  header .who{font-size:0.85rem; color:var(--ink-faint);}
+  .btn{display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px; border:1.5px solid var(--line-strong); background:var(--surface); font-weight:600; font-size:0.88rem; cursor:pointer; text-decoration:none; color:var(--ink);}
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .btn.small{padding:6px 11px; font-size:0.8rem;}
+  .btn.danger{color:var(--red);}
+  .btn:hover{border-color:var(--accent);}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);}
+  .signin{max-width:440px; margin:60px auto; padding:28px; text-align:center;}
+  .signin input{width:100%; padding:11px 14px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--bg); margin:14px 0 10px;}
+  .msg{font-size:0.88rem; color:var(--ink-soft); margin-top:10px;}
+  .msg.err{color:var(--red);}
+  .hint{font-size:0.78rem; color:var(--ink-faint);}
+
+  .tabs{display:flex; gap:2px; margin:4px 0 14px; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none;}
+  .tab{border:none; background:none; padding:9px 14px; font-weight:700; cursor:pointer; color:var(--ink-faint); border-bottom:3px solid transparent; white-space:nowrap;}
+  .tab.on{color:var(--ink); border-bottom-color:var(--accent);}
+  .toolbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:14px;}
+  .toolbar .grow{flex:1 1 auto;}
+  .stats{display:flex; flex-wrap:wrap; gap:10px; margin:0 0 14px;}
+  .stat{padding:10px 14px; min-width:120px;}
+  .stat b{display:block; font-family:"Montserrat",sans-serif; font-size:1.35rem; line-height:1.15;}
+  .stat span{font-size:0.75rem; color:var(--ink-faint); font-weight:600;}
+
+  .pill{display:inline-block; padding:2px 10px; border-radius:999px; font-size:0.74rem; font-weight:700; white-space:nowrap; background:var(--surface-2); color:var(--ink-soft);}
+  .pill.hold{background:var(--gold-soft); color:var(--gold);}
+  .pill.offered{background:var(--blue-soft); color:var(--blue);}
+  .pill.confirmed,.pill.played{background:var(--green-soft); color:var(--green);}
+  .pill.cancelled{background:var(--red-soft); color:var(--red); text-decoration:line-through;}
+  .pill.warn{background:var(--red-soft); color:var(--red);}
+
+  /* Week view */
+  .week{margin-bottom:18px;}
+  .week-h{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:0 0 8px; flex-wrap:wrap;}
+  .week-h h2{font-size:1.02rem;}
+  .gig{display:grid; grid-template-columns:76px 1fr auto; gap:4px 14px; padding:12px 14px; margin-bottom:8px; border-left:5px solid var(--gc,var(--line-strong)); cursor:pointer;}
+  .gig:hover{border-color:var(--accent);}
+  .gig .d{font-family:"Montserrat",sans-serif; font-weight:800; line-height:1.15;}
+  .gig .d small{display:block; font-family:"Inter",sans-serif; font-weight:600; font-size:0.76rem; color:var(--ink-faint);}
+  .gig .v{font-weight:700;}
+  .gig .lineup{font-size:0.9rem; color:var(--ink-soft);}
+  .gig .meta{font-size:0.8rem; color:var(--ink-faint);}
+  .gig .right{text-align:right; display:flex; flex-direction:column; gap:4px; align-items:flex-end;}
+  @media (max-width:560px){ .gig{grid-template-columns:60px 1fr;} .gig .right{grid-column:2; flex-direction:row; flex-wrap:wrap; align-items:center; text-align:left;} }
+  .empty{padding:18px; text-align:center; color:var(--ink-faint); font-size:0.92rem;}
+  .open-night{font-size:0.82rem; color:var(--ink-faint); padding:4px 0 8px 4px;}
+
+  /* Venues */
+  .stages{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 14px;}
+  .stage-chip{border:1.5px solid var(--line); background:var(--surface); border-radius:12px; padding:8px 12px; cursor:pointer; text-align:left; min-width:96px;}
+  .stage-chip b{display:block; font-family:"Montserrat",sans-serif; font-size:1.2rem; line-height:1.1;}
+  .stage-chip span{font-size:0.72rem; color:var(--ink-faint); font-weight:600;}
+  .stage-chip.on{border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent);}
+  .filters{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center;}
+  .filters input,.filters select{padding:8px 11px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--surface); font-size:0.88rem; max-width:100%;}
+  .filters input{flex:1 1 220px;}
+  .count{font-size:0.85rem; color:var(--ink-faint); margin:0 0 10px;}
+  .list{display:grid; gap:10px;}
+  .p{padding:14px 16px; border-left:5px solid var(--sc,var(--line-strong));}
+  .p-top{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline; justify-content:space-between;}
+  .p-name{font-family:"Montserrat",sans-serif; font-weight:800; font-size:1.02rem;}
+  .p-sub{font-size:0.82rem; color:var(--ink-faint); font-weight:600;}
+  .p-line{font-size:0.88rem; color:var(--ink-soft); margin-top:5px;}
+  .tier{font-size:0.7rem; font-weight:800; padding:1px 7px; border-radius:6px; background:var(--gold-soft); color:var(--gold); margin-left:4px;}
+  .next{margin-top:7px; font-size:0.88rem;}
+  .next .due{font-weight:700;}
+  .next .due.over{color:var(--red);}
+  .next .due.soon{color:var(--gold);}
+  .p-actions{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .details{margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:0.88rem; display:none;}
+  .details.open{display:block;}
+  .details dl{display:grid; grid-template-columns:130px 1fr; gap:4px 12px; margin:0 0 10px;}
+  .details dt{color:var(--ink-faint); font-weight:600;}
+  .details dd{margin:0; overflow-wrap:anywhere;}
+  @media (max-width:560px){ .details dl{grid-template-columns:1fr;} .details dt{margin-top:6px;} }
+  .log{list-style:none; padding:0; margin:6px 0 0;}
+  .log li{padding:6px 0; border-top:1px solid var(--line);}
+  .log .when{font-size:0.76rem; color:var(--ink-faint);}
+
+  /* Acts */
+  .acts{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px;}
+  .act{padding:14px 16px;}
+  .act h3{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .act .kind{font-size:0.72rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint);}
+
+  /* Money */
+  .calc{padding:16px; margin-bottom:16px;}
+  .calc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin:10px 0 14px;}
+  .calc-out{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px;}
+  .opt{padding:12px 14px; border-radius:12px; background:var(--surface-2);}
+  .opt b{display:block; font-family:"Montserrat",sans-serif; font-size:1.3rem;}
+  .opt span{font-size:0.8rem; color:var(--ink-soft);}
+  .opt.best{background:var(--green-soft);}
+  .opt.best b{color:var(--green);}
+  .say{margin-top:12px; padding:10px 12px; border-radius:10px; background:var(--gold-soft); font-size:0.92rem;}
+  table.t{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  table.t th,table.t td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.t th{font-size:0.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em;}
+  table.t td.n,table.t th.n{text-align:right; white-space:nowrap;}
+  .scroll-x{overflow-x:auto;}
+
+  dialog{border:none; border-radius:16px; padding:0; width:min(680px,calc(100vw - 24px)); max-height:calc(100vh - 24px); background:var(--surface); color:var(--ink); box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+  dialog::backdrop{background:rgba(8,12,8,0.55);}
+  dialog form{padding:20px;}
+  dialog h2{font-size:1.15rem; margin-bottom:12px;}
+  .f{display:grid; gap:4px; margin-bottom:11px;}
+  .f label{font-size:0.78rem; font-weight:700; color:var(--ink-soft);}
+  .f input,.f select,.f textarea{padding:9px 11px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--bg); width:100%;}
+  .f textarea{min-height:70px; resize:vertical;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+  @media (max-width:520px){ .row2,.row3{grid-template-columns:1fr;} }
+  .checks{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:0.9rem;}
+  .checks label{font-weight:500; color:var(--ink); display:flex; gap:6px; align-items:center;}
+  .dlg-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:8px; flex-wrap:wrap;}
+  .dlg-actions .left{margin-right:auto;}
+  .warn{background:var(--red-soft); color:var(--red); padding:8px 12px; border-radius:10px; font-size:0.86rem; margin-bottom:12px;}
+  .note{background:var(--gold-soft); padding:8px 12px; border-radius:10px; font-size:0.86rem; margin-bottom:12px;}
+  .gen-list{max-height:46vh; overflow:auto; border:1px solid var(--line); border-radius:12px; margin:10px 0;}
+  .gen-row{display:flex; gap:10px; align-items:flex-start; padding:9px 12px; border-bottom:1px solid var(--line); font-size:0.88rem;}
+  .gen-row:last-child{border-bottom:none;}
+  .gen-row .why{font-size:0.76rem; color:var(--red);}
+  pre.copy{white-space:pre-wrap; background:var(--surface-2); padding:12px; border-radius:10px; font-size:0.86rem; max-height:40vh; overflow:auto; font-family:inherit;}
+  .theme-toggle{border:1px solid var(--line-strong); background:var(--surface); width:36px; height:36px; border-radius:50%; cursor:pointer;}
+  .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:9px 16px; border-radius:999px; font-size:0.88rem; font-weight:600; opacity:0; transition:opacity .2s; pointer-events:none; z-index:50;}
+  .toast.on{opacity:1;}
+  footer{padding:30px 0 40px; font-size:0.8rem; color:var(--ink-faint); text-align:center;}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+
+<div id="signin" class="wrap" hidden>
+  <div class="card signin">
+    <h1 style="font-size:1.4rem">Live Reggae Rotation</h1>
+    <p class="msg" style="margin-top:8px">Private booking board. Enter your email and we'll send you a sign-in link.</p>
+    <form id="signinForm">
+      <input type="email" id="signinEmail" placeholder="you@example.com" required autocomplete="email">
+      <button class="btn primary" type="submit" style="width:100%; justify-content:center">Email me a sign-in link</button>
+    </form>
+    <p id="signinMsg" class="msg"></p>
+  </div>
+</div>
+
+<div id="teamIn" class="wrap" hidden>
+  <div class="card signin">
+    <h1 style="font-size:1.4rem">Live Reggae Rotation</h1>
+    <p class="msg" style="margin-top:8px">You were sent the team link. What's your first name? It goes next to anything you log, so the team knows who did what.</p>
+    <form id="teamForm">
+      <input id="teamName" placeholder="Your first name" required autocomplete="given-name" maxlength="60">
+      <button class="btn primary" type="submit" style="width:100%; justify-content:center">Open the board</button>
+    </form>
+    <p id="teamMsg" class="msg"></p>
+  </div>
+</div>
+
+<div id="app" class="wrap" hidden>
+  <header>
+    <div>
+      <h1>Live Reggae Rotation</h1>
+      <div class="who"><span id="who"></span> · Ifficial Reggae Movement · Chicago, suburbs &amp; NW Indiana</div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center">
+      <a class="btn small" href="/live-reggae/" target="_blank" rel="noopener"><i class="fa-solid fa-calendar"></i> Public calendar</a>
+      <button class="btn small" id="signoutBtn">Sign out</button>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab on" data-tab="week">This week</button>
+    <button class="tab" data-tab="calendar">Calendar</button>
+    <button class="tab" data-tab="venues">Venues</button>
+    <button class="tab" data-tab="acts">Acts</button>
+    <button class="tab" data-tab="money">Money</button>
+  </nav>
+
+  <!-- This week -->
+  <section id="tab-week">
+    <div class="stats" id="weekStats"></div>
+    <div class="toolbar">
+      <button class="btn primary small" id="copyBandBtn"><i class="fa-solid fa-copy"></i> Copy lineup for the band</button>
+      <button class="btn small" id="copyFansBtn"><i class="fa-solid fa-bullhorn"></i> Copy for fans</button>
+      <span class="grow"></span>
+      <button class="btn small" data-add-gig><i class="fa-solid fa-plus"></i> Add a night</button>
+    </div>
+    <div id="weekList"></div>
+  </section>
+
+  <!-- Calendar -->
+  <section id="tab-calendar" hidden>
+    <div class="toolbar">
+      <button class="btn primary small" id="genBtn"><i class="fa-solid fa-shuffle"></i> Build the rotation</button>
+      <button class="btn small" data-add-gig><i class="fa-solid fa-plus"></i> Add a night</button>
+      <span class="grow"></span>
+      <label class="hint"><input type="checkbox" id="showPast"> Show past 8 weeks</label>
+      <label class="hint"><input type="checkbox" id="showCancelled"> Show cancelled</label>
+    </div>
+    <div id="calList"></div>
+  </section>
+
+  <!-- Venues -->
+  <section id="tab-venues" hidden>
+    <div class="stages" id="stageChips"></div>
+    <div class="filters">
+      <input type="search" id="vSearch" placeholder="Search venues, neighborhoods, notes…">
+      <select id="vRegion"><option value="">All areas</option></select>
+      <select id="vTier"><option value="">All tiers</option><option value="A">A: hosts reggae now</option><option value="B">B: live-music room</option><option value="C">C: Caribbean restaurant</option></select>
+      <select id="vSort"><option value="due">Sort: next step due</option><option value="name">Sort: name</option><option value="region">Sort: area</option><option value="recent">Sort: recently touched</option></select>
+      <button class="btn primary small" id="addVenueBtn"><i class="fa-solid fa-plus"></i> Add venue</button>
+    </div>
+    <p class="count" id="vCount"></p>
+    <div class="list" id="vList"></div>
+  </section>
+
+  <!-- Acts -->
+  <section id="tab-acts" hidden>
+    <div class="note">The featured singers marked <b>Main</b> are the ones the rotation takes turns with, so every room hears a different voice from week to week. The band plays every night.</div>
+    <div class="toolbar"><span class="grow"></span><button class="btn primary small" id="addActBtn"><i class="fa-solid fa-plus"></i> Add act</button></div>
+    <div class="acts" id="actList"></div>
+  </section>
+
+  <!-- Money -->
+  <section id="tab-money" hidden>
+    <div class="card calc">
+      <h2 style="font-size:1.1rem">Deal math: $1,200 flat or a deal?</h2>
+      <p class="hint">Plug in what the club expects. The example numbers below are placeholders. Change them to match the room.</p>
+      <div class="calc-grid">
+        <div class="f"><label for="cCover">Cover charge ($)</label><input id="cCover" type="number" min="0" step="1" value="15"></div>
+        <div class="f"><label for="cHeads">Paying guests</label><input id="cHeads" type="number" min="0" step="1" value="120"></div>
+        <div class="f"><label for="cDoorPct">Band's share of door (%)</label><input id="cDoorPct" type="number" min="0" max="100" step="5" value="80"></div>
+        <div class="f"><label for="cGuar">Guarantee ($)</label><input id="cGuar" type="number" min="0" step="50" value="600"></div>
+        <div class="f"><label for="cBar">Bar sales that night ($)</label><input id="cBar" type="number" min="0" step="100" value="4000"></div>
+        <div class="f"><label for="cBarPct">Band's share of bar (%)</label><input id="cBarPct" type="number" min="0" max="100" step="1" value="15"></div>
+      </div>
+      <div class="calc-out" id="calcOut"></div>
+      <div class="say" id="calcSay"></div>
+    </div>
+    <div class="stats" id="moneyStats"></div>
+    <h3 style="margin:6px 0 8px">Nights and pay</h3>
+    <div class="card scroll-x"><table class="t" id="ledger"></table></div>
+    <h3 style="margin:18px 0 8px">Who's featured</h3>
+    <div class="card scroll-x"><table class="t" id="actCounts"></table></div>
+  </section>
+
+  <footer>Private to the rotation team. Venue contacts never appear on the public pages.</footer>
+</div>
+
+<!-- Gig dialog -->
+<dialog id="gigDlg"><form method="dialog" id="gigForm">
+  <h2 id="gigTitle">Night</h2>
+  <div id="gigWarn"></div>
+  <div class="f"><label for="gVenue">Venue</label><select id="gVenue" required></select></div>
+  <div class="row3">
+    <div class="f"><label for="gDate">Date</label><input id="gDate" type="date" required></div>
+    <div class="f"><label for="gStart">Start</label><input id="gStart" type="time"></div>
+    <div class="f"><label for="gEnd">End</label><input id="gEnd" type="time"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="gStatus">Status</label><select id="gStatus">
+      <option value="hold">Hold (penciled in)</option><option value="offered">Offered to the venue</option><option value="confirmed">Confirmed</option><option value="played">Played</option><option value="cancelled">Cancelled</option></select></div>
+    <div class="f"><label for="gBand">Band</label><select id="gBand"></select></div>
+  </div>
+  <div class="f"><label for="gHead">Featured singer</label><select id="gHead"></select></div>
+  <div class="f"><label>Also on the bill</label><div class="checks" id="gSupport"></div></div>
+  <div class="row2">
+    <div class="f"><label for="gDeal">Deal</label><select id="gDeal">
+      <option value="flat">$1,200 flat</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door (whichever is higher)</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
+    <div class="f"><label for="gFee">Band is owed ($)</label><input id="gFee" type="number" min="0" step="10"></div>
+  </div>
+  <div class="row3" id="gTermsRow">
+    <div class="f"><label for="gDoorPct">Door %</label><input id="gDoorPct" type="number" min="0" max="100"></div>
+    <div class="f"><label for="gGuar">Guarantee $</label><input id="gGuar" type="number" min="0"></div>
+    <div class="f"><label for="gBarPct">Bar %</label><input id="gBarPct" type="number" min="0" max="100"></div>
+  </div>
+  <div class="f" id="gTermsNoteWrap"><label for="gTermsNote">Deal notes</label><input id="gTermsNote" placeholder="e.g. band keeps door after the first $200 for the DJ"></div>
+  <details style="margin-bottom:11px"><summary class="hint" style="cursor:pointer">After the night: door, bar, crowd and payment</summary>
+    <div class="row3" style="margin-top:10px">
+      <div class="f"><label for="gCover">Cover $</label><input id="gCover" type="number" min="0" step="1"></div>
+      <div class="f"><label for="gDoor">Door gross $</label><input id="gDoor" type="number" min="0"></div>
+      <div class="f"><label for="gBarGross">Bar gross $</label><input id="gBarGross" type="number" min="0"></div>
+    </div>
+    <div class="row3">
+      <div class="f"><label for="gAtt">Attendance</label><input id="gAtt" type="number" min="0"></div>
+      <div class="f"><label for="gPaid">Paid so far $</label><input id="gPaid" type="number" min="0"></div>
+      <div class="f"><label for="gPaidStatus">Payment</label><select id="gPaidStatus"><option value="unpaid">Unpaid</option><option value="deposit">Deposit paid</option><option value="paid">Paid in full</option><option value="waived">Waived</option></select></div>
+    </div>
+    <button type="button" class="btn small" id="gCalcFee"><i class="fa-solid fa-calculator"></i> Work out what the band is owed from the door and bar</button>
+  </details>
+  <div class="checks" style="margin-bottom:8px"><label><input type="checkbox" id="gPublic" checked> Show on the public calendar once confirmed</label></div>
+  <div class="f"><label for="gPubNote">Public note (fans see this)</label><input id="gPubNote" placeholder="e.g. 21+ · $10 at the door"></div>
+  <div class="f"><label for="gNotes">Private notes</label><textarea id="gNotes" placeholder="Load-in time, parking, who to ask for…"></textarea></div>
+  <div class="dlg-actions">
+    <button type="button" class="btn small danger left" id="gDelete">Delete</button>
+    <button type="button" class="btn" id="gCancel">Close</button>
+    <button type="submit" class="btn primary">Save</button>
+  </div>
+</form></dialog>
+
+<!-- Rotation generator -->
+<dialog id="genDlg"><form method="dialog" id="genForm">
+  <h2>Build the rotation</h2>
+  <p class="hint" style="margin-top:-6px">This fills open nights for venues marked <b>Trial booked</b> or <b>In rotation</b> that have a set night. The featured singer takes turns so no room gets the same voice twice in a row, and no one is booked on a blackout date. Everything is saved as a <b>Hold</b> until you confirm with the venue.</p>
+  <div class="row3">
+    <div class="f"><label for="genStart">Starting the week of</label><input id="genStart" type="date"></div>
+    <div class="f"><label for="genWeeks">For</label><select id="genWeeks"><option value="4">4 weeks</option><option value="8" selected>8 weeks</option><option value="12">12 weeks</option></select></div>
+    <div class="f"><label for="genSupport">Second singer</label><select id="genSupport"><option value="1">Add one each night</option><option value="0">Featured singer only</option></select></div>
+  </div>
+  <div class="checks"><label><input type="checkbox" id="genTalking"> Also pencil in venues still in <b>Talking</b></label></div>
+  <div id="genOut"></div>
+  <div class="dlg-actions">
+    <button type="button" class="btn" id="genCancel">Close</button>
+    <button type="button" class="btn" id="genPreview"><i class="fa-solid fa-eye"></i> Preview</button>
+    <button type="submit" class="btn primary" id="genSave" disabled>Save holds</button>
+  </div>
+</form></dialog>
+
+<!-- Venue dialog -->
+<dialog id="venueDlg"><form method="dialog" id="venueForm">
+  <h2 id="venueTitle">Venue</h2>
+  <div class="f"><label for="vName">Name</label><input id="vName" required></div>
+  <div class="row2">
+    <div class="f"><label for="vRegionIn">Area</label><select id="vRegionIn"></select></div>
+    <div class="f"><label for="vHood">Neighborhood / city</label><input id="vHood"></div>
+  </div>
+  <div class="f"><label for="vAddr">Address</label><input id="vAddr"></div>
+  <div class="row2">
+    <div class="f"><label for="vPhone">Phone</label><input id="vPhone" type="tel"></div>
+    <div class="f"><label for="vEmail">Email</label><input id="vEmail" type="email"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="vWeb">Website</label><input id="vWeb"></div>
+    <div class="f"><label for="vIg">Instagram</label><input id="vIg"></div>
+  </div>
+  <div class="f"><label for="vContacts">People (one per line: name | role | phone | email)</label><textarea id="vContacts" placeholder="Owner name | Owner | 773-555-0100 | owner@example.com"></textarea></div>
+  <div class="row3">
+    <div class="f"><label for="vStage">Stage</label><select id="vStage"></select></div>
+    <div class="f"><label for="vTierIn">Tier</label><select id="vTierIn"><option value="">–</option><option value="A">A: hosts reggae now</option><option value="B">B: live-music room</option><option value="C">C: Caribbean restaurant</option></select></div>
+    <div class="f"><label for="vCap">Capacity</label><input id="vCap" type="number" min="0"></div>
+  </div>
+  <div class="f"><label for="vNights">What they do now</label><input id="vNights" placeholder="e.g. DJ Fri–Sat, karaoke Wed"></div>
+  <h3 style="margin:8px 0 8px">Their night in the rotation</h3>
+  <div class="row3">
+    <div class="f"><label for="vNight">Night</label><select id="vNight"><option value="">Not set</option><option>Wed</option><option>Thu</option><option>Fri</option><option>Sat</option><option>Sun</option><option>Mon</option><option>Tue</option></select></div>
+    <div class="f"><label for="vCad">How often</label><select id="vCad"><option value="weekly">Every week</option><option value="biweekly">Every other week</option><option value="monthly">Once a month</option><option value="one_off">One-off only</option></select></div>
+    <div class="f"><label for="vStart">Usual start</label><input id="vStart" type="time"></div>
+  </div>
+  <div class="f" id="vOffsetWrap"><label for="vOffset">Which week</label><select id="vOffset"></select></div>
+  <div class="row2">
+    <div class="f"><label for="vDeal">Deal</label><select id="vDeal"><option value="tbd">Not set yet</option><option value="flat">$1,200 flat</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
+    <div class="f"><label for="vDealNote">Deal terms</label><input id="vDealNote" placeholder="e.g. $600 vs. 80% of a $15 door"></div>
+  </div>
+  <div class="row3">
+    <div class="f"><label for="vDoorPct">Door %</label><input id="vDoorPct" type="number" min="0" max="100"></div>
+    <div class="f"><label for="vGuar">Guarantee $</label><input id="vGuar" type="number" min="0"></div>
+    <div class="f"><label for="vBarPct">Bar %</label><input id="vBarPct" type="number" min="0" max="100"></div>
+  </div>
+  <div class="f"><label for="vOffer">Note on their pitch page (the owner sees this)</label><textarea id="vOffer" placeholder="Optional. e.g. Thursdays fit your room best. Happy to start with one trial night."></textarea></div>
+  <div class="row2">
+    <div class="f"><label for="vNext">Next step</label><input id="vNext"></div>
+    <div class="f"><label for="vDue">Due</label><input id="vDue" type="date"></div>
+  </div>
+  <div class="f"><label for="vNotes">Notes</label><textarea id="vNotes"></textarea></div>
+  <div class="dlg-actions">
+    <button type="button" class="btn small danger left" id="vDelete">Delete</button>
+    <button type="button" class="btn" id="vCancel">Close</button>
+    <button type="submit" class="btn primary">Save</button>
+  </div>
+</form></dialog>
+
+<!-- Log dialog -->
+<dialog id="logDlg"><form method="dialog" id="logForm">
+  <h2 id="logTitle">Log a touch</h2>
+  <div class="row2">
+    <div class="f"><label for="logKind">What happened</label><select id="logKind"><option value="call">Call</option><option value="text">Text</option><option value="email">Email</option><option value="visit">Walked in</option><option value="meeting">Meeting</option><option value="note">Note</option></select></div>
+    <div class="f"><label for="logStage">Move to</label><select id="logStage"></select></div>
+  </div>
+  <div class="f"><label for="logSummary">Summary</label><textarea id="logSummary" placeholder="Talked to the manager, wants Thursdays, asked for a video link…"></textarea></div>
+  <div class="row2">
+    <div class="f"><label for="logNext">Next step</label><input id="logNext"></div>
+    <div class="f"><label for="logDue">Due</label><input id="logDue" type="date"></div>
+  </div>
+  <div class="dlg-actions"><button type="button" class="btn" id="logCancel">Close</button><button type="submit" class="btn primary">Save</button></div>
+</form></dialog>
+
+<!-- Act dialog -->
+<dialog id="actDlg"><form method="dialog" id="actForm">
+  <h2 id="actTitle">Act</h2>
+  <div class="row2">
+    <div class="f"><label for="aName">Name</label><input id="aName" required></div>
+    <div class="f"><label for="aKind">Kind</label><select id="aKind"><option value="band">Band</option><option value="singer">Singer</option><option value="dj">DJ / selector</option><option value="mc">MC / host</option></select></div>
+  </div>
+  <div class="checks" style="margin-bottom:10px"><label><input type="checkbox" id="aMain"> Main act (takes turns as the featured singer)</label><label><input type="checkbox" id="aActive"> Active</label></div>
+  <div class="f"><label for="aRate">Rate</label><input id="aRate" placeholder="e.g. $1,200 per event, or a deal with the club"></div>
+  <div class="row2">
+    <div class="f"><label for="aIg">Instagram</label><input id="aIg"></div>
+    <div class="f"><label for="aWeb">Website</label><input id="aWeb"></div>
+  </div>
+  <div class="row2">
+    <div class="f"><label for="aPhone">Phone</label><input id="aPhone" type="tel"></div>
+    <div class="f"><label for="aEmail">Email</label><input id="aEmail" type="email"></div>
+  </div>
+  <div class="f"><label for="aBlack">Can't play (dates, comma-separated)</label><input id="aBlack" placeholder="2026-11-26, 2026-12-24"></div>
+  <div class="f"><label for="aNotes">Notes</label><textarea id="aNotes"></textarea></div>
+  <div class="dlg-actions">
+    <button type="button" class="btn small danger left" id="aDelete">Delete</button>
+    <button type="button" class="btn" id="aCancel">Close</button>
+    <button type="submit" class="btn primary">Save</button>
+  </div>
+</form></dialog>
+
+<!-- Copy dialog -->
+<dialog id="copyDlg"><form method="dialog">
+  <h2 id="copyTitle">Copy</h2>
+  <pre class="copy" id="copyText"></pre>
+  <div class="dlg-actions"><button type="button" class="btn" id="copyClose">Close</button><button type="button" class="btn primary" id="copyGo"><i class="fa-solid fa-copy"></i> Copy</button></div>
+</form></dialog>
+
+<div class="toast" id="toast"></div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var BOOKER = 'Stephen Henry', BOOKER_PHONE = '(872) 255-9333';
+  var STAGES = [['prospect','Prospect','var(--line-strong)'],['contacted','Contacted','var(--blue)'],['talking','Talking','var(--violet)'],
+    ['trial_booked','Trial booked','var(--gold)'],['in_rotation','In rotation','var(--green)'],['paused','Paused','var(--ink-faint)'],['declined','Declined','var(--red)']];
+  var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
+  var REGIONS = ['Chicago – South Side','Chicago – Far South Side','Chicago – West Side','Chicago – North Side','Chicago – Downtown / Near','South Suburbs','West Suburbs','North Suburbs','NW Indiana'];
+  var STATUS = {hold:'Hold', offered:'Offered', confirmed:'Confirmed', played:'Played', cancelled:'Cancelled'};
+  var STATUS_COLOR = {hold:'var(--gold)', offered:'var(--blue)', confirmed:'var(--green)', played:'var(--green)', cancelled:'var(--red)'};
+  var DEAL = {tbd:'Deal not set', flat:'$1,200 flat', door:'Door split', guarantee_door:'Guarantee vs. door', bar:'Bar %', hybrid:'Custom deal'};
+  var CAD = {weekly:'every week', biweekly:'every other week', monthly:'once a month', one_off:'one-off'};
+  var KIND = {call:'Call', email:'Email', visit:'Walk-in', meeting:'Meeting', text:'Text', note:'Note', stage:'Stage', gig:'Gig'};
+  var NIGHTS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var FLAT = 1200;
+  var KEY = 'lrSession';
+  var state = { session:null, venues:[], acts:[], gigs:[], activity:[], tab:'week', stageFilter:'', open:{}, gen:[] };
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function loadSession(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
+  function saveSession(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  function clearSession(){ try { localStorage.removeItem(KEY); } catch(e){} }
+  async function client(){ return await window.sfSupabaseReady; }
+  function toast(t){ var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(function(){ el.classList.remove('on'); }, 1800); }
+
+  // Dates are local YYYY-MM-DD strings throughout.
+  function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function parse(s){ return s ? new Date(String(s).slice(0,10) + 'T00:00:00') : null; }
+  function addDays(s, n){ var d = parse(s); d.setDate(d.getDate() + n); return iso(d); }
+  function todayIso(){ return iso(new Date()); }
+  function mondayOf(s){ var d = parse(s); var wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return iso(d); }
+  function nightOf(s){ return NIGHTS[(parse(s).getDay() + 6) % 7]; }
+  function fmtDay(s){ return parse(s).toLocaleDateString('en-US', {weekday:'short'}); }
+  function fmtMD(s){ var d = parse(s); return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined}); }
+  function fmtLong(s){ return parse(s).toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}); }
+  function fmtTime(t){ if (!t) return ''; var p = String(t).split(':'), h = +p[0], m = +p[1]; return ((h + 11) % 12 + 1) + (m ? ':' + String(m).padStart(2,'0') : '') + (h < 12 ? 'am' : 'pm'); }
+  function fmtWhen(ts){ var d = new Date(ts); return d.toLocaleDateString('en-US',{month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'}); }
+  function money(n){ return '$' + Math.round(Number(n || 0)).toLocaleString('en-US'); }
+  function num(v){ return v === '' || v == null || isNaN(+v) ? null : +v; }
+
+  function venue(id){ return state.venues.find(function(v){ return v.id === id; }); }
+  function act(id){ return state.acts.find(function(a){ return a.id === id; }); }
+  function actName(id){ var a = act(id); return a ? a.name : ''; }
+  function band(){ return state.acts.find(function(a){ return a.kind === 'band' && a.active; }); }
+  function mains(){ return state.acts.filter(function(a){ return a.is_main && a.active; }); }
+  function liveGigs(){ return state.gigs.filter(function(g){ return g.status !== 'cancelled'; }); }
+  function pitchUrl(v){ return 'https://selassiefest.com/live-reggae/venue/?k=' + v.pitch_key; }
+
+  // Theme
+  (function(){ var root = document.documentElement; try { var t = localStorage.getItem('lr-theme'); if (t) root.setAttribute('data-theme', t); } catch(e){}
+    $('themeBtn').addEventListener('click', function(){ var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var next = cur === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', next); try { localStorage.setItem('lr-theme', next); } catch(e){} }); })();
+
+  function showSignin(msg, isErr){ $('app').hidden = true; $('signin').hidden = false; if (msg){ $('signinMsg').textContent = msg; $('signinMsg').className = 'msg' + (isErr ? ' err' : ''); } }
+
+  $('signinForm').addEventListener('submit', async function(e){
+    e.preventDefault(); var email = $('signinEmail').value.trim();
+    $('signinMsg').className = 'msg'; $('signinMsg').textContent = 'Sending…';
+    try { var c = await client(); var r = await c.from('lr_login_links').insert({ email: email });
+      if (r.error) throw r.error;
+      $('signinMsg').textContent = 'Check your email for the sign-in link. It works for 30 minutes.';
+    } catch(err){ $('signinMsg').className = 'msg err'; $('signinMsg').textContent = 'That email is not on the rotation team. Ask Stephen to add you.'; }
+  });
+
+  async function rpc(name, args){ var c = await client(); var r = await c.rpc(name, Object.assign({ p_session: state.session.sessionToken }, args || {}));
+    if (r.error){ if (/session/i.test(r.error.message)){ var wasTeam = /^link:/.test(state.session.email || ''); clearSession(); showSignin(wasTeam ? 'The team link has changed. Open the newest team link from Stephen.' : 'Your session ended. Please sign in again.', true); } throw r.error; } return r.data; }
+
+  async function load(){
+    var d = await rpc('lr_load');
+    state.venues = d.venues || []; state.acts = d.acts || []; state.gigs = d.gigs || []; state.activity = d.activity || [];
+    render();
+  }
+
+  function render(){ renderWeek(); renderCalendar(); renderVenues(); renderActs(); renderMoney(); }
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){
+    state.tab = b.getAttribute('data-tab');
+    document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x === b); });
+    ['week','calendar','venues','acts','money'].forEach(function(t){ $('tab-' + t).hidden = t !== state.tab; });
+    try { localStorage.setItem('lr-tab', state.tab); } catch(e){}
+  }); });
+
+  // ── Gig cards ─────────────────────────────────────────────────────────
+  function lineup(g){
+    var parts = [];
+    var b = act(g.band_id) || band();
+    if (b) parts.push(b.name);
+    if (g.headliner_id) parts.push('featuring ' + actName(g.headliner_id));
+    var sup = (g.support_ids || []).map(actName).filter(Boolean);
+    if (sup.length) parts.push('+ ' + sup.join(', '));
+    return parts.join(' ');
+  }
+  function bandBusy(date, exceptId){ return liveGigs().filter(function(g){ return g.gig_date === date && g.id !== exceptId; }); }
+  function gigCard(g){
+    var v = venue(g.venue_id) || {name:'(venue deleted)'};
+    var clash = g.status !== 'cancelled' && bandBusy(g.gig_date, g.id).length;
+    var owed = g.status === 'played' && g.fee_agreed && g.paid_status !== 'paid' && g.paid_status !== 'waived' ? (g.fee_agreed - (g.amount_paid || 0)) : 0;
+    return '<div class="card gig" data-gig="' + g.id + '" style="--gc:' + STATUS_COLOR[g.status] + '">' +
+      '<div class="d">' + esc(fmtDay(g.gig_date)) + '<small>' + esc(fmtMD(g.gig_date)) + (g.start_time ? ' · ' + esc(fmtTime(g.start_time)) : '') + '</small></div>' +
+      '<div><div class="v">' + esc(v.name) + '</div>' +
+        '<div class="lineup">' + esc(lineup(g)) + '</div>' +
+        '<div class="meta">' + esc([v.neighborhood || v.region, DEAL[g.deal_type] + (g.fee_agreed && g.deal_type !== 'flat' ? ' · ' + money(g.fee_agreed) : '')].filter(Boolean).join(' · ')) + '</div></div>' +
+      '<div class="right"><span class="pill ' + g.status + '">' + STATUS[g.status] + '</span>' +
+        (clash ? '<span class="pill warn" title="The band has another night booked on this date">Band double-booked</span>' : '') +
+        (owed > 0 ? '<span class="pill warn">' + money(owed) + ' owed</span>' : '') +
+        (g.status === 'confirmed' && !g.is_public ? '<span class="pill">Private</span>' : '') + '</div></div>';
+  }
+
+  // ── This week ─────────────────────────────────────────────────────────
+  function weekGigs(){ var t = todayIso(), end = addDays(t, 6); return liveGigs().filter(function(g){ return g.gig_date >= t && g.gig_date <= end; }); }
+  function renderWeek(){
+    var t = todayIso(), wk = weekGigs(), next = liveGigs().filter(function(g){ return g.gig_date > addDays(t,6) && g.gig_date <= addDays(t,13); });
+    var holds21 = liveGigs().filter(function(g){ return (g.status === 'hold' || g.status === 'offered') && g.gig_date >= t && g.gig_date <= addDays(t,21); }).length;
+    var due = state.venues.filter(function(v){ return v.next_step_due && v.next_step_due <= addDays(t,0) && v.stage !== 'declined'; }).length;
+    var owed = state.gigs.filter(function(g){ return g.status === 'played' && g.paid_status !== 'paid' && g.paid_status !== 'waived' && (g.fee_agreed || 0) > (g.amount_paid || 0); })
+      .reduce(function(s,g){ return s + g.fee_agreed - (g.amount_paid || 0); }, 0);
+    $('weekStats').innerHTML = [
+      [wk.length, 'nights in the next 7 days'],
+      [wk.filter(function(g){ return g.status === 'confirmed'; }).length, 'confirmed'],
+      [holds21, 'holds to firm up (3 weeks)'],
+      [due, 'venue follow-ups due today'],
+      [money(owed), 'owed to the band']
+    ].map(function(s){ return '<div class="card stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    var html = '<div class="week"><div class="week-h"><h2>Next 7 days</h2></div>' + (wk.length ? wk.map(gigCard).join('') : '<div class="card empty">Nothing booked in the next 7 days. Open the <b>Calendar</b> tab and tap <b>Build the rotation</b>, or add a night.</div>') + '</div>';
+    if (next.length) html += '<div class="week"><div class="week-h"><h2>The week after</h2></div>' + next.map(gigCard).join('') + '</div>';
+    $('weekList').innerHTML = html;
+  }
+  function lineupText(gigs, forFans){
+    if (!gigs.length) return forFans ? 'No confirmed live reggae nights this week yet.' : 'No nights booked this week.';
+    var lines = [forFans ? 'LIVE REGGAE THIS WEEK' : 'THIS WEEK — Ifficial Reggae Movement'];
+    gigs.forEach(function(g){
+      var v = venue(g.venue_id) || {};
+      lines.push('');
+      lines.push(fmtLong(g.gig_date) + (g.start_time ? ' · ' + fmtTime(g.start_time) : '') + ' — ' + (v.name || '') + (v.neighborhood ? ' (' + v.neighborhood + ')' : ''));
+      lines.push(lineup(g));
+      if (forFans){ if (v.address) lines.push(v.address); if (g.public_note) lines.push(g.public_note); }
+      else {
+        lines.push(STATUS[g.status].toUpperCase() + ' · ' + DEAL[g.deal_type] + (g.fee_agreed ? ' · ' + money(g.fee_agreed) : ''));
+        if (v.address) lines.push(v.address);
+        if (g.notes) lines.push('Note: ' + g.notes);
+      }
+    });
+    if (forFans) { lines.push(''); lines.push('Full calendar: https://selassiefest.com/live-reggae/'); }
+    return lines.join('\n');
+  }
+  function showCopy(title, text){ $('copyTitle').textContent = title; $('copyText').textContent = text; $('copyDlg').showModal(); }
+  $('copyBandBtn').addEventListener('click', function(){ showCopy('Lineup for the band', lineupText(weekGigs(), false)); });
+  $('copyFansBtn').addEventListener('click', function(){ showCopy('For fans (confirmed, public nights only)', lineupText(weekGigs().filter(function(g){ return (g.status === 'confirmed' || g.status === 'played') && g.is_public; }), true)); });
+  $('copyClose').addEventListener('click', function(){ $('copyDlg').close(); });
+  $('copyGo').addEventListener('click', function(){ copy($('copyText').textContent); });
+  function copy(t){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast('Copied'); }, function(){
+    var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copied'); } catch(e){} ta.remove(); }); }
+
+  // ── Calendar ──────────────────────────────────────────────────────────
+  function renderCalendar(){
+    var t = todayIso(), start = $('showPast').checked ? addDays(mondayOf(t), -56) : mondayOf(t);
+    var gigs = state.gigs.filter(function(g){ return g.gig_date >= start && ($('showCancelled').checked || g.status !== 'cancelled'); });
+    var last = gigs.reduce(function(m,g){ return g.gig_date > m ? g.gig_date : m; }, addDays(mondayOf(t), 7 * 7));
+    var rotating = state.venues.filter(function(v){ return (v.stage === 'in_rotation' || v.stage === 'trial_booked') && v.preferred_night; });
+    var html = '';
+    for (var wk = start; wk <= last; wk = addDays(wk, 7)){
+      var end = addDays(wk, 6);
+      var these = gigs.filter(function(g){ return g.gig_date >= wk && g.gig_date <= end; });
+      var openNights = rotating.filter(function(v){
+        var d = addDays(wk, NIGHTS.indexOf(v.preferred_night));
+        return d >= t && hitsCadence(v, d) && !state.gigs.some(function(g){ return g.venue_id === v.id && g.gig_date === d && g.status !== 'cancelled'; });
+      });
+      var nLive = these.filter(function(g){ return g.status !== 'cancelled'; }).length;
+      var sum = these.reduce(function(s,g){ return g.status === 'cancelled' ? s : s + (+g.fee_agreed || 0); }, 0);
+      html += '<div class="week"><div class="week-h"><h2>Week of ' + esc(fmtMD(wk)) + '</h2><span class="hint">' + nLive + ' night' + (nLive === 1 ? '' : 's') + (sum ? ' · ' + money(sum) + ' booked' : '') + '</span></div>' +
+        (these.length ? these.map(gigCard).join('') : '') +
+        (openNights.length ? '<div class="open-night"><i class="fa-regular fa-circle"></i> Open: ' + openNights.map(function(v){ return esc(v.name) + ' (' + v.preferred_night + ')'; }).join(', ') + '</div>' : '') +
+        (!these.length && !openNights.length ? '<div class="open-night">Nothing booked.</div>' : '') + '</div>';
+    }
+    $('calList').innerHTML = html;
+  }
+  $('showPast').addEventListener('change', renderCalendar);
+  $('showCancelled').addEventListener('change', renderCalendar);
+
+  function hitsCadence(v, d){
+    if (v.cadence === 'one_off') return false;
+    if (v.cadence === 'weekly') return true;
+    if (v.cadence === 'biweekly'){ var wkNo = Math.floor((parse(mondayOf(d)) - parse('2026-01-05')) / (7 * 864e5)); return ((wkNo % 2) + 2) % 2 === (v.rotation_offset || 0); }
+    if (v.cadence === 'monthly') return Math.floor((parse(d).getDate() - 1) / 7) === (v.rotation_offset || 0);
+    return false;
+  }
+
+  // ── Rotation generator ────────────────────────────────────────────────
+  $('genBtn').addEventListener('click', function(){
+    $('genStart').value = mondayOf(todayIso());   // nights already past are skipped
+    $('genOut').innerHTML = ''; $('genSave').disabled = true; state.gen = [];
+    $('genDlg').showModal();
+  });
+  $('genCancel').addEventListener('click', function(){ $('genDlg').close(); });
+  $('genPreview').addEventListener('click', buildRotation);
+
+  function buildRotation(){
+    var startWk = mondayOf($('genStart').value || todayIso()), weeks = +$('genWeeks').value, withSupport = $('genSupport').value === '1';
+    var stagesOk = ['in_rotation','trial_booked'].concat($('genTalking').checked ? ['talking'] : []);
+    var vs = state.venues.filter(function(v){ return stagesOk.indexOf(v.stage) >= 0 && v.preferred_night && v.cadence !== 'one_off'; })
+      .sort(function(a,b){ return NIGHTS.indexOf(a.preferred_night) - NIGHTS.indexOf(b.preferred_night) || a.name.localeCompare(b.name); });
+    var ms = mains(), b = band(), t = todayIso();
+    var out = [], msgs = [];
+    if (!vs.length) msgs.push('No venues are ready. Set a venue to <b>Trial booked</b> or <b>In rotation</b> and give it a night on the Venues tab.');
+    if (!ms.length) msgs.push('No main acts are marked. Mark the featured singers as <b>Main</b> on the Acts tab.');
+    // Running tallies so turns spread evenly, seeded with what's already booked.
+    var heads = {}, sups = {}, lastAtVenue = {};
+    ms.forEach(function(a){ heads[a.id] = 0; sups[a.id] = 0; });
+    liveGigs().forEach(function(g){
+      if (g.headliner_id in heads && g.gig_date >= addDays(startWk, -56)) heads[g.headliner_id]++;
+      (g.support_ids || []).forEach(function(s){ if (s in sups) sups[s]++; });
+      if (g.headliner_id && g.gig_date < startWk && (!lastAtVenue[g.venue_id] || lastAtVenue[g.venue_id].date < g.gig_date)) lastAtVenue[g.venue_id] = {date:g.gig_date, act:g.headliner_id};
+    });
+    function free(a, d, taken){ return (a.blackout_dates || []).indexOf(d) < 0 && taken.indexOf(a.id) < 0; }
+    for (var w = 0; w < weeks; w++){
+      var wk = addDays(startWk, 7 * w);
+      vs.forEach(function(v){
+        var d = addDays(wk, NIGHTS.indexOf(v.preferred_night));
+        if (d < t || !hitsCadence(v, d)) return;
+        if (state.gigs.some(function(g){ return g.venue_id === v.id && g.gig_date === d && g.status !== 'cancelled'; })) return;
+        // Acts already on a bill that night (existing gigs + this batch) can't double up.
+        var takenTonight = [];
+        liveGigs().concat(out).forEach(function(g){ if (g.gig_date === d){ if (g.headliner_id) takenTonight.push(g.headliner_id); (g.support_ids || []).forEach(function(s){ takenTonight.push(s); }); } });
+        var clash = liveGigs().concat(out).some(function(g){ return g.gig_date === d; });
+        var prev = lastAtVenue[v.id] ? lastAtVenue[v.id].act : null;
+        var cands = ms.filter(function(a){ return free(a, d, takenTonight); })
+          .sort(function(x,y){ return ((heads[x.id] + (x.id === prev ? 100 : 0)) - (heads[y.id] + (y.id === prev ? 100 : 0))) || (x.sort - y.sort); });
+        var h = cands[0] || null, s = null;
+        if (h){ heads[h.id]++; lastAtVenue[v.id] = {date:d, act:h.id}; takenTonight.push(h.id); }
+        if (withSupport){
+          s = ms.filter(function(a){ return free(a, d, takenTonight); }).sort(function(x,y){ return (sups[x.id] - sups[y.id]) || (x.sort - y.sort); })[0] || null;
+          if (s) sups[s.id]++;
+        }
+        var flat = v.deal_type === 'flat' || v.deal_type === 'tbd';
+        var why = [];
+        if (clash) why.push('The band already has a night on ' + fmtLong(d));
+        if (!h) why.push('No featured singer free that night');
+        out.push({ _venue: v.name, _why: why, _on: !clash,
+          venue_id: v.id, gig_date: d, start_time: v.default_start || '', status: 'hold',
+          band_id: b ? b.id : '', headliner_id: h ? h.id : '', support_ids: s ? [s.id] : [],
+          deal_type: flat ? 'flat' : v.deal_type, deal_terms: v.deal_terms || {},
+          fee_agreed: flat ? FLAT : (v.deal_terms && v.deal_terms.guarantee ? v.deal_terms.guarantee : ''), is_public: true });
+      });
+    }
+    out.sort(function(a,b){ return a.gig_date < b.gig_date ? -1 : a.gig_date > b.gig_date ? 1 : a._venue.localeCompare(b._venue); });
+    state.gen = out;
+    var html = msgs.map(function(m){ return '<div class="warn">' + m + '</div>'; }).join('');
+    if (vs.length && !out.length) html += '<div class="note">Every night in that window is already on the calendar.</div>';
+    if (out.length){
+      html += '<div class="gen-list">' + out.map(function(g, i){
+        return '<label class="gen-row"><input type="checkbox" data-gen="' + i + '"' + (g._on ? ' checked' : '') + '>' +
+          '<div><b>' + esc(fmtLong(g.gig_date)) + '</b> · ' + esc(g._venue) + '<br><span class="hint">' + esc(lineup(g)) + ' · ' + esc(DEAL[g.deal_type]) + (g.fee_agreed ? ' · ' + money(g.fee_agreed) : '') + '</span>' +
+          (g._why.length ? '<div class="why">' + esc(g._why.join('. ')) + '</div>' : '') + '</div></label>';
+      }).join('') + '</div>';
+      var counts = {}; out.forEach(function(g){ if (g.headliner_id) counts[g.headliner_id] = (counts[g.headliner_id] || 0) + 1; });
+      html += '<p class="hint">Featured turns in this batch: ' + ms.map(function(a){ return esc(a.name) + ' ' + (counts[a.id] || 0); }).join(' · ') + '</p>';
+    }
+    $('genOut').innerHTML = html;
+    syncGenSave();
+  }
+  $('genOut').addEventListener('change', syncGenSave);
+  function syncGenSave(){ var n = $('genOut').querySelectorAll('input[data-gen]:checked').length; $('genSave').disabled = !n; $('genSave').textContent = n ? 'Save ' + n + ' hold' + (n === 1 ? '' : 's') : 'Save holds'; }
+  $('genForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var pick = Array.prototype.map.call($('genOut').querySelectorAll('input[data-gen]:checked'), function(cb){ var g = Object.assign({}, state.gen[+cb.getAttribute('data-gen')]); delete g._venue; delete g._why; delete g._on; return g; });
+    if (!pick.length) return;
+    $('genSave').disabled = true; $('genSave').textContent = 'Saving…';
+    try { var n = await rpc('lr_gigs_bulk_create', { p: pick }); $('genDlg').close(); await load(); toast(n + ' holds added'); }
+    catch(err){ alert('Could not save: ' + err.message); syncGenSave(); }
+  });
+
+  // ── Gig dialog ────────────────────────────────────────────────────────
+  var gigId = null;
+  function fillActSelects(){
+    var acts = state.acts.filter(function(a){ return a.active; });
+    $('gBand').innerHTML = '<option value="">–</option>' + acts.filter(function(a){ return a.kind === 'band'; }).map(function(a){ return '<option value="' + a.id + '">' + esc(a.name) + '</option>'; }).join('');
+    $('gHead').innerHTML = '<option value="">Not set</option>' + acts.filter(function(a){ return a.kind !== 'band'; }).sort(function(a,b){ return (b.is_main - a.is_main) || (a.sort - b.sort); })
+      .map(function(a){ return '<option value="' + a.id + '">' + esc(a.name) + (a.is_main ? ' (main)' : '') + '</option>'; }).join('');
+    $('gSupport').innerHTML = acts.filter(function(a){ return a.kind !== 'band'; }).map(function(a){ return '<label><input type="checkbox" value="' + a.id + '"> ' + esc(a.name) + '</label>'; }).join('') || '<span class="hint">Add acts on the Acts tab.</span>';
+    $('gVenue').innerHTML = state.venues.slice().sort(function(a,b){ return (stageRank(a) - stageRank(b)) || a.name.localeCompare(b.name); })
+      .map(function(v){ return '<option value="' + v.id + '">' + esc(v.name) + ' · ' + esc(STAGE[v.stage].label) + '</option>'; }).join('');
+  }
+  function stageRank(v){ return ['in_rotation','trial_booked','talking','contacted','prospect','paused','declined'].indexOf(v.stage); }
+  function syncDealFields(){ var d = $('gDeal').value; $('gTermsRow').style.display = d === 'flat' ? 'none' : ''; $('gTermsNoteWrap').style.display = d === 'flat' ? 'none' : ''; }
+  $('gDeal').addEventListener('change', function(){ syncDealFields(); if ($('gDeal').value === 'flat' && !$('gFee').value) $('gFee').value = FLAT; });
+  function gigWarn(){
+    var d = $('gDate').value, msgs = [];
+    if (d && bandBusy(d, gigId).length) msgs.push('The band already has a night on this date: ' + bandBusy(d, gigId).map(function(g){ return (venue(g.venue_id) || {}).name; }).join(', ') + '.');
+    var h = act($('gHead').value);
+    if (d && h && (h.blackout_dates || []).indexOf(d) >= 0) msgs.push(h.name + ' marked this date as unavailable.');
+    $('gigWarn').innerHTML = msgs.map(function(m){ return '<div class="warn">' + esc(m) + '</div>'; }).join('');
+  }
+  ['gDate','gHead'].forEach(function(id){ $(id).addEventListener('change', gigWarn); });
+  function openGig(g, preset){
+    if (!state.venues.length){ alert('Add a venue first (Venues tab).'); return; }
+    fillActSelects();
+    gigId = g ? g.id : null;
+    var v = g ? null : (preset && preset.venue_id ? venue(preset.venue_id) : null);
+    g = g || Object.assign({ status:'hold', band_id: band() ? band().id : '', deal_type: v && v.deal_type !== 'tbd' ? v.deal_type : 'flat', deal_terms: v ? v.deal_terms : {},
+      fee_agreed: !v || v.deal_type === 'flat' || v.deal_type === 'tbd' ? FLAT : '', start_time: v ? v.default_start : '', is_public: true, support_ids: [], paid_status:'unpaid' }, preset || {});
+    $('gigTitle').textContent = gigId ? 'Edit night' : 'Add a night';
+    $('gVenue').value = g.venue_id || $('gVenue').value;
+    $('gDate').value = g.gig_date || '';
+    $('gStart').value = (g.start_time || '').slice(0,5); $('gEnd').value = (g.end_time || '').slice(0,5);
+    $('gStatus').value = g.status; $('gBand').value = g.band_id || ''; $('gHead').value = g.headliner_id || '';
+    Array.prototype.forEach.call($('gSupport').querySelectorAll('input'), function(cb){ cb.checked = (g.support_ids || []).indexOf(cb.value) >= 0; });
+    $('gDeal').value = g.deal_type || 'flat'; $('gFee').value = g.fee_agreed == null ? '' : g.fee_agreed;
+    var dt = g.deal_terms || {};
+    $('gDoorPct').value = dt.door_pct == null ? '' : dt.door_pct; $('gGuar').value = dt.guarantee == null ? '' : dt.guarantee; $('gBarPct').value = dt.bar_pct == null ? '' : dt.bar_pct; $('gTermsNote').value = dt.notes || '';
+    $('gCover').value = g.cover_charge == null ? (dt.cover == null ? '' : dt.cover) : g.cover_charge; $('gDoor').value = g.door_gross == null ? '' : g.door_gross; $('gBarGross').value = g.bar_gross == null ? '' : g.bar_gross;
+    $('gAtt').value = g.attendance == null ? '' : g.attendance; $('gPaid').value = g.amount_paid || ''; $('gPaidStatus').value = g.paid_status || 'unpaid';
+    $('gPublic').checked = g.is_public !== false; $('gPubNote').value = g.public_note || ''; $('gNotes').value = g.notes || '';
+    $('gDelete').style.display = gigId ? '' : 'none';
+    syncDealFields(); gigWarn();
+    $('gigDlg').showModal();
+  }
+  $('gVenue').addEventListener('change', function(){ if (gigId) return; var v = venue($('gVenue').value); if (!v) return;
+    if (v.default_start) $('gStart').value = v.default_start.slice(0,5);
+    if (v.deal_type && v.deal_type !== 'tbd'){ $('gDeal').value = v.deal_type; var dt = v.deal_terms || {}; $('gDoorPct').value = dt.door_pct == null ? '' : dt.door_pct; $('gGuar').value = dt.guarantee == null ? '' : dt.guarantee; $('gBarPct').value = dt.bar_pct == null ? '' : dt.bar_pct; $('gTermsNote').value = dt.notes || ''; if (v.deal_type !== 'flat') $('gFee').value = dt.guarantee || ''; }
+    syncDealFields(); });
+  $('gCalcFee').addEventListener('click', function(){
+    var deal = $('gDeal').value, door = num($('gDoor').value) || 0, bar = num($('gBarGross').value) || 0;
+    var dp = (num($('gDoorPct').value) || 0) / 100, bp = (num($('gBarPct').value) || 0) / 100, gu = num($('gGuar').value) || 0, fee;
+    if (deal === 'flat') fee = FLAT;
+    else if (deal === 'door') fee = door * dp;
+    else if (deal === 'guarantee_door') fee = Math.max(gu, door * dp);
+    else if (deal === 'bar') fee = gu + bar * bp;
+    else fee = gu + door * dp + bar * bp;
+    $('gFee').value = Math.round(fee);
+    toast('Band is owed ' + money(fee));
+  });
+  document.querySelectorAll('[data-add-gig]').forEach(function(b){ b.addEventListener('click', function(){ openGig(null, { gig_date: todayIso() }); }); });
+  document.addEventListener('click', function(e){ var c = e.target.closest('[data-gig]'); if (c){ var g = state.gigs.find(function(x){ return x.id === c.getAttribute('data-gig'); }); if (g) openGig(g); } });
+  $('gCancel').addEventListener('click', function(){ $('gigDlg').close(); });
+  $('gigForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var d = $('gDate').value;
+    if (bandBusy(d, gigId).length && !confirm('The band already has a night on ' + fmtLong(d) + '. Save anyway (an early show and a late show)?')) return;
+    var payload = { venue_id: $('gVenue').value, gig_date: d, start_time: $('gStart').value, end_time: $('gEnd').value, status: $('gStatus').value,
+      band_id: $('gBand').value, headliner_id: $('gHead').value,
+      support_ids: Array.prototype.filter.call($('gSupport').querySelectorAll('input'), function(cb){ return cb.checked && cb.value !== $('gHead').value; }).map(function(cb){ return cb.value; }),
+      deal_type: $('gDeal').value, deal_terms: { door_pct: num($('gDoorPct').value), guarantee: num($('gGuar').value), bar_pct: num($('gBarPct').value), cover: num($('gCover').value), notes: $('gTermsNote').value.trim() || null },
+      fee_agreed: $('gFee').value, cover_charge: $('gCover').value, door_gross: $('gDoor').value, bar_gross: $('gBarGross').value, attendance: $('gAtt').value,
+      amount_paid: $('gPaid').value, paid_status: $('gPaidStatus').value, is_public: $('gPublic').checked, public_note: $('gPubNote').value, notes: $('gNotes').value };
+    try { await rpc('lr_gig_save', { p_id: gigId, p: payload }); $('gigDlg').close(); await load(); toast('Saved'); } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  $('gDelete').addEventListener('click', async function(){
+    if (!gigId || !confirm('Delete this night? (To keep a record, set it to Cancelled instead.)')) return;
+    try { await rpc('lr_gig_delete', { p_id: gigId }); $('gigDlg').close(); await load(); } catch(err){ alert('Could not delete: ' + err.message); }
+  });
+
+  // ── Venues ────────────────────────────────────────────────────────────
+  REGIONS.forEach(function(r){ $('vRegion').insertAdjacentHTML('beforeend', '<option>' + esc(r) + '</option>'); $('vRegionIn').insertAdjacentHTML('beforeend', '<option>' + esc(r) + '</option>'); });
+  STAGES.forEach(function(s){ $('vStage').insertAdjacentHTML('beforeend', '<option value="' + s[0] + '">' + s[1] + '</option>'); });
+  $('logStage').innerHTML = '<option value="">Keep the same</option>' + STAGES.map(function(s){ return '<option value="' + s[0] + '">' + s[1] + '</option>'; }).join('');
+
+  function filteredVenues(){
+    var q = $('vSearch').value.trim().toLowerCase(), r = $('vRegion').value, tier = $('vTier').value, sf = state.stageFilter;
+    var list = state.venues.filter(function(v){
+      if (sf && v.stage !== sf) return false;
+      if (r && v.region !== r) return false;
+      if (tier && v.tier !== tier) return false;
+      if (q && [v.name, v.neighborhood, v.region, v.address, v.music_nights, v.reggae_history, v.notes, v.next_step].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var sort = $('vSort').value;
+    list.sort(function(a,b){
+      if (sort === 'name') return a.name.localeCompare(b.name);
+      if (sort === 'region') return a.region.localeCompare(b.region) || a.name.localeCompare(b.name);
+      if (sort === 'recent') return String(b.last_contact_at || b.updated_at).localeCompare(String(a.last_contact_at || a.updated_at));
+      var ad = a.next_step_due || '9999', bd = b.next_step_due || '9999';
+      return ad.localeCompare(bd) || (a.tier || 'Z').localeCompare(b.tier || 'Z') || a.name.localeCompare(b.name);
+    });
+    return list;
+  }
+  function renderVenues(){
+    var counts = {}; state.venues.forEach(function(v){ counts[v.stage] = (counts[v.stage] || 0) + 1; });
+    $('stageChips').innerHTML = '<button class="stage-chip' + (state.stageFilter ? '' : ' on') + '" data-stage=""><b>' + state.venues.length + '</b><span>All venues</span></button>' +
+      STAGES.map(function(s){ return '<button class="stage-chip' + (state.stageFilter === s[0] ? ' on' : '') + '" data-stage="' + s[0] + '" style="border-left:4px solid ' + s[2] + '"><b>' + (counts[s[0]] || 0) + '</b><span>' + s[1] + '</span></button>'; }).join('');
+    var list = filteredVenues(), t = todayIso();
+    $('vCount').textContent = list.length + ' of ' + state.venues.length + ' venues';
+    $('vList').innerHTML = list.length ? list.map(function(v){
+      var st = STAGE[v.stage], due = v.next_step_due;
+      var dueCls = due ? (due < t ? 'over' : due <= addDays(t, 3) ? 'soon' : '') : '';
+      var upcoming = liveGigs().filter(function(g){ return g.venue_id === v.id && g.gig_date >= t; });
+      var acts = state.activity.filter(function(a){ return a.venue_id === v.id; }).slice(0, 12);
+      var contacts = (v.contacts || []).map(function(c){ return [c.name, c.role, c.phone, c.email].filter(Boolean).map(esc).join(' · '); });
+      return '<div class="card p" style="--sc:' + st.color + '">' +
+        '<div class="p-top"><div><span class="p-name">' + esc(v.name) + '</span>' + (v.tier ? '<span class="tier">' + v.tier + '</span>' : '') +
+        '<div class="p-sub">' + esc([v.neighborhood, v.region].filter(Boolean).join(' · ')) + '</div></div>' +
+        '<span class="pill" style="color:' + st.color + '">' + st.label + '</span></div>' +
+        (v.preferred_night ? '<div class="p-line"><i class="fa-solid fa-calendar-week"></i> ' + esc(v.preferred_night) + ' ' + esc(CAD[v.cadence]) + (v.default_start ? ' at ' + esc(fmtTime(v.default_start)) : '') + ' · ' + esc(DEAL[v.deal_type]) + (v.deal_terms && v.deal_terms.notes ? ' (' + esc(v.deal_terms.notes) + ')' : '') + '</div>' : '') +
+        (v.music_nights ? '<div class="p-line"><i class="fa-solid fa-music"></i> ' + esc(v.music_nights) + '</div>' : '') +
+        (v.reggae_history ? '<div class="p-line"><i class="fa-solid fa-star"></i> ' + esc(v.reggae_history) + '</div>' : '') +
+        (upcoming.length ? '<div class="p-line"><i class="fa-solid fa-check"></i> ' + upcoming.length + ' upcoming night' + (upcoming.length === 1 ? '' : 's') + ', next ' + esc(fmtLong(upcoming[0].gig_date)) + '</div>' : '') +
+        (v.next_step ? '<div class="next">Next: ' + esc(v.next_step) + (due ? ' <span class="due ' + dueCls + '">· ' + (due < t ? 'overdue, ' : '') + esc(fmtMD(due)) + '</span>' : '') + '</div>' : '') +
+        '<div class="p-actions">' +
+          '<button class="btn small primary" data-log="' + v.id + '"><i class="fa-solid fa-phone"></i> Log</button>' +
+          '<button class="btn small" data-edit="' + v.id + '"><i class="fa-solid fa-pen"></i> Edit</button>' +
+          '<button class="btn small" data-gigfor="' + v.id + '"><i class="fa-solid fa-plus"></i> Night</button>' +
+          (v.pitch_key ? '<button class="btn small" data-pitch="' + v.id + '"><i class="fa-solid fa-paper-plane"></i> Pitch text</button>' : '') +
+          '<button class="btn small" data-more="' + v.id + '">' + (state.open[v.id] ? 'Less' : 'More') + '</button></div>' +
+        '<div class="details' + (state.open[v.id] ? ' open' : '') + '"><dl>' +
+          (v.address ? '<dt>Address</dt><dd>' + esc(v.address) + '</dd>' : '') +
+          (v.phone ? '<dt>Phone</dt><dd><a href="tel:' + esc(v.phone.replace(/[^\d+]/g,'')) + '">' + esc(v.phone) + '</a></dd>' : '') +
+          (v.email ? '<dt>Email</dt><dd><a href="mailto:' + esc(v.email) + '">' + esc(v.email) + '</a></dd>' : '') +
+          (v.website ? '<dt>Website</dt><dd><a href="' + esc(/^https?:/.test(v.website) ? v.website : 'https://' + v.website) + '" target="_blank" rel="noopener">' + esc(v.website) + '</a></dd>' : '') +
+          (v.instagram ? '<dt>Instagram</dt><dd>' + esc(v.instagram) + '</dd>' : '') +
+          (contacts.length ? '<dt>People</dt><dd>' + contacts.join('<br>') + '</dd>' : '') +
+          (v.capacity ? '<dt>Capacity</dt><dd>' + esc(v.capacity) + '</dd>' : '') +
+          (v.evidence ? '<dt>Why it fits</dt><dd>' + esc(v.evidence) + (v.evidence_url ? ' <a href="' + esc(v.evidence_url) + '" target="_blank" rel="noopener">source</a>' : '') + '</dd>' : '') +
+          (v.pitch_key ? '<dt>Pitch page</dt><dd><a href="' + esc(pitchUrl(v)) + '" target="_blank" rel="noopener">' + esc(pitchUrl(v)) + '</a><br><span class="hint">Opened ' + (v.pitch_views || 0) + ' time' + (v.pitch_views === 1 ? '' : 's') + (v.pitch_last_viewed ? ', last ' + esc(fmtWhen(v.pitch_last_viewed)) : '') + '</span></dd>' : '') +
+          (v.notes ? '<dt>Notes</dt><dd>' + esc(v.notes) + '</dd>' : '') +
+          (v.source ? '<dt>Source</dt><dd>' + esc(v.source) + '</dd>' : '') +
+        '</dl>' + (acts.length ? '<b>Activity</b><ul class="log">' + acts.map(function(a){ return '<li><span class="when">' + esc(fmtWhen(a.created_at)) + ' · ' + esc(KIND[a.kind] || a.kind) + ' · ' + esc(a.by_name) + '</span><br>' + esc(a.summary || '') + '</li>'; }).join('') + '</ul>' : '<span class="hint">No activity yet.</span>') +
+        '</div></div>';
+    }).join('') : '<div class="card empty">No venues match. ' + (state.venues.length ? 'Clear the filters.' : 'Tap <b>Add venue</b> to start the list.') + '</div>';
+  }
+  $('stageChips').addEventListener('click', function(e){ var b = e.target.closest('[data-stage]'); if (!b) return; state.stageFilter = b.getAttribute('data-stage'); renderVenues(); });
+  ['vSearch','vRegion','vTier','vSort'].forEach(function(id){ $(id).addEventListener('input', renderVenues); });
+  $('vList').addEventListener('click', function(e){
+    var b;
+    if ((b = e.target.closest('[data-more]'))){ var id = b.getAttribute('data-more'); state.open[id] = !state.open[id]; renderVenues(); }
+    else if ((b = e.target.closest('[data-edit]'))) openVenue(venue(b.getAttribute('data-edit')));
+    else if ((b = e.target.closest('[data-log]'))) openLog(venue(b.getAttribute('data-log')));
+    else if ((b = e.target.closest('[data-gigfor]'))){ var v = venue(b.getAttribute('data-gigfor')); var d = todayIso();
+      if (v.preferred_night){ var wk = mondayOf(d), c = addDays(wk, NIGHTS.indexOf(v.preferred_night)); d = c < d ? addDays(c, 7) : c; }
+      openGig(null, { venue_id: v.id, gig_date: d }); }
+    else if ((b = e.target.closest('[data-pitch]'))){ var pv = venue(b.getAttribute('data-pitch')); showCopy('Text or email to ' + pv.name, pitchText(pv)); }
+  });
+  function pitchText(v){
+    return 'Hi, this is ' + BOOKER + '. I book Ifficial Reggae Movement, a live reggae band that has played all over the Midwest for decades, with featured singers like JayRebl.\n\n' +
+      'We\'re building a weekly live reggae night across Chicago and NW Indiana and would love ' + v.name + ' to be one of the rooms' + (v.preferred_night ? ', maybe ' + ({Mon:'Mondays',Tue:'Tuesdays',Wed:'Wednesdays',Thu:'Thursdays',Fri:'Fridays',Sat:'Saturdays',Sun:'Sundays'})[v.preferred_night] : '') + '. ' +
+      'The band is $1,200 a night, or we can work out a door or bar deal with you.\n\n' +
+      'Here\'s a one-page with the details. You can answer right on it: ' + pitchUrl(v) + '\n\n' + BOOKER + ' · ' + BOOKER_PHONE;
+  }
+
+  var editId = null;
+  function contactsToText(c){ return (c || []).map(function(x){ return [x.name || '', x.role || '', x.phone || '', x.email || ''].join(' | '); }).join('\n'); }
+  function textToContacts(t){ return t.split('\n').map(function(l){ var p = l.split('|').map(function(s){ return s.trim(); }); return p[0] || p[2] || p[3] ? { name: p[0] || null, role: p[1] || null, phone: p[2] || null, email: p[3] || null } : null; }).filter(Boolean); }
+  function syncOffset(){
+    var c = $('vCad').value, cur = $('vOffset').value;
+    $('vOffsetWrap').style.display = c === 'biweekly' || c === 'monthly' ? '' : 'none';
+    $('vOffset').innerHTML = c === 'monthly' ? ['1st','2nd','3rd','4th'].map(function(x,i){ return '<option value="' + i + '">' + x + ' of the month</option>'; }).join('')
+      : '<option value="0">Week A</option><option value="1">Week B</option>';
+    if (cur) $('vOffset').value = cur;
+  }
+  $('vCad').addEventListener('change', syncOffset);
+  function openVenue(v){
+    editId = v ? v.id : null; v = v || { region: REGIONS[0], stage: 'prospect', cadence: 'weekly', deal_type: 'tbd', deal_terms: {} };
+    $('venueTitle').textContent = editId ? 'Edit ' + v.name : 'Add a venue';
+    $('vName').value = v.name || ''; $('vRegionIn').value = v.region; $('vHood').value = v.neighborhood || ''; $('vAddr').value = v.address || '';
+    $('vPhone').value = v.phone || ''; $('vEmail').value = v.email || ''; $('vWeb').value = v.website || ''; $('vIg').value = v.instagram || '';
+    $('vContacts').value = contactsToText(v.contacts); $('vStage').value = v.stage; $('vTierIn').value = v.tier || ''; $('vCap').value = v.capacity || '';
+    $('vNights').value = v.music_nights || ''; $('vNight').value = v.preferred_night || ''; $('vCad').value = v.cadence; $('vStart').value = (v.default_start || '').slice(0,5);
+    $('vOffset').value = ''; syncOffset(); $('vOffset').value = String(v.rotation_offset || 0);
+    var dt = v.deal_terms || {};
+    $('vDeal').value = v.deal_type; $('vDealNote').value = dt.notes || ''; $('vDoorPct').value = dt.door_pct == null ? '' : dt.door_pct; $('vGuar').value = dt.guarantee == null ? '' : dt.guarantee; $('vBarPct').value = dt.bar_pct == null ? '' : dt.bar_pct;
+    $('vOffer').value = v.offer_note || ''; $('vNext').value = v.next_step || ''; $('vDue').value = v.next_step_due || ''; $('vNotes').value = v.notes || '';
+    $('vDelete').style.display = editId ? '' : 'none';
+    $('venueDlg').showModal();
+  }
+  $('addVenueBtn').addEventListener('click', function(){ openVenue(null); });
+  $('vCancel').addEventListener('click', function(){ $('venueDlg').close(); });
+  $('venueForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var p = { name: $('vName').value, region: $('vRegionIn').value, neighborhood: $('vHood').value, address: $('vAddr').value, phone: $('vPhone').value, email: $('vEmail').value,
+      website: $('vWeb').value, instagram: $('vIg').value, contacts: textToContacts($('vContacts').value), stage: $('vStage').value, tier: $('vTierIn').value, capacity: $('vCap').value,
+      music_nights: $('vNights').value, preferred_night: $('vNight').value, cadence: $('vCad').value, rotation_offset: $('vOffset').value, default_start: $('vStart').value,
+      deal_type: $('vDeal').value, deal_terms: { notes: $('vDealNote').value.trim() || null, door_pct: num($('vDoorPct').value), guarantee: num($('vGuar').value), bar_pct: num($('vBarPct').value) },
+      offer_note: $('vOffer').value, next_step: $('vNext').value, next_step_due: $('vDue').value, notes: $('vNotes').value };
+    try { await rpc('lr_venue_save', { p_id: editId, p: p }); $('venueDlg').close(); await load(); toast('Saved'); } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  $('vDelete').addEventListener('click', async function(){
+    if (!editId || !confirm('Delete this venue and all its nights? (Usually better to set it to Declined or Paused.)')) return;
+    try { await rpc('lr_venue_delete', { p_id: editId }); $('venueDlg').close(); await load(); } catch(err){ alert('Could not delete: ' + err.message); }
+  });
+
+  var logId = null;
+  function openLog(v){ logId = v.id; $('logTitle').textContent = 'Log a touch: ' + v.name; $('logKind').value = 'call'; $('logStage').value = ''; $('logSummary').value = ''; $('logNext').value = v.next_step || ''; $('logDue').value = v.next_step_due || ''; $('logDlg').showModal(); }
+  $('logCancel').addEventListener('click', function(){ $('logDlg').close(); });
+  $('logForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    try { await rpc('lr_venue_log', { p_venue: logId, p_kind: $('logKind').value, p_summary: $('logSummary').value, p_stage: $('logStage').value || null, p_next_step: $('logNext').value, p_next_due: $('logDue').value || null });
+      $('logDlg').close(); await load(); toast('Logged'); } catch(err){ alert('Could not save: ' + err.message); }
+  });
+
+  // ── Acts ──────────────────────────────────────────────────────────────
+  function renderActs(){
+    var t = todayIso();
+    $('actList').innerHTML = state.acts.map(function(a){
+      var up = liveGigs().filter(function(g){ return g.gig_date >= t && (g.headliner_id === a.id || (g.support_ids || []).indexOf(a.id) >= 0 || g.band_id === a.id); }).length;
+      var black = (a.blackout_dates || []).filter(function(d){ return d >= t; });
+      return '<div class="card act"' + (a.active ? '' : ' style="opacity:.6"') + '><div class="kind">' + esc({band:'Band',singer:'Singer',dj:'DJ / selector',mc:'MC / host'}[a.kind]) + (a.is_main ? ' · Main' : '') + (a.active ? '' : ' · Inactive') + '</div>' +
+        '<h3>' + esc(a.name) + '</h3>' +
+        (a.rate_note ? '<div class="p-line">' + esc(a.rate_note) + '</div>' : '') +
+        '<div class="p-line">' + up + ' upcoming night' + (up === 1 ? '' : 's') + '</div>' +
+        (black.length ? '<div class="p-line">Can\'t play: ' + black.map(fmtMD).map(esc).join(', ') + '</div>' : '') +
+        '<div class="p-line">' + [a.instagram ? '<a href="' + esc(a.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '', a.website ? '<a href="' + esc(a.website) + '" target="_blank" rel="noopener">Website</a>' : '', a.phone ? '<a href="tel:' + esc(a.phone) + '">' + esc(a.phone) + '</a>' : ''].filter(Boolean).join(' · ') + '</div>' +
+        '<div class="p-actions"><button class="btn small" data-act="' + a.id + '"><i class="fa-solid fa-pen"></i> Edit</button></div></div>';
+    }).join('');
+  }
+  var actId = null;
+  function openAct(a){
+    actId = a ? a.id : null; a = a || { kind:'singer', is_main:false, active:true, blackout_dates:[] };
+    $('actTitle').textContent = actId ? 'Edit ' + a.name : 'Add an act';
+    $('aName').value = a.name || ''; $('aKind').value = a.kind; $('aMain').checked = !!a.is_main; $('aActive').checked = a.active !== false;
+    $('aRate').value = a.rate_note || ''; $('aIg').value = a.instagram || ''; $('aWeb').value = a.website || ''; $('aPhone').value = a.phone || ''; $('aEmail').value = a.email || '';
+    $('aBlack').value = (a.blackout_dates || []).join(', '); $('aNotes').value = a.notes || '';
+    $('aDelete').style.display = actId ? '' : 'none';
+    $('actDlg').showModal();
+  }
+  $('actList').addEventListener('click', function(e){ var b = e.target.closest('[data-act]'); if (b) openAct(act(b.getAttribute('data-act'))); });
+  $('addActBtn').addEventListener('click', function(){ openAct(null); });
+  $('aCancel').addEventListener('click', function(){ $('actDlg').close(); });
+  $('actForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var black = $('aBlack').value.split(/[,\s]+/).map(function(s){ return s.trim(); }).filter(function(s){ return /^\d{4}-\d{2}-\d{2}$/.test(s); });
+    var p = { name: $('aName').value, kind: $('aKind').value, is_main: $('aMain').checked, active: $('aActive').checked, rate_note: $('aRate').value, instagram: $('aIg').value,
+      website: $('aWeb').value, phone: $('aPhone').value, email: $('aEmail').value, blackout_dates: black, notes: $('aNotes').value };
+    try { await rpc('lr_act_save', { p_id: actId, p: p }); $('actDlg').close(); await load(); toast('Saved'); } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  $('aDelete').addEventListener('click', async function(){
+    if (!actId || !confirm('Delete this act? Past nights keep their date but lose this name. Usually better to untick Active.')) return;
+    try { await rpc('lr_act_delete', { p_id: actId }); $('actDlg').close(); await load(); } catch(err){ alert('Could not delete: ' + err.message); }
+  });
+
+  // ── Money ─────────────────────────────────────────────────────────────
+  function renderCalc(){
+    var cover = num($('cCover').value) || 0, heads = num($('cHeads').value) || 0, dp = (num($('cDoorPct').value) || 0) / 100, gu = num($('cGuar').value) || 0, bar = num($('cBar').value) || 0, bp = (num($('cBarPct').value) || 0) / 100;
+    var door = cover * heads;
+    var opts = [
+      ['flat', 'Flat fee', FLAT, 'Same every night, no matter the crowd'],
+      ['door', 'Door split', door * dp, Math.round(dp * 100) + '% of ' + money(door) + ' at the door'],
+      ['guar', 'Guarantee vs. door', Math.max(gu, door * dp), money(gu) + ' minimum, or the door share if higher'],
+      ['bar', 'Guarantee + bar %', gu + bar * bp, money(gu) + ' plus ' + Math.round(bp * 100) + '% of ' + money(bar) + ' bar']
+    ];
+    var best = opts.reduce(function(m,o){ return o[2] > m[2] ? o : m; }, opts[0]);
+    $('calcOut').innerHTML = opts.map(function(o){ return '<div class="opt' + (o === best ? ' best' : '') + '"><span>' + o[1] + '</span><b>' + money(o[2]) + '</b><span>' + esc(o[3]) + '</span></div>'; }).join('');
+    var be = cover && dp ? Math.ceil(FLAT / (cover * dp)) : null;
+    var club = door - door * dp;
+    $('calcSay').innerHTML = (be ? 'At a <b>' + money(cover) + '</b> cover with <b>' + Math.round(dp * 100) + '%</b> of the door to the band, the club needs <b>' + be + ' paying guests</b> for a door deal to match $1,200. ' : '') +
+      'With ' + heads + ' guests the door takes in ' + money(door) + ', and the club keeps ' + money(club) + ' of it plus the bar.' +
+      (best[0] === 'flat' ? ' At this crowd size the <b>flat $1,200</b> pays the band best.' : ' At this crowd size, <b>' + esc(best[1].toLowerCase()) + '</b> pays the band more than the flat fee.');
+  }
+  ['cCover','cHeads','cDoorPct','cGuar','cBar','cBarPct'].forEach(function(id){ $(id).addEventListener('input', renderCalc); });
+  function renderMoney(){
+    renderCalc();
+    var t = todayIso(), ym = t.slice(0,7);
+    var real = state.gigs.filter(function(g){ return g.status === 'confirmed' || g.status === 'played'; });
+    var month = real.filter(function(g){ return g.gig_date.slice(0,7) === ym; }).reduce(function(s,g){ return s + (+g.fee_agreed || 0); }, 0);
+    var ahead = real.filter(function(g){ return g.gig_date >= t; }).reduce(function(s,g){ return s + (+g.fee_agreed || 0); }, 0);
+    var collected = state.gigs.reduce(function(s,g){ return s + (+g.amount_paid || 0); }, 0);
+    var owed = state.gigs.filter(function(g){ return g.status === 'played' && g.paid_status !== 'paid' && g.paid_status !== 'waived'; }).reduce(function(s,g){ return s + Math.max(0, (+g.fee_agreed || 0) - (+g.amount_paid || 0)); }, 0);
+    var played = state.gigs.filter(function(g){ return g.status === 'played' && g.attendance; });
+    var avgCrowd = played.length ? Math.round(played.reduce(function(s,g){ return s + g.attendance; }, 0) / played.length) : null;
+    $('moneyStats').innerHTML = [[money(month), 'confirmed this month'], [money(ahead), 'confirmed from today on'], [money(collected), 'collected (last 4 months)'], [money(owed), 'owed for nights played'], [avgCrowd == null ? '–' : avgCrowd, 'average crowd']]
+      .map(function(s){ return '<div class="card stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    var rows = state.gigs.filter(function(g){ return g.status !== 'cancelled' && g.status !== 'hold'; }).slice().sort(function(a,b){ return b.gig_date.localeCompare(a.gig_date); });
+    $('ledger').innerHTML = '<thead><tr><th>Date</th><th>Venue</th><th>Status</th><th>Deal</th><th class="n">Owed</th><th class="n">Paid</th><th class="n">Crowd</th><th>Payment</th></tr></thead><tbody>' +
+      (rows.length ? rows.map(function(g){ var v = venue(g.venue_id) || {};
+        return '<tr data-gig="' + g.id + '" style="cursor:pointer"><td>' + esc(fmtMD(g.gig_date)) + '</td><td>' + esc(v.name) + '</td><td><span class="pill ' + g.status + '">' + STATUS[g.status] + '</span></td><td>' + esc(DEAL[g.deal_type]) + '</td>' +
+          '<td class="n">' + (g.fee_agreed == null ? '–' : money(g.fee_agreed)) + '</td><td class="n">' + money(g.amount_paid) + '</td><td class="n">' + (g.attendance == null ? '' : g.attendance) + '</td><td>' + esc({unpaid:'Unpaid',deposit:'Deposit',paid:'Paid',waived:'Waived'}[g.paid_status]) + '</td></tr>'; }).join('')
+        : '<tr><td colspan="8" class="empty">Offered, confirmed and played nights show here.</td></tr>') + '</tbody>';
+    var ms = state.acts.filter(function(a){ return a.kind !== 'band'; });
+    var since = addDays(t, -60), until = addDays(t, 60);
+    $('actCounts').innerHTML = '<thead><tr><th>Act</th><th class="n">Featured, last 60 days</th><th class="n">Featured, next 60 days</th><th class="n">Second singer, next 60 days</th></tr></thead><tbody>' +
+      ms.map(function(a){ var past = liveGigs().filter(function(g){ return g.headliner_id === a.id && g.gig_date >= since && g.gig_date < t; }).length;
+        var fut = liveGigs().filter(function(g){ return g.headliner_id === a.id && g.gig_date >= t && g.gig_date <= until; }).length;
+        var sup = liveGigs().filter(function(g){ return (g.support_ids || []).indexOf(a.id) >= 0 && g.gig_date >= t && g.gig_date <= until; }).length;
+        return '<tr><td>' + esc(a.name) + (a.is_main ? ' <span class="pill">Main</span>' : '') + '</td><td class="n">' + past + '</td><td class="n">' + fut + '</td><td class="n">' + sup + '</td></tr>'; }).join('') + '</tbody>';
+  }
+
+  $('signoutBtn').addEventListener('click', function(){ clearSession(); state.session = null; showSignin('Signed out.'); });
+
+  // Boot
+  (async function(){
+    var params = new URLSearchParams(location.search), token = params.get('token'), team = params.get('team');
+    if (team){
+      history.replaceState(null, '', location.pathname);
+      $('teamIn').hidden = false;
+      try { $('teamName').value = localStorage.getItem('lr-team-name') || ''; } catch(e){}
+      $('teamForm').addEventListener('submit', async function(e){
+        e.preventDefault(); var name = $('teamName').value.trim(); if (!name) return;
+        $('teamMsg').className = 'msg'; $('teamMsg').textContent = 'Opening…';
+        try { var c = await client(); var r = await c.rpc('lr_team_session', { p_key: team, p_name: name });
+          if (r.error || !r.data || !r.data.length) throw new Error('This team link is no longer active. Ask Stephen for the current one.');
+          try { localStorage.setItem('lr-team-name', name); } catch(e2){}
+          state.session = { sessionToken: r.data[0].session_token, email: r.data[0].email, displayName: name }; saveSession(state.session);
+          $('teamIn').hidden = true; $('app').hidden = false; $('who').textContent = 'Signed in as ' + name;
+          await load();
+        } catch(err){ $('teamMsg').className = 'msg err'; $('teamMsg').textContent = err.message; }
+      });
+      return;
+    }
+    if (token){
+      history.replaceState(null, '', location.pathname);
+      try { var c = await client(); var r = await c.rpc('lr_verify_login_link', { p_token: token });
+        if (r.error || !r.data || !r.data.length) throw new Error('That sign-in link is invalid or has expired.');
+        state.session = { sessionToken: r.data[0].session_token, email: r.data[0].email, displayName: r.data[0].display_name }; saveSession(state.session);
+      } catch(err){ return showSignin(err.message, true); }
+    } else { state.session = loadSession(); }
+    if (!state.session) return showSignin();
+    $('signin').hidden = true; $('app').hidden = false;
+    $('who').textContent = 'Signed in as ' + state.session.displayName;
+    try { var saved = localStorage.getItem('lr-tab'); if (saved && $('tab-' + saved)) document.querySelector('.tab[data-tab="' + saved + '"]').click(); } catch(e){}
+    try { await load(); } catch(err){ if (!/session/i.test(err.message)) $('weekList').innerHTML = '<p class="msg err">Could not load: ' + esc(err.message) + '</p>'; }
+  })();
+})();
+</script>
+</body>
+</html>

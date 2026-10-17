@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Reggae Nights</title>
+<meta name="description" content="Where to catch Ifficial Reggae Movement live this week: reggae nights across Chicago, the suburbs and Northwest Indiana, with a rotating featured singer.">
+<link rel="canonical" href="https://selassiefest.com/live-reggae/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#0D0D0D; --surface:rgba(255,255,255,0.045); --surface-2:rgba(255,255,255,0.08); --ink:#F5F5F5; --ink-soft:#C9C9C9; --ink-faint:#8E8E8E;
+    --line:rgba(255,255,255,0.10); --green:#0E5E36; --green-hi:#3FBF7A; --gold:#E5A93C; --red:#C83737;
+  }
+  :root[data-theme="light"]{
+    --bg:#F7F5EF; --surface:#FFFFFF; --surface-2:#EFECE2; --ink:#151515; --ink-soft:#3E3E3E; --ink-faint:#6E6E6E;
+    --line:#E0DCD0; --green-hi:#0E5E36; --gold:#9A6A00;
+  }
+  @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+    --bg:#F7F5EF; --surface:#FFFFFF; --surface-2:#EFECE2; --ink:#151515; --ink-soft:#3E3E3E; --ink-faint:#6E6E6E;
+    --line:#E0DCD0; --green-hi:#0E5E36; --gold:#9A6A00; } }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:"Jost",-apple-system,"Segoe UI",sans-serif; font-size:17px; line-height:1.6;}
+  a{color:var(--gold);}
+  .stripe{height:6px; background:linear-gradient(90deg,var(--green) 0 33.3%,var(--gold) 33.3% 66.6%,var(--red) 66.6%);}
+  .wrap{max-width:820px; margin:0 auto; padding:0 16px;}
+  .top{display:flex; justify-content:space-between; align-items:center; padding:14px 0;}
+  .top a.home{color:var(--ink-soft); text-decoration:none; font-size:0.92rem;}
+  .theme{border:1px solid var(--line); background:var(--surface); color:var(--ink); width:38px; height:38px; border-radius:50%; cursor:pointer;}
+  .hero{padding:20px 0 10px;}
+  .eyebrow{font-size:0.78rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); font-weight:600;}
+  h1{font-size:clamp(2rem,7vw,3.1rem); line-height:1.05; margin:10px 0 12px; font-weight:600;}
+  .lede{color:var(--ink-soft); font-size:1.08rem; margin:0;}
+  .filters{display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 8px;}
+  .fbtn{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:7px 15px; font:inherit; font-size:0.92rem; cursor:pointer;}
+  .fbtn.on{border-color:var(--gold); color:var(--gold);}
+  .wk{margin:24px 0 8px; font-size:0.8rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-faint); font-weight:600;}
+  .night{display:grid; grid-template-columns:72px 1fr; gap:14px; padding:16px; margin-bottom:10px; border:1px solid var(--line); border-radius:16px; background:var(--surface);}
+  .date{text-align:center; border-radius:12px; background:var(--surface-2); padding:8px 4px; align-self:start;}
+  .date .dow{font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); font-weight:600;}
+  .date .day{font-size:1.7rem; font-weight:600; line-height:1.1;}
+  .date .mon{font-size:0.8rem; color:var(--ink-faint);}
+  .night h2{font-size:1.2rem; font-weight:600; margin:0;}
+  .night .where{color:var(--ink-soft); font-size:0.95rem;}
+  .night .who{margin-top:6px;}
+  .night .who b{font-weight:600;}
+  .night .note{font-size:0.9rem; color:var(--ink-faint); margin-top:2px;}
+  .night .acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; font-size:0.9rem;}
+  .night .acts a{display:inline-flex; gap:6px; align-items:center; text-decoration:none;}
+  .past{opacity:.55;}
+  .empty{padding:28px 20px; text-align:center; border:1px dashed var(--line); border-radius:16px; color:var(--ink-soft);}
+  .about{margin:34px 0 0; padding:20px; border-radius:16px; background:var(--surface); border:1px solid var(--line);}
+  .about h2{font-size:1.2rem; font-weight:600; margin:0 0 8px;}
+  .about p{margin:0 0 10px; color:var(--ink-soft);}
+  .cta{display:inline-flex; gap:8px; align-items:center; padding:11px 20px; border-radius:999px; background:var(--gold); color:#111; text-decoration:none; font-weight:600;}
+  footer{padding:30px 0 40px; color:var(--ink-faint); font-size:0.85rem; text-align:center;}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<div class="wrap">
+  <div class="top"><a class="home" href="/"><i class="fa-solid fa-arrow-left"></i> SelassieFest</a><button class="theme" id="themeBtn" aria-label="Switch light or dark"><i class="fa-solid fa-circle-half-stroke"></i></button></div>
+  <div class="hero">
+    <div class="eyebrow">Chicago · Suburbs · NW Indiana</div>
+    <h1>Live reggae nights</h1>
+    <p class="lede">Where to catch <b>Ifficial Reggae Movement</b> live, with a featured singer that rotates from week to week: <b>JayRebl</b>, <b>Nego Hights</b> and more.</p>
+  </div>
+  <div class="filters" id="filters">
+    <button class="fbtn on" data-f="">Everywhere</button>
+    <button class="fbtn" data-f="chicago">Chicago</button>
+    <button class="fbtn" data-f="suburbs">Suburbs</button>
+    <button class="fbtn" data-f="indiana">NW Indiana</button>
+  </div>
+  <div id="list"><p class="lede" style="padding:20px 0">Loading the calendar…</p></div>
+
+  <div class="about">
+    <h2>Own a club, lounge or restaurant?</h2>
+    <p>Bring a weekly live reggae night to your room: $1,200 a night, or a door or bar deal we build around you.</p>
+    <a class="cta" href="/live-reggae/venue/"><i class="fa-solid fa-calendar-plus"></i> Book a night</a>
+  </div>
+</div>
+<footer>Band: <a href="https://www.ifficialreggae.com/" target="_blank" rel="noopener">ifficialreggae.com</a> · JayRebl: <a href="https://www.instagram.com/jayreblmusic/" target="_blank" rel="noopener">@jayreblmusic</a> · Nego Hights: <a href="https://www.youtube.com/c/NegoHights" target="_blank" rel="noopener">YouTube</a></footer>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var rows = [], filter = '';
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function parse(s){ return new Date(String(s).slice(0,10) + 'T00:00:00'); }
+  function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function fmtTime(t){ if (!t) return ''; var p = String(t).split(':'), h = +p[0], m = +p[1]; return ((h + 11) % 12 + 1) + (m ? ':' + String(m).padStart(2,'0') : '') + (h < 12 ? 'am' : 'pm'); }
+  function group(region){ region = region || ''; return /indiana/i.test(region) ? 'indiana' : /suburb/i.test(region) ? 'suburbs' : 'chicago'; }
+  function mondayOf(s){ var d = parse(s); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return iso(d); }
+
+  (function(){ var root = document.documentElement; try { var t = localStorage.getItem('lr-pub-theme'); if (t) root.setAttribute('data-theme', t); } catch(e){}
+    $('themeBtn').addEventListener('click', function(){ var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      var next = cur === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', next); try { localStorage.setItem('lr-pub-theme', next); } catch(e){} }); })();
+
+  // Google Calendar link; times are Chicago local (Indiana's Lake County is Central too).
+  function gcal(r){
+    var d = r.gig_date.replace(/-/g,''), title = 'Live reggae: ' + [r.band, r.headliner].filter(Boolean).join(' + ') + ' at ' + r.venue;
+    var dates;
+    if (r.start_time){
+      var s = r.start_time.replace(/:/g,'').slice(0,4) + '00', endD = d, e;
+      if (r.end_time){ e = r.end_time.replace(/:/g,'').slice(0,4) + '00'; if (e <= s){ var n = parse(r.gig_date); n.setDate(n.getDate()+1); endD = iso(n).replace(/-/g,''); } }
+      else { var h = (+r.start_time.slice(0,2) + 3); if (h >= 24){ var n2 = parse(r.gig_date); n2.setDate(n2.getDate()+1); endD = iso(n2).replace(/-/g,''); h -= 24; } e = String(h).padStart(2,'0') + r.start_time.slice(3,5) + '00'; }
+      dates = d + 'T' + s + '/' + endD + 'T' + e;
+    } else { var nx = parse(r.gig_date); nx.setDate(nx.getDate()+1); dates = d + '/' + iso(nx).replace(/-/g,''); }
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&ctz=America/Chicago&text=' + encodeURIComponent(title) + '&dates=' + dates +
+      '&location=' + encodeURIComponent([r.venue, r.address].filter(Boolean).join(', ')) + '&details=' + encodeURIComponent('https://selassiefest.com/live-reggae/');
+  }
+
+  function render(){
+    var today = iso(new Date());
+    var list = rows.filter(function(r){ return !filter || group(r.region) === filter; });
+    if (!list.length){
+      $('list').innerHTML = '<div class="empty"><b>The first nights are being booked now.</b><br>Check back soon' + (filter ? ', or look <a href="#" data-clear>everywhere</a>' : '') + '.</div>';
+      return;
+    }
+    var html = '', lastWk = '';
+    list.forEach(function(r){
+      var wk = mondayOf(r.gig_date);
+      if (wk !== lastWk){ lastWk = wk; var w = parse(wk); html += '<div class="wk">' + (wk === mondayOf(today) ? 'This week' : 'Week of ' + w.toLocaleDateString('en-US', {month:'long', day:'numeric'})) + '</div>'; }
+      var d = parse(r.gig_date);
+      html += '<div class="night' + (r.gig_date < today ? ' past' : '') + '">' +
+        '<div class="date"><div class="dow">' + d.toLocaleDateString('en-US',{weekday:'short'}) + '</div><div class="day">' + d.getDate() + '</div><div class="mon">' + d.toLocaleDateString('en-US',{month:'short'}) + '</div></div>' +
+        '<div><h2>' + esc(r.venue) + '</h2>' +
+        '<div class="where">' + esc([r.neighborhood || r.region, r.start_time ? fmtTime(r.start_time) + (r.end_time ? '–' + fmtTime(r.end_time) : '') : ''].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="who">' + (r.band ? '<b>' + esc(r.band) + '</b> ' : '') + (r.headliner ? 'featuring <b>' + esc(r.headliner) + '</b>' : '') + (r.support && r.support.length ? ' + ' + r.support.map(esc).join(', ') : '') + '</div>' +
+        (r.public_note ? '<div class="note">' + esc(r.public_note) + '</div>' : '') +
+        '<div class="acts">' +
+          (r.address ? '<a href="https://maps.google.com/?q=' + encodeURIComponent(r.venue + ', ' + r.address) + '" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot"></i> Directions</a>' : '') +
+          (r.gig_date >= today ? '<a href="' + gcal(r) + '" target="_blank" rel="noopener"><i class="fa-regular fa-calendar-plus"></i> Add to calendar</a>' : '') +
+          (r.website ? '<a href="' + esc(/^https?:/.test(r.website) ? r.website : 'https://' + r.website) + '" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Venue</a>' : '') +
+        '</div></div></div>';
+    });
+    $('list').innerHTML = html;
+  }
+  $('filters').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if (!b) return; filter = b.getAttribute('data-f');
+    document.querySelectorAll('.fbtn').forEach(function(x){ x.classList.toggle('on', x === b); }); render(); });
+  $('list').addEventListener('click', function(e){ if (e.target.closest('[data-clear]')){ e.preventDefault(); document.querySelector('.fbtn[data-f=""]').click(); } });
+
+  (async function(){
+    try { var c = await window.sfSupabaseReady; var r = await c.rpc('lr_public_calendar'); if (r.error) throw r.error; rows = r.data || []; render(); }
+    catch(e){ $('list').innerHTML = '<div class="empty">The calendar could not load right now. Please try again in a minute.</div>'; }
+  })();
+})();
+</script>
+</body>
+</html>
