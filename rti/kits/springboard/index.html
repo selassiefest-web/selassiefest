@@ -1,0 +1,186 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Springboard Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a numbered run-book. Steps 1-6 in order, each with its links and copy-ready text;
+   the survey answers sit inside step 3 in Springboard's own question order. */
+:root{
+  --bg:#f5f5f0; --paper:#ffffff; --ink:#1a1e1b; --muted:#5b635d; --line:#dfe0d8; --field:#eff0ea;
+  --deep:#1d2b22; --deep-ink:#eef3ee; --accent:#1f6f8b; --green:#1f7a45; --green-bg:#e1f1e6; --gold:#9a6a06; --gold-bg:#fbefd2; --red:#b8322a; --red-bg:#f9e3e0;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#101412; --paper:#181d1a; --ink:#e7ece8; --muted:#9ba69e; --line:#2b332e; --field:#212823; --deep:#0b120e; --accent:#8cc8e0; --green:#6dcf95; --green-bg:#1b3325; --gold:#e8b44f; --gold-bg:#3a2f14; --red:#f07a70; --red-bg:#3d1c18; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --bg:#101412; --paper:#181d1a; --ink:#e7ece8; --muted:#9ba69e; --line:#2b332e; --field:#212823; --deep:#0b120e; --accent:#8cc8e0; --green:#6dcf95; --green-bg:#1b3325; --gold:#e8b44f; --gold-bg:#3a2f14; --red:#f07a70; --red-bg:#3d1c18; color-scheme:dark; }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:var(--accent);overflow-wrap:anywhere}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+.hero{background:var(--deep);color:var(--deep-ink)}
+.in{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hero .in{padding-block:26px 22px;display:grid;gap:10px}
+.eyebrow{font:500 .74rem var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:clamp(1.8rem,4.6vw,2.5rem);font-weight:800}
+.hero p{margin:0;opacity:.88;max-width:70ch}
+.dates{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 .9rem var(--mono)}
+.dates b{color:#f2c94c}
+main.in{padding-block:6px 64px}
+.step{margin-top:26px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px}
+.num{grid-row:span 2;width:40px;height:40px;border-radius:50%;background:var(--deep);color:var(--deep-ink);display:grid;place-items:center;font:800 1.1rem var(--display)}
+.step h2{font-size:1.25rem;padding-top:8px}
+.body{display:grid;gap:10px;min-width:0}
+.body > p{margin:0}
+.link{display:grid;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.link b{font-family:var(--display);font-size:.95rem}
+.link a{font:13px var(--mono)}
+.warn{background:var(--red-bg);border-radius:8px;padding:10px 12px}
+.warn b{color:var(--red)}
+.tip{background:var(--gold-bg);border-radius:8px;padding:10px 12px;font-size:.95rem}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.q .lbl{font-weight:700}
+.q .ans{font-size:.95rem;margin:0}
+.q textarea{width:100%;font:15px/1.5 var(--body);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:9px 10px;resize:vertical}
+.q .foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.pill{font:500 .74rem/1 var(--mono);padding:5px 8px;border-radius:999px;background:var(--field);color:var(--muted)}
+.pill.ok{background:var(--green-bg);color:var(--green)} .pill.bad{background:var(--red-bg);color:var(--red)}
+.fill{background:var(--gold-bg);padding:0 3px;border-radius:3px}
+button{font:700 .86rem var(--display);border-radius:6px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 11px}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #d4a40c;outline-offset:2px}
+.done{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--display);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 12px;width:max-content;cursor:pointer}
+.done input,.qck input{width:20px;height:20px;accent-color:var(--green);margin:0}
+.done:has(input:checked){background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.step:has(.done input:checked) .num{background:var(--green)}
+.qck{display:inline-flex;align-items:center;gap:6px;font:600 .82rem var(--display);cursor:pointer}
+.q:has(.qck input:checked){border-color:var(--green)}
+.prog{display:grid;gap:6px}
+.prog .bar{height:10px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:#6dcf95;transition:width .3s}
+.prog span{font:500 .85rem var(--mono)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font:600 .9rem var(--display);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="hero"><div class="in">
+  <span class="eyebrow">Ras Tafari Inc. &middot; Springboard Foundation &middot; first-time grantee, 2027 funding</span>
+  <h1>Springboard Kit</h1>
+  <p>Springboard funds small, new Chicago after-school programs: $5,000 to $20,000, often renewed for several years. Six steps from the five-question survey to a funded weekday DJ class. Tick each box as you go; ticks and edits save with this page.</p>
+  <div class="prog"><div class="bar"><i id="pbar"></i></div><span id="ptext">Loading&hellip;</span></div>
+  <div class="dates"><span><b>Now</b> survey (open all year)</span><span>Nov application opens</span><span><b>Early Feb 2027</b> new-grantee application due</span><span>Apr-Jun site visit</span><span>Jul decision &middot; Aug funds</span></div>
+</div></div>
+
+<main class="in">
+
+<div class="step"><span class="num">1</span><h2>Confirm you qualify</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s1"> Done</label>
+  <p>First-time applicants must meet all four. Tick each one you can say yes to.</p>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="e1"> Chicago-based and/or serving 501(c)(3): yes (EIN 42-3036705; programs at Rainbow Beach Park)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="e2"> In operation five years or less: yes (founded 2026)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="e3"> Organizational budget under $100,000: yes (2026 projected about $14,000)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="e4"> An after-school program sometime Monday to Friday, 3 to 7 pm, during the CPS school year (roughly September to June)</label><p class="ans" style="color:var(--muted)">This is the one to decide. Weekend-only and summer-only programs don't count, so Rainbow Wednesdays, the Black History Month Saturdays and SelassieFest can't be the basis. A weekday DJ class during the school year can. Set the slot in step 2.</p></div>
+  <div class="link"><b>Springboard's rules</b><a href="https://springboardfoundation.org/apply-grant" target="_blank" rel="noopener">https://springboardfoundation.org/apply-grant</a></div>
+</div></div>
+
+<div class="step"><span class="num">2</span><h2>Set the weekday class</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s2"> Done</label>
+  <p>Proposed below; change it to what you will actually run. The spring After School Matters apprenticeship counts too if it meets on weekday afternoons.</p>
+  <div class="q"><span class="lbl">The after-school program, in one paragraph</span><textarea id="a-program" rows="6"></textarea><div class="foot"><span class="pill" id="c-program"></span><span style="display:flex;gap:10px;align-items:center"><label class="qck"><input type="checkbox" data-check="q-program"> Final</label><button type="button" data-copy="program">Copy</button></span></div></div>
+</div></div>
+
+<div class="step"><span class="num">3</span><h2>Fill in the survey (5 questions, open now)</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s3"> Done</label>
+  <div class="link"><b>Prospective Springboard Grantee Survey (Microsoft Form)</b><a href="https://forms.office.com/r/A1r7ddK3az" target="_blank" rel="noopener">https://forms.office.com/r/A1r7ddK3az</a></div>
+  <div id="qs"></div>
+  <p class="ans" style="color:var(--muted)">After you submit, Springboard asks fit-looking applicants to schedule a short phone call. If the form link ever breaks, email sejal@springboardfoundation.org.</p>
+</div></div>
+
+<div class="step"><span class="num">4</span><h2>Prepare for the phone call</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s4"> Done</label>
+  <p>Talking points, in the order they'll likely come up. Keep it conversational.</p>
+  <div class="q"><span class="lbl">Call notes</span><textarea id="a-email" rows="18"></textarea><div class="foot"><span class="pill" id="c-email"></span><button type="button" data-copy="email">Copy</button></div></div>
+</div></div>
+
+<div class="step"><span class="num">5</span><h2>Gather the application pieces (application opens in November)</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s5"> Done</label>
+  <p>The new-grantee application is due in early February. Have these ready:</p>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g1"> IRS determination letter (June 12, 2026)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g2"> 2027 organizational budget, one page (Paul)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g3"> After-school program budget for the school year</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g4"> Board list and the program's curriculum link</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g5"> Two or three letters of support (selassiefest.com/support-letter/)</label></div>
+  <div class="q"><label class="qck"><input type="checkbox" data-check="g6"> Photos of SelassieFest 2026 and the gear</label></div>
+</div></div>
+
+<div class="step"><span class="num">6</span><h2>Site visit and decision</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s6"> Done</label>
+  <p>Springboard members visit every new grantee's program between April and June, so the weekday class should be running by spring 2027. Decisions arrive in July and funds in August. Mark Springboard on the Success Engine dashboard as you go.</p>
+</div></div>
+
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var EMAIL = "WHO WE ARE\n- Ras Tafari Inc., a Chicago 501(c)(3) since June 2026 (EIN 42-3036705). Board: Stephen Henry (President), Paul Kelly (VP/Treasurer), Albert Harris (Secretary). Officers unpaid.\n- We produced SelassieFest 2026, a free roots reggae and cultural festival.\n\nTHE AFTER-SCHOOL PROGRAM\n- Rainbow DJ Lab: free DJ and music-production classes at Rainbow Beach Park in South Shore, working with the park's staff.\n- Weekday afternoons during the school year (see step 2): DJ craft, music history, live sound, the business of performing.\n- 14-session curriculum with a skills Passport and a public showcase: https://selassiefest.com/dj-lab/about/curriculum.html\n- Empress Decks: a girls' track taught by women DJs.\n- Gear is donated; every adult clears the Park District's background check and is a mandated reporter.\n\nWHO WE SERVE\n- Youth and teens from South Shore and nearby: Avalon Park, South Chicago, Calumet Heights, Greater Grand Crossing, Woodlawn.\n- Free, no audition, no experience needed.\n\nSIZE AND MONEY\n- Organizational budget well under $100,000; 2026 projected about $14,000.\n- One class cohort costs about $5,500 in cash plus $4,200 in donated gear and time.\n- A Springboard grant would pay instructors for the school-year class and help grow it from 12 to 30 students.\n\nWHY US, WHY NOW\n- South Shore families travel about nine miles to Grant Park for free music programs.\n- DJing teaches focus, listening, math of tempo, public speaking and teamwork, and it brings teens back to the park every week.\n\nLINKS\n- For funders: https://selassiefest.com/rti/funders/\n- Rainbow DJ Lab: https://selassiefest.com/dj-lab/";
+
+  // [key, question, answer, character limit or 0, note]
+  var Q = [
+    ["name","1. First and Last name","Stephen Henry",0,""],
+    ["phone","2. Phone number","(872) 255-9333",0,""],
+    ["mail","3. Email address","stephen@selassiefest.com",0,""],
+    ["org","4. Name of your nonprofit","Ras Tafari Inc.",0,""],
+    ["c3","5. Does your organization have a 501c3 designation from the IRS?","Yes",0,""]
+  ];
+
+  var KEY = "springboard-kit-v1", edits = {}, checks = {}, dbRef = null, dbOk = false, timer = null;
+  try { var s0 = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; edits = s0.edits || {}; checks = s0.checks || {}; } catch(e) {}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify({ edits: edits, checks: checks })); } catch(e) {} if (dbOk) { clearTimeout(timer); timer = setTimeout(function(){ dbRef.set({ edits: edits, checks: checks, updatedAt: new Date().toISOString() }).catch(function(){ dbOk = false; }); }, 600); } }
+  function progress(){ var boxes = document.querySelectorAll("[data-check]"), n = 0; boxes.forEach(function(b){ if (b.checked) n++; }); var p = boxes.length ? Math.round(n / boxes.length * 100) : 0; $("pbar").style.width = p + "%"; $("ptext").textContent = n + " of " + boxes.length + " ticked (" + document.querySelectorAll('[data-check^="s"]:checked').length + " of 6 steps done)"; }
+  function applyChecks(){ document.querySelectorAll("[data-check]").forEach(function(b){ b.checked = !!checks[b.getAttribute("data-check")]; }); progress(); }
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  var tt; function toast(m){ var e = $("toast"); e.textContent = m; e.classList.add("on"); clearTimeout(tt); tt = setTimeout(function(){ e.classList.remove("on"); }, 1600); }
+  function copy(text){
+    function fb(){ var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch(e){} document.body.removeChild(ta); toast(ok ? "Copied" : "Select the text and copy it by hand"); }
+    try { navigator.clipboard.writeText(text).then(function(){ toast("Copied"); }, fb); } catch(e){ fb(); }
+  }
+  var DEF = { email: EMAIL, program: "Rainbow DJ Lab after-school class: free DJ and music-production instruction for youth and teens at Rainbow Beach Park, 3111 E. 77th St., Tuesdays and Thursdays, 4:00 to 6:00 pm, during the CPS school year. Each 14-session course follows a written curriculum (beatmatching, phrasing, music history, live sound, the business of performing), uses donated DJ gear, and ends in a public showcase. Two instructors per class; Empress Decks is a girls' track taught by women DJs. Free, no audition." }; Q.forEach(function(q){ DEF[q[0]] = q[2]; });
+  var LIM = {}; Q.forEach(function(q){ LIM[q[0]] = q[3]; });
+  function val(k){ return edits[k] != null ? edits[k] : DEF[k]; }
+  function count(k){ var e = $("c-" + k); if (!e) return; var n = val(k).length, lim = LIM[k] || 0; e.textContent = n.toLocaleString() + (lim ? " / " + lim.toLocaleString() + " characters" : " characters"); e.className = "pill" + (lim ? (n > lim ? " bad" : " ok") : ""); }
+
+  $("qs").innerHTML = Q.map(function(q){
+    var short = q[2].length < 60 && q[3] < 200;
+    var needs = /\[[^\]]+\]/.test(q[2]);
+    return '<div class="q"><span class="lbl">' + esc(q[1]) + '</span>' +
+      (short ? '<p class="ans"><b>' + esc(q[2]).replace(/(\[[^\]]+\])/g, '<span class="fill">$1</span>') + '</b></p>' : '<textarea id="a-' + q[0] + '" rows="' + Math.min(18, Math.max(3, Math.ceil(q[2].length / 90))) + '"></textarea>') +
+      (q[4] ? '<p class="ans" style="color:var(--muted)">' + esc(q[4]).replace('up to 7,000 characters. This is about 3,400.', 'up to 7,000 characters. This is about 3,100.') + '</p>' : '') +
+      '<div class="foot"><span class="pill" id="c-' + q[0] + '"></span><span style="display:flex;gap:10px;align-items:center"><label class="qck"><input type="checkbox" data-check="q-' + q[0] + '"> Pasted</label><button type="button" data-copy="' + q[0] + '">Copy</button></span></div></div>';
+  }).join("");
+
+  Object.keys(DEF).forEach(function(k){
+    var ta = $("a-" + k); if (!ta) { count(k); return; }
+    ta.value = val(k);
+    ta.addEventListener("input", function(){ if (ta.value === DEF[k]) delete edits[k]; else edits[k] = ta.value; save(); count(k); });
+    count(k);
+  });
+  document.addEventListener("click", function(e){ var b = e.target.closest("[data-copy]"); if (b) copy(val(b.getAttribute("data-copy"))); });
+  document.addEventListener("change", function(e){ var k = e.target.getAttribute && e.target.getAttribute("data-check"); if (!k) return; if (e.target.checked) checks[k] = 1; else delete checks[k]; save(); progress(); });
+  applyChecks();
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(async function(db){
+      if (!db) return; dbRef = db.doc("kit/state");
+      try { var snap = await dbRef.get(); dbOk = true; if (snap.exists) { var d = snap.data(); edits = d.edits || {}; checks = d.checks || {}; Object.keys(DEF).forEach(function(k){ var ta = $("a-" + k); if (ta) ta.value = val(k); count(k); }); applyChecks(); save(); } }
+      catch(e) { dbOk = false; }
+    });
+  }
+})();
+</script>
+
+</body></html>

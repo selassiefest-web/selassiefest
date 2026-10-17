@@ -1,0 +1,275 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>RTI Success Engine</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<script>try{if(!localStorage.getItem("rti-success-engine-v1"))localStorage.setItem("rti-success-engine-v1","{\"owner\":{},\"status\":{\"asm\":\"done\",\"evidence\":\"prog\",\"letters\":\"prog\",\"seabury\":\"prog\",\"springboard\":\"prog\"},\"note\":{\"asm\":\"Submitted Oct 16, 2026 at 10:05 pm (Jotform asmcontracts; Thank You page; screenshot in Downloads/After School Matter Submitted.png). Next: email ASM to confirm receipt; prepare for interview (budget, recruitment, teen selection); name a community liaison.\",\"evidence\":\"Funder page live: selassiefest.com/rti/funders/ (programs, budgets, status, supporters). Still needs SelassieFest 2026 photos and attendance.\",\"letters\":\"Letter page live: selassiefest.com/support-letter/ (add ?p=dj for DJ Lab preselected). Count shows on selassiefest.com/rti/funders/\",\"seabury\":\"Pre-application email sent to grants@seaburyfoundation.org Oct 16 (P&L / Chicago HQ questions). Kit: selassiefest.com/rti/kits/seabury/. Next: portal account, P&L from Paul, BIPOC answer, submit by Nov 6.\",\"springboard\":\"Kit: selassiefest.com/rti/kits/springboard/. Survey is open all year: forms.office.com/r/A1r7ddK3az (5 questions). Decide the weekday class slot (proposed Tue/Thu 4-6 pm, Rainbow Beach Park). Application opens Nov; new grantees due early Feb 2027.\"}}")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an operations board. Score strip and "fix first" up top; then the gap register
+   grouped by area with editable status/owner; then the funding calendar and the corrections.
+   Palette: the Rastafari red, gold, green as status colors on a deep ink; neutrals lean green. */
+:root{
+  --bg:#f3f4f0; --paper:#ffffff; --ink:#18201b; --muted:#5b665e; --line:#dce1da; --field:#edf0eb;
+  --deep:#16241c; --deep-ink:#eef3ee;
+  --red:#b8322a; --red-bg:#f9e3e0; --gold:#9a6a06; --gold-bg:#fbefd2; --green:#1f7a45; --green-bg:#e0f0e6; --blue:#2b5f8f; --blue-bg:#e3edf6;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1411; --paper:#171e1a; --ink:#e6ece7; --muted:#9aa69e; --line:#2a332e; --field:#202823;
+    --deep:#0a120d; --deep-ink:#eef3ee;
+    --red:#f07a70; --red-bg:#3d1c18; --gold:#e8b44f; --gold-bg:#3a2f14; --green:#64c98c; --green-bg:#1b3325; --blue:#8cbcf0; --blue-bg:#1b2b3c; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1411; --paper:#171e1a; --ink:#e6ece7; --muted:#9aa69e; --line:#2a332e; --field:#202823;
+  --deep:#0a120d; --deep-ink:#eef3ee;
+  --red:#f07a70; --red-bg:#3d1c18; --gold:#e8b44f; --gold-bg:#3a2f14; --green:#64c98c; --green-bg:#1b3325; --blue:#8cbcf0; --blue-bg:#1b2b3c; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body)}
+a{color:var(--blue)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+.flag{height:6px;background:linear-gradient(90deg,var(--red) 0 33.3%,var(--gold) 0 66.6%,var(--green) 0)}
+.hero{background:var(--deep);color:var(--deep-ink)}
+.in{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hero .in{padding-block:26px 22px;display:grid;gap:14px}
+.eyebrow{font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:clamp(1.8rem,4.6vw,2.7rem);font-weight:800}
+.hero p{margin:0;max-width:75ch;opacity:.85}
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;display:grid;gap:4px}
+.tile .n{font:800 2rem/1 var(--display);font-variant-numeric:tabular-nums}
+.tile .l{font:500 .74rem var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.meter{height:10px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;display:flex}
+.meter i{display:block;height:100%}
+main.in{padding-block:8px 64px}
+section{margin-top:30px;display:grid;gap:12px}
+section > header{border-bottom:2px solid var(--ink);padding-bottom:8px;display:grid;gap:4px}
+section > header h2{font-size:1.35rem;font-weight:800}
+section > header p{margin:0;color:var(--muted);max-width:80ch}
+.first{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.fcard{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:8px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.fcard h3{font-size:1rem}
+.fcard p{margin:0;font-size:.93rem;color:var(--muted)}
+.fcard .who{font:500 .78rem var(--mono);color:var(--ink)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools input{flex:1 1 220px;font:15px var(--body);padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.chip{font:600 .82rem var(--display);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.area{display:grid;gap:8px}
+.area h3{font-size:1.05rem;margin-top:6px}
+.gap{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 12px;align-items:start}
+.pr{font:700 .72rem/1 var(--mono);padding:5px 7px;border-radius:5px;margin-top:2px}
+.pr.P0{background:var(--red-bg);color:var(--red)} .pr.P1{background:var(--gold-bg);color:var(--gold)} .pr.P2{background:var(--blue-bg);color:var(--blue)}
+.gap .t{font-weight:700}
+.gap .d{grid-column:2/4;margin:0;color:var(--muted);font-size:.93rem}
+.gap .next{grid-column:2/4;margin:0;font-size:.93rem}
+.gap .next b{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.gap .row{grid-column:2/4;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gap select,.gap input{font:14px var(--body);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink)}
+.gap input.note{flex:1 1 220px}
+.st{font:600 .76rem/1 var(--mono);padding:6px 9px;border-radius:999px;white-space:nowrap}
+.st.done{background:var(--green-bg);color:var(--green)} .st.prog{background:var(--gold-bg);color:var(--gold)} .st.todo{background:var(--red-bg);color:var(--red)} .st.na{background:var(--field);color:var(--muted)}
+.gap.isdone{opacity:.72}
+.gap.isdone .t{text-decoration:line-through;text-decoration-color:var(--green)}
+.tw{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 .7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--field)}
+td.dt{white-space:nowrap;font-family:var(--mono);font-size:.84rem;font-variant-numeric:tabular-nums}
+tr.past td{color:var(--muted)}
+tr.soon td.dt{color:var(--red);font-weight:500}
+.fix{display:grid;gap:8px}
+.fix div{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+.fix b{font-family:var(--display)}
+.fix span{color:var(--muted);font-size:.93rem}
+.status{color:var(--muted);font-size:.86rem;margin:0}
+@media (max-width:560px){.gap{grid-template-columns:auto minmax(0,1fr)}.gap .st{grid-column:2}}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+
+<div class="flag" aria-hidden="true"></div>
+<div class="hero"><div class="in">
+  <span class="eyebrow">Ras Tafari Inc. &middot; grant readiness</span>
+  <h1>RTI Success Engine</h1>
+  <p>Every gap between a strong proposal and a funded, running program, with its real status today, an owner and the next action. Update a status or owner here and it saves for the whole team.</p>
+  <div class="score" id="score"></div>
+  <div class="meter" id="meter" aria-hidden="true"></div>
+  <p class="status" id="saveStatus" style="color:inherit;opacity:.75">Checking where updates are saved&hellip;</p>
+</div></div>
+
+<main class="in">
+  <section id="first">
+    <header><h2>Fix first</h2><p>The open P0 items: anything here can stop a funder from approving, contracting or paying.</p></header>
+    <div class="first" id="firstList"></div>
+  </section>
+
+  <section id="register">
+    <header><h2>Gap register</h2><p>Reconciled from the two outside analyses and the DJ Lab launch checklist. Statuses reflect what is on file as of Oct. 16, 2026.</p></header>
+    <div class="tools">
+      <input type="search" id="q" placeholder="Search gaps, owners, programs" aria-label="Search gaps">
+      <button class="chip" type="button" data-f="open" aria-pressed="true">Open</button>
+      <button class="chip" type="button" data-f="all" aria-pressed="false">All</button>
+      <button class="chip" type="button" data-f="P0" aria-pressed="false">P0</button>
+      <button class="chip" type="button" data-f="done" aria-pressed="false">Done</button>
+    </div>
+    <div id="areas"></div>
+  </section>
+
+  <section id="calendar">
+    <header><h2>Funding calendar</h2><p>Every dated opportunity on our tracks, soonest first. Red dates are within 14 days.</p></header>
+    <div class="tw"><table id="cal"></table></div>
+  </section>
+
+  <section id="corrections">
+    <header><h2>What the outside analyses got wrong</h2><p>Both were written without our records. These items are already settled, so don't spend time on them.</p></header>
+    <div class="fix" id="fixes"></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var TODAY = new Date();
+  // [id, area, priority, title, detail, next action, default status, default owner, due]
+  var GAPS = [
+    ["addr","Eligibility","P0","Official records show South Holland, applications say Chicago","IRS letter and Illinois Secretary of State list 765 E. 154th St., South Holland. ARCS and Night Out use 7700 S. Stony Island, Chicago. Night Out verifies Chicago residency at application, contracting and payment.","File IRS Form 8822-B (change of address) and update the registered office with the Illinois Secretary of State; keep proof of the Chicago address on hand.","todo","Albert Harris (Secretary)","2026-10-30"],
+    ["sam","Eligibility","P0","SAM.gov UEI","Required for My CHI. My Future. and most government money; free but takes 1 to 4 weeks.","Register Ras Tafari Inc. at SAM.gov for a UEI.","todo","Paul Kelly (Treasurer)","2026-11-15"],
+    ["letters","Evidence","P0","Letters of support: none on file","Most funders ask for 1 to 3. We have 390 partners on the tracker and no letters.","Use the letter-of-support page to collect 5 letters: schools, churches, a block club, a business, a youth organization.","todo","Stephen Henry","2026-10-31"],
+    ["orgbudget","Finance","P0","One-page organizational budget for 2027","Funders want the whole organization's budget, not only project budgets. The FY2026 projection was $13,813.","Combine program budgets (DJ Lab, Rainbow Wednesdays, Roots in the Parks, Shoreline, SelassieFest) into a 2027 organizational budget, approved by the board.","todo","Paul Kelly (Treasurer)","2026-10-28"],
+    ["fin","Finance","P1","Financial statements","Founded June 2026, so there is no 990 or audit yet. Fry Foundation requires an audit; most small funders accept a current-year statement.","Prepare an unaudited 2026 statement of activities and bank balance summary; first 990 after Dec. 31, 2026.","todo","Paul Kelly (Treasurer)","2027-01-31"],
+    ["policies","Governance","P0","Board adoption of DJ Lab policies (launch item 10)","Youth protection, safety, privacy and enforcement policies are written but not adopted.","Load one written-consent packet on the board signing page adopting every DJ Lab policy.","todo","Stephen Henry","2026-10-31"],
+    ["coi","Governance","P1","Conflict-of-interest disclosures (launch item 15)","Policy drafted; each director's disclosure must be on file.","Collect disclosures with the policy-adoption packet.","todo","Albert Harris (Secretary)","2026-10-31"],
+    ["arcs","Park","P0","ARCS partnership proposal","Ivry gave the go-ahead Oct. 14. Form filled; board consent 1 of 3 signed.","Finish board signatures and send to partnerships.app@chicagoparkdistrict.com, copying Ivry.","prog","Stephen Henry","2026-10-24"],
+    ["mou","Park","P1","Written park agreement / MOU (launch items 1, 7, 12)","The ARCS partnership agreement becomes the written agreement for space, schedule, safety and the Empress Decks girls' track.","After ARCS approval, review the agreement with the board before signing.","prog","Stephen Henry","2027-01-15"],
+    ["sitewalk","Park","P1","Site walk and emergency maps (launch item 6)","Exits, shelter spots and meeting points must be mapped with park staff.","Schedule a site walk with Ivry and draw the maps.","todo","Stephen Henry","2026-11-20"],
+    ["bg","Safety","P1","CPD background checks for every adult (launch item 3)","Two member applications sent through /rti/background-check/. Artists for Roots in the Parks need checks too.","Get every director, instructor and performer through CPD's volunteer application.","prog","Albert Harris (Secretary)","2026-11-30"],
+    ["training","Safety","P1","Mandated reporter and first aid/CPR (launch items 4, 5)","Every adult needs DCFS training; at least one adult per class needs pediatric first aid/CPR/AED.","Assign the free DCFS course to everyone; book a first aid/CPR class for the instructors.","todo","Stephen Henry","2027-01-15"],
+    ["insurance","Safety","P0","Insurance","Handled by Stephen.","No action needed here.","na","Stephen Henry",""],
+    ["music","Safety","P1","Music licensing for public performances (launch item 11)","Spotlight sets, showcases and park events play recorded music for an audience.","Ask CPD whether its licenses cover park events; if not, price ASCAP, BMI, SESAC and GMR.","todo","Stephen Henry","2026-12-15"],
+    ["spanish","Delivery","P1","Parent forms in Spanish (launch item 8)","Forms are written; a native-speaker review is budgeted.","Commission the Spanish review.","todo","Stephen Henry","2026-12-15"],
+    ["grad","Delivery","P1","Graduation criteria published (launch item 18)","Graduation and the Open Decks slot must depend on public rules.","Publish: attend 10 of 14 sessions and pass 6 Passport skill checks.","todo","Stephen Henry","2026-11-15"],
+    ["qality","Governance","P1","Q-Ality Sound agreement and sole-source approval (launch items 16, 17)","Drafts exist; approval must come from directors with no tie to Q-Ality.","Add to the board policy packet, with the vendor's own certificate on file.","todo","Paul Kelly (Treasurer)","2026-11-30"],
+    ["asm","Funding","P0","After School Matters provider pathway","Interest form nearly complete; the planner PDF is filled. ASM's site now links a Google Form; the Jotform is the older link.","Submit, then email ASM to confirm which form they are reviewing for spring 2027.","prog","Stephen Henry","2026-10-23"],
+    ["asmbudget","Finance","P1","Teen (ASM) cohort budget at 15, 20 and 30 teens","The site's DJ Lab budget is for 12 children (about $5,500 cash plus $4,200 in-kind). ASM cohorts are 15 to 30 teens with 2 instructors.","Build the ASM version with three enrollment scenarios for the interview.","todo","Paul Kelly (Treasurer)","2026-11-15"],
+    ["noitp","Funding","P0","Night Out 2027 application","Kit ready; budget approved; Albert is main applicant. Opens Nov. 1, 12:01 am.","Collect artist packets and submit on opening day.","prog","Albert Harris (Secretary)","2026-11-01"],
+    ["seabury","Funding","P0","Seabury Foundation letter of intent","Eligible now; LOI due Nov. 6 for the Spring 2027 cycle.","Write and submit the LOI through Seabury's portal.","todo","Paul Kelly (Treasurer)","2026-11-06"],
+    ["springboard","Funding","P1","Springboard Foundation","Only a weekday 3-7 pm school-year class qualifies.","Decide the weekday class slot, then complete the survey when it opens in November.","todo","Stephen Henry","2026-11-02"],
+    ["evidence","Evidence","P1","Track record: photos, numbers, press","Funders score proof of past delivery. SelassieFest 2026 photos and attendance exist but aren't gathered.","Build one evidence page: SelassieFest 2026 photos, attendance, artist list, press, partner logos.","todo","Stephen Henry","2026-11-15"],
+    ["recruit","Delivery","P1","Recruitment plan and enrollment targets","Outreach channels are named; no enrollment commitments yet.","Set targets (30 teens, half girls) and line up 3 referral partners (schools, churches, youth orgs) from the tracker.","todo","Stephen Henry","2026-12-15"],
+    ["eval","Delivery","P1","Evaluation and reporting owner","Passport, rubric and season report are designed; no owner or calendar.","Name an owner and a reporting calendar; keep attendance, receipts and assessments in one folder.","todo","Albert Harris (Secretary)","2026-12-15"],
+    ["alloc","Finance","P2","Shared-cost allocation method","Insurance, admin and equipment are shared across programs.","Write a one-paragraph allocation rule so no cost is charged to two funders.","todo","Paul Kelly (Treasurer)","2027-01-31"],
+    ["components","Funding","P2","Budgets for stage shows, festivals and parties","Rainbow Wednesdays ($34,220) and Roots in the Parks (per-show) are done.","Per-show, per-festival and per-party budgets from the same template.","todo","Paul Kelly (Treasurer)","2027-02-28"]
+  ];
+  var CAL = [
+    ["2026-10-24","ARCS partnership proposal: send once the board has signed","Chicago Park District"],
+    ["2026-11-01","Night Out 2027 opens 12:01 am: submit on day 1","Chicago Park District"],
+    ["2026-11-02","Springboard Foundation applications open (November)","Springboard"],
+    ["2026-11-06","Seabury Foundation letter of intent due","Seabury Foundation"],
+    ["2026-11-16","Night Out office hours (Nov. 16 to 18)","Chicago Park District"],
+    ["2026-11-30","Walmart Spark Good local grants, FY27 cycle 3 closes ($250-$5,000 per store; Deed verification first)","Walmart / Sam's Club"],
+    ["2026-12-08","Night Out 2027 closes 11:59 pm","Chicago Park District"],
+    ["2026-12-31","Target GiftCards cycle ends","Target"],
+    ["2027-01-11","ComEd Powering the Arts opens (due Mar. 12)","ComEd / League of Chicago Theatres"],
+    ["2027-02-05","Seabury full proposal (if invited Dec. 11)","Seabury Foundation"],
+    ["2027-03-01","Fry Foundation Arts Learning deadline (needs an audit)","Lloyd A. Fry Foundation"],
+    ["2027-04-15","Field Foundation / MacArthur A Road Together opens","Field Foundation"]
+  ];
+  var FIXES = [
+    ["501(c)(3) status is verified.","IRS determination letter dated June 12, 2026; EIN 42-3036705; public charity under 509(a)(2), effective June 9, 2026. Illinois file 75598726, in good standing through June 15, 2027."],
+    ["The park relationship exists.","Rainbow Beach Park's supervisor told us on Oct. 14 to submit the partnership through ARCS. Rainbow Beach Park is the site."],
+    ["Insurance, instructor pay and women DJs are handled.","Confirmed by Stephen. Not tracked here."],
+    ["\"Approve once\" already means a staged model.","The Full Spectrum proposal already says each event is confirmed with park staff and gets its own permit."],
+    ["The Rainbow Wednesdays budget is itemized.","$34,220 with cash and in-kind separated; what each funder may pay for still gets checked per application."],
+    ["The $5,780 figure is not ours.","Our published DJ Lab budget is about $5,500 cash plus $4,200 in-kind for 12 children. The ASM teen version gets its own budget (see the gap register)."]
+  ];
+
+  // ---------- state ----------
+  var state = { status:{}, owner:{}, note:{} }, dbRef = null, dbOk = false, KEY = "rti-success-engine-v1";
+  try { var s0 = JSON.parse(localStorage.getItem(KEY) || "null"); if (s0) state = Object.assign(state, s0); } catch(e){}
+  function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+  var t = null, busy = false, again = false;
+  function save(){ saveLocal(); if (!dbOk) { stat(); return; } clearTimeout(t); t = setTimeout(flush, 700); $("saveStatus").textContent = "Saving…"; }
+  async function flush(){ if (busy) { again = true; return; } busy = true; try { await dbRef.set(Object.assign({}, state, { updatedAt: new Date().toISOString() })); stat(); } catch(e){ dbOk = false; $("saveStatus").textContent = "Couldn't save to the page. Updates are kept in this browser."; } busy = false; if (again) { again = false; flush(); } }
+  function stat(){ $("saveStatus").textContent = dbOk ? "Updates save with this page for everyone who opens it." : "Updates are saved in this browser only."; }
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function st(g){ return state.status[g[0]] || g[6]; }
+  function own(g){ return state.owner[g[0]] != null ? state.owner[g[0]] : g[7]; }
+  var ST = { done:["done","Done"], prog:["prog","In progress"], todo:["todo","Not started"], na:["na","Handled / N/A"] };
+  function fmt(d){ if (!d) return ""; var x = new Date(d + "T12:00:00"); return x.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}); }
+  function days(d){ return Math.round((new Date(d + "T12:00:00") - TODAY) / 864e5); }
+
+  var filter = "open", q = "";
+  function render(){
+    // score
+    var counts = { done:0, prog:0, todo:0, na:0 }; GAPS.forEach(function(g){ counts[st(g)]++; });
+    var p0open = GAPS.filter(function(g){ return g[2] === "P0" && (st(g) === "todo" || st(g) === "prog"); }).length;
+    var active = GAPS.length - counts.na, pct = active ? Math.round(counts.done / active * 100) : 0;
+    $("score").innerHTML = [[pct + "%","Ready"],[p0open,"P0 open"],[counts.prog,"In progress"],[counts.todo,"Not started"],[counts.done,"Done"]].map(function(x){ return '<div class="tile"><span class="n">' + x[0] + '</span><span class="l">' + x[1] + '</span></div>'; }).join("");
+    $("meter").innerHTML = '<i style="width:' + (counts.done/GAPS.length*100) + '%;background:var(--green)"></i><i style="width:' + (counts.prog/GAPS.length*100) + '%;background:var(--gold)"></i><i style="width:' + (counts.todo/GAPS.length*100) + '%;background:var(--red)"></i>';
+
+    // fix first
+    var first = GAPS.filter(function(g){ return g[2] === "P0" && (st(g) === "todo" || st(g) === "prog"); }).sort(function(a,b){ return (a[8]||"9") < (b[8]||"9") ? -1 : 1; });
+    $("firstList").innerHTML = first.length ? first.map(function(g){ return '<div class="fcard"><h3>' + esc(g[3]) + '</h3><p>' + esc(g[5]) + '</p><span class="who">' + esc(own(g)) + (g[8] ? ' &middot; by ' + fmt(g[8]) : '') + '</span></div>'; }).join("") : '<p class="status">No open P0 items. Nothing is blocking a funder.</p>';
+
+    // register
+    var areas = []; GAPS.forEach(function(g){ if (areas.indexOf(g[1]) < 0) areas.push(g[1]); });
+    var html = "";
+    areas.forEach(function(a){
+      var list = GAPS.filter(function(g){
+        if (g[1] !== a) return false;
+        var s = st(g);
+        if (filter === "open" && !(s === "todo" || s === "prog")) return false;
+        if (filter === "P0" && g[2] !== "P0") return false;
+        if (filter === "done" && s !== "done") return false;
+        if (q && (g.join(" ") + " " + own(g) + " " + (state.note[g[0]]||"")).toLowerCase().indexOf(q) < 0) return false;
+        return true;
+      });
+      if (!list.length) return;
+      html += '<div class="area"><h3>' + esc(a) + '</h3>' + list.map(function(g){
+        var s = st(g);
+        return '<div class="gap' + (s === "done" ? " isdone" : "") + '"><span class="pr ' + g[2] + '">' + g[2] + '</span><span class="t">' + esc(g[3]) + '</span><span class="st ' + ST[s][0] + '">' + ST[s][1] + '</span>' +
+          '<p class="d">' + esc(g[4]) + '</p><p class="next"><b>Next</b>' + esc(g[5]) + (g[8] ? ' <span class="status" style="display:inline">(by ' + fmt(g[8]) + ')</span>' : '') + '</p>' +
+          '<div class="row"><label class="status" for="s-' + g[0] + '">Status</label><select id="s-' + g[0] + '" data-s="' + g[0] + '">' + Object.keys(ST).map(function(k){ return '<option value="' + k + '"' + (k === s ? " selected" : "") + '>' + ST[k][1] + '</option>'; }).join("") + '</select>' +
+          '<label class="status" for="o-' + g[0] + '">Owner</label><input id="o-' + g[0] + '" data-o="' + g[0] + '" value="' + esc(own(g)) + '">' +
+          '<input class="note" id="n-' + g[0] + '" data-n="' + g[0] + '" placeholder="Note or evidence link" value="' + esc(state.note[g[0]] || "") + '" aria-label="Note for ' + esc(g[3]) + '"></div></div>';
+      }).join("") + '</div>';
+    });
+    $("areas").innerHTML = html || '<p class="status">Nothing matches.</p>';
+
+    // calendar
+    $("cal").innerHTML = '<thead><tr><th>Date</th><th>What</th><th>Funder</th></tr></thead><tbody>' + CAL.map(function(c){
+      var d = days(c[0]); return '<tr class="' + (d < 0 ? "past" : d <= 14 ? "soon" : "") + '"><td class="dt">' + fmt(c[0]) + '</td><td>' + esc(c[1]) + '</td><td>' + esc(c[2]) + '</td></tr>';
+    }).join("") + '</tbody>';
+  }
+  $("fixes").innerHTML = FIXES.map(function(f){ return '<div><b>' + esc(f[0]) + '</b><span>' + esc(f[1]) + '</span></div>'; }).join("");
+
+  document.addEventListener("change", function(e){
+    var el = e.target, k;
+    if ((k = el.getAttribute("data-s"))) { state.status[k] = el.value; save(); render(); }
+  });
+  document.addEventListener("input", function(e){
+    var el = e.target, k;
+    if ((k = el.getAttribute("data-o"))) { state.owner[k] = el.value; save(); }
+    if ((k = el.getAttribute("data-n"))) { state.note[k] = el.value; save(); }
+  });
+  document.querySelectorAll("[data-f]").forEach(function(b){ b.addEventListener("click", function(){ filter = b.getAttribute("data-f"); document.querySelectorAll("[data-f]").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); render(); }); });
+  $("q").addEventListener("input", function(){ q = this.value.trim().toLowerCase(); render(); });
+
+  render(); stat();
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(async function(db){
+      if (!db) { stat(); return; }
+      dbRef = db.doc("engine/state");
+      try { var snap = await dbRef.get(); dbOk = true; if (snap.exists) { var s = snap.data(); state = { status: s.status || {}, owner: s.owner || {}, note: s.note || {} }; saveLocal(); render(); } stat(); }
+      catch(e){ dbOk = false; stat(); }
+    });
+  }
+})();
+</script>
+
+</body></html>

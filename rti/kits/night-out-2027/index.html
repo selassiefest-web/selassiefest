@@ -1,0 +1,440 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Night Out 2027 Application Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<script>try{if(!localStorage.getItem("noitp-kit-v1"))localStorage.setItem("noitp-kit-v1","{\"values\":{},\"steps\":{\"0\":1,\"1\":1,\"2\":1},\"attach\":{},\"artists\":{},\"budget\":{},\"mix\":{}}")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working file for one application. Countdown and opening-day plan on top;
+   answers in order down the left; a sticky rail with progress, budget totals and what's missing.
+   Palette: the red, gold and green of roots reggae, used as status, on a night-sky ink. */
+:root{
+  --bg:#f4f3ef; --paper:#ffffff; --ink:#191b1f; --muted:#5d6068; --line:#dedcd5; --field:#efeee9;
+  --night:#1c2333; --night-ink:#f2efe6;
+  --red:#b8322a; --gold:#a8740d; --green:#1f7a45; --green-bg:#e2f1e7; --gold-bg:#fbf0d6; --red-bg:#f9e3e0;
+  --accent:#1f5f99;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111317; --paper:#191c22; --ink:#e9e7e1; --muted:#9da0a8; --line:#2c3038; --field:#22262d;
+    --night:#0b0f18; --night-ink:#f2efe6;
+    --red:#f07a70; --gold:#e8b44f; --green:#64c98c; --green-bg:#1b3325; --gold-bg:#3a2f14; --red-bg:#3d1c18;
+    --accent:#8cbcf0; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111317; --paper:#191c22; --ink:#e9e7e1; --muted:#9da0a8; --line:#2c3038; --field:#22262d;
+  --night:#0b0f18; --night-ink:#f2efe6;
+  --red:#f07a70; --gold:#e8b44f; --green:#64c98c; --green-bg:#1b3325; --gold-bg:#3a2f14; --red-bg:#3d1c18;
+  --accent:#8cbcf0; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+.flag{height:6px;background:linear-gradient(90deg,var(--red) 0 33.3%,var(--gold) 0 66.6%,var(--green) 0)}
+.hero{background:var(--night);color:var(--night-ink)}
+.hero .in{max-width:1180px;margin:0 auto;padding-block:26px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:12px}
+.eyebrow{font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:clamp(1.8rem,4.6vw,2.7rem);font-weight:800}
+.hero p{margin:0;max-width:72ch;opacity:.85}
+.clock{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.clock .n{font:800 clamp(2rem,6vw,3.2rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.clock .u{font:500 .8rem var(--mono);opacity:.75;margin-right:10px}
+.clock .when{font-size:.95rem;opacity:.85;flex-basis:100%}
+.wrap{max-width:1180px;margin:0 auto;padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:28px;align-items:start}
+@media (max-width:920px){.layout{grid-template-columns:minmax(0,1fr)}.rail{position:static!important;order:-1}}
+main,.rail{min-width:0}
+section.block{margin-top:30px;display:grid;gap:12px}
+section.block > header{border-bottom:2px solid var(--ink);padding-bottom:8px;display:grid;gap:4px}
+section.block > header h2{font-size:1.35rem;font-weight:800}
+section.block > header p{margin:0;color:var(--muted);max-width:75ch}
+.sub{font:700 1rem var(--display);margin-top:8px}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.q label{font-weight:700}
+.q textarea,.q input[type=text],.q input[type=number]{width:100%;font:15px/1.5 var(--body);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+.q textarea{resize:vertical;min-height:84px}
+.qfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.pill{display:inline-flex;font:500 .74rem/1 var(--mono);padding:5px 8px;border-radius:999px;background:var(--field);color:var(--muted);font-variant-numeric:tabular-nums}
+.pill.ok{background:var(--green-bg);color:var(--green)}
+.pill.warn{background:var(--gold-bg);color:var(--gold)}
+.hint{margin:0;color:var(--muted);font-size:.9rem}
+.note{margin:0;background:var(--gold-bg);border-radius:6px;padding:8px 10px;font-size:.92rem}
+button{font:700 .86rem/1 var(--display);border-radius:6px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 11px}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.checklist{display:grid;gap:8px}
+.ck{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:11px 14px}
+.ck input{width:20px;height:20px;margin-top:2px;accent-color:var(--green)}
+.ck .t{font-weight:700}
+.ck .t .d{font:500 .78rem var(--mono);color:var(--gold);margin-right:6px}
+.ck p{grid-column:2;margin:0;color:var(--muted);font-size:.92rem}
+.ck:has(input:checked){border-color:var(--green)}
+.ck p.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.ck a.go{display:inline-flex;align-items:center;font:700 .86rem/1 var(--display);padding:9px 12px;border-radius:6px;background:var(--night);color:var(--night-ink);text-decoration:none}
+.ck a.go:hover{opacity:.88}
+.ck:has(input:checked) .t{text-decoration:line-through;text-decoration-color:var(--green)}
+.tw{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:500 .7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--field)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td input[type=number]{width:96px;font:14px var(--mono);text-align:right;padding:5px 6px;border:1px solid var(--line);border-radius:5px;background:var(--field);color:var(--ink)}
+tr.tot td{font-weight:700;background:var(--field)}
+.pk{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.pkc{background:var(--paper);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:8px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.pkc h3{font-size:1.02rem}
+.pkc p{margin:0;font-size:.92rem;color:var(--muted)}
+.pkc label{font:500 .8rem var(--mono);display:flex;gap:8px;align-items:center}
+.pkc input{width:70px;font:15px var(--mono);padding:5px 6px;border:1px solid var(--line);border-radius:5px;background:var(--field);color:var(--ink)}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 14px);display:grid;gap:14px;margin-top:30px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px}
+.card h3{font-size:1rem}
+.big{font:800 1.6rem/1 var(--display);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:.92rem}
+.kv span:nth-child(even){font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.bar{height:8px;background:var(--field);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.status{margin:0;font-size:.88rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font:600 .9rem var(--display);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="flag" aria-hidden="true"></div>
+<div class="hero"><div class="in">
+  <span class="eyebrow">Ras Tafari Inc. &middot; Chicago Park District &middot; Night Out in the Parks 2027</span>
+  <h1>Night Out 2027 Application Kit</h1>
+  <p>Two projects in one application: <b>Roots in the Parks</b>, six free reggae concerts across the city, and <b>Anatomy of a Shoreline</b>. Every answer is ready to paste. Edits save with this page.</p>
+  <div class="clock" id="clock" aria-live="polite"><span class="when">Applications open Sunday, Nov. 1, 2026 at 12:01 am Central on Submittable. Due Tuesday, Dec. 8, 2026 at 11:59 pm.</span></div>
+</div></div>
+
+<div class="wrap"><div class="layout">
+<main>
+
+  <section class="block" id="plan">
+    <header><h2>Opening-day plan</h2><p>Everything below gets done before Nov. 1, so the form is filled and sent the day it opens. Tick each step; ticks save with the page.</p></header>
+    <div class="checklist" id="steps"></div>
+  </section>
+
+  <section class="block" id="applicant">
+    <header><h2>Applicant</h2><p>CPD requires a Chicago-based applicant and a main applicant 21 or older. Nonprofit status isn't required, but we have it.</p></header>
+    <div id="qs-applicant"></div>
+  </section>
+
+  <section class="block" id="p1">
+    <header><h2>Project 1: Roots in the Parks</h2><p>Six free evenings of live reggae, two in each Park District region, each booked from a menu of three formats so any park can say yes. Answers follow CPD's four review criteria.</p></header>
+    <div class="sub">The three formats a park can book</div>
+    <div class="pk" id="packages"></div>
+    <div id="qs-p1"></div>
+  </section>
+
+  <section class="block" id="budget">
+    <header><h2>Roots in the Parks budget</h2><p>Approved by Stephen on Oct. 16, 2026. Change a number only if an artist's fee differs, and every total updates. CPD publishes no award sizes and may offer space and marketing only.</p></header>
+    <div class="tw"><table id="btable"></table></div>
+    <div class="tw"><table id="ftable"></table></div>
+  </section>
+
+  <section class="block" id="artists">
+    <header><h2>Artists: what we need from each</h2><p>Collect these before Nov. 1. Bios and work samples are the most likely uploads; CPD runs background checks on anyone who interacts with the public.</p></header>
+    <div class="tw"><table id="atable"></table></div>
+  </section>
+
+  <section class="block" id="p2">
+    <header><h2>Project 2: Anatomy of a Shoreline</h2><p>Already drafted in full at <a href="https://selassiefest.com/night-out/" target="_blank" rel="noopener">selassiefest.com/night-out/</a>. The short answers below are for the form; the pages hold the detail.</p></header>
+    <div id="qs-p2"></div>
+  </section>
+
+  <section class="block" id="uploads">
+    <header><h2>Uploads and attachments</h2><p>The exact upload list appears when the form opens. These cover everything CPD's guidelines ask for.</p></header>
+    <div class="checklist" id="attach"></div>
+  </section>
+
+</main>
+
+<aside class="rail" aria-label="Status">
+  <div class="card">
+    <h3>Ready for Nov. 1?</h3>
+    <div class="bar"><i id="pbar"></i></div>
+    <p class="status" id="ptext">Loading&hellip;</p>
+  </div>
+  <div class="card">
+    <h3>Combined request</h3>
+    <div class="big" id="reqTotal">$0</div>
+    <div class="kv">
+      <span>Roots in the Parks</span><span id="reqP1">$0</span>
+      <span>Anatomy of a Shoreline</span><span id="reqP2">$15,000</span>
+      <span>Roots project value</span><span id="valP1">$0</span>
+      <span>Shows</span><span id="showsN">6</span>
+    </div>
+    <p class="status">Budget approved Oct. 16. CPD may fund part, all, or offer space and marketing only.</p>
+  </div>
+  <div class="card">
+    <h3>Your edits</h3>
+    <p class="status" id="saveStatus">Checking where edits are saved&hellip;</p>
+    <button type="button" id="copyAll">Copy every answer as text</button>
+  </div>
+  <div class="card">
+    <h3>Contacts</h3>
+    <p class="status">Night Out team: <b style="user-select:all">noitp@chicagoparkdistrict.com</b> (CPD's page misspells it as "noip@").<br>Portal: chicagoparkdistrict.submittable.com</p>
+  </div>
+</aside>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  // ---------------- content ----------------
+  var STEPS = [
+    ["now","Sign up for CPD's opening-day email","CPD's Night Out partner interest form: name, email, phone, ZIP, and genre Music. CPD emails you the moment the form opens.",[["Open the interest form","https://www.chicagoparkdistrict.com/NOTP-Partner-Interest-Form"]]],
+    ["now","Create the Submittable account","Albert signs up with his own email (choose Create account on the sign-in page), since the main applicant submits. Do it now so nothing slows you down at 12:01 am.",[["Sign up on Submittable","https://chicagoparkdistrict.submittable.com/login"],["CPD's Submittable page","https://chicagoparkdistrict.submittable.com/submit"]]],
+    ["now","Watch CPD's info video","CPD asks every applicant to watch it first. Note any question wording it shows and paste it into the matching answer here.",[["Watch the video","https://vimeo.com/1131003199"]]],
+    ["now","Read CPD's 2027 guidelines","Eligibility, what CPD provides, the four review criteria and the dates, on one page.",[["Open the guidelines","https://www.chicagoparkdistrict.com/night-out-parks-proposals"]]],
+    ["Oct 24","Collect every artist's packet","Bio (about 100 words), a photo, 1 or 2 performance links, confirmed fee, summer 2027 availability, W-9. See the Artists table."],
+    ["Oct 26","Budget check","Stephen approved the budget on Oct. 16. Change a line only if an artist's packet shows a different fee."],
+    ["Oct 28","Board approval","All three directors sign a written consent authorizing the application and the requests, on the same signing page as ARCS. Each director uses the personal link in their email."],
+    ["Oct 30","Insurance quote","$1M general liability naming the Chicago Park District, 4830 S. Western Ave., as additional insured. The same policy can cover ARCS."],
+    ["Oct 31","Final read","Read every answer once more; check the word counts once the form shows its limits."],
+    ["Nov 1","Submit on opening day","Form opens 12:01 am. Signed in as Albert, paste answers in order, upload, submit, and save the confirmation email.",[["Go to CPD's Submittable","https://chicagoparkdistrict.submittable.com/submit"]]],
+    ["Nov 16–18","Meet the Night Out team","Optional office hours: Mon. Nov. 16, 6–8 pm, Warren Park; Tue. Nov. 17, 5:30–7:30 pm, Garfield Park; Wed. Nov. 18, 5–7 pm, Hamilton Park. First come, first served. Go after submitting, to put faces to the proposal.",[["Office-hours details","https://www.chicagoparkdistrict.com/night-out-parks-proposals"]]],
+    ["Dec 8","Hard deadline","11:59 pm. If anything slipped, this is the last moment."]
+  ];
+  var PACKAGES = [
+    ["--red","Full show","About 3 hours. A DJ warm-up from Matches, Fatta and One Stick of Matches; Ifficial Reggae Movement live with singers JayRebl and Nego Hights; a closing DJ set. For lawns and bandshells.","full",3],
+    ["--gold","Band concert","About 90 minutes. Ifficial Reggae Movement with a guest singer and a DJ warm-up. Fits smaller lawns and early evenings.","band",2],
+    ["--green","Sound-system night","About 2.5 hours. Selectors Matches, Fatta and One Stick of Matches play roots, rocksteady, lovers rock and dancehall, with a short &ldquo;how a sound system works&rdquo; intro for kids.","ss",1]
+  ];
+  // [key, label, default text, hint]
+  var Q = {
+    applicant: [
+      ["orgName","Applicant (organization)","Ras Tafari Inc.",""],
+      ["orgType","Organization type","Illinois not-for-profit corporation, 501(c)(3) public charity (EIN 42-3036705; Illinois file 75598726)",""],
+      ["address","Chicago address","7700 S. Stony Island Ave., Chicago, IL 60649","CPD verifies Chicago residency at application, contracting and payment."],
+      ["mainApplicant","Main applicant (21+)","Albert Harris, Secretary","The main applicant is the person whose Submittable account sends the application. Submit from Albert's account."],
+      ["phone","Phone","(872) 255-9333",""],
+      ["email","Email (main applicant)","selassiefest@gmail.com","Albert's address on file with the board. Change it if his Submittable account uses a different email."],
+      ["web","Website","selassiefest.com",""],
+      ["orgBio","About the organization","Ras Tafari Inc. is a Chicago cultural and educational nonprofit dedicated to Caribbean and African diaspora heritage. Its roots in Chicago's reggae and dancehall community run back to the early 2000s. In 2026 it revived SelassieFest, a roots reggae and dancehall festival that had been dark for thirty years, and it produces events end to end: artist contracting, staging, sound, permits, insurance and marketing.","The old Shoreline pages say the 2027 festival is in Jackson Park. Its venue is not confirmed, so this answer leaves the venue out."],
+      ["team","Key people","Albert Harris, Secretary and a military veteran (main applicant and administrative contact for the Night Out liaison). Stephen Henry, President (project director; leads production at every site). Paul Kelly, Vice President and Treasurer. Artists contracted per show.",""]
+    ],
+    p1: [
+      ["p1Title","Project title","Roots in the Parks",""],
+      ["p1Discipline","Discipline","Music: live reggae band and DJ sound system",""],
+      ["p1Short","Short description","Roots in the Parks brings free reggae concerts to Chicago parks: Chicago's Ifficial Reggae Movement with singers JayRebl and Nego Hights, and selectors Matches, Fatta and One Stick of Matches. Six evenings, two in each region, each booked from a menu of three formats so any park can host one.","Keep near 50 words until the form shows its limit."],
+      ["p1Engaging","Enriching and engaging programming","Reggae is Jamaican music the whole world claims, and UNESCO named it part of humanity's intangible cultural heritage in 2018. Roots in the Parks brings it to the parks as a night neighbors take part in, not just watch. Singers introduce songs with the story behind them. The DJs run a short call-and-response riddim lesson and a kids' percussion corner. The audience sings the choruses everyone knows. Every set is family-friendly, with clean lyrics only. Each park chooses the format that fits its space: a full show, a band concert or a sound-system night.",""],
+      ["p1Viability","Production viability","Self-contained. Ras Tafari Inc. brings its own generator, sound system, ground-level staging and canopy, so no field house or park power is needed. A sound engineer and a stage manager run every show. Load-in takes 2 hours and load-out 1 hour, inside park hours. Levels stay within park limits. Footprint is about 60 by 60 feet for a full show and less for the others. If there is lightning or heavy rain, the show pauses or moves to a rain date set with the liaison. We transport all equipment, performers and staff ourselves, and we confirm the full schedule by mid-March 2027.",""],
+      ["p1Community","Commitment to community connectivity","At every park we start with the park supervisor and the park's partners: we ask what the neighborhood wants, who should open the night, and where flyers will actually be seen. We recruit a local opener at each show (a church choir, a school band or a young DJ) through those partners. Outreach runs through block clubs, churches, libraries and Caribbean and African diaspora groups in each region, plus the 390 community partners on our tracker. After each show we debrief with the park supervisor, and we share photos with the park.",""],
+      ["p1Outreach","Outreach and marketing plan","Six weeks out: meet the park supervisor and partners, and set the local opener. Four weeks out: CPD's printed postcards and posters (up to 1,000 pieces) at the park, libraries, barbershops, groceries and churches nearby, in English and Spanish. Two weeks out: e-blast to the SelassieFest list, social posts tagging the Chicago Park District, and notices to Caribbean and community media. Day of: a sign-up sheet for news of the next show.",""],
+      ["p1Access","Accessibility","ASL interpretation at every full show and band concert. An accessible viewing area on a firm surface with seating for elders. Free earplugs for children, speakers kept away from the seating area, and a quieter zone at the back. Bilingual English and Spanish flyers. Routes kept clear for wheelchairs and strollers.",""],
+      ["p1Parks","Locations and flexibility","Any park, in all three regions: two shows each in the North, Central and South regions. We are flexible on location and will work with the Night Out liaison to place each format where it fits. Evenings, June through September 2027. We avoid Sundays at field houses and federal holidays, as CPD requires.",""],
+      ["p1Record","Track record","Ras Tafari Inc. revived SelassieFest in 2026 and produces it end to end. Ifficial Reggae Movement is a Chicago reggae band that has played across the Midwest for decades, led by Jamaica-born vocalist Livingston. Selectors Matches and Fatta Fyah are part of the SelassieFest family.","Replace with each artist's own credits once their packets arrive."],
+      ["p1Safety","Insurance and screening","$1M general liability naming the Chicago Park District as additional insured for every event. Every artist and crew member who interacts with the public completes CPD's background check.",""]
+    ],
+    p2: [
+      ["p2Title","Project title","Anatomy of a Shoreline",""],
+      ["p2Discipline","Discipline","Multi-disciplinary: film premiere, visual art, spoken word, drum circle, original music and a community open mic",""],
+      ["p2Short","Short description","A free day built around the premiere of an original documentary about 63rd Street Beach and its 1919 pavilion, with a shoreline art walk, site-written spoken word, an open drum circle, original music and a community open mic. Flagship at 63rd Street Beach, with editions in the North and Central regions.",""],
+      ["p2Request","Night Out request","$15,000 (project value $39,890: $33,890 cash and $6,000 in-kind)","Full budget at selassiefest.com/night-out/budget.html"],
+      ["p2Parks","Parks requested","South: 63rd Street Beach (flagship weekend). North: Rogers (Phillip) Park, Sat., July 17, 2027. Central: Humboldt Park, Sat., Aug. 14, 2027. Dates are requests; final dates are set with the liaison.",""],
+      ["p2Link","Full proposal","selassiefest.com/night-out/ (Overview, Program, Parks, Production, Community, Budget, Organization)",""]
+    ]
+  };
+  var BUDGET = {
+    // per show: [key, line, cash, inkind]
+    full: [["f1","Ifficial Reggae Movement (band)",1800,0],["f2","JayRebl (singer)",400,0],["f3","Nego Hights (singer)",400,0],["f4","DJs: Matches, Fatta, One Stick of Matches",750,0],["f5","Sound engineer (hired locally)",300,0],["f6","Stage manager",200,0],["f7","ASL interpreters (2)",450,0],["f8","Generator and fuel",250,0],["f9","Transport",150,0],["f10","Sound system and staging (own inventory)",0,600]],
+    band: [["b1","Ifficial Reggae Movement (band)",1200,0],["b2","Guest singer",300,0],["b3","DJ warm-up",250,0],["b4","Sound engineer",250,0],["b5","ASL interpreters",300,0],["b6","Generator and fuel",250,0],["b7","Transport",150,0],["b8","Sound system (own inventory)",0,400]],
+    ss: [["s1","Selectors (3)",750,0],["s2","Sound engineer",200,0],["s3","ASL interpreter",150,0],["s4","Generator and fuel",250,0],["s5","Transport",100,0],["s6","Sound system (own inventory)",0,500]],
+    series: [["x1","Event liability insurance",900,0],["x2","Extra print marketing (beyond CPD's 1,000 pieces)",600,0],["x3","Digital ads and e-blast",600,0],["x4","Photo and video documentation",900,0],["x5","Outreach coordinator",1200,0],["x6","Kids' percussion and canopy kit",400,0],["x7","Project director",0,2400]],
+    funding: [["rtiCash","Ras Tafari Inc. cash",2500],["sponsors","Local sponsors (to raise)",3000]]
+  };
+  var ARTISTS = [
+    ["Ifficial Reggae Movement","Band","ifficialreggae.com"],
+    ["JayRebl","Singer","facebook.com/p/JayRebl-Music-100093370884541 · instagram.com/jayreblmusic"],
+    ["Nego Hights","Singer",""],
+    ["Matches","DJ / selector",""],
+    ["Fatta (Fatta Fyah?)","DJ / selector","Confirm stage name"],
+    ["One Stick of Matches","DJ / selector",""]
+  ];
+  var NEEDS = ["Bio","Photo","Work sample","Fee","Availability","W-9","Background check"];
+  var ATTACH = [
+    ["Artist bios","About 100 words each, from the artists."],
+    ["Work samples","1 or 2 performance video or audio links per act; a Shoreline screener link."],
+    ["Photos","A live photo of the band and of the DJs; production photos from SelassieFest."],
+    ["Budget","Both projects, in CPD's template if the form provides one (figures from this kit)."],
+    ["Certificate of insurance","CPD as additional insured. Required at contracting; have the quote ready."],
+    ["Proof of Chicago address","Ras Tafari Inc.'s IRS letter and Illinois good standing show the organization; keep a utility bill or lease for 7700 S. Stony Island handy."],
+    ["Letters of support","Optional: a park partner, a community group or a past venue."],
+    ["Shoreline site plans","Already prepared for the three Shoreline parks."]
+  ];
+
+  // ---------------- state ----------------
+  var defaults = {};
+  Object.keys(Q).forEach(function(s){ Q[s].forEach(function(q){ defaults[q[0]] = q[2]; }); });
+  var state = { values:{}, steps:{}, attach:{}, artists:{}, budget:{}, mix:{} };
+  var dbRef = null, dbOk = false, KEY = "noitp-kit-v1";
+  function loadLocal(){ try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) state = Object.assign(state, s); } catch(e){} }
+  function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+  var t = null, saving = false, again = false;
+  function save(){ saveLocal(); if (!dbOk) { status(); return; } clearTimeout(t); t = setTimeout(flush, 800); $("saveStatus").textContent = "Saving…"; }
+  async function flush(){
+    if (saving) { again = true; return; } saving = true;
+    try { await dbRef.set(Object.assign({}, state, { updatedAt: new Date().toISOString() })); status(); }
+    catch(e) { dbOk = false; $("saveStatus").textContent = "Couldn't save to the page. Edits are kept in this browser."; }
+    saving = false; if (again) { again = false; flush(); }
+  }
+  function status(){ $("saveStatus").textContent = dbOk ? "Edits save with this page, so they follow you to any device." : "Edits are saved in this browser only."; }
+
+  // ---------------- helpers ----------------
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function money(n){ return "$" + Math.round(n).toLocaleString("en-US"); }
+  function words(s){ return String(s || "").trim().split(/\s+/).filter(Boolean).length; }
+  function val(k){ return Object.prototype.hasOwnProperty.call(state.values, k) ? state.values[k] : defaults[k]; }
+  var tt; function toast(m){ var e = $("toast"); e.textContent = m; e.classList.add("on"); clearTimeout(tt); tt = setTimeout(function(){ e.classList.remove("on"); }, 1700); }
+  function copy(text){
+    function fb(){ var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch(e){} document.body.removeChild(ta); toast(ok ? "Copied" : "Select the text and copy it by hand"); }
+    try { navigator.clipboard.writeText(text).then(function(){ toast("Copied"); }, fb); } catch(e){ fb(); }
+  }
+
+  // ---------------- countdown ----------------
+  var OPEN = Date.parse("2026-11-01T00:01:00-05:00"), CLOSE = Date.parse("2026-12-08T23:59:00-06:00");
+  function tick(){
+    var now = Date.now(), c = $("clock"), when = c.querySelector(".when").outerHTML, ms, label;
+    if (now < OPEN) { ms = OPEN - now; label = "until the form opens"; }
+    else if (now < CLOSE) { ms = CLOSE - now; label = "until the deadline"; }
+    else { c.innerHTML = '<span class="n">Closed</span>' + when; return; }
+    var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+    c.innerHTML = '<span class="n">' + d + '</span><span class="u">days</span><span class="n">' + h + '</span><span class="u">hrs</span><span class="n">' + m + '</span><span class="u">min ' + label + '</span>' + when;
+  }
+
+  // ---------------- render ----------------
+  function renderQs(){
+    Object.keys(Q).forEach(function(sec){
+      var root = $("qs-" + sec); root.innerHTML = "";
+      Q[sec].forEach(function(q){
+        var long = q[2].length > 90, id = "f-" + q[0];
+        var box = document.createElement("div"); box.className = "q";
+        box.innerHTML = '<label for="' + id + '">' + esc(q[1]) + '</label>' +
+          (long ? '<textarea id="' + id + '" rows="5"></textarea>' : '<input type="text" id="' + id + '">') +
+          (q[3] ? '<p class="note">' + esc(q[3]) + '</p>' : '') +
+          '<div class="qfoot"><span class="pill" id="w-' + q[0] + '"></span><div class="acts"><button type="button" data-copy="' + q[0] + '">Copy</button><button type="button" data-undo="' + q[0] + '">Undo edits</button></div></div>';
+        root.appendChild(box);
+        var inp = box.querySelector(long ? "textarea" : "input"); inp.value = val(q[0]);
+        inp.addEventListener("input", function(){ if (inp.value === defaults[q[0]]) delete state.values[q[0]]; else state.values[q[0]] = inp.value; meter(q[0]); save(); });
+        meter(q[0]);
+      });
+    });
+  }
+  function meter(k){
+    var e = $("w-" + k); if (!e) return; var n = words(val(k)), edited = Object.prototype.hasOwnProperty.call(state.values, k);
+    e.textContent = n + " words" + (edited ? " · edited" : ""); e.className = "pill" + (edited ? " warn" : "");
+    var u = document.querySelector('[data-undo="' + k + '"]'); if (u) u.hidden = !edited;
+  }
+  function renderChecklist(rootId, list, bucket, dated){
+    var root = $(rootId); root.innerHTML = "";
+    list.forEach(function(s, i){
+      var id = rootId + "-" + i, key = String(i);
+      var el = document.createElement("div"); el.className = "ck";
+      var links = dated && s[3] ? '<p class="links">' + s[3].map(function(l){ return '<a class="go" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + ' &rarr;</a>'; }).join('') + '</p>' : '';
+      el.innerHTML = '<input type="checkbox" id="' + id + '"' + (state[bucket][key] ? " checked" : "") + '><label class="t" for="' + id + '">' + (dated ? '<span class="d">' + esc(s[0]) + '</span>' : '') + esc(dated ? s[1] : s[0]) + '</label><p>' + esc(dated ? s[2] : s[1]) + '</p>' + links;
+      el.querySelector("input").addEventListener("change", function(e){ if (e.target.checked) state[bucket][key] = 1; else delete state[bucket][key]; save(); progress(); });
+      root.appendChild(el);
+    });
+  }
+  function renderPackages(){
+    $("packages").innerHTML = PACKAGES.map(function(p){
+      var n = state.mix[p[3]] != null ? state.mix[p[3]] : p[4];
+      return '<div class="pkc" style="--c:var(' + p[0] + ')"><h3>' + p[1] + '</h3><p>' + p[2] + '</p><label>Shows in the budget <input type="number" min="0" max="12" id="mix-' + p[3] + '" value="' + n + '"></label></div>';
+    }).join("");
+    PACKAGES.forEach(function(p){ $("mix-" + p[3]).addEventListener("input", function(e){ var v = Math.max(0, parseInt(e.target.value || "0", 10)); state.mix[p[3]] = v; save(); renderBudget(); }); });
+  }
+  function bv(k, d){ return state.budget[k] != null ? state.budget[k] : d; }
+  function mix(k){ var p = PACKAGES.filter(function(x){ return x[3] === k; })[0]; return state.mix[k] != null ? state.mix[k] : p[4]; }
+  function renderBudget(){
+    var cash = 0, kind = 0, rows = "";
+    [["full","Full show"],["band","Band concert"],["ss","Sound-system night"]].forEach(function(g){
+      var n = mix(g[0]), sc = 0, sk = 0;
+      rows += '<tr class="tot"><td colspan="4">' + g[1] + ' &middot; per show &times; ' + n + '</td></tr>';
+      BUDGET[g[0]].forEach(function(l){
+        var c = bv(l[0] + "c", l[2]), k = bv(l[0] + "k", l[3]); sc += c; sk += k;
+        rows += '<tr><td>' + esc(l[1]) + '</td><td class="n"><input type="number" min="0" step="25" data-b="' + l[0] + 'c" value="' + c + '" aria-label="' + esc(l[1]) + ' cash"></td><td class="n"><input type="number" min="0" step="25" data-b="' + l[0] + 'k" value="' + k + '" aria-label="' + esc(l[1]) + ' in-kind"></td><td class="n">' + money((c + k) * n) + '</td></tr>';
+      });
+      cash += sc * n; kind += sk * n;
+      rows += '<tr><td><i>' + g[1] + ' subtotal (' + n + ' &times; ' + money(sc + sk) + ')</i></td><td class="n">' + money(sc * n) + '</td><td class="n">' + money(sk * n) + '</td><td class="n">' + money((sc + sk) * n) + '</td></tr>';
+    });
+    rows += '<tr class="tot"><td colspan="4">Series costs (once)</td></tr>';
+    BUDGET.series.forEach(function(l){
+      var c = bv(l[0] + "c", l[2]), k = bv(l[0] + "k", l[3]); cash += c; kind += k;
+      rows += '<tr><td>' + esc(l[1]) + '</td><td class="n"><input type="number" min="0" step="25" data-b="' + l[0] + 'c" value="' + c + '" aria-label="' + esc(l[1]) + ' cash"></td><td class="n"><input type="number" min="0" step="25" data-b="' + l[0] + 'k" value="' + k + '" aria-label="' + esc(l[1]) + ' in-kind"></td><td class="n">' + money(c + k) + '</td></tr>';
+    });
+    rows += '<tr class="tot"><td>Total project value</td><td class="n">' + money(cash) + '</td><td class="n">' + money(kind) + '</td><td class="n">' + money(cash + kind) + '</td></tr>';
+    $("btable").innerHTML = '<thead><tr><th>Line</th><th class="n">Cash</th><th class="n">In-kind</th><th class="n">Total</th></tr></thead><tbody>' + rows + '</tbody>';
+
+    var other = 0, frows = "";
+    BUDGET.funding.forEach(function(f){ var a = bv(f[0], f[2]); other += a; frows += '<tr><td>' + esc(f[1]) + '</td><td class="n"><input type="number" min="0" step="100" data-b="' + f[0] + '" value="' + a + '" aria-label="' + esc(f[1]) + '"></td></tr>'; });
+    frows += '<tr><td>In-kind from Ras Tafari Inc.</td><td class="n">' + money(kind) + '</td></tr>';
+    var req = Math.max(0, cash - other);
+    frows += '<tr class="tot"><td>Night Out request (cash still needed)</td><td class="n">' + money(req) + '</td></tr>';
+    $("ftable").innerHTML = '<thead><tr><th>Funding plan</th><th class="n">Amount</th></tr></thead><tbody>' + frows + '</tbody>';
+    document.querySelectorAll("[data-b]").forEach(function(inp){ inp.addEventListener("change", function(){ state.budget[inp.getAttribute("data-b")] = Math.max(0, parseFloat(inp.value || "0")); save(); renderBudget(); }); });
+    $("reqP1").textContent = money(req); $("valP1").textContent = money(cash + kind);
+    $("reqTotal").textContent = money(req + 15000);
+    $("showsN").textContent = mix("full") + mix("band") + mix("ss");
+    state._req = req;
+  }
+  function renderArtists(){
+    var head = '<thead><tr><th>Artist</th>' + NEEDS.map(function(n){ return '<th>' + n + '</th>'; }).join("") + '</tr></thead>';
+    var body = ARTISTS.map(function(a, i){
+      return '<tr><td><b>' + esc(a[0]) + '</b><br><span class="hint">' + esc(a[1]) + (a[2] ? ' · ' + esc(a[2]) : '') + '</span></td>' + NEEDS.map(function(n, j){
+        var k = i + "-" + j; return '<td><input type="checkbox" data-a="' + k + '" aria-label="' + esc(a[0] + ": " + n) + '"' + (state.artists[k] ? " checked" : "") + '></td>';
+      }).join("") + '</tr>';
+    }).join("");
+    $("atable").innerHTML = head + '<tbody>' + body + '</tbody>';
+    document.querySelectorAll("[data-a]").forEach(function(cb){ cb.addEventListener("change", function(){ var k = cb.getAttribute("data-a"); if (cb.checked) state.artists[k] = 1; else delete state.artists[k]; save(); progress(); }); });
+  }
+  function progress(){
+    var total = STEPS.length + ATTACH.length + ARTISTS.length * NEEDS.length;
+    var done = Object.keys(state.steps).length + Object.keys(state.attach).length + Object.keys(state.artists).length;
+    $("pbar").style.width = Math.round(done / total * 100) + "%";
+    $("ptext").textContent = done + " of " + total + " items done (plan steps, artist packets, uploads).";
+  }
+
+  document.addEventListener("click", function(e){
+    var c = e.target.closest("[data-copy]"); if (c) { copy(val(c.getAttribute("data-copy"))); return; }
+    var u = e.target.closest("[data-undo]"); if (u) { delete state.values[u.getAttribute("data-undo")]; save(); renderQs(); }
+  });
+  $("copyAll").addEventListener("click", function(){
+    var out = [];
+    [["Applicant","applicant"],["Project 1: Roots in the Parks","p1"],["Project 2: Anatomy of a Shoreline","p2"]].forEach(function(s){
+      out.push("=== " + s[0] + " ==="); Q[s[1]].forEach(function(q){ out.push(q[1] + ":", val(q[0]), ""); });
+    });
+    out.push("=== Roots in the Parks request ===", money(state._req || 0));
+    copy(out.join("\n"));
+  });
+
+  function renderAll(){ renderQs(); renderChecklist("steps", STEPS, "steps", true); renderChecklist("attach", ATTACH, "attach", false); renderPackages(); renderBudget(); renderArtists(); progress(); status(); }
+
+  loadLocal(); renderAll(); tick(); setInterval(tick, 30000);
+
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(async function(db){
+      if (!db) { status(); return; }
+      dbRef = db.doc("kit/state");
+      try {
+        var snap = await dbRef.get(); dbOk = true;
+        if (snap.exists) { var s = snap.data(); ["values","steps","attach","artists","budget","mix"].forEach(function(k){ state[k] = Object.assign({}, s[k] || {}); }); saveLocal(); renderAll(); }
+        status();
+      } catch(e) { dbOk = false; status(); }
+    });
+  }
+})();
+</script>
+
+</body></html>

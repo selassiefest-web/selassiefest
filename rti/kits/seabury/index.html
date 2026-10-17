@@ -1,0 +1,192 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Seabury LOI Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<script>try{if(!localStorage.getItem("seabury-kit-v2"))localStorage.setItem("seabury-kit-v2","{\"edits\":{},\"checks\":{\"s1\":1}}")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a numbered run-book. Steps 1-6 in order, each with its links and copy-ready text;
+   the letter-of-intent answers sit inside step 5 in Seabury's own question order. */
+:root{
+  --bg:#f5f5f0; --paper:#ffffff; --ink:#1a1e1b; --muted:#5b635d; --line:#dfe0d8; --field:#eff0ea;
+  --deep:#1d2b22; --deep-ink:#eef3ee; --accent:#1f6f8b; --green:#1f7a45; --green-bg:#e1f1e6; --gold:#9a6a06; --gold-bg:#fbefd2; --red:#b8322a; --red-bg:#f9e3e0;
+  --display:"Archivo","Segoe UI",system-ui,sans-serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#101412; --paper:#181d1a; --ink:#e7ece8; --muted:#9ba69e; --line:#2b332e; --field:#212823; --deep:#0b120e; --accent:#8cc8e0; --green:#6dcf95; --green-bg:#1b3325; --gold:#e8b44f; --gold-bg:#3a2f14; --red:#f07a70; --red-bg:#3d1c18; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --bg:#101412; --paper:#181d1a; --ink:#e7ece8; --muted:#9ba69e; --line:#2b332e; --field:#212823; --deep:#0b120e; --accent:#8cc8e0; --green:#6dcf95; --green-bg:#1b3325; --gold:#e8b44f; --gold-bg:#3a2f14; --red:#f07a70; --red-bg:#3d1c18; color-scheme:dark; }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:var(--accent);overflow-wrap:anywhere}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+.hero{background:var(--deep);color:var(--deep-ink)}
+.in{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hero .in{padding-block:26px 22px;display:grid;gap:10px}
+.eyebrow{font:500 .74rem var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:clamp(1.8rem,4.6vw,2.5rem);font-weight:800}
+.hero p{margin:0;opacity:.88;max-width:70ch}
+.dates{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 .9rem var(--mono)}
+.dates b{color:#f2c94c}
+main.in{padding-block:6px 64px}
+.step{margin-top:26px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px}
+.num{grid-row:span 2;width:40px;height:40px;border-radius:50%;background:var(--deep);color:var(--deep-ink);display:grid;place-items:center;font:800 1.1rem var(--display)}
+.step h2{font-size:1.25rem;padding-top:8px}
+.body{display:grid;gap:10px;min-width:0}
+.body > p{margin:0}
+.link{display:grid;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.link b{font-family:var(--display);font-size:.95rem}
+.link a{font:13px var(--mono)}
+.warn{background:var(--red-bg);border-radius:8px;padding:10px 12px}
+.warn b{color:var(--red)}
+.tip{background:var(--gold-bg);border-radius:8px;padding:10px 12px;font-size:.95rem}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.q .lbl{font-weight:700}
+.q .ans{font-size:.95rem;margin:0}
+.q textarea{width:100%;font:15px/1.5 var(--body);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:9px 10px;resize:vertical}
+.q .foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.pill{font:500 .74rem/1 var(--mono);padding:5px 8px;border-radius:999px;background:var(--field);color:var(--muted)}
+.pill.ok{background:var(--green-bg);color:var(--green)} .pill.bad{background:var(--red-bg);color:var(--red)}
+.fill{background:var(--gold-bg);padding:0 3px;border-radius:3px}
+button{font:700 .86rem var(--display);border-radius:6px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 11px}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #d4a40c;outline-offset:2px}
+.done{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--display);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 12px;width:max-content;cursor:pointer}
+.done input,.qck input{width:20px;height:20px;accent-color:var(--green);margin:0}
+.done:has(input:checked){background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.step:has(.done input:checked) .num{background:var(--green)}
+.qck{display:inline-flex;align-items:center;gap:6px;font:600 .82rem var(--display);cursor:pointer}
+.q:has(.qck input:checked){border-color:var(--green)}
+.prog{display:grid;gap:6px}
+.prog .bar{height:10px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:#6dcf95;transition:width .3s}
+.prog span{font:500 .85rem var(--mono)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font:600 .9rem var(--display);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="hero"><div class="in">
+  <span class="eyebrow">Ras Tafari Inc. &middot; The Seabury Foundation &middot; Community Grants, Spring 2027 cycle</span>
+  <h1>Seabury LOI Kit</h1>
+  <p>Six steps from today to a submitted letter of intent, with every link written out and every answer drafted. Edit any answer here; your edits stay in this browser.</p>
+  <div class="prog"><div class="bar"><i id="pbar"></i></div><span id="ptext">Loading&hellip;</span></div>
+  <div class="dates"><span><b>Nov 6, 2026</b> LOI due</span><span>Dec 11 invitations</span><span>Feb 5, 2027 proposal due</span><span>May 14 decisions</span></div>
+</div></div>
+
+<main class="in">
+
+<div class="step"><span class="num">1</span><h2>Email Seabury first (today)</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s1"> Done</label>
+  <div class="warn"><b>Why first:</b> two required questions don't fit a new organization. Seabury wants a profit and loss statement for the <i>most recently completed fiscal year</i>; ours ends Dec. 31, 2026. And it funds organizations <i>headquartered in the City of Chicago</i>, while our IRS and Illinois records still show South Holland. Their form says to email them when either applies.</div>
+  <div class="link"><b>Send to</b><span style="font-family:var(--mono)">grants@seaburyfoundation.org</span></div>
+  <div class="q"><span class="lbl">Email (copy and send from stephen@selassiefest.com)</span><textarea id="a-email" rows="16"></textarea><div class="foot"><span class="pill" id="c-email"></span><button type="button" data-copy="email">Copy</button></div></div>
+</div></div>
+
+<div class="step"><span class="num">2</span><h2>Create the portal account</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s2"> Done</label>
+  <p>Seabury uses a grants portal. Choose <b>Create New Account</b>, use stephen@selassiefest.com, and add Paul as a collaborator if he'll help (the portal supports collaborators).</p>
+  <div class="link"><b>Seabury grants portal</b><a href="https://www.grantinterface.com/Home/Logon?urlkey=seaburyfoundation" target="_blank" rel="noopener">https://www.grantinterface.com/Home/Logon?urlkey=seaburyfoundation</a></div>
+</div></div>
+
+<div class="step"><span class="num">3</span><h2>Read the rules and the questions</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s3"> Done</label>
+  <div class="link"><b>Community Grants guidelines</b><a href="https://seaburyfoundation.org/applying-for-a-grant/#CommunityGrants" target="_blank" rel="noopener">https://seaburyfoundation.org/applying-for-a-grant/#CommunityGrants</a></div>
+  <div class="link"><b>LOI questions (PDF)</b><a href="https://seaburyfoundation.org/wp-content/uploads/2025/09/Seabury-Foundation-Community-Grant-Program-LOI-Updated-09.17.25.pdf" target="_blank" rel="noopener">https://seaburyfoundation.org/wp-content/uploads/2025/09/Seabury-Foundation-Community-Grant-Program-LOI-Updated-09.17.25.pdf</a></div>
+  <div class="link"><b>LOI questions (Word)</b><a href="https://seaburyfoundation.org/wp-content/uploads/2025/09/Seabury-Foundation-Community-Grant-Program-LOI-Updated-09.17.25.docx" target="_blank" rel="noopener">https://seaburyfoundation.org/wp-content/uploads/2025/09/Seabury-Foundation-Community-Grant-Program-LOI-Updated-09.17.25.docx</a></div>
+  <div class="tip">Award size is set by the organization's expenses: under $100,000 in a year, the guideline is 10% of expenses (Seabury may go above it). One LOI per year, so this one counts until the Fall 2027 cycle.</div>
+</div></div>
+
+<div class="step"><span class="num">4</span><h2>Gather two things</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s4"> Done</label>
+  <p><b>A profit and loss statement</b> (statement of activities): 2026 income and expenses to date, or whatever Seabury says in its reply. PDF, 2 MB max. Owner: Paul.</p>
+  <p><b>The expense total</b> from that statement, for the Annual Operating Expenses box.</p>
+</div></div>
+
+<div class="step"><span class="num">5</span><h2>Fill in the letter of intent</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s5"> Done</label>
+  <p>In Seabury's order. Highlighted text is what you still need to supply.</p>
+  <div id="qs"></div>
+</div></div>
+
+<div class="step"><span class="num">6</span><h2>Submit by Nov. 6, then log it</h2><div class="body">
+  <label class="done"><input type="checkbox" data-check="s6"> Done</label>
+  <p>Submit in the portal, save the confirmation email, and mark the Seabury item done on the Success Engine dashboard. Invitations to a full proposal go out Dec. 11.</p>
+  <div class="link"><b>Seabury grants portal</b><a href="https://www.grantinterface.com/Home/Logon?urlkey=seaburyfoundation" target="_blank" rel="noopener">https://www.grantinterface.com/Home/Logon?urlkey=seaburyfoundation</a></div>
+</div></div>
+
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var EMAIL = "Subject: New applicant question: Spring 2027 Community Grant LOI (Ras Tafari Inc.)\n\nHello,\n\nRas Tafari Inc. plans to submit a letter of intent for the Spring 2027 Community Grant cycle. We are a Chicago 501(c)(3) (EIN 42-3036705) that runs free music education programs, including a DJ class at Rainbow Beach Park in South Shore. Two questions before we apply:\n\n1. Profit and loss statement. We were incorporated in June 2026, so our first fiscal year (January to December) is not complete. May we upload a 2026 year-to-date statement of activities and report year-to-date operating expenses?\n\n2. Location. Our programs and operations are based at 7700 S. Stony Island Ave., Chicago, IL 60649. Our IRS and Illinois filings still list our founding address in South Holland, and we are updating them to the Chicago address. Does that meet the Chicago headquarters requirement?\n\nThank you,\nStephen Henry\nPresident, Ras Tafari Inc.\nstephen@selassiefest.com · (872) 255-9333";
+
+  // [key, question, answer, character limit or 0, note]
+  var Q = [
+    ["status","Nonprofit Status","Yes (Please continue.)",0,""],
+    ["location","Location","City of Chicago",0,"Answer only after Seabury replies to step 1."],
+    ["approach","Program Approach: is learning/education a primary component or outcome?","Yes",0,""],
+    ["under","Total operating expenses for the most recently completed fiscal year under $2.5 million?","Yes. (Please continue.)",0,""],
+    ["year","Year Founded","2026",25,"Seabury wants the year the program launched. SelassieFest and Ras Tafari Inc. launched in 2026."],
+    ["project","Project Name","Chicago: General Operating",100,"General operating support lets the award go where it's needed most; Seabury explicitly welcomes it."],
+    ["focus","Primary Focus Area","Arts Enrichment",0,""],
+    ["focus2","Additional Focus Area(s)","Academic Support; Lifelong Learning",0,"Academic Support covers the history-research series and mentorship; Lifelong Learning covers the career skills in the DJ classes."],
+    ["expenses","Annual Operating Expenses","[$ total from the P&L]",20,"From Paul's statement (step 4)."],
+    ["pnl","Profit and Loss Statement (upload)","Upload the 2026 statement of activities (PDF, 2 MB max).",0,""],
+    ["budget","Budget Context","Ras Tafari Inc. was incorporated in June 2026, so our first fiscal year (January to December) is not yet complete. The figure above is our 2026 operating expenses to date, mostly for producing SelassieFest 2026: venue, sound, insurance, artists and marketing. Our 2026 projected budget was $13,813. Officers serve without pay and our DJ equipment is donated, which keeps costs low. For 2027 we have budgeted the Rainbow DJ Lab at about $5,500 in cash plus $4,200 in-kind per 12-student cohort, and Rainbow Wednesdays, a free summer youth DJ series, at $34,220.",1000,""],
+    ["about","Tell us about yourself (Who are you? What do you do? Why does it matter?)","WHO WE ARE\nRas Tafari Inc. is a Chicago cultural and educational nonprofit rooted in the Caribbean and African diaspora. We became a 501(c)(3) public charity in June 2026 (EIN 42-3036705). Every program we run is free. Our board (Stephen Henry, President; Paul Kelly, Vice President and Treasurer; Albert Harris, Secretary) serves without pay.\n\nWHAT WE DO\nWe use music as a classroom. Our work grows out of Jamaican sound-system culture and the South Side's own musical history, from gospel to house to footwork.\n\n- SelassieFest. In July 2026 we revived SelassieFest, a free roots reggae and cultural festival, and produced it end to end: artists, staging, sound, permits, insurance and marketing.\n\n- Rainbow DJ Lab. A free DJ class at Rainbow Beach Park in South Shore for ages 5 to adult: 14 weekly 90-minute sessions, gear provided, ending in a public showcase. Students learn beatmatching and phrasing, the history behind the music, live sound and the business of performing. Each student keeps a skills Passport. Empress Decks, a girls' track taught by women DJs, starts early on a gap that lasts: women hold under 6% of producer credits on the Billboard Hot 100 (USC Annenberg Inclusion Initiative, 2024). A teen apprenticeship version for ages 14 to 18 has been proposed to After School Matters for spring 2027.\n\n- Remix the Record. A Black History Month series where neighbors of all ages learn to research real history with AI, checking every fact against two real sources, then write two songs about one specific story. DJs mix every team's songs into one set that travels through Black history in order, including the 1960 wade-ins at Rainbow Beach itself.\n\n- Full Spectrum at Rainbow Beach. Our partnership proposal to the Chicago Park District, invited by Rainbow Beach Park staff: classes, a summer youth DJ series, stage shows, heritage festivals and family parties, so a young person can go from a first class to a festival stage in their own park.\n\nWHY IT MATTERS\nSouth Shore families travel about nine miles to Grant Park for free concerts and music programs. Young people here have talent but rarely the gear, the training or a stage close to home. DJing turns out to be a strong teacher: practice and focus, listening, counting tempo and phrases, speaking to a crowd, working as a crew, and running a small business. Our research projects teach how to find a primary source, spot a fact an AI made up, and cite what you found, skills that carry straight back into school. And because everything is free, cost never decides who gets to learn.\n\nHOW WE MEASURE LEARNING\nStudents log skills in their Passport. Weekly Spotlight performances are scored on a simple rubric (transitions, energy, reading the crowd). We track attendance, completion and girls' participation, and publish a season report.\n\nLEARN MORE\nFor funders: https://selassiefest.com/rti/funders/\nRainbow DJ Lab: https://selassiefest.com/dj-lab/\nCurriculum: https://selassiefest.com/dj-lab/about/curriculum.html\nFull Spectrum: https://selassiefest.com/full-spectrum/\n2027 calendar: https://selassiefest.com/full-spectrum/full-spectrum-calendar-2027.pdf",10000,"Suggested length is up to 7,000 characters. This is about 3,400."],
+    ["upto","Bring us up to speed (Returning Grantees Only)","n/a",10000,""],
+    ["bipoc","BIPOC Leadership","[Yes / No]. [Describe the board and leadership: for example, \"All three directors and our program lead are Black members of Chicago's Caribbean and African diaspora community.\" Use only what is true.]",1000,"I don't have your board's demographics, so this one is yours to write."],
+    ["deia","Diversity, Equity, Inclusion and Access","Access is built into how our programs run, not added on.\n\nCost: every program is free. Gear is provided, and students never need to own a controller or laptop.\n\nGirls: Empress Decks, a girls' track taught by women DJs, recruits girls into a field where they are badly underrepresented, and every program report counts girls' participation.\n\nAll ages and abilities: classes run from age 5, with a grown-up, to elders. Accommodations are available on request; we provide volume-limited headphones, free earplugs, a quieter workspace and visual step cards, and ASL interpretation at stage shows and festivals.\n\nLanguage: flyers and parent forms in English and Spanish, with interpretation in any language on request.\n\nIdentity: LGBTQ+ youth and families are welcomed by name in our outreach, and students use the names and pronouns they choose. Veterans outreach is led by a board member who is a military veteran.\n\nSafety: every adult who works with young people clears the Chicago Park District's background check and is an Illinois mandated reporter. Our youth protection, behavior and privacy policies are public: https://selassiefest.com/dj-lab/safety/\n\nCulture: the curriculum moves through house, footwork, hip-hop, reggae, Afrobeats, Latin and gospel, and students bring and teach the music of their own homes.",10000,""],
+    ["extra","Additional Info (optional)","Our one-page funder summary, with every program's budget and status: https://selassiefest.com/rti/funders/",1500,""]
+  ];
+
+  var KEY = "seabury-kit-v2", edits = {}, checks = {}, dbRef = null, dbOk = false, timer = null;
+  try { var s0 = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; edits = s0.edits || {}; checks = s0.checks || {}; } catch(e) {}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify({ edits: edits, checks: checks })); } catch(e) {} if (dbOk) { clearTimeout(timer); timer = setTimeout(function(){ dbRef.set({ edits: edits, checks: checks, updatedAt: new Date().toISOString() }).catch(function(){ dbOk = false; }); }, 600); } }
+  function progress(){ var boxes = document.querySelectorAll("[data-check]"), n = 0; boxes.forEach(function(b){ if (b.checked) n++; }); var p = boxes.length ? Math.round(n / boxes.length * 100) : 0; $("pbar").style.width = p + "%"; $("ptext").textContent = n + " of " + boxes.length + " done (" + document.querySelectorAll('[data-check^="s"]:checked').length + " of 6 steps)"; }
+  function applyChecks(){ document.querySelectorAll("[data-check]").forEach(function(b){ b.checked = !!checks[b.getAttribute("data-check")]; }); progress(); }
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  var tt; function toast(m){ var e = $("toast"); e.textContent = m; e.classList.add("on"); clearTimeout(tt); tt = setTimeout(function(){ e.classList.remove("on"); }, 1600); }
+  function copy(text){
+    function fb(){ var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch(e){} document.body.removeChild(ta); toast(ok ? "Copied" : "Select the text and copy it by hand"); }
+    try { navigator.clipboard.writeText(text).then(function(){ toast("Copied"); }, fb); } catch(e){ fb(); }
+  }
+  var DEF = { email: EMAIL }; Q.forEach(function(q){ DEF[q[0]] = q[2]; });
+  var LIM = {}; Q.forEach(function(q){ LIM[q[0]] = q[3]; });
+  function val(k){ return edits[k] != null ? edits[k] : DEF[k]; }
+  function count(k){ var e = $("c-" + k); if (!e) return; var n = val(k).length, lim = LIM[k] || 0; e.textContent = n.toLocaleString() + (lim ? " / " + lim.toLocaleString() + " characters" : " characters"); e.className = "pill" + (lim ? (n > lim ? " bad" : " ok") : ""); }
+
+  $("qs").innerHTML = Q.map(function(q){
+    var short = q[2].length < 60 && q[3] < 200;
+    var needs = /\[[^\]]+\]/.test(q[2]);
+    return '<div class="q"><span class="lbl">' + esc(q[1]) + '</span>' +
+      (short ? '<p class="ans"><b>' + esc(q[2]).replace(/(\[[^\]]+\])/g, '<span class="fill">$1</span>') + '</b></p>' : '<textarea id="a-' + q[0] + '" rows="' + Math.min(18, Math.max(3, Math.ceil(q[2].length / 90))) + '"></textarea>') +
+      (q[4] ? '<p class="ans" style="color:var(--muted)">' + esc(q[4]).replace('up to 7,000 characters. This is about 3,400.', 'up to 7,000 characters. This is about 3,100.') + '</p>' : '') +
+      '<div class="foot"><span class="pill" id="c-' + q[0] + '"></span><span style="display:flex;gap:10px;align-items:center"><label class="qck"><input type="checkbox" data-check="q-' + q[0] + '"> Pasted</label><button type="button" data-copy="' + q[0] + '">Copy</button></span></div></div>';
+  }).join("");
+
+  Object.keys(DEF).forEach(function(k){
+    var ta = $("a-" + k); if (!ta) { count(k); return; }
+    ta.value = val(k);
+    ta.addEventListener("input", function(){ if (ta.value === DEF[k]) delete edits[k]; else edits[k] = ta.value; save(); count(k); });
+    count(k);
+  });
+  document.addEventListener("click", function(e){ var b = e.target.closest("[data-copy]"); if (b) copy(val(b.getAttribute("data-copy"))); });
+  document.addEventListener("change", function(e){ var k = e.target.getAttribute && e.target.getAttribute("data-check"); if (!k) return; if (e.target.checked) checks[k] = 1; else delete checks[k]; save(); progress(); });
+  applyChecks();
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(async function(db){
+      if (!db) return; dbRef = db.doc("kit/state");
+      try { var snap = await dbRef.get(); dbOk = true; if (snap.exists) { var d = snap.data(); edits = d.edits || {}; checks = d.checks || {}; Object.keys(DEF).forEach(function(k){ var ta = $("a-" + k); if (ta) ta.value = val(k); count(k); }); applyChecks(); save(); } }
+      catch(e) { dbOk = false; }
+    });
+  }
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,629 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Full Spectrum CPD Application Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<script>try{if(!localStorage.getItem("fs-arcs-kit-v1"))localStorage.setItem("fs-arcs-kit-v1","{\"values\":{\"facilities\":[\"Gymnasium - General\",\"Gymnasium - Large\",\"Outdoor Space - Other\",\"Rooms - Club\",\"Rooms - Dance\",\"Rooms - Other\"],\"marketing\":[\"Banners\",\"Flyers\",\"Other\"]},\"checked\":{\"demand\":true,\"facilities\":true,\"hrsWed\":true,\"inKind\":true,\"moreParks\":true,\"orgName\":true,\"participants\":true,\"partnerType\":true,\"startDate\":true,\"veterans\":true},\"attach\":{\"proposal\":true}}")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working paper. Answers run down the left in CPD form order; a sticky
+   action rail on the right holds the PDF, the blockers and the send kit. */
+:root {
+  --bg: #f6f7f4;
+  --paper: #ffffff;
+  --ink: #1d2420;
+  --muted: #5c665f;
+  --line: #dde2dc;
+  --field: #eef1ed;
+  --accent: #2f6b45;        /* park green, from the CPD form header */
+  --accent-ink: #ffffff;
+  --gold: #a8740d;
+  --warn-bg: #fdf3dc;
+  --warn: #8a5a00;
+  --bad-bg: #fbe6e3;
+  --bad: #a3271b;
+  --ok: #2f6b45;
+  --ok-bg: #e4f1e7;
+  --sel: #cfe3ee;
+  --display: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --spectrum: linear-gradient(90deg, #d7263d 0 14.28%, #f46036 0 28.57%, #f2c14e 0 42.85%, #3a9d5d 0 57.14%, #2e86ab 0 71.42%, #4b3f9e 0 85.71%, #8e44ad 0);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121614; --paper: #1a201d; --ink: #e6ebe7; --muted: #9aa69e; --line: #2c3530;
+    --field: #222a26; --accent: #6cc28a; --accent-ink: #0f1a13; --gold: #e0b252;
+    --warn-bg: #3a2f14; --warn: #f0c46a; --bad-bg: #3d1c18; --bad: #ff8e80;
+    --ok: #6cc28a; --ok-bg: #1d3325; --sel: #24414f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121614; --paper: #1a201d; --ink: #e6ebe7; --muted: #9aa69e; --line: #2c3530;
+  --field: #222a26; --accent: #6cc28a; --accent-ink: #0f1a13; --gold: #e0b252;
+  --warn-bg: #3a2f14; --warn: #f0c46a; --bad-bg: #3d1c18; --bad: #ff8e80;
+  --ok: #6cc28a; --ok-bg: #1d3325; --sel: #24414f; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 0 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.spectrum { height: 6px; background: var(--spectrum); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: .005em; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 600; line-height: 1.15; }
+h2 { font-size: 1.35rem; font-weight: 600; }
+h3 { font-size: 1.02rem; font-weight: 600; }
+a { color: var(--accent); }
+.eyebrow { font: 600 .74rem/1.2 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--mono); font-size: .76rem; color: var(--muted); }
+button, .btn { font: 600 .9rem/1 var(--display); letter-spacing: .02em; border-radius: 6px; cursor: pointer; }
+button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+header.top { display: grid; gap: 14px; padding-block: 28px 22px; }
+.top p { margin: 0; max-width: 68ch; color: var(--muted); }
+.greenlight { display: flex; gap: 12px; align-items: flex-start; background: var(--ok-bg); border-radius: 8px; padding: 12px 14px; max-width: 760px; }
+.greenlight b { color: var(--ok); }
+.greenlight q { font-style: italic; }
+
+.steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; }
+.steps a { display: inline-flex; gap: 8px; align-items: center; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); text-decoration: none; color: var(--ink); font: 500 .9rem var(--display); }
+.steps a::before { content: counter(s); display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .78rem; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 28px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } .rail { position: static !important; order: -1; } }
+
+section.block { display: grid; gap: 14px; margin-top: 30px; }
+section.block > header { display: grid; gap: 4px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+section.block > header p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+.formpage { display: grid; gap: 10px; }
+.formpage > .eyebrow { margin-top: 14px; }
+
+.q { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.q.needs { border-left: 4px solid var(--gold); }
+.q.done { border-left: 4px solid var(--ok); }
+.q .qhead { display: flex; gap: 10px; justify-content: space-between; align-items: baseline; flex-wrap: wrap; }
+.q label.ql, .q .ql { font-weight: 700; font-size: .97rem; line-height: 1.35; flex: 1 1 320px; min-width: 0; }
+.q textarea, .q input[type=text] { width: 100%; font: 15px/1.5 var(--body); color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; }
+.q textarea { resize: vertical; min-height: 90px; }
+.q select { font: 15px var(--body); color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; max-width: 100%; }
+.q .hint { margin: 0; color: var(--muted); font-size: .9rem; }
+.q .note { margin: 0; background: var(--warn-bg); color: var(--ink); border-radius: 6px; padding: 8px 10px; font-size: .92rem; }
+.q .note b { color: var(--warn); }
+.qfoot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.meters { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font: 500 .74rem/1 var(--mono); padding: 5px 8px; border-radius: 999px; background: var(--field); color: var(--muted); font-variant-numeric: tabular-nums; }
+.pill.ok { background: var(--ok-bg); color: var(--ok); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.bad { background: var(--bad-bg); color: var(--bad); }
+.acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); padding: 7px 10px; }
+.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.chk { background: transparent; border: 1px solid var(--gold); color: var(--warn); padding: 7px 10px; }
+.q.done .chk { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--field); font-size: .92rem; cursor: pointer; }
+.chips label:has(input:checked) { background: var(--sel); border-color: var(--accent); }
+.chips input { accent-color: var(--accent); margin: 0; }
+details.more summary { cursor: pointer; color: var(--accent); font-size: .9rem; }
+details.more .chips { margin-top: 8px; max-height: 260px; overflow: auto; }
+
+.hours { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.hours label { display: grid; gap: 4px; font: 600 .72rem var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.hours input { text-align: center; font: 15px var(--mono); padding: 8px 2px; width: 100%; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 6px; }
+
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); display: grid; gap: 14px; margin-top: 30px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+.primary { background: var(--accent); color: var(--accent-ink); border: 0; padding: 13px 14px; width: 100%; font-size: 1rem; }
+.primary[disabled] { opacity: .55; cursor: progress; }
+.progress { display: grid; gap: 6px; }
+.bar { height: 8px; background: var(--field); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+.status { font-size: .88rem; color: var(--muted); margin: 0; }
+.status.err { color: var(--bad); }
+.blocker { background: var(--bad-bg); border-radius: 8px; padding: 10px 12px; font-size: .92rem; }
+.blocker b { color: var(--bad); }
+ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.rail ul.plain li { font-size: .9rem; display: flex; gap: 8px; }
+.rail ul.plain a { overflow-wrap: anywhere; }
+
+.attach { display: grid; gap: 8px; }
+.att { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.att input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+.att .t { font-weight: 700; }
+.att .t .tag { font: 600 .68rem var(--display); letter-spacing: .1em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 2px; }
+.tag.req { background: var(--bad-bg); color: var(--bad); }
+.tag.opt { background: var(--field); color: var(--muted); }
+.tag.later { background: var(--field); color: var(--muted); }
+.att p { grid-column: 2; margin: 0; color: var(--muted); font-size: .93rem; }
+.att:has(input:checked) { border-color: var(--ok); }
+.att:has(input:checked) .t { text-decoration: line-through; text-decoration-color: var(--ok); }
+
+.email { display: grid; gap: 10px; }
+.erow { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.erow .k { font: 600 .74rem var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.erow .v { overflow-wrap: anywhere; font-family: var(--mono); font-size: .88rem; user-select: all; }
+.ebody { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; white-space: pre-wrap; font: 15px/1.55 var(--body); margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .erow { grid-template-columns: minmax(0, 1fr) auto; } .erow .k { grid-column: 1 / -1; } }
+
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font: 500 .92rem var(--display); opacity: 0; pointer-events: none; transition: opacity .2s; }
+.toast.on { opacity: 1; }
+footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: grid; gap: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="spectrum" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Ras Tafari Inc. · Chicago Park District ARCS partnership</span>
+    <h1>Full Spectrum CPD Application Kit</h1>
+    <p>Every question on CPD's ARCS Partnership Proposal form, answered from the Full Spectrum proposal. Edit any answer here, then download CPD's own PDF already filled in, attach the documents, and send.</p>
+    <div class="greenlight">
+      <span aria-hidden="true">✔</span>
+      <div><b>Green light, Oct. 14, 2026.</b> Ivry Ector, Rainbow Beach Park Supervisor: <q>You can move forward with submitting your proposal for partnership.</q></div>
+    </div>
+    <ol class="steps">
+      <li><a href="#answers">Check the answers</a></li>
+      <li><a href="#download">Download the filled form</a></li>
+      <li><a href="#attachments">Gather attachments</a></li>
+      <li><a href="#send">Send the email</a></li>
+    </ol>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="block" id="answers">
+        <header>
+          <span class="eyebrow">Step 1</span>
+          <h2>Check the answers</h2>
+          <p>Gold-edged answers need your eye; tick <em>Checked</em> once you're happy. The pill under each long answer shows whether it fits CPD's box. If one says <em>too long</em>, trim it.</p>
+        </header>
+        <div id="qs"></div>
+      </section>
+
+      <section class="block" id="attachments">
+        <header>
+          <span class="eyebrow">Step 3</span>
+          <h2>Gather attachments</h2>
+          <p>The supporting documents CPD lists on page 4 of the form. Tick each one as you get it into your email.</p>
+        </header>
+        <div class="attach" id="attach"></div>
+      </section>
+
+      <section class="block" id="send">
+        <header>
+          <span class="eyebrow">Step 4</span>
+          <h2>Send the email</h2>
+          <p>Copy each part into a new email from stephen@selassiefest.com. Attach the filled form and the documents from step 3. CPD asks for at least 30 days to review.</p>
+        </header>
+        <div class="email">
+          <div class="erow"><span class="k">To</span><span class="v" id="eTo">partnerships.app@chicagoparkdistrict.com</span><button class="ghost" data-copy="eTo">Copy</button></div>
+          <div class="erow"><span class="k">Cc</span><span class="v" id="eCc">ivry.ector@chicagoparkdistrict.com</span><button class="ghost" data-copy="eCc">Copy</button></div>
+          <div class="erow"><span class="k">Subject</span><span class="v" id="eSubj"></span><button class="ghost" data-copy="eSubj">Copy</button></div>
+          <pre class="ebody" id="eBody"></pre>
+          <div class="acts"><button class="ghost" data-copy="eBody">Copy message</button><a class="ghost btn" id="mailto" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Open in mail app</a></div>
+          <p class="status">The mail-app link may not open from every viewer. Copying always works. Questions for CPD: New Business Development, (312) 742-0909.</p>
+        </div>
+      </section>
+
+      <footer class="src">
+        <span>Form: CPD "Partnerships – ARCS Program", updated 1/14/2025. Guidelines updated 11/7/24.</span>
+        <span><a href="https://www.chicagoparkdistrict.com/arcs" target="_blank" rel="noopener">CPD ARCS program page</a> · <a href="https://www.chicagoparkdistrict.com/media/34076/download?inline" target="_blank" rel="noopener">ARCS Guidelines (PDF)</a> · <a href="https://selassiefest.com/full-spectrum/" target="_blank" rel="noopener">Full Spectrum proposal</a></span>
+      </footer>
+    </main>
+
+    <aside class="rail" id="download" aria-label="Actions">
+      <div class="card">
+        <span class="eyebrow">Step 2</span>
+        <h3>Download the filled CPD form</h3>
+        <div class="progress">
+          <div class="bar"><i id="pbar"></i></div>
+          <p class="status" id="ptext">Loading…</p>
+        </div>
+        <button class="primary" id="dl" disabled>Preparing the form…</button>
+        <p class="status" id="dlStatus">CPD's own fillable PDF, filled with every answer on this page. It stays editable in Adobe Acrobat Reader.</p>
+        <button class="ghost" id="copyAll">Copy all answers as text</button>
+      </div>
+      <div class="card">
+        <h3>Before you send</h3>
+        <div class="blocker"><b>Certificate of Insurance.</b> CPD won't treat the application as complete without a COI naming the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured. As of Oct. 14 no policy is in place.</div>
+        <ul class="plain" id="blockers"></ul>
+      </div>
+      <div class="card">
+        <h3>Your edits</h3>
+        <p class="status" id="saveStatus">Checking where edits are saved…</p>
+        <button class="ghost" id="resetAll">Reset every answer to the draft</button>
+        <div id="resetConfirm" hidden class="acts"><span class="status">Discard all your edits?</span><button class="ghost" id="resetYes">Yes, reset</button><button class="ghost" id="resetNo">Keep them</button></div>
+      </div>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="answers.js"></script>
+<script src="arcs-fill.js"></script>
+<script>
+(function () {
+  var FIELDS = window.ARCS.FIELDS;
+  var P = window.PDFLib;
+  var STORE_KEY = "fs-arcs-kit-v1";
+  var DOC_PATH = "kit/state";
+
+  var ATTACH = [
+    { key: "coi", tag: "req", title: "Certificate of Insurance (COI)",
+      text: "Required. It must name the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured, and the insured name must match the form (\"Ras Tafari Inc.\"). Plan for $1,000,000 general liability plus sexual abuse and molestation coverage, as the Full Spectrum and DJ Lab pages promise." },
+    { key: "irs", tag: "opt", title: "Proof of nonprofit status",
+      text: "Ras Tafari Inc.'s own IRS letter dated June 12, 2026 (EIN 42-3036705), file 03_determinationLetter_42-3036705_RASTAFARIINC_06092026.pdf in Fest/Ras Tafari. Not the 2016 letter in the 2nd chance housing folder: that one is 2nd Chance Housing Inc.'s (EIN 47-5387503)." },
+    { key: "proposal", tag: "opt", title: "Proposed schedule of activities with detailed descriptions",
+      text: "The Full Spectrum proposal PDF covers all five parts and the year calendar.", link: "https://selassiefest.com/full-spectrum/full-spectrum-proposal.pdf" },
+    { key: "calendar", tag: "opt", title: "2027 calendar",
+      text: "The form says \"Calendar attached.\" This one-page calendar shows all 14 Rainbow Wednesdays, the class terms, festival days and holiday parties.", link: "https://selassiefest.com/full-spectrum/full-spectrum-calendar-2027.pdf" },
+    { key: "resolution", tag: "opt", title: "Board resolution",
+      text: "CPD doesn't require one, but it shows the board approved the proposal. Print it once all three directors have signed on the board signing page." },
+    { key: "refs", tag: "opt", title: "References or letters of recommendation",
+      text: "Optional, and it would strengthen the demand answer. Partners who said yes on the Full Spectrum tracker are the natural people to ask." },
+    { key: "affil", tag: "opt", title: "Proof of affiliation",
+      text: "Ras Tafari Inc. letterhead or a business card." },
+    { key: "permit", tag: "later", title: "Permit request",
+      text: "Not needed now. Each stage show and festival day gets its own Special Event Permit application later, once it has a date." }
+  ];
+
+  // ---------- state ----------
+  var defaults = {};
+  FIELDS.forEach(function (f) { defaults[f.key] = f.value; });
+  var state = { values: {}, checked: {}, attach: {} };
+  var db = null, dbRef = null, dbOk = false;
+
+  function val(k) { return Object.prototype.hasOwnProperty.call(state.values, k) ? state.values[k] : defaults[k]; }
+  function allValues() { var o = {}; FIELDS.forEach(function (f) { o[f.key] = val(f.key); }); return o; }
+  function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+
+  function loadLocal() {
+    try { var s = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (s && s.values) state = { values: s.values || {}, checked: s.checked || {}, attach: s.attach || {} }; } catch (e) {}
+  }
+  function saveLocal() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var saveTimer = null, saving = false, pending = false;
+  function scheduleSave() {
+    saveLocal();
+    if (!dbOk) { setSaveStatus(); return; }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(flush, 900);
+    $("saveStatus").textContent = "Saving…";
+  }
+  async function flush() {
+    if (saving) { pending = true; return; }
+    saving = true;
+    try {
+      await dbRef.set({ values: state.values, checked: state.checked, attach: state.attach, updatedAt: new Date().toISOString() });
+      setSaveStatus();
+    } catch (e) {
+      dbOk = false;
+      $("saveStatus").textContent = "Couldn't save to the page (" + (e && e.code || "error") + "). Edits are kept in this browser.";
+      $("saveStatus").className = "status err";
+    }
+    saving = false;
+    if (pending) { pending = false; flush(); }
+  }
+  function setSaveStatus() {
+    var n = Object.keys(state.values).filter(function (k) { return !same(state.values[k], defaults[k]); }).length;
+    var where = dbOk ? "Saved with this page, so you'll see them on any device." : "Saved in this browser only.";
+    $("saveStatus").className = "status";
+    $("saveStatus").textContent = (n ? n + " answer" + (n === 1 ? "" : "s") + " changed from the draft. " : "No changes from the draft yet. ") + where;
+  }
+
+  // ---------- helpers ----------
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") e.textContent = attrs[k];
+      else if (k === "html") e.innerHTML = attrs[k];
+      else if (k.slice(0, 2) === "on") e.addEventListener(k.slice(2), attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return e;
+  }
+  var toastT;
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 1800); }
+  function copyText(text, label) {
+    function fallback() {
+      var ta = el("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      toast(ok ? (label || "Copied") : "Select the text and copy it by hand");
+    }
+    try { navigator.clipboard.writeText(text).then(function () { toast(label || "Copied"); }, fallback); } catch (e) { fallback(); }
+  }
+  function words(s) { return String(s || "").trim().split(/\s+/).filter(Boolean).length; }
+  function display(f, v) {
+    if (f.kind === "radio") { var o = (f.options || []).filter(function (x) { return x.value === v; })[0]; return o ? o.label : ""; }
+    if (f.kind === "multi") return (v || []).join(", ");
+    if (f.kind === "date" && String(v).toLowerCase() === "auto") return window.ArcsFill.todayString(f.fmt);
+    return v == null ? "" : String(v);
+  }
+
+  // ---------- live fit measuring ----------
+  var geo = null, font = null, formBytes = null;
+  function fitPill(f) {
+    if (!geo || !geo[f.pdf]) return null;
+    var g = geo[f.pdf];
+    var text = String(val(f.key) || "").replace(/\s+/g, " ").trim();
+    if (f.kind === "date" && text.toLowerCase() === "auto") text = window.ArcsFill.todayString(f.fmt);
+    if (!text) return null;
+    var r = window.ArcsFill.fit(P, font, text, g.box, g.multiline, g.size);
+    if (!r.fits) return { cls: "bad", text: "Too long for CPD's box" };
+    if (r.size < 8) return { cls: "warn", text: "Fits, small: " + r.size + " pt" };
+    return { cls: "ok", text: "Fits at " + r.size + " pt" };
+  }
+
+  // ---------- render questions ----------
+  var cards = {};
+  function render() {
+    var root = $("qs"); root.innerHTML = "";
+    var pages = { 1: "Form page 1 · Who you are", 2: "Form page 2 · The partnership", 3: "Form page 3 · Activities, audience and benefits" };
+    var current = 0, pageBox = null, hoursDone = false;
+    FIELDS.forEach(function (f) {
+      if (f.page !== current) {
+        current = f.page;
+        pageBox = el("div", { class: "formpage" }, [el("span", { class: "eyebrow", text: pages[current] })]);
+        root.appendChild(pageBox);
+      }
+      if (f.kind === "hours") { if (!hoursDone) { pageBox.appendChild(hoursCard()); hoursDone = true; } return; }
+      pageBox.appendChild(card(f));
+    });
+    refreshAll();
+  }
+
+  function card(f) {
+    var id = "f-" + f.key;
+    var c = el("div", { class: "q", id: "q-" + f.key });
+    var head = el("div", { class: "qhead" }, [
+      el(f.kind === "radio" || f.kind === "multi" ? "span" : "label", f.kind === "radio" || f.kind === "multi" ? { class: "ql", text: f.label } : { class: "ql", for: id, text: f.label }),
+      el("span", { class: "mono", text: "p." + f.page + " · " + f.pdf })
+    ]);
+    c.appendChild(head);
+    c.appendChild(control(f, id));
+    if (f.hint) c.appendChild(el("p", { class: "hint", text: f.hint }));
+    if (f.confirm) c.appendChild(el("p", { class: "note", html: "<b>Check:</b> " }, [f.confirm]));
+    var meters = el("div", { class: "meters" });
+    var acts = el("div", { class: "acts" });
+    if (f.confirm) acts.appendChild(el("button", { class: "chk", type: "button", onclick: function () { state.checked[f.key] = !state.checked[f.key]; scheduleSave(); refresh(f); refreshProgress(); } }));
+    acts.appendChild(el("button", { class: "ghost", type: "button", text: "Copy", onclick: function () { copyText(display(f, val(f.key)), "Answer copied"); } }));
+    var undo = el("button", { class: "ghost", type: "button", text: "Undo edits", onclick: function () { delete state.values[f.key]; scheduleSave(); render(); } });
+    acts.appendChild(undo);
+    c.appendChild(el("div", { class: "qfoot" }, [meters, acts]));
+    cards[f.key] = { c: c, meters: meters, undo: undo, chk: acts.querySelector(".chk") };
+    return c;
+  }
+
+  function setVal(f, v) { if (same(v, defaults[f.key])) delete state.values[f.key]; else state.values[f.key] = v; scheduleSave(); refresh(f); refreshEmail(); }
+
+  function control(f, id) {
+    var v = val(f.key);
+    if (f.kind === "long") {
+      var ta = el("textarea", { id: id, rows: "4" }); ta.value = v || "";
+      ta.addEventListener("input", function () { setVal(f, ta.value); });
+      return ta;
+    }
+    if (f.kind === "text" || f.kind === "date") {
+      var inp = el("input", { id: id, type: "text", autocomplete: "off" }); inp.value = v || "";
+      inp.addEventListener("input", function () { setVal(f, inp.value); });
+      return inp;
+    }
+    if (f.kind === "select") {
+      var s = el("select", { id: id }, f.options.map(function (o) { var op = el("option", { value: o, text: o }); if (o === v) op.selected = true; return op; }));
+      s.addEventListener("change", function () { setVal(f, s.value); });
+      return s;
+    }
+    if (f.kind === "radio") {
+      return el("div", { class: "chips", role: "radiogroup", "aria-label": f.label }, f.options.map(function (o, i) {
+        var r = el("input", { type: "radio", name: id, id: id + "-" + i, value: o.value }); if (o.value === v) r.checked = true;
+        r.addEventListener("change", function () { if (r.checked) setVal(f, o.value); });
+        return el("label", { for: id + "-" + i }, [r, o.label]);
+      }));
+    }
+    if (f.kind === "multi") {
+      var picked = v || [];
+      function box(o, i) {
+        var cb = el("input", { type: "checkbox", id: id + "-" + i, value: o }); if (picked.indexOf(o) >= 0) cb.checked = true;
+        cb.addEventListener("change", function () {
+          var cur = (val(f.key) || []).slice();
+          if (cb.checked && cur.indexOf(o) < 0) cur.push(o);
+          if (!cb.checked) cur = cur.filter(function (x) { return x !== o; });
+          cur.sort(function (a, b) { return f.options.indexOf(a) - f.options.indexOf(b); });
+          setVal(f, cur);
+        });
+        return el("label", { for: id + "-" + i }, [cb, o]);
+      }
+      if (f.options.length <= 12) return el("div", { class: "chips" }, f.options.map(box));
+      var wrap = el("div");
+      wrap.appendChild(el("div", { class: "chips", "data-sel": "1" }, f.options.map(function (o, i) { return picked.indexOf(o) >= 0 ? box(o, i) : null; })));
+      var det = el("details", { class: "more" }, [el("summary", { text: "Show all " + f.options.length + " options" }), el("div", { class: "chips" }, f.options.map(function (o, i) { return picked.indexOf(o) >= 0 ? null : box(o, i); }))]);
+      wrap.appendChild(det);
+      return wrap;
+    }
+    return el("span");
+  }
+
+  function hoursCard() {
+    var hrs = FIELDS.filter(function (f) { return f.kind === "hours"; });
+    var wed = hrs.filter(function (f) { return f.confirm; })[0];
+    var c = el("div", { class: "q", id: "q-" + wed.key });
+    c.appendChild(el("div", { class: "qhead" }, [el("span", { class: "ql", text: "Total hours needed per day" }), el("span", { class: "mono", text: "p.2 · Text25–31" })]));
+    c.appendChild(el("div", { class: "hours" }, hrs.map(function (f) {
+      var inp = el("input", { type: "text", inputmode: "decimal", id: "f-" + f.key, "aria-label": f.label.replace("Hours per day: ", "") + " hours" }); inp.value = val(f.key) || "";
+      inp.addEventListener("input", function () { setVal(f, inp.value); });
+      return el("label", {}, [f.label.replace("Hours per day: ", ""), inp]);
+    })));
+    c.appendChild(el("p", { class: "note", html: "<b>Check:</b> " }, [wed.confirm]));
+    var acts = el("div", { class: "acts" });
+    acts.appendChild(el("button", { class: "chk", type: "button", onclick: function () { state.checked[wed.key] = !state.checked[wed.key]; scheduleSave(); refresh(wed); refreshProgress(); } }));
+    c.appendChild(el("div", { class: "qfoot" }, [el("div", { class: "meters" }), acts]));
+    cards[wed.key] = { c: c, meters: c.querySelector(".meters"), undo: null, chk: acts.querySelector(".chk") };
+    return c;
+  }
+
+  function refresh(f) {
+    var k = cards[f.key]; if (!k) return;
+    k.c.classList.toggle("needs", !!f.confirm && !state.checked[f.key]);
+    k.c.classList.toggle("done", !!f.confirm && !!state.checked[f.key]);
+    if (k.chk) k.chk.textContent = state.checked[f.key] ? "✓ Checked" : "Mark checked";
+    if (k.undo) k.undo.hidden = !Object.prototype.hasOwnProperty.call(state.values, f.key);
+    k.meters.innerHTML = "";
+    if (f.words) {
+      var n = words(val(f.key));
+      k.meters.appendChild(el("span", { class: "pill " + (n > f.words ? "bad" : "ok"), text: n + " / " + f.words + " words" }));
+    }
+    if (f.kind === "long" || f.kind === "text" || f.kind === "date") {
+      var p = fitPill(f);
+      if (p && (f.kind === "long" || p.cls !== "ok")) k.meters.appendChild(el("span", { class: "pill " + p.cls, text: p.text }));
+    }
+    if (Object.prototype.hasOwnProperty.call(state.values, f.key)) k.meters.appendChild(el("span", { class: "pill", text: "Edited" }));
+  }
+  function refreshAll() { FIELDS.forEach(refresh); refreshProgress(); refreshEmail(); setSaveStatus(); }
+
+  function refreshProgress() {
+    var need = FIELDS.filter(function (f) { return f.confirm; });
+    var done = need.filter(function (f) { return state.checked[f.key]; }).length;
+    var over = FIELDS.filter(function (f) { return (f.words && words(val(f.key)) > f.words) || ((f.kind === "long" || f.kind === "text") && (fitPill(f) || {}).cls === "bad"); });
+    $("pbar").style.width = Math.round(done / need.length * 100) + "%";
+    $("ptext").textContent = done + " of " + need.length + " flagged answers checked";
+    var ul = $("blockers"); ul.innerHTML = "";
+    need.filter(function (f) { return !state.checked[f.key]; }).forEach(function (f) {
+      ul.appendChild(el("li", {}, [el("span", { text: "○" }), el("a", { href: "#q-" + f.key, text: f.kind === "hours" ? "Hours per day" : f.label.replace(/\s*\(.*?\)\s*$/, "") })]));
+    });
+    over.forEach(function (f) { ul.appendChild(el("li", {}, [el("span", { text: "✕", style: "color:var(--bad)" }), el("a", { href: "#q-" + f.key, text: "Too long: " + f.label.replace(/\s*\(.*?\)\s*$/, "") })])); });
+    var att = ATTACH.filter(function (a) { return a.tag !== "later" && !state.attach[a.key]; }).length;
+    if (att) ul.appendChild(el("li", {}, [el("span", { text: "○" }), el("a", { href: "#attachments", text: att + " attachment" + (att === 1 ? "" : "s") + " not gathered yet" })]));
+  }
+
+  // ---------- attachments ----------
+  function renderAttach() {
+    var root = $("attach"); root.innerHTML = "";
+    ATTACH.forEach(function (a) {
+      var id = "a-" + a.key;
+      var cb = el("input", { type: "checkbox", id: id }); cb.checked = !!state.attach[a.key];
+      cb.addEventListener("change", function () { state.attach[a.key] = cb.checked; scheduleSave(); refreshProgress(); });
+      var label = el("label", { for: id, class: "t" }, [a.title, el("span", { class: "tag " + a.tag, text: a.tag === "req" ? "Required" : a.tag === "later" ? "Later" : "Recommended" })]);
+      var p = el("p", {}, [a.text]);
+      if (a.link) { p.appendChild(document.createTextNode(" ")); p.appendChild(el("a", { href: a.link, target: "_blank", rel: "noopener", text: "Open the PDF" })); }
+      root.appendChild(el("div", { class: "att" }, [cb, label, p]));
+    });
+  }
+
+  // ---------- email ----------
+  function refreshEmail() {
+    var type = val("partnerType") || "Service Provider";
+    var name = val("partnershipName") || "Full Spectrum at Rainbow Beach";
+    var org = val("orgName") || "Ras Tafari Inc.";
+    var subj = "ARCS Partnership Proposal: " + name + " (" + org + ")";
+    var body = [
+      "Hello New Business Development team,",
+      "",
+      "Please find attached " + org + "'s ARCS Partnership Proposal for " + name + ", a free, year-round music and culture program at Rainbow Beach Park. We are applying as a " + type + " partner.",
+      "",
+      "Ivry Ector, Park Supervisor at Rainbow Beach Park (copied here), has reviewed the program with us and asked us to submit it through the ARCS process.",
+      "",
+      "Attached:",
+      "- ARCS Partnership Proposal form",
+      "- Certificate of Insurance naming the Chicago Park District as additional insured",
+      "- IRS 501(c)(3) determination letter",
+      "- Full Spectrum program proposal",
+      "- Full Spectrum 2027 calendar",
+      "- Ras Tafari Inc. board resolution authorizing this proposal",
+      "",
+      "Please let me know if you need anything else.",
+      "",
+      "Thank you,",
+      (val("ceoName") || "Stephen Henry, President").replace(/,\s*/, "\n") + ", " + org,
+      val("mailing") || "",
+      (val("contactPhone") || "") + " · " + (val("contactEmail") || "")
+    ].join("\n");
+    $("eSubj").textContent = subj;
+    $("eBody").textContent = body;
+    $("mailto").href = "mailto:" + $("eTo").textContent + "?cc=" + encodeURIComponent($("eCc").textContent) + "&subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-copy]"); if (!b) return;
+    copyText($(b.getAttribute("data-copy")).textContent, "Copied");
+  });
+
+  // ---------- copy all ----------
+  $("copyAll").addEventListener("click", function () {
+    var out = [], pg = 0;
+    FIELDS.forEach(function (f) {
+      if (f.page !== pg) { pg = f.page; out.push("", "=== CPD form page " + pg + " ==="); }
+      var v = display(f, val(f.key));
+      out.push(f.label + ":", v || "(blank)", "");
+    });
+    copyText(out.join("\n").trim(), "All answers copied");
+  });
+
+  // ---------- reset ----------
+  $("resetAll").addEventListener("click", function () { $("resetConfirm").hidden = false; });
+  $("resetNo").addEventListener("click", function () { $("resetConfirm").hidden = true; });
+  $("resetYes").addEventListener("click", function () { state.values = {}; scheduleSave(); render(); $("resetConfirm").hidden = true; toast("Answers reset to the draft"); });
+
+  // ---------- download ----------
+  var downloads = null;
+  $("dl").addEventListener("click", async function () {
+    var btn = $("dl"); btn.disabled = true; btn.textContent = "Filling the form…";
+    try {
+      var res = await window.ArcsFill.fill(P, formBytes.slice(0), FIELDS, allValues());
+      var tooLong = res.report.filter(function (r) { return !r.fits; });
+      var blob = new Blob([res.bytes], { type: "application/pdf" });
+      var name = "ARCS-Partnership-Proposal-Full-Spectrum-Ras-Tafari-Inc.pdf";
+      if (downloads) await downloads.save({ filename: name, data: blob });
+      else { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+      $("dlStatus").className = "status";
+      $("dlStatus").textContent = "Saved " + name + "." + (tooLong.length ? " " + tooLong.length + " answer(s) run past their box; trim them and download again." : " Open it in Acrobat Reader to check it, then attach it to the email.");
+    } catch (e) {
+      $("dlStatus").className = "status err";
+      var code = e && e.code;
+      $("dlStatus").textContent = code === "declined" ? "Download cancelled." :
+        code === "unavailable" || code === "not_granted" || code === "capability_disabled" ? "Downloads aren't available in this view. Open the kit on claude.ai to download the PDF." :
+        code === "rate_limited" ? "A save prompt is already open. Finish it first." :
+        "Couldn't build the PDF: " + (e && e.message || code || e);
+    }
+    btn.disabled = false; btn.textContent = "Download filled CPD form (PDF)";
+  });
+
+  // ---------- boot ----------
+  loadLocal();
+  render();
+  renderAttach();
+  refreshProgress();
+
+  fetch("arcs-form.pdf").then(function (r) { if (!r.ok) throw new Error("form " + r.status); return r.arrayBuffer(); })
+    .then(function (buf) { formBytes = new Uint8Array(buf); return window.ArcsFill.inspect(P, formBytes.slice(0)); })
+    .then(function (info) { geo = info.geo; font = info.font; refreshAll(); $("dl").disabled = false; $("dl").textContent = "Download filled CPD form (PDF)"; })
+    .catch(function (e) { $("dl").textContent = "Form unavailable"; $("dlStatus").className = "status err"; $("dlStatus").textContent = "Couldn't load CPD's blank form (" + e.message + "). Reload the page."; });
+
+  if (window.claude && window.claude.use) {
+    window.claude.use("downloads").then(function (d) { downloads = d; });
+    window.claude.use("db").then(async function (d) {
+      if (!d) { setSaveStatus(); return; }
+      db = d; dbRef = db.doc(DOC_PATH);
+      try {
+        var snap = await dbRef.get();
+        dbOk = true;
+        if (snap.exists) {
+          var s = snap.data();
+          state = { values: Object.assign({}, s.values || {}), checked: Object.assign({}, s.checked || {}), attach: Object.assign({}, s.attach || {}) };
+          saveLocal(); render(); renderAttach();
+        }
+        setSaveStatus();
+      } catch (e) { dbOk = false; setSaveStatus(); }
+    });
+  } else { setSaveStatus(); }
+})();
+</script>
+
+</body></html>
