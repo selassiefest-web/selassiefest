@@ -16,7 +16,11 @@
 //       the shared Drive folder link (secret AI_LAB_FOLDER_URL) so the link
 //       never sits in the public page source.
 //
-// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY, RTI_DRAFT_KEY, AI_LAB_FOLDER_URL.
+//   Open mode: while the secret RTI_BGCHECK_OPEN is "1", the background check
+//       accepts any email (a row with active=false is still turned away).
+//       The AI Lab stays members-only. Unset the secret to close it again.
+//
+// Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY, RTI_DRAFT_KEY, AI_LAB_FOLDER_URL, RTI_BGCHECK_OPEN (optional).
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -52,13 +56,19 @@ async function encrypt(text: string) {
 async function decrypt(iv: string, ciphertext: string) {
   return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(iv) }, await key(), unb64(ciphertext)));
 }
-// A pass is good if it's unexpired and its email is still an active member
-async function sessionFor(supabase: any, pass: string) {
+const OPEN = Deno.env.get("RTI_BGCHECK_OPEN") === "1";
+// Allowed in: an active member, or (open mode, background check only) anyone not switched off
+async function allowed(supabase: any, email: string, page?: string) {
+  const { data: m } = await supabase.from("rti_members").select("active, full_name").eq("email", email).maybeSingle();
+  const ok = m ? !!m.active : OPEN && page !== "ai-lab";
+  return ok ? { full_name: m?.full_name ?? null } : null;
+}
+// A pass is good if it's unexpired and its email is still allowed in
+async function sessionFor(supabase: any, pass: string, page?: string) {
   if (!/^[0-9a-f]{64}$/.test(pass)) return null;
   const { data: s } = await supabase.from("rti_bgcheck_sessions").select("*").eq("token_hash", await sha256(pass)).maybeSingle();
   if (!s || new Date(s.expires_at) < new Date()) return null;
-  const { data: m } = await supabase.from("rti_members").select("active").eq("email", s.email).maybeSingle();
-  return m?.active ? s : null;
+  return (await allowed(supabase, s.email, page)) ? s : null;
 }
 const IP_WINDOW_MINUTES = 15;
 const IP_MAX_REQUESTS = 5;
@@ -107,7 +117,7 @@ Deno.serve(async (req) => {
 
   // ---- Saved progress (needs a pass; no code or Turnstile, since autosave runs often) ----
   if (["load", "save", "clear", "check"].includes(body.action)) {
-    const session = await sessionFor(supabase, String(body.pass ?? ""));
+    const session = await sessionFor(supabase, String(body.pass ?? ""), body.action === "check" ? body.page : undefined);
     if (!session) return reply({ ok: false, relogin: true, error: "Your sign-in expired. Confirm your email again; your saved answers will come back." }, 401);
     const email = session.email as string;
     if (body.action === "check") return reply(body.page === "ai-lab" ? { ok: true, email, folder: AI_LAB_FOLDER_URL || null } : { ok: true, email });
@@ -153,10 +163,11 @@ Deno.serve(async (req) => {
   if (body.action === "request") {
     if (!body.token) return reply({ ok: false, error: "Please wait for the security check to finish, then try again." }, 400);
     if (!(await turnstileOk(String(body.token), ip))) return reply({ ok: false, error: "We couldn't verify you're a person. Please try again." }, 400);
-    const generic = { ok: true, message: "If that email is on the Ras Tafari Inc. member list, a 6-digit code is on its way. It can take a minute." };
+    const generic = OPEN && body.page !== "ai-lab"
+      ? { ok: true, message: "A 6-digit code is on its way. It can take a minute." }
+      : { ok: true, message: "If that email is on the Ras Tafari Inc. member list, a 6-digit code is on its way. It can take a minute." };
 
-    const { data: member } = await supabase.from("rti_members").select("email, active").eq("email", email).maybeSingle();
-    if (!member || !member.active) return reply(generic);
+    if (!(await allowed(supabase, email, body.page))) return reply(generic);
 
     const { data: pending } = await supabase.from("rti_bgcheck_codes").select("created_at").eq("email", email).maybeSingle();
     if (pending && (Date.now() - new Date(pending.created_at).getTime()) / 1000 < COOLDOWN_SECONDS) return reply(generic);
@@ -195,8 +206,8 @@ Deno.serve(async (req) => {
       return reply({ ok: false, error: "That code doesn't match. Check the email and try again." });
     }
     // Still on the list? (Someone could be removed between asking and entering the code.)
-    const { data: member } = await supabase.from("rti_members").select("active, full_name").eq("email", email).maybeSingle();
-    if (!member?.active) return reply({ ok: false, error: "This email isn't on the member list." });
+    const member = await allowed(supabase, email, body.page);
+    if (!member) return reply({ ok: false, error: "This email isn't on the member list." });
 
     await supabase.from("rti_bgcheck_codes").delete().eq("email", email);
     const pass = randomHex(32);

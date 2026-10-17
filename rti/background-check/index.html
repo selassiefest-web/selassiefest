@@ -42,6 +42,7 @@ section h2{font-family:var(--display);font-size:22px;font-weight:700;margin:0 0 
 section h2 .n{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:500}
 .hint{color:var(--muted);font-size:16px;margin:0 0 14px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(6,1fr)}
+.dob{display:grid;grid-template-columns:1.3fr .9fr 1.1fr;gap:6px}.dob select{min-width:0}
 .c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.c2{grid-column:span 2}
 @media (max-width:560px){.c4,.c3,.c2,.grid>[style*="span 1"]{grid-column:span 6!important}}
 label.f{display:grid;gap:5px;min-width:0}
@@ -130,7 +131,7 @@ a{color:var(--accent)}
   <h1>Your Park District background check, in about 10 minutes</h1>
   <p class="lede">Every Ras Tafari Inc. member and associate completes the Chicago Park District's background check. It starts with the Park District's volunteer application. Fill in this page and it types your answers into the Park District's own form for you, then emails it to their volunteer office.</p>
   <ol class="steps3">
-    <li>Confirm your email with the 6-digit code we send you. This page is for Ras Tafari Inc. members only.</li>
+    <li>Confirm your email with the 6-digit code we send you.</li>
     <li>Fill in the form. Starred fields are required. It takes about 10 minutes.</li>
     <li>Sign with your finger or mouse, then press <b>Review application</b> and download a copy to check it.</li>
     <li>Press <b>Send</b>. The Park District emails you the background check instructions.</li>
@@ -144,9 +145,9 @@ a{color:var(--accent)}
 </header>
 
 <section id="gate">
-  <h2><span class="n">🔒</span>Members only: confirm your email</h2>
+  <h2><span class="n">🔒</span>Confirm your email</h2>
   <div id="gateIn">
-    <p class="hint">Enter the email Ras Tafari Inc. has for you. We'll email you a 6-digit code to open your application.</p>
+    <p class="hint">Enter your email. We'll email you a 6-digit code to open your application.</p>
     <div class="grid">
       <label class="f c4"><span>Your email</span><input id="gEmail" type="email" autocomplete="email" inputmode="email"></label>
       <div class="c2" style="align-self:end"><button class="primary" id="gSend" type="button" style="width:100%">Email me a code</button></div>
@@ -156,7 +157,7 @@ a{color:var(--accent)}
       <div class="c2" style="align-self:end"><button class="primary" id="gVerify" type="button" style="width:100%">Open my application</button></div>
     </div>
     <p class="note" id="gMsg" aria-live="polite" style="margin:12px 0 0"></p>
-    <p class="note" style="margin:8px 0 0">No code? Check the spelling and your spam folder. If it still doesn't come, email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> to be added to the member list.</p>
+    <p class="note" style="margin:8px 0 0">No code? Check the spelling and your spam folder. If it still doesn't come, email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> for help.</p>
   </div>
   <div id="gateOk" hidden>
     <div class="sigprev" style="justify-content:space-between">
@@ -198,7 +199,14 @@ a{color:var(--accent)}
     <label class="f c2"><span class="req">ZIP</span><input id="zip" type="text" inputmode="numeric" pattern="\d{5}(-\d{4})?" autocomplete="postal-code" required></label>
     <label class="f c3"><span class="req">Best contact number</span><input id="phone" type="tel" autocomplete="tel" required></label>
     <label class="f c3"><span class="req">Email</span><input id="email" type="email" autocomplete="email" required readonly title="This is the email you confirmed. Sign out to use a different one."></label>
-    <label class="f c3"><span class="req">Date of birth</span><input id="dob" type="date" required></label>
+    <div class="f c3" style="display:grid;gap:5px"><span class="lbl req" id="dobLbl">Date of birth</span>
+      <div class="dob" role="group" aria-labelledby="dobLbl">
+        <select id="dobM" aria-label="Birth month" autocomplete="bday-month"><option value="">Month</option></select>
+        <select id="dobD" aria-label="Birth day" autocomplete="bday-day"><option value="">Day</option></select>
+        <select id="dobY" aria-label="Birth year" autocomplete="bday-year"><option value="">Year</option></select>
+      </div>
+      <input id="dob" type="hidden">
+    </div>
     <div class="f c3" style="display:grid;gap:5px"><span class="lbl">Gender</span>
       <div class="seg" role="radiogroup" aria-label="Gender">
         <label><input type="radio" name="gender" value="Male"><span>Male</span></label>
@@ -450,7 +458,27 @@ DAYS.forEach((d,i)=>{
 const today = new Date(); $("sigDate").value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
 // Show/hide dependent fields
+// Date of birth: three dropdowns fill the hidden #dob as YYYY-MM-DD (blank until all three make a real date)
+(()=>{
+  const M=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  M.forEach((m,i)=>$("dobM").add(new Option(m, String(i+1).padStart(2,"0"))));
+  for(let d=1; d<=31; d++) $("dobD").add(new Option(d, String(d).padStart(2,"0")));
+  const y0=new Date().getFullYear();
+  for(let y=y0-14; y>=y0-100; y--) $("dobY").add(new Option(y, y));
+})();
+function dobFromSelects(){
+  const y=$("dobY").value, m=$("dobM").value, d=$("dobD").value;
+  const t=y&&m&&d ? new Date(+y, +m-1, +d) : null;
+  $("dob").value = t && t.getMonth()===+m-1 ? `${y}-${m}-${d}` : "";
+}
+function dobToSelects(v){
+  const [y,m,d]=(v||"").split("-");
+  if(!y) return;
+  if(![...$("dobY").options].some(o=>o.value===y)) $("dobY").add(new Option(y, y));
+  $("dobY").value=y; $("dobM").value=m; $("dobD").value=d;
+}
 function sync(){
+  dobFromSelects();
   $("pacRoleRow").hidden = radio("pac")!=="YES";
   $("pacRoleOtherRow").hidden = $("pacRole").value!=="__other";
   $("pacOtherRow").hidden = !$("pacc"+(PACS.length-1)).checked;
@@ -472,7 +500,7 @@ function validate(){
   const missing=[];
   const need = {rtiRole:"Your role with Ras Tafari Inc.",last:"Last name",first:"First name",addr:"Street address",city:"City",state:"State",zip:"ZIP",phone:"Contact number",email:"Email",dob:"Date of birth",why:"Why you're interested",park:"Park",ecName:"Emergency contact",ecPhone:"Emergency phone",sig:"Signature",sigDate:"Signature date"};
   let first=null;
-  for(const [id,label] of Object.entries(need)){ if(!val(id)){missing.push(label); first=first||$(id);} }
+  for(const [id,label] of Object.entries(need)){ if(!val(id)){missing.push(id==="dob" && $("dobM").value && $("dobD").value && $("dobY").value ? "Date of birth (that day isn't in that month)" : label); first=first||$(id==="dob" ? "dobM" : id);} }
   if(val("zip") && !/^\d{5}(-\d{4})?$/.test(val("zip"))){missing.push("ZIP format"); first=first||$("zip");}
   if(val("email") && !$("email").checkValidity()){missing.push("Email format"); first=first||$("email");}
   if(!/^\d{4}$/.test(val("ssn")) && !val("dl")){missing.push("Last 4 of SSN or driver's license"); first=first||$("ssn");}
@@ -888,6 +916,7 @@ async function loadDraft(){
   try{
     const d=out.data;
     for(const [id,v] of Object.entries(d.fields||{})){ const el=$(id); if(el && el.type!=="file") el.value=v; }
+    if(d.fields && d.fields.dob && !d.fields.dobY) dobToSelects(d.fields.dob);
     for(const [id,v] of Object.entries(d.checks||{})){ const el=$(id); if(el) el.checked=!!v; }
     for(const [n,v] of Object.entries(d.radios||{})){ const el=document.querySelector(`input[name="${n}"][value="${CSS.escape(v)}"]`); if(el) el.checked=true; }
     sync(); padFit();

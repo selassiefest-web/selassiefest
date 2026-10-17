@@ -155,8 +155,9 @@ Deno.serve(async (req) => {
   const { data: session } = await supabase.from("rti_bgcheck_sessions").select("*").eq("token_hash", await sha256(pass)).maybeSingle();
   if (!session || new Date(session.expires_at) < new Date()) return reply({ ok: false, error: "Your sign-in expired. Confirm your email again, then send.", relogin: true }, 401);
   if (session.sends >= MAX_SENDS_PER_PASS) return reply({ ok: false, error: "This sign-in has already sent the most applications allowed. Email stephen@selassiefest.com if you need to resend." }, 429);
+  // Open mode (secret RTI_BGCHECK_OPEN = "1"): any confirmed email may send, unless its rti_members row is switched off
   const { data: member } = await supabase.from("rti_members").select("active").eq("email", session.email).maybeSingle();
-  if (!member?.active) return reply({ ok: false, error: "This email isn't on the member list." }, 403);
+  if (member ? !member.active : Deno.env.get("RTI_BGCHECK_OPEN") !== "1") return reply({ ok: false, error: "This email isn't on the member list." }, 403);
 
   // And per member across sign-ins: at most 3 live sends a day (test sends don't count)
   const { count: todays } = await supabase.from("rti_bgcheck_submissions").select("*", { count: "exact", head: true })
