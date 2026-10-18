@@ -174,7 +174,7 @@ footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
 <td>10</td>
 <td>A board vote adopting these policies</td>
 <td>Policies only bind an organization once its board formally adopts them.</td>
-<td>Not yet complete</td>
+<td>Out for board signature (Oct. 17, 2026); see <a href="#board-vote">live status</a></td>
 <td><a href="/dj-lab/governance/board.html">Board and officers</a></td>
 </tr>
 <tr>
@@ -209,7 +209,7 @@ footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
 <td>15</td>
 <td>Conflict-of-interest policy adopted by the board, with every covered person's disclosure on file</td>
 <td>Decisions about children, money, vendors and stage time must be made by people with nothing to gain, and everyone covered must say in writing whether they have a conflict.</td>
-<td>Not yet complete</td>
+<td>Out for board signature (Oct. 17, 2026); see <a href="#board-vote">live status</a></td>
 <td><a href="/dj-lab/governance/conflict-of-interest.html">Conflict of interest policy</a></td>
 </tr>
 <tr>
@@ -244,7 +244,24 @@ footer .em{background:var(--bad-soft); border-radius:10px; padding:10px 12px}
 </ol>
 <p>If any item later lapses (for example, an insurance policy expires or a screening comes due), classes pause until it is fixed, and this table will show that too.</p>
 <h2 id="policy-status">Policy status</h2>
-<p>The safety, privacy and governance policies on this site are <strong>policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement</strong> (item 10 above). The Ras Tafari Inc. board has not yet voted on them.</p>
+<p>The safety, privacy and governance policies on this site are <strong>policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement</strong> (items 10 and 15 above).</p>
+<p>On October 17, 2026, a unanimous written consent adopting 37 Lab policies went to the Ras Tafari Inc. board for electronic signature, together with the election of two independent directors. The policies are adopted when every director has signed.</p>
+<div id="board-vote" style="border:2px solid #1f5b3a;border-radius:10px;padding:14px 16px;margin:12px 0;font-size:1.05em">Board vote: out for signature.</div>
+<script>
+(function () {
+  var el = document.getElementById('board-vote');
+  fetch('https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/rti-board-sign', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'progress', packet: 'rti-board-2026-10-17' })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d || !d.ok) return;
+    el.innerHTML = d.complete
+      ? '<strong>Board vote: signed by all ' + d.total + ' directors.</strong> The policies are adopted.'
+      : '<strong>Board vote: ' + d.signed + ' of ' + d.total + ' directors have signed.</strong> The policies are adopted when all ' + d.total + ' have signed.';
+  }).catch(function () {});
+})();
+</script>
+
 <h2 id="document-status-at-a-glance">Document status at a glance</h2>
 <table>
 <thead>
