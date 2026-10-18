@@ -12,7 +12,8 @@
 //   { action: "announce", secret, packet, subject, text }   From the CLI: emails one message to
 //       every director on the packet ({first} becomes their first name).
 //   { action: "invite", token }   Admin signers only: emails a fresh link to every
-//       director who hasn't signed yet (except the admin).
+//       director who hasn't signed yet (except the admin). This also happens
+//       automatically the moment the admin (the packet's first signer) signs.
 //   { action: "bootstrap", secret, packet }   From the CLI (RTI_SIGN_ADMIN_SECRET):
 //       emails the admin signer(s) their link to start a packet; with who: "all",
 //       every director who hasn't signed yet.
@@ -183,6 +184,12 @@ Deno.serve(async (req) => {
           `Hello ${firstName(s.full_name)},\n\nAll ${signers.length} directors have signed "${packet.title}". The last signature was ${me.full_name}'s.\n\nTo print or save the signed packet as a PDF, open the signing link from your earlier email and press "Print / save signed PDF".\n\nThe Secretary files the signed packet in the corporate records book (Bylaws, Article XIV).\n`,
           `<p>Hello ${esc(firstName(s.full_name))},</p><p>All ${signers.length} directors have signed <b>${esc(packet.title)}</b>. The last signature was ${esc(me.full_name)}'s.</p><p>To print or save the signed packet as a PDF, open the signing link from your earlier email and press <b>Print / save signed PDF</b>.</p><p style="color:#666;font-size:13px">The Secretary files the signed packet in the corporate records book (Bylaws, Article XIV).</p>`);
       }
+    } else if (me.is_admin) {
+      // The first signer (the packet's admin) signing releases the packet: everyone
+      // still waiting gets their personal link at once.
+      const invited: string[] = [];
+      for (const s of remaining) if (await invite(supabase, packet, s, me.full_name)) invited.push(s.full_name);
+      return reply({ ok: true, complete: false, invited });
     } else {
       for (const a of admins) {
         await sendEmail(a.email, `${me.full_name} signed: ${packet.title}`,
@@ -194,7 +201,7 @@ Deno.serve(async (req) => {
   }
 
   if (body.action === "invite") {
-    if (!me.is_admin) return reply({ ok: false, error: "Only the President can send signing links." }, 403);
+    if (!me.is_admin) return reply({ ok: false, error: "Only the first signer on this packet can send signing links." }, 403);
     const targets = (await loadSigners()).filter((s: any) => !s.signed_at && !s.is_admin);
     const sent = [];
     for (const s of targets) if (await invite(supabase, packet, s, me.full_name)) sent.push(s.full_name);

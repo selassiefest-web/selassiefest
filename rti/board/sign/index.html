@@ -98,6 +98,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
   .cert{display:block}
   .doc .lh{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:14px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.jump a{font:600 14px var(--display);color:var(--fg);text-decoration:none;padding:6px 10px;border-radius:8px;border:1px solid var(--line);white-space:nowrap}
+.jump a:hover,.jump a:focus-visible{border-color:#1f5b3a;outline:none}
+.jump a.signhere{background:#1f5b3a;color:#fff;border-color:#1f5b3a}
+.jump .lbl{font:600 12px var(--display);letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-right:2px}
+@media (max-width:700px){.jump{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.jump::-webkit-scrollbar{display:none}.jump .lbl{display:none}.doc,#signCard,#statusCard{scroll-margin-top:64px}}
+.doc,#signCard,#statusCard{scroll-margin-top:84px}
+@media print{.jump{display:none}}
 </style>
 </head>
 <body>
@@ -105,7 +113,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
   <header class="noprint">
     <div class="eyebrow">Ras Tafari Inc. &middot; Board of Directors</div>
     <h1 id="title">Board documents to sign</h1>
-    <p class="lede">Read each document below, then sign once at the bottom. Your one signature applies to the minutes and the written consent in this packet.</p>
+    <p class="lede">Read each document below, then sign once at the bottom. Your one signature goes on every signature line in this packet that carries your name.</p>
   </header>
 
   <div id="loading" class="card noprint">Opening your signing link&hellip;</div>
@@ -122,6 +130,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
     <p class="msg" id="statusMsg"></p>
   </section>
 
+  <nav id="jump" class="jump noprint" aria-label="Jump to" hidden></nav>
+
   <div id="docs"></div>
 
   <div id="certWrap" class="cert"></div>
@@ -130,7 +140,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
     <h2>Sign as <span id="meName"></span></h2>
     <p class="lede" id="meTitle"></p>
     <div class="field">
-      <span class="lbl" id="coiLbl">Conflict of interest (Bylaws, Article X). Do you have any financial, personal or professional interest in the Full Spectrum proposal?</span>
+      <span class="lbl" id="coiLbl">Conflict of interest (Bylaws, Article X). Do you have any financial, personal or professional interest in any matter in this packet?</span>
       <div class="radios" role="radiogroup" aria-labelledby="coiLbl">
         <label class="tick"><input type="radio" name="coi" value="none"> No, I have no conflict of interest.</label>
         <label class="tick"><input type="radio" name="coi" value="yes"> Yes, I want to disclose something.</label>
@@ -146,7 +156,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
       <div class="pad"><canvas id="pad" aria-label="Signature pad"></canvas><div class="base"></div><div class="ph" id="padPh">Sign above the line</div></div>
       <div><button type="button" id="padClear">Clear</button></div>
     </div>
-    <label class="tick"><input type="checkbox" id="attest"> I have read the agenda, the minutes and the written consent. The minutes are accurate, and I approve them and consent to the resolution.</label>
+    <label class="tick"><input type="checkbox" id="attest"> <span id="attestTxt">I have read every document in this packet and approve and consent to each resolution above my signature.</span></label>
     <label class="tick"><input type="checkbox" id="esign"> I agree to sign electronically. My typed name and drawn signature are my legal signature on these documents, with the same effect as signing on paper.</label>
     <div class="toolbar"><button class="primary" id="signBtn" type="button">Sign the packet</button></div>
     <p class="msg" id="signMsg"></p>
@@ -212,7 +222,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
         <tr><td>Signed</td><td>${s.signed_at ? esc(fmt(s.signed_at)) + " from IP " + esc(s.ip) : "Not signed"}</td></tr>
         <tr><td>Conflict of interest</td><td>${s.signed_at ? (s.conflict === "none" ? "None disclosed" : esc(s.conflict)) : "&mdash;"}</td></tr>
         <tr><td>Signed fingerprint</td><td>${s.doc_hash_signed ? (s.doc_hash_signed === packet.doc_hash ? "Matches the documents above" : "DIFFERENT VERSION") : "&mdash;"}</td></tr></table>`).join("")}
-      <p class="small">Each director opened a personal link emailed to them, read the documents, typed their name, drew a signature, consented to sign electronically and attested to the minutes. Signed electronically under the Illinois Electronic Commerce Security Act and the federal E-SIGN Act. Board action taken by unanimous written consent under 805 ILCS 105/108.45.</p></article>`;
+      <p class="small">Each director opened a personal link emailed to them, read the documents, typed their name, drew a signature, consented to sign electronically and attested that they had read the documents. Signed electronically under the Illinois Electronic Commerce Security Act and the federal E-SIGN Act. Board action taken by unanimous written consent under 805 ILCS 105/108.45.</p></article>`;
+
+    // Jump bar: every document, the signing panel and the signature list
+    $("jump").hidden = false;
+    $("jump").innerHTML = (me.signed_at ? "" : '<a class="signhere" href="#signCard">Sign here</a>') +
+      '<span class="lbl">Jump to</span>' +
+      packet.docs.map(d => `<a href="#doc-${esc(d.id)}">${esc(d.title)}</a>`).join("") +
+      '<a href="#statusCard">Signatures</a>';
+    $("attestTxt").textContent = "I have read every document in this packet (" + packet.docs.map(d => d.title).join("; ") + ") and approve and consent to each resolution above my signature.";
 
     // Signing panel
     if (!me.signed_at) {
@@ -281,9 +299,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
     if (problems.length) { msg.className = "msg err"; msg.textContent = "Before signing, please " + problems.join(", ") + "."; return; }
     const btn = $("signBtn"); btn.disabled = true; btn.textContent = "Signing…";
     try {
-      await call({action:"sign", typed_name:$("typed").value, signature:sig, conflict, doc_hash:state.packet.doc_hash, esign:true, attest:true});
+      const signed = await call({action:"sign", typed_name:$("typed").value, signature:sig, conflict, doc_hash:state.packet.doc_hash, esign:true, attest:true});
       state = await call({action:"load"}); render();
-      $("statusMsg").className = "msg ok"; $("statusMsg").textContent = "Thank you. Your signature is recorded.";
+      $("statusMsg").className = "msg ok"; $("statusMsg").textContent = "Thank you. Your signature is recorded." + (signed.invited && signed.invited.length ? " Signing links were just emailed to " + signed.invited.join(", ") + "." : "");
       $("statusCard").scrollIntoView({behavior:"smooth"});
     } catch(e) {
       msg.className = "msg err"; msg.textContent = e.message;
