@@ -141,6 +141,7 @@
   <div class="tabs" role="tablist">
     <button class="tab on" id="tabPartners" data-tab="partners" role="tab">Partners</button>
     <button class="tab" id="tabGrants" data-tab="grants" role="tab">Grants <span class="p-cat" id="grantBadge"></span></button>
+    <button class="tab" id="tabLetters" data-tab="letters" role="tab">Letters <span class="p-cat" id="letterBadge"></span></button>
   </div>
   <div id="partnersView">
   <div class="stages" id="stages"></div>
@@ -154,6 +155,11 @@
   </div>
   <p class="count" id="count"></p>
   <div class="list" id="list"></div>
+  </div>
+
+  <div id="lettersView" hidden>
+    <p class="count" id="lcount"></p>
+    <div class="list" id="llist"></div>
   </div>
 
   <div id="grantsView" hidden>
@@ -342,7 +348,9 @@
     state.partners = data.partners || []; state.activity = data.activity || [];
     try { state.grants = await rpc('fs_grants_load', { p_session: state.session.sessionToken }) || []; state.grantsOk = true; }
     catch(err){ if (/session/i.test(err.message)) throw err; state.grants = []; state.grantsOk = false; }
-    buildFilters(); render(); renderGrants();
+    try { state.letters = await rpc('fs_support_letters_load', { p_session: state.session.sessionToken }) || []; }
+    catch(err){ if (/session/i.test(err.message)) throw err; state.letters = []; }
+    buildFilters(); render(); renderGrants(); renderLetters();
   }
 
   function buildFilters(){
@@ -471,6 +479,20 @@
     return rows;
   }
 
+  function renderLetters(){
+    var ls = state.letters || [];
+    $('letterBadge').textContent = ls.length ? '(' + ls.length + ')' : '';
+    $('lcount').textContent = ls.length ? ls.length + ' signed letter' + (ls.length === 1 ? '' : 's') + ' of support. Open one to print or save it as a PDF for an application.' : 'No letters of support yet. Partners write them from their personal page or at selassiefest.com/support-letter/.';
+    $('llist').innerHTML = ls.map(function(l){
+      return '<div class="card" style="margin-bottom:10px"><div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap"><b>' + esc(l.org_name) + '</b><span class="p-cat">' + esc(new Date(l.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})) + '</span></div>' +
+        '<div class="p-cat" style="margin:2px 0 8px">' + esc(l.signer_name) + (l.signer_title ? ', ' + esc(l.signer_title) : '') + ' &middot; ' + esc((l.programs || []).join(', ')) + (l.partner ? ' &middot; partner: ' + esc(l.partner) : '') + '</div>' +
+        '<div style="font-size:.9rem; white-space:pre-wrap">' + esc(l.why) + '</div>' +
+        (l.commitment ? '<div style="font-size:.88rem; margin-top:6px"><b>They offer:</b> ' + esc(l.commitment) + '</div>' : '') +
+        '<div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">' + (l.link ? '<a class="btn" href="' + esc(l.link) + '" target="_blank" rel="noopener">Open signed letter</a>' : '<span class="p-cat">Signed copy: see the email sent when it arrived</span>') +
+        '<a class="btn" href="mailto:' + esc(l.email) + '">Email ' + esc(l.signer_name.split(' ')[0]) + '</a></div></div>';
+    }).join('');
+  }
+
   function renderGrants(){
     $('grantWarn').innerHTML = state.grantsOk ? '' : '<div class="warn">The grant pipeline is not set up in the database yet. Apply supabase/fs-grants-pipeline.sql, then reload.</div>';
     var gs = state.grants, counts = {}; gs.forEach(function(g){ counts[g.status] = (counts[g.status] || 0) + 1; });
@@ -515,10 +537,10 @@
     try { await rpc('fs_grant_save', { p_session: state.session.sessionToken, p_id: sel.getAttribute('data-gid'), p: { status: sel.value } }); await load(); }
     catch(err){ alert('Could not save: ' + err.message); }
   });
-  ['tabPartners','tabGrants'].forEach(function(id){ $(id).addEventListener('click', function(){
+  ['tabPartners','tabGrants','tabLetters'].forEach(function(id){ $(id).addEventListener('click', function(){
     state.tab = $(id).getAttribute('data-tab');
-    $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants');
-    $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants';
+    $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants'); $('tabLetters').classList.toggle('on', state.tab === 'letters');
+    $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants'; $('lettersView').hidden = state.tab !== 'letters';
     $('addBtn').style.display = state.tab === 'partners' ? '' : 'none'; }); });
 
   var grantId = null;

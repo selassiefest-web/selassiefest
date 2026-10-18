@@ -141,7 +141,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
   ];
   var $ = function(id){ return document.getElementById(id); };
   var esc = function(s){ return String(s || "").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); };
-  var pre = new URLSearchParams(location.search).get("p");
+  var qs = new URLSearchParams(location.search);
+  var pre = qs.get("p");
+  var partnerKey = /^[a-z0-9]{6,16}$/.test(qs.get("k") || "") ? qs.get("k") : null;   // set when coming from a partner page
+  if (qs.get("org")) $("org_name").value = qs.get("org").slice(0, 160);
   $("programs").innerHTML = PROGRAMS.map(function(p, i){
     var on = pre ? p[0].toLowerCase().indexOf(pre.toLowerCase()) >= 0 : i === 0;
     return '<label><input type="checkbox" value="' + esc(p[0]) + '"' + (on ? " checked" : "") + '><span><b>' + esc(p[0]) + '</b><br><span class="h" style="color:var(--muted);font-size:.9rem">' + esc(p[1]) + '</span></span></label>';
@@ -203,7 +206,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
       var token = await sfTurnstileToken();
       var res = await fetch(SUPABASE_URL + "/functions/v1/support-letter", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ action:"submit", token: token, letter: {
         org_name: v("org_name"), org_about: v("org_about"), signer_name: v("signer_name"), signer_title: v("signer_title"), email: v("email"), phone: v("phone"), address: v("address"),
-        relationship: v("relationship"), programs: picked(), why: v("why"), commitment: v("commitment"), signature_png: sigUrl, attest: $("attest").checked, public_ok: $("public_ok").checked } }) });
+        relationship: v("relationship"), programs: picked(), why: v("why"), commitment: v("commitment"), signature_png: sigUrl, attest: $("attest").checked, public_ok: $("public_ok").checked, pitch_key: partnerKey } }) });
       var out = {}; try { out = await res.json(); } catch(x){}
       if (!res.ok || !out.ok) throw new Error(out.error || "Something went wrong. Please try again.");
       Array.prototype.forEach.call(document.querySelectorAll("#f fieldset"), function(fs){ fs.hidden = true; });

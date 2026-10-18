@@ -99,6 +99,7 @@ Deno.serve(async (req) => {
     email: clean(L.email, 200).toLowerCase(), phone: clean(L.phone, 40), address: clean(L.address, 200), relationship: clean(L.relationship, 600),
     programs: (Array.isArray(L.programs) ? L.programs : []).filter((p: string) => PROGRAMS.includes(p)).slice(0, 6),
     why: clean(L.why, 2000), commitment: clean(L.commitment, 800), public_ok: L.public_ok === true, signature_png: String(L.signature_png ?? ""),
+    pitch_key: /^[a-z0-9]{6,16}$/.test(String(L.pitch_key ?? "")) ? String(L.pitch_key) : null,   // set when written from a partner page
   };
   if (!letter.org_name || !letter.signer_name) return reply({ ok: false, error: "Add your organization and your name." }, 400);
   if (!isEmail(letter.email)) return reply({ ok: false, error: "That email address doesn't look right." }, 400);
@@ -108,7 +109,7 @@ Deno.serve(async (req) => {
   if (L.attest !== true) return reply({ ok: false, error: "Tick the box confirming you may sign for your organization." }, 400);
 
   const t = randomHex(24);
-  const { data: row, error } = await supabase.from("support_letters").insert({ ...letter, token_hash: await sha256(t), ip, user_agent: (req.headers.get("user-agent") || "").slice(0, 300) }).select("id").single();
+  const { data: row, error } = await supabase.from("support_letters").insert({ ...letter, token_hash: await sha256(t), staff_token: t, ip, user_agent: (req.headers.get("user-agent") || "").slice(0, 300) }).select("id").single();
   if (error) { console.error("support-letter: insert", error.code); return reply({ ok: false, error: "Couldn't save your letter. Please try again." }, 500); }
 
   const link = `${PAGE}view/?t=${t}`;
