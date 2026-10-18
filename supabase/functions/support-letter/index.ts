@@ -8,6 +8,7 @@
 //
 // Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, TURNSTILE_SECRET_KEY.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -48,13 +49,57 @@ async function turnstileOk(token: string, ip: string) {
   const out = await (await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form })).json();
   return out.success === true && ALLOWED_HOSTNAMES.includes(out.hostname);
 }
-async function send(to: string[], subject: string, html: string, replyTo?: string) {
+async function send(to: string[], subject: string, html: string, replyTo?: string, attachments?: { filename: string; content: string }[]) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) }),
+    body: JSON.stringify({ from: FROM, to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}), ...(attachments ? { attachments } : {}) }),
   });
   if (!res.ok) console.error("support-letter: resend", res.status, (await res.text()).slice(0, 200));
+}
+
+// The signed letter as a one-page PDF (same wording as /support-letter/view/), attached to the emails
+const listOf = (a: string[]) => a.length <= 1 ? (a[0] || "") : a.length === 2 ? a.join(" and ") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+const ascii = (s: string) => String(s || "").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-").replace(/…/g, "...").replace(/[^\x20-\x7E\n]/g, "");
+async function letterPdf(L: any, id: string, createdAt: Date) {
+  const pdf = await PDFDocument.create();
+  const page = pdf.addPage([612, 792]);
+  const reg = await pdf.embedFont(StandardFonts.Helvetica), bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const M = 64, W = 612 - 2 * M; let y = 792 - 60;
+  const lines = (text: string, font: any, size: number) => {
+    const out: string[] = [];
+    for (const para of ascii(text).split("\n")) {
+      let line = "";
+      for (const w of para.split(/\s+/).filter(Boolean)) {
+        const t = line ? line + " " + w : w;
+        if (font.widthOfTextAtSize(t, size) > W && line) { out.push(line); line = w; } else line = t;
+      }
+      out.push(line);
+    }
+    return out;
+  };
+  const para = (text: string, font = reg, size = 11, gap = 9) => { for (const l of lines(text, font, size)) { page.drawText(l, { x: M, y, size, font }); y -= size * 1.38; } y -= gap; };
+  para(L.org_name, bold, 15, 2);
+  if (L.address) para(L.address, reg, 9.5, 2);
+  page.drawLine({ start: { x: M, y: y + 4 }, end: { x: 612 - M, y: y + 4 }, thickness: 0.8, color: rgb(0.8, 0.78, 0.72) }); y -= 14;
+  para(createdAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "America/Chicago" }));
+  para("To the grant review committees and the Chicago Park District:");
+  para(`On behalf of ${L.org_name}, I am writing in support of Ras Tafari Inc.'s ${listOf(L.programs)}. ${L.org_about || ""}`.trim());
+  if (L.relationship) para(L.relationship);
+  para(L.why);
+  if (L.commitment) para(`To help this work succeed, ${L.org_name} will ${L.commitment.replace(/^we will\s+/i, "")}`);
+  para("I am glad to recommend Ras Tafari Inc. and urge you to support this work.");
+  para("Sincerely,", reg, 11, 4);
+  try {
+    const png = await pdf.embedPng(Uint8Array.from(atob(L.signature_png.split(",")[1]), (c) => c.charCodeAt(0)));
+    const h = 54, w = Math.min(220, png.width * (h / png.height));
+    page.drawImage(png, { x: M, y: y - h, width: w, height: h }); y -= h + 20;
+  } catch { y -= 20; }
+  para([L.signer_name, L.signer_title, L.org_name, L.email + (L.phone ? " - " + L.phone : "")].filter(Boolean).join("\n"), reg, 11, 14);
+  for (const l of lines(`Signed electronically on ${createdAt.toLocaleString("en-US", { timeZone: "America/Chicago", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })} CT through selassiefest.com. Letter ID ${id}.`, reg, 8)) { page.drawText(l, { x: M, y, size: 8, font: reg, color: rgb(0.4, 0.4, 0.45) }); y -= 11; }
+  const bytes = await pdf.save();
+  let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
 }
 
 Deno.serve(async (req) => {
@@ -114,16 +159,21 @@ Deno.serve(async (req) => {
 
   const link = `${PAGE}view/?t=${t}`;
   const progs = letter.programs.join(", ");
+  let files: { filename: string; content: string }[] | undefined;
+  try { files = [{ filename: `Letter-of-Support-${letter.org_name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "")}.pdf`, content: await letterPdf(letter, row.id, new Date()) }]; }
+  catch (e) { console.error("support-letter: pdf", String(e).slice(0, 200)); }
   await send(STAFF, `New letter of support: ${letter.org_name}`,
     `<p><b>${esc(letter.signer_name)}</b>${letter.signer_title ? ", " + esc(letter.signer_title) : ""} of <b>${esc(letter.org_name)}</b> signed a letter of support for ${esc(progs)}.</p>
      <blockquote style="border-left:3px solid #1f7a45;margin:12px 0;padding:4px 12px;color:#333">${esc(letter.why).replace(/\n/g, "<br>")}</blockquote>
      ${letter.commitment ? `<p><b>They offer:</b> ${esc(letter.commitment)}</p>` : ""}
      <p><a href="${link}">Open and print the signed letter</a></p>
-     <p style="color:#666;font-size:13px">${esc(letter.email)}${letter.phone ? " · " + esc(letter.phone) : ""} · listed publicly: ${letter.public_ok ? "yes" : "no"}</p>`);
+     <p>The signed letter is attached as a PDF, ready for an application. It is also in the Letters tab of the partner tracker.</p>
+     <p style="color:#666;font-size:13px">${esc(letter.email)}${letter.phone ? " · " + esc(letter.phone) : ""} · listed publicly: ${letter.public_ok ? "yes" : "no"}</p>`, undefined, files);
   await send([letter.email], "Thank you for your letter of support",
     `<p>Thank you, ${esc(letter.signer_name.split(" ")[0])}. Your letter of support for ${esc(progs)} is signed and on file with Ras Tafari Inc.</p>
      <p><a href="${link}">View or print your signed letter</a></p>
      <p>We'll include it with our applications to funders and the Chicago Park District. If anything in it needs changing, just reply to this email.</p>
-     <p>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333</p>`, STAFF[0]);
+     <p>A PDF copy is attached for your records.</p>
+     <p>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333</p>`, STAFF[0], files);
   return reply({ ok: true, id: row.id, link });
 });
