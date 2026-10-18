@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>RTI Financials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#F6F4EF; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#15192A; --ink-soft:#464B60; --ink-faint:#7A7F92;
+    --line:#E2DDD2; --green:#1F7A4D; --red:#B9382F; --gold:#A86A06; --accent:#1F5B3A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1117; --surface:#161B24; --surface-2:#1D2330; --ink:#ECEFF5; --ink-soft:#B3B9C8; --ink-faint:#868D9E;
+      --line:#2A3140; --green:#4CC48A; --red:#F07A70; --gold:#F0B44A; --accent:#5BC78F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1117; --surface:#161B24; --surface-2:#1D2330; --ink:#ECEFF5; --ink-soft:#B3B9C8; --ink-faint:#868D9E;
+    --line:#2A3140; --green:#4CC48A; --red:#F07A70; --gold:#F0B44A; --accent:#5BC78F;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Inter",-apple-system,"Segoe UI",Roboto,sans-serif; overflow-x:hidden;}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; margin:0; letter-spacing:-.01em; line-height:1.15;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 16px;}
+  header{padding:22px 0 14px;}
+  .eyebrow{font:700 .7rem "Inter",sans-serif; letter-spacing:.16em; text-transform:uppercase; color:var(--gold);}
+  h1{font-size:1.6rem; font-weight:800; margin:6px 0 4px;}
+  .sub{color:var(--ink-soft); font-size:.9rem;}
+  nav.tabs{position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--line);}
+  nav.tabs .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:8px; padding-bottom:8px; scrollbar-width:none;}
+  nav.tabs .wrap::-webkit-scrollbar{display:none}
+  nav.tabs button{font:600 .82rem "Inter",sans-serif; white-space:nowrap; padding:8px 12px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
+  nav.tabs button.on{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  main{padding:18px 0 50px;}
+  section.tab{display:none;} section.tab.on{display:block;}
+  h2{font-size:1.2rem; font-weight:800; margin:4px 0 4px;}
+  .note{color:var(--ink-soft); font-size:.86rem; margin:0 0 14px;}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0 18px;}
+  .kpi{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px;}
+  .kpi .l{font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint);}
+  .kpi .v{font:800 1.35rem "Montserrat",sans-serif; margin-top:4px; font-variant-numeric:tabular-nums;}
+  .kpi .s{font-size:.78rem; color:var(--ink-faint);}
+  .neg{color:var(--red);} .pos{color:var(--green);}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:0 0 14px;}
+  .card h3{font-size:.95rem; font-weight:800; margin-bottom:8px;}
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin:0 0 14px;}
+  table{width:100%; border-collapse:collapse; font-size:.86rem;}
+  th,td{padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  th{font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2); white-space:nowrap;}
+  td.n,th.n{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  tr.sub td{font-weight:700; background:var(--surface-2);}
+  tr.tot td{font-weight:800; border-top:2px solid var(--ink);}
+  tr.h td{font-weight:800; font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); padding-top:14px;}
+  tr:last-child td{border-bottom:0;}
+  td.ind{padding-left:22px;}
+  .filters{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px;}
+  .filters select,.filters input{font:500 .85rem "Inter",sans-serif; padding:8px 10px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--ink); min-width:0;}
+  .filters input{flex:1 1 160px;}
+  .flag{display:inline-block; font:700 .64rem "Inter",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); border:1px solid currentColor; border-radius:5px; padding:0 5px; margin-left:4px;}
+  .items{display:grid; gap:10px;}
+  .it{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:12px; padding:12px 14px;}
+  .it b{display:block;} .it .d{font-size:.86rem; color:var(--ink-soft); margin-top:3px;} .it .o{font-size:.74rem; color:var(--ink-faint); margin-top:5px; text-transform:uppercase; letter-spacing:.06em;}
+  .bar{display:flex; height:10px; border-radius:6px; overflow:hidden; background:var(--surface-2); margin:6px 0 2px;}
+  .bar span{display:block; height:100%;}
+  .rowbar{display:grid; grid-template-columns:minmax(0,1fr) 92px; gap:10px; align-items:center; font-size:.86rem; margin-bottom:8px;}
+  .rowbar .n{text-align:right; font-variant-numeric:tabular-nums;}
+  .btn{display:inline-block; font:700 .85rem "Inter",sans-serif; padding:10px 14px; border-radius:10px; border:1px solid var(--ink); background:var(--ink); color:var(--bg); cursor:pointer; text-decoration:none;}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);}
+  .gate{max-width:440px; margin:40px auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px;}
+  .gate input{width:100%; font:500 1rem "Inter",sans-serif; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); margin:10px 0;}
+  .msg{font-size:.88rem; color:var(--ink-soft); margin-top:10px;}
+  footer{color:var(--ink-faint); font-size:.78rem; padding:20px 0 40px; border-top:1px solid var(--line);}
+  @media screen and (max-width:720px){
+    .kpis{grid-template-columns:1fr 1fr;}
+    h1{font-size:1.35rem;}
+    table.stack thead{display:none;}
+    table.stack tr{display:block; padding:9px 12px; border-bottom:1px solid var(--line);}
+    table.stack td{display:block; border:0; padding:1px 0; text-align:left !important;}
+    table.stack td[data-l]::before{content:attr(data-l) ": "; color:var(--ink-faint); font-size:.74rem;}
+    table.stack td.hide-m{display:none;}
+    table.stack td.top{display:flex; justify-content:space-between; gap:10px; font-weight:600;}
+  }
+  @media print{
+    nav.tabs,.filters,.noprint{display:none !important;}
+    section.tab{display:block !important; break-before:page;}
+    section.tab:first-of-type{break-before:auto;}
+    body{background:#fff; color:#000; font-size:10.5px;}
+    .tw{overflow:visible;}
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <span class="eyebrow">Ras Tafari Inc. &middot; Officers only</span>
+  <h1>RTI Financials</h1>
+  <div class="sub" id="who">Private board financials for Stephen Henry, Paul Kelly and Albert Harris.</div>
+</header>
+
+<div id="gate" class="wrap" hidden>
+  <div class="gate">
+    <h2>Get your link</h2>
+    <p class="note">Enter the email RTI has on file for you. If it belongs to an RTI officer, a personal link arrives in a minute. The link keeps working, so you can bookmark it.</p>
+    <form id="gateForm"><input type="email" id="gateEmail" placeholder="you@example.com" required autocomplete="email"><button class="btn" type="submit">Email me a link</button></form>
+    <div class="msg" id="gateMsg"></div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <nav class="tabs"><div class="wrap" id="tabbar"></div></nav>
+  <main class="wrap" id="main"></main>
+  <footer class="wrap" id="foot"></footer>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  "use strict";
+  var FN = SUPABASE_URL + "/functions/v1/rti-finance";
+  var params = new URLSearchParams(location.search);
+  var token = params.get("t") || "";
+  try { if (token) localStorage.setItem("rtiFinT", token); else token = localStorage.getItem("rtiFinT") || ""; } catch (e) {}
+  if (params.get("t")) history.replaceState(null, "", location.pathname + location.hash);
+
+  function call(body){ return fetch(FN, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}).then(function(r){ return r.json(); }); }
+  var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+  var fmt = function(n){ var v = Math.round(n * 100) / 100; var s = Math.abs(v).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); return (v < 0 ? "−$" : "$") + s; };
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var mlabel = function(m){ var p = m.split("-"); return MONTHS[+p[1]-1] + " " + p[0]; };
+  var dlabel = function(d){ var p = d.split("-"); return MONTHS[+p[1]-1] + " " + (+p[2]) + ", " + p[0]; };
+
+  function showGate(msg){
+    document.getElementById("gate").hidden = false;
+    if (msg) document.getElementById("gateMsg").textContent = msg;
+    document.getElementById("gateForm").onsubmit = function(e){
+      e.preventDefault();
+      var m = document.getElementById("gateMsg"); m.textContent = "Sending…";
+      call({action:"link", email:document.getElementById("gateEmail").value}).then(function(r){ m.textContent = r.message || r.error || "Check your email."; }).catch(function(){ m.textContent = "Couldn't reach the server. Try again."; });
+    };
+  }
+
+  if (!token) { showGate(); return; }
+  call({action:"load", token:token}).then(function(r){
+    if (!r.ok) { try { localStorage.removeItem("rtiFinT"); } catch (e) {} showGate(r.error); return; }
+    render(r);
+  }).catch(function(){ showGate("Couldn't reach the server. Try again."); });
+
+  function render(r){
+    var B = r.books, end = B.period.to;
+    document.getElementById("who").textContent = "Signed in as " + r.viewer.full_name + ", " + r.viewer.title + " · Books updated " + new Date(r.updated_at).toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"});
+    var inP = B.txns.filter(function(t){ return t.date <= end; });
+    var rev = inP.filter(function(t){ return t.kind === "revenue"; }), exp = inP.filter(function(t){ return t.kind === "expense"; });
+    var sum = function(a){ return a.reduce(function(s, t){ return s + t.amount; }, 0); };
+    var totRev = sum(rev), totExp = -sum(exp), net = totRev - totExp;
+    var group = function(a, key){ var o = {}; a.forEach(function(t){ var k = typeof key === "function" ? key(t) : t[key]; o[k] = (o[k] || 0) + t.amount; }); return o; };
+    var months = Array.from(new Set(inP.map(function(t){ return t.date.slice(0,7); }))).sort();
+    var progs = Array.from(new Set(inP.map(function(t){ return t.program; }))).sort();
+    var cash = B.accounts.checking, card = B.accounts.card;
+
+    var tabs = [["summary","Summary"],["pl","P&L"],["programs","By program"],["balance","Balance sheet"],["monthly","Monthly reports"],["checking","Checking"],["cardl","Card"],["open","Open items"],["calendar","Deadlines"]];
+    document.getElementById("tabbar").innerHTML = tabs.map(function(t, i){ return '<button data-t="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</button>'; }).join("");
+    var H = [];
+
+    // Summary
+    var revCats = group(rev, "category"), expCats = group(exp, "category");
+    var topExp = Object.keys(expCats).map(function(k){ return [k, -expCats[k]]; }).sort(function(a, b){ return b[1] - a[1]; });
+    var maxE = topExp.length ? topExp[0][1] : 1;
+    H.push('<section class="tab on" id="t-summary"><h2>Summary</h2><p class="note">' + esc(B.period.label) + '. Built from the Chase checking and Chase Ink card statements, reconciled to the bank and card balances.</p>' +
+      '<div class="kpis">' +
+        '<div class="kpi"><div class="l">Money in</div><div class="v">' + fmt(totRev) + '</div><div class="s">gifts, tickets, card rewards</div></div>' +
+        '<div class="kpi"><div class="l">Costs</div><div class="v">' + fmt(totExp) + '</div><div class="s">bank and card</div></div>' +
+        '<div class="kpi"><div class="l">Result</div><div class="v ' + (net < 0 ? "neg" : "pos") + '">' + fmt(net) + '</div><div class="s">' + (net < 0 ? "deficit, carried on the card" : "surplus") + '</div></div>' +
+        '<div class="kpi"><div class="l">Card owed</div><div class="v neg">' + fmt(card.statement.balance) + '</div><div class="s">as of ' + dlabel(card.statement.date) + '</div></div>' +
+      '</div>' +
+      '<div class="card"><h3>Where the money went</h3>' + topExp.map(function(e){ return '<div class="rowbar"><div>' + esc(e[0]) + '<div class="bar"><span style="width:' + (e[1] / maxE * 100).toFixed(1) + '%;background:var(--accent)"></span></div></div><div class="n">' + fmt(e[1]) + '</div></div>'; }).join("") + '</div>' +
+      '<div class="card"><h3>Next due</h3><p style="margin:0">Card minimum <b>' + fmt(card.statement.minimum) + '</b> due <b>' + dlabel(card.statement.due) + '</b>. ' + esc(card.statement.promoApr) + '. ' + B.openItems.length + ' open items on the Open items tab.</p></div>' +
+      '<div class="noprint"><button class="btn ghost" onclick="window.print()">Print or save all reports as PDF</button></div></section>');
+
+    // P&L
+    var catsBy = function(arr){ var o = {}; arr.forEach(function(t){ o[t.category] = o[t.category] || {}; var m = t.date.slice(0,7); o[t.category][m] = (o[t.category][m] || 0) + t.amount; }); return o; };
+    var rc = catsBy(rev), ec = catsBy(exp);
+    var row = function(name, byM, sign, cls){ var tot = 0; var cells = months.map(function(m){ var v = (byM[m] || 0) * sign; tot += v; return '<td class="n">' + (v ? fmt(v) : "–") + '</td>'; }).join(""); return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><td class="ind">' + esc(name) + '</td>' + cells + '<td class="n">' + fmt(tot) + '</td></tr>'; };
+    var mTot = function(arr, sign){ var o = {}; arr.forEach(function(t){ var m = t.date.slice(0,7); o[m] = (o[m] || 0) + t.amount; }); return o; };
+    var netM = {}; months.forEach(function(m){ netM[m] = (mTot(rev,1)[m] || 0) + (mTot(exp,1)[m] || 0); });
+    var head = '<tr><th>Line</th>' + months.map(function(m){ return '<th class="n">' + mlabel(m) + '</th>'; }).join("") + '<th class="n">Total</th></tr>';
+    H.push('<section class="tab" id="t-pl"><h2>Profit &amp; loss (Statement of Activities)</h2><p class="note">' + esc(B.period.label) + ', by month. Card charges count on the day they were made; payments to the card are transfers, not costs. Swipe sideways on a phone.</p>' +
+      '<div class="tw"><table><thead>' + head + '</thead><tbody>' +
+      '<tr class="h"><td colspan="' + (months.length + 2) + '">Revenue</td></tr>' +
+      Object.keys(rc).sort().map(function(k){ return row(k, rc[k], 1); }).join("") +
+      row("Total revenue", mTot(rev), 1, "sub") +
+      '<tr class="h"><td colspan="' + (months.length + 2) + '">Expenses</td></tr>' +
+      Object.keys(ec).sort().map(function(k){ return row(k, ec[k], -1); }).join("") +
+      row("Total expenses", mTot(exp), -1, "sub") +
+      row("Change in net assets", netM, 1, "tot") +
+      '</tbody></table></div></section>');
+
+    // By program
+    var progRows = progs.map(function(p){ var r1 = sum(rev.filter(function(t){ return t.program === p; })), e1 = -sum(exp.filter(function(t){ return t.program === p; })); return '<tr><td class="top" data-l=""><span>' + esc(p) + '</span></td><td class="n" data-l="Revenue">' + fmt(r1) + '</td><td class="n" data-l="Expenses">' + fmt(e1) + '</td><td class="n ' + (r1 - e1 < 0 ? "neg" : "pos") + '" data-l="Net">' + fmt(r1 - e1) + '</td></tr>'; }).join("");
+    H.push('<section class="tab" id="t-programs"><h2>Results by program</h2><p class="note">Board gifts are recorded where they were deposited, so program results show how each event was paid for, not whether it "made money." "General" is RTI operating costs: website, software, fees.</p>' +
+      '<div class="tw"><table class="stack"><thead><tr><th>Program</th><th class="n">Revenue</th><th class="n">Expenses</th><th class="n">Net</th></tr></thead><tbody>' + progRows +
+      '<tr class="tot"><td>Total</td><td class="n">' + fmt(totRev) + '</td><td class="n">' + fmt(totExp) + '</td><td class="n">' + fmt(net) + '</td></tr></tbody></table></div></section>');
+
+    // Balance sheet
+    H.push('<section class="tab" id="t-balance"><h2>Balance sheet (Statement of Financial Position)</h2><p class="note">As of ' + dlabel(end) + '.</p>' +
+      '<div class="tw"><table><tbody>' +
+      '<tr class="h"><td colspan="2">Assets</td></tr><tr><td class="ind">' + esc(cash.name) + '</td><td class="n">' + fmt(cash.balance) + '</td></tr>' +
+      '<tr class="sub"><td>Total assets</td><td class="n">' + fmt(cash.balance) + '</td></tr>' +
+      '<tr class="h"><td colspan="2">Liabilities</td></tr><tr><td class="ind">' + esc(card.name) + '</td><td class="n">' + fmt(card.balance) + '</td></tr>' +
+      '<tr class="sub"><td>Total liabilities</td><td class="n">' + fmt(card.balance) + '</td></tr>' +
+      '<tr class="h"><td colspan="2">Net assets</td></tr><tr><td class="ind">Without donor restrictions</td><td class="n neg">' + fmt(cash.balance - card.balance) + '</td></tr>' +
+      '<tr class="tot"><td>Total liabilities and net assets</td><td class="n">' + fmt(cash.balance) + '</td></tr>' +
+      '</tbody></table></div>' +
+      '<div class="card"><h3>Check</h3><p style="margin:0">Net assets of ' + fmt(cash.balance - card.balance) + ' equal the P&amp;L result of ' + fmt(net) + ' since RTI started with nothing on June 8. The two statements agree' + (Math.abs((cash.balance - card.balance) - net) < 0.01 ? ' to the penny.' : '; difference ' + fmt((cash.balance - card.balance) - net) + '.') + '</p></div>' +
+      '<div class="card"><h3>After ' + dlabel(end) + '</h3><p style="margin:0">Card statement of ' + dlabel(card.statement.date) + ': ' + fmt(card.statement.balance) + ' owed, ' + fmt(card.statement.minimum) + ' minimum due ' + dlabel(card.statement.due) + ', limit ' + fmt(card.statement.limit) + '.</p></div></section>');
+
+    // Monthly treasurer's reports
+    var chk = B.txns.filter(function(t){ return t.source.indexOf("Checking") === 0 && t.date <= end; });
+    var run = 0, mr = months.map(function(m){
+      var open = run, a = chk.filter(function(t){ return t.date.slice(0,7) === m; });
+      var inn = sum(a.filter(function(t){ return t.amount > 0; })), out = -sum(a.filter(function(t){ return t.amount < 0; }));
+      run = open + inn - out;
+      var cm = B.txns.filter(function(t){ return t.source.indexOf("Card") === 0 && t.date.slice(0,7) === m; });
+      var cardCh = -sum(cm.filter(function(t){ return t.kind === "expense"; }));
+      var rm = rev.filter(function(t){ return t.date.slice(0,7) === m; }), em = exp.filter(function(t){ return t.date.slice(0,7) === m; });
+      return '<div class="card"><h3>Treasurer&rsquo;s report: ' + mlabel(m) + '</h3><div class="tw" style="margin:6px 0 0"><table><tbody>' +
+        '<tr><td>Checking, start of month</td><td class="n">' + fmt(open) + '</td></tr>' +
+        '<tr><td class="ind">Deposits</td><td class="n">' + fmt(inn) + '</td></tr>' +
+        '<tr><td class="ind">Payments (incl. card payments)</td><td class="n">' + fmt(-out) + '</td></tr>' +
+        '<tr class="sub"><td>Checking, end of month</td><td class="n">' + fmt(run) + '</td></tr>' +
+        '<tr><td>Spent on the card this month</td><td class="n">' + fmt(cardCh) + '</td></tr>' +
+        '<tr><td>Revenue / expenses (P&amp;L)</td><td class="n">' + fmt(sum(rm)) + ' / ' + fmt(-sum(em)) + '</td></tr>' +
+        '</tbody></table></div></div>';
+    });
+    H.push('<section class="tab" id="t-monthly"><h2>Monthly treasurer&rsquo;s reports</h2><p class="note">For Paul to present at each board meeting. Checking end-of-month balances match the Chase statements.</p>' + mr.join("") + '</section>');
+
+    // Ledgers
+    var ledger = function(id, title, src, note){
+      var rows = B.txns.filter(function(t){ return t.source.indexOf(src) === 0; });
+      var cats = Array.from(new Set(rows.map(function(t){ return t.category; }))).sort();
+      var pr = Array.from(new Set(rows.map(function(t){ return t.program; }))).sort();
+      return '<section class="tab" id="t-' + id + '"><h2>' + title + '</h2><p class="note">' + note + '</p>' +
+        '<div class="filters"><input type="search" placeholder="Search payee or note" data-f="q"><select data-f="c"><option value="">All categories</option>' + cats.map(function(c){ return '<option>' + esc(c) + '</option>'; }).join("") + '</select><select data-f="p"><option value="">All programs</option>' + pr.map(function(c){ return '<option>' + esc(c) + '</option>'; }).join("") + '</select></div>' +
+        '<div class="tw"><table class="stack lg"><thead><tr><th>Date</th><th>Payee / source</th><th>Category</th><th>Program</th><th class="n">Amount</th></tr></thead><tbody>' +
+        rows.map(function(t){ return '<tr data-a="' + t.amount + '" data-c="' + esc(t.category) + '" data-p="' + esc(t.program) + '" data-q="' + esc((t.party + " " + t.note + " " + t.method).toLowerCase()) + '"><td class="top" data-l=""><span>' + dlabel(t.date) + '</span><span class="' + (t.amount < 0 ? "neg" : "pos") + '">' + fmt(t.amount) + '</span></td><td data-l="Payee">' + esc(t.party) + (t.note ? ' <span class="flag">' + esc(t.note) + '</span>' : '') + (t.date > end ? ' <span class="flag">After Sept 30</span>' : '') + (t.kind === "transfer" ? ' <span class="flag">Transfer</span>' : '') + '</td><td data-l="Category">' + esc(t.category) + '</td><td data-l="Program">' + esc(t.program) + '</td><td class="n hide-m">' + fmt(t.amount) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="note" data-total></p></section>';
+    };
+    H.push(ledger("checking", "Checking ledger (Chase 3995)", "Checking", "Every deposit and payment, June 18 – Sept 30. Payments to the card are marked Transfer."));
+    H.push(ledger("cardl", "Card ledger (Chase Ink 8759)", "Card", "Every charge and credit on the card, cardholder Albert Harris. Positive amounts are credits (rewards cash back, returns)."));
+
+    // Open items
+    H.push('<section class="tab" id="t-open"><h2>Open items</h2><p class="note">What still needs an answer, a document or a payment.</p><div class="items">' +
+      B.openItems.map(function(o){ return '<div class="it"><b>' + esc(o.item) + '</b><div class="d">' + esc(o.detail) + '</div><div class="o">' + esc(o.area) + ' · Owner: ' + esc(o.owner) + '</div></div>'; }).join("") + '</div></section>');
+
+    // Calendar
+    H.push('<section class="tab" id="t-calendar"><h2>Deadlines</h2><p class="note">Filing and payment dates for RTI&rsquo;s first year (fiscal year ends December 31).</p><div class="tw"><table class="stack"><tbody>' +
+      B.calendar.map(function(c){ return '<tr><td class="top" data-l=""><span>' + dlabel(c.date) + '</span></td><td>' + esc(c.item) + '</td></tr>'; }).join("") + '</tbody></table></div></section>');
+
+    document.getElementById("main").innerHTML = H.join("");
+    document.getElementById("foot").innerHTML = "Sources: " + B.sources.map(esc).join(" · ") + ".<br>Private to RTI officers. Please don't forward your link.";
+    document.getElementById("app").hidden = false;
+
+    var bar = document.getElementById("tabbar");
+    var show = function(id){ bar.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", b.dataset.t === id); }); document.querySelectorAll("section.tab").forEach(function(s){ s.classList.toggle("on", s.id === "t-" + id); }); try { history.replaceState(null, "", "#" + id); } catch (e) {} window.scrollTo(0, 0); };
+    bar.addEventListener("click", function(e){ var b = e.target.closest("button"); if (b) show(b.dataset.t); });
+    if (location.hash && document.getElementById("t-" + location.hash.slice(1))) show(location.hash.slice(1));
+
+    document.querySelectorAll("section.tab").forEach(function(s){
+      var f = s.querySelector(".filters"); if (!f) return;
+      var total = s.querySelector("[data-total]");
+      var apply = function(){
+        var q = f.querySelector('[data-f="q"]').value.toLowerCase(), c = f.querySelector('[data-f="c"]').value, p = f.querySelector('[data-f="p"]').value, n = 0, t = 0;
+        s.querySelectorAll("tbody tr").forEach(function(tr){ var ok = (!q || tr.dataset.q.indexOf(q) >= 0) && (!c || tr.dataset.c === c) && (!p || tr.dataset.p === p); tr.hidden = !ok; if (ok) { n++; t += +tr.dataset.a; } });
+        total.textContent = n + " transactions · net " + fmt(t);
+      };
+      f.addEventListener("input", apply); apply();
+    });
+  }
+})();
+</script>
+</body>
+</html>
