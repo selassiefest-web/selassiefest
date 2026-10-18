@@ -17,7 +17,7 @@ A careful parent should be able to check us out with people who aren't us. We ta
 - Address: 7700 S. Stony Island Ave., Chicago, IL 60649.
 - Officers: Stephen Henry, President (Lab lead and family contact); Paul Kelly, Vice President and Treasurer; Albert Harris, Corporate Secretary.
 - Produces SelassieFest, Chicago's roots reggae and cultural festival. SelassieFest makes its own decisions about its lineup.
-- No officer, director or staff member is paid for work on the Lab. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+- No officer, director or staff member is paid for work on the Lab today; any paid role needs approval by directors with no stake in it. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ## References that will be available
 

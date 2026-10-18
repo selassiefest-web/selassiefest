@@ -52,7 +52,7 @@ More detail: [Staff screening](/dj-lab/safety/staff-screening.html) and [Mandate
 
 ## Trainers train, and that's all
 
-DJ trainers are **not members of Ras Tafari Inc.** Mentors and trainers may be paid from the class budget; no Ras Tafari Inc. officer, director or staff member is paid for work on the Lab. Under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), trainers:
+DJ trainers are **not members of Ras Tafari Inc.** Mentors and trainers may be paid from the class budget; no Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today, and any paid role needs approval by directors with no stake in it. Under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), trainers:
 
 - **train only.** They never select, recommend, rank or vouch for any child for a performance or opportunity, and they never count votes.
 - **don't promote their own music, products or businesses** to students through the Lab.

@@ -22,9 +22,9 @@ description: Who leads Ras Tafari Inc., the organization behind the Rainbow DJ L
 | Paul Kelly | Vice President and Treasurer | Financial oversight. A second officer who can receive concerns about the President (concerns about anyone's conduct with children go to the Chicago Park District). |
 | Albert Harris | Corporate Secretary | Keeps the corporation's records, including board minutes and adopted policies. |
 
-## No pay for officers, directors or staff
+## Pay for officers, directors and staff
 
-**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** They may be reimbursed for documented, pre-approved expenses. DJ trainers, who are not members of Ras Tafari Inc., may be paid from the class budget. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) and [Financial transparency](/dj-lab/governance/financial-transparency.html).
+**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today.** A paid role is allowed only if directors with no stake in it approve it in advance, at a fair rate based on comparable programs, paid through payroll and reported publicly. The person who would be paid leaves the room for the discussion and the vote. Board service itself is always unpaid. They may be reimbursed for documented, pre-approved expenses. DJ trainers, who are not members of Ras Tafari Inc., may be paid from the class budget. See the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) and [Financial transparency](/dj-lab/governance/financial-transparency.html).
 
 No coaches, staff or volunteers have been hired or named for the Lab yet. When they are, they must clear the Chicago Park District's background check, run under the Park District's rules, before their first class (see [Staff screening](/dj-lab/safety/staff-screening.html)). We will not post their personal information.
 

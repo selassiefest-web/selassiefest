@@ -23,7 +23,7 @@ Ras Tafari Inc. also produces SelassieFest, Chicago's roots reggae and cultural 
 
 **How Ras Tafari Inc. keeps the Lab fair:**
 
-- No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.
+- No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today; any paid role needs approval by directors with no stake in it.
 - DJ trainers are not members of Ras Tafari Inc. They train only, and never select or recommend children for anything.
 - The DJ gear was donated to Ras Tafari Inc. and is used only for its programs.
 - **Q-Ality Sound** provides sound, stage and lighting only. Its staff never supervise children, get no family data and take no photos or recordings.

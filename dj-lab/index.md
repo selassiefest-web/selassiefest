@@ -46,7 +46,7 @@ See the [Curriculum](/dj-lab/about/curriculum.html) for every session, or [The j
 
 **Nothing.** There's no tuition, and all equipment is provided: controllers, laptops, headphones and earplugs. You don't need to buy anything.
 
-The DJ gear was donated to Ras Tafari Inc. and belongs to the Lab's programs. No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab. See [Financial transparency](/dj-lab/governance/financial-transparency.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
+The DJ gear was donated to Ras Tafari Inc. and belongs to the Lab's programs. No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today; any paid role needs approval by directors with no stake in it. See [Financial transparency](/dj-lab/governance/financial-transparency.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 
 ## Find what you need
 

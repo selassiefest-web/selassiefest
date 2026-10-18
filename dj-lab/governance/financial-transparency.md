@@ -11,7 +11,7 @@ description: How the free Rainbow DJ Lab is paid for, what we will publish each 
 
 Here is the **one-page budget for the DJ classes** (item 14 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: instructor rates match the Rainbow Wednesdays budget, the donated gear is valued at typical retail, and insurance, music-licensing and sound, stage and lighting amounts are still to be set.
 
-**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.** They may be reimbursed for documented, pre-approved expenses. The instructors and the second adult are **paid DJ trainers who are not members of Ras Tafari Inc.**
+**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today.** A paid role is allowed only if directors with no stake in it approve it, at a fair rate based on comparable programs, paid through payroll and reported publicly (see the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 12). They may be reimbursed for documented, pre-approved expenses. The instructors and the second adult are **paid DJ trainers who are not members of Ras Tafari Inc.**
 
 ### One cohort: up to 12 children, 14 weekly 90-minute sessions
 

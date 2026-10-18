@@ -9,7 +9,7 @@ description: How the Rainbow DJ Lab keeps decisions about children, money, vendo
 
 - **"Ras Tafari Inc. Consultants"** is the name Ras Tafari Inc. uses for its proposal work. It is not a separate company.
 - **Ras Tafari Inc. wrote the Full Spectrum proposal and would run the Lab as its own program.**
-- **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab.**
+- **No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today.** Any paid role needs approval by directors with no stake in it (section 12).
 - **Ras Tafari Inc. also produces SelassieFest.** SelassieFest makes its own decisions about its lineup, and Lab performers reach SelassieFest only by **audience vote**, counted by someone with no interest in the result (section 9).
 - **Q-Ality Sound** provides sound, stage and lighting only, chosen as a documented sole source (section 7).
 
@@ -104,7 +104,9 @@ Covered persons do not accept gifts, favors or hospitality worth more than $50 i
 
 ## 12. Handling money
 
-- No Ras Tafari Inc. officer, director or staff member is paid for the Lab. They may be reimbursed for documented, pre-approved expenses.
+- No Ras Tafari Inc. officer, director or staff member is paid for the Lab today. Anyone may be reimbursed for documented, pre-approved expenses.
+- **How a paid role is approved.** The board approves the role, its duties and its rate before any paid work starts. The person who would be paid discloses the interest and leaves the room for the discussion and the vote; only directors with no stake in it vote. The rate is based on what comparable programs pay, and the minutes record the decision, the comparisons used and who voted. Pay goes through payroll, never through artist fees, vendor payments or cash, and it is reported on Ras Tafari Inc.'s public filings. Board service itself is always unpaid.
+- **Private practices stay private.** An officer or director with a private professional practice, such as counseling or coaching, does not market it to Lab families and does not take Lab children or their families as private clients.
 - The person who selects a vendor is not the person who approves that vendor's invoice, and neither is the person who signs the payment.
 - Grant and sponsor funds are used only as the grant or sponsor agreement allows, and the board reviews a summary of Lab payments every quarter.
 
