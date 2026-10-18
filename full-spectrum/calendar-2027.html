@@ -76,6 +76,13 @@
   /* season pages */
   .hero-img{height:clamp(170px,30vw,270px); border-radius:14px; background:#ccc center/cover; margin:14px 0 16px; position:relative; overflow:hidden;}
   .hero-img .cap{position:absolute; left:12px; bottom:10px; background:rgba(13,15,28,.72); color:#fff; font-size:.74rem; font-weight:600; padding:4px 9px; border-radius:6px;}
+  .hero-img,.side-img{position:relative; overflow:hidden;}
+  .hero-img img,.side-img img,.duo img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .hero-img .cap{z-index:1;}
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0;}
+  .duo.wide{grid-template-columns:1fr 1.45fr;}
+  .duo figure{margin:0; position:relative; overflow:hidden; border-radius:14px; height:clamp(150px,24vw,230px); background:#ccc;}
+  .duo figcaption{position:absolute; left:10px; bottom:9px; z-index:1; background:rgba(13,15,28,.72); color:#fff; font-size:.72rem; font-weight:600; padding:4px 9px; border-radius:6px;}
   .split{display:grid; grid-template-columns:1.6fr 1fr; gap:16px; align-items:start;}
   .side-img{height:100%; min-height:190px; border-radius:14px; background:#ccc center/cover;}
   .month-h{display:flex; align-items:center; gap:10px; margin:18px 0 8px;}
@@ -111,6 +118,22 @@
   .closing .in{position:relative; z-index:1; color:#fff; padding:22px; max-width:560px;}
   .closing h2{font-size:1.6rem; font-weight:900; margin-bottom:8px;}
   .closing p{font-size:.92rem; color:#E8E9F2;}
+  .topnav{position:sticky; top:0; z-index:20; background:rgba(250,248,244,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .topnav{background:rgba(13,15,28,.92);} }
+  :root[data-theme="dark"] .topnav{background:rgba(13,15,28,.92);}
+  .topnav ul{list-style:none; margin:0 auto; padding:8px 16px; max-width:1000px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;}
+  .topnav ul::-webkit-scrollbar{display:none;}
+  .topnav a{display:block; white-space:nowrap; text-decoration:none; color:var(--ink-soft); font:600 .8rem "Inter",sans-serif; padding:7px 11px; border-radius:8px; border:1px solid var(--line); background:var(--surface);}
+  .topnav a.hi{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  section[id]{scroll-margin-top:56px;}
+  a.w{text-decoration:none; color:inherit; transition:transform .12s, box-shadow .12s;}
+  a.w:hover{transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,.08);}
+  a.w .th::after{content:"Full setlist \2192"; font:700 .7rem "Inter",sans-serif; color:var(--accent); margin-top:2px;}
+  a.part{text-decoration:none; color:inherit;}
+  .btns{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0;}
+  .btn{display:inline-block; text-decoration:none; font:700 .85rem "Inter",sans-serif; padding:10px 14px; border-radius:10px; background:var(--ink); color:var(--bg); border:1px solid var(--ink);}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line);}
+  .closing .btn{background:#fff; color:#16182B; border-color:#fff;} .closing .btn.ghost{background:transparent; color:#fff; border-color:rgba(255,255,255,.6);}
   footer{max-width:1000px; margin:0 auto; padding:16px 16px 40px; font-size:.8rem; color:var(--ink-faint); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
 
   @media screen and (max-width:760px){
@@ -119,6 +142,11 @@
     .split{grid-template-columns:1fr;}
     .side-img{min-height:170px;}
     .wed{grid-template-columns:1fr;}
+    .duo,.duo.wide{grid-template-columns:1fr;}
+    .cover .photo{height:clamp(440px,118vw,520px); background-position:30% 60%;}
+    .cover h1{font-size:2.6rem;}
+    .mo h3{flex-direction:column; align-items:flex-start; gap:1px;}
+    .split .side-img{order:-1;}
     .grid3{grid-template-columns:1fr;}
     .ev td.d{width:112px; white-space:normal;}
   }
@@ -136,15 +164,36 @@
     .cover .below{padding:.22in 0 0; max-width:none;}
     .hero-img{height:2.15in; margin:8px 0 10px;}
     .side-img{min-height:2in;}
+    .duo figure{height:1.9in;}
+    #winter .hero-img{height:1.15in;}
+    #winter .duo figure{height:1.25in;}
+    #winter .side-img{min-height:0;}
+    #winter .ev td{padding:4px 9px;}
+    #winter .callout{margin-top:8px; padding:8px 12px;}
     .ev{font-size:.95rem;} .ev td{padding:5px 9px;}
     .month-h{margin:11px 0 6px;}
     .closing{min-height:3.6in;}
     tr,.mo,.w,.commit,.part{break-inside:avoid;}
     footer{max-width:none; padding:12px 0 0;}
+    .topnav,.btns,.screen-only{display:none !important;}
+    a.w .th::after{content:none;}
+    a{color:inherit; text-decoration:none;}
   }
 </style>
 </head>
 <body>
+<nav class="topnav" aria-label="Calendar sections"><ul>
+  <li><a href="#glance">Year at a glance</a></li>
+  <li><a href="#winter">Winter</a></li>
+  <li><a class="hi" href="/full-spectrum/black-history-month-2027.html">BHM DJ setlists</a></li>
+  <li><a href="#spring">Spring</a></li>
+  <li><a href="#heroes-day">Heroes Day</a></li>
+  <li><a href="#summer">Rainbow Wednesdays</a></li>
+  <li><a href="#festivals">Festivals</a></li>
+  <li><a href="#fall">Fall &amp; holidays</a></li>
+  <li><a href="#park">Working with the park</a></li>
+  <li><a href="/full-spectrum/full-spectrum-calendar-2027.pdf">PDF</a></li>
+</ul></nav>
 
 <!-- ============ COVER ============ -->
 <section class="page cover">
@@ -158,8 +207,8 @@
   <div class="bar"></div>
   <div class="below">
     <div class="parts">
-      <div class="part" style="--c:var(--r1)"><b>a &middot; DJ classes</b><span>Two 14-week cohorts in the fieldhouse, ages 5 to elders</span></div>
-      <div class="part" style="--c:var(--r2)"><b>b &middot; Rainbow Wednesdays</b><span>14 free summer nights on the beach, one color each week</span></div>
+      <a class="part" href="/dj-lab/" style="--c:var(--r1)"><b>a &middot; DJ classes</b><span>Two 14-week cohorts in the fieldhouse, ages 5 to elders</span></a>
+      <a class="part" href="/rainbow-wednesdays/" style="--c:var(--r2)"><b>b &middot; Rainbow Wednesdays</b><span>14 free summer nights on the beach, one color each week</span></a>
       <div class="part" style="--c:var(--r4)"><b>c &middot; Stage shows</b><span>Young performers open for local and major artists</span></div>
       <div class="part" style="--c:var(--r5)"><b>d &middot; Festival days</b><span>Juneteenth, Caribbean independence days and more</span></div>
       <div class="part" style="--c:var(--r7)"><b>e &middot; Holiday parties</b><span>Fall and winter family nights, indoors</span></div>
@@ -172,7 +221,7 @@
 </section>
 
 <!-- ============ NOTE + YEAR AT A GLANCE ============ -->
-<section class="page">
+<section class="page" id="glance">
   <span class="eyebrow">The year at a glance</span>
   <div class="season"><h2>Twelve months at Rainbow Beach</h2></div>
   <div class="note-card">
@@ -198,25 +247,32 @@
 </section>
 
 <!-- ============ WINTER ============ -->
-<section class="page">
+<section class="page" id="winter">
   <span class="eyebrow">Winter &middot; in the fieldhouse</span>
   <div class="season"><h2>A new year on the decks</h2><span class="months">January &middot; February</span></div>
-  <div class="hero-img" style="background-image:url('img/04-a-dj-classes.jpg')"><span class="cap">Winter&ndash;spring DJ cohort</span></div>
+  <div class="hero-img"><img src="img/cal-01-winter-fieldhouse-class.jpg" alt="A woman DJ teacher guides a grandmother and a teenage boy on a DJ controller in a park fieldhouse, with snow outside the windows and children in headphones waiting their turn" loading="lazy" width="1792" height="1024"><span class="cap">Winter&ndash;spring DJ cohort, in the fieldhouse</span></div>
 
   <div class="month-h" style="--c:var(--r6)"><span class="pill">January</span><h3>Open the doors</h3></div>
+  <div class="split">
   <table class="ev" style="--c:var(--r6)">
     <tr><td class="d">Sat, Jan 9<small>1&ndash;3 pm</small></td><td><b>DJ Lab Open House.</b> Try the decks, meet the teachers and sign up for the winter&ndash;spring cohort. Starter controllers on hand for anyone without equipment.</td></tr>
-    <tr><td class="d">Week of Jan 11</td><td><b>Winter&ndash;spring cohort begins.</b> 14 weekly 90-minute sessions: Little DJs (ages 5&ndash;7, with a grown-up), Junior, Teen, Empress Decks (girls, taught by women DJs) and Grown-Up &amp; Elder DJs.</td></tr>
+    <tr><td class="d">Week of Jan 11</td><td><b>Winter&ndash;spring cohort begins.</b> 14 weekly 90-minute sessions: Little DJs (ages 5&ndash;7, with a grown-up), Junior, Teen, Empress Decks (girls, taught by women DJs) and Grown-Up &amp; Elder DJs. <a href="/dj-lab/" class="screen-only">Rainbow DJ Lab &rarr;</a></td></tr>
     <tr><td class="d">Mon, Jan 18</td><td><b>Martin Luther King Jr. Day of Service: Dream Decks.</b> A morning service project with neighbors, then a family set of freedom songs and Dr. King&rsquo;s words.</td></tr>
   </table>
+  <div class="side-img"><img src="img/cal-08-mlk-day-of-service.jpg" alt="Neighbors in winter hats and coats sort donated food and clothes on tables in a park fieldhouse; a teenager hands a box to an elderly man" loading="lazy" width="1792" height="1024"></div>
+  </div>
 
-  <div class="month-h" style="--c:var(--r7)"><span class="pill">February</span><h3>Black History Month &amp; Valentine&rsquo;s</h3></div>
-  <p class="lede" style="font-size:.9rem">Four Wednesday listening nights carry the music from spirituals to Afrobeats, while families build their own songs on Saturdays. It all comes together in the Journey Set on February 27.</p>
+  <div class="month-h" id="february" style="--c:var(--r7); scroll-margin-top:56px"><span class="pill">February</span><h3>Black History Month &amp; Valentine&rsquo;s</h3></div>
+  <p class="lede" style="font-size:.9rem">Four Wednesday listening nights carry the music from spirituals to Afrobeats, while families build their own songs on Saturdays. It all comes together in the Journey Set on February 27.<span class="screen-only"> Tap a night for its full DJ setlist.</span></p>
+  <div class="duo">
+    <figure><img src="img/cal-02-bhm-listening-night.jpg" alt="Families and elders seated in a warmly lit fieldhouse listening to a DJ, with an album cover projected on the screen behind him" loading="lazy" width="1792" height="1024"><figcaption>Wednesday listening nights</figcaption></figure>
+    <figure><img src="img/cal-03-remix-the-record.jpg" alt="A father, his daughter and her grandfather research Black history together at a laptop surrounded by library books" loading="lazy" width="1792" height="1024"><figcaption>Remix the Record, Saturdays</figcaption></figure>
+  </div>
   <div class="wed" style="margin-bottom:10px">
-    <div class="w" style="--c:#B5791A"><div class="dt"><small>Wed</small>Feb 3</div><div class="th"><b>Roots, Spirit &amp; Resistance</b><span>Spirituals, gospel, civil rights, early Afro-Latin roots</span></div></div>
-    <div class="w" style="--c:#C4553A"><div class="dt"><small>Wed</small>Feb 10</div><div class="th"><b>Soul, Funk &amp; Afrobeat</b><span>Chicago soul, Black power anthems, Fela, Black love</span></div></div>
-    <div class="w" style="--c:#2E8F7A"><div class="dt"><small>Wed</small>Feb 17</div><div class="th"><b>The Diaspora Calling</b><span>Jamaica, the UK, South Africa, Brazil, Cuba, Haiti</span></div></div>
-    <div class="w full"><div class="dt"><small>Wed</small>Feb 24</div><div class="th"><b>Hip-Hop &amp; the Global Now</b><span>Hip-hop, UK rap, Afrobeats, amapiano (clean edits)</span></div></div>
+    <a class="w" href="/full-spectrum/black-history-month-2027.html#night1" style="--c:#B5791A"><div class="dt"><small>Wed</small>Feb 3</div><div class="th"><b>Roots, Spirit &amp; Resistance</b><span>Spirituals, gospel, civil rights, early Afro-Latin roots</span></div></a>
+    <a class="w" href="/full-spectrum/black-history-month-2027.html#night2" style="--c:#C4553A"><div class="dt"><small>Wed</small>Feb 10</div><div class="th"><b>Soul, Funk &amp; Afrobeat</b><span>Chicago soul, Black power anthems, Fela, Black love</span></div></a>
+    <a class="w" href="/full-spectrum/black-history-month-2027.html#night3" style="--c:#2E8F7A"><div class="dt"><small>Wed</small>Feb 17</div><div class="th"><b>The Diaspora Calling</b><span>Jamaica, the UK, South Africa, Brazil, Cuba, Haiti</span></div></a>
+    <a class="w full" href="/full-spectrum/black-history-month-2027.html#night4"><div class="dt"><small>Wed</small>Feb 24</div><div class="th"><b>Hip-Hop &amp; the Global Now</b><span>Hip-hop, UK rap, Afrobeats, amapiano (clean edits)</span></div></a>
   </div>
   <table class="ev" style="--c:var(--r7)">
     <tr><td class="d">Sat, Feb 6<small>1&ndash;3 pm</small></td><td><b>Remix the Record, session 1: Find your story.</b> Black History Month research with AI, led by Albert Harris. Each family team picks one person, place and moment.</td></tr>
@@ -226,10 +282,11 @@
     <tr><td class="d">Sat, Feb 27<small>5&ndash;8 pm</small></td><td><b>The Journey Set.</b> DJs mix every team&rsquo;s songs into one set that travels through Black history in order.</td></tr>
   </table>
   <p class="callout">All ages. Children under 13 work in a family team with a grown-up at the keyboard. Wednesday listening nights run about 90 minutes in the fieldhouse; every track is a clean edit and every artist is credited on screen with title and country.</p>
+  <div class="btns"><a class="btn" href="/full-spectrum/black-history-month-2027.html">Full DJ setlists, all four nights &rarr;</a><a class="btn ghost" href="/full-spectrum/black-history-month-2027.html#pairings">Story &amp; Echo song pairs</a></div>
 </section>
 
 <!-- ============ SPRING ============ -->
-<section class="page">
+<section class="page" id="spring">
   <span class="eyebrow">Spring &middot; getting ready for the beach</span>
   <div class="season"><h2>Women lead, the city answers</h2><span class="months">March &middot; April &middot; May</span></div>
   <div class="split">
@@ -240,32 +297,39 @@
         <tr><td class="d">Sat, Mar 27<small>5&ndash;8 pm</small></td><td><b>Empress Decks Showcase.</b> Girls from the cohort play alongside women DJs from Chicago&rsquo;s house, reggae and hip-hop scenes.</td></tr>
       </table>
     </div>
-    <div class="side-img" style="background-image:url('img/12-girls-empress-decks.jpg')"></div>
+    <div class="side-img"><img src="img/cal-04-empress-decks-showcase.jpg" alt="A teenage girl DJs at night with a woman DJ mentor beside her while a crowd of girls and families cheers under string lights" loading="lazy" width="1792" height="1024"></div>
   </div>
 
   <div class="month-h" style="--c:var(--r4)"><span class="pill">April</span><h3>The open call</h3></div>
+  <div class="split">
   <table class="ev" style="--c:var(--r4)">
     <tr><td class="d">Apr 1 &ndash; 30</td><td><b>Open call for Rainbow Wednesdays.</b> Youth DJs and young instrumentalists (ages 12&ndash;24) send a short mix or phone video. Shared through the park, schools, churches, libraries and social media.</td></tr>
     <tr><td class="d">Sat, Apr 10, 17, 24<small>1&ndash;3 pm</small></td><td><b>Spring workshops 1&ndash;3</b> (free): beatmatching and blending; building a set; live looping and editing.</td></tr>
     <tr><td class="d">Sat, Apr 24<small>10 am &ndash; noon</small></td><td><b>Earth Day Beach Cleanup.</b> Neighbors and families clean Rainbow Beach to a youth DJ set.</td></tr>
   </table>
+  <div class="side-img"><img src="img/cal-05-earth-day-cleanup.jpg" alt="Neighbors of all ages in light jackets pick up litter on a Lake Michigan beach on a cool spring morning" loading="lazy" width="1792" height="1024"></div>
+  </div>
 
   <div class="month-h" style="--c:var(--r2)"><span class="pill">May</span><h3>Graduation and Heroes Day</h3></div>
   <table class="ev" style="--c:var(--r2)">
     <tr><td class="d">Sat, May 1<small>5&ndash;7 pm</small></td><td><b>Cohort Graduation Set.</b> Winter&ndash;spring graduates play for their families; Passport certificates handed out.</td></tr>
     <tr><td class="d">Sat, May 1 &amp; 8<small>1&ndash;3 pm</small></td><td><b>Spring workshops 4&ndash;5:</b> playing with live instruments; the Theme Clash (wordplay and genre-mixing).</td></tr>
-    <tr><td class="d">Sat, May 15<small>11 am &ndash; 3 pm</small></td><td><b>Heroes Day</b> <span class="tag">Partners invited</span><br>Between Police Week and EMS Week, a thank-you to the Chicago Fire Department, Chicago Police and EMTs: fire-truck and ambulance visits, hands-only CPR and water-safety lessons before beach season, and a youth DJ set for first responders and their families.</td></tr>
+    <tr id="heroes-day" style="scroll-margin-top:60px"><td class="d">Sat, May 15<small>11 am &ndash; 3 pm</small></td><td><b>Heroes Day</b> <span class="tag">Partners invited</span><br>Between Police Week and EMS Week, a thank-you to the Chicago Fire Department, Chicago Police and EMTs: fire-truck and ambulance visits, hands-only CPR and water-safety lessons before beach season, and a youth DJ set for first responders and their families.</td></tr>
     <tr><td class="d">Sat, May 22<small>1&ndash;3 pm</small></td><td><b>Spring workshop 6: Dress rehearsal on the beach.</b> Sound check and a full run-through on the Rainbow Wednesdays spot.</td></tr>
     <tr><td class="d">By Fri, May 28</td><td><b>June lineups announced.</b> A featured DJ, a neighbor and a music educator choose the Youth Showcase performers.</td></tr>
   </table>
-  <div class="hero-img" style="background-image:url('img/09-ladder-generations.jpg'); margin-top:14px; height:clamp(140px,22vw,190px)"><span class="cap">Every generation on the same floor</span></div>
+  <div class="duo wide">
+    <figure><img src="img/cal-07-graduation-set.jpg" alt="Kids, teens and elders hold up certificates at a DJ class graduation while families clap" loading="lazy" width="1792" height="1024"><figcaption>Graduation Set, May 1</figcaption></figure>
+    <figure><img src="img/cal-06-heroes-day.jpg" alt="Firefighters show children a fire engine while a paramedic teaches families hands-only CPR on mannequins in a lakefront park, with a youth DJ in the background" loading="lazy" width="1792" height="1024"><figcaption>Heroes Day, May 15</figcaption></figure>
+  </div>
 </section>
 
 <!-- ============ SUMMER ============ -->
-<section class="page">
+<section class="page" id="summer">
   <span class="eyebrow">Summer &middot; on the beach</span>
   <div class="season"><h2>Rainbow Wednesdays</h2><span class="months">June &middot; July &middot; August &middot; September</span></div>
   <p class="lede">Fourteen free family nights, 6:00&ndash;8:30 pm, one color each week. Open Decks for young DJs, a featured Chicago DJ and a Youth Showcase every night. On the first Wednesday of each month the music starts at 7:00 pm.</p>
+  <div class="btns"><a class="btn" href="/rainbow-wednesdays/">About Rainbow Wednesdays &rarr;</a><a class="btn ghost" href="/rainbow-wednesdays/proposal.html">Full proposal</a></div>
   <div class="hero-img" style="background-image:url('img/05-b-rainbow-wednesdays.jpg')"><span class="cap">Rainbow Wednesdays at Rainbow Beach</span></div>
   <div class="wed">
     <div class="w" style="--c:var(--r1)"><div class="dt"><small>Jun</small>2</div><div class="th"><b>Opening Night: Rainbow Rising</b><span>Red &middot; 7 pm start</span></div></div>
@@ -290,7 +354,7 @@
 </section>
 
 <!-- ============ FESTIVALS + FALL ============ -->
-<section class="page">
+<section class="page" id="festivals">
   <span class="eyebrow">Festival days &middot; summer</span>
   <div class="season"><h2>Heritage on the lakefront</h2><span class="months">June &ndash; September</span></div>
   <div class="hero-img" style="background-image:url('img/07-d-festival.jpg')"><span class="cap">Festival and heritage days (proposed)</span></div>
@@ -306,7 +370,7 @@
     <tr><td class="d">Summer <small>date TBD</small></td><td><b>SelassieFest community day at Rainbow Beach</b></td></tr>
   </table>
 
-  <span class="eyebrow" style="display:block; margin-top:24px">Fall &amp; holidays &middot; back in the fieldhouse</span>
+  <span id="fall" class="eyebrow" style="display:block; margin-top:24px; scroll-margin-top:56px">Fall &amp; holidays &middot; back in the fieldhouse</span>
   <div class="season"><h2>Parties for every season</h2><span class="months">October &middot; November &middot; December</span></div>
   <div class="split">
     <table class="ev" style="--c:var(--r7)">
@@ -324,14 +388,14 @@
 </section>
 
 <!-- ============ HOW WE WORK WITH THE PARK ============ -->
-<section class="page">
+<section class="page" id="park">
   <span class="eyebrow">Working with Rainbow Beach Park</span>
   <div class="season"><h2>How every date comes to life</h2></div>
   <p class="lede">Full Spectrum is designed to make the park&rsquo;s job easier, not harder. Here is what Ras Tafari Inc. brings to every date.</p>
   <div class="grid3">
     <div class="commit" style="--c:var(--r1)"><h3>Confirmed with you first</h3><p>Nothing is announced until park staff confirm the date and the space. Stage shows and festival days each get their own Special Event Permit.</p></div>
     <div class="commit" style="--c:var(--r2)"><h3>Free for every family</h3><p>Every class, Wednesday, festival day and party is free. Starter controllers are lent to anyone who doesn&rsquo;t have equipment.</p></div>
-    <div class="commit" style="--c:var(--r3)"><h3>Family-safe, every time</h3><p>All ages and alcohol-free, with clean lyrics only (radio edits). Youth programs follow the published Rainbow DJ Lab safety policies.</p></div>
+    <div class="commit" style="--c:var(--r3)"><h3>Family-safe, every time</h3><p>All ages and alcohol-free, with clean lyrics only (radio edits). Youth programs follow the published <a href="/dj-lab/safety/">Rainbow DJ Lab safety policies</a>.</p></div>
     <div class="commit" style="--c:var(--r4)"><h3>In and out on time</h3><p>On the beach, setup starts at 5:00 pm and the area is cleared by 9:00 pm. We bring the sound, the crew and the production management.</p></div>
     <div class="commit" style="--c:var(--r5)"><h3>Girls on every stage</h3><p>Empress Decks classes are taught by women DJs, and a girl opens every live stage show.</p></div>
     <div class="commit" style="--c:var(--r6)"><h3>A report back to the park</h3><p>Each season ends with a written report: attendance, performers, girls&rsquo; participation and audience reach.</p></div>
@@ -340,6 +404,7 @@
     <div class="in">
       <h2>Let&rsquo;s build the year together.</h2>
       <p>Each part starts when it is funded and scheduled with park staff. We would be glad to walk through any date, move anything that doesn&rsquo;t fit the park&rsquo;s calendar, and add what the neighborhood asks for.</p>
+      <div class="btns" style="margin:0 0 12px"><a class="btn" href="/full-spectrum/full-spectrum-calendar-2027.pdf">Download the PDF</a><a class="btn ghost" href="/full-spectrum/">Full Spectrum program</a><a class="btn ghost" href="tel:+18722559333">Call (872) 255-9333</a></div>
       <p style="margin:0"><b style="color:#fff">Stephen Henry</b>, President, Ras Tafari Inc. &middot; (872) 255-9333 &middot; stephen@selassiefest.com</p>
     </div>
   </div>
