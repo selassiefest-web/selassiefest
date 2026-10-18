@@ -158,6 +158,9 @@
   </div>
 
   <div id="lettersView" hidden>
+    <h2 style="font-size:1.05rem; margin:4px 0 6px">Letters to deliver</h2>
+    <div id="outgoing"></div>
+    <h2 style="font-size:1.05rem; margin:22px 0 6px">Signed letters of support</h2>
     <p class="count" id="lcount"></p>
     <div class="list" id="llist"></div>
   </div>
@@ -348,6 +351,8 @@
     state.partners = data.partners || []; state.activity = data.activity || [];
     try { state.grants = await rpc('fs_grants_load', { p_session: state.session.sessionToken }) || []; state.grantsOk = true; }
     catch(err){ if (/session/i.test(err.message)) throw err; state.grants = []; state.grantsOk = false; }
+    try { state.outgoing = await rpc('fs_partner_letters_load', { p_session: state.session.sessionToken }) || []; }
+    catch(err){ if (/session/i.test(err.message)) throw err; state.outgoing = []; }
     try { state.letters = await rpc('fs_support_letters_load', { p_session: state.session.sessionToken }) || []; }
     catch(err){ if (/session/i.test(err.message)) throw err; state.letters = []; }
     buildFilters(); render(); renderGrants(); renderLetters();
@@ -479,7 +484,39 @@
     return rows;
   }
 
+  var OUT_LABEL = { to_print:'To print', printed:'Printed, not yet delivered', delivered:'Delivered', emailed_only:'Emailed (print only if you want a paper copy)' };
+  var WAVE_LABEL = { 'establishment-2026-10-19':'City: fire, police, alderman', 'schools-health-2026-10-19':'Schools and health' };
+  function printLetters(list){
+    if (!list.length) { alert('Nothing to print here.'); return; }
+    var first = list[0].html, head = first.slice(first.indexOf('<head>') + 6, first.indexOf('</head>'));
+    var bodies = list.map(function(l){ var x = l.html; return '<div style="break-after:page">' + x.slice(x.indexOf('<body>') + 6, x.lastIndexOf('</body>')) + '</div>'; }).join('');
+    var w = window.open('', '_blank'); if (!w) { alert('Allow pop-ups for this page to print.'); return; }
+    w.document.write('<!DOCTYPE html><html><head>' + head + '<style>div[style*="break-after"]:last-child{break-after:auto !important}</style></head><body>' + bodies + '<script>window.onload=function(){setTimeout(function(){window.print()},700)}<\/script></body></html>');
+    w.document.close();
+  }
+  function renderOutgoing(){
+    var ls = state.outgoing || [], waves = Array.from(new Set(ls.map(function(l){ return l.wave; })));
+    var pending = ls.filter(function(l){ return l.status === 'to_print' || l.status === 'printed'; }).length;
+    if (!ls.length) { $('outgoing').innerHTML = '<p class="count">No outgoing letters loaded yet.</p>'; return; }
+    $('outgoing').innerHTML = '<p class="count">' + pending + ' letter' + (pending === 1 ? '' : 's') + ' still to hand-deliver. Print opens the letter ready for your printer (or "Save as PDF").</p>' +
+      waves.map(function(w){
+        var wl = ls.filter(function(l){ return l.wave === w; });
+        var todo = wl.filter(function(l){ return l.status === 'to_print' || l.status === 'printed'; });
+        return '<div class="card" style="margin-bottom:12px"><div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center"><b>' + esc(WAVE_LABEL[w] || w) + '</b>' +
+          '<button class="btn" data-print-wave="' + esc(w) + '"><i class="fa-solid fa-print"></i> Print all ' + todo.length + ' to deliver</button></div>' +
+          wl.map(function(l){
+            var done = l.status === 'delivered';
+            return '<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:9px 0; border-top:1px solid var(--line)">' +
+              '<div style="flex:1 1 220px; min-width:0"><b>' + l.sort + '. ' + esc(l.title) + '</b><div class="p-cat">' + esc(l.street || '') + ' &middot; ' + esc(OUT_LABEL[l.status] || l.status) +
+              (l.emailed_to ? ' &middot; emailed to ' + esc(l.emailed_to) : '') + (done && l.delivered_note ? ' &middot; left with ' + esc(l.delivered_note) : '') + '</div></div>' +
+              '<button class="btn" data-print-one="' + l.id + '"><i class="fa-solid fa-print"></i> Print</button>' +
+              (done ? '<button class="btn" data-mark="' + l.id + '" data-to="to_print">Undo</button>' : '<button class="btn" data-mark="' + l.id + '" data-to="delivered"><i class="fa-solid fa-check"></i> Delivered</button>') + '</div>';
+          }).join('') + '</div>';
+      }).join('');
+  }
+
   function renderLetters(){
+    renderOutgoing();
     var ls = state.letters || [];
     $('letterBadge').textContent = ls.length ? '(' + ls.length + ')' : '';
     $('lcount').textContent = ls.length ? ls.length + ' signed letter' + (ls.length === 1 ? '' : 's') + ' of support. Open one to print or save it as a PDF for an application.' : 'No letters of support yet. Partners write them from their personal page or at selassiefest.com/support-letter/.';
@@ -492,6 +529,19 @@
         '<a class="btn" href="mailto:' + esc(l.email) + '">Email ' + esc(l.signer_name.split(' ')[0]) + '</a></div></div>';
     }).join('');
   }
+
+  $('outgoing') && $('outgoing').addEventListener('click', async function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    var ls = state.outgoing || [];
+    if (b.dataset.printOne) { printLetters(ls.filter(function(l){ return l.id === b.dataset.printOne; })); return; }
+    if (b.dataset.printWave) { printLetters(ls.filter(function(l){ return l.wave === b.dataset.printWave && (l.status === 'to_print' || l.status === 'printed'); })); return; }
+    if (b.dataset.mark) {
+      var note = null;
+      if (b.dataset.to === 'delivered') { note = prompt('Left with (name or front desk)? Optional.', ''); if (note === null) return; }
+      try { await rpc('fs_partner_letter_mark', { p_session: state.session.sessionToken, p_id: b.dataset.mark, p_status: b.dataset.to, p_note: note }); await load(); }
+      catch(err){ alert('Could not save: ' + err.message); }
+    }
+  });
 
   function renderGrants(){
     $('grantWarn').innerHTML = state.grantsOk ? '' : '<div class="warn">The grant pipeline is not set up in the database yet. Apply supabase/fs-grants-pipeline.sql, then reload.</div>';
