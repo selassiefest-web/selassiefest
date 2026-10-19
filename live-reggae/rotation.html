@@ -261,9 +261,10 @@
   <!-- Money -->
   <section id="tab-money" hidden>
     <div class="card calc">
-      <h2 style="font-size:1.1rem">Deal math: $1,200 flat or a deal?</h2>
+      <h2 style="font-size:1.1rem">Deal math: flat fee or a deal?</h2>
       <p class="hint">Plug in what the club expects. The example numbers below are placeholders. Change them to match the room.</p>
       <div class="calc-grid">
+        <div class="f"><label for="cFlat">Flat fee to compare ($)</label><input id="cFlat" type="number" min="0" step="50" value="1200"></div>
         <div class="f"><label for="cCover">Cover charge ($)</label><input id="cCover" type="number" min="0" step="1" value="15"></div>
         <div class="f"><label for="cHeads">Paying guests</label><input id="cHeads" type="number" min="0" step="1" value="120"></div>
         <div class="f"><label for="cDoorPct">Band's share of door (%)</label><input id="cDoorPct" type="number" min="0" max="100" step="5" value="80"></div>
@@ -303,7 +304,7 @@
   <div class="f"><label>Also on the bill</label><div class="checks" id="gSupport"></div></div>
   <div class="row2">
     <div class="f"><label for="gDeal">Deal</label><select id="gDeal">
-      <option value="flat">$1,200 flat</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door (whichever is higher)</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
+      <option value="flat">Flat fee</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door (whichever is higher)</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
     <div class="f"><label for="gFee">Band is owed ($)</label><input id="gFee" type="number" min="0" step="10"></div>
   </div>
   <div class="row3" id="gTermsRow">
@@ -385,7 +386,7 @@
   </div>
   <div class="f" id="vOffsetWrap"><label for="vOffset">Which week</label><select id="vOffset"></select></div>
   <div class="row2">
-    <div class="f"><label for="vDeal">Deal</label><select id="vDeal"><option value="tbd">Not set yet</option><option value="flat">$1,200 flat</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
+    <div class="f"><label for="vDeal">Deal</label><select id="vDeal"><option value="tbd">Not set yet</option><option value="flat">Flat fee</option><option value="door">Door split</option><option value="guarantee_door">Guarantee vs. door</option><option value="bar">Bar percentage</option><option value="hybrid">Custom deal</option></select></div>
     <div class="f"><label for="vDealNote">Deal terms</label><input id="vDealNote" placeholder="e.g. $600 vs. 80% of a $15 door"></div>
   </div>
   <div class="row3">
@@ -429,7 +430,7 @@
     <div class="f"><label for="aKind">Kind</label><select id="aKind"><option value="band">Band</option><option value="singer">Singer</option><option value="dj">DJ / selector</option><option value="mc">MC / host</option></select></div>
   </div>
   <div class="checks" style="margin-bottom:10px"><label><input type="checkbox" id="aMain"> Main act (takes turns as the featured singer)</label><label><input type="checkbox" id="aActive"> Active</label></div>
-  <div class="f"><label for="aRate">Rate</label><input id="aRate" placeholder="e.g. $1,200 per event, or a deal with the club"></div>
+  <div class="f"><label for="aRate">Rate</label><input id="aRate" placeholder="e.g. a flat fee per event, or a deal with the club"></div>
   <div class="row2">
     <div class="f"><label for="aIg">Instagram</label><input id="aIg"></div>
     <div class="f"><label for="aWeb">Website</label><input id="aWeb"></div>
@@ -466,11 +467,11 @@
   var REGIONS = ['Chicago – South Side','Chicago – Far South Side','Chicago – West Side','Chicago – North Side','Chicago – Downtown / Near','South Suburbs','West Suburbs','North Suburbs','NW Indiana'];
   var STATUS = {hold:'Hold', offered:'Offered', confirmed:'Confirmed', played:'Played', cancelled:'Cancelled'};
   var STATUS_COLOR = {hold:'var(--gold)', offered:'var(--blue)', confirmed:'var(--green)', played:'var(--green)', cancelled:'var(--red)'};
-  var DEAL = {tbd:'Deal not set', flat:'$1,200 flat', door:'Door split', guarantee_door:'Guarantee vs. door', bar:'Bar %', hybrid:'Custom deal'};
+  var DEAL = {tbd:'Deal not set', flat:'Flat fee', door:'Door split', guarantee_door:'Guarantee vs. door', bar:'Bar %', hybrid:'Custom deal'};
   var CAD = {weekly:'every week', biweekly:'every other week', monthly:'once a month', one_off:'one-off'};
   var KIND = {call:'Call', email:'Email', visit:'Walk-in', meeting:'Meeting', text:'Text', note:'Note', stage:'Stage', gig:'Gig'};
   var NIGHTS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  var FLAT = 1200;
+  var FLAT = ''; // the owner sets the price, so nothing is prefilled
   var KEY = 'lrSession';
   var state = { session:null, venues:[], acts:[], gigs:[], activity:[], tab:'week', stageFilter:'', open:{}, gen:[] };
   var $ = function(id){ return document.getElementById(id); };
@@ -780,7 +781,7 @@
   $('gCalcFee').addEventListener('click', function(){
     var deal = $('gDeal').value, door = num($('gDoor').value) || 0, bar = num($('gBarGross').value) || 0;
     var dp = (num($('gDoorPct').value) || 0) / 100, bp = (num($('gBarPct').value) || 0) / 100, gu = num($('gGuar').value) || 0, fee;
-    if (deal === 'flat') fee = FLAT;
+    if (deal === 'flat') fee = num($('gFee').value) || 0;
     else if (deal === 'door') fee = door * dp;
     else if (deal === 'guarantee_door') fee = Math.max(gu, door * dp);
     else if (deal === 'bar') fee = gu + bar * bp;
@@ -890,7 +891,7 @@
   function pitchText(v){
     return 'Hi, this is ' + BOOKER + '. I book Ifficial Reggae Movement, a live reggae band that has played all over the Midwest for decades, with featured singers like JayRebl.\n\n' +
       'We\'re building a weekly live reggae night across Chicago and NW Indiana and would love ' + v.name + ' to be one of the rooms' + (v.preferred_night ? ', maybe ' + ({Mon:'Mondays',Tue:'Tuesdays',Wed:'Wednesdays',Thu:'Thursdays',Fri:'Fridays',Sat:'Saturdays',Sun:'Sundays'})[v.preferred_night] : '') + '. ' +
-      'The band is $1,200 a night, or we can work out a door or bar deal with you.\n\n' +
+      'You set the price: a flat fee, or a door or bar deal that fits your room. One package covers the band, singer, DJ, street team and crew.\n\n' +
       'Here\'s a one-page with the details. You can answer right on it: ' + pitchUrl(v) + '\n\n' + BOOKER + ' · ' + BOOKER_PHONE;
   }
 
@@ -986,23 +987,23 @@
 
   // ── Money ─────────────────────────────────────────────────────────────
   function renderCalc(){
-    var cover = num($('cCover').value) || 0, heads = num($('cHeads').value) || 0, dp = (num($('cDoorPct').value) || 0) / 100, gu = num($('cGuar').value) || 0, bar = num($('cBar').value) || 0, bp = (num($('cBarPct').value) || 0) / 100;
+    var flat = num($('cFlat').value) || 0, cover = num($('cCover').value) || 0, heads = num($('cHeads').value) || 0, dp = (num($('cDoorPct').value) || 0) / 100, gu = num($('cGuar').value) || 0, bar = num($('cBar').value) || 0, bp = (num($('cBarPct').value) || 0) / 100;
     var door = cover * heads;
     var opts = [
-      ['flat', 'Flat fee', FLAT, 'Same every night, no matter the crowd'],
+      ['flat', 'Flat fee', flat, 'Same every night, no matter the crowd'],
       ['door', 'Door split', door * dp, Math.round(dp * 100) + '% of ' + money(door) + ' at the door'],
       ['guar', 'Guarantee vs. door', Math.max(gu, door * dp), money(gu) + ' minimum, or the door share if higher'],
       ['bar', 'Guarantee + bar %', gu + bar * bp, money(gu) + ' plus ' + Math.round(bp * 100) + '% of ' + money(bar) + ' bar']
     ];
     var best = opts.reduce(function(m,o){ return o[2] > m[2] ? o : m; }, opts[0]);
     $('calcOut').innerHTML = opts.map(function(o){ return '<div class="opt' + (o === best ? ' best' : '') + '"><span>' + o[1] + '</span><b>' + money(o[2]) + '</b><span>' + esc(o[3]) + '</span></div>'; }).join('');
-    var be = cover && dp ? Math.ceil(FLAT / (cover * dp)) : null;
+    var be = cover && dp ? Math.ceil(flat / (cover * dp)) : null;
     var club = door - door * dp;
-    $('calcSay').innerHTML = (be ? 'At a <b>' + money(cover) + '</b> cover with <b>' + Math.round(dp * 100) + '%</b> of the door to the band, the club needs <b>' + be + ' paying guests</b> for a door deal to match $1,200. ' : '') +
+    $('calcSay').innerHTML = (be ? 'At a <b>' + money(cover) + '</b> cover with <b>' + Math.round(dp * 100) + '%</b> of the door to the band, the club needs <b>' + be + ' paying guests</b> for a door deal to match the ' + money(flat) + ' flat fee. ' : '') +
       'With ' + heads + ' guests the door takes in ' + money(door) + ', and the club keeps ' + money(club) + ' of it plus the bar.' +
-      (best[0] === 'flat' ? ' At this crowd size the <b>flat $1,200</b> pays the band best.' : ' At this crowd size, <b>' + esc(best[1].toLowerCase()) + '</b> pays the band more than the flat fee.');
+      (best[0] === 'flat' ? ' At this crowd size the <b>flat ' + money(flat) + '</b> pays the band best.' : ' At this crowd size, <b>' + esc(best[1].toLowerCase()) + '</b> pays the band more than the flat fee.');
   }
-  ['cCover','cHeads','cDoorPct','cGuar','cBar','cBarPct'].forEach(function(id){ $(id).addEventListener('input', renderCalc); });
+  ['cFlat','cCover','cHeads','cDoorPct','cGuar','cBar','cBarPct'].forEach(function(id){ $(id).addEventListener('input', renderCalc); });
   function renderMoney(){
     renderCalc();
     var t = todayIso(), ym = t.slice(0,7);
