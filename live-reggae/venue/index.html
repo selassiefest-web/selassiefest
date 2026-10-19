@@ -156,12 +156,25 @@
   .sig{display:flex; gap:14px; align-items:center;}
   .sig .dot{width:46px; height:46px; border-radius:50%; background:var(--green); display:grid; place-items:center; color:#fff; font-weight:600; flex:none;}
   footer{padding:26px 0 40px; color:var(--ink-faint); font-size:0.85rem; text-align:center;}
-  .theme{position:absolute; top:14px; right:14px; border:1px solid var(--line); background:var(--surface); color:var(--ink); width:38px; height:38px; border-radius:50%; cursor:pointer;}
+  .theme{border:1px solid var(--line); background:var(--surface); color:var(--ink); width:34px; height:34px; border-radius:50%; cursor:pointer; flex:none; margin-left:auto;}
+  .nav{position:sticky; top:0; z-index:30; background:var(--bg); border-bottom:1px solid var(--line);}
+  .navin{max-width:760px; margin:0 auto; padding:8px 16px; display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none;}
+  .navin::-webkit-scrollbar{display:none;}
+  .navin a{flex:none; padding:7px 13px; border-radius:999px; color:var(--ink-soft); text-decoration:none; font-size:0.9rem; font-weight:500; border:1px solid transparent; white-space:nowrap;}
+  .navin a:hover{color:var(--ink); border-color:var(--line);}
+  .navin a.on{color:var(--gold); border-color:var(--gold);}
+  .navin a.go{background:var(--gold); color:#111; font-weight:600;}
+  .navin a.ext{color:var(--ink-faint);}
+  section[id], #formSec{scroll-margin-top:64px;}
 </style>
 </head>
 <body>
 <div class="stripe"></div>
-<button class="theme" id="themeBtn" aria-label="Switch light or dark"><i class="fa-solid fa-circle-half-stroke"></i></button>
+<nav class="nav" id="nav" aria-label="Page sections"><div class="navin">
+  <a href="/live-reggae/" class="ext"><i class="fa-solid fa-arrow-left"></i> Calendar</a>
+  <a href="#show" data-s="show">The show</a><a href="#night" data-s="night">The night</a><a href="#promo" data-s="promo">We promote</a><a href="#trial" data-s="trial">The trial</a><a href="#deal" data-s="deal">Pricing</a><a href="#formSec" data-s="formSec" class="go">Book</a>
+  <button class="theme" id="themeBtn" aria-label="Switch light or dark"><i class="fa-solid fa-circle-half-stroke"></i></button>
+</div></nav>
 <main class="wrap">
   <div class="hero">
     <div class="eyebrow" id="eyebrow">Live band + DJ + street team · Chicago · Suburbs · NW Indiana</div>
@@ -181,7 +194,7 @@
     <div><b>+ Street team</b><span>we help build the night</span></div>
   </div>
 
-  <section>
+  <section id="why">
     <h2>Why it works in a room like yours</h2>
     <div class="why">
       <div><i class="fa-solid fa-volume-high"></i><b>No dead air</b><span>The DJ carries the room while the band rests, so guests stay engaged and the night keeps its energy.</span></div>
@@ -191,13 +204,13 @@
     </div>
   </section>
 
-  <section>
+  <section id="show">
     <h2>The moment that gets people on their feet</h2>
     <p class="intro">A song you know. The DJ turns it inside out. The band catches it and carries it somewhere you didn't expect. Four of the moments in the show:</p>
     <div class="revs"><div class="rv"><div class="rvh">The Sister Nancy reveal</div><div class="flow"><div class="st"><em>The band plays</em><b>Bam Bam</b><i>Sister Nancy</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The DJ flips it</em><b>Lost Ones</b><i>Lauryn Hill</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The band brings it home</em><b>Bam Bam</b><i>Back to the roots</i></div></div></div><div class="rv"><div class="rvh">The R&amp;B surprise</div><div class="flow"><div class="st"><em>The band plays</em><b>Murder She Wrote</b><i>Chaka Demus &amp; Pliers</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The DJ reveals</em><b>Post to Be</b><i>Omarion</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The band takes the last chorus</em><b>Murder She Wrote</b><i>Back to the roots</i></div></div></div><div class="rv"><div class="rvh">The transformation</div><div class="flow"><div class="st"><em>The DJ sets the riff</em><b>Billie Jean</b><i>Michael Jackson</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The band enters piece by piece</em><b>Our reggae version</b></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>Then the floor turns</em><b>Uptown Funk</b><i>Mark Ronson</i></div></div></div><div class="rv"><div class="rvh">Jamaica meets country</div><div class="flow"><div class="st"><em>The band plays</em><b>Take Me Home, Country Roads</b><i>Toots &amp; the Maytals</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>The room sings it back</em><b>The Gambler</b><i>Kenny Rogers</i></div><span class="arr" aria-hidden="true">&rarr;</span><div class="st"><em>Then the whole night lifts</em><b>Could You Be Loved</b><i>Bob Marley</i></div></div></div></div>
   </section>
 
-  <section>
+  <section id="night">
     <h2>Your night, start to finish</h2>
     <div class="bar" aria-hidden="true"><span class="dj" style="flex:30">DJ</span><span class="lv" style="flex:60">LIVE BAND</span><span class="dj" style="flex:25">DJ</span><span class="lv" style="flex:60">LIVE BAND</span><span class="dj" style="flex:25">DJ</span></div>
     <div class="timeline">
@@ -218,7 +231,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="promo">
     <h2>We don't just fill the stage. We help build the night.</h2>
     <p class="proof"><i class="fa-solid fa-circle-check"></i> Proven in the field: this street team has promoted <b>SelassieFest</b>, <b>Charly Black</b> and <b>Bad Like 90's</b>.</p>
     <p class="intro">A flyer handed out is an activity. A customer who arrives is a result. Here is exactly what we do for your night, and how we track it.</p>
@@ -267,7 +280,7 @@
     <p class="fine">Our proposed program. Arrangements are rehearsed and adjusted to the singer and the room.</p>
   </section>
 
-  <section>
+  <section id="trial">
     <h2>A trial that shows whether the night works</h2>
     <p class="intro">A busy room and a profitable night are different things. Before the date, we agree on what we'll look at together afterward:</p>
     <div class="chips big">
@@ -288,7 +301,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="deal">
     <h2>One clear package. A deal that fits your room.</h2>
     <p class="intro">Every room is different, so you choose the structure and the number that works for yours. One package covers everyone: the full band, the featured singer, the DJ, the street team and the crew.</p>
     <div class="deals">
@@ -365,6 +378,11 @@
   // Book buttons pick "Book a trial night" and jump to the form.
   document.querySelectorAll('[data-pick]').forEach(function(a){ a.addEventListener('click', function(){
     var c = document.querySelector('.choice[data-d="' + a.getAttribute('data-pick') + '"]'); if (c) c.click(); }); });
+  // Nav: highlight the section in view.
+  var navLinks = document.querySelectorAll('.navin a[data-s]');
+  try { var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (!e.isIntersecting) return;
+      navLinks.forEach(function(a){ a.classList.toggle('on', a.getAttribute('data-s') === e.target.id && !a.classList.contains('go')); }); }); }, {rootMargin:'-45% 0px -50% 0px'});
+    navLinks.forEach(function(a){ var t = document.getElementById(a.getAttribute('data-s')); if (t) io.observe(t); }); } catch(e){}
   // Hide the phone bar once the form is on screen.
   try { new IntersectionObserver(function(en){ $('sticky').classList.toggle('off', en[0].isIntersecting); }).observe($('formSec')); } catch(e){}
   // Performance reel: set REEL to a YouTube video id when the clip is ready and the section appears.
