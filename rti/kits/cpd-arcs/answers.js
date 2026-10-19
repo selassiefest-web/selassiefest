@@ -74,7 +74,7 @@
     { key: "facilities", pdf: "List Box4", page: 2, kind: "multi",
       label: "Facilities requested (select all that apply)",
       options: ["Athletic Fields - Baseball", "Athletic Fields - Basketball (Outdoors)", "Athletic Fields - Football", "Athletic Fields - Soccer (Grass)", "Athletic Fields - Soccer (Turf)", "Athletic Fields - Tennis", "Athletic Fields - Volleyball (Concrete)", "Athletic Fields - Volleyball (Sand)", "Gymnasium - General", "Gymnasium - Large", "Outdoor Space - Bocce", "Outdoor Space - Hand Ball", "Outdoor Space - Horse Shoe", "Outdoor Space - Pickleball", "Outdoor Space - Picnic Grove", "Outdoor Space - Other", "Rooms - Art", "Rooms - Auditorium", "Rooms - Club", "Rooms - Dance", "Rooms - Meeting Room", "Rooms - Theater", "Rooms - Other"],
-      value: ["Outdoor Space - Other", "Rooms - Club"],
+      value: ["Gymnasium - General", "Gymnasium - Large", "Outdoor Space - Other", "Rooms - Club", "Rooms - Dance", "Rooms - Other"],
       confirm: "CPD's list has no Beach option. Tick \"Outdoor Space - Other\" for the beach and lawn on summer nights; the schedule answer below names it as the beach. The rooms cover off-season classes and holiday parties. Ask Ivry which rooms Rainbow Beach actually has free." },
     { key: "hrsSun", pdf: "Text25", page: 2, kind: "hours", label: "Hours per day: Sun", value: "" },
     { key: "hrsMon", pdf: "Text30", page: 2, kind: "hours", label: "Mon", value: "" },

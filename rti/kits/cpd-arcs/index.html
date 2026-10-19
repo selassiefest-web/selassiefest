@@ -139,6 +139,7 @@ ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .tag.req { background: var(--bad-bg); color: var(--bad); }
 .tag.opt { background: var(--field); color: var(--muted); }
 .tag.later { background: var(--field); color: var(--muted); }
+.tag.auto { background: var(--ok-bg); color: var(--ok); }
 .att p { grid-column: 2; margin: 0; color: var(--muted); font-size: .93rem; }
 .att:has(input:checked) { border-color: var(--ok); }
 .att:has(input:checked) .t { text-decoration: line-through; text-decoration-color: var(--ok); }
@@ -225,12 +226,12 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
           <p class="status" id="ptext">Loading…</p>
         </div>
         <button class="primary" id="dl" disabled>Preparing the form…</button>
-        <p class="status" id="dlStatus">CPD's own fillable PDF, filled with every answer on this page. It stays editable in Adobe Acrobat Reader.</p>
+        <p class="status" id="dlStatus">CPD's own fillable PDF, filled with every answer on this page, with Ras Tafari Inc.'s IRS determination letter added as the last page. It stays editable in Adobe Acrobat Reader.</p>
         <button class="ghost" id="copyAll">Copy all answers as text</button>
       </div>
       <div class="card">
         <h3>Before you send</h3>
-        <div class="blocker"><b>Certificate of Insurance.</b> CPD won't treat the application as complete without a COI naming the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured. As of Oct. 14 no policy is in place.</div>
+        <div class="blocker"><b>Certificate of Insurance.</b> CPD won't treat the application as complete without a COI naming the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured. Quotes requested Oct. 18 from four agencies: RMIS/Tulip (CPD's preferred broker, 312-729-5233), S. Wolf &amp; Associates (773-754-0849), a third Chicago agency listed as Netsha Insurance Group (773-909-4503), and Eventsured. Pick one, then send.</div>
         <ul class="plain" id="blockers"></ul>
       </div>
       <div class="card">
@@ -254,11 +255,12 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
   var STORE_KEY = "fs-arcs-kit-v1";
   var DOC_PATH = "kit/state";
 
+  var IRS_LETTER = "irs-determination-letter.pdf";
   var ATTACH = [
     { key: "coi", tag: "req", title: "Certificate of Insurance (COI)",
       text: "Required. It must name the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured, and the insured name must match the form (\"Ras Tafari Inc.\"). Plan for $1,000,000 general liability plus sexual abuse and molestation coverage, as the Full Spectrum and DJ Lab pages promise." },
-    { key: "irs", tag: "opt", title: "Proof of nonprofit status",
-      text: "Ras Tafari Inc.'s IRS determination letter (EIN 42-3036705). Attached.", link: "https://selassiefest.com/rti/kits/cpd-arcs/irs-determination-letter.pdf" },
+    { key: "irs", tag: "auto", title: "IRS 501(c)(3) determination letter",
+      text: "Ras Tafari Inc.'s IRS determination letter, June 12, 2026 (EIN 42-3036705). Attached automatically: it is added as the last page of the filled form you download in step 2.", link: IRS_LETTER, linkText: "Open the letter on its own" },
     { key: "proposal", tag: "opt", title: "Proposed schedule of activities with detailed descriptions",
       text: "The Full Spectrum proposal PDF covers all five parts and the year calendar.", link: "https://selassiefest.com/full-spectrum/full-spectrum-proposal.pdf" },
     { key: "calendar", tag: "opt", title: "2027 calendar",
@@ -266,7 +268,7 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
     { key: "resolution", tag: "opt", title: "Board resolution",
       text: "CPD doesn't require one, but it shows the board approved the proposal. Done: all three directors (Stephen Henry, Paul Kelly, Albert Harris) have signed the ARCS consent, completed Oct. 18, 2026. Print the signed copy from the board signing page." },
     { key: "refs", tag: "opt", title: "References or letters of recommendation",
-      text: "Optional, and it would strengthen the demand answer. Partners who said yes on the Full Spectrum tracker are the natural people to ask." },
+      text: "Optional, and it would strengthen the demand answer. As of Oct. 19, 80 neighborhood partners have been contacted (schools, libraries, churches, aldermen, youth and arts groups); none has replied yet. Signed letters arrive through selassiefest.com/support-letter/ and appear in the partner tracker's Letters tab. Attach any that come in before you send.", link: "https://selassiefest.com/full-spectrum/partners.html", linkText: "Open the partner tracker" },
     { key: "affil", tag: "opt", title: "Proof of affiliation",
       text: "Ras Tafari Inc. letterhead or a business card. Better: the Oct. 18, 2026 board consent, signed by all three directors on RTI letterhead, which formally adopts Full Spectrum as a program of Ras Tafari Inc. and states that all funds raised under that name belong to RTI. It also shows the current office, 1401 E. 71st St." },
     { key: "permit", tag: "later", title: "Permit request",
@@ -500,7 +502,7 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
       ul.appendChild(el("li", {}, [el("span", { text: "○" }), el("a", { href: "#q-" + f.key, text: f.kind === "hours" ? "Hours per day" : f.label.replace(/\s*\(.*?\)\s*$/, "") })]));
     });
     over.forEach(function (f) { ul.appendChild(el("li", {}, [el("span", { text: "✕", style: "color:var(--bad)" }), el("a", { href: "#q-" + f.key, text: "Too long: " + f.label.replace(/\s*\(.*?\)\s*$/, "") })])); });
-    var att = ATTACH.filter(function (a) { return a.tag !== "later" && !state.attach[a.key]; }).length;
+    var att = ATTACH.filter(function (a) { return a.tag !== "later" && a.tag !== "auto" && !state.attach[a.key]; }).length;
     if (att) ul.appendChild(el("li", {}, [el("span", { text: "○" }), el("a", { href: "#attachments", text: att + " attachment" + (att === 1 ? "" : "s") + " not gathered yet" })]));
   }
 
@@ -509,11 +511,12 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
     var root = $("attach"); root.innerHTML = "";
     ATTACH.forEach(function (a) {
       var id = "a-" + a.key;
-      var cb = el("input", { type: "checkbox", id: id }); cb.checked = !!state.attach[a.key];
+      var cb = el("input", { type: "checkbox", id: id }); cb.checked = a.tag === "auto" || !!state.attach[a.key];
+      if (a.tag === "auto") cb.disabled = true;
       cb.addEventListener("change", function () { state.attach[a.key] = cb.checked; scheduleSave(); refreshProgress(); });
-      var label = el("label", { for: id, class: "t" }, [a.title, el("span", { class: "tag " + a.tag, text: a.tag === "req" ? "Required" : a.tag === "later" ? "Later" : "Recommended" })]);
+      var label = el("label", { for: id, class: "t" }, [a.title, el("span", { class: "tag " + a.tag, text: a.tag === "req" ? "Required" : a.tag === "later" ? "Later" : a.tag === "auto" ? "Attached automatically" : "Recommended" })]);
       var p = el("p", {}, [a.text]);
-      if (a.link) { p.appendChild(document.createTextNode(" ")); p.appendChild(el("a", { href: a.link, target: "_blank", rel: "noopener", text: "Open the PDF" })); }
+      if (a.link) { p.appendChild(document.createTextNode(" ")); p.appendChild(el("a", { href: a.link, target: "_blank", rel: "noopener", text: a.linkText || "Open the PDF" })); }
       root.appendChild(el("div", { class: "att" }, [cb, label, p]));
     });
   }
@@ -534,7 +537,7 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
       "Attached:",
       "- ARCS Partnership Proposal form",
       "- Certificate of Insurance naming the Chicago Park District as additional insured",
-      "- IRS 501(c)(3) determination letter",
+      "- IRS 501(c)(3) determination letter (last page of the form PDF)",
       "- Full Spectrum program proposal",
       "- Full Spectrum 2027 calendar",
       "- Ras Tafari Inc. board resolution authorizing this proposal (signed by all three directors)",
@@ -579,12 +582,17 @@ footer.src { margin-top: 36px; color: var(--muted); font-size: .88rem; display: 
     try {
       var res = await window.ArcsFill.fill(P, formBytes.slice(0), FIELDS, allValues());
       var tooLong = res.report.filter(function (r) { return !r.fits; });
-      var blob = new Blob([res.bytes], { type: "application/pdf" });
+      var irsRes = await fetch(IRS_LETTER);
+      if (!irsRes.ok) throw new Error("IRS letter " + irsRes.status);
+      var out = await P.PDFDocument.load(res.bytes);
+      var irs = await P.PDFDocument.load(await irsRes.arrayBuffer());
+      (await out.copyPages(irs, irs.getPageIndices())).forEach(function (pg) { out.addPage(pg); });
+      var blob = new Blob([await out.save()], { type: "application/pdf" });
       var name = "ARCS-Partnership-Proposal-Full-Spectrum-Ras-Tafari-Inc.pdf";
       if (downloads) await downloads.save({ filename: name, data: blob });
       else { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
       $("dlStatus").className = "status";
-      $("dlStatus").textContent = "Saved " + name + "." + (tooLong.length ? " " + tooLong.length + " answer(s) run past their box; trim them and download again." : " Open it in Acrobat Reader to check it, then attach it to the email.");
+      $("dlStatus").textContent = "Saved " + name + "." + (tooLong.length ? " " + tooLong.length + " answer(s) run past their box; trim them and download again." : " The IRS determination letter is the last page. Open it in Acrobat Reader to check it, then attach it to the email.");
     } catch (e) {
       $("dlStatus").className = "status err";
       var code = e && e.code;
