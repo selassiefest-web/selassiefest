@@ -22,10 +22,11 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Insurance: general liability + abuse and molestation | Reserve; quote pending. Small youth programs have been quoted from about $800 to $1,600, and some carriers set a $5,000 minimum | $3,500 | |
 | CPD background checks | Reserve; the Park District runs and pays for its own checks, to be confirmed for partner staff and guest DJs | $500 | |
 | Music public-performance licensing | Reserve; ASCAP, BMI, SESAC and GMR, or written confirmation that the Park District's licenses cover the Lab | $1,000 | |
-| Sound, stage and lighting for 3 Showcases (Q-Ality Sound) | Reserve of $750 a Showcase; the real rate is set by the board's sole-source memo | $2,250 | |
+| Q-Ality Sound: sound, stage and lighting for the 14 Rainbow Wednesdays | $1,200 per Rainbow Wednesday × 14 | $16,800 | |
+| Q-Ality Sound: sound, stage and lighting for 3 DJ Lab Showcases | Reserve at the same $1,200 rate × 3; to be confirmed | $3,600 | |
 | Payroll costs if the instructors are employees | Reserve of about 10% of the $19,500 instructor pay; $0 if they are independent trainers | $1,950 | |
 | Class app, family email and hosting | Estimate, about $50 a month | $600 | |
-| **Total cash** | | **$56,973** | |
+| **Total cash** | | **$75,123** | |
 | Controllers: Hercules DJControl Inpulse 300 MK2 | **Being sought** through grants and donations; 13 × about $200 (12 stations + a spare) | | $2,600 |
 | Windows laptops (Core i5, 8 GB, 64-bit) | **Being sought** through grants and donations; 13 × about $575 | | $7,475 |
 | Volume-limited headphones (85 dB) | **Being sought** through grants and donations; 13 × about $30 | | $390 |
@@ -34,11 +35,10 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | 4 modern LED DJ booths for Rainbow Wednesdays | **Being sought** through grants and donations; 4 × about $1,800 (professional LED video-panel booth). A basic LED-strip facade is about $190 to $275 each; a curved indoor LED booth about $3,600 | | $7,200 |
 | 10% equipment contingency | repairs, replacements, shipping | | $1,861 |
 | **Total equipment value** | | | **$20,466** |
-| Q-Ality Sound, if paid more than the reserve | Paid, donated or both, per the board's [sole-source memo](/dj-lab/governance/sole-source-justification-qality.html) | per memo | |
 | Program coordination | Ras Tafari Inc. officers, unpaid | | not valued |
-| **Everything, first year** | | **$56,973** | **$20,466** |
+| **Everything, first year** | | **$75,123** | **$20,466** |
 
-- **About $57,000 in cash for the first year, plus about $20,500 of equipment sought through grants and donations: about $77,400 in all.** That is about $4,700 in cash per station ($56,973 ÷ 12), before any payment to Q-Ality Sound above its reserve. Children join any Tuesday, so there is no fixed per-child cost.
+- **About $75,100 in cash for the first year, plus about $20,500 of equipment sought through grants and donations: about $95,600 in all.** Q-Ality Sound is $1,200 for each Rainbow Wednesday. Children join any Tuesday, so there is no fixed per-child cost.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused every Tuesday, so it doesn't need to be bought again.
 - **No stipends in classes.** Stipends for young performers are paid at Rainbow Wednesdays, which has its own budget.
 - **Funding:** arts and youth grants, sponsors and Ras Tafari Inc. The class is free to families. No class starts until its funding is in place.
