@@ -97,6 +97,8 @@
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
   function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function link(d){ return "https://selassiefest.com/guest-dj/?k=" + d.invite_key; }
+  // Short invitation for DJs reached by booking form or DM (same words as the email script's short version).
+  function shortMsg(d){ return "Hi " + d.name + "! I'm Stephen Henry with Ras Tafari Inc. In January we open the Rainbow DJ Lab, free year-round DJ classes for South Side kids at Rainbow Beach Park. Each week a Chicago woman DJ teaches the last 30 minutes (5:30-6:00 pm on a Tuesday you pick, anticipated pay $200). Would you be one of them? A Yes, Maybe or No on your personal page is all I need for now: " + link(d); }
 
   // The 39 class Tuesdays and their featured Missions (same cycle as dj-lab-2027.html).
   var DATES = [], m = 0;
@@ -151,7 +153,8 @@
         '<div class="small muted">' + esc((d.specialties || []).join(", ")) + '</div></td>' +
         '<td><span class="pill">' + esc(d.tier || "") + '</span></td>' +
         '<td class="small">' + ch + (d.email ? '<div>' + esc(d.email) + '</div>' : '') + (d.form_url ? '<div><a href="' + esc(d.form_url) + '" target="_blank" rel="noopener">form</a></div>' : '') + (d.instagram ? '<div>' + esc(d.instagram) + '</div>' : '') + '</td>' +
-        '<td>' + sel + '<div style="margin-top:6px"><button type="button" class="sm" data-copy="' + esc(link(d)) + '">Copy her link</button></div></td>' +
+        '<td>' + sel + '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px"><button type="button" class="sm" data-copy="' + esc(link(d)) + '" data-label="Copy her link">Copy her link</button>' +
+          (!d.email && ['ready','research'].indexOf(d.status) >= 0 && (d.form_url || d.instagram) ? '<button type="button" class="sm" data-copy="' + esc(shortMsg(d)) + '" data-label="Copy message">Copy message</button>' + (d.form_url ? '<a class="sm" style="padding:4px 6px;border:1px solid var(--line);border-radius:6px;text-decoration:none" href="' + esc(d.form_url) + '" target="_blank" rel="noopener">Open form</a>' : '') + '<button type="button" class="sm" data-invited="' + d.id + '">Mark invited</button>' : '') + '</div></td>' +
         '<td>' + ans + '</td></tr>';
     }).join("");
     $("roster").innerHTML = '<div class="tw"><table><thead><tr><th>DJ</th><th>Tier</th><th>Reach her by</th><th>Status</th><th>Her answer</th></tr></thead><tbody>' + (rows || '<tr><td colspan="5" class="muted">No DJs loaded yet.</td></tr>') + '</tbody></table></div>';
@@ -189,7 +192,9 @@
   });
   document.addEventListener("click", function(e){
     var c = e.target.closest("[data-copy]");
-    if (c) { var t = c.getAttribute("data-copy"); try { navigator.clipboard.writeText(t).then(function(){ c.textContent = "Copied"; setTimeout(function(){ c.textContent = "Copy her link"; }, 1400); }); } catch (x) { prompt("Her link:", t); } return; }
+    if (c) { var t = c.getAttribute("data-copy"); try { navigator.clipboard.writeText(t).then(function(){ c.textContent = "Copied"; setTimeout(function(){ c.textContent = c.getAttribute("data-label") || "Copy"; }, 1400); }); } catch (x) { prompt("Her link:", t); } return; }
+    var inv = e.target.closest("[data-invited]");
+    if (inv) { rpc("fs_guest_dj_mark", { p_session: state.session.sessionToken, p_id: inv.getAttribute("data-invited"), p_status: "invited", p_note: "Sent by hand (form or DM)" }).then(load).catch(function(err){ alert("Could not save: " + err.message); }); return; }
     var t = e.target.closest(".tabs button"); if (!t) return;
     document.querySelectorAll(".tabs button").forEach(function(b){ b.setAttribute("aria-selected", b === t ? "true" : "false"); });
     $("roster").hidden = t.getAttribute("data-t") !== "roster"; $("fit").hidden = t.getAttribute("data-t") !== "fit";
