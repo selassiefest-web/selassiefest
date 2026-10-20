@@ -119,7 +119,7 @@
   <p class="personal" id="personal" hidden></p>
   <p class="muted">Ras Tafari Inc. opens the Rainbow DJ Lab in January 2027: free, year-round DJ classes for South Side kids in the Rainbow Beach Park fieldhouse. Each class week, one Chicago woman DJ comes in as our guest instructor for the last half hour. We would be honored if one of those Tuesdays were yours.</p>
   <div class="facts">
-    <div class="fact"><b>$200</b><span>For your visit</span></div>
+    <div class="fact"><b>$200</b><span>Anticipated pay for your visit</span></div>
     <div class="fact"><b>30 min</b><span>5:30&ndash;6:00 pm on a Tuesday</span></div>
     <div class="fact"><b>12</b><span>Students, each on their own deck</span></div>
     <div class="fact"><b>39</b><span>Tuesdays in 2027 to choose from</span></div>
@@ -145,7 +145,7 @@
       <li><b>Who:</b> up to 12 middle- and high-school students, each on their own Hercules DJControl Inpulse 300 controller with Serato DJ Lite. Two resident DJ instructors, one man and one woman, are in the room the whole time.</li>
       <li><b>What we handle:</b> gear set up and tested, a one-page briefing on that day&rsquo;s lesson and the students&rsquo; levels, snacks, and the Park District background-check paperwork every adult working with youth completes.</li>
       <li><b>House rules:</b> clean lyrics only, capped headphone volume, and nobody is ever made to perform.</li>
-      <li><b>Pay:</b> $200 for your visit. With your permission, we&rsquo;ll also feature you with a short interview or photo.</li>
+      <li><b>Anticipated pay:</b> $200 for your visit. With your permission, we&rsquo;ll also feature you with a short interview or photo.</li>
     </ul>
   </div>
 </section>
@@ -290,7 +290,10 @@
       chips("sounds", SOUNDS, "checkbox", "sound"); chips("months", MONTHS, "checkbox", "month");
       chips("freq", FREQ, "radio", "freq"); chips("ages", AGES, "radio", "age");
       if (ANSWERED[d.answered]) { $("prev").hidden = false; $("prev").textContent = "You already answered " + d.answered.toUpperCase() + ". Thank you! You can send an updated answer below."; }
+      var pre = (new URLSearchParams(location.search).get("a") || "").toLowerCase();
+      if (ANSWERED[pre]) { var rb = document.querySelector('input[name="decision"][value="' + pre + '"]'); rb.checked = true; rb.dispatchEvent(new Event("change")); }
       $("page").hidden = false;
+      if (ANSWERED[pre]) setTimeout(function(){ $("f").scrollIntoView({ behavior: "smooth", block: "start" }); }, 150);
     } catch (e) { $("missing").hidden = false; }
   }
 
