@@ -9,16 +9,16 @@ description: How the free Rainbow DJ Lab is paid for, what we will publish each 
 
 ## A one-page class budget is a launch requirement
 
-Here is the **one-page budget for the DJ classes** (item 14 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: instructor rates match the Rainbow Wednesdays budget, the gear, which is being sought through grants and donations, is valued at typical retail, and insurance, music-licensing and sound, stage and lighting amounts are still to be set.
+Here is the **one-page budget for the DJ classes** (item 14 on the [launch checklist](/dj-lab/governance/index.html)). It is a planning budget: the two regular instructors are paid $250 a session, the gear, which is being sought through grants and donations, is valued at typical retail, and insurance, music-licensing and sound, stage and lighting amounts are still to be set.
 
-**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today.** A paid role is allowed only if directors with no stake in it approve it, at a fair rate based on comparable programs, paid through payroll and reported publicly (see the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 12). They may be reimbursed for documented, pre-approved expenses. The instructors and the second adult are **paid DJ trainers who are not members of Ras Tafari Inc.**
+**No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today.** A paid role is allowed only if directors with no stake in it approve it, at a fair rate based on comparable programs, paid through payroll and reported publicly (see the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 12). They may be reimbursed for documented, pre-approved expenses. Both instructors are **paid DJ trainers who are not members of Ras Tafari Inc.**
 
 ### One cohort: up to 12 children, 14 weekly 90-minute sessions
 
 | Line | Basis | Cash | In-kind |
 |---|---|---:|---:|
-| Lead DJ instructor (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $200 | $2,800 | |
-| Second adult for the two-adult rule (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $100 | $1,400 | |
+| Lead DJ instructor (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $250 | $3,500 | |
+| Second DJ instructor (paid trainer, not a Ras Tafari Inc. member) | 14 sessions × $250 | $3,500 | |
 | Rainbow Showcase extra staffing (session 14), paid trainer | 1 × $200 | $200 | |
 | DJ controllers, 3 stations | **Being sought** through grants and donations; valued at about 3 × $300 | | about $900 |
 | Laptops, 3 stations | **Being sought** through grants and donations; valued at about $1,500 | | about $1,500 |
@@ -33,9 +33,9 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Printing: forms, Passports, flyers in English and Spanish | | $150 | |
 | Spanish review by a native speaker | | $200 | |
 | Program coordination | Ras Tafari Inc. officers, unpaid | | $1,500 |
-| **Total** | | **about $5,500, plus licensing, sound, stage and lighting, and any CPD check costs** | **about $4,200** |
+| **Total** | | **about $8,300, plus licensing, sound, stage and lighting, and any CPD check costs** | **about $4,200** |
 
-- **About $460 per child in cash** for a 12-child, 14-week course ($5,500 ÷ 12), before licensing, any payment to Q-Ality Sound and any CPD background-check costs. Counting the gear and unpaid coordination, the full value is about $9,700, or about $810 per child.
+- **About $690 per child in cash** for a 12-child, 14-week course ($8,300 ÷ 12), before licensing, any payment to Q-Ality Sound and any CPD background-check costs. Counting the gear and unpaid coordination, the full value is about $12,500, or about $1,040 per child.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused, so later cohorts don't need it again.
 - **The spring fast track** (6 workshops × 2 hours) needs about 43% of the instructor cost and the same gear.
 - **No stipends in classes.** Stipends for young performers are paid at Rainbow Wednesdays, which has its own budget.
