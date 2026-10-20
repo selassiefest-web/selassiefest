@@ -24,7 +24,7 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Supplies, Passports and printing | | $1,000 | |
 | Showcase and event supplies | | $1,500 | |
 | 10% contingency | on the $42,475 above | $4,248 | |
-| DJ equipment: 12 complete stations plus a spare (controller, laptop, headphones, software, power, tables) | **Being sought** through grants and donations; to be priced before the first class | | to be priced |
+| DJ equipment: 12 complete stations plus a spare (controller, laptop, headphones, software, power, tables) | **Being sought** through grants and donations; planning value at new retail: about $805 a station (controller about $200, Windows laptop about $575, volume-limited headphones about $30) × 13 = about $10,500. Power, cable management and tables are extra and will be quoted | | about $10,500 |
 | Earplugs, free to every child | | $50 | |
 | Pediatric first aid/CPR/AED certification | 2 adults × about $100 | $200 | |
 | Spanish review by a native speaker | | $200 | |
@@ -34,7 +34,7 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Mandated reporter training | Illinois DCFS online course | $0 | |
 | Music public-performance licensing | quote pending, or park coverage | to be confirmed | |
 | Program coordination | Ras Tafari Inc. officers, unpaid | | not valued |
-| **Total** | | **about $47,700, plus licensing, sound, stage and lighting, and any CPD check costs** | **equipment, to be priced** |
+| **Total** | | **about $47,700, plus licensing, sound, stage and lighting, and any CPD check costs** | **about $10,500 equipment, plus power and tables to be quoted** |
 
 - **About $4,000 per station for the year** in cash ($47,700 ÷ 12 stations), before licensing, any payment to Q-Ality Sound and any CPD background-check costs. Children join any Tuesday, so there is no fixed per-child cost.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused every Tuesday, so it doesn't need to be bought again.
