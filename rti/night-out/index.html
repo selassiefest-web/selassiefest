@@ -4,124 +4,419 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Team page for the four Night Out in the Parks 2027 applications: who submits each one, the write-ups, the tracker and the dates.">
-<title>Night Out 2027 Team Page</title>
+<meta name="description" content="Team tracker for the four Night Out in the Parks 2027 applications.">
+<title>Night Out Submission Engine</title>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
+/* Layout: one working page. Countdown and rules on top, four track cards as the board,
+   one track open below with its gates, steps and log, then cross-track checks and the 2026 precedents.
+   Palette: night-sky ink and paper neutrals; roots red, gold, green and a harbor blue mark the four tracks and the status. */
 :root{
-  --bg:#f5f6f2; --paper:#fff; --ink:#1a1e1b; --muted:#5a635c; --line:#dde1da; --accent:#264f9c;
-  --c1:#d9363e; --c2:#d4a40c; --c3:#2b9152; --c4:#1f84b8; --warn-bg:#fbf0d6; --warn:#8a5a00;
-  --font:"Segoe UI",system-ui,-apple-system,sans-serif;
+  --bg:#f2f4f0; --surface:#ffffff; --ink:#14201a; --muted:#56635b; --line:#d8ded6; --field:#eaeee8;
+  --accent:#1b5e7a; --ok:#1d7a45; --ok-bg:#dff1e5; --warn:#865700; --warn-bg:#fbefd0; --bad:#b0302a; --bad-bg:#f8e0dd;
+  --t1:#c8332d; --t2:#cf9410; --t3:#2a8a51; --t4:#2a78b5;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#121513; --paper:#1a1f1c; --ink:#e7ece8; --muted:#9ba69e; --line:#2c342f; --accent:#8fb0ff;
-    --c1:#f0656b; --c2:#e8c34a; --c3:#57c07f; --c4:#56b4e6; --warn-bg:#3a2f14; --warn:#f0c46a; color-scheme:dark;
+    --bg:#0f1511; --surface:#17201b; --ink:#e8eee9; --muted:#9aa7a0; --line:#2a352e; --field:#202a24;
+    --accent:#7fc0dc; --ok:#6dcf95; --ok-bg:#1b3325; --warn:#f0c46a; --warn-bg:#3a2f14; --bad:#f28b83; --bad-bg:#3d1c18;
+    --t1:#f0746d; --t2:#e8b84a; --t3:#5fc488; --t4:#6db0e4; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#121513; --paper:#1a1f1c; --ink:#e7ece8; --muted:#9ba69e; --line:#2c342f; --accent:#8fb0ff;
-  --c1:#f0656b; --c2:#e8c34a; --c3:#57c07f; --c4:#56b4e6; --warn-bg:#3a2f14; --warn:#f0c46a; color-scheme:dark;
+  --bg:#0f1511; --surface:#17201b; --ink:#e8eee9; --muted:#9aa7a0; --line:#2a352e; --field:#202a24;
+  --accent:#7fc0dc; --ok:#6dcf95; --ok-bg:#1b3325; --warn:#f0c46a; --warn-bg:#3a2f14; --bad:#f28b83; --bad-bg:#3d1c18;
+  --t1:#f0746d; --t2:#e8b84a; --t3:#5fc488; --t4:#6db0e4; color-scheme:dark;
 }
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--font)}
-[hidden]{display:none!important}
-.wrap{max-width:980px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-a{color:var(--accent)}
-.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-h1{font-size:clamp(28px,5vw,40px);line-height:1.1;margin:6px 0 12px;text-wrap:balance}
-h2{font-size:22px;margin:36px 0 12px}
-.note{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:12px 16px;margin:16px 0}
-.dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.dates div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.dates b{display:block;font-size:15px}
-.dates span{color:var(--muted);font-size:14px}
-.tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.card{background:var(--paper);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:14px 16px;min-width:0}
-.card .t{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.card h3{margin:4px 0 2px;font-size:18px}
-.card p{margin:6px 0;font-size:14.5px}
-.card .amt{font-weight:700;font-size:20px}
-.card button,.card a.btn{display:inline-block;margin-top:8px;font:inherit;font-size:14px;color:var(--accent);background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;text-decoration:none}
-#doc{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 20px 20px;margin-top:20px;overflow-wrap:anywhere}
-#doc table{border-collapse:collapse;display:block;overflow-x:auto}
-#doc th,#doc td{border:1px solid var(--line);padding:6px 10px;text-align:left}
-#doc h1{font-size:26px}
-#doc h2{font-size:20px}
-#doc h3{font-size:17px;margin:20px 0 6px}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);padding-block:0 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto}
+a{color:var(--accent);overflow-wrap:anywhere}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.12;text-wrap:balance}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800}
+h2{font-size:1.3rem;font-weight:800}
+h3{font-size:1.02rem;font-weight:600}
+.eyebrow{font:700 .72rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:.9rem}
+.spec{height:6px;background:linear-gradient(90deg,var(--t1) 0 25%,var(--t2) 0 50%,var(--t3) 0 75%,var(--t4) 0)}
+header.top{display:grid;gap:12px;padding-block:26px 6px}
+.lede{margin:0;color:var(--muted);max-width:68ch}
+.clock{display:flex;flex-wrap:wrap;gap:10px}
+.clk{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:0;flex:1 1 240px}
+.clk b{font:700 1.45rem/1.1 var(--mono);display:block;font-variant-numeric:tabular-nums}
+.clk span{font-size:.86rem;color:var(--muted)}
+.rule{background:var(--warn-bg);color:var(--ink);border-radius:10px;padding:12px 16px;font-size:.95rem}
+.rule b{color:var(--warn)}
+section{margin-top:30px;display:grid;gap:14px}
+section>h2{border-bottom:2px solid var(--ink);padding-bottom:8px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0;text-align:left;font:inherit;color:inherit;border-top:5px solid var(--c)}
+button.card{cursor:pointer}
+button.card[aria-pressed="true"]{outline:3px solid var(--c);outline-offset:1px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card .tn{font:700 .72rem var(--mono);letter-spacing:.08em;color:var(--c);text-transform:uppercase}
+.card h3{overflow-wrap:anywhere}
+.row{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:space-between}
+.pill{font:700 .7rem/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:5px 8px;border-radius:99px;background:var(--field);color:var(--muted);width:max-content}
+.pill.drafting{background:var(--warn-bg);color:var(--warn)} .pill.ready{background:var(--field);color:var(--accent)}
+.pill.submitted,.pill.confirmed{background:var(--ok-bg);color:var(--ok)}
+.bar{height:8px;background:var(--field);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c);width:0}
+.next{font-size:.88rem;color:var(--muted)}
+.big{font:700 1.05rem var(--mono);font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:14px;min-width:0}
+.panel.tk{border-top:6px solid var(--c)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+label.f{display:grid;gap:4px;font-size:.84rem;color:var(--muted);min-width:0}
+input[type=text],input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:84px;resize:vertical}
+.chk{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;align-items:start;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.chk input{width:20px;height:20px;margin-top:2px;accent-color:var(--c)}
+.chk.done{background:var(--ok-bg)}
+.chk .due{font:700 .72rem var(--mono);color:var(--muted);letter-spacing:.04em}
+.chk .why{font-size:.86rem;color:var(--muted)}
+.list{display:grid;gap:8px}
+.flag{border-radius:10px;padding:10px 14px;font-size:.93rem;background:var(--field)}
+.flag.bad{background:var(--bad-bg)} .flag.bad b{color:var(--bad)}
+.flag.warn{background:var(--warn-bg)} .flag.warn b{color:var(--warn)}
+.flag.ok{background:var(--ok-bg)} .flag.ok b{color:var(--ok)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--field)}
+tr:last-child td{border-bottom:0} td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.btn{font:700 .92rem var(--body);background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:9px 14px;cursor:pointer}
+.btn.ghost{background:var(--field);color:var(--ink)}
+.log{display:grid;gap:6px;font-size:.92rem}
+.log div{border-left:3px solid var(--c);padding:2px 0 2px 10px}
+.empty{border:2px dashed var(--line);border-radius:12px;padding:18px;color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:.9rem;max-width:90vw;z-index:20}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<div class="spec" aria-hidden="true"></div>
 <div class="wrap">
-  <div class="kicker">Chicago Park District · Night Out in the Parks 2027</div>
-  <h1>Four applications, one team</h1>
-  <p>Four separate proposals, each with its own applicant and submitter. Use this page to read each write-up and see what is still needed. Status is kept on the tracker.</p>
-  <p><a href="https://claude.ai/artifact/CeA2p666t1cNrGDabVKQmY">Open the Submission Engine tracker</a> (ask Albert for access if it asks you to sign in).</p>
-
-  <div class="dates">
-    <div><b>Oct 23</b><span>Questions to the CPD liaison</span></div>
-    <div><b>Oct 24</b><span>Artist packets and details due</span></div>
-    <div><b>Oct 26</b><span>Budgets locked</span></div>
-    <div><b>Oct 28</b><span>Approvals</span></div>
-    <div><b>Oct 30</b><span>$1M insurance quote</span></div>
-    <div><b>Nov 1</b><span>Portal opens, 12:01 am Central</span></div>
-    <div><b>Dec 8</b><span>Hard deadline, 11:59 pm Central</span></div>
-  </div>
-
-  <h2>The four tracks</h2>
-  <div class="tracks">
-    <div class="card" style="--c:var(--c1)">
-      <div class="t">Track 1</div><h3>JayRebl Live in the Parks</h3>
-      <p>Applicant: Ras Tafari Inc. Submits: Albert Harris.</p>
-      <p class="amt">$9,000 <span style="font-size:13px;font-weight:400;color:var(--muted)">6 shows, $1,500 each</span></p>
-      <button data-doc="jayrebl-proposal-track-1.md">Read write-up</button>
+  <header class="top">
+    <span class="eyebrow">Chicago Park District &middot; Night Out in the Parks 2027</span>
+    <h1>Night Out Submission Engine</h1>
+    <p class="lede">Four separate proposals, four separate submitters, one place to see where each stands. Status saves for everyone who opens this page, so Stephen, Craig, Max and Albert see the same board.</p>
+    <label class="small muted" for="meName" style="display:block;margin:0 0 12px">Your name, so the log shows who made each change: <input id="meName" type="text" maxlength="40" autocomplete="name" placeholder="Stephen, Craig, Max or Albert" style="font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)"></label>
+    <div class="clock">
+      <div class="clk"><b id="cdOpen">&hellip;</b><span id="cdOpenLbl">Portal opens Sunday, Nov. 1, 2026 at 12:01 am Central</span></div>
+      <div class="clk"><b id="cdDue">&hellip;</b><span>Proposals due Tuesday, Dec. 8, 2026 at 11:59 pm Central</span></div>
     </div>
-    <div class="card" style="--c:var(--c2)">
-      <div class="t">Track 2</div><h3>Prestige Sound: Feel the Riddim</h3>
-      <p>Applicant: Prestige Sound. Submits: Stephen Henry.</p>
-      <p class="amt">$9,000 <span style="font-size:13px;font-weight:400;color:var(--muted)">6 shows, $1,500 each</span></p>
-      <button data-doc="prestige-sound-proposal-track-2.md">Read write-up</button>
-    </div>
-    <div class="card" style="--c:var(--c3)">
-      <div class="t">Track 3</div><h3>Q-Ality Sound in the Park</h3>
-      <p>Applicant: Q-Ality Sound. Submits: Craig Rainford.</p>
-      <p class="amt">$9,000 <span style="font-size:13px;font-weight:400;color:var(--muted)">6 shows, $1,500 each</span></p>
-      <button data-doc="q-ality-sound-proposal-track-3.md">Read write-up</button>
-    </div>
-    <div class="card" style="--c:var(--c4)">
-      <div class="t">Track 4</div><h3>Anatomy of a Shoreline</h3>
-      <p>Submits: Max. Applicant details still to confirm.</p>
-      <p class="amt">$15,000 <span style="font-size:13px;font-weight:400;color:var(--muted)">request</span></p>
-      <a class="btn" href="/rti/kits/night-out-2027/">Open the Night Out kit</a>
-    </div>
-  </div>
+    <div class="rule"><b>CPD's rules, as published.</b> The applicant must be Chicago-based, and the main applicant must be 21 or older. Nonprofit status is not required. CPD's guidelines page sets no limit on the number of proposals. Each track below needs its own applicant, account, budget and insurance.</div>
+  </header>
 
-  <div class="note">Drafts. Items marked [confirm] in a write-up are still open. The number of shows for tracks 2 and 3 is a working assumption until Stephen and Craig confirm it.</div>
+  <section id="boardSec">
+    <h2>The four tracks</h2>
+    <div class="board" id="board"></div>
+    <div id="totals" class="small muted"></div>
+  </section>
 
-  <div id="doc" hidden></div>
+  <section id="detailSec">
+    <h2 id="detailH">Open a track</h2>
+    <div id="detail"></div>
+  </section>
+
+  <section>
+    <h2>Checks across all four</h2>
+    <div class="list" id="cross"></div>
+  </section>
+
+  <section>
+    <h2>Last year's approved partners</h2>
+    <p class="small muted" style="margin:0">From your research on CPD's 2026 partner list. Verify each name on CPD's own page before quoting it. We are modeling the format of the closest precedents.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Category</th><th>Count</th><th>Partners</th></tr></thead>
+      <tbody>
+        <tr><td>Sound system</td><td class="n">1</td><td>Beatdown Soundsystem</td></tr>
+        <tr><td>DJ and beatmaking</td><td class="n">1</td><td>Beatmaker's Toolbox</td></tr>
+        <tr><td>Bands and bandleaders</td><td class="n">13</td><td>A Flor de Piel; Baba Yaga's Stew; ChangoSnakeDog &amp; Friends; Deep Fried Pickle Project Jug Band; Emily Kuhn; Gustavo Cortiñas; <b>Ifficial Reggae Movement</b>; Kitt Lyles; Lucy Smith; Luiz Ewerling; SamaSama Project; Sones de Mexico Ensemble; Yves Francois Rocambu Jazz</td></tr>
+        <tr><td>Other live ensembles</td><td class="n">5</td><td>Beyond This Point; Crossing Borders Music; Eighth Blackbird/Noelia Cruz; Friends of the Gamelan; Music Around the Mediterranean</td></tr>
+        <tr><td><b>Total</b></td><td class="n"><b>20</b></td><td></td></tr>
+      </tbody>
+    </table></div>
+    <div class="flag warn"><b>Closest precedents.</b> Beatdown Soundsystem for the sound-system tracks and Ifficial Reggae Movement for the reggae band track. Ifficial was an approved partner itself in 2026, so ask the liaison how CPD treats an act that is its own applicant and also appears in someone else's proposal.</div>
+  </section>
+
+  <section>
+    <h2>Dates</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Date</th><th>What</th></tr></thead>
+      <tbody>
+        <tr><td>Oct. 23</td><td>Ask the NOITP liaison any open questions: noitp@chicagoparkdistrict.com (CPD's page prints it as "noip@")</td></tr>
+        <tr><td>Oct. 24</td><td>Artist packets collected</td></tr>
+        <tr><td>Oct. 26</td><td>Budgets locked against confirmed fees</td></tr>
+        <tr><td>Oct. 28</td><td>Approvals signed for each applicant</td></tr>
+        <tr><td>Oct. 30</td><td>$1M general liability quote naming the Park District</td></tr>
+        <tr><td>Oct. 31</td><td>Final read of every answer</td></tr>
+        <tr><td>Nov. 1, 12:01 am</td><td>Portal opens: <a href="https://chicagoparkdistrict.submittable.com/submit" target="_blank" rel="noopener">chicagoparkdistrict.submittable.com</a></td></tr>
+        <tr><td>Nov. 16&ndash;18</td><td>Optional office hours: Warren Park (Mon.), Garfield Park (Tue.), Hamilton Park (Wed.)</td></tr>
+        <tr><td>Dec. 8, 11:59 pm</td><td>Hard deadline</td></tr>
+      </tbody>
+    </table></div>
+  </section>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<div id="toast" hidden></div>
+
+<script src="/assets/js/supabase-client.js"></script>
 <script>
 (function(){
-  var box = document.getElementById('doc');
-  var base = '/Claude%20outputs/night-out/';
-  document.querySelectorAll('button[data-doc]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var file = b.getAttribute('data-doc');
-      box.hidden = false;
-      box.textContent = 'Loading…';
-      fetch(base + file).then(function(r){
-        if(!r.ok) throw new Error(r.status);
-        return r.text();
-      }).then(function(t){
-        box.innerHTML = window.marked ? marked.parse(t) : '';
-        if(!window.marked) box.textContent = t;
-        box.scrollIntoView({behavior:'smooth', block:'start'});
-      }).catch(function(){
-        box.innerHTML = 'Could not load the write-up. <a href="https://github.com/selassiefest-web/selassiefest/blob/main/Claude%20outputs/night-out/' + file + '">Open it on GitHub</a>.';
-      });
-    });
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function money(n){ return n || n === 0 ? "$" + Number(n).toLocaleString("en-US") : "not set"; }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function isObj(x){ return x && typeof x === "object" && !Array.isArray(x); }
+  function merge(a, b){ var o = isObj(a) ? clone(a) : {}; Object.keys(b).forEach(function(k){ o[k] = isObj(b[k]) ? merge(o[k], b[k]) : b[k]; }); return o; }
+
+  var IDS = ["t1","t2","t3","t4"];
+  var META = { t1:{c:"--t1"}, t2:{c:"--t2"}, t3:{c:"--t3"}, t4:{c:"--t4"} };
+  var STATUS = [["planning","Planning"],["drafting","Drafting"],["ready","Ready to submit"],["submitted","Submitted"],["confirmed","Confirmed by CPD"]];
+
+  var GATES = [
+    ["g_chi","The applicant has a Chicago address, verified at application, contracting and payment"],
+    ["g_21","The main applicant is 21 or older"],
+    ["g_acct","The main applicant has their own Submittable account"],
+    ["g_int","Signed up for CPD's opening-day email (NOTP Partner Interest Form)"],
+    ["g_guide","Read CPD's 2027 guidelines and watched the info video"]
+  ];
+  var APPROVAL = {
+    t1: "Board consent signed by all five directors on the signing page",
+    t2: "Prestige Sound's written authorization to apply, and a note to the Ras Tafari Inc. board",
+    t3: "Q-Ality Sound's written authorization to apply, and a note to the Ras Tafari Inc. board with the director recused from any Ras Tafari vote about Q-Ality",
+    t4: "The applicant's written authorization to apply, and a note to the Ras Tafari Inc. board if Ras Tafari Inc. is credited"
+  };
+  function steps(id){
+    return [
+      ["s_liaison","Oct. 23","Ask the NOITP liaison any open questions, such as whether one act can appear in two proposals, and write the answers in the notes","Email noitp@chicagoparkdistrict.com."],
+      ["s_packets","Oct. 24","Collect every artist's packet: bio of about 100 words, a photo, 1 or 2 performance links, fee, summer 2027 availability, W-9","Background checks apply to anyone who interacts with the public."],
+      ["s_budget","Oct. 26","Lock the budget against the confirmed fees",""],
+      ["s_approve","Oct. 28",APPROVAL[id],""],
+      ["s_ins","Oct. 30","Quote for $1M general liability naming the Chicago Park District, 4830 S. Western Ave., Chicago, IL 60609, as additional insured","The policy must be in the applicant's own name. One applicant's policy does not cover another."],
+      ["s_read","Oct. 31","Final read of every answer; check word counts against the form's limits",""],
+      ["s_submit","Nov. 1","Submit at 12:01 am Central from the main applicant's own account",""],
+      ["s_conf","Nov. 1","Save the confirmation email and enter its number below",""],
+      ["s_office","Nov. 16–18","Optional: attend NOITP office hours after submitting",""],
+      ["s_dec8","Dec. 8","Hard deadline, 11:59 pm Central, if anything slipped",""]
+    ];
+  }
+  function gatesFor(id){ return GATES; }
+
+  var KEY = (new URLSearchParams(location.search)).get("k") || "", sb = null, me = "", tracks = {}, selected = "t1", loaded = false;
+  var pending = {}, timers = {}, inflight = {}, nameCache = {};
+
+  function toast(msg){ var t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.hidden = true; }, 2600); }
+
+  // ---------- clocks ----------
+  var OPEN_AT = Date.UTC(2026, 10, 1, 5, 1), DUE_AT = Date.UTC(2026, 11, 9, 5, 59);
+  function span(ms){
+    if (ms <= 0) return "now";
+    var m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60);
+    return d + "d " + h + "h " + (m % 60) + "m";
+  }
+  function tick(){
+    var now = Date.now();
+    $("cdOpen").textContent = now < OPEN_AT ? span(OPEN_AT - now) : "Open now";
+    $("cdOpenLbl").textContent = now < OPEN_AT ? "until the portal opens, Sunday Nov. 1, 2026 at 12:01 am Central" : "The portal opened Nov. 1, 2026 at 12:01 am Central";
+    $("cdDue").textContent = now < DUE_AT ? span(DUE_AT - now) : "Closed";
+  }
+
+  // ---------- progress ----------
+  function items(id){ return gatesFor(id).map(function(g){ return ["g", g[0], g[1]]; }).concat(steps(id).map(function(s){ return ["s", s[0], s[2], s[1]]; })); }
+  function doneOf(t, kind, key){ var bag = kind === "g" ? (t.gates || {}) : (t.steps || {}); return !!(bag[key] && bag[key].done); }
+  function progress(id){
+    var t = tracks[id] || {}, its = items(id), done = 0, next = null;
+    its.forEach(function(it){ if (doneOf(t, it[0], it[1])) done++; else if (!next && it[1] !== "s_office") next = it; });
+    return { done: done, total: its.length, next: next };
+  }
+
+  // ---------- saving ----------
+  function save(id, patch){
+    patch.updatedAt = new Date().toISOString();
+    if (me) patch.updatedBy = me;
+    tracks[id] = merge(tracks[id] || {}, patch);
+    pending[id] = merge(pending[id] || {}, patch);
+    clearTimeout(timers[id]);
+    timers[id] = setTimeout(function(){ flush(id); }, 500);
+  }
+  async function flush(id){
+    if (!sb) return;
+    if (inflight[id]) { timers[id] = setTimeout(function(){ flush(id); }, 400); return; }
+    var patch = pending[id]; if (!patch) return;
+    pending[id] = null; inflight[id] = true;
+    try {
+      var r = await sb.rpc("noitp_save", { p_key: KEY, p_id: id, p_patch: patch });
+      if (r.error) throw r.error;
+    } catch (e) { toast("Not saved. Check your connection and the link, then try again."); }
+    inflight[id] = false;
+  }
+
+  // ---------- render ----------
+  function renderBoard(){
+    var html = IDS.map(function(id){
+      var t = tracks[id], c = META[id].c;
+      if (!t) return '<div class="card" style="--c:var(' + c + ')"><span class="tn">Track ' + id.slice(1) + '</span><h3>Waiting for data</h3><span class="next">This track has not been set up yet.</span></div>';
+      var p = progress(id), pct = Math.round(100 * p.done / p.total), st = t.status || "planning";
+      var stLabel = STATUS.filter(function(s){ return s[0] === st; })[0];
+      return '<button type="button" class="card" data-pick="' + id + '" aria-pressed="' + (selected === id) + '" style="--c:var(' + c + ')">' +
+        '<span class="tn">Track ' + id.slice(1) + '</span><h3>' + esc(t.entity || "Applicant to confirm") + '</h3>' +
+        '<span class="small">' + esc(t.project || "Project to confirm") + '</span>' +
+        '<span class="row"><span class="small muted">Submits: ' + esc(t.submitter || "to confirm") + '</span></span>' +
+        '<span class="row"><span class="pill ' + esc(st) + '">' + esc(stLabel ? stLabel[1] : st) + '</span><span class="big">' + money(t.request) + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
+        '<span class="next">' + p.done + ' of ' + p.total + ' done' + (p.next ? ' &middot; next: ' + esc(p.next[2].length > 70 ? p.next[2].slice(0, 70) + "…" : p.next[2]) + (p.next[3] ? ' (' + esc(p.next[3]) + ')' : '') : ' &middot; all done') + '</span></button>';
+    }).join("");
+    $("board").innerHTML = html;
+    var req = 0, val = 0, n = 0;
+    IDS.forEach(function(id){ var t = tracks[id]; if (t) { n++; req += Number(t.request) || 0; val += Number(t.value) || 0; } });
+    $("totals").innerHTML = n ? 'Combined requested from CPD: <b>' + money(req) + '</b> &middot; combined project value: <b>' + money(val) + '</b>' : "";
+  }
+
+  function chk(id, kind, key, label, due, why, t){
+    var d = doneOf(t, kind, key), by = ((kind === "g" ? t.gates : t.steps) || {})[key] || {};
+    return '<label class="chk' + (d ? ' done' : '') + '"><input type="checkbox" data-k="' + kind + '" data-key="' + key + '"' + (d ? " checked" : "") + '>' +
+      '<span><span class="due">' + (due ? esc(due) + " &middot; " : "") + '</span>' + esc(label) +
+      (why ? '<span class="why"><br>' + esc(why) + '</span>' : '') +
+      (d && by.at ? '<span class="why"><br>Done ' + esc(by.at.slice(0, 10)) + '</span>' : '') + '</span></label>';
+  }
+  function field(label, f, val, type){
+    var id = "f-" + f.replace(/\W/g, "");
+    return '<label class="f" for="' + id + '">' + esc(label) + '<input id="' + id + '" type="' + (type || "text") + '" data-f="' + f + '" value="' + esc(val == null ? "" : val) + '"' + (type === "number" ? ' min="0" step="100" inputmode="numeric"' : "") + '></label>';
+  }
+  function area(label, f, val, rows){
+    var id = "f-" + f.replace(/\W/g, "");
+    return '<label class="f" for="' + id + '">' + esc(label) + '<textarea id="' + id + '" data-f="' + f + '"' + (rows ? ' style="min-height:' + rows + 'px"' : "") + '>' + esc(val == null ? "" : val) + '</textarea></label>';
+  }
+  function renderDetail(){
+    var t = tracks[selected], c = META[selected].c;
+    $("detailH").textContent = t ? "Track " + selected.slice(1) + ": " + (t.entity || "Applicant to confirm") : "Open a track";
+    if (!t) {
+      $("detail").innerHTML = '<div class="empty">' + (loaded ? "This track has no data yet." : "Loading the shared tracker&hellip;") + '</div>';
+      return;
+    }
+    var gs = gatesFor(selected).map(function(g){ return chk(selected, "g", g[0], g[1], "", "", t); }).join("");
+    var ss = steps(selected).map(function(s){ return chk(selected, "s", s[0], s[2], s[1], s[3], t); }).join("");
+    var stOpts = STATUS.map(function(s){ return '<option value="' + s[0] + '"' + ((t.status || "planning") === s[0] ? " selected" : "") + '>' + s[1] + '</option>'; }).join("");
+    var log = (t.log || []).slice().reverse().map(function(e){ return '<div><b>' + esc((e.at || "").slice(0, 10)) + '</b> &middot; <span data-by="' + esc(e.by || "") + '">' + esc(e.by || "Someone") + '</span>: ' + esc(e.text) + '</div>'; }).join("") || '<span class="muted small">No entries yet.</span>';
+    $("detail").innerHTML =
+      '<div class="panel tk" style="--c:var(' + c + ')">' +
+        '<div class="row"><h3>Applicant and project</h3><label class="f" for="f-status">Status<select id="f-status" data-f="status">' + stOpts + '</select></label></div>' +
+        '<div class="grid2">' + field("Applicant of record (organization or individual)", "entity", t.entity) + field("Entity type", "entityType", t.entityType) +
+        field("Main applicant (21 or older)", "mainApplicant", t.mainApplicant) + field("Submits from account / email", "submitterEmail", t.submitterEmail) +
+        field("Person who submits", "submitter", t.submitter) + field("Chicago address of the applicant", "address", t.address) + '</div>' +
+        area("Background on the applicant", "relationship", t.relationship, 70) +
+        '<div class="grid2">' + field("Project title", "project", t.project) + field("Parks and dates requested", "parks", t.parks) +
+        field("Requested from CPD ($)", "request", t.request, "number") + field("Total project value ($)", "value", t.value, "number") + '</div>' +
+        area("Short description (about 50 words)", "summary", t.summary, 90) +
+        area("Artists and acts in this proposal (one per line)", "artistsText", (t.artists || []).join("\n"), 90) +
+      '</div>' +
+      '<div class="grid2" style="margin-top:12px">' +
+        '<div class="panel" style="--c:var(' + c + ')"><h3>Eligibility and disclosure</h3><div class="list">' + gs + '</div></div>' +
+        '<div class="panel" style="--c:var(' + c + ')"><h3>Steps to submission</h3><div class="list">' + ss + '</div></div>' +
+      '</div>' +
+      '<div class="grid2" style="margin-top:12px">' +
+        '<div class="panel" style="--c:var(' + c + ')"><h3>Confirmation</h3>' + field("Submittable confirmation number", "confirmation", t.confirmation) + field("Date and time submitted", "submittedAt", t.submittedAt) + area("Notes (liaison answer, decisions, open questions)", "notes", t.notes, 110) + '</div>' +
+        '<div class="panel" style="--c:var(' + c + ')"><h3>Log</h3><div class="row"><label class="f" for="logIn" style="flex:1 1 200px">New entry<input id="logIn" type="text" maxlength="300"></label><button type="button" class="btn" id="logAdd">Add</button></div><div class="log" id="logList" style="--c:var(' + c + ')">' + log + '</div></div>' +
+      '</div>';
+    resolveNames();
+  }
+
+  function resolveNames(){}
+
+  function renderCross(){
+    var out = [], loadedIds = IDS.filter(function(id){ return tracks[id]; });
+    if (!loadedIds.length) { $("cross").innerHTML = '<div class="empty">Checks appear once the tracks load.</div>'; return; }
+    // artists in more than one proposal
+    var seen = {};
+    loadedIds.forEach(function(id){ (tracks[id].artists || []).forEach(function(a){ var k = a.trim().toLowerCase(); if (!k) return; (seen[k] = seen[k] || {name: a.trim(), tracks: []}).tracks.push(id.slice(1)); }); });
+    var dups = Object.keys(seen).filter(function(k){ return seen[k].tracks.length > 1; });
+    out.push(dups.length ? '<div class="flag warn"><b>Same act in more than one proposal.</b> ' + dups.map(function(k){ return esc(seen[k].name) + " (tracks " + seen[k].tracks.join(", ") + ")"; }).join("; ") + '. Give each a different date and park, tell the artist, and raise it with the liaison.</div>'
+      : '<div class="flag ok"><b>No act appears in two proposals.</b> Each artist is assigned to one track.</div>');
+    // same main applicant on two tracks
+    var mains = {}; loadedIds.forEach(function(id){ var m = (tracks[id].mainApplicant || "").trim().toLowerCase(); if (m && m.indexOf("confirm") < 0) (mains[m] = mains[m] || []).push(id.slice(1)); });
+    var dm = Object.keys(mains).filter(function(k){ return mains[k].length > 1; });
+    out.push(dm.length ? '<div class="flag bad"><b>One person is the main applicant on more than one track:</b> ' + dm.map(function(k){ return esc(k) + " (tracks " + mains[k].join(", ") + ")"; }).join("; ") + '. Each proposal needs its own main applicant and Submittable account.</div>'
+      : '<div class="flag ok"><b>Each track has its own main applicant.</b></div>');
+    // liaison answer
+    var noLiaison = loadedIds.filter(function(id){ return !doneOf(tracks[id], "s", "s_liaison"); });
+    out.push(noLiaison.length ? '<div class="flag warn"><b>Liaison not yet asked on tracks ' + noLiaison.map(function(i){ return i.slice(1); }).join(", ") + '.</b> Open questions for CPD, such as one act in two proposals, are not answered in the public guidelines. Ask by Oct. 23.</div>'
+      : '<div class="flag ok"><b>The liaison has answered for every track.</b> Keep the answer in each track\'s notes.</div>');
+    // per-track insurance and approval
+    var noIns = loadedIds.filter(function(id){ return !doneOf(tracks[id], "s", "s_ins"); });
+    out.push('<div class="flag"><b>Insurance.</b> Each applicant needs its own $1M general liability policy naming the Park District' + (noIns.length ? '; still open on tracks ' + noIns.map(function(i){ return i.slice(1); }).join(", ") : '; done on every track') + '.</div>');
+    // summary table
+    var rows = loadedIds.map(function(id){ var t = tracks[id], p = progress(id); return '<tr><td>' + id.slice(1) + '</td><td>' + esc(t.entity || "") + '</td><td>' + esc(t.submitter || "") + '</td><td>' + esc((STATUS.filter(function(s){ return s[0] === (t.status || "planning"); })[0] || ["", ""])[1]) + '</td><td class="n">' + p.done + "/" + p.total + '</td><td class="n">' + money(t.request) + '</td></tr>'; }).join("");
+    out.push('<div class="tw"><table><thead><tr><th>#</th><th>Applicant</th><th>Submitter</th><th>Status</th><th>Done</th><th>Request</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+    $("cross").innerHTML = out.join("");
+  }
+
+  function renderAll(skipDetail){
+    renderBoard(); renderCross();
+    if (!skipDetail) renderDetail();
+  }
+
+  // ---------- events ----------
+  document.addEventListener("click", function(e){
+    var b = e.target.closest("[data-pick]");
+    if (b) { selected = b.getAttribute("data-pick"); renderAll(); $("detailSec").scrollIntoView({behavior:"smooth", block:"start"}); return; }
+    if (e.target.id === "logAdd") {
+      var inp = $("logIn"), txt = inp.value.trim(); if (!txt) return;
+      var t = tracks[selected] || {}, log = (t.log || []).concat([{ at: new Date().toISOString(), by: me || "", text: txt }]);
+      save(selected, { log: log }); inp.value = ""; renderAll();
+    }
   });
+  document.addEventListener("input", function(e){
+    var el = e.target; if (!el.getAttribute || !el.closest("#detail")) return;
+    var f = el.getAttribute("data-f"); if (!f || el.tagName === "SELECT") return;
+    if (f === "artistsText") { save(selected, { artists: el.value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean) }); renderBoard(); renderCross(); return; }
+    var v = el.type === "number" ? (el.value === "" ? null : Number(el.value)) : el.value;
+    var p = {}; p[f] = v; save(selected, p); renderBoard(); renderCross();
+  });
+  document.addEventListener("change", function(e){
+    var el = e.target; if (!el.closest || !el.closest("#detail")) return;
+    if (el.getAttribute("data-f") === "status") { save(selected, { status: el.value }); renderAll(); return; }
+    var k = el.getAttribute("data-k"); if (!k) return;
+    var key = el.getAttribute("data-key"), p = {}, bag = k === "g" ? "gates" : "steps";
+    p[bag] = {}; p[bag][key] = { done: el.checked, at: el.checked ? new Date().toISOString() : null, by: me || "" };
+    save(selected, p); renderAll();
+  });
+
+  // ---------- boot ----------
+  tick(); setInterval(tick, 60000);
+  var h = (location.hash || "").replace("#", ""); if (IDS.indexOf(h) >= 0) selected = h;
+  renderAll();
+  var nameEl = $("meName");
+  try { me = localStorage.getItem("noitp_name") || ""; } catch (e) {}
+  nameEl.value = me;
+  nameEl.addEventListener("input", function(){ me = nameEl.value.trim(); try { localStorage.setItem("noitp_name", me); } catch (e) {} });
+
+  async function pull(){
+    if (!sb || !KEY) return;
+    var r = await sb.rpc("noitp_list", { p_key: KEY });
+    if (r.error) { loaded = true; if (!Object.keys(tracks).length) $("detail").innerHTML = '<div class="empty">This link is not valid. Ask Albert for the team link.</div>'; return; }
+    var active = document.activeElement, editing = active && active.closest && active.closest("#detail") && /INPUT|TEXTAREA|SELECT/.test(active.tagName);
+    (r.data || []).forEach(function(row){
+      if (pending[row.id] || inflight[row.id] || timers[row.id]) return;
+      tracks[row.id] = row.data;
+    });
+    loaded = true; renderAll(!!editing);
+  }
+  (async function(){
+    if (!KEY) { loaded = true; $("detail").innerHTML = '<div class="empty">Open this page from the team link (it ends in ?k=...). Ask Albert if you do not have it.</div>'; return; }
+    try { sb = await window.sfSupabaseReady; } catch (e) {}
+    if (!sb) { loaded = true; $("detail").innerHTML = '<div class="empty">Could not reach the shared tracker.</div>'; return; }
+    await pull();
+    setInterval(pull, 8000);
+  })();
 })();
 </script>
 </body>
