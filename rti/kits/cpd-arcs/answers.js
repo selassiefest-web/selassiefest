@@ -86,7 +86,7 @@
     { key: "hrsSat", pdf: "Text29", page: 2, kind: "hours", label: "Sat", value: "3" },
     { key: "schedule", pdf: "Text32", page: 2, kind: "long",
       label: "More information about the schedule (or attach a calendar)",
-      value: "Rainbow Wednesdays, on the beach (Outdoor Space - Other): 14 Wednesdays, June 2 to Sept. 1, 2027, 6:00 to 8:30 pm (5:00 to 9:00 pm with setup). DJ classes: Tuesdays 4:00 to 6:00 pm in the fieldhouse game room/clubroom (14 weekly 90-minute sessions; spring cohort Feb. 2 to May 11, fall cohort from October). Black History Month: four Saturdays in Feb. Stage shows, festival days and holiday parties on dates set with park staff, each with its own permit. Calendar attached." },
+      value: "Rainbow Wednesdays, on the beach (Outdoor Space - Other): 14 Wednesdays, June 2 to Sept. 1, 2027, 6:00 to 8:30 pm (5:00 to 9:00 pm with setup). DJ classes: Tuesdays 4:00 to 6:00 pm in the fieldhouse game room/clubroom, year-round from Jan. 12, 2027, except federal-holiday weeks and CPS spring break. Black History Month: four Saturdays in Feb. Stage shows, festival days and holiday parties on dates set with park staff, each with its own permit. Calendar attached." },
     { key: "marketing", pdf: "List Box3", page: 2, kind: "multi",
       label: "Requesting marketing material posted in the park?",
       options: ["None", "Banners", "Brochures", "Flyers", "Other"], value: ["Banners", "Flyers", "Other"],
