@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Guest DJ Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93;
+    --line:#E5E0D6; --accent:#2F3DB5; --sun:#B87503; --ok:#1F7A45; --ok-bg:#E7F4EC; --warn-bg:#FCF1DC; --warn:#9A6206; --bad:#B3261E; --bad-bg:#FBEAEA;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+      --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --ok:#6FD39A; --ok-bg:#16301F; --warn-bg:#3A2D12; --warn:#F2BE5C; --bad:#FF8A7D; --bad-bg:#3A1A1A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+    --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --ok:#6FD39A; --ok-bg:#16301F; --warn-bg:#3A2D12; --warn:#F2BE5C; --bad:#FF8A7D; --bad-bg:#3A1A1A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; margin:0; letter-spacing:-0.015em; line-height:1.15;}
+  a{color:var(--accent);}
+  .bar{height:7px; background:var(--spectrum);}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 16px 50px;}
+  header{padding:26px 0 8px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:end;}
+  header h1{font-size:clamp(1.5rem,4vw,2.1rem); font-weight:900;}
+  .muted{color:var(--ink-soft);} .small{font-size:.86rem;}
+  .counts{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .count{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.86rem;}
+  .count b{font:900 1.2rem "Montserrat",sans-serif; margin-right:6px;}
+  .tabs{display:flex; gap:6px; border-bottom:1px solid var(--line); margin-top:8px;}
+  .tabs button{border:0; background:none; font:700 .92rem "Inter",sans-serif; color:var(--ink-soft); padding:10px 12px; cursor:pointer; border-bottom:3px solid transparent;}
+  .tabs button[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent);}
+  .tw{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-top:12px;}
+  table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:last-child td{border-bottom:0;}
+  th{font:700 .7rem "Inter",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2); white-space:nowrap;}
+  .pill{display:inline-block; font:700 .72rem "Inter",sans-serif; padding:3px 8px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); white-space:nowrap;}
+  .pill.yes,.pill.booked{background:var(--ok-bg); color:var(--ok);}
+  .pill.maybe,.pill.viewed{background:var(--warn-bg); color:var(--warn);}
+  .pill.no,.pill.do_not_contact{background:var(--bad-bg); color:var(--bad);}
+  .sw{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px;}
+  select, button.sm{font:inherit; font-size:.82rem; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:6px; padding:4px 6px; cursor:pointer;}
+  .fit{display:flex; flex-direction:column; gap:3px;}
+  .fit span{font-size:.84rem;}
+  .fit .top{font-weight:700;}
+  .score{font:700 .72rem "Inter",sans-serif; color:var(--ink-faint); margin-left:4px;}
+  .gate{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; margin-top:20px; max-width:560px;}
+  .note{background:var(--surface-2); border-radius:10px; padding:10px 12px; font-size:.86rem; margin-top:12px;}
+</style>
+</head>
+<body>
+<div class="bar" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div><span class="small muted">Full Spectrum &middot; Rainbow DJ Lab 2027</span><h1>Guest DJ Tracker</h1></div>
+    <div class="small"><a href="/full-spectrum/partners.html">Partner Tracker</a> &middot; <a href="/full-spectrum/dj-lab-2027.html">2027 schedule</a></div>
+  </header>
+
+  <div id="gate" class="gate" hidden>
+    <h2 style="font-size:1.1rem">Sign in first</h2>
+    <p class="muted">This tracker uses your Full Spectrum Partner Tracker sign-in. Open the <a href="/full-spectrum/partners.html">Partner Tracker</a>, sign in, then come back here.</p>
+  </div>
+
+  <div id="app" hidden>
+    <div class="counts" id="counts"></div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-t="roster" aria-selected="true">Roster &amp; answers</button>
+      <button role="tab" data-t="fit" aria-selected="false">Best fit by Tuesday</button>
+    </div>
+    <div id="roster"></div>
+    <div id="fit" hidden></div>
+  </div>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var MISSIONS = [["--r1","Meet the Machine"],["--r1","Build Your Crate"],["--r2","Beats, Bars and Phrases"],["--r2","Mix on the One"],["--r3","Tempo with the Lights On"],["--r3","Beatmatch by Ear"],["--r4","The Three Knobs"],["--r4","Make a Third Song"],["--r5","Hot Cues and Loops"],["--r5","Word Flip"],["--r6","Theme Clash Lab"],["--r6","Mic, MC and Live Lab"],["--r7","Build Your Set"],["--r7","Rainbow Showcase"]];
+  var CLOSED = ["2027-01-19","2027-02-16","2027-03-23","2027-06-01","2027-06-15","2027-07-06","2027-09-07","2027-10-12","2027-11-09","2027-11-23","2027-12-21","2027-12-28"];
+  var MSHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var STATUSES = ["research","ready","invited","viewed","yes","maybe","no","booked","do_not_contact"];
+  var CAP = { once:1, few:3, monthly:12, open:99 };
+  var state = { djs: [], session: null };
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function link(d){ return "https://selassiefest.com/guest-dj/?k=" + d.invite_key; }
+
+  // The 39 class Tuesdays and their featured Missions (same cycle as dj-lab-2027.html).
+  var DATES = [], m = 0;
+  for (var d = new Date(2027,0,12); d <= new Date(2027,11,28); d.setDate(d.getDate()+7)) {
+    var k = iso(d); if (CLOSED.indexOf(k) >= 0) continue;
+    DATES.push({ iso:k, mo:d.getMonth(), day:d.getDate(), mission:(m % 14) + 1 }); m++;
+  }
+
+  async function rpc(name, args){
+    var c = await window.sfSupabaseReady; var r = await c.rpc(name, args);
+    if (r.error) { if (/session/i.test(r.error.message)) { $("app").hidden = true; $("gate").hidden = false; } throw r.error; }
+    return r.data;
+  }
+
+  // Fit score of one DJ for one class date. Her own answers count most; her
+  // research-suggested Missions count a little before she answers.
+  function score(dj, dt){
+    var a = dj.answer, s = 0;
+    if (["no","do_not_contact"].indexOf(dj.status) >= 0) return 0;
+    if (a && a.decision === "no") return 0;
+    var picks = (a && Array.isArray(a.missions)) ? a.missions.map(Number) : [];
+    var r = picks.indexOf(dt.mission);
+    if (r === 0) s += 6; else if (r === 1) s += 4; else if (r === 2) s += 3;
+    else if ((dj.suggested_missions || []).indexOf(dt.mission) >= 0) s += 1.5;
+    if (s === 0) return 0;
+    if (a) {
+      var months = Array.isArray(a.months) ? a.months : [];
+      if (months.length) { if (months.indexOf(MSHORT[dt.mo]) >= 0) s += 2; else s -= 4; }
+      s += a.decision === "yes" ? 3 : a.decision === "maybe" ? 1 : 0;
+    }
+    if (dj.status === "booked") s += 1;
+    return Math.max(0, s);
+  }
+
+  function renderCounts(){
+    var by = {}; state.djs.forEach(function(d){ by[d.status] = (by[d.status] || 0) + 1; });
+    $("counts").innerHTML = '<span class="count"><b>' + state.djs.length + '</b>on the roster</span>' +
+      STATUSES.filter(function(s){ return by[s]; }).map(function(s){ return '<span class="count"><b>' + by[s] + '</b>' + s.replace(/_/g, " ") + '</span>'; }).join("");
+  }
+
+  function renderRoster(){
+    var rows = state.djs.map(function(d){
+      var a = d.answer, ch = d.email ? "Email" : d.form_url ? "Form" : d.instagram ? "Instagram" : "None found";
+      var ans = !a ? '<span class="muted small">No answer yet' + (d.page_views ? " &middot; opened " + d.page_views + "&times;" : "") + '</span>' :
+        '<span class="pill ' + a.decision + '">' + a.decision.toUpperCase() + '</span> ' +
+        (Array.isArray(a.missions) && a.missions.length ? '<div class="small">' + a.missions.map(function(n, i){ return (i+1) + ". " + esc(MISSIONS[n-1] ? MISSIONS[n-1][1] : n); }).join("<br>") + '</div>' : '') +
+        '<div class="small muted">' + [Array.isArray(a.months) && a.months.length ? a.months.join(", ") : "", a.frequency || "", a.age_group || "", Array.isArray(a.sounds) ? a.sounds.join(", ") : ""].filter(Boolean).map(esc).join(" &middot; ") + '</div>' +
+        (a.email || a.phone ? '<div class="small">' + esc([a.email, a.phone].filter(Boolean).join(" · ")) + '</div>' : '') +
+        (a.message ? '<div class="small muted">&ldquo;' + esc(a.message) + '&rdquo;</div>' : '');
+      var sel = '<select data-id="' + d.id + '" aria-label="Status for ' + esc(d.name) + '">' + STATUSES.map(function(s){ return '<option value="' + s + '"' + (s === d.status ? " selected" : "") + '>' + s.replace(/_/g, " ") + '</option>'; }).join("") + '</select>';
+      return '<tr><td><b>' + esc(d.name) + '</b>' + (d.real_name && d.real_name !== d.name ? '<div class="small muted">' + esc(d.real_name) + '</div>' : '') +
+        '<div class="small muted">' + esc((d.specialties || []).join(", ")) + '</div></td>' +
+        '<td><span class="pill">' + esc(d.tier || "") + '</span></td>' +
+        '<td class="small">' + ch + (d.email ? '<div>' + esc(d.email) + '</div>' : '') + (d.form_url ? '<div><a href="' + esc(d.form_url) + '" target="_blank" rel="noopener">form</a></div>' : '') + (d.instagram ? '<div>' + esc(d.instagram) + '</div>' : '') + '</td>' +
+        '<td>' + sel + '<div style="margin-top:6px"><button type="button" class="sm" data-copy="' + esc(link(d)) + '">Copy her link</button></div></td>' +
+        '<td>' + ans + '</td></tr>';
+    }).join("");
+    $("roster").innerHTML = '<div class="tw"><table><thead><tr><th>DJ</th><th>Tier</th><th>Reach her by</th><th>Status</th><th>Her answer</th></tr></thead><tbody>' + (rows || '<tr><td colspan="5" class="muted">No DJs loaded yet.</td></tr>') + '</tbody></table></div>';
+  }
+
+  function renderFit(){
+    // Greedy plan: walk the dates in order and give each one the best-scoring
+    // DJ who still has visits left (by her "how often" answer) and hasn't
+    // been placed in the same month already.
+    var used = {}, usedMonth = {};
+    var rows = DATES.map(function(dt){
+      var ranked = state.djs.map(function(dj){ return { dj:dj, s:score(dj, dt) }; }).filter(function(x){ return x.s > 0; }).sort(function(a, b){ return b.s - a.s; });
+      var pick = null;
+      for (var i = 0; i < ranked.length; i++) {
+        var dj = ranked[i].dj, cap = CAP[(dj.answer && dj.answer.frequency) || "once"] || 1;
+        if ((used[dj.id] || 0) >= cap || usedMonth[dj.id + ":" + dt.mo]) continue;
+        if (!dj.answer || dj.answer.decision !== "yes") continue;
+        pick = ranked[i]; used[dj.id] = (used[dj.id] || 0) + 1; usedMonth[dj.id + ":" + dt.mo] = 1; break;
+      }
+      var mi = MISSIONS[dt.mission - 1];
+      return '<tr><td><b>Tue, ' + MSHORT[dt.mo] + ' ' + dt.day + '</b></td><td><span class="sw" style="background:var(' + mi[0] + ')"></span>' + dt.mission + '. ' + esc(mi[1]) + '</td>' +
+        '<td>' + (pick ? '<b>' + esc(pick.dj.name) + '</b><span class="score">' + pick.s.toFixed(1) + '</span>' : '<span class="muted small">Open</span>') + '</td>' +
+        '<td><div class="fit">' + (ranked.slice(0, 4).map(function(x, i){ return '<span' + (i === 0 ? ' class="top"' : '') + '>' + esc(x.dj.name) + ' <span class="pill ' + esc(x.dj.answer ? x.dj.answer.decision : x.dj.status) + '">' + esc(x.dj.answer ? x.dj.answer.decision : x.dj.status) + '</span><span class="score">' + x.s.toFixed(1) + '</span></span>'; }).join("") || '<span class="muted small">No candidates yet</span>') + '</div></td></tr>';
+    }).join("");
+    $("fit").innerHTML = '<p class="note">Scores: her 1st, 2nd or 3rd Mission choice (6 / 4 / 3) or a research suggestion (1.5), +2 if she listed that month (&minus;4 if she listed others), +3 for yes, +1 for maybe. The suggested plan only uses DJs who said yes, respects how often she said she can come, and spreads each DJ to one date a month. It is a starting point: confirm every date with her before marking her booked.</p>' +
+      '<div class="tw"><table><thead><tr><th>Class Tuesday</th><th>Featured Mission</th><th>Suggested guest</th><th>Best fits</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function renderAll(){ renderCounts(); renderRoster(); renderFit(); }
+
+  document.addEventListener("change", async function(e){
+    var s = e.target.closest("select[data-id]"); if (!s) return;
+    try { await rpc("fs_guest_dj_mark", { p_session: state.session.sessionToken, p_id: s.getAttribute("data-id"), p_status: s.value, p_note: null }); await load(); }
+    catch (err) { alert("Could not save: " + err.message); }
+  });
+  document.addEventListener("click", function(e){
+    var c = e.target.closest("[data-copy]");
+    if (c) { var t = c.getAttribute("data-copy"); try { navigator.clipboard.writeText(t).then(function(){ c.textContent = "Copied"; setTimeout(function(){ c.textContent = "Copy her link"; }, 1400); }); } catch (x) { prompt("Her link:", t); } return; }
+    var t = e.target.closest(".tabs button"); if (!t) return;
+    document.querySelectorAll(".tabs button").forEach(function(b){ b.setAttribute("aria-selected", b === t ? "true" : "false"); });
+    $("roster").hidden = t.getAttribute("data-t") !== "roster"; $("fit").hidden = t.getAttribute("data-t") !== "fit";
+  });
+
+  async function load(){ state.djs = await rpc("fs_guest_djs_load", { p_session: state.session.sessionToken }) || []; renderAll(); }
+
+  (async function(){
+    try { state.session = JSON.parse(localStorage.getItem("fsPartnerSession") || "null"); } catch (e) {}
+    if (!state.session || !state.session.sessionToken) { $("gate").hidden = false; return; }
+    $("app").hidden = false;
+    try { await load(); } catch (e) { if (!/session/i.test(e.message)) { $("roster").innerHTML = '<p class="muted">Could not load: ' + esc(e.message) + '</p>'; } }
+  })();
+})();
+</script>
+</body>
+</html>

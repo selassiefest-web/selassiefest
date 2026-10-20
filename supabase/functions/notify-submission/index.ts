@@ -727,6 +727,24 @@ function formatFsPartnerResponse(record: Record<string, any>) {
   };
 }
 
+// Rainbow DJ Lab guest DJ invitation answer -- see supabase/fs-guest-djs.sql.
+function formatFsGuestDjResponse(record: Record<string, any>) {
+  const MISSIONS = ["Meet the Machine","Build Your Crate","Beats, Bars and Phrases","Mix on the One","Tempo with the Lights On","Beatmatch by Ear","The Three Knobs","Make a Third Song","Hot Cues and Loops","Word Flip","Theme Clash Lab","Mic, MC and Live Lab","Build Your Set","Rainbow Showcase"];
+  const who = record.dj_name || 'A guest DJ';
+  const label = record.decision === 'yes' ? 'YES' : record.decision === 'maybe' ? 'MAYBE' : 'NO';
+  const list = (v: unknown) => (Array.isArray(v) ? v.slice(0, 20).map((x) => escapeHtml(x)).join(', ') : '');
+  const missions = Array.isArray(record.missions) ? record.missions.slice(0, 14).map((m: any, i: number) => (i + 1) + '. Mission ' + escapeHtml(m) + ' ' + escapeHtml(MISSIONS[Number(m) - 1] || '')).join('<br>') : '';
+  const row = (k: string, v: unknown) => (v ? '<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top;">' + k + '</td><td style="padding:4px 0;">' + v + '</td></tr>' : '');
+  return {
+    subject: label + ': ' + who + ' answered the Rainbow DJ Lab guest invitation',
+    html: '<h2>' + escapeHtml(who) + ': ' + label + '</h2><table style="border-collapse:collapse;">' +
+      row('Missions', missions) + row('Sounds', list(record.sounds)) + row('Months', list(record.months)) +
+      row('How often', escapeHtml(record.frequency || '')) + row('Age group', escapeHtml(record.age_group || '')) +
+      row('Name', escapeHtml(record.contact_name || '')) + row('Email', escapeHtml(record.email || '')) + row('Phone', escapeHtml(record.phone || '')) + row('Message', escapeHtml(record.message || '')) +
+      '</table><p style="margin-top:18px;"><a href="https://selassiefest.com/full-spectrum/guest-djs.html">Open the Guest DJ tracker</a></p>',
+  };
+}
+
 // Full Spectrum cash gift paid by card on a partner page -- see
 // supabase/fs-partner-pay.sql.
 function formatFsPartnerGift(record: Record<string, any>) {
@@ -1036,6 +1054,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   },
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   fs_partner_gifts: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerGift }] },
+  fs_guest_dj_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsGuestDjResponse }] },
   lr_login_links: {
     notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
   },
