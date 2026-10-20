@@ -77,6 +77,7 @@
     <li><span class="st done">Ready</span><b>ARCS Partnership Proposal form</b><p>CPD&rsquo;s form, filled in as a Service Provider partnership for 2027, every answer reviewed. Facilities requested: the beach (&ldquo;Outdoor Space &ndash; Other&rdquo;), the gym and the club, dance and other rooms, all subject to what you can offer. <a href="/full-spectrum/arcs-proposal-draft.pdf">Filled form (PDF)</a></p></li>
     <li><span class="st done">In hand</span><b>Proof of nonprofit status</b><p>Ras Tafari Inc.&rsquo;s IRS 501(c)(3) determination letter, June 12, 2026.</p></li>
     <li id="board"><span class="st done" id="boardSt">Done</span><b>Board approval</b><p>The board reviewed the proposal on October 15. <span id="boardTxt">All three directors have signed the resolution that authorizes it (completed October 18).</span> A separate October 18 consent, also signed by all three, formally adopts Full Spectrum as a program of Ras Tafari Inc.</p></li>
+    <li id="labBoard"><span class="st prog" id="labSt">In progress</span><b>Board approval of the DJ Lab structure</b><p>The board is reviewing the Rainbow DJ Lab as one year-round program: every Tuesday, 4 to 6 pm, 14 Missions at each child&rsquo;s own pace, with the revised policies, the graduation rule and the first-year budget. <span id="labTxt">Directors are signing now.</span> <a href="/full-spectrum/dj-lab-2027.html">Read the plan</a></p></li>
     <li><span class="st prog">Under way</span><b>Neighborhood support</b><p>On October 18 we began writing to neighborhood organizations near the park, asking for letters of support for this proposal: schools, libraries, health centers, churches, youth and arts groups, the 3rd and 4th Police Districts, nearby firehouses, and the 5th, 7th, 8th and 10th Ward offices. So far we have written to 80 organizations, <a href="#who">each one listed by name below</a>. Letters that come in will go with the proposal.</p></li>
     <li><span class="st prog">In progress</span><b>CPD volunteer background checks</b><p>Ras Tafari Inc. members are sending CPD&rsquo;s Long Term Adult Volunteer Application; everyone who works with young people completes it first.</p></li>
     <li><span class="st prog">In progress</span><b>Certificate of Insurance</b><p>Quote requests went out on October 18 to four agencies: RMIS/Tulip (the Park District&rsquo;s preferred special-event provider), S. Wolf &amp; Associates, Netsha Insurance Group, and Eventsured. We asked for general liability naming the Chicago Park District as additional insured, plus abuse and molestation coverage. We submit once the certificate is in hand.</p></li>
@@ -125,7 +126,16 @@
         else { tx.textContent = o.signed + " of " + o.total + " directors have signed the resolution that authorizes it."; }
       }).catch(function(){});
   }
-  check(); setInterval(function(){ if (!document.hidden) check(); }, 30000);
+  function checkLab(){
+    fetch(URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({action:"progress", packet:"rti-board-2026-10-20"})})
+      .then(function(r){ return r.json(); }).then(function(o){
+        if (!o || !o.ok) return;
+        var st = document.getElementById("labSt"), tx = document.getElementById("labTxt");
+        if (o.complete) { st.className = "st done"; st.textContent = "Done"; tx.textContent = "All " + o.total + " directors have signed."; }
+        else { tx.textContent = o.signed + " of " + o.total + " directors have signed."; }
+      }).catch(function(){});
+  }
+  check(); checkLab(); setInterval(function(){ if (!document.hidden) { check(); checkLab(); } }, 30000);
 })();
 </script>
 </body>
