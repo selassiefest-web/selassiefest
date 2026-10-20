@@ -282,7 +282,7 @@
 <section id="budget"><div class="wrap">
   <span class="eyebrow">Staffing and budget</span>
   <h2>What a year of Tuesdays costs</h2>
-  <p class="intro">Ras Tafari Inc. rates: resident DJ instructors $50 an hour, guest DJs $200 an hour, and $20 a person in snacks for 15 people (12 students, two residents and the guest), bought from neighborhood restaurants so every class also supports a local business. The two residents are paid for three hours: the two-hour class plus setup, pack-up and Passport records. Equal pay for equal duties.</p>
+  <p class="intro">Ras Tafari Inc. rates: resident DJ instructors $50 an hour, guest DJs $200 an hour with a one-hour minimum, and $20 a person in snacks for 15 people (12 students, two residents and the guest), bought from neighborhood restaurants so every class also supports a local business. The two residents are paid for three hours: the two-hour class plus setup, pack-up and Passport records. Equal pay for equal duties.</p>
   <div class="grid2">
     <div class="tw">
       <table>
@@ -471,11 +471,11 @@
   }).join("");
 
   // Pay and budget, computed from the class-date count.
-  var lead = 50 * 3, guest = 200 * 0.5, snacks = 20 * 15, week = 2*lead + guest + snacks;
+  var lead = 50 * 3, guest = 200, snacks = 20 * 15, week = 2*lead + guest + snacks;
   $("payRows").innerHTML =
     '<tr><td>Resident DJ instructor (man), $50/hr &times; 3 hrs</td><td class="n">' + money(lead) + '</td><td class="n">' + money(lead*openN) + '</td></tr>' +
     '<tr><td>Resident DJ instructor (woman), $50/hr &times; 3 hrs</td><td class="n">' + money(lead) + '</td><td class="n">' + money(lead*openN) + '</td></tr>' +
-    '<tr><td>Guest woman DJ, $200/hr &times; 30 min</td><td class="n">' + money(guest) + '</td><td class="n">' + money(guest*openN) + '</td></tr>' +
+    '<tr><td>Guest woman DJ, $200/hr, 1-hour minimum</td><td class="n">' + money(guest) + '</td><td class="n">' + money(guest*openN) + '</td></tr>' +
     '<tr><td>Class snacks, $20 &times; 15 people, from neighborhood restaurants</td><td class="n">' + money(snacks) + '</td><td class="n">' + money(snacks*openN) + '</td></tr>' +
     '<tr class="tot"><td>Total</td><td class="n">' + money(week) + '</td><td class="n">' + money(week*openN) + '</td></tr>';
   var ops = [["Two resident DJ instructors", 2*lead*openN], ["Guest DJs", guest*openN], ["Class snacks from neighborhood restaurants", snacks*openN], ["Guest travel allowance ($25 a week)", 25*openN], ["Supplies, Passports and printing", 1000], ["Showcase and event supplies", 1500]];
