@@ -11,13 +11,13 @@ At the Lab, independence means **children learn to make their own decisions at t
 
 ### At the decks
 - **Which song comes next.** Kids build their own crate of clean songs and choose what to play.
-- **When to bring the next song in.** By session 4 they're waiting for beat 1 of a new phrase and making the call themselves.
+- **When to bring the next song in.** By Mission 4 they're waiting for beat 1 of a new phrase and making the call themselves.
 - **How to fix a mistake.** When a mix crashes, the station shouts "Data!" and the DJ names one reason, then decides what to try next.
-- **What goes in their set.** In session 13 each child fills in their own Set Map (Opener, Build, Theme Clash, Peak, Exit) and writes their own Plan B.
+- **What goes in their set.** In Mission 13 each child fills in their own Set Map (Opener, Build, Theme Clash, Peak, Exit) and writes their own Plan B.
 
 ### About their challenge
 - **Their level.** In Deck Time 2, each child picks Mild, Medium or Spicy, and can switch any time without asking.
-- **Their prediction.** At the start of each session, kids guess whether the Mission will be easy, medium or hard for them, and say why.
+- **Their prediction.** At the start of each class, kids guess whether the Mission will be easy, medium or hard for them, and say why.
 
 ### About their own progress
 - **Their self-rating.** At Check Out, kids tap a traffic light: I got it / Getting there / Not yet.

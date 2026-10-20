@@ -13,11 +13,10 @@ The program lead and family contact is **Stephen Henry**, President of Ras Tafar
 
 Each class will have:
 
-- **A lead coach** who runs the session, does the "Watch Me Think" demonstration, and keeps the 9 blocks on time.
-- **At least one more screened adult,** a coach or mentor, so there are always at least two screened adults with children.
-- **Mentors** who work with stations, award Passport stamps, and run listen-back reviews on sessions 6, 10 and 13.
+- **Two resident DJ instructors, one man and one woman,** who teach every class, do the "Watch Me Think" demonstration, keep the 9 blocks on time, award Passport stamps and run listen-back reviews. Each takes six students for coaching and stamps, so there are always at least two screened adults with children.
+- **A guest woman DJ** who takes the last 30 minutes of each class (5:30 to 6:00 pm).
 
-Some sessions bring in guests. In session 12 (Mic, MC and Live Lab), a young drummer or keyboardist plays over a child's loop. Any guest who works with children goes through the same Park District background check as staff, and is never alone with a child.
+Some classes bring in other guests. In Mission 12 (Mic, MC and Live Lab), a young drummer or keyboardist plays over a child's loop. Any guest who works with children goes through the same Park District background check as staff, and is never alone with a child.
 
 ## What we look for
 
@@ -56,7 +55,7 @@ DJ trainers are **not members of Ras Tafari Inc.** Mentors and trainers may be p
 
 - **train only.** They never select, recommend, rank or vouch for any child for a performance or opportunity, and they never count votes.
 - **don't promote their own music, products or businesses** to students through the Lab.
-- **don't offer students paid private lessons** during a cohort or for 6 months after it, unless a parent asks in writing and the board approves.
+- **don't offer students paid private lessons** while a child is enrolled or for 6 months after they leave, unless a parent asks in writing and the board approves.
 
 Coaches do record each child's skill checks and attendance as met or not met against the [published graduation criteria](/dj-lab/journey/graduation.html). That's a record, not a judgment call.
 

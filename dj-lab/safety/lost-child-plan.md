@@ -17,7 +17,7 @@ This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch r
 
 ## What we teach children
 
-In kid words, in the first session: "If you can't find us, stay where you are and yell 'DJ Lab!' Or go to a park worker or a grown-up with kids and say you're lost from the DJ Lab. Never leave the park with anyone."
+In kid words, in their first class: "If you can't find us, stay where you are and yell 'DJ Lab!' Or go to a park worker or a grown-up with kids and say you're lost from the DJ Lab. Never leave the park with anyone."
 
 ## Minute by minute
 

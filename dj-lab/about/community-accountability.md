@@ -24,7 +24,7 @@ The board is responsible for the organization. **A board vote adopting the Lab's
 - **The launch checklist.** Every requirement and its status is posted on the [Governance](/dj-lab/governance/index.html) page. Nothing is marked done until it is.
 - **Coach screening dates.** Each coach's Chicago Park District background-check clearance and training completion dates will be posted on [Meet the coach](/dj-lab/about/meet-the-coach.html).
 - **Conflicts of interest.** Each year we publish a summary of disclosures and recusals under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
-- **Feedback.** Tell us what's working and what isn't. See the [feedback loop](/dj-lab/families/feedback-loop.html) and the [mid-season check-in](/dj-lab/families/mid-season-checkin.html).
+- **Feedback.** Tell us what's working and what isn't. See the [feedback loop](/dj-lab/families/feedback-loop.html) and the [progress check-in](/dj-lab/families/progress-checkin.html).
 - **Public reports.** We plan to publish an [annual safety review](/dj-lab/governance/annual-safety-review.html) and a [community accountability report](/dj-lab/governance/community-accountability-report.html), which share what happened in plain numbers without identifying any child.
 - **How we hold ourselves to our rules.** See [Enforcement and self-accountability](/dj-lab/governance/enforcement-self-accountability.html).
 

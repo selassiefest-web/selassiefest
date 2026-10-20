@@ -19,7 +19,7 @@ We use two well-known ideas:
 | Practice | What it means for your child |
 |---|---|
 | **Same shape every session** | Every class runs the same 9 blocks (Drop In, Mission Card, Watch Me Think, Deck Time 1, Move Break, Deck Time 2, Wordplay Lab, Spotlight, Check Out). Kids know what's next |
-| **A few simple class agreements** | Taught at session 1 and posted, for example: respect the gear, respect each other, respect the music |
+| **A few simple class agreements** | Taught at orientation and posted, for example: respect the gear, respect each other, respect the music |
 | **"Data!" not failure** | When a mix crashes, the DJ names one reason and tries again. Mistakes are learning, out loud, with no teasing |
 | **Choice** | Kids pick their challenge level (Mild, Medium or Spicy) in Deck Time 2 |
 | **No forced spotlight** | Spotlight is volunteers only. Coaches never call on a child who didn't sign up |

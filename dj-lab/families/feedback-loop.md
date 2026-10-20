@@ -15,7 +15,7 @@ The Lab is still proposed and not running yet, so there's no feedback from class
 |---|---|---|
 | **Any time** | Phone, text or email to Stephen Henry (872-255-9333, stephen@selassiefest.com), or a word with staff at pickup | Families |
 | **Every session** | Kids' traffic-light self-rating and "Next time I'll…" line at Check Out. These show us which skills need another pass | Kids |
-| **Session 7** | The [mid-season check-in](/dj-lab/families/mid-season-checkin.html), a conversation about your child's progress, where we also ask how the Lab is working for your family | Families and kids |
+| **Family progress observations** | The [progress check-in](/dj-lab/families/progress-checkin.html), a conversation about your child's progress, where we also ask how the Lab is working for your family | Families and kids |
 | **End of season** | A short survey (paper or online) about safety, communication, pickup, teaching and fun. Your name is optional | Families and kids |
 | **If you withdraw** | We'll ask, if you're willing, what led to the decision | Families |
 

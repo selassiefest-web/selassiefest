@@ -38,7 +38,7 @@ Read the full picture in [Safety](/dj-lab/safety/index.html), starting with the 
 
 ### 2. What will my child learn?
 
-The full course is **14 sessions of 90 minutes**, two for each color of the rainbow. Children go from "load and play two songs" to building and playing their own 10-minute set for a real crowd. Along the way they practice counting beats and phrases, matching tempo by ear, mixing without muddy bass, writing clean wordplay, and handling mistakes calmly. We call a mistake **"Data!"**: the DJ names one reason it went wrong and tries again.
+The Lab runs **year-round, every Tuesday from 4 to 6 pm**. Children join any Tuesday and work through **14 Missions**, two for each color of the rainbow, at their own pace. Children go from "load and play two songs" to building and playing their own 10-minute set for a real crowd. Along the way they practice counting beats and phrases, matching tempo by ear, mixing without muddy bass, writing clean wordplay, and handling mistakes calmly. We call a mistake **"Data!"**: the DJ names one reason it went wrong and tries again.
 
 See the [Curriculum](/dj-lab/about/curriculum.html) for every session, or [The journey](/dj-lab/journey/index.html) for what your child will experience week by week.
 

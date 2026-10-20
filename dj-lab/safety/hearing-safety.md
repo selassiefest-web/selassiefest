@@ -48,7 +48,7 @@ The main speaker, stage and lights are provided by **Q-Ality Sound**, under a wr
 
 ## Kids are taught to ask for quieter
 
-At the first session (Red: Meet the Machine), coaches teach every child:
+In a child's first class (Mission 1, Red: Meet the Machine), coaches teach every child:
 
 1. **"Too loud" is always OK to say.** Use the hand signal (hand over ear) or say "Quieter, please."
 2. **An adult turns it down right away,** no argument and no teasing.

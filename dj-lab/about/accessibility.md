@@ -22,14 +22,14 @@ DJ class involves music, lights and a busy room. We plan for that.
 
 - **A quieter station.** On request, your child can work at the station farthest from the main speaker.
 - **Ear protection.** Headphone volume is capped on every laptop, and earplugs are free for any child, any time. Your child may also bring their own ear defenders. Children stay out of the zone in front of the speakers. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
-- **A visual schedule on screen.** Every session follows the same 9 blocks, and the [live class app](/dj-lab/live/) shows which block is happening now and what the Mission is. Children can see what's next without having to ask.
-- **Movement breaks.** Every session has a built-in Move Break, and the fast track has two. A child who needs to move at other times can ask.
+- **A visual schedule on screen.** Every class follows the same 9 blocks, and the [live class app](/dj-lab/live/) shows which block is happening now and what the Mission is. Children can see what's next without having to ask.
+- **Movement breaks.** Every class has a built-in Move Break. A child who needs to move at other times can ask.
 - **A calm place to reset.** A cool-down space, always with an adult in view, is available to any child who needs a break. It's a support, not a punishment. See [Cool-down space](/dj-lab/safety/cooldown-space.html).
 - **Spotlight is volunteers only.** No child is ever made to play on the big speaker or speak on the mic.
 
 ## Learning supports already built into the course
 
-- **One skill per session,** stated as a simple "I can…" Mission.
+- **One Mission at a time,** stated as a simple "I can…" Mission.
 - **The coach thinks out loud** while demonstrating, so the "how" is never hidden.
 - **Everyone starts at Mild,** and children can switch levels at any time.
 - **Rotating jobs** (DJ, Co-pilot, Hype, Logger) mean nobody waits long, and every child has a clear task.
@@ -41,7 +41,7 @@ DJ class involves music, lights and a busy room. We plan for that.
 1. **Tell us at registration.** The [registration form](/dj-lab/enroll/forms/registration.html) and the [medical and allergy form](/dj-lab/enroll/forms/medical-allergy.html) have space for this.
 2. **Or contact Stephen Henry directly:** 872-255-9333, stephen@selassiefest.com.
 3. **We'll talk with you** about what works at home and at school, and agree on a plan before the first class.
-4. **We'll check in** after the first few sessions and adjust. See the [mid-season check-in](/dj-lab/families/mid-season-checkin.html).
+4. **We'll check in** after the first few classes and adjust. See the [progress check-in](/dj-lab/families/progress-checkin.html).
 
 ## IEP and 504 plans: welcome, never required
 

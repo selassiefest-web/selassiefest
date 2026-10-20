@@ -47,7 +47,7 @@ If you think someone is breaking the [conflict of interest policy](/dj-lab/gover
 
 ## Kids can report too
 
-Children are told at the first session, and on the [kids' pages](/dj-lab/kids/), that they can tell **any adult** at the Lab, a parent, or another adult they trust if something feels wrong, and that they won't be in trouble for telling.
+Children are told in their first class, and on the [kids' pages](/dj-lab/kids/), that they can tell **any adult** at the Lab, a parent, or another adult they trust if something feels wrong, and that they won't be in trouble for telling.
 
 ## What happens after you report to us
 

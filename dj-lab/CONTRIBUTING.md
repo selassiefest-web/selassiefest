@@ -9,7 +9,7 @@ Do not include any child's or family's name, age, photo, contact details, medica
 ## Proposing a correction
 
 1. **Small fixes** (typos, broken links): open an issue or a pull request that edits the `.md` source file, or email stephen@selassiefest.com with the page and the fix.
-2. **Fact changes:** every fact must agree with `rainbow-wednesdays/development/DJLAB_FACTS.md`. If the fact sheet is wrong, propose the change to the fact sheet first and say where the correct information comes from (an official source, signed document or board decision).
+2. **Fact changes:** every fact must agree with `full-spectrum/dj-lab-2027.html`. If that page is wrong, propose the change to it first and say where the correct information comes from (an official source, signed document or board decision).
 3. **Status changes** (for example, a launch requirement completed): include the evidence, or say where it is kept. A second officer must check the evidence before the [Launch Readiness Checklist](https://selassiefest.com/dj-lab/governance/index.html) is updated.
 
 Edit the `.md` file, then run `python dj-lab/_build/build.py` and commit both the `.md` and the generated `.html`. See [`README.md`](README.md).

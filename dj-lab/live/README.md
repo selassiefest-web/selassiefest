@@ -1,10 +1,10 @@
 # Live class app (`/dj-lab/live/`)
 
-The live class app is the shared classroom screen for a Rainbow DJ Lab session (the app calls the course brand "Rainbow DJ Academy"). Every screen follows the same session clock, but each kind of screen sees only what it needs: in-room Kid/Station screens see the station board, a family sees only their own child, and coaches see the whole class.
+The live class app is the shared classroom screen for a Rainbow DJ Lab class (the app calls the course brand "Rainbow DJ Academy"). Every screen follows the same session clock, but each kind of screen sees only what it needs: in-room Kid/Station screens see the station board, a family sees only their own child, and coaches see the whole class.
 
 ## What it does
 
-- **Session clock.** It runs a 90-minute session through its 9 blocks (Drop In, Mission Card, Watch Me Think, Deck Time 1, Move Break, Deck Time 2, Wordplay Lab, Spotlight, Check Out), drawn as a rainbow waveform with one bar per minute. It also supports the 2-hour spring fast-track workshops (W1–W6).
+- **Session clock.** It runs the 90-minute core of the class through its 9 blocks (Drop In, Mission Card, Watch Me Think, Deck Time 1, Move Break, Deck Time 2, Wordplay Lab, Spotlight, Check Out), drawn as a rainbow waveform with one bar per minute.
 - **Station board.** It shows groups of 4 kids per controller, with jobs (DJ, Co-pilot, Hype, Logger) rotating every 3 minutes 45 seconds. There are up to 3 stations.
 - **Kid check-ins.** Each kid records a prediction, a Mild/Medium/Spicy challenge level, a traffic-light self-rating, a "Next time I'll…" line, a "Data!" count and a Mix Log.
 - **Passport stamps and glow notes**, given by coaches.

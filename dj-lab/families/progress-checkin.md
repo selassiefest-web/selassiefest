@@ -1,11 +1,11 @@
 ---
-title: Mid-Season Check-In
-description: A conversation at session 7 between your family and a mentor about your child's progress, using the Passport and your child's own self-ratings.
+title: Progress Check-In
+description: A conversation, at each family progress observation, between your family and a mentor about your child's progress, using the Passport and your child's own self-ratings.
 ---
 
 ## What it is
 
-Halfway through the full course, around **session 7 (Green: The Three Knobs)**, we'll offer every family a short check-in about how your child is doing. It's a conversation, not a report card. There are no grades in the Lab and there won't be any here.
+At each family progress observation during the year (the first is planned for February 23, 2027), we'll offer every family a short check-in about how your child is doing. It's a conversation, not a report card. There are no grades in the Lab and there won't be any here.
 
 The Lab is proposed and not running yet, so no check-ins have taken place. This page describes how they'll work.
 
@@ -13,9 +13,9 @@ The Lab is proposed and not running yet, so no check-ins have taken place. This 
 
 ### Your child's Passport
 
-Mentors award Passport stamps for skills: 3 skills per session, 42 for the full course. Six stamps complete one color badge. By session 7, your child will have had sessions in Red, Orange and Yellow and will be starting Green.
+Mentors award Passport stamps for skills: 3 skills per Mission, 42 in all. Six stamps complete one color badge. Children work at their own pace, so we look at which colors your child has finished and which Mission they are on now.
 
-| Color | Sessions |
+| Color | Missions |
 |---|---|
 | Red | 1. Meet the Machine · 2. Build Your Crate |
 | Orange | 3. Beats, Bars and Phrases · 4. Mix on the One |
@@ -33,7 +33,7 @@ A missing stamp isn't a failure. It just shows a skill to come back to.
 
 ### The first listen-back
 
-Session 6 is the first listen-back day: your child records 2 minutes and reviews it with a mentor. We'll talk about what they noticed. (Recordings are deleted after the review unless you asked for a copy. See [photos and recordings](/dj-lab/privacy/photos-recordings.html).)
+Mission 6 is the first listen-back Mission: your child records 2 minutes and reviews it with a mentor. We'll talk about what they noticed. (Recordings are deleted after the review unless you asked for a copy. See [photos and recordings](/dj-lab/privacy/photos-recordings.html).)
 
 ## Questions we'll ask
 
@@ -54,4 +54,4 @@ Your answers also feed our [feedback loop](/dj-lab/families/feedback-loop.html).
 
 ## Want to talk sooner?
 
-You don't have to wait for session 7. Contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com.
+You don't have to wait for a progress observation. Contact Stephen Henry at 872-255-9333 or stephen@selassiefest.com.

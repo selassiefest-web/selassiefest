@@ -45,7 +45,7 @@ Any of these is reported at once to the Chicago Park District (the Rainbow Beach
 
 ## Rule 2: One-on-one time is observable and interruptible
 
-Some teaching is naturally one-on-one, for example listen-back days (sessions 6, 10 and 13, and fast-track W6), where a mentor reviews a child's 2-minute recording.
+Some teaching is naturally one-on-one, for example listen-back Missions (6, 10 and 13), where a mentor reviews a child's 2-minute recording.
 
 1. It happens **in the main room**, in the open, in sight of the other adult and the class.
 2. Doors stay open. Windows in doors are never covered.
@@ -108,7 +108,7 @@ Children go in pairs, an adult waits at the restroom entrance, and staff never e
 
 Adults do not babysit, tutor, give private DJ lessons to, or spend time with an enrolled child outside Lab activities, unless the adult is a relative or the arrangement is disclosed in writing to the Lab lead in advance. Even then, Lab adults do not use Lab materials or the Lab's name for it.
 
-DJ trainers have a stricter rule under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html): no paid private lessons for enrolled students during a cohort or for 6 months after it, unless a parent asks in writing and the board approves, and no promoting their own business to students.
+DJ trainers have a stricter rule under the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html): no paid private lessons for enrolled students while a child is enrolled or for 6 months after they leave, unless a parent asks in writing and the board approves, and no promoting their own business to students.
 
 ## Rule 10: Sound, stage and lighting crew
 
@@ -140,7 +140,7 @@ Details on who decides and how are in [How the policy is enforced](/dj-lab/safet
 
 ## How your child can speak up
 
-We teach children in the first session, in kid words: "If any grown-up makes you feel weird or asks you to keep a secret, tell your parent or another coach. You will never be in trouble for telling." Parents can take any concern about an adult to the Chicago Park District (the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member), and see [Report a concern](/dj-lab/safety/report-a-concern.html).
+We teach children in their first class, in kid words: "If any grown-up makes you feel weird or asks you to keep a secret, tell your parent or another coach. You will never be in trouble for telling." Parents can take any concern about an adult to the Chicago Park District (the Rainbow Beach Park office, (312) 745-1479, or any Park District staff member), and see [Report a concern](/dj-lab/safety/report-a-concern.html).
 
 ## Sources
 

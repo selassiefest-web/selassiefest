@@ -31,7 +31,7 @@ If a care plan or medicine is missing on a class day, the lead adult talks with 
 
 1. Stephen Henry (or the lead adult he assigns, once staff are cleared) reads every Medical & Allergy form.
 2. For each child with a care plan, the lead adult meets or calls the parent to walk through it: the triggers, the early signs, what to do, the doses, and when to call 911.
-3. Each adult who will be in the room reads the plans for the children in their class before the first session.
+3. Each adult who will be in the room reads the plans for the children in their class before the first class.
 4. If there's a need we can't safely meet, we tell you honestly before your child attends, and we work on it together.
 
 ## Who can see your child's health information

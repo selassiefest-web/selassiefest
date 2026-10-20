@@ -6,7 +6,7 @@ This folder holds everything for the **Rainbow DJ Lab**, the free DJ-class progr
 2. **The live class app** (`/dj-lab/live/`). The shared classroom screen that runs a 90-minute session, with the station board, check-ins and Passport stamps. See [`live/README.md`](live/README.md).
 3. **The portal** (`/dj-lab/portal/`). Entry pages for families, coaches and kids, plus the sign-out log. See [`portal/README.md`](portal/README.md).
 
-The Lab is **proposed**. It does not have Chicago Park District approval, no class dates are set, and no staff are hired. Every page must agree with the single source of truth, [`/rainbow-wednesdays/development/DJLAB_FACTS.md`](../rainbow-wednesdays/development/DJLAB_FACTS.md). If a fact isn't there and can't be verified from an official source, don't add it.
+The Lab is **proposed**. It does not have Chicago Park District approval, the opening Tuesday (January 12, 2027) is planned but not final, and no staff are hired. Every page must agree with the single source of truth, [`/full-spectrum/dj-lab-2027.html`](../full-spectrum/dj-lab-2027.html). If a fact isn't there and can't be verified from an official source, don't add it.
 
 ## Structure
 
@@ -43,7 +43,7 @@ Repo docs (this README and the other uppercase files) have no front matter and a
 ## Updating content
 
 1. Edit the `.md` file, not the generated `.html`. Your changes to `.html` will be overwritten on the next build.
-2. Check every fact against `DJLAB_FACTS.md`. Never write "approved," "licensed," "certified program," "insured," "permitted" or "guaranteed" about anything not yet done.
+2. Check every fact against `full-spectrum/dj-lab-2027.html`. Never write "approved," "licensed," "certified program," "insured," "permitted" or "guaranteed" about anything not yet done.
 3. Use root-absolute links ending in `.html`, for example `/dj-lab/governance/index.html`.
 4. Run the build from the repo root:
    ```

@@ -22,8 +22,8 @@ We want you to know exactly where things stand.
 | Item | Status |
 |---|---|
 | Rainbow DJ Lab classes | **Proposed.** The Chicago Park District hasn't approved or permitted them yet, and no class dates are set. |
-| Spotlight (in class) | Part of the written curriculum. It runs in every session once classes begin. |
-| Rainbow Showcase (session 14, families attend) | Part of the written curriculum. It is the last session of the full course. |
+| Spotlight (in class) | Part of the written curriculum. It runs in every class once classes begin. |
+| Rainbow Showcase (families attend) | Part of the written curriculum. A child plays at the next Showcase after earning all 42 stamps. |
 | Rainbow Wednesdays (free summer DJ series) | **Proposed. Not yet approved.** |
 | Open Decks slot for graduates | Guaranteed **when Rainbow Wednesdays runs.** See [Graduation guarantee](/dj-lab/performing/graduation-guarantee.html). |
 | Youth Showcase open call, Theme Clash semifinals and Finale | **Proposed** stage shows. Not yet approved. |

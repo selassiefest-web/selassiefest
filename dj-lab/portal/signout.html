@@ -42,8 +42,8 @@
   function load(){
     DJLabDB.coachState(coach.token, cls.id).then(function(st){
       if(!st || st.error) throw new Error("That class isn't available. Open it again in the live app.");
-      cohort=st.cohort; var L=st.live||{}; unit=(L.mode==="fast"?"w"+(L.ws||1):"s"+(L.session||1));
-      $("sub").textContent="Class: "+cohort.name+" · "+(L.mode==="fast"?"Workshop "+(L.ws||1):"Session "+(L.session||1))+" · signed in as "+coach.name;
+      cohort=st.cohort; var L=st.live||{}; unit="s"+(L.session||1);
+      $("sub").textContent="Class: "+cohort.name+" · "+"Mission "+(L.session||1)+" · signed in as "+coach.name;
       return DJLabDB.safetyRoster(coach.token, cohort.id);
     }).then(function(r){ kids=r||[]; render(); }).catch(function(e){
       var m=(e&&e.message)||"error";

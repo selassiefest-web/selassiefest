@@ -1,27 +1,27 @@
 ---
 title: "Graduation: The Rainbow Showcase"
-description: What happens at session 14, the Rainbow Showcase, where your child plays their set for a crowd that includes you.
+description: What happens at the Rainbow Showcase, where your child plays their set for a crowd that includes you.
 ---
 
-## Session 14 · Violet · Rainbow Showcase
+## Mission 14 · Violet · Rainbow Showcase
 
 **Mission:** "I play my set for a real crowd."
 
-The last session of the full course is the Rainbow Showcase. **Families attend.** Every child gets a slot to play their set, and every performer gets glow cards.
+The last Mission is the Rainbow Showcase. A child plays at the next Showcase after earning all 42 stamps. Showcases are planned for spring, midyear and year-end. **Families attend.** Every child gets a slot to play their set, and every performer gets glow cards.
 
 *The Lab is proposed and not running yet. No showcase date is set.*
 
-## Getting there: sessions 9 to 13
+## Getting there: Missions 9 to 13
 
-| Session | Color | Title | In one line |
+| Mission | Color | Title | In one line |
 |---|---|---|---|
 | 9 | Blue | Hot Cues and Loops | Switch to Serato DJ Lite. Mark moments on pads and loop a single word. |
-| 10 | Blue | Word Flip | Make songs talk with call and response. Build a sentence from lyrics. *(Listen-back day.)* |
+| 10 | Blue | Word Flip | Make songs talk with call and response. Build a sentence from lyrics. *(Listen-back Mission.)* |
 | 11 | Indigo | Theme Clash Lab | Drop a cartoon or game theme into a hit: Tease, Swap or Stack. |
 | 12 | Indigo | Mic, MC and Live Lab | Say one MC line on the beat, read the crowd, and play with a young live musician. |
-| 13 | Violet | Build Your Set | Fill in a Set Map (Opener, Build, Theme Clash, Peak, Exit) and a Plan B card. *(Listen-back day.)* |
+| 13 | Violet | Build Your Set | Fill in a Set Map (Opener, Build, Theme Clash, Peak, Exit) and a Plan B card. *(Listen-back Mission.)* |
 
-In session 13, your child plans what they'll do if a song won't load, the laptop freezes, or they blank. The coach models it: *"If my laptop freezes, Plan B: I talk on the mic and load my backup song."*
+In Mission 13, your child plans what they'll do if a song won't load, the laptop freezes, or they blank. The coach models it: *"If my laptop freezes, Plan B: I talk on the mic and load my backup song."*
 
 ## What happens at the showcase
 
@@ -54,7 +54,7 @@ The showcase is a busier day, with more adults in the room. The same rules apply
 
 | Passport | What it means |
 |---|---|
-| 42 stamps | The full spectrum: 3 skills × 14 sessions |
+| 42 stamps | The full spectrum: 3 skills × 14 Missions |
 | 7 color badges | Six stamps complete each color |
 
 There are no grades. Stamps show skills a mentor saw your child do.
@@ -72,7 +72,7 @@ Also try:
 
 Every graduate is **guaranteed an Open Decks slot at Rainbow Wednesdays**, the free summer DJ series. Rainbow Wednesdays is also proposed, so **the guarantee applies when Rainbow Wednesdays runs.** See the [Graduation guarantee](/dj-lab/performing/graduation-guarantee.html).
 
-**Who graduates is decided by published criteria,** not anyone's opinion: attendance at a published number of sessions and completion of a published number of skill checks. The numbers will be published before the first class. A coach records each one as met or not met, the program coordinator confirms it, and no one can waive a criterion. Performing at the showcase isn't one of them.
+**Who graduates is decided by published criteria,** not anyone's opinion: all 42 Passport skills stamped and a final set ready to play. A coach records each one as met or not met, the program coordinator confirms it, and no one can waive a criterion. Performing at the showcase isn't one of them.
 
 ## Next stop
 

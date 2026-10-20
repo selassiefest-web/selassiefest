@@ -1,5 +1,4 @@
-// Rainbow DJ Lab curriculum: the 14-session course (S) and the 6-workshop
-// spring fast track (W). Read by app.js; edit lesson content here.
+// Rainbow DJ Lab curriculum: the 14 Missions (S). Read by app.js; edit lesson content here.
 window.DJLAB_SESSIONS = (function(){
 
 var S = [
@@ -88,43 +87,5 @@ var S = [
   move:"Crowd warm-up: the whole room learns one step together.",lab:"Glow Cards",labHow:"Write one glow for every performer.",
   home:"You played for a crowd. What was the best moment?",checks:["Play 10 minutes for a crowd","Give glows to others","Earn the full spectrum"]}
 ];
-var W = [
- {n:1,color:"red",title:"Beatmatching and Blending",covers:"Red + Orange (sessions 1–4)",mission:"I can count the phrase and start my second song on the one.",
-  look:"Coach counting out loud and waiting for beat 1.",demo:"Fast controller tour with the color stickers, headphone caps, then bars and phrases on the waveform. Start song B on beat 1 of a new phrase.",
-  say:"“5, 6, 7, 8… new phrase, beat 1, go.”",
-  mild:"Load two songs and fade between them.",medium:"Start song B on beat 1 of a phrase.",spicy:"Cut on a phrase change with the crossfader.",
-  move:"Step on 1, clap on every bar, jump on the phrase change.",lab:"DJ Name Builder + Answer Songs",labHow:"Make your DJ name, then pick two songs whose titles talk to each other.",
-  home:"What's your DJ name, and where is beat 1?",checks:["Load, play and fade two songs","Count 8 bars while mixing","Start song B on the one"]},
- {n:2,color:"yellow",title:"Building a Set",covers:"Yellow + Green (sessions 5–8)",mission:"I can match two songs' speed and blend them without mud.",
-  look:"the arrow lights going dark, then the bass swap.",demo:"Tempo fader plus Beatmatch Guide arrows. Then EQ: never two basslines at once, swap the bass on the phrase. Build a crate by color.",
-  say:"“Arrows dark, so we're matched. Bass out on song 2… swap on the phrase.”",
-  mild:"Match tempo with the lights.",medium:"Swap the bass on a phrase change.",spicy:"Blend 16 bars with the guide off.",
-  move:"Low, mid, high: crouch for bass, stand for mids, reach for highs.",lab:"Color Mix",labHow:"Pick two songs from different genres and predict the new color they'll make.",
-  home:"What do the arrow lights tell you, and which knob is the bass?",checks:["Match tempo with the lights","Swap the bass on a phrase","Build a crate by color"]},
- {n:3,color:"blue",title:"Live Looping and Editing",covers:"Blue (sessions 9–10)",mission:"I can grab any moment and make songs talk to each other.",
-  look:"Coach putting the hook on a pad.",demo:"Hot cues on pads: intro, hook, drop. Loop 4 beats, then one word. Call and response across decks.",
-  say:"“I want this word ready any time. Hot cue on pad 2.”",
-  mild:"Set 4 hot cues.",medium:"Loop one word.",spicy:"Build a 4-word sentence from lyrics.",
-  move:"Human loop: repeat one move until Coach says “exit loop.”",lab:"Sentence Builder",labHow:"Using clean words from your crate, build a 4-word shout-out.",
-  home:"What sentence did you build from song lyrics?",checks:["Set hot cues","Loop one word","Flip a phrase"]},
- {n:4,color:"indigo",title:"Playing with Live Instruments",covers:"Indigo part (session 12)",mission:"I can leave space for a live musician and say one line on the mic.",
-  look:"how Coach drops the drums for the drummer.",demo:"Mic basics: close, on the beat, short lines. A young drummer or keyboardist plays over a kid's loop.",
-  say:"“The drummer needs room. Drums out, melody looped.”",
-  mild:"Say one MC line on the beat.",medium:"Loop a beat for a live musician.",spicy:"Play and MC at the same time.",
-  move:"Crowd reading: half dance, half watch and report.",lab:"Two-line Hype",labHow:"Write a two-line rhyming intro for your own set.",
-  home:"Can you say your two-line hype for me?",checks:["Leave space for a musician","Mic basics","Deliver one MC line"]},
- {n:5,color:"indigo",title:"The Theme Clash",covers:"Indigo part (session 11)",mission:"I can build one Theme Clash with an MC line.",
-  look:"the tempo and key check before the clash.",demo:"Pairing checklist: close tempo, matching key, a strong 4 to 8 bar hook. Tease, Swap or Stack. Quote the theme, don't play it all.",
-  say:"“Close tempos, neighbor keys. I'll Swap it into the drop.”",
-  mild:"Tease a theme over an intro.",medium:"Swap a theme into the drop.",spicy:"Stack a theme with blind-drawn cards.",
-  move:"Theme freeze: freeze in the pose of whatever theme plays.",lab:"Clash Cards",labHow:"One Theme card and one Song card. Ten minutes to make it work.",
-  home:"What theme did you clash with what song?",checks:["Run the fit check","Play one Theme Clash","Add an MC line"]},
- {n:6,color:"violet",title:"Dress Rehearsal on the Beach",covers:"Violet (sessions 13–14)",mission:"I play a planned 10-minute set outdoors on the real system.",
-  look:"Coach's Set Map and Plan B.",demo:"Set Map: Opener, Build, Theme Clash, Peak, Exit. Plan B card. Sound check on the beach system.",
-  say:"“Wind and sun change everything. Check your levels, then trust your map.”",
-  mild:"Play 5 minutes with a partner.",medium:"Play your 10-minute set.",spicy:"Play your set with a Theme Clash and an MC line.",
-  move:"Crowd warm-up: the whole beach learns one step together.",lab:"Plan B Card",labHow:"Write what you'll do if a song won't load, the laptop freezes, or you blank.",
-  home:"What's on your Set Map, and what's your Plan B?",checks:["Follow my Set Map","Use my Plan B","Play 10 minutes outdoors"]}
-];
-return {S:S, W:W};
+return {S:S};
 })();

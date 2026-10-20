@@ -28,12 +28,12 @@ The Rainbow DJ Lab itself is also proposed. The Chicago Park District hasn't app
 
 ## Who graduates
 
-Graduation comes at the end of the course. The full course has 14 sessions and ends with session 14, the Rainbow Showcase. **Graduation, and the Open Decks slot that comes with it, depends only on published criteria:**
+Graduation is on mastery, not a date. **Graduation, and the Open Decks slot that comes with it, depends only on published criteria:**
 
-- attendance at a published number of sessions, and
-- completion of a published number of skill checks.
+- all 42 Passport skills stamped, and
+- a final set ready to play.
 
-The numbers, for the full course and for the 6-workshop spring fast track, will be **published before the first class**. Publishing them is on the [launch checklist](/dj-lab/governance/index.html).
+A graduate plays the next Rainbow Showcase. Because children join any Tuesday and learn at their own pace, there is no attendance count: a missed class never costs a stamp.
 
 - A coach records each criterion as **met or not met**, and the program coordinator confirms it.
 - **No one can waive a criterion or add one.** Nobody's opinion of your child decides graduation.

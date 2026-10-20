@@ -75,7 +75,7 @@ Q-Ality Sound was selected without competitive bidding because it has the equipm
 
 - Trainers sign an agreement directly with the program that includes this policy.
 - **Trainers train only.** They do not select, recommend, rank or vouch for any child, performer or opportunity, and they do not sit on selection panels or count votes.
-- During a cohort and for 6 months after it ends, a trainer does not offer paid private lessons to enrolled students or book them for the trainer's own paid work, unless a parent starts the request in writing and the board has approved it.
+- While a child is enrolled and for 6 months after they leave, a trainer does not offer paid private lessons to enrolled students or book them for the trainer's own paid work, unless a parent starts the request in writing and the board has approved it.
 - Trainers do not promote their own music, products or businesses to students through the Lab.
 - Trainers disclose any paid work they receive from other Lab events or vendors.
 

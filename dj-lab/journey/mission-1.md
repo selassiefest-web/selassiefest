@@ -1,25 +1,25 @@
 ---
-title: "Week 1: Meet the Machine"
-description: What your child does in their first Rainbow DJ Lab session, what you do, and what to ask at dinner.
+title: "Mission 1: Meet the Machine"
+description: What your child does in their first Rainbow DJ Lab Mission, what you do, and what to ask at dinner.
 ---
 
-## Session 1 · Red · Meet the Machine
+## Mission 1 · Red · Meet the Machine
 
 **Mission:** "I can play a song and bring in a second one."
 
-Week 1 is about getting comfortable. Your child touches a real DJ controller, plays two songs, fades from one to the other, and leaves with a DJ name.
+Mission 1 is about getting comfortable. Your child touches a real DJ controller, plays two songs, fades from one to the other, and leaves with a DJ name.
 
-*The Lab is proposed and not running yet. "Week 1" assumes one session a week. See the [schedule](/dj-lab/enroll/schedule.html).*
+*The Lab is proposed and not running yet. Children join any Tuesday and start here. See the [schedule](/dj-lab/enroll/schedule.html).*
 
 ## Arrival (for you)
 
-1. **Sign your child in** with a coach. You'll do this every week.
+1. **Sign your child in** with a coach. You'll do this every Tuesday.
 2. **Check that your pickup list is right.** Your child goes home only with an adult on it, after a photo ID check.
 3. **Stay and watch if you'd like.** See the [Open door policy](/dj-lab/families/open-door-policy.html).
 
 ## What your child does, block by block
 
-| Block | Minutes | In session 1 |
+| Block | Minutes | In Mission 1 |
 |---|---|---|
 | Drop In | 0–7 | Music from the red crate is already playing. Kids clap on beat 1, stomp on beat 4, and get their Passport. |
 | Mission Card | 7–12 | Kids hear the Mission and guess: easy, medium or hard? |
@@ -33,7 +33,7 @@ Week 1 is about getting comfortable. Your child touches a real DJ controller, pl
 
 During Watch Me Think, the coach says things like: *"I'm watching song 1 run out. I want song 2 ready before that, so I press cue now."*
 
-## Passport skills this week
+## Passport skills in this Mission
 
 - Load and play two songs
 - Fade between them
@@ -47,7 +47,7 @@ During Watch Me Think, the coach says things like: *"I'm watching song 1 run out
 
 ## What to ask at dinner
 
-**This week's home question:** *"What's your DJ name, and how did you make it?"*
+**This Mission's home question:** *"What's your DJ name, and how did you make it?"*
 
 Also try:
 - "What job did you have first: DJ, Co-pilot, Hype or Logger?"
@@ -62,4 +62,4 @@ You'll also get an email when your child is signed out at the end of class. See 
 
 ## Next stop
 
-[Week 4: Mix on the One](/dj-lab/journey/week-4.html)
+[Mission 4: Mix on the One](/dj-lab/journey/mission-4.html)

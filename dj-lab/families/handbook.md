@@ -19,11 +19,10 @@ This handbook tells you how a Rainbow DJ Lab class works for your family, from t
 | **Run by** | Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649 |
 | **Where** | Rainbow Beach Park, 3111 E. 77th St., Chicago, IL 60649. Indoors in the fieldhouse when space is available (fall through spring); outdoors on the park lawn in summer, as the park approves |
 | **Water** | Children do not swim during the program, and the program never takes place in the water |
-| **Full course** | 14 sessions of 90 minutes, two per rainbow color, ending with the Rainbow Showcase that families attend |
-| **Spring fast track** | 6 workshops of 2 hours |
+| **Schedule** | Year-round, every Tuesday 4 to 6 pm. Join any Tuesday and learn at your own pace through 14 Missions, two per rainbow color. A child graduates when all 42 skills are stamped and a final set is ready, at the next Rainbow Showcase that families attend |
 | **Class size** | Up to 12 kids, in stations of 4 kids sharing one controller |
 | **Adults** | At least two screened adults at all times; no more than 6 children per screened adult |
-| **Dates** | Not set yet. They will be posted before registration opens |
+| **Dates** | Opening Tuesday is planned for January 12, 2027. The calendar skips federal-holiday weeks and CPS spring break |
 | **Signing up now** | Until launch, the online form is an [interest list](/dj-lab/enroll/register.html), not enrollment. Full registration opens only when every [launch-checklist](/dj-lab/governance/index.html) item is complete |
 
 ### Age groups
@@ -40,7 +39,7 @@ Every group learns the same core curriculum, adapted by age group and by the Mil
 
 ## What a session looks like
 
-Every 90-minute session follows the same 9 blocks, so kids always know what comes next:
+The 90-minute core of every class follows the same 9 blocks, so kids always know what comes next:
 
 1. **Drop In** (0–7 min): arrive, check in, settle
 2. **Mission Card** (7–12): today's goal
@@ -54,7 +53,7 @@ Every 90-minute session follows the same 9 blocks, so kids always know what come
 
 At each station, jobs rotate every 3 minutes 45 seconds: **DJ, Co-pilot, Hype and Logger**. Everyone gets turns.
 
-There are **no grades and no tests**. Kids rate themselves with a traffic light (I got it / Getting there / Not yet), and mentors award **Passport stamps** for skills: 3 per session, so 42 for the full course and 18 for the spring fast track (6 workshops × 3 stamps). When a mix goes wrong, we call it **"Data!"**: the DJ names one reason and tries again. More in [your child's journey](/dj-lab/journey/).
+There are **no grades and no tests**. Kids rate themselves with a traffic light (I got it / Getting there / Not yet), and mentors award **Passport stamps** for skills: 3 per Mission, so 42 in all. When a mix goes wrong, we call it **"Data!"**: the DJ names one reason and tries again. More in [your child's journey](/dj-lab/journey/).
 
 ## What to bring
 
@@ -194,7 +193,7 @@ Full details: [data privacy statement](/dj-lab/privacy/data-privacy-statement.ht
 ## Photos and recordings
 
 - The class app holds no photos or video.
-- On listen-back days (sessions 6, 10 and 13, and fast-track W6), each kid records 2 minutes of their mix and reviews it with a mentor. Recordings are deleted after the review unless your family asks for a copy.
+- On listen-back Missions (6, 10 and 13), each kid records 2 minutes of their mix and reviews it with a mentor. Recordings are deleted after the review unless your family asks for a copy.
 - Any photos for outside use need your separate media consent, and we never put names with images.
 
 Details: [photos and recordings](/dj-lab/privacy/photos-recordings.html).
@@ -202,7 +201,7 @@ Details: [photos and recordings](/dj-lab/privacy/photos-recordings.html).
 ## Performing
 
 - **Spotlight** in class is always voluntary, and needs your performance consent.
-- **Session 14, the Rainbow Showcase,** is for families. You're invited.
+- **The Rainbow Showcase** is for families. You're invited.
 - **Graduates get an Open Decks slot at Rainbow Wednesdays**, the free summer DJ series. Rainbow Wednesdays is also proposed, so this applies when the series runs.
 - **Graduation uses published criteria:** attendance at a published number of sessions and a published number of skill checks, recorded as met or not met. The numbers will be published before the first class, and no one can waive them.
 - After that, the path continues: Open Decks → Youth Showcase open call → Theme Clash semifinals and Finale.

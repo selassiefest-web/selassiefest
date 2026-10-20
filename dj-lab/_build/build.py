@@ -17,14 +17,14 @@ SKIP_DIRS = {"_build", ".github", "live", "portal", "assets"}
 RENAME = {"enroll/register.md": "enroll/register-help.html"}
 
 SECTIONS = [
-    ("about", "About", ["index", "curriculum", "curriculum-fast-track", "age-groups", "accessibility", "language-access", "instructors", "meet-the-coach", "independence", "community-accountability"]),
+    ("about", "About", ["index", "curriculum", "age-groups", "accessibility", "language-access", "instructors", "meet-the-coach", "independence", "community-accountability"]),
     ("enroll", "Enroll", ["index", "register", "schedule", "locations", "transportation-parking", "attendance-absence", "weather-cancellation", "communicable-disease", "exit-withdrawal", "faq", "forms/index"]),
     ("safety", "Safety", ["index", "youth-protection-policy", "enforcement", "staff-screening", "mandated-reporter-training", "substance-free-policy", "arrival-signout", "id-check-protocol", "impaired-parent-protocol", "lost-child-plan", "emergency-action-plan", "active-threat-lockdown", "incident-reporting", "medical-allergy-plan", "epinephrine-protocol", "medication-storage", "first-aid-cpr-roster", "lakefront-weather", "sunscreen-hydration", "restroom-supervision", "hearing-safety", "behavior-emotional-safety", "discipline-ladder", "cooldown-space", "peer-harm-protocol", "report-a-concern", "grievance-procedure"]),
-    ("families", "Families", ["index", "handbook", "orientation", "open-door-policy", "session-contact", "feedback-loop", "weekly-digest", "mid-season-checkin", "references"]),
+    ("families", "Families", ["index", "handbook", "orientation", "open-door-policy", "session-contact", "feedback-loop", "weekly-digest", "progress-checkin", "references"]),
     ("privacy", "Privacy", ["index", "data-privacy-statement", "coppa-compliance", "third-party-vendors", "breach-notification", "retention-deletion", "parent-data-rights", "audit-log", "photos-recordings"]),
     ("performing", "Performing", ["index", "pathway", "opt-out", "event-day-supervision", "sound-crowd-exposure", "transportation", "stage-freeze-protocol", "graduation-guarantee"]),
     ("kids", "For kids", ["index", "first-day", "rules-for-me", "if-you-feel-unsafe", "data-mistakes", "bathroom-and-buddy", "who-to-talk-to", "promises-to-you"]),
-    ("journey", "The journey", ["index", "before-day-one", "week-1", "week-4", "week-8", "graduation", "after"]),
+    ("journey", "The journey", ["index", "before-day-one", "mission-1", "mission-4", "mission-8", "graduation", "after"]),
     ("governance", "Governance", ["index", "board", "conflict-of-interest", "whistleblower", "financial-transparency", "mou-park-district", "park-district-permits", "data-sharing-agreement-selassiefest", "qality-vendor-agreement", "sole-source-justification-qality", "equipment-use-agreement-qality", "insurance-certificate", "501c3-letter", "enforcement-self-accountability", "annual-safety-review", "community-accountability-report"]),
 ]
 FORMS_ORDER = ["index", "registration", "emergency-contacts", "medical-allergy", "authorized-pickup", "media-consent", "performance-consent", "digital-tracking-consent", "code-of-conduct"]

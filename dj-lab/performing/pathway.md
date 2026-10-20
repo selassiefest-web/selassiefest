@@ -13,8 +13,8 @@ Before your child takes **any** step beyond in-class Spotlight, a parent or guar
 
 | Step | Where | Who watches | How long | Status |
 |---|---|---|---|---|
-| 1. Spotlight | In class, every session (minutes 70–82) | Classmates and coaches | 60 seconds on the main speaker | Part of the written curriculum |
-| 2. Rainbow Showcase | Session 14, the last class | Classmates, coaches and families | 5 minutes with a partner, or a 10-minute set | Part of the written curriculum |
+| 1. Spotlight | In class, every Tuesday (minutes 70–82) | Classmates and coaches | 60 seconds on the main speaker | Part of the written curriculum |
+| 2. Rainbow Showcase | Spring, midyear and year-end Showcases | Classmates, coaches and families | 5 minutes with a partner, or a 10-minute set | Part of the written curriculum |
 | 3. Open Decks | Rainbow Wednesdays, the free summer DJ series | The public at the park | Set length confirmed before the event | Guaranteed slot **when Rainbow Wednesdays runs**. The series itself is proposed. |
 | 4. Youth Showcase open call | A proposed stage show | The public | Confirmed before the event | **Proposed.** Not yet approved. |
 | 5. Theme Clash semifinals and Finale | Proposed stage shows | The public | Confirmed before the event | **Proposed.** Not yet approved. |
@@ -26,9 +26,9 @@ Before your child takes **any** step beyond in-class Spotlight, a parent or guar
 - Classmates give each performer one **glow** (something that worked) and one **grow** (one idea).
 - Children who don't play still take part by listening and giving glows.
 
-## Step 2: Rainbow Showcase (session 14)
+## Step 2: Rainbow Showcase
 
-- Families are invited to watch the last class.
+- Families are invited to watch. A child plays at the next Showcase after earning all 42 stamps.
 - Children choose their own challenge level:
   - **Mild:** play 5 minutes with a partner.
   - **Medium:** play your own 10-minute set.
@@ -39,7 +39,7 @@ Before your child takes **any** step beyond in-class Spotlight, a parent or guar
 ## Step 3: Open Decks at Rainbow Wednesdays
 
 - Graduating from the course earns a **guaranteed Open Decks slot** at Rainbow Wednesdays. The guarantee applies when Rainbow Wednesdays runs. That series is still **proposed**. See [Graduation guarantee](/dj-lab/performing/graduation-guarantee.html).
-- Using the slot is optional. A family can decline it, or save it for later in the season if one is offered.
+- Using the slot is optional. A family can decline it, or save it for a later series if one is offered.
 - All [event-day supervision](/dj-lab/performing/event-day-supervision.html) rules apply.
 
 ## Step 4: Youth Showcase open call
@@ -49,7 +49,7 @@ Before your child takes **any** step beyond in-class Spotlight, a parent or guar
 
 ## Step 5: Theme Clash semifinals and Finale
 
-- The Theme Clash is the creative heart of the course: a DJ drops a cartoon or game theme into a hit song. Kids practice it in session 11 (Indigo: Theme Clash Lab).
+- The Theme Clash is the creative heart of the course: a DJ drops a cartoon or game theme into a hit song. Kids practice it in Mission 11 (Indigo: Theme Clash Lab).
 - The semifinals and Finale are **proposed** stage shows and are not yet approved.
 - "Clash" here means a friendly music contest. No child is ever put down, booed or ranked in front of the crowd by Lab staff.
 

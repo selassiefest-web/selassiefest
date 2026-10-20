@@ -20,7 +20,7 @@ These are policies Ras Tafari Inc. commits to; formal board adoption is a launch
 ## Prevention
 
 - Two adults always present and actively moving between stations.
-- Jobs rotate and the class agreements are taught at session 1.
+- Jobs rotate and the class agreements are taught at orientation.
 - **No phones out during class** for kids, and no photos or video of other children. The Lab's app stores no photos or video.
 - Restroom buddy system ([Restroom Supervision](/dj-lab/safety/restroom-supervision.html)).
 - Kids are taught: "If someone is hurting you or someone else, tell any adult. You won't be in trouble for telling."

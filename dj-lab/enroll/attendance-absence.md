@@ -22,7 +22,7 @@ Because a parent or guardian signs every child in, we always know who is in the 
 
 ## How kids catch up
 
-Our course is built on **Passport stamps**: 3 skills per session, 42 for the full course. A missed session means some stamps aren't earned yet. They aren't lost.
+Our course is built on **Passport stamps**: 3 skills per Mission, 42 in all. A missed class means some stamps aren't earned yet. They aren't lost.
 
 - At the next class, a mentor can show your child the skills they missed during Deck Time.
 - The class app shows which Passport skills are still open, so you and your child can see what to work on.
@@ -34,7 +34,7 @@ If your child misses several classes in a row, we'll reach out to ask how we can
 
 ## The Showcase
 
-Session 14 (the Rainbow Showcase) is open to every enrolled child, whatever their attendance. Playing is always a choice.
+The Rainbow Showcase is open to every enrolled child, whatever their attendance. Playing is always a choice.
 
 ## Related
 

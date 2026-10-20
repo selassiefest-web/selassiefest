@@ -51,7 +51,7 @@ A 9-year-old usually wants to know three things: *Who will be there? What will I
 - **Explain Spotlight.** Playing on the big speaker is volunteers only. Nobody will make them do it.
 - **Talk about the buddy system.** Kids go to the restroom in pairs, and an adult waits at the entrance. See [Bathroom and buddy](/dj-lab/kids/bathroom-and-buddy.html).
 - **Name their safe adults.** Make sure your child knows who's on the pickup list, and that they should never leave with anyone else. See [Who to talk to](/dj-lab/kids/who-to-talk-to.html).
-- **Start thinking of a DJ name.** They'll build one in week 1: their name + a sound + a color.
+- **Start thinking of a DJ name.** They'll build one in Mission 1: their name + a sound + a color.
 
 ## Keep illness rules in mind
 
@@ -59,4 +59,4 @@ Keep your child home with a fever of 100.4°F or higher. They can come back when
 
 ## Next stop
 
-[Week 1: Meet the Machine](/dj-lab/journey/week-1.html)
+[Mission 1: Meet the Machine](/dj-lab/journey/mission-1.html)

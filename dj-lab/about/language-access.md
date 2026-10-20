@@ -42,7 +42,7 @@ If something important is only in English and you need it in another language, t
 **Lo más importante:**
 
 - **Es gratis.** No se cobra matrícula y todo el equipo se presta.
-- **El curso completo** tiene 14 sesiones de 90 minutos. No hay calificaciones ni exámenes.
+- **El programa** funciona todo el año, los martes de 4 a 6 pm, con 14 Misiones. No hay calificaciones ni exámenes.
 - **Grupos por edad.** Los niños de 8 a 11 años están en "Junior DJs". Usted puede dejar a su hijo o hija en la clase si firma una lista de personas autorizadas para recogerlo.
 - **Seguridad.** Siempre habrá por lo menos dos adultos evaluados con los niños. Habrá un máximo de 6 niños por adulto. Todos los adultos pasan una verificación de antecedentes con huellas digitales y reciben capacitación como denunciantes obligatorios del DCFS de Illinois.
 - **Recogida.** Solo entregamos a su hijo o hija a un adulto de su lista autorizada, después de revisar una identificación con foto.

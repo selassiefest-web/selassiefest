@@ -15,7 +15,7 @@ These are policies Ras Tafari Inc. commits to; formal board adoption is a launch
 4. **No medicine in kids' bags.** Children don't keep medicine in backpacks, with one exception: if a child's own plan and their prescriber say they carry their own inhaler, and the parent agrees in writing, the trained adult still knows where it is.
 5. **Given only as labeled.** We give the dose and time on the label or plan. We never change doses.
 
-Most classes are 90 minutes (fast-track workshops are 2 hours), so routine medicine during class should be rare. If a dose can be given at home, please give it at home.
+Classes run 4 to 6 pm, so routine medicine during class should be rare. If a dose can be given at home, please give it at home.
 
 ## Hand-off at sign-in
 

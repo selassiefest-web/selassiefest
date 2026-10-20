@@ -20,7 +20,7 @@ These are policies Ras Tafari Inc. commits to; formal board adoption is a launch
 | What | Who | When |
 |---|---|---|
 | Stations set up in shade (trees, canopies) | Staff | Before children arrive |
-| Reminder to reapply sunscreen | Lead adult | About every 2 hours in the sun, and after heavy sweating. Fast-track workshops are 2 hours, so this falls near the end |
+| Reminder to reapply sunscreen | Lead adult | About every 2 hours in the sun, and after heavy sweating. Classes run 2 hours, so this falls near the end |
 | Children apply their own sunscreen | Child | During a break |
 | A Little DJ's sunscreen is applied | Their own grown-up (who stays with them) | As needed |
 

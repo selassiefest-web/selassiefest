@@ -110,7 +110,7 @@ create index if not exists djlab_kids_cohort_idx on djlab_kids (cohort_id);
 
 create table if not exists djlab_checkins (
   kid_id uuid not null references djlab_kids(id) on delete cascade,
-  unit text not null,                       -- s1..s14 (course) or w1..w6 (fast track)
+  unit text not null,                       -- s1..s14 (the 14 Missions)
   data jsonb not null default '{}'::jsonb,  -- {predict, level, light, next, data, mixlog:[...]}
   updated_at timestamptz not null default now(),
   primary key (kid_id, unit)

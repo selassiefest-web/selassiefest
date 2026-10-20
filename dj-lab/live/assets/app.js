@@ -11,7 +11,7 @@ var ROLES = [
   {k:"Logger", short:"LG", job:"Write in the Mix Log: song pair, what happened, what to change.", c:"--r7"}
 ];
 var ROT_SECS = 225; // 15-minute deck time / 4 kids = 3:45 each
-var LISTEN_BACK = {s6:1, s10:1, s13:1, w6:1};
+var LISTEN_BACK = {s6:1, s10:1, s13:1};
 
 // ---- block definitions (what a block is) ----
 var BD = {
@@ -62,7 +62,7 @@ var BD = {
     brain:"What's one glow I can give?",
     parent:"Volunteers play 60 seconds on the main speaker. Classmates give one glow (something that worked) and one grow (one idea).",
     ride:"Who played in the Spotlight? What glow did they get?",
-    coach:function(s,uk){return {doo:(LISTEN_BACK[uk]?"Listen-back day: each kid records 2 minutes, then reviews it with a mentor (one glow, one grow, one goal). Then ":"")+"3 or 4 volunteers play 60 seconds each on the main speaker. Tap Spot on the board so their family sees it.", say:"Glow: one thing that worked. Grow: one idea.", watch:"Volunteers only. Never call on a kid who didn't sign up.", ask:"What made that moment work?"};}},
+    coach:function(s,uk){return {doo:(LISTEN_BACK[uk]?"Listen-back Mission: each kid records 2 minutes, then reviews it with a mentor (one glow, one grow, one goal). Then ":"")+"3 or 4 volunteers play 60 seconds each on the main speaker. Tap Spot on the board so their family sees it.", say:"Glow: one thing that worked. Grow: one idea.", watch:"Volunteers only. Never call on a kid who didn't sign up.", ask:"What made that moment work?"};}},
   out:{name:"Check Out", c:"--r5", think:"Reflect",
     kid:function(s){return "How did your Mission go? Tap a light. Then finish: Next time I'll…";},
     brain:"What will I do next time?",
@@ -72,13 +72,10 @@ var BD = {
 };
 function mk(def,a,b,name,id){ var d=BD[def]; var o={}; for(var k in d) o[k]=d[k]; o.def=def; o.id=id||def; o.a=a; o.b=b; if(name) o.name=name; return o; }
 var COURSE = [mk("drop",0,7), mk("mission",7,12), mk("watch",12,20), mk("deck1",20,35), mk("move",35,40), mk("deck2",40,55), mk("word",55,70), mk("spot",70,82), mk("out",82,90)];
-var FAST = [mk("drop",0,7), mk("mission",7,12), mk("watch",12,20), mk("deck1",20,35), mk("move",35,40), mk("deck2",40,55), mk("word",55,70), mk("move",70,75,"Move Break 2","move2"), mk("deck2",75,90,"Deck Time 3","deck3"), mk("spot",90,110), mk("out",110,120)];
-
 var S = window.DJLAB_SESSIONS.S;
-var W = window.DJLAB_SESSIONS.W;
 
 // ---------- state ----------
-var live = {mode:"course", session:1, ws:1, running:false, base:0, markAt:0, msg:"", msgAt:0, feed:[], spot:null};
+var live = {mode:"course", session:1, running:false, base:0, markAt:0, msg:"", msgAt:0, feed:[], spot:null};
 var roster = {kids:{}};
 var checkins = {};
 var canCoach = true, connected = false, kidCanWrite = true;
@@ -90,12 +87,11 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){retu
 function cap(s){ s=String(s||""); return s.charAt(0).toUpperCase()+s.slice(1); }
 function cssv(n){ return "var("+n+")"; }
 function fmt(sec){ sec=Math.max(0,Math.round(sec)); return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0"); }
-function fast(){ return live.mode==="fast"; }
-function blocks(){ return fast() ? FAST : COURSE; }
+function blocks(){ return COURSE; }
 function TOTAL(){ var b=blocks(); return b[b.length-1].b*60; }
-function unit(){ return fast() ? (W[(live.ws||1)-1]||W[0]) : (S[(live.session||1)-1]||S[0]); }
-function uk(){ return (fast()?"w":"s")+(fast()?live.ws:live.session); }
-function unitLabel(){ return fast() ? "Workshop "+live.ws+" of 6" : "Session "+live.session+" of 14"; }
+function unit(){ return S[(live.session||1)-1]||S[0]; }
+function uk(){ return "s"+live.session; }
+function unitLabel(){ return "Mission "+live.session+" of 14"; }
 // Class time runs on the server's clock, not the device's: every poll
 // returns the server time, and the round trip gives this device's offset
 // (NTP-style; the fastest recent round trip wins, so one slow request
@@ -134,7 +130,7 @@ function ci(k){ return checkins[k+"_"+uk()]||{}; }
 function toast(msg){ var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove("show"); },2600); }
 
 // ---------- persistence ----------
-function liveBody(){ return {mode:live.mode, session:live.session, ws:live.ws, running:live.running, base:live.base, markAt:live.markAt, msg:live.msg, msgAt:live.msgAt, feed:live.feed, spot:live.spot||null}; }
+function liveBody(){ return {mode:"course", session:live.session, running:live.running, base:live.base, markAt:live.markAt, msg:live.msg, msgAt:live.msgAt, feed:live.feed, spot:live.spot||null}; }
 function rpc(name, args){
   return window.sfSupabaseReady.then(function(c){ return c.rpc(name, args); }).then(function(r){ if(r.error) throw r.error; return r.data; });
 }
@@ -209,7 +205,7 @@ function buildWave(){
   }
   var head=document.createElement("div"); head.className="head"; head.id="head"; w.appendChild(head);
   bl.innerHTML=bs.map(function(B,i){ return '<span id="bl'+i+'" style="--c:'+cssv(B.c)+';flex:'+(B.b-B.a)+'">'+esc(B.name)+'</span>'; }).join("");
-  document.getElementById("waveLbl").innerHTML=(n)+"-minute "+(fast()?"workshop":"session")+" &middot; one bar per minute";
+  document.getElementById("waveLbl").innerHTML=(n)+"-minute core &middot; one bar per minute";
 }
 function onBar(min){
   if(view==="coach" && canCoach){ setT(min*60); return; }
@@ -221,7 +217,7 @@ function renderHeader(){
   var root=document.documentElement;
   root.style.setProperty("--sc",cssv(COLORS[s.color]));
   root.style.setProperty("--sc-ink",DARK_INK[s.color]?"#16182B":"#FFFFFF");
-  document.getElementById("sessPill").innerHTML="<b>"+(fast()?"W":"")+s.n+"</b><span>"+esc(cap(s.color))+" &middot; "+esc(s.title)+"</span>";
+  document.getElementById("sessPill").innerHTML="<b>"+s.n+"</b><span>"+esc(cap(s.color))+" &middot; "+esc(s.title)+"</span>";
   var labels={idle:"Not started",live:"Live",paused:"Paused",done:"Session over"};
   var stEl=document.getElementById("status"); stEl.className="status "+st;
   stEl.querySelector("span").textContent=(MODE==="demo"?"Demo · ":MODE?"":"Not joined · ")+labels[st];
@@ -361,7 +357,7 @@ function renderCoach(){
   var st=stateName(), btn=document.getElementById("cStart");
   btn.textContent=st==="live"?"Pause":st==="paused"?"Resume":st==="done"?"Done":"Start";
   btn.disabled=st==="done"||!canCoach;
-  ["cBack","cNext","cAdd","cReset","cSession","cMode","castSend","castClear","castIn","rAdd","rName","rStation","rSeat","gKid","gText","gSave"].forEach(function(id){ document.getElementById(id).disabled=!canCoach; });
+  ["cBack","cNext","cAdd","cReset","cSession","castSend","castClear","castIn","rAdd","rName","rStation","rSeat","gKid","gText","gSave"].forEach(function(id){ document.getElementById(id).disabled=!canCoach; });
   document.getElementById("coachUp").innerHTML='<span class="lbl">Coming up</span>'+bs.slice(bi+1,bi+4).map(function(nb){
     var d=nb.coach(s,uk()).doo;
     return '<div style="display:grid;grid-template-columns:52px 12px minmax(0,1fr);gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><span class="faint num">'+nb.a+':00</span><span class="dot" style="--c:'+cssv(nb.c)+'"></span><span><b>'+esc(nb.name)+'</b><br><span class="faint">'+esc(d.slice(0,90))+(d.length>90?"…":"")+'</span></span></div>';
@@ -427,7 +423,7 @@ function renderParentKid(){
   var c=me?ci(me.key):{}, nm=me?esc(me.name):"Your child", lt={green:"I got it",yellow:"Getting there",red:"Not yet"};
   var glow=me?me.glow[uk()]:"";
   var logs=(c.mixlog||[]).slice(-2).reverse();
-  var html='<span class="lbl">Today &middot; '+esc(unitLabel())+(fast()?' &middot; '+esc(s.covers):'')+'</span>'+
+  var html='<span class="lbl">Today &middot; '+esc(unitLabel())+'</span>'+
     '<h3 style="font-size:1.2rem;margin:6px 0 4px">'+esc(s.title)+'</h3>'+
     '<p style="margin:0"><b>Mission:</b> '+esc(s.mission)+'</p>'+
     '<div class="facts">'+
@@ -442,24 +438,14 @@ function renderParentKid(){
     '<div class="ask" style="margin-top:12px"><span class="lbl">Ask at dinner</span><p>'+esc(s.home)+'</p></div>';
   if(el._h!==html){ el.innerHTML=html; el._h=html; }
   var pp=document.getElementById("parentPass"), total=0;
-  if(fast()){
-    var fg=0, fh='<span class="lbl">'+nm+'’s Fast-Track Passport</span><div class="passport" style="margin-top:10px;grid-template-columns:repeat(6,minmax(0,1fr))">'+W.map(function(w){
-      var got=0; if(me){ (me.stamps["w"+w.n]||[]).forEach(function(x){ if(x) got++; }); } fg+=got;
-      return '<div class="'+(got>=3?"got":"")+(DARK_INK[w.color]?" lt":"")+'" style="--c:'+cssv(COLORS[w.color])+'">W'+w.n+'<small>'+got+'/3</small></div>'; }).join("")+'</div>'+
-      '<p class="faint" style="margin:8px 0 0">'+fg+' of 18 fast-track stamps. Three stamps complete a workshop. The six workshops cover the full course&rsquo;s colors in a shorter season.</p>';
-    if(pp._h!==fh){ pp.innerHTML=fh; pp._h=fh; }
-    renderParentRecap();
-  } else {
   var ph='<span class="lbl">'+nm+'’s Rainbow Passport</span><div class="passport" style="margin-top:10px">'+ORDER.map(function(col,i2){
     var got=0; if(me){ ["s"+(i2*2+1),"s"+(i2*2+2)].forEach(function(k){ (me.stamps[k]||[]).forEach(function(x){ if(x) got++; }); }); }
     total+=got;
     return '<div class="'+(got>=6?"got":"")+(DARK_INK[col]?" lt":"")+'" style="--c:'+cssv(COLORS[col])+'">'+cap(col)+'<small>'+got+'/6</small></div>';
   }).join("")+'</div>';
-  var fastGot=0; if(me){ for(var w=1;w<=6;w++){ (me.stamps["w"+w]||[]).forEach(function(x){ if(x) fastGot++; }); } }
-  ph+='<p class="faint" style="margin:8px 0 0">'+total+' of 42 course stamps'+(fastGot?' &middot; '+fastGot+' of 18 fast-track stamps':'')+'. A full color (6 stamps) is a badge.</p>';
+  ph+='<p class="faint" style="margin:8px 0 0">'+total+' of 42 Passport stamps. A full color (6 stamps) is a badge.</p>';
   if(pp._h!==ph){ pp.innerHTML=ph; pp._h=ph; }
   renderParentRecap();
-  }
   var f=document.getElementById("feed"), items=(live.feed||[]).slice().reverse();
   var fh=items.length?items.map(function(m){ return '<li><span>'+esc(new Date(m.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}))+'</span>'+esc(m.text)+'</li>'; }).join(""):'<li class="empty" style="border:0;padding:0">No messages yet.</li>';
   if(f._h!==fh){ f.innerHTML=fh; f._h=fh; }
@@ -476,11 +462,10 @@ function fillPickers(){
     if(cur.indexOf("st:")===0||roster.kids[cur]) sel.value=cur; else sel.value="";
   });
   if(MODE==="family" && ks.length===1){ document.getElementById("pWho").value=ks[0].key; }
-  document.getElementById("cMode").value=live.mode;
-  var cs=document.getElementById("cSession"), list=fast()?W:S;
-  var ch=list.map(function(s){ return '<option value="'+s.n+'">'+(fast()?"W":"")+s.n+'. '+cap(s.color)+' · '+esc(s.title)+'</option>'; }).join("");
+  var cs=document.getElementById("cSession"), list=S;
+  var ch=list.map(function(s){ return '<option value="'+s.n+'">'+s.n+'. '+cap(s.color)+' · '+esc(s.title)+'</option>'; }).join("");
   if(cs._h!==ch){ cs.innerHTML=ch; cs._h=ch; }
-  cs.value=String(fast()?live.ws:live.session);
+  cs.value=String(live.session);
 }
 
 // ---------- orchestration ----------
@@ -509,8 +494,7 @@ $("cReset").addEventListener("click",function(){
   if(b.dataset.armed){ delete b.dataset.armed; b.textContent="Reset"; saveLive({running:false, base:0, markAt:sNow(), spot:null}); }
   else { b.dataset.armed="1"; b.textContent="Tap again to reset"; setTimeout(function(){ if(b.dataset.armed){ delete b.dataset.armed; b.textContent="Reset"; } },3000); }
 });
-$("cMode").addEventListener("change",function(){ previewT=null; saveLive({mode:this.value, running:false, base:0, markAt:sNow(), spot:null}); });
-$("cSession").addEventListener("change",function(){ previewT=null; var n=Number(this.value); saveLive(fast()?{ws:n,running:false,base:0,markAt:sNow(),spot:null}:{session:n,running:false,base:0,markAt:sNow(),spot:null}); });
+$("cSession").addEventListener("change",function(){ previewT=null; var n=Number(this.value); saveLive({session:n,running:false,base:0,markAt:sNow(),spot:null}); });
 $("castSend").addEventListener("click",function(){
   var v=$("castIn").value.trim(); if(!v) return;
   saveLive({msg:v, msgAt:sNow(), feed:(live.feed||[]).concat([{text:v, at:sNow()}]).slice(-20)}); $("castIn").value=""; toast("Sent to every screen.");
@@ -600,7 +584,7 @@ function demoSeed(){
     d5:{name:"Example: Nia W.",station:2,seat:0,stamps:{},here:{s1:now-1300000},glow:{}}
   };
   checkins={d1_s1:{kid:"d1",unit:"s1",predict:"medium",data:2,mixlog:[{pair:"Example song A + song B",what:"Faded in too early, tried again on the chorus",fix:"Wait for the phrase",at:now-200000}]},d2_s1:{kid:"d2",unit:"s1",predict:"hard",data:1}};
-  live={mode:"course",session:1,ws:1,running:true,base:23*60+40,markAt:now,msg:"",msgAt:0,feed:[{text:"Example message: Station 1 nailed their first fade!",at:now-120000}],spot:null};
+  live={mode:"course",session:1,running:true,base:23*60+40,markAt:now,msg:"",msgAt:0,feed:[{text:"Example message: Station 1 nailed their first fade!",at:now-120000}],spot:null};
 }
 
 // ---------- access: room code, family link, coach (Supabase + Resend) ----------
@@ -638,7 +622,7 @@ function applyState(d){
   if(d.room_code!==undefined){ CODE=(d.expires_at && new Date(d.expires_at)>new Date())?d.room_code:null; ROOM_EXPIRES=d.expires_at; }
   if(MODE==="room" && d.expires_at) ROOM_EXPIRES=d.expires_at;
   var L=d.live||{};
-  live={mode:L.mode==="fast"?"fast":"course", session:L.session||1, ws:L.ws||1, running:!!L.running, base:Number(L.base)||0, markAt:Number(L.markAt)||sNow(), msg:L.msg||"", msgAt:L.msgAt||0, feed:Array.isArray(L.feed)?L.feed:[], spot:L.spot||null};
+  live={mode:"course", session:L.session||1, running:!!L.running, base:Number(L.base)||0, markAt:Number(L.markAt)||sNow(), msg:L.msg||"", msgAt:L.msgAt||0, feed:Array.isArray(L.feed)?L.feed:[], spot:L.spot||null};
   var m={}; (d.kids||[]).forEach(function(k){ m[k.id]={name:k.name, station:k.station, seat:k.seat, stamps:k.stamps||{}, here:k.here||{}, glow:k.glow||{}, recap:!!k.recap, tracking:!!k.tracking, perform:!!k.perform}; });
   roster={kids:m}; checkins=d.checkins||{};
   renderData();
@@ -686,7 +670,7 @@ function leaveClass(){
   emptyState(); if(was) { canCoach=false; applyTabs(); renderData(); }
 }
 function emptyState(){
-  roster={kids:{}}; checkins={}; live={mode:"course",session:1,ws:1,running:false,base:0,markAt:Date.now(),msg:"",msgAt:0,feed:[],spot:null};
+  roster={kids:{}}; checkins={}; live={mode:"course",session:1,running:false,base:0,markAt:Date.now(),msg:"",msgAt:0,feed:[],spot:null};
 }
 function startDemo(){ demoSeed(); MODE="demo"; connected=false; canCoach=true; applyTabs(); fillPickers(); if(!$("pWho").value) $("pWho").value="d1"; if(!$("kidWho").value) $("kidWho").value="d1"; renderData(); }
 function fmtExp(iso){ return iso ? new Date(iso).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) : ""; }
@@ -798,7 +782,7 @@ document.addEventListener("click", function(e){
   if(t.closest("#coachOut")){ setCoach(null); return; }
   if(t.closest("#classOpen")){ var v=$("classPick").value, c=coachClasses.filter(function(x){ return x.id===v; })[0]; if(c) openCoachClass(c); return; }
   if(t.closest("#classNew")){
-    var nm=$("className").value.trim(); if(!nm){ toast("Name the class first, e.g. Spring Cohort A."); return; }
+    var nm=$("className").value.trim(); if(!nm){ toast("Name the class first, e.g. Tuesday Class."); return; }
     rpc("djlab_coach_new_cohort",{p_session:coachSess.token, p_name:nm}).then(function(c){ toast("Created "+c.name+"."); loadCoachClasses(); openCoachClass(c); }).catch(coachErr);
     return;
   }

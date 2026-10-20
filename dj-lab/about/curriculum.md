@@ -1,19 +1,20 @@
 ---
 title: Curriculum
-description: All 14 sessions of the Rainbow DJ Lab full course, the Passport skills for each, and how every 90-minute session is shaped.
+description: The 14 Missions of the year-round Rainbow DJ Lab, the Passport skills for each, and how every Tuesday class is shaped.
 ---
 
-## The full course at a glance
+## The curriculum at a glance
 
-- **14 sessions, 90 minutes each**, two sessions for each color of the rainbow: red, orange, yellow, green, blue, indigo, violet.
-- **One Mission per session:** a single goal your child can say in one sentence.
-- **3 Passport skills per session**, 42 across the course. Six stamps complete a color badge.
+- **14 Missions**, two for each color of the rainbow: red, orange, yellow, green, blue, indigo, violet.
+- **One Mission at a time:** a single goal your child can say in one sentence.
+- **3 Passport skills per Mission**, 42 in all. Six stamps complete a color badge.
+- **Year-round, every Tuesday, 4 to 6 pm.** Children join any Tuesday and learn at their own pace. Each Tuesday the instructors feature one Mission for the room, and every child also works on their own next skill. The featured Missions cycle 1 to 14 across the year.
 - **No grades and no tests.** Kids rate themselves and mentors award stamps.
-- **The course ends with the Rainbow Showcase**, which families attend.
+- **Graduation is on mastery, not a date:** all 42 skills stamped and a final set ready, then the child plays the next Rainbow Showcase, which families attend.
 
-This curriculum is already written and runs in the [live class app](/dj-lab/live/). Class dates are not set yet. See the [schedule](/dj-lab/enroll/schedule.html).
+This curriculum is already written and runs in the [live class app](/dj-lab/live/). See the [schedule](/dj-lab/enroll/schedule.html).
 
-## All 14 sessions
+## All 14 Missions
 
 | # | Color | Title | Mission ("I can…") | Passport skills |
 |---|---|---|---|---|
@@ -32,13 +33,13 @@ This curriculum is already written and runs in the [live class app](/dj-lab/live
 | 13 | Violet | Build Your Set | I have a 10-minute plan I can follow under pressure. | Follow my Set Map · Use my Plan B once · Record and listen back |
 | 14 | Violet | Rainbow Showcase | I play my set for a real crowd. | Play 10 minutes for a crowd · Give glows to others · Earn the full spectrum |
 
-**Listen-back days** are sessions 6, 10 and 13. Each child records 2 minutes of mixing and reviews it with a mentor: one glow, one grow, one goal.
+**Listen-back Missions** are 6, 10 and 13. When a child works on one of them, they record 2 minutes of mixing and review it with a mentor: one glow, one grow, one goal.
 
-**Session 14 is the Rainbow Showcase.** Families attend. Every child plays a 10-minute set, or 5 minutes with a partner if they prefer. Every performer gets glow cards.
+**Mission 14 is the Rainbow Showcase.** A child plays it at the next Rainbow Showcase after earning all 42 stamps. Families attend. Every child plays a 10-minute set, or 5 minutes with a partner if they prefer. Every performer gets glow cards.
 
-## The shape of every session: 9 blocks
+## The shape of every class: 9 blocks
 
-Every 90-minute session follows the same pattern, so children always know what comes next. The [live class app](/dj-lab/live/) shows the current block on screen.
+The core of every Tuesday class is 90 minutes (4:00 to 5:30 pm) and follows the same pattern, so children always know what comes next. The [live class app](/dj-lab/live/) shows the current block on screen. From 5:30 to 6:00 pm a guest woman DJ takes the room; see the [schedule](/dj-lab/enroll/schedule.html).
 
 | Block | Minutes | What happens |
 |---|---|---|
@@ -60,14 +61,14 @@ Every 90-minute session follows the same pattern, so children always know what c
   - **Co-pilot:** headphones on, counts the beat out loud, asks the DJ "Did it work?"
   - **Hype:** plays the crowd and practices one MC line on the beat.
   - **Logger:** writes in the Mix Log: which songs, what happened, what to change.
-- **Challenge levels:** in Deck Time 2, each child chooses Mild, Medium or Spicy. In session 1, for example, Mild is "fade from one song to the other," and Spicy is "bring song 2 in exactly on the chorus of song 1."
+- **Challenge levels:** in Deck Time 2, each child chooses Mild, Medium or Spicy. In Mission 1, for example, Mild is "fade from one song to the other," and Spicy is "bring song 2 in exactly on the chorus of song 1."
 - **"Data!"** is our word for learning from a mistake. When a mix crashes, the station shouts "Data!" and the DJ names one reason before trying again.
 
 ## How we measure progress
 
 - **Traffic-light self-rating:** I got it / Getting there / Not yet.
 - **A "Next time I'll…" line**, written by your child.
-- **Passport stamps** from mentors, for the 3 skills in each session.
+- **Passport stamps** from mentors, for the 3 skills in each Mission.
 - **No grades, no tests, no rankings.** Red ("Not yet") is treated as useful information, not failure.
 
 ## Spotlight is always voluntary
@@ -76,13 +77,12 @@ Spotlight is volunteers only. Coaches never call on a child who didn't sign up. 
 
 ## Gear and music
 
-- **Controllers:** Hercules DJControl Inpulse 300 MK2. Lights under the jog wheels guide beatmatching in the early sessions.
-- **Software:** Serato DJ Lite from session 9 on.
+- **Controllers:** Hercules DJControl Inpulse 300 MK2. Lights under the jog wheels guide beatmatching in the early Missions.
+- **Software:** Serato DJ Lite from Mission 9 on.
 - **Hearing:** headphone volume is capped on every laptop, and earplugs are available free. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
 - **Clean lyrics only:** radio edits, checked when crates are built.
 
 ## Related pages
 
-- [Spring fast track](/dj-lab/about/curriculum-fast-track.html)
-- [The journey, week by week](/dj-lab/journey/index.html)
+- [The journey, Mission by Mission](/dj-lab/journey/index.html)
 - [Age groups](/dj-lab/about/age-groups.html)

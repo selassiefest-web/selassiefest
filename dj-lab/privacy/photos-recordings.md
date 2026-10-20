@@ -18,7 +18,7 @@ The app at [/dj-lab/live/](/dj-lab/live/) has no way to take, upload or store ph
 
 ## Listen-back recordings
 
-On **listen-back days** (sessions 6, 10 and 13 of the full course, and workshop W6 of the spring fast track), each kid records **2 minutes** of their own mix and reviews it with a mentor. Hearing yourself back is one of the best ways DJs improve.
+On **listen-back Missions** (6, 10 and 13), each kid records **2 minutes** of their own mix and reviews it with a mentor. Hearing yourself back is one of the best ways DJs improve.
 
 | Question | Answer |
 |---|---|
@@ -50,7 +50,7 @@ Children with and without media consent take part in exactly the same way.
 ## Other families and visitors
 
 - Please **don't photograph or record other people's children** at any Lab activity, including from the family area.
-- At the **Rainbow Showcase** (session 14), families may photograph their own child. Please don't post images of other children without their family's permission.
+- At the **Rainbow Showcase**, families may photograph their own child. Please don't post images of other children without their family's permission.
 - Staff and volunteers **never** use personal phones to photograph children.
 
 ## Concerns

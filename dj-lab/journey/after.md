@@ -9,7 +9,7 @@ Graduation isn't the end. Kids who want to keep playing have a path:
 
 1. **Open Decks at Rainbow Wednesdays.** Every graduate is guaranteed an Open Decks slot at Rainbow Wednesdays, the free summer DJ series. **Rainbow Wednesdays is also proposed, so the guarantee applies when Rainbow Wednesdays runs.**
 2. **Youth Showcase open call.** Graduates can answer the open call for the Youth Showcase.
-3. **Theme Clash semifinals and Finale.** The Theme Clash your child learned in session 11 becomes a competition.
+3. **Theme Clash semifinals and Finale.** The Theme Clash your child learned in Mission 11 becomes a competition.
 
 The Youth Showcase and the Theme Clash semifinals and Finale are proposed stage shows too, with no dates set. Every step is optional.
 
@@ -29,7 +29,7 @@ Performing in public needs your [performance consent](/dj-lab/enroll/forms/perfo
 
 ## Keep learning
 
-- **Take the course again** in a new season, or try the [spring fast track](/dj-lab/about/curriculum-fast-track.html) if it's offered.
+- **Keep coming on Tuesdays.** The Lab runs year-round, so a graduate can stay on as a returning DJ.
 - **Keep the habits:** count the phrase, call your own "Data!", write a "Next time I'll…" line.
 - **Look after their ears:** keep headphone volume low and take listening breaks, the same habits coached in class. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
 

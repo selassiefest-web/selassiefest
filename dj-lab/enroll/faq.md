@@ -15,7 +15,7 @@ It's **proposed**. The curriculum is written and runs in our class app. The Chic
 **Nothing.** There's no tuition, and all equipment is provided. Ras Tafari Inc. is seeking grants and donations for the DJ gear, which will be used only for its programs.
 
 ### 4. When are classes?
-**Dates are not set.** They'll be posted after the park approves the program. The full course is 14 weekly sessions of 90 minutes each, and there's also a spring fast track of 6 two-hour workshops. See [schedule](/dj-lab/enroll/schedule.html).
+Every Tuesday from 4:00 to 6:00 pm, year-round, starting January 12, 2027 once the park approves the program. Children join any Tuesday. See [schedule](/dj-lab/enroll/schedule.html).
 
 ### 5. Can I sign my child up now?
 Not yet. Until launch, the online form is an **[interest list](/dj-lab/enroll/register.html)**. It asks only your child's first name and last initial, age and age group, your name, email and phone, and your permission for us to contact you. **It is not enrollment** and doesn't hold a place. It collects no health, pickup, custody or emergency-contact details, no consents and no free-text notes. If the Lab hasn't started within 12 months, we delete the list, and you can ask to come off it at any time. **Full registration** (health and allergies, two emergency contacts, authorized pickup, a custody note, and each consent separately) opens only when every launch-checklist item is complete. The [printable forms](/dj-lab/enroll/forms/index.html) are for full registration after launch.
@@ -76,7 +76,7 @@ Headphone volume is **capped on every laptop**, earplugs are free, the main spea
 ## Learning, behavior and performing
 
 ### 22. Are there grades or tests?
-No. Kids rate themselves with a traffic light (I got it / Getting there / Not yet) and earn **Passport stamps** for skills: 3 per session, 42 for the full course. When a mix crashes, we call it **"Data!"**: the DJ names one reason and tries again.
+No. Kids rate themselves with a traffic light (I got it / Getting there / Not yet) and earn **Passport stamps** for skills: 3 per Mission, 42 in all. When a mix crashes, we call it **"Data!"**: the DJ names one reason and tries again.
 
 ### 23. My child is shy. Will they be put on the spot?
 No. **Spotlight is volunteers only.** Coaches never call on a child who didn't sign up, and the app won't put a child in the Spotlight without your performance consent. Stations rotate four jobs (DJ, Co-pilot, Hype and Logger), so there's always a role that fits. Kids also pick their own challenge level: Mild, Medium or Spicy.
@@ -117,7 +117,7 @@ Yes, at any time, at no cost. See [withdrawing](/dj-lab/enroll/exit-withdrawal.h
 Parent forms in English **and Spanish** are a launch requirement. They aren't ready yet.
 
 ### 33. Can I watch a class?
-Little DJs (5–7) always have their grown-up in the room, and families are invited to the Rainbow Showcase (session 14). Whether Junior DJ parents can observe other sessions depends on the space the park provides. Ask Stephen.
+Little DJs (5–7) always have their grown-up in the room, and families are invited to the Rainbow Showcase. Whether Junior DJ parents can observe other classes depends on the space the park provides. Ask Stephen.
 
 ## Still have a question?
 

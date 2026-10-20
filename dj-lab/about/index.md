@@ -52,8 +52,7 @@ No class runs until every item on the [launch checklist](/dj-lab/governance/inde
 
 ## In this section
 
-- [Curriculum](/dj-lab/about/curriculum.html): all 14 sessions and how a session is shaped
-- [Spring fast track](/dj-lab/about/curriculum-fast-track.html): 6 two-hour workshops
+- [Curriculum](/dj-lab/about/curriculum.html): the 14 Missions and how a Tuesday class is shaped
 - [Age groups](/dj-lab/about/age-groups.html): Little, Junior, Teen, Grown-Up & Elder, and Empress Decks
 - [Accessibility](/dj-lab/about/accessibility.html): physical access, sensory-friendly options, accommodations
 - [Language access](/dj-lab/about/language-access.html): English and Spanish, interpretation on request

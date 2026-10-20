@@ -48,7 +48,7 @@ If two adults share the same concern, **each one** makes sure the call is made. 
 
 ## What we teach children
 
-In kid words, in the first session: "If anyone, even a grown-up you like, hurts you, touches you in a way that feels wrong, or asks you to keep a secret, tell a coach or your parent. You will never be in trouble for telling."
+In kid words, in their first class: "If anyone, even a grown-up you like, hurts you, touches you in a way that feels wrong, or asks you to keep a secret, tell a coach or your parent. You will never be in trouble for telling."
 
 ## What you'll be told
 

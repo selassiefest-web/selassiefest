@@ -80,7 +80,7 @@ To ask, call or email Stephen Henry: 872-255-9333, stephen@selassiefest.com. We 
 ## What you'll be told
 
 - Before your child's first class: confirmation that every adult on the team has cleared CPD's check and completed every Lab step.
-- If a new adult joins mid-season: confirmation that they did the same before their first class.
+- If a new adult joins after classes have started: confirmation that they did the same before their first class.
 - If an adult is removed: that the adult is no longer with the Lab (not the reason, where privacy law or an investigation prevents it).
 
 ## Sources

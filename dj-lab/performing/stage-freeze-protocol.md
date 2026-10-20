@@ -11,7 +11,7 @@ Every DJ, at every level, has had a mix crash or a moment when their mind went b
 
 - **The mentor stands beside the child.** The child's named Lab adult stands next to them at the decks for the whole set. See [Event-day supervision](/dj-lab/performing/event-day-supervision.html).
 - **A Plan B card.** Kids build a Set Map in class (Opener, Build, Theme Clash, Peak, Exit), with a backup move for every box.
-- **A safety loop is ready.** Before the set starts, a loop is set up that can hold the music steady. Kids learn hot cues and loops in session 9.
+- **A safety loop is ready.** Before the set starts, a loop is set up that can hold the music steady. Kids learn hot cues and loops in Mission 9.
 - **We agree on a signal.** The child and mentor agree on a simple signal, such as a tap on the shoulder or a thumbs-down, that means "help me" or "I want to stop."
 - **The crowd is primed.** Before the youth sets begin, the MC tells the audience these are young DJs who are learning, and asks them to cheer for every DJ, especially if something goes wrong.
 

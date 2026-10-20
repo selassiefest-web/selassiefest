@@ -22,7 +22,7 @@ Rainbow DJ Lab is a free DJ class run by Ras Tafari Inc., a Chicago not-for-prof
 | [Family orientation](/dj-lab/families/orientation.html) | A visit before day one to try the gear, meet staff, tour the space and ask questions |
 | [Open-door policy](/dj-lab/families/open-door-policy.html) | You may watch any session. How to visit and sign in |
 | [Reaching us during a session](/dj-lab/families/session-contact.html) | Who to call, how we reach you, and how fast we respond |
-| [Mid-season check-in](/dj-lab/families/mid-season-checkin.html) | A conversation at session 7 about how your child is doing |
+| [Progress check-in](/dj-lab/families/progress-checkin.html) | A conversation about how your child is doing, at each family progress observation |
 | [Feedback and "You said, we did"](/dj-lab/families/feedback-loop.html) | How we collect your feedback and report back on what changed |
 | [Weekly family digest (planned)](/dj-lab/families/weekly-digest.html) | An opt-in weekly email we plan to build. Not available yet |
 | [References](/dj-lab/families/references.html) | Who can speak to our work, and when references will be available |

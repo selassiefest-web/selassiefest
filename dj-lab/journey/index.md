@@ -7,25 +7,25 @@ description: What a 9-year-old and their parent experience in Rainbow DJ Lab, fr
 
 This section walks through the Lab the way your family will live it. Each page describes what your child does, what you do, and what to ask at dinner, using the real curriculum that runs in the [live class app](/dj-lab/live/).
 
-**A note on timing:** the Lab is proposed and not running yet, and no dates are set. These pages assume one session a week, so "week 4" means session 4. The real schedule will be posted on [Schedule](/dj-lab/enroll/schedule.html) once the [launch checklist](/dj-lab/governance/index.html) is complete.
+**A note on timing:** the Lab is proposed and not running yet. It will run year-round on Tuesdays, and children work through the Missions at their own pace, so "Mission 4" is a skill, not a calendar week. See the [Schedule](/dj-lab/enroll/schedule.html) and the [launch checklist](/dj-lab/governance/index.html).
 
 ## The stops along the way
 
-| Stop | Session | Color | What happens |
+| Stop | Mission | Color | What happens |
 |---|---|---|---|
 | [Before day one](/dj-lab/journey/before-day-one.html) | — | — | Forms, orientation, getting your child ready |
-| [Week 1](/dj-lab/journey/week-1.html) | 1: Meet the Machine | Red | First time on the decks. Two songs, one fade, a DJ name. |
-| [Week 4](/dj-lab/journey/week-4.html) | 4: Mix on the One | Orange | Starting the second song at exactly the right moment |
-| [Week 8](/dj-lab/journey/week-8.html) | 8: Make a Third Song | Green | Long blends that sound like a brand-new song |
-| [Graduation](/dj-lab/journey/graduation.html) | 14: Rainbow Showcase | Violet | Your child plays their set for a real crowd, and you're in it |
+| [Mission 1](/dj-lab/journey/mission-1.html) | 1: Meet the Machine | Red | First time on the decks. Two songs, one fade, a DJ name. |
+| [Mission 4](/dj-lab/journey/mission-4.html) | 4: Mix on the One | Orange | Starting the second song at exactly the right moment |
+| [Mission 8](/dj-lab/journey/mission-8.html) | 8: Make a Third Song | Green | Long blends that sound like a brand-new song |
+| [Graduation](/dj-lab/journey/graduation.html) | 14: Rainbow Showcase (after all 42 stamps) | Violet | Your child plays their set for a real crowd, and you're in it |
 | [After](/dj-lab/journey/after.html) | — | — | Open Decks and what comes next |
 
-## What stays the same every week
+## What stays the same every Tuesday
 
 - **The same 9 blocks,** in the same order: Drop In, Mission Card, Watch Me Think, Deck Time 1, Move Break, Deck Time 2, Wordplay Lab, Spotlight, Check Out. See [Curriculum](/dj-lab/about/curriculum.html).
 - **The same safety routine:** you sign your child in, and they're released only to an adult on your authorized-pickup list after a photo ID check. See [Arrival and sign-out](/dj-lab/safety/arrival-signout.html).
 - **The same small group:** 4 kids per controller, rotating jobs every 3 minutes 45 seconds.
-- **A home question every week,** taken from that session's lesson. It's on each journey page, and in the optional recap email after class if you opt in.
+- **A home question every class,** taken from that Mission's lesson. It's on each journey page, and in the optional recap email after class if you opt in.
 
 ## Questions that work after any class
 
