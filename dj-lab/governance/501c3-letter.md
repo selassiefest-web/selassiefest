@@ -15,7 +15,7 @@ We do not post the letter's identifying numbers on this website. This helps prot
 
 - **Email:** stephen@selassiefest.com
 - **Phone:** 872-255-9333 (Stephen Henry, President)
-- **In person or by mail:** Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- **In person or by mail:** Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619
 
 Please tell us who you are (for example, a parent, park official or grant maker) and how you would like the copy delivered.
 

@@ -13,7 +13,7 @@ Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festi
 
 - Phone: 872-255-9333
 - Email: stephen@selassiefest.com
-- Mail: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- Mail: Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619
 
 As program lead, Stephen is responsible for making sure every launch requirement is met before any class runs, and for making sure the policies on this site are followed. If he works directly with children, he goes through the same Chicago Park District background check and Lab training as every other adult (see [staff screening](/dj-lab/safety/staff-screening.html)), and his completion dates will be posted here the same way. Stephen is not paid for his work on the Lab, and no Ras Tafari Inc. officer, director or staff member is paid today. Any paid role needs approval by directors with no stake in it (see the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), section 12).
 

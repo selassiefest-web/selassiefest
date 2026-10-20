@@ -17,7 +17,7 @@ SelassieFest and the Lab are not separate companies, so this is not a contract b
 
 ## Agreement text
 
-**Between:** the Rainbow DJ Lab program and the SelassieFest program, both operated by Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649.
+**Between:** the Rainbow DJ Lab program and the SelassieFest program, both operated by Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619.
 
 ### 1. Definitions
 

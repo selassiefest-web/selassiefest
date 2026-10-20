@@ -44,7 +44,7 @@ You may report to any of these people. Choose whoever you are comfortable with. 
 | Paul Kelly, Vice President and Treasurer | Through the Corporation's mailing address below, marked "Confidential: for Paul Kelly" |
 | Albert Harris, Corporate Secretary | Through the Corporation's mailing address below, marked "Confidential: for Albert Harris" |
 
-Mailing address: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649.
+Mailing address: Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619.
 
 Direct contact details for the Vice President and the Corporate Secretary will be posted here before the first class, so that no report about the President has to pass through the President.
 

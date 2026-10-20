@@ -71,7 +71,7 @@ Already enrolled? The [family and coach portal](/dj-lab/portal/) and the [live c
 
 - Phone: 872-255-9333
 - Email: stephen@selassiefest.com
-- Mail: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- Mail: Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619
 
 No question is too small. If something on this site is unclear or doesn't match what you've been told, please tell us.
 

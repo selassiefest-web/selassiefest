@@ -41,6 +41,6 @@ Rainbow DJ Lab is a free DJ class run by Ras Tafari Inc., a Chicago not-for-prof
 
 - Phone: 872-255-9333
 - Email: stephen@selassiefest.com
-- Mail: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- Mail: Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619
 
 For an emergency, call **911** first.

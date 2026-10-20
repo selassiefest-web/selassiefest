@@ -34,7 +34,7 @@ If more time is truly needed (for example, while DCFS or police investigate), we
 
 ### 1. Raise it
 
-Tell us in person, by phone (Stephen Henry, 872-255-9333), by email (stephen@selassiefest.com), or by mail (Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649). Writing helps but isn't required. If you tell us by phone, we'll write it down and send it back so you can check it's right. See [Report a Concern](/dj-lab/safety/report-a-concern.html).
+Tell us in person, by phone (Stephen Henry, 872-255-9333), by email (stephen@selassiefest.com), or by mail (Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619). Writing helps but isn't required. If you tell us by phone, we'll write it down and send it back so you can check it's right. See [Report a Concern](/dj-lab/safety/report-a-concern.html).
 
 **If the grievance is about Stephen Henry** (other than his conduct with children, which goes to the Park District), send it to the other board officers, Paul Kelly (Vice President and Treasurer) and Albert Harris (Corporate Secretary), at the mailing address. They handle steps 2–4, and Stephen Henry is not involved in deciding it. (A direct contact route for the officers will be posted before launch.)
 
@@ -57,7 +57,7 @@ It says what we found, what we decided, any changes we're making, and how to app
 
 If you're not satisfied, write to the Ras Tafari Inc. board officers within 10 business days of the response. Say what you disagree with and what outcome you're asking for.
 
-> **How to send it:** until a direct contact route for the officers is posted (before launch), send appeals **by mail**, addressed to the board officers at Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649. That way the person whose decision is being appealed isn't the gatekeeper.
+> **How to send it:** until a direct contact route for the officers is posted (before launch), send appeals **by mail**, addressed to the board officers at Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619. That way the person whose decision is being appealed isn't the gatekeeper.
 
 Officers who were involved in the original decision step aside from the appeal.
 

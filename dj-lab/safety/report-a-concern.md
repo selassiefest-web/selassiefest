@@ -39,7 +39,7 @@ If you think someone is breaking the [conflict of interest policy](/dj-lab/gover
 | **In person** | Tell the lead adult at sign-in or pickup, or ask to speak with Stephen Henry | Something you saw in class; a quick question |
 | **Phone** | Stephen Henry, President, Ras Tafari Inc.: **872-255-9333** | Program questions and anything urgent that isn't an emergency |
 | **Email** | **stephen@selassiefest.com** | Anything you'd like in writing |
-| **Mail** | Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649 | A formal written complaint |
+| **Mail** | Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619 | A formal written complaint |
 | **Anonymous form** | **Coming before launch.** It doesn't exist yet. Until it does, you can mail an unsigned letter to the address above | When you don't want to give your name |
 | **Poison emergency** | Illinois Poison Center: **1-800-222-1222** | A child swallowed or touched something harmful |
 

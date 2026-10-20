@@ -36,4 +36,4 @@ description: How Rainbow DJ Lab collects, uses, protects and deletes information
 
 - 872-255-9333
 - stephen@selassiefest.com
-- Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619

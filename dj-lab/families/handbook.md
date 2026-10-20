@@ -16,7 +16,7 @@ This handbook tells you how a Rainbow DJ Lab class works for your family, from t
 | | |
 |---|---|
 | **Cost** | Free. No tuition, and all equipment is provided |
-| **Run by** | Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649 |
+| **Run by** | Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619 |
 | **Where** | Rainbow Beach Park, 3111 E. 77th St., Chicago, IL 60649. Indoors in the fieldhouse when space is available (fall through spring); outdoors on the park lawn in summer, as the park approves |
 | **Water** | Children do not swim during the program, and the program never takes place in the water |
 | **Schedule** | Year-round, every Tuesday 4 to 6 pm. Join any Tuesday and learn at your own pace through 14 Missions, two per rainbow color. A child graduates when all 42 skills are stamped and a final set is ready, at the next Rainbow Showcase that families attend |

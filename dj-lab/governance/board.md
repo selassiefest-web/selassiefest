@@ -11,7 +11,7 @@ description: Who leads Ras Tafari Inc., the organization behind the Rainbow DJ L
 
 **Ras Tafari Inc.** is an Illinois not-for-profit corporation and a 501(c)(3) public charity.
 
-- Address: 7700 S. Stony Island Ave., Chicago, IL 60649
+- Address: 1401 E. 71st St., Chicago, IL 60619
 - Other work: Ras Tafari Inc. produces SelassieFest, Chicago's roots reggae and cultural festival.
 
 ## Officers

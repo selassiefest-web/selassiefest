@@ -106,7 +106,7 @@ Federal law gives everyone the right to see certain records of a 501(c)(3) publi
 
 **How to ask:**
 
-- **In person:** at 7700 S. Stony Island Ave., Chicago, IL 60649. Under the IRS regulation, copies requested in person are generally provided the same day.
+- **In person:** at 1401 E. 71st St., Chicago, IL 60619. Under the IRS regulation, copies requested in person are generally provided the same day.
 - **In writing:** email stephen@selassiefest.com or mail the address above. Under the regulation, copies are mailed within 30 days of receiving the request.
 - **Cost:** we will not charge for copies sent by email. For paper copies, the law allows only a reasonable fee (no more than standard per-page copying charges plus actual postage), and we may waive it.
 

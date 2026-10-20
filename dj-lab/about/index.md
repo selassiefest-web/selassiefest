@@ -11,7 +11,7 @@ Kids work in small groups of four at one DJ controller, taking turns at four job
 
 ## Who runs it
 
-The Lab is run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 7700 S. Stony Island Ave., Chicago, IL 60649.
+The Lab is run by **Ras Tafari Inc.**, an Illinois not-for-profit corporation and 501(c)(3) public charity at 1401 E. 71st St., Chicago, IL 60619.
 
 | Officer | Role |
 |---|---|

@@ -26,7 +26,7 @@ Contact **Stephen Henry**, President, Ras Tafari Inc.:
 
 - Email: stephen@selassiefest.com (best, because it gives us both a written record)
 - Phone: 872-255-9333
-- Mail: Ras Tafari Inc., 7700 S. Stony Island Ave., Chicago, IL 60649
+- Mail: Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619
 - In person at a session
 
 Tell us your name, your child's first name, the class, and what you'd like.
