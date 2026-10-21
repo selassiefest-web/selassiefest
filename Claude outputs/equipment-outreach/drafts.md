@@ -133,4 +133,25 @@ Our program page is https://selassiefest.com/full-spectrum/dj-lab-2027.html. We 
 ## Still open
 
 - Shure's need-by date (suggest before the Jan 12, 2027 opening).
-- Focusrite (https://us.focusrite.com/contact-us/artist-enquiries) is an artist-collaboration form; no draft yet.
+- Focusrite: draft written (section 6); review before submitting.
+
+---
+
+## 6. Focusrite / Novation  (collaboration form, the education and collaboration angle together)
+
+Form: https://us.focusrite.com/contact-us/artist-enquiries
+Inquiry type: Other
+Website: https://selassiefest.com/full-spectrum/dj-lab-2027.html
+Social: https://www.instagram.com/selassiefest , https://www.tiktok.com/@selassiefest , https://www.youtube.com/@selassie7291
+Location: Chicago, Illinois (South Shore, Rainbow Beach Park)
+Equipment of interest: Novation beat-making controller(s) for the classroom; a Focusrite interface with monitors for a small recording station; a product-specialist masterclass for students.
+
+How we would work with Focusrite Novation:
+
+We are a Chicago youth education program and a performing collective at once, and that is why we think this is a real collaboration rather than a donation request. Ras Tafari Inc. is a 501(c)(3). Our Rainbow DJ Lab teaches students in grades 6 to 12 (open to all ages) to mix and make beats every Tuesday from 4 to 6 pm, year-round, beginning January 12, 2027. Our Full Spectrum series then puts those same students on a public stage at Rainbow Beach Park, with weekly guest woman DJs and resident instructors who are working artists.
+
+Here is the exchange we propose. Focusrite Novation equips a production and beat-making station. Students learn on it in class and record their own tracks, so the gear is used by learners and by the artists who teach them. Every term ends with a public showcase where students perform original work made on Novation controllers and recorded through Focusrite interfaces. We document the work (with consent), credit Focusrite Novation on our website and at showcases, and send an impact report: attendance, instructional hours, completed student mixes and performances.
+
+We would also welcome a masterclass from one of your product specialists or artists, in person or by video, for the class and the showcase audience. It gives students a view of the industry and gives your team a first-hand look at who is learning on your gear.
+
+If this form is not the right door for an education program, we would be grateful for a referral to the right team.
