@@ -85,29 +85,32 @@ If you use live chat, paste just the first and third paragraphs.
 
 ---
 
-## 4. AlphaTheta / Pioneer DJ  (phone call script, then email if given an address)
+## 4. AlphaTheta / Pioneer DJ  (flagship pitch: "Start From Scratch: Chicago"; phone script, then email)
 
-Call: AlphaTheta Music Americas, 1-844-784-0000 (a support line; ask to be transferred).
+The idea: we do not ask for a donation. We ask AlphaTheta to launch Start From Scratch in Chicago as its US pilot, with Ras Tafari as the local host partner, the way HOMECOMING hosts in Lagos and Boudica in Europe. They bring the engine (brand, equipment, curriculum, guest experts, Accelerator). We bring the community, the room, the students, the instructors, the showcases and the 501(c)(3). Our Tuesday class opens January 12, 2027 either way; their involvement would put it under their flagship.
+
+Call: AlphaTheta Music Americas, 1-844-784-0000 (support line, Torrance CA; ask to be transferred).
 
 Say:
-"My name is Stephen Henry. I run Ras Tafari Inc., a Chicago nonprofit. We are starting a free, year-round DJ class for students in grades 6 to 12, open to all ages, beginning January 12, 2027, with a goal of 12 student stations. I saw your Start From Scratch program and I would like to reach the education or community partnerships team. Can you give me a name or an email address?"
+"My name is Stephen Henry. I run Ras Tafari Inc., a Chicago nonprofit. Start From Scratch is doing free, community-led DJ education for underrepresented people in Europe, the Middle East and Africa. We are about to open the same thing on Chicago's South Side, every Tuesday starting January 12, 2027, with a girls-only track taught by women DJs. We would like to talk about AlphaTheta launching Start From Scratch in Chicago with us as your local partner. Who handles US community partnerships? I can send a one-page proposal."
 
 When you have an address, send:
 
-Subject: Education partnership: 12 student DJ stations in Chicago (Start From Scratch)
+Subject: Proposal: launch Start From Scratch in Chicago with a local host partner
 
 Hello,
 
-I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). Start From Scratch supports DJ education for communities that are underrepresented in the industry, which is who Rainbow DJ Lab serves.
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). Start From Scratch has trained thousands of new DJs from underrepresented communities in Europe, the Middle East and Africa. We would like to propose a US pilot in Chicago, with AlphaTheta leading under the Start From Scratch name and Ras Tafari as the local host partner.
 
-The Lab is a free class every Tuesday, 4 to 6 pm, from January 12, 2027, for grades 6 to 12 and open to all ages, with public student showcases at Rainbow Beach Park. We are equipping 12 stations so every student has a dedicated controller.
+What the pilot would look like: a free DJ class every Tuesday, 4 to 6 pm, on Chicago's South Side, opening January 12, 2027. It is built for grades 6 to 12 and open to all ages, with 12 student stations, a girls-only track taught by women DJs, accommodations for neurodiverse students, and public student showcases at Rainbow Beach Park. Students move through 14 Missions at their own pace.
 
-We are asking about a partnership that could include 12 matching student controllers, 12 headphones and an instructor demonstration setup, or a portion such as four controllers toward the 12. We can offer recognition, showcases your team can attend, and an impact report. Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can send our IRS letter, budget and schedule.
+What we bring: the community and the students, the room, paid resident instructors, the showcases, a 501(c)(3) to receive and report funds, and a plan already in motion. What we would ask AlphaTheta to bring: the Start From Scratch framework and name, 12 matching student controllers and headphones, guest experts, and a path into your Accelerator Programme for graduating students. We would report attendance, instructional hours, completed student mixes and performances to you.
 
-Could you tell me whether this fits and what you would need?
+Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can send our IRS letter, budget and schedule. Could we schedule a call?
 
 Thank you,
 Stephen Henry
+President, Ras Tafari Inc.
 (872) 255-9333 | stephen@selassiefest.com
 
 ---
