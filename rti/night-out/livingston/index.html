@@ -81,11 +81,22 @@ table textarea{min-width:130px;min-height:72px;font-size:15px}
 .group h3{margin:8px 0 2px}
 .item{padding:14px 16px;margin:8px 0;border:1px solid var(--line);border-radius:12px;background:var(--bg);display:flex;flex-direction:column;gap:10px;font-size:18px}
 .item textarea{background:var(--surface)}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.card{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:14px 16px;font-size:16px;min-width:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.card{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:12px 14px;font-size:16px;line-height:1.4;min-width:0}
 .card .h{display:block;font-family:var(--f-display);font-weight:700;font-size:18px;color:var(--ink);margin-bottom:4px}
-.card .n{display:block;font:750 22px/1 var(--f-display);color:var(--gold);margin-bottom:6px}
+.card .n{display:inline-block;min-width:1.4em;font:750 20px/1 var(--f-display);color:var(--gold);margin-right:6px}
+.card .n + .h{display:inline}
+.card .n + .h::after{content:"";display:block;margin-bottom:4px}
 .card.first{border:2px solid var(--gold);background:var(--gold-soft)}
+details.ref>summary,details.albert>summary,details.mini-ref>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+details>summary::-webkit-details-marker{display:none}
+details.ref>summary::before,details.albert>summary::before,details.mini-ref>summary::before{content:"▸";color:var(--gold);font-size:16px}
+details[open]>summary::before{content:"▾"}
+.tap{font:500 12px/1 var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+details.albert,details.mini-ref{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--muted)}
+details.albert[open],details.mini-ref[open]{color:var(--ink)}
+details.albert>summary,details.mini-ref>summary{font:600 13px/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.05em}
+details.ref:not([open]){gap:0}
 .cloud{font:500 13px/1 var(--f-mono);color:var(--accent);background:var(--accent-soft);padding:8px 10px;border-radius:8px}
 .cloud.bad{color:var(--warn);background:var(--warn-soft)}
 .q{display:flex;gap:12px;cursor:pointer}
@@ -140,7 +151,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   <div class="eyebrow">Working session 2 &middot; Albert Harris + Livingston</div>
   <h1>From two park engagements to a stronger, park-by-park 2027 season</h1>
   <p class="sub">Albert &amp; Livingston: build the next park season, and make JayRebl Live in the Parks, six evenings in 2027, the strongest submission it can be.</p>
-  <p class="lead">Ifficial Reggae Movement &middot; Night Out in the Parks. We have already talked once. This session will confirm what we learned, fill the gaps, review the 2026 application and results, identify what limited bookings, clarify Livingston&rsquo;s own goals, and choose an evidence-based path to more paid performances, within each park and across additional parks. We will leave with a plan, owners and dates before the 2027 portal opens on November 1.</p>
+  <p class="lead">Ifficial Reggae Movement &middot; Night Out in the Parks. We will turn what Livingston learned in 2026 into the strongest JayRebl Live in the Parks submission, with owners and dates, before the portal opens November 1.</p>
   <div class="chips">
     <span class="chip">120-minute core meeting</span>
     <span class="chip">Optional questions for follow-up</span>
@@ -171,12 +182,14 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   <p id="linkWarn" class="callout warn" hidden><b>This page needs the private link Albert sent you.</b> Without it, answers save only on this device.</p>
 </section>
 
-<div class="panel meta" aria-label="Meeting details">
+<details class="panel ref" id="meeting"><summary><h2>Meeting details</h2><span class="tap">Date, place, who &middot; tap to open</span></summary>
+<div class="meta" aria-label="Meeting details">
   <label class="f">Meeting date / time<input type="text" id="m-date" placeholder="To be agreed (aim for before Nov 1)"></label>
   <label class="f">Location / call link<input type="text" id="m-loc" placeholder="To be agreed"></label>
   <label class="f">Participants<input type="text" id="m-who" value="Albert Harris; Livingston"></label>
   <label class="f">Note taker<input type="text" id="m-notes" value="Albert Harris"></label>
 </div>
+</details>
 
 <section class="panel" id="purpose">
   <h2>What this meeting will cover</h2>
@@ -190,7 +203,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
     <div class="card"><span class="n">7</span><span class="h">Strengthen our submission</span>Carry every lesson into JayRebl Live in the Parks, our 2027 proposal with your band backing JayRebl.</div>
   </div>
   <div class="callout"><b>Lead question:</b> What determined that you received two events, and what would have needed to change for you to receive six? We will distinguish funding limits, park demand, scheduling, production, and the number of performances originally proposed.</div>
-  <div class="callout green"><b>Objective:</b> We will clarify what was requested versus approved, scheduled, and completed; understand the reasons for the two-event outcome; and agree on a realistic strategy to increase both the number of parks and the number of performances per park in the next cycle.</div>
+  <details class="mini-ref"><summary>Objective &middot; tap to open</summary><p> We will clarify what was requested versus approved, scheduled, and completed; understand the reasons for the two-event outcome; and agree on a realistic strategy to increase both the number of parks and the number of performances per park in the next cycle.</p></details>
   <h3 style="color:var(--accent)">Five concrete outcomes we will leave with</h3>
   <div class="cards">
     <div class="card"><span class="n">1</span>His <b>requested-versus-awarded event count</b>.</div>
@@ -201,13 +214,13 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   </div>
 </section>
 
-<section class="panel" id="prep">
-  <h2>Albert&rsquo;s prep, before we sit down</h2>
+<details class="panel ref" id="prep">
+  <summary><h2>Albert&rsquo;s prep, before we sit down</h2><span class="tap">For Albert &middot; tap to open</span></summary>
   <div class="group" id="prepList"></div>
-</section>
+</details>
 
-<section class="panel" id="facts">
-  <h2>What the public record shows (starting facts)</h2>
+<details class="panel ref" id="facts">
+  <summary><h2>What the public record shows (starting facts)</h2><span class="tap">Background &middot; tap to open</span></summary>
   <p>The Park District lists Ifficial Reggae Movement as a 2026 partner. Its approved public program, <em>History of Jamaican Music</em>, combined live music and performance, storytelling, instrument education, and audience participation.</p>
   <div class="scroll"><table>
     <thead><tr><th>Park</th><th>Published listing</th><th>We will confirm in the meeting (if not settled last time)</th></tr></thead>
@@ -238,21 +251,21 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
     </div>
   </div>
   <div class="callout green"><b>Two events is not a program cap.</b> A larger schedule is possible in principle: the 2026 season announcement lists ten park dates for Dance in the Parks and six for Chicago Creative Reuse Exchange. Their allocations do not establish an entitlement or a comparable budget for this band, and they do not explain why awards differ. We will diagnose the real constraint, and we will test a park-led route: where we already have a relationship with a particular park, can we submit our program to that individual park, so its staff can request our presence at their venue for their own events, which we will plan together with that park?</div>
-</section>
+</details>
 
-<section class="panel" id="runofshow">
-  <h2>Run of show</h2>
+<details class="panel ref" id="runofshow">
+  <summary><h2>Run of show</h2><span class="tap">Timing &middot; tap to open</span></summary>
   <div class="scroll"><table>
     <thead><tr><th>Clock</th><th>Section</th><th>Minutes</th></tr></thead>
     <tbody id="rosBody"></tbody>
   </table></div>
   <p style="color:var(--muted);font-size:15px">Because Livingston will enter many answers ahead, the meeting will spend its time confirming, filling gaps and deciding. If time runs short, we will cover every <span class="tag">Start here</span> item plus sections 01, 02, 08 and 11, and move the rest to email or to the optional follow-up list. Albert will ask permission before requesting sensitive material such as the full application, budget, or award letter.</p>
-</section>
+</details>
 
 <div id="sections" style="display:flex;flex-direction:column;gap:20px"></div>
 
-<section class="panel" id="actions">
-  <h2>Action register</h2>
+<details class="panel ref" id="actions">
+  <summary><h2>Action register</h2><span class="tap">For Albert &middot; tap to open</span></summary>
   <p style="color:var(--muted)">Due-date hints work back from the December 8 deadline with a few days&rsquo; buffer. Each action will get a named owner and a real deadline.</p>
   <div class="scroll"><table>
     <thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Result / status</th></tr></thead>
@@ -260,10 +273,10 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   </table></div>
   <h3 style="color:var(--accent)">Close with an agreed decision</h3>
   <textarea id="decision" rows="4" placeholder="Target event count and parks; per-park two-visit plan; proposed format; minimum fee; funding conditions; introductions authorized; next meeting date."></textarea>
-</section>
+</details>
 
-<section class="panel" id="worksheets">
-  <h2>Worksheets</h2>
+<details class="panel ref" id="worksheets">
+  <summary><h2>Worksheets</h2><span class="tap">Optional tables &middot; tap to open</span></summary>
   <h3 style="color:var(--accent)">Park-by-park growth worksheet</h3>
   <div class="scroll"><table>
     <thead><tr><th>Park / status</th><th>Return value and evidence</th><th>Outreach / production fit</th><th>Approval needed</th><th>Owner / next step / due</th></tr></thead>
@@ -279,18 +292,18 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
     <thead><tr><th>Cost / funding item</th><th>2 events</th><th>4 events</th><th>6 events</th></tr></thead>
     <tbody id="budBody"></tbody>
   </table></div>
-</section>
+</details>
 
-<section class="panel" id="optional">
-  <h2>Optional follow-up questions</h2>
+<details class="panel ref" id="optional">
+  <summary><h2>Optional follow-up questions</h2><span class="tap">Optional &middot; tap to open</span></summary>
   <p>We will use these only if relevant, or schedule a separate follow-up: precise insurance and clearance paperwork; equipment transport and loading; power and sound limits; accessible audience and participation arrangements; consent for documentation; cancellation decision timing; invoicing milestones; potential school or community partners. We will record staff-confirmed requirements rather than treating another partner&rsquo;s experience as a rule.</p>
   <label class="f">Follow-up topics and owner<textarea id="optionalNotes" rows="3" placeholder="Follow-up topics and owner"></textarea></label>
   <h3 style="color:var(--accent)">Decision standard</h3>
   <p>Each proposed extra date will need a distinct community purpose, credible host interest, feasible staffing and production, fair compensation, and formal authorization. A repeat visit should add value for residents rather than merely repeat the same show.</p>
-</section>
+</details>
 
-<section class="panel" id="playbook">
-  <h2>Growth playbook: more parks and repeat bookings (proposed work plan)</h2>
+<details class="panel ref" id="playbook">
+  <summary><h2>Growth playbook: more parks and repeat bookings (proposed work plan)</h2><span class="tap">Background &middot; tap to open</span></summary>
   <div class="callout green"><b>Proposed planning target:</b> a six-event pilot across three parks, with two distinct visits per park, subject to funding and staff approval. This is a planning target, not an established NOITP entitlement. We will use it to structure the conversation, the park conversations, and the next application, and compare it against the other growth options before selecting a target.</div>
   <div class="scroll"><table>
     <thead><tr><th style="width:26%">Action</th><th>Practical approach</th></tr></thead>
@@ -309,10 +322,10 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   </table></div>
   <p>This approach fits the current guidelines&rsquo; emphasis on local relationships, returning partners&rsquo; outreach records, flexibility across regions, feasible production, and sustainable budgets.</p>
   <div class="callout">Park interest supports a proposal; it is not an award or permission to add funded events. We will protect fair artist pay and avoid promising unconfirmed resources.</div>
-</section>
+</details>
 
-<section class="panel" id="guidelines">
-  <h2>2027 guidelines and calendar</h2>
+<details class="panel ref" id="guidelines">
+  <summary><h2>2027 guidelines and calendar</h2><span class="tap">Background &middot; tap to open</span></summary>
   <div class="grid2">
     <div class="mini">
       <h3>Scored heavily</h3>
@@ -368,10 +381,10 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
     <li><span class="d">Jun 1 &ndash; Dec 31, 2027</span><span>15th NOITP season.</span></li>
   </ol>
   <div class="copybox"><span>Questions to staff:</span><code>noitp@chicagoparkdistrict.com</code><button type="button" class="ghost" id="copyEmail">Copy address</button><a href="mailto:noitp@chicagoparkdistrict.com">Email</a></div>
-</section>
+</details>
 
-<section class="panel" id="gap">
-  <h2>How this agenda was built: gap analysis of the earlier draft</h2>
+<details class="panel ref" id="gap">
+  <summary><h2>How this agenda was built: gap analysis of the earlier draft</h2><span class="tap">Background &middot; tap to open</span></summary>
   <p>The supplied draft was strong on requested-versus-awarded events, booking authority, production, outreach, rain, payment, and the need for staff confirmation. The updates below make it easier to turn that discussion into decisions.</p>
   <p>This combined agenda merges three versions prepared on October 21, 2026. The October 21 revision included the gap analysis below; every update it lists is carried into this agenda. Nothing from any version was dropped, so the core meeting now runs 120 minutes instead of 60. Albert will review this table before the meeting; it is not an additional timed agenda block.</p>
   <div class="scroll"><table>
@@ -390,10 +403,10 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
       <tr><td>Use in the meeting</td><td>The attachment has no editable notes, portable saved notes, or print button.</td><td>Provide editable notes, local browser saving, downloadable copy with notes, and print / PDF controls. (This merged agenda adds typed or spoken answers that save online, so nothing is lost when switching devices.)</td></tr>
     </tbody>
   </table></div>
-</section>
+</details>
 
-<section class="panel sources" id="sources">
-  <h2>Reference links</h2>
+<details class="panel ref sources" id="sources">
+  <summary><h2>Reference links</h2><span class="tap">Links &middot; tap to open</span></summary>
   <p style="color:var(--muted)">Official pages reviewed October 21, 2026. We will confirm changes before submitting. The band bio is included as supplied context.</p>
   <a href="https://www.chicagoparkdistrict.com/night-out-parks-proposals" target="_blank" rel="noopener">2027 proposal guidelines</a>
   <a href="https://www.chicagoparkdistrict.com/about-night-out-parks" target="_blank" rel="noopener">About Night Out in the Parks &middot; 2026 partners</a>
@@ -403,7 +416,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   <a href="https://www.chicagoparkdistrict.com/events/history-jamaican-music-ada-0" target="_blank" rel="noopener">Ada &middot; August 8 listing</a>
   <a href="https://vimeo.com/1131003199" target="_blank" rel="noopener">NOITP virtual information session</a>
   <a href="https://www.ifficialreggae.com/bio" target="_blank" rel="noopener">Ifficial Reggae Movement &middot; band bio</a>
-</section>
+</details>
 
 <footer>
   <p>Updated October 21, 2026 &middot; Prepared for Albert Harris and Livingston &middot; Ifficial Reggae Movement / NOITP planning conversation. This agenda is not an official NOITP document and does not guarantee funding or event counts.</p>
@@ -450,11 +463,11 @@ const S = [
     ["q","If you applied again tomorrow, which step would you do differently or start earlier?"]
    ]}
   ],
-  extra:`<h3>Your steps, in order</h3>
+  extra:`<details class="mini-ref"><summary>Optional: list your steps in a table &middot; tap to open</summary>
    <div class="scroll"><table>
     <thead><tr><th>#</th><th>What you did</th><th>When / how long</th><th>What you needed</th><th>Tip for next time</th></tr></thead>
     <tbody>${[1,2,3,4,5,6,7,8].map(n=>`<tr><td class="t">${n}</td><td><textarea id="step${n}-a" aria-label="Step ${n}: what you did"></textarea></td><td><textarea id="step${n}-b" aria-label="Step ${n}: when / how long"></textarea></td><td><textarea id="step${n}-c" aria-label="Step ${n}: what you needed"></textarea></td><td><textarea id="step${n}-d" aria-label="Step ${n}: tip"></textarea></td></tr>`).join('')}</tbody>
-   </table></div>`},
+   </table></div></details>`},
  {id:"sj", num:"02", title:"JayRebl Live in the Parks: our 2027 submission", time:"10 min",
   goal:"We will apply Livingston’s experience to the proposal Ras Tafari Inc. will submit, and close what is still open before October 24.",
   groups:[
@@ -611,7 +624,7 @@ const S = [
     ["q","How do your band’s own 2027 renewal and JayRebl Live in the Parks fit together? What would each person contribute, who is the applicant or lead for each, how are costs allocated, and what approvals are needed? We will keep the two proposals separate and will not assume a joint application or pooled funding."]
    ]}
   ],
-  extra:`<div class="scroll"><table>
+  extra:`<details class="mini-ref"><summary>Growth options, two-visit idea and park-by-park table &middot; tap to open</summary><div class="scroll"><table>
    <thead><tr><th>Option</th><th>Proposed scope</th><th>Decision test</th></tr></thead>
    <tbody>
     <tr><td><b>Return and improve</b></td><td>2 events at 2 parks</td><td>Can stronger results and host relationships establish a sustainable base?</td></tr>
@@ -629,6 +642,7 @@ const S = [
      <tr><td><b>Ada</b></td><td>August 1 cancelled due to rain; the August 8 listing may be the replacement. We will confirm what actually happened.</td><td>Did the rain cancellation affect interest or payment? Would staff support two visits next season?</td><td>Same connected sequence, adapted to Ada’s audience and space; include a weather alternative.</td><td>Identify a local outreach partner; clarify the indoor/rain backup and who authorizes changes.</td><td>Replacement authorization, attendance, costs, staff feedback, return-interest statement.</td></tr>
      <tr><td><b>Proposed third park</b></td><td>To be identified based on geography, demand, and staff interest.</td><td>Which park is a realistic introduction? Who can introduce the band?</td><td>Two visits with a clear progression, not the same show twice.</td><td>Local partner, technical rider, setup timeline, promotion package, and park responsibilities.</td><td>Expression of interest, outreach plan, attendance evidence, staff feedback.</td></tr>
     </tbody></table></div>
+   </details>
    <label class="f" for="growth">Preferred option and conditions<textarea id="growth" rows="3" placeholder="Preferred option, reasons, minimum viable fee, availability, per-park plan, and conditions."></textarea></label>`},
  {id:"s7", num:"09", title:"Map host relationships and approval questions", time:"10 min",
   goal:"We will decide which hosts to approach, in what order and by whom, and separate host interest from formal booking and funding approval.",
@@ -736,8 +750,8 @@ S.forEach(sec=>{
   });
   if (sec.extra) html += sec.extra;
   html += sec.noHeard
-    ? `<div class="notes single"><label class="f" for="${sec.id}-notes">Albert: notes, answers, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Record answers, who owns what, and follow-ups."></textarea></label></div>`
-    : `<div class="notes"><label class="f" for="${sec.id}-heard">Albert: what we heard last time<textarea id="${sec.id}-heard" rows="4" placeholder="Fill in before the meeting from your first-conversation notes."></textarea></label><label class="f" for="${sec.id}-notes">Albert: in the meeting, answers, evidence, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Distinguish confirmed facts from interpretations. Capture follow-up questions."></textarea></label></div>`;
+    ? `<details class="albert"><summary>Albert’s notes &middot; tap to open</summary><div class="notes single"><label class="f" for="${sec.id}-notes">Albert: notes, answers, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Record answers, who owns what, and follow-ups."></textarea></label></div></details>`
+    : `<details class="albert"><summary>Albert’s notes &middot; tap to open</summary><div class="notes"><label class="f" for="${sec.id}-heard">Albert: what we heard last time<textarea id="${sec.id}-heard" rows="4" placeholder="Fill in before the meeting from your first-conversation notes."></textarea></label><label class="f" for="${sec.id}-notes">Albert: in the meeting, answers, evidence, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Distinguish confirmed facts from interpretations. Capture follow-up questions."></textarea></label></div></details>`;
   const el = document.createElement('section'); el.className = 'agenda'; el.id = sec.id; el.innerHTML = html; host.appendChild(el);
 });
 const hh = Math.floor(clock/60), mm = String(clock%60).padStart(2,'0');
@@ -896,6 +910,7 @@ $('copyBtn').addEventListener('click',()=>{
 $('copyEmail').addEventListener('click',()=>{
   try { navigator.clipboard.writeText('noitp@chicagoparkdistrict.com').then(()=>{ status.textContent = 'Email address copied.'; }, ()=>{ status.textContent = 'Select the address to copy it.'; }); } catch(e){ status.textContent = 'Select the address to copy it.'; }
 });
+window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
 $('dlBtn').addEventListener('click',()=>{
   const copy = document.documentElement.cloneNode(true);
   copy.querySelectorAll('input,textarea').forEach(f=>{
