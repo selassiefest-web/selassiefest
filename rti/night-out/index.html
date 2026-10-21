@@ -105,8 +105,8 @@ tr:last-child td{border-bottom:0} td.n{text-align:right;font-variant-numeric:tab
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">Chicago Park District &middot; Night Out in the Parks 2027</span>
-    <h1>Night Out Submission Engine</h1>
-    <p class="lede">Four separate proposals, four separate submitters, one place to see where each stands. Status saves for everyone who opens this page, so Stephen, Craig, Max and Albert see the same board.</p>
+    <h1 id="pageH">Night Out Submission Engine</h1>
+    <p class="lede" id="lede">Four separate proposals, four separate submitters, one place to see where each stands. Status saves for everyone who opens this page, so Stephen, Craig, Max and Albert see the same board.</p>
     <label class="small muted" for="meName" style="display:block;margin:0 0 12px">Your name, so the log shows who made each change: <input id="meName" type="text" maxlength="40" autocomplete="name" placeholder="Stephen, Craig, Max or Albert" style="font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)"></label>
     <div class="clock">
       <div class="clk"><b id="cdOpen">&hellip;</b><span id="cdOpenLbl">Portal opens Sunday, Nov. 1, 2026 at 12:01 am Central</span></div>
@@ -126,12 +126,12 @@ tr:last-child td{border-bottom:0} td.n{text-align:right;font-variant-numeric:tab
     <div id="detail"></div>
   </section>
 
-  <section>
+  <section id="crossSec">
     <h2>Checks across all four</h2>
     <div class="list" id="cross"></div>
   </section>
 
-  <section>
+  <section id="partnersSec">
     <h2>Last year's approved partners</h2>
     <p class="small muted" style="margin:0">From your research on CPD's 2026 partner list. Verify each name on CPD's own page before quoting it. We are modeling the format of the closest precedents.</p>
     <div class="tw"><table>
@@ -414,6 +414,14 @@ tr:last-child td{border-bottom:0} td.n{text-align:right;font-variant-numeric:tab
     if (!KEY) { loaded = true; $("detail").innerHTML = '<div class="empty">Open this page from the team link (it ends in ?k=...). Ask Albert if you do not have it.</div>'; return; }
     try { sb = await window.sfSupabaseReady; } catch (e) {}
     if (!sb) { loaded = true; $("detail").innerHTML = '<div class="empty">Could not reach the shared tracker.</div>'; return; }
+    // A track-only link (e.g. Max, Track 4) shows just that track: no board, no cross-track checks.
+    try { var sc = await sb.rpc("noitp_scope", { p_key: KEY }); if (!sc.error && sc.data && IDS.indexOf(sc.data) >= 0) {
+      selected = sc.data;
+      ["boardSec","crossSec","partnersSec"].forEach(function(id){ var el = $(id); if (el) el.hidden = true; });
+      $("pageH").textContent = "Night Out 2027 · Track " + sc.data.slice(1);
+      $("lede").textContent = "Your proposal for Night Out in the Parks 2027. Changes save for everyone working on this track.";
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    } } catch (e) {}
     await pull();
     setInterval(pull, 8000);
   })();
