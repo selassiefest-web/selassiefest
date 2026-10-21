@@ -155,3 +155,7 @@ Here is the exchange we propose. Focusrite Novation equips a production and beat
 We would also welcome a masterclass from one of your product specialists or artists, in person or by video, for the class and the showcase audience. It gives students a view of the industry and gives your team a first-hand look at who is learning on your gear.
 
 If this form is not the right door for an education program, we would be grateful for a referral to the right team.
+
+### Focusrite form: "Additional information" (paste this; then tick every genre)
+
+We selected every genre on purpose. Our students learn to mix everything into music: records from every genre, and also the sounds of everyday media such as TV shows and ads, which they sample, cut and blend into their own tracks. A student might build a set from reggae, hip-hop, house and gospel, then work a TV theme or a commercial hook into the mix. So no single genre describes the work; the skill is blending them. Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can send our IRS determination letter, budget and schedule on request.
