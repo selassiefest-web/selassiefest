@@ -18,7 +18,7 @@ The FTC amended the COPPA Rule in 2025. According to the FTC, the amendments inc
 
 Children in the Lab, including Junior DJs (8–11) and some Little DJs (5–7) and Empress Decks members, are under 13 and enter activity into our class app. So we treat the Lab as covered by COPPA and follow it.
 
-> **Status:** The Lab is proposed and not running yet. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
+> **Status:** The Lab is proposed and not running yet. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## How we comply
 

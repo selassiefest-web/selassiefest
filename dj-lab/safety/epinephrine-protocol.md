@@ -5,7 +5,7 @@ description: Step by step, what Rainbow DJ Lab adults do if a child with a presc
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**, with no staff hired and no class dates set. This protocol takes effect before the first class, as part of the [launch checklist](/dj-lab/governance/index.html).
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**, with no staff hired and no class dates set. This protocol takes effect before the first class, as part of the [launch checklist](/dj-lab/governance/index.html).
 
 ## The rules in one place
 

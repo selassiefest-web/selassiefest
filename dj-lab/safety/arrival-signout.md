@@ -5,7 +5,7 @@ description: How children are signed in and released at Rainbow DJ Lab, who may 
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. Class dates and times are not set yet, so the times below are counted from the scheduled end of class.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. Class dates and times are not set yet, so the times below are counted from the scheduled end of class.
 
 ## The short version
 

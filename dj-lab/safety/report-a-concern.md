@@ -5,7 +5,7 @@ description: How anyone, whether a parent, child, staff member or neighbor, can 
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. No classes are running yet, but you can raise a concern about the program or these policies at any time.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. No classes are running yet, but you can raise a concern about the program or these policies at any time.
 
 ## If a child is in danger right now
 

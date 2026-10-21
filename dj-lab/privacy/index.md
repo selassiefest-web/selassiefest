@@ -15,7 +15,7 @@ description: How Rainbow DJ Lab collects, uses, protects and deletes information
 - **For children under 13,** we collect limited information only with your verifiable consent at registration.
 - **You're in charge.** You can see, correct or delete your child's information, or withdraw consent, at any time. We respond within 10 business days.
 
-> **Status:** Rainbow DJ Lab is proposed and not running yet. The class app is built and described here as it works today. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html). Where something is still being built, the page says so.
+> **Status:** Rainbow DJ Lab is proposed and not running yet. The class app is built and described here as it works today. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. Where something is still being built, the page says so.
 
 ## Privacy pages
 

@@ -10,7 +10,7 @@ description: How Rainbow DJ Lab handles listen-back audio recordings, media cons
 - **Photos or video for any outside use need your separate, opt-in media consent.**
 - **We never put a child's name with an image.**
 
-> **Status:** The Lab is proposed and not running yet. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
+> **Status:** The Lab is proposed and not running yet. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## In the class app
 

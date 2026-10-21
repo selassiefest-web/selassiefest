@@ -32,24 +32,20 @@ No coaches, staff or volunteers have been hired or named for the Lab yet. When t
 
 The full board roster will be posted on this page before the first class. We are not listing anyone here until that roster is confirmed for publication.
 
-## What the board must do before launch
+## Board adoption of the Lab's policies
 
-The board must hold a formal vote to adopt the Lab's policies. Until it does, those policies are **policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement.** The vote covers:
+On **October 17, 2026**, the board adopted 37 Lab policies by unanimous written consent (Resolution 2026-10-17-02), signed by all five directors. The adopted policies are:
 
 - the safety policies in [Safety](/dj-lab/safety/index.html)
-- the [privacy policy](/dj-lab/privacy/index.html)
-- the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html), with every covered person's disclosure on file
-- the [Q-Ality Sound vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) and its [sole-source memo](/dj-lab/governance/sole-source-justification-qality.html), voted on only by directors with no tie to Q-Ality
+- the [privacy policies](/dj-lab/privacy/index.html)
+- the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html) (every covered person's disclosure must be on file: launch checklist item 15)
 - the [whistleblower policy](/dj-lab/governance/whistleblower.html)
+- the [enforcement and self-accountability commitments](/dj-lab/governance/enforcement-self-accountability.html) and the [annual safety review](/dj-lab/governance/annual-safety-review.html)
+
+Still to come before the board:
+
+- the [Q-Ality Sound vendor agreement](/dj-lab/governance/qality-vendor-agreement.html) and its [sole-source memo](/dj-lab/governance/sole-source-justification-qality.html), voted on only by directors with no tie to Q-Ality
 - the [data-sharing agreement with SelassieFest](/dj-lab/governance/data-sharing-agreement-selassiefest.html)
-- the [enforcement and self-accountability commitments](/dj-lab/governance/enforcement-self-accountability.html)
-
-When the vote is held, we will post here:
-
-- the date of the meeting
-- the list of policies adopted, with their versions
-- the vote result, and any recusals
-- an excerpt of the minutes, signed by the Corporate Secretary
 
 ## Why a board vote matters
 

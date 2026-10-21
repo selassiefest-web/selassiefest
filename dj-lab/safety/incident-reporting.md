@@ -5,7 +5,7 @@ description: What counts as an incident at Rainbow DJ Lab, who is told and how f
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## The timeline at a glance
 

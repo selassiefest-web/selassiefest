@@ -5,7 +5,7 @@ description: What Rainbow DJ Lab adults do when one child harms another, includi
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. No staff are hired yet.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. No staff are hired yet.
 
 ## What this covers
 

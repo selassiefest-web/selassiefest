@@ -5,7 +5,7 @@ description: The Rainbow DJ Lab's rules for lightning, wind, heat, cold and air 
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. The Chicago Park District hasn't approved it, and no dates are set. The indoor shelter locations named below depend on park approval and on the site walk with park staff ([Emergency Action Plan](/dj-lab/safety/emergency-action-plan.html), launch checklist item 6).
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. The Chicago Park District hasn't approved it, and no dates are set. The indoor shelter locations named below depend on park approval and on the site walk with park staff ([Emergency Action Plan](/dj-lab/safety/emergency-action-plan.html), launch checklist item 6).
 
 ## Where classes happen
 

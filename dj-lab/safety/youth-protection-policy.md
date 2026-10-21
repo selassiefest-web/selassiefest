@@ -5,7 +5,7 @@ description: The core rules every adult at Rainbow DJ Lab follows to prevent abu
 
 ## Status of this policy
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. It takes effect before the first class and applies to every adult who takes part in a Lab activity: coaches, mentors, volunteers, guest DJs, and Ras Tafari Inc. officers, including the President. Its conduct rules also bind vendor staff on site, such as Q-Ality Sound's sound and stage crew (see Rule 10). No staff have been hired yet. Every person who is hired or volunteers must read and sign this policy before their first class.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. It takes effect before the first class and applies to every adult who takes part in a Lab activity: coaches, mentors, volunteers, guest DJs, and Ras Tafari Inc. officers, including the President. Its conduct rules also bind vendor staff on site, such as Q-Ality Sound's sound and stage crew (see Rule 10). No staff have been hired yet. Every person who is hired or volunteers must read and sign this policy before their first class.
 
 The policy covers every Lab activity: classes, Spotlight, listen-back days, the Rainbow Showcase, and any messages or online contact connected to the Lab.
 

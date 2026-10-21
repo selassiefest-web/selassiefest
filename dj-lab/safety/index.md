@@ -7,7 +7,7 @@ description: The safety promises Rainbow DJ Lab makes to every family, at a glan
 
 Rainbow DJ Lab is **proposed**. The Chicago Park District has not approved or permitted it, no class dates are set, and no staff are hired.
 
-Every policy in this section is a commitment that takes effect **before the first class**. These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. No class runs until every item on the [launch checklist](/dj-lab/governance/index.html) is checked.
+Every policy in this section is a commitment that takes effect **before the first class**. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. No class runs until every item on the [launch checklist](/dj-lab/governance/index.html) is checked.
 
 ## Our safety promises at a glance
 

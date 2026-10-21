@@ -5,7 +5,7 @@ description: The proposed whistleblower policy for Ras Tafari Inc., protecting a
 
 # Whistleblower Policy
 
-**Status: Proposed, for adoption by the Ras Tafari Inc. board.** It has not been adopted yet. Board adoption is required before the first class.
+**Status: Adopted.** This policy was adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 This policy follows standard nonprofit practice. It is modeled on the description of a whistleblower policy in the IRS instructions for Form 990, Part VI, line 13.
 

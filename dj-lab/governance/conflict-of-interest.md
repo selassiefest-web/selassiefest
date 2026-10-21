@@ -3,7 +3,7 @@ title: Conflict of interest policy
 description: How the Rainbow DJ Lab keeps decisions about children, money, vendors and stage time free of conflicts of interest, and our own disclosure.
 ---
 
-**Status: Draft for board and counsel review (version 1).** Ras Tafari Inc. commits to this policy; formal board adoption, with every covered person's disclosure on file, is on the [launch checklist](/dj-lab/governance/index.html).
+**Status: Adopted (version 1).** This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. Every covered person's disclosure must be on file; that is item 15 on the [launch checklist](/dj-lab/governance/index.html).
 
 ## Our disclosure
 

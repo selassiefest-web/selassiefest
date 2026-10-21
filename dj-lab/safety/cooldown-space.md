@@ -5,7 +5,7 @@ description: The Rainbow DJ Lab's calm corner, which is always in view of an adu
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. Where the space goes in the fieldhouse and on the lawn will be set after the site walk with park staff.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. Where the space goes in the fieldhouse and on the lawn will be set after the site walk with park staff.
 
 ## What it is
 

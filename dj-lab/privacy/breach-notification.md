@@ -7,7 +7,7 @@ description: What Rainbow DJ Lab will do, and what we will tell families, if per
 
 If information about your family or child is ever exposed to someone who shouldn't have it, **we'll tell you without unreasonable delay**, tell you what happened in plain words, and tell you what we're doing about it. We won't wait to find out whether the law strictly requires notice before telling you.
 
-> **Status:** The Lab is proposed and not running yet. This is a policy Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
+> **Status:** The Lab is proposed and not running yet. This policy was adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## What counts as a breach
 

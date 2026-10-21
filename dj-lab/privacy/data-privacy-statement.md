@@ -9,7 +9,7 @@ Rainbow DJ Lab is a free DJ class run by **Ras Tafari Inc.**, an Illinois not-fo
 
 **Privacy contact:** Stephen Henry, President. 872-255-9333, stephen@selassiefest.com.
 
-> **Status:** The Lab is proposed and not running yet. The Chicago Park District has not approved or permitted it. The app described here is built. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
+> **Status:** The Lab is proposed and not running yet. The Chicago Park District has not approved or permitted it. The app described here is built. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## The short version
 

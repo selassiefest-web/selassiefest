@@ -7,7 +7,7 @@ description: How long Rainbow DJ Lab keeps each kind of information about childr
 
 We keep information only as long as we need it for the reason we collected it, then delete it. The federal COPPA Rule requires this for children's information, and we apply it to everyone.
 
-> **Status:** These retention periods are a policy commitment of Ras Tafari Inc.; formal board adoption is a [launch requirement](/dj-lab/governance/index.html). Where a period isn't decided yet, the table says so, and it will be set in our written retention schedule before the first class.
+> **Status:** These retention periods were adopted by the Ras Tafari Inc. board on October 17, 2026. Where a period isn't decided yet, the table says so, and it will be set in our written retention schedule before the first class.
 
 ## Retention table
 

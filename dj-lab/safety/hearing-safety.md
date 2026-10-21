@@ -5,7 +5,7 @@ description: How the Rainbow DJ Lab protects children's ears: capped headphones,
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. The exact sound levels below are the Lab's own limits, chosen to be cautious. The sound meter is part of the gear to be in place before the first class.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. The exact sound levels below are the Lab's own limits, chosen to be cautious. The sound meter is part of the gear to be in place before the first class.
 
 ## Why this matters
 

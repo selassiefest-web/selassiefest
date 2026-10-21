@@ -5,7 +5,7 @@ description: How the Rainbow DJ Lab protects children from sun and dehydration d
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. Outdoor classes would happen only in summer, on the park lawn, as the Chicago Park District approves.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. Outdoor classes would happen only in summer, on the park lawn, as the Chicago Park District approves.
 
 ## Sun
 

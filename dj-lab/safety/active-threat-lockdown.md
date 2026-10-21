@@ -5,7 +5,7 @@ description: How Rainbow DJ Lab adults lead children through "Run, Hide, Fight" 
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 **Pending:** the lockdown plan for the Rainbow Beach Park fieldhouse (which rooms lock, which doors to block, hiding places, and the outdoor escape routes and rally point) is **to be finalized with park staff** during the site walk, which has not happened yet. That is part of item 6 on the [launch checklist](/dj-lab/governance/index.html). No class runs until it is done.
 

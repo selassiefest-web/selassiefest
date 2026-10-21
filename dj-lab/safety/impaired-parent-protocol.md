@@ -5,7 +5,7 @@ description: What Rainbow DJ Lab staff do, step by step, when an adult arriving 
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## The rule
 

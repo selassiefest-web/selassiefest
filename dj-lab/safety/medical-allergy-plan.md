@@ -5,7 +5,7 @@ description: How the Rainbow DJ Lab learns about each child's health needs, keep
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Rainbow DJ Lab is **proposed**. It has not been approved by the Chicago Park District, no class dates are set, and no staff are hired yet. Nothing on this page is in effect until the [launch checklist](/dj-lab/governance/index.html) is complete. No class runs until every item is checked.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Rainbow DJ Lab is **proposed**. It has not been approved by the Chicago Park District, no class dates are set, and no staff are hired yet. Nothing on this page is in effect until the [launch checklist](/dj-lab/governance/index.html) is complete. No class runs until every item is checked.
 
 ## The short version
 

@@ -5,7 +5,7 @@ description: Who watches for problems, how spot checks work, what happens step b
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. No staff have been hired yet, so the roles below are described by job, not by name. Stephen Henry, President, is the Lab lead.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. No staff have been hired yet, so the roles below are described by job, not by name. Stephen Henry, President, is the Lab lead.
 
 ## Who monitors
 

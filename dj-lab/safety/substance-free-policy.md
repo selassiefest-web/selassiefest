@@ -5,7 +5,7 @@ description: No alcohol, tobacco, vaping or cannabis at any Rainbow DJ Lab activ
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. It takes effect before the first class.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. It takes effect before the first class.
 
 ## The rule
 

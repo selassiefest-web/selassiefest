@@ -5,7 +5,7 @@ description: Exactly how a coach checks photo ID against the authorized-pickup l
 
 ## Status
 
-This is a policy Ras Tafari Inc. commits to; formal board adoption is a launch requirement. It applies at every pickup, from the first class.
+This policy was adopted by the Ras Tafari Inc. board on October 17, 2026. It applies at every pickup, from the first class.
 
 ## The rule
 

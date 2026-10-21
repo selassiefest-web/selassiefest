@@ -5,7 +5,7 @@ description: How the Rainbow DJ Lab accepts, stores, gives, records and returns 
 
 ## Status
 
-These are policies Ras Tafari Inc. commits to; formal board adoption is a launch requirement. The Lab is **proposed**. No staff are hired and no class dates are set.
+These policies were adopted by the Ras Tafari Inc. board on October 17, 2026. The Lab is **proposed**. No staff are hired and no class dates are set.
 
 ## The rules
 

@@ -18,7 +18,7 @@ As the parent or guardian, you can at any time:
 
 There's no cost, and you don't have to give a reason.
 
-> **Status:** The Lab is proposed and not running yet. These are policies Ras Tafari Inc. commits to; formal board adoption is a [launch requirement](/dj-lab/governance/index.html).
+> **Status:** The Lab is proposed and not running yet. These policies were adopted by the Ras Tafari Inc. board on October 17, 2026.
 
 ## How to make a request
 
