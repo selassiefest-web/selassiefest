@@ -7,8 +7,7 @@ The three partner choices used in every ask:
 2. Supply one category for all 12 students (for example headphones).
 3. Become the Lab's equipment partner, supplying the full classroom or a substantial part.
 
-Before sending: make sure the proposal link below works, and decide whether to name Rainbow Beach Park as confirmed or "planned".
-
+Proposal link in every draft: https://selassiefest.com/full-spectrum/dj-lab-2027.html (the DJ Lab page is the source of truth).
 ---
 
 ## 1. Sennheiser  (email)
@@ -26,7 +25,7 @@ Our goal is 12 complete student stations so every learner has their own gear dur
 
 If a full set is not possible, we would welcome any part of it. We can offer agreed recognition on our website and at showcases, an equipment demonstration, and a short impact report after the first term. Photos or video of students would only be shared with consent.
 
-Could you tell me whether this fits your sponsorship program, and what you would need from us (documents, a proposal, timing)? I can send our IRS determination letter, budget and schedule right away.
+Could you tell me whether this fits your sponsorship program, and what you would need from us (documents, a proposal, timing)? Our full program page is https://selassiefest.com/full-spectrum/dj-lab-2027.html. I can send our IRS determination letter, budget and schedule right away.
 
 Thank you for your time.
 
@@ -56,7 +55,7 @@ What we are asking about:
 
 We can offer recognition on our website and at showcases, equipment demonstrations, a staff or volunteer day, and an impact report. We are open to refurbished, demonstration or loaned equipment as well.
 
-Please tell me who should receive a full proposal. I can send our IRS letter, budget and schedule.
+Our full program page is https://selassiefest.com/full-spectrum/dj-lab-2027.html. Please tell me who should receive a full proposal. I can send our IRS letter, budget and schedule.
 
 Thank you,
 Stephen Henry
@@ -76,7 +75,7 @@ I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). Your free
 
 Rainbow DJ Lab is a free, year-round class every Tuesday from 4 to 6 pm, opening January 12, 2027, in Chicago. It is built for grades 6 to 12 and open to all ages. We are building 12 matching beginner stations so every student has a controller and headphones.
 
-Could you point me to the person who handles education or marketing partnerships? We would ask about 12 matching beginner controllers, headphones and any instructor resources. We can offer recognition, public student showcases, and an impact report.
+Could you point me to the person who handles education or marketing partnerships? We would ask about 12 matching beginner controllers, headphones and any instructor resources. Our program page is https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can offer recognition, public student showcases, and an impact report.
 
 Thank you,
 Stephen Henry
@@ -103,7 +102,7 @@ I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). Start Fro
 
 The Lab is a free class every Tuesday, 4 to 6 pm, from January 12, 2027, for grades 6 to 12 and open to all ages, with public student showcases at Rainbow Beach Park. We are equipping 12 stations so every student has a dedicated controller.
 
-We are asking about a partnership that could include 12 matching student controllers, 12 headphones and an instructor demonstration setup, or a portion such as four controllers toward the 12. We can offer recognition, showcases your team can attend, and an impact report. We can send our IRS letter, budget and schedule.
+We are asking about a partnership that could include 12 matching student controllers, 12 headphones and an instructor demonstration setup, or a portion such as four controllers toward the 12. We can offer recognition, showcases your team can attend, and an impact report. Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can send our IRS letter, budget and schedule.
 
 Could you tell me whether this fits and what you would need?
 
@@ -115,7 +114,7 @@ Stephen Henry
 
 ## 5. Shure  (form text, for https://shure.formstack.com/forms/donation_request_en)
 
-Choose: Product. Have ready: Tax ID 42-3036705, program name, need-by date, proposal link.
+Choose: Product. Have ready: Tax ID 42-3036705, program name, need-by date. Proposal link: https://selassiefest.com/full-spectrum/dj-lab-2027.html
 Program name: Rainbow DJ Lab and Full Spectrum at Rainbow Beach
 Specific products: 12 wired student headphones; 2 microphones for teaching and showcases
 
@@ -127,13 +126,11 @@ We are equipping 12 stations so every student has their own gear. We are request
 
 The equipment stays with the program for future cohorts and is stored securely. We will recognize Shure on our website and at showcases, offer an equipment demonstration, and send an impact report after the first term (attendance, instructional hours, student mixes completed, and showcases). Any student photos or video are shared only with consent.
 
-We can provide our IRS determination letter, budget, schedule and instructor biographies on request. Thank you for considering us.
+Our program page is https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can provide our IRS determination letter, budget, schedule and instructor biographies on request. Thank you for considering us.
 
 ---
 
-## Still needs a human decision
+## Still open
 
-- The need-by date for Shure's form (suggest before the Jan 12, 2027 opening).
-- The proposal link: the DJ Lab page is https://selassiefest.com/full-spectrum/dj-lab-2027.html (confirm it is the page you want funders to read).
-- Whether to say Rainbow Beach Park is confirmed or planned, since the ARCS form is still due Oct 24.
-- Focusrite (https://us.focusrite.com/contact-us/artist-enquiries) is an artist-collaboration form. I did not draft it; say if you want a version that describes Rainbow honestly as a youth education program.
+- Shure's need-by date (suggest before the Jan 12, 2027 opening).
+- Focusrite (https://us.focusrite.com/contact-us/artist-enquiries) is an artist-collaboration form; no draft yet.
