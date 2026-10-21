@@ -74,3 +74,33 @@ Stephen Henry, (872) 255-9333
 ## Script, if you reach a person
 
 "My name is Stephen Henry, I run Ras Tafari Inc., a Chicago nonprofit. Start From Scratch is doing free, community-led DJ education abroad. We are opening a free DJ class on Chicago's South Side on January 12, and we would like AlphaTheta to lead it as a Start From Scratch launch, with us as your local host. I put a one-page proposal on the web. Who is the right person for that, and can I send it to them today?"
+
+## Named people and warm routes found (published sources, 2026-10-21)
+
+Nobody on the public pages is named as the Start From Scratch program lead. These are the people and organizations that are named, in the order I would approach them:
+
+1. HOMECOMING (Lagos), the program's local host partner. Source: https://thenativemag.com/homecoming-and-alphatheta-complete-start-from-scratch-workshops-in-lagos-for-2025/
+2. Boudica (Europe), host partner. Source: https://alphatheta.com/en/landing/start-from-scratch/partners/
+3. On The Rise DJ Academy (London), a school featured in the program. Source: https://ontheriseacademy.com/pioneer-dj-alphatheta-start-from-scratch-free-dj-production-workshops/
+4. Ellie Donovan, quoted as marketing executive at AlphaTheta in Mixmag MENA's Start From Scratch story. Source: https://mixmagmena.com/read/women-only-dj-workshops-from-alphatheta-kick-off-in-mena-at-soho-garden-start-from-scratch-news . Message her on LinkedIn; she works on the program, and role and location are as of that article.
+5. John Powell, listed as President of AlphaTheta Music Americas in a 2020 Music Inc. interview; his current title is unconfirmed. Source: https://www.musicincmag.com/features/detail/from-the-top-john-powell-i-alphatheta-music-americas . Verify he is still there on LinkedIn before writing to him.
+6. The Americas line and the support gateway in the table above.
+
+Rule for all of them: one message each, personal, with the tracked link. No guessed or scraped email addresses; use LinkedIn messages, published contact forms or an address the person gave you.
+
+## The deal: how this keeps moving
+
+- Source of truth: this file, the Partner Tracker row "AlphaTheta / Pioneer DJ" (next step and view count), and the project memory note.
+- Next actions are dated in the tracker. Open Claude Code in this folder and say "AlphaTheta campaign"; I read the tracker, tell you what is due, draft today's messages and log what you send.
+- Calls and sends are yours; drafting, logging, checking views and adjusting the pitch are mine.
+
+## Cadence from Thursday, October 22, 2026
+
+| Date | Action |
+|---|---|
+| Thu Oct 22 | Call the Americas line. Send introduction emails to HOMECOMING, Boudica and On The Rise. LinkedIn message to Ellie Donovan. Send Email 1 to any AlphaTheta address you obtain. |
+| Mon Oct 26 | Email 2 to anyone who has not replied. Check the view count. |
+| Tue Oct 27 | Second call. |
+| Thu Oct 29 | Call. LinkedIn message to John Powell if verified. |
+| Mon Nov 2 | Email 3 (last note) to anyone silent. |
+| Tue Nov 3 | Call. Review: who opened the page, who answered, what to change. |
