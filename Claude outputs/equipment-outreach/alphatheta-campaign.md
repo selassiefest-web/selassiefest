@@ -158,3 +158,14 @@ Sources: https://ontheriseacademy.com/dj-courses-london/ , https://ontheriseacad
 - We add: Mic/MC and Word Flip, Theme Clash (TV and ad themes), Rainbow Showcase, hearing-safety orientation, a girls-only track, accommodations, free year-round entry for grades 6 to 12.
 - They add: scratching and turntablism, vinyl, a production workshop, named software lessons.
 - Suggestions (not curriculum changes): use Rekordbox (AlphaTheta's own software) for the pilot; offer scratch as a guest-DJ topic and a short production workshop as an optional block.
+
+## Personalized links (site v2, 2026-10-21)
+
+Base tracked link: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce
+Add &n=FirstName to greet a person in the banner ("A proposal prepared for John by Ras Tafari Inc."). Letters, spaces, hyphens and apostrophes only. Examples:
+- John Powell: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=John
+- Ellie: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Ellie
+- Chris: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Chris
+- Grace: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Grace
+- Samantha: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Samantha
+Every link counts a view on the same AlphaTheta row (the count cannot say who). The links already sent do not have &n=, which is fine: they show the generic banner.
