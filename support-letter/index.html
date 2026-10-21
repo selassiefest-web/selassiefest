@@ -192,6 +192,20 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
   var pre = qs.get("p");
   var partnerKey = /^[a-z0-9]{6,16}$/.test(qs.get("k") || "") ? qs.get("k") : null;   // set when coming from a partner page
   if (qs.get("org")) $("org_name").value = qs.get("org").slice(0, 160);
+  // Sample letters: a ready-made script a partner can accept as is (?t=<id>, or matched by organization name).
+  var SAMPLES = {
+    wpac: { match: /^washington park advisory council$/i,
+      org_about: "Our council is a volunteer group of neighbors that supports programs and stewardship at Washington Park.",
+      relationship: "Albert Harris, Secretary of Ras Tafari Inc., is a member of our council.",
+      why: "Full Spectrum gives South Side children and families, including families from Washington Park, free DJ classes and alcohol-free music nights in a safe, welcoming park. Programs like this make all of our parks stronger." }
+  };
+  var sample = SAMPLES[qs.get("t")] || Object.keys(SAMPLES).map(function(id){ return SAMPLES[id]; }).filter(function(s){ return s.match.test(v("org_name")); })[0];
+  if (sample) {
+    ["org_about","relationship","why"].forEach(function(id){ if (sample[id]) $(id).value = sample[id]; });
+    var note = document.createElement("p"); note.className = "lede";
+    note.innerHTML = "<b>We wrote a short sample letter for you.</b> Change anything you like, or just add your name and email and sign.";
+    document.querySelector(".lede").insertAdjacentElement("afterend", note);
+  }
   $("programs").innerHTML = PROGRAMS.map(function(p, i){
     var on = pre ? p[0].toLowerCase().indexOf(pre.toLowerCase()) >= 0 : i === 0;
     return '<label><input type="checkbox" value="' + esc(p[0]) + '"' + (on ? " checked" : "") + '><span><b>' + esc(p[0]) + '</b><br><span class="h" style="color:var(--muted);font-size:.9rem">' + esc(p[1]) + '</span></span></label>';
