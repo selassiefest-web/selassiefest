@@ -137,3 +137,13 @@ President, Ras Tafari Inc.
 (872) 255-9333 | stephen@selassiefest.com
 
 Phone: 424-488-0480 is listed with the same interview and is not identified as his direct line. If the email goes unanswered, call it on a Tuesday to Thursday morning (Pacific) and say you wrote to him and connected on LinkedIn.
+
+## Instagram DM to @alphathetausa (AlphaTheta/Pioneer DJ USA, 323K followers; the official US account)
+
+A social team reads this inbox, so ask for a routing, not a decision. Keep it short.
+
+Hi AlphaTheta team! I'm Stephen Henry with Ras Tafari Inc., a Chicago nonprofit opening a free DJ class for students on January 12, 2027, with a girls-only track taught by women DJs. We'd love AlphaTheta to lead a Chicago launch of Start From Scratch, with us as your local host. Could you point me to whoever runs community or education partnerships for the US? The one-page plan: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce
+
+Follow-up if no reply in 5 days: "Hi again! Just checking this reached the right person. Happy to answer questions on a quick call: (872) 255-9333."
+
+Also: comment on a Start From Scratch or education post with something real (not the link). Cold-linking in comments looks like spam.
