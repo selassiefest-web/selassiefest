@@ -104,3 +104,8 @@ Rule for all of them: one message each, personal, with the tracked link. No gues
 | Thu Oct 29 | Call. LinkedIn message to John Powell if verified. |
 | Mon Nov 2 | Email 3 (last note) to anyone silent. |
 | Tue Nov 3 | Call. Review: who opened the page, who answered, what to change. |
+
+## Question to ask AlphaTheta directly
+
+"Has Start From Scratch previously operated anywhere in the United States, including one-time workshops or partner events, and could Chicago qualify as its first US host city?"
+Our pages claim only that we found no US host city on the program's pages. That does not prove none exists, so never say "first" as fact until they confirm.
