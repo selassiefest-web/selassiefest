@@ -109,3 +109,31 @@ Rule for all of them: one message each, personal, with the tracked link. No gues
 
 "Has Start From Scratch previously operated anywhere in the United States, including one-time workshops or partner events, and could Chicago qualify as its first US host city?"
 Our pages claim only that we found no US host city on the program's pages. That does not prove none exists, so never say "first" as fact until they confirm.
+
+## John Powell: published email and phone (verified 2026-10-21)
+
+Source: https://www.musicconnection.com/executive-profile-john-powell/ (dated April 1, 2020). It lists Email: john.powell@pioneerdj.com and Phone: 424-488-0480. Both were published by him in 2020, since then the company was renamed AlphaTheta, so deliverability is unconfirmed. Send it, and watch for a bounce-back. Do not guess other addresses.
+Why he is the right person: in April 2024 Pioneer DJ / AlphaTheta Music Americas gave DDJ-REV1 controllers and DM-50D monitors to Girls Make Beats Miami, and he said the company is committed to "giving back to the industry" and to equal chances for young women. Source: https://www.musicincmag.com/news/detail/pioneer-dj-makes-donation-to-girls-make-beats . Our Empress Decks girls-only track is the closest match.
+
+### Email to John Powell (send today; the LinkedIn invitation went out Oct 21)
+
+To: john.powell@pioneerdj.com
+Subject: Start From Scratch Chicago: Rainbow Beach Youth DJ Partnership
+
+Dear John,
+
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). I sent you a LinkedIn invitation yesterday and am following up here with the full idea.
+
+I read that AlphaTheta equipped Girls Make Beats Miami in 2024, and that you spoke about giving back to the industry and giving young women equal chances. We are opening a free DJ class for Chicago students on January 12, 2027, every Tuesday, on the South Side, with a girls-only track taught by women DJs. Start From Scratch has trained thousands of new DJs abroad. I would like to propose that AlphaTheta lead a Chicago launch of Start From Scratch, with us as your local host partner: you set the direction and bring the gear and the experts, and we bring the students, the room, the instructors, the showcases and a 501(c)(3) that reports results back to you.
+
+The whole proposal is on one page, with a draft announcement your team can adapt:
+https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce
+
+One question I would like to ask directly: has Start From Scratch operated anywhere in the United States, and could Chicago qualify as a US host city? Could we have 20 minutes?
+
+Thank you,
+Stephen Henry
+President, Ras Tafari Inc.
+(872) 255-9333 | stephen@selassiefest.com
+
+Phone: 424-488-0480 is listed with the same interview and is not identified as his direct line. If the email goes unanswered, call it on a Tuesday to Thursday morning (Pacific) and say you wrote to him and connected on LinkedIn.
