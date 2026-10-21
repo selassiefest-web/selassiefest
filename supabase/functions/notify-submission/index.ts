@@ -790,6 +790,36 @@ function formatLrVenueResponse(record: Record<string, any>) {
   };
 }
 
+// Meeting agenda answers (e.g. /rti/night-out/livingston/) -- see supabase/noitp-agenda-answers.sql.
+function formatNoitpAgendaAnswers(record: Record<string, any>) {
+  const who = record.respondent_name || 'Someone';
+  const answers = Array.isArray(record.answers) ? record.answers : [];
+  const extra = record.extra && typeof record.extra === 'object' ? record.extra : {};
+  const para = (v: unknown) => escapeHtml(v).replace(/\n/g, '<br>');
+  let section = '';
+  let body = '';
+  for (const a of answers) {
+    if (a.section !== section) {
+      section = a.section;
+      body += `<h3 style="margin:22px 0 6px;color:#17604a;">${escapeHtml(section)}</h3>`;
+    }
+    body += `<p style="margin:10px 0 2px;color:#555;"><b>${escapeHtml(a.question)}</b></p><p style="margin:0 0 8px;">${para(a.answer)}</p>`;
+  }
+  const extraRows = Object.entries(extra)
+    .filter(([, v]) => v !== null && v !== undefined && String(v).trim() !== '')
+    .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top;">${escapeHtml(k)}</td><td style="padding:4px 0;">${para(v)}</td></tr>`)
+    .join('');
+  return {
+    subject: `Agenda answers from ${who} (${answers.length} answered${record.part_label && record.part_label !== '1 of 1' ? ', part ' + record.part_label : ''})`,
+    html: `
+      <h2>${escapeHtml(who)} sent answers on the meeting agenda</h2>
+      <p>${record.respondent_contact ? 'Contact: ' + escapeHtml(record.respondent_contact) + '<br>' : ''}Agenda: ${escapeHtml(record.agenda_key)}${record.part_label ? ' &middot; part ' + escapeHtml(record.part_label) : ''}${record.source_page ? '<br><a href="' + escapeHtml(record.source_page) + '">' + escapeHtml(record.source_page) + '</a>' : ''}</p>
+      ${body || '<p>No question answers in this send.</p>'}
+      ${extraRows ? `<h3 style="margin:22px 0 6px;color:#17604a;">Other fields filled in</h3><table style="border-collapse:collapse;">${extraRows}</table>` : ''}
+    `,
+  };
+}
+
 // Rainbow DJ Lab (/dj-lab/) -- see supabase/dj-lab.sql.
 function formatDjlabCoachLoginLink(record: Record<string, any>) {
   const url = `https://selassiefest.com/dj-lab/live/?coach_token=${encodeURIComponent(record.id)}#coach`;
@@ -1059,6 +1089,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
   },
   lr_venue_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatLrVenueResponse }] },
+  noitp_agenda_answers: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatNoitpAgendaAnswers }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],
   },

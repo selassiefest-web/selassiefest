@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Albert &amp; Livingston Agenda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,750&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* One working column: sticky toolbar; numbered run-of-show sections where every
+   question has an answer box (type or speak) and every section has note fields;
+   worksheets and reference material after. Merged from three agenda drafts (Oct 21, 2026). */
+:root{
+  --bg:#edf1ec; --surface:#ffffff; --ink:#15251e; --muted:#53655d; --line:#d2dbd4;
+  --accent:#17604a; --accent-soft:#e1eee7; --gold:#a8761a; --gold-soft:#f5ebd2; --warn:#8a4b12; --warn-soft:#fbefe0;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1713; --surface:#16211c; --ink:#e4ebe7; --muted:#9db0a7; --line:#2a3933;
+  --accent:#62c7a0; --accent-soft:#1a2e26; --gold:#e1b25a; --gold-soft:#2b2515; --warn:#f0b27a; --warn-soft:#2c1f13; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1713; --surface:#16211c; --ink:#e4ebe7; --muted:#9db0a7; --line:#2a3933;
+  --accent:#62c7a0; --accent-soft:#1a2e26; --gold:#e1b25a; --gold-soft:#2b2515; --warn:#f0b27a; --warn-soft:#2c1f13; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--f-body)}
+.wrap{max-width:980px;margin:0 auto;padding:28px 16px 72px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5.4vw,46px);line-height:1.08;font-weight:750;letter-spacing:-.01em}
+h2{font-size:23px;line-height:1.25;font-weight:750}
+h3{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.hero{display:flex;flex-direction:column;gap:14px;padding-block:8px 4px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.sub{font:600 20px/1.3 var(--f-display);color:var(--accent)}
+.lead{color:var(--muted);max-width:68ch;font-size:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 12px/1 var(--f-mono);padding:7px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.chip.gold{background:var(--gold-soft);color:var(--gold)}
+.bar{position:sticky;top:0;z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.prog{display:flex;align-items:center;gap:10px;flex:1 1 220px;min-width:0}
+.meter{flex:1;height:6px;background:var(--accent-soft);border-radius:6px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.prog span{font:500 13px/1 var(--f-mono);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+select,button{font:600 14px/1 var(--f-body);border-radius:8px;padding:9px 12px;cursor:pointer}
+select{background:var(--surface);color:var(--ink);border:1px solid var(--line);max-width:100%}
+button{background:var(--accent);color:var(--surface);border:1px solid var(--accent)}
+button.ghost{background:transparent;color:var(--accent)}
+button.big{font-size:16px;padding:12px 18px}
+.status{font-size:13px;color:var(--muted);flex-basis:100%}
+.panel,.agenda{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:90px}
+.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+input[type=text],textarea{font:400 16px/1.45 var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%}
+textarea{resize:vertical;min-height:84px}
+.callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:14px 16px;border-radius:0 10px 10px 0}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout.green{border-color:var(--accent);background:var(--accent-soft)}
+.callout b{color:var(--ink)}
+ul.plain,ol.plain{margin:0;padding-left:1.25rem;display:flex;flex-direction:column;gap:6px}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid var(--line)}
+th{font:600 12px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+td.t{font-family:var(--f-mono);font-size:13px;white-space:nowrap;color:var(--gold);font-variant-numeric:tabular-nums}
+table input[type=text]{min-width:120px;padding:7px 9px;font-size:15px}
+table textarea{min-width:130px;min-height:72px;font-size:15px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mini{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mini h3{color:var(--accent)}
+.sec-head{display:grid;grid-template-columns:auto 1fr auto;gap:4px 14px;align-items:baseline}
+.num{font:750 30px/1 var(--f-display);color:var(--gold);font-variant-numeric:tabular-nums}
+.goal{color:var(--muted);font-size:16px;margin-top:4px}
+.mins{font:500 12px/1 var(--f-mono);color:var(--accent);background:var(--accent-soft);padding:6px 9px;border-radius:999px;white-space:nowrap}
+.group{display:flex;flex-direction:column}
+.group h3{margin:8px 0 2px}
+.item{padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.item:last-child{border-bottom:none}
+.q{display:flex;gap:12px;cursor:pointer}
+.q input{width:19px;height:19px;flex-shrink:0;margin-top:3px;accent-color:var(--accent)}
+.q span{min-width:0}
+.q input:checked + span{color:var(--muted)}
+.who{font:600 11px/1 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-left:4px}
+.tag{display:inline-block;font:600 11px/1 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--gold);background:var(--gold-soft);padding:4px 7px;border-radius:5px;margin-right:4px;vertical-align:2px}
+.ans{margin-left:31px;display:flex;flex-direction:column;gap:6px}
+.ans .lbl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:700;color:var(--accent)}
+.ans textarea{min-height:64px}
+.mic{font-size:13px;padding:6px 10px;background:transparent;color:var(--accent)}
+.mic.on{background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;padding-top:4px}
+.notes.single{grid-template-columns:1fr}
+.copybox{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.copybox code{font:500 15px/1 var(--f-mono);background:var(--bg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;user-select:all;overflow-wrap:anywhere}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.timeline li{display:grid;grid-template-columns:9.5rem 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.timeline li:last-child{border-bottom:none}
+.timeline .d{font:500 13px/1.5 var(--f-mono);color:var(--gold);font-variant-numeric:tabular-nums}
+.timeline li.now .d{color:var(--accent)}
+.sources a{display:block;padding:3px 0;overflow-wrap:anywhere}
+.howto ol{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:6px}
+.sendrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+#fallback[hidden]{display:none!important}
+.sr{position:absolute;left:-9999px}
+@media (max-width:680px){
+  body{font-size:16px}
+  .meta,.grid2,.notes{grid-template-columns:1fr}
+  .panel,.agenda{padding:18px}
+  .sec-head{grid-template-columns:auto 1fr}
+  .mins{grid-column:2;justify-self:start;margin-top:6px}
+  .timeline li{grid-template-columns:1fr;gap:2px}
+  .ans{margin-left:0}
+}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .bar,.mic,.sendrow,.noprint{display:none!important}
+  .panel,.agenda{break-inside:avoid;border-radius:0;padding:12px}
+  textarea{min-height:50px}
+  a{overflow-wrap:anywhere}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Working session 2 &middot; Albert Harris + Livingston</div>
+  <h1>From two park engagements to a stronger, park-by-park 2027 season</h1>
+  <p class="sub">Albert &amp; Livingston: build the next park season, toward a six-event 2027 proposal.</p>
+  <p class="lead">Ifficial Reggae Movement &middot; Night Out in the Parks. We have already talked once. This session will confirm what we learned, fill the gaps, review the 2026 application and results, identify what limited bookings, clarify Livingston&rsquo;s own goals, and choose an evidence-based path to more paid performances, within each park and across additional parks. We will leave with a plan, owners and dates before the 2027 portal opens on November 1.</p>
+  <div class="chips">
+    <span class="chip">95-minute core meeting</span>
+    <span class="chip">Discussion, not a booking or funding commitment</span>
+    <span class="chip">Optional questions for follow-up</span>
+    <span class="chip gold">Proposals due Dec 8, 2026 &middot; 11:59 p.m.</span>
+  </div>
+</header>
+
+<div class="bar" role="region" aria-label="Progress and tools">
+  <div class="prog"><div class="meter" aria-hidden="true"><i id="meterFill"></i></div><span id="progText">0 / 0 covered</span></div>
+  <label class="sr" for="jump">Jump to section</label>
+  <select id="jump"><option value="">Jump to&hellip;</option></select>
+  <button type="button" id="sendTop">Send answers to Albert</button>
+  <button type="button" class="ghost" id="copyBtn">Copy notes</button>
+  <button type="button" class="ghost" id="dlBtn">Download with notes</button>
+  <button type="button" class="ghost" onclick="window.print()">Print / Save PDF</button>
+  <span class="status" id="status">Answers and notes save on this device as you type, when the browser allows.</span>
+  <textarea id="fallback" hidden rows="6" aria-label="Notes to copy"></textarea>
+</div>
+
+<section class="panel howto" id="howto">
+  <h2>Livingston: how you will prepare your answers</h2>
+  <ol>
+    <li>Type your name below.</li>
+    <li>Under each question there is an answer box. <b>Type</b> your answer, or tap <b>Speak</b> and talk; tap <b>Stop</b> when you finish. Your words are added to the box, and you can correct them.</li>
+    <li>On an iPhone or any phone where <b>Speak</b> does not work, tap inside the answer box and use the microphone key on your keyboard.</li>
+    <li>Answer what you can. Leave a box empty, or write &ldquo;in person,&rdquo; for anything you would rather talk through at the meeting.</li>
+    <li>Your answers save on this device automatically, so you can come back and finish later.</li>
+    <li>When you are ready, tap <b>Send my answers to Albert</b>. You can send again after adding more; Albert will use your latest send.</li>
+  </ol>
+  <div class="meta">
+    <label class="f">Your name<input type="text" id="r-name" placeholder="Livingston"></label>
+    <label class="f">Phone or email (optional)<input type="text" id="r-contact" placeholder="So Albert can follow up"></label>
+  </div>
+  <div class="sendrow"><button type="button" class="big" id="sendMain">Send my answers to Albert</button><span class="status" id="sendStatus" style="flex-basis:auto"></span></div>
+  <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" class="sr" aria-hidden="true">
+</section>
+
+<div class="panel meta" aria-label="Meeting details">
+  <label class="f">Meeting date / time<input type="text" id="m-date" placeholder="To be agreed (aim for before Nov 1)"></label>
+  <label class="f">Location / call link<input type="text" id="m-loc" placeholder="To be agreed"></label>
+  <label class="f">Participants<input type="text" id="m-who" value="Albert Harris; Livingston"></label>
+  <label class="f">Note taker<input type="text" id="m-notes" placeholder="Name"></label>
+</div>
+
+<section class="panel" id="purpose">
+  <h2>Why we will meet again</h2>
+  <p>Livingston, thank you again for sharing your experience last time. In this session we will confirm what we understood, close the questions we did not get to, understand what made your 2026 application successful and what happened at the parks, and agree on what would make a larger 2027 schedule worthwhile and achievable for your band. We also hope to carry the lessons into Rainbow DJ Lab and Full Spectrum.</p>
+  <div class="callout"><b>Lead question:</b> What determined that you received two events, and what would have needed to change for you to receive six? We will distinguish funding limits, park demand, scheduling, production, and the number of performances originally proposed.</div>
+  <div class="callout green"><b>Objective:</b> We will clarify what was requested versus approved, scheduled, and completed; understand the reasons for the two-event outcome; and agree on a realistic strategy to increase both the number of parks and the number of performances per park in the next cycle.</div>
+  <h3 style="color:var(--accent)">Five concrete outcomes we will leave with</h3>
+  <ol class="plain">
+    <li>His <b>requested-versus-awarded event count</b>.</li>
+    <li>The <b>reason for any reduction or expansion constraint</b>.</li>
+    <li><b>Permission to review useful application materials</b>.</li>
+    <li>A clear account of <b>results, attendance, and staff feedback</b>.</li>
+    <li>One agreed <b>next step toward a larger, park-by-park schedule</b>.</li>
+  </ol>
+</section>
+
+<section class="panel" id="prep">
+  <h2>Albert&rsquo;s prep, before we sit down</h2>
+  <div class="group" id="prepList"></div>
+</section>
+
+<section class="panel" id="facts">
+  <h2>What the public record shows (starting facts)</h2>
+  <p>The Park District lists Ifficial Reggae Movement as a 2026 partner. Its approved public program, <em>History of Jamaican Music</em>, combined live music and performance, storytelling, instrument education, and audience participation.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Park</th><th>Published listing</th><th>We will confirm in the meeting (if not settled last time)</th></tr></thead>
+    <tbody>
+      <tr><td>Tilton</td><td>June 26, 2026 &middot; 4&ndash;7 p.m.</td><td>Completed? Actual format, attendance, payment, and staff feedback?</td></tr>
+      <tr><td>Ada</td><td>August 1, 2026 &middot; 2&ndash;3 p.m.<br>Marked cancelled due to rain</td><td>Who authorized rescheduling, and what was the rescheduling process? What happened to costs and payment?</td></tr>
+      <tr><td>Ada</td><td>August 8, 2026 &middot; 2&ndash;3 p.m.</td><td>Was this the replacement date for August 1? Completed? Same program and fee?</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout warn"><b>Working hypothesis:</b> two park engagements, with a likely (possible) Ada replacement date. Calendar listings alone do not prove or establish completed performances. Livingston will confirm what actually took place; we will write down what he confirms, not what the calendar implies.</div>
+  <div class="grid2">
+    <div class="mini">
+      <h3>The band, per its bio</h3>
+      <ul class="plain">
+        <li><b>Livingston</b>: lead vocals; Montego Bay-born vocalist and songwriter; style blends Roots, Lover&rsquo;s Rock, and Dancehall; his goal is to electrify audiences.</li>
+        <li><b>Vinnie</b>: guitar; Jamaican-born; versatile across genres; established music producer and CEO of IGS (It Go So) Entertainment.</li>
+        <li><b>Charles</b>: keyboards; longtime reggae scene musician; teaches music theory and keyboard lessons to youth; adds harmony.</li>
+      </ul>
+      <p style="font-size:14px;color:var(--muted)">These are supplied bio facts from the band page (ifficialreggae.com/bio), not independently verified biographical claims beyond that page. An earlier draft noted the bio as pending review; it has since been reviewed.</p>
+    </div>
+    <div class="mini">
+      <h3>Why the bio matters here</h3>
+      <ul class="plain">
+        <li>Charles&rsquo;s teaching experience is a natural lead for an educational first visit.</li>
+        <li>Vinnie&rsquo;s production background may cover sound and technical needs.</li>
+        <li>We will confirm whether the NOITP lineup matches the bio or uses more players, since that drives the budget.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout green"><b>Two events is not a program cap.</b> A larger schedule is possible in principle: the 2026 season announcement lists ten park dates for Dance in the Parks and six for Chicago Creative Reuse Exchange. Their allocations do not establish an entitlement or a comparable budget for this band, and they do not explain why awards differ. We will diagnose the real constraint before assuming that stronger promotion alone will solve it.</div>
+</section>
+
+<section class="panel" id="runofshow">
+  <h2>Run of show</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Clock</th><th>Section</th><th>Minutes</th></tr></thead>
+    <tbody id="rosBody"></tbody>
+  </table></div>
+  <p style="color:var(--muted);font-size:15px">Because Livingston will send many answers ahead, the meeting will spend its time confirming, filling gaps and deciding. If time runs short, we will cover every <span class="tag">Start here</span> item plus sections 06 and 09, and move the rest to email or to the optional follow-up list. Albert will ask permission before requesting sensitive material such as the full application, budget, or award letter.</p>
+</section>
+
+<div id="sections" style="display:flex;flex-direction:column;gap:20px"></div>
+
+<section class="panel" id="actions">
+  <h2>Action register</h2>
+  <p style="color:var(--muted)">Due-date hints work back from the December 8 deadline with a few days&rsquo; buffer. Each action will get a named owner and a real deadline.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Result / status</th></tr></thead>
+    <tbody id="actBody"></tbody>
+  </table></div>
+  <h3 style="color:var(--accent)">Close with an agreed decision</h3>
+  <textarea id="decision" rows="4" placeholder="Target event count and parks; per-park two-visit plan; proposed format; minimum fee; funding conditions; introductions authorized; next meeting date."></textarea>
+</section>
+
+<section class="panel" id="worksheets">
+  <h2>Worksheets</h2>
+  <h3 style="color:var(--accent)">Park-by-park growth worksheet</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>Park / status</th><th>Return value and evidence</th><th>Outreach / production fit</th><th>Approval needed</th><th>Owner / next step / due</th></tr></thead>
+    <tbody id="parkBody"></tbody>
+  </table></div>
+  <h3 style="color:var(--accent)">2026 event evidence record</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>Event / completed?</th><th>Audience / participation</th><th>Promotion / host feedback</th><th>Cost / payment / evidence</th></tr></thead>
+    <tbody id="evBody"></tbody>
+  </table></div>
+  <h3 style="color:var(--accent)">Budget comparison &middot; amounts to be supplied</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>Cost / funding item</th><th>2 events</th><th>4 events</th><th>6 events</th></tr></thead>
+    <tbody id="budBody"></tbody>
+  </table></div>
+</section>
+
+<section class="panel" id="optional">
+  <h2>Optional follow-up questions</h2>
+  <p>We will use these only if relevant, or schedule a separate follow-up: precise insurance and clearance paperwork; equipment transport and loading; power and sound limits; accessible audience and participation arrangements; consent for documentation; cancellation decision timing; invoicing milestones; potential school or community partners. We will record staff-confirmed requirements rather than treating another partner&rsquo;s experience as a rule.</p>
+  <label class="f">Follow-up topics and owner<textarea id="optionalNotes" rows="3" placeholder="Follow-up topics and owner"></textarea></label>
+  <h3 style="color:var(--accent)">Decision standard</h3>
+  <p>Each proposed extra date will need a distinct community purpose, credible host interest, feasible staffing and production, fair compensation, and formal authorization. A repeat visit should add value for residents rather than merely repeat the same show.</p>
+</section>
+
+<section class="panel" id="playbook">
+  <h2>Growth playbook: more parks and repeat bookings (proposed work plan)</h2>
+  <div class="callout green"><b>Proposed planning target:</b> a six-event pilot across three parks, with two distinct visits per park, subject to funding and staff approval. This is a planning target, not an established NOITP entitlement. We will use it to structure the conversation, the park conversations, and the next application, and compare it against the other growth options before selecting a target.</div>
+  <div class="scroll"><table>
+    <thead><tr><th style="width:26%">Action</th><th>Practical approach</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Diagnose the actual constraint</b></td><td>Document requested, awarded, scheduled, and completed events. Establish whether Livingston asked for two events or asked for more and received two. Identify the real constraint and build the next proposal around the reason.</td></tr>
+      <tr><td><b>2. Reconnect and secure return interest</b></td><td>Ask Tilton and Ada staff (previous hosts) what worked, what needs improvement, and whether they would support two different visits next season. Request a short statement of interest, without treating it as funding approval. Seek permission for introductions.</td></tr>
+      <tr><td><b>3. Give each return visit a purpose</b></td><td>Offer a connected sequence: <b>Visit 1</b>, Jamaican rhythms, instruments, and musical history with audience participation; <b>Visit 2</b>, a distinct interactive reggae concert that builds on the first. Livingston shapes the content around what his band delivers well.</td></tr>
+      <tr><td><b>4. Package and offer scalable budgets</b></td><td>Prepare distinct program options and transparent 2-, 4-, and 6-event budgets showing musician pay, sound, transport, outreach, administration, and any amenities the park cannot supply. Claim only genuine shared savings and keep artist pay fair.</td></tr>
+      <tr><td><b>5. Reduce hosting work</b></td><td>Package a concise technical rider, setup timeline, staffing responsibilities, promotion package, and weather alternative. State exactly what the park must provide.</td></tr>
+      <tr><td><b>6. Build local, neighborhood demand</b></td><td>Name a local outreach partner for each proposed park, such as a school, library, community organization, or neighborhood business, with its specific contribution and a specific resident-engagement plan showing how residents will take part.</td></tr>
+      <tr><td><b>7. Broaden availability</b></td><td>Offer realistic weekday and geographic flexibility across the North, Central, and South regions, plus an indoor version where feasible. Do not promise dates or production capacity the band cannot sustain.</td></tr>
+      <tr><td><b>8. Document, then renew</b></td><td>After each event, track attendance estimates, participation, outreach activity, staff and host observations and feedback, and return interest. Collect consented photos (images) and short testimonials. Turn results into evidence for the following application and park conversations.</td></tr>
+      <tr><td><b>9. Confirm authority</b></td><td>Ask the central NOITP team how park interest, repeat visits, additional dates, and independently funded performances are approved. Individual park enthusiasm supports a proposal; it is not an award or permission to add funded events.</td></tr>
+    </tbody>
+  </table></div>
+  <p>This approach fits the current guidelines&rsquo; emphasis on local relationships, returning partners&rsquo; outreach records, flexibility across regions, feasible production, and sustainable budgets.</p>
+  <div class="callout">Park interest supports a proposal; it is not an award or permission to add funded events. We will protect fair artist pay and avoid promising unconfirmed resources.</div>
+</section>
+
+<section class="panel" id="guidelines">
+  <h2>2027 guidelines and calendar</h2>
+  <div class="grid2">
+    <div class="mini">
+      <h3>Scored heavily</h3>
+      <ul class="plain">
+        <li>Enriching and engaging programming</li>
+        <li>Production viability in park spaces</li>
+        <li>Commitment to community connectivity, with a thorough outreach and marketing plan</li>
+        <li>Budget feasibility: sustainable, fair, accurate to scope</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <h3>Requirements that shape the plan</h3>
+      <ul class="plain">
+        <li>Chicago-based applicant, verified at application, contracting, and payment; main applicant 21+</li>
+        <li>Program free to the public; other funding encouraged</li>
+        <li>Returning applicants must show intentional outreach and community engagement</li>
+        <li>Priority for willingness to present in all three regions; partners transport their own gear and people</li>
+        <li>Events any day, mostly evenings; no NOITP dates on Sundays or federal holidays</li>
+        <li>Budget for any amenity the program depends on</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <h3>Contracting</h3>
+      <ul class="plain">
+        <li>$1 million general liability insurance strongly recommended, naming the Park District as additional insured</li>
+        <li>Fingerprint clearance or background check possible where partners interact with the public</li>
+        <li>Accessibility plan encouraged: mobile access, bilingual narratives, ASL, audio description</li>
+        <li>Performance schedule must be confirmed by mid-March 2027</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <h3>What partners can receive</h3>
+      <ul class="plain">
+        <li>Permit fee waivers</li>
+        <li>Full or partial budget support; no two awards are the same</li>
+        <li>Up to 1,000 printed marketing pieces, plus digital promotion</li>
+        <li>A NOITP liaison for park connections, site selection, and training</li>
+        <li>Some applicants are offered space and marketing only</li>
+      </ul>
+    </div>
+  </div>
+  <p><b>Published planning window:</b> applications November 1 to December 8, 2026; deadline 11:59 p.m. December 8. Published 2027 season: June 1 to December 31. We will confirm notification timing directly, because the page contains a stale 2026 notification date.</p>
+  <ol class="timeline" aria-label="Timeline">
+    <li class="now"><span class="d">Oct 21, 2026</span><span>Agenda prepared. This session will land before the portal opens.</span></li>
+    <li><span class="d">Nov 1 &middot; 12:01 a.m.</span><span>2027 proposal portal opens.</span></li>
+    <li><span class="d">Nov 16 &middot; 6&ndash;8 p.m.</span><span>Office hours, Warren Park, 6601 N. Western Ave.</span></li>
+    <li><span class="d">Nov 17 &middot; 5:30&ndash;7:30</span><span>Office hours, Garfield Park, 100 N. Central Park Ave.</span></li>
+    <li><span class="d">Nov 18 &middot; 5&ndash;7 p.m.</span><span>Office hours, Hamilton Park, 513 W. 72nd St.</span></li>
+    <li><span class="d">Dec 4</span><span>Target internal submission.</span></li>
+    <li><span class="d">Dec 8 &middot; 11:59 p.m.</span><span>Proposals due.</span></li>
+    <li><span class="d">Early 2027</span><span>Acceptance notices. The page still shows a stale &ldquo;March 2, 2026&rdquo; date, so we will confirm with staff.</span></li>
+    <li><span class="d">Mid-March 2027</span><span>Selected partners confirm their performance schedule.</span></li>
+    <li><span class="d">Jun 1 &ndash; Dec 31, 2027</span><span>15th NOITP season.</span></li>
+  </ol>
+  <div class="copybox"><span>Questions to staff:</span><code>noitp@chicagoparkdistrict.com</code><button type="button" class="ghost" id="copyEmail">Copy address</button><a href="mailto:noitp@chicagoparkdistrict.com">Email</a></div>
+</section>
+
+<section class="panel" id="gap">
+  <h2>How this agenda was built: gap analysis of the earlier draft</h2>
+  <p>The supplied draft was strong on requested-versus-awarded events, booking authority, production, outreach, rain, payment, and the need for staff confirmation. The updates below make it easier to turn that discussion into decisions.</p>
+  <p>This combined agenda merges three versions prepared on October 21, 2026. The October 21 revision included the gap analysis below; every update it lists is carried into this agenda. Nothing from any version was dropped, so the core meeting now runs 95 minutes instead of 60. Albert will review this table before the meeting; it is not an additional timed agenda block.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Area</th><th>Gap / refinement</th><th>Update</th></tr></thead>
+    <tbody>
+      <tr><td>Timing</td><td>The attachment says 45&ndash;60 minutes; its blocks add up to 60&ndash;65.</td><td>Six core blocks totaled exactly 60 minutes in that revision; optional prompts moved to follow-up. (This merged agenda keeps every block and runs 95 minutes.)</td></tr>
+      <tr><td>Repetition</td><td>Questions recur in the key-question table, strategy, and six additional-topic cards.</td><td>One ordered discussion flow; references and optional prompts remain separate.</td></tr>
+      <tr><td>Livingston&rsquo;s own goals</td><td>The agenda presumes expansion is the desired outcome.</td><td>Start with his priorities, capacity, minimum fee, and definition of success.</td></tr>
+      <tr><td>Premature target</td><td>Six events / three parks receives emphasis before the constraint is known.</td><td>Compare repeat visits, wider reach, and 2 / 4 / 6-event options before selecting a target.</td></tr>
+      <tr><td>Per-park strategy</td><td>The principle of two visits is present, but park-by-park execution is missing.</td><td>Add a host pipeline with audience need, distinct return value, evidence, outreach, approval, owner, and next step.</td></tr>
+      <tr><td>Financial sustainability</td><td>Award amounts and uncovered expenses are discussed without a structured comparison.</td><td>Add budget prompts for artist compensation, full delivery costs, funding gaps, and payment timing.</td></tr>
+      <tr><td>Results and evidence</td><td>Attendance and feedback questions are sound but lack a capture framework.</td><td>Add an event-by-event evidence record and separate fact, interpretation, and staff confirmation.</td></tr>
+      <tr><td>Responsibilities</td><td>The closing asks for next steps but has no named-owner register.</td><td>Add decisions, owners, deadlines, dependencies, and a next meeting field.</td></tr>
+      <tr><td>Distinct projects</td><td>The band&rsquo;s renewal and Albert&rsquo;s separate applications are not clearly distinguished.</td><td>Add transferability and optional collaboration questions; do not assume a joint application or pooled funding.</td></tr>
+      <tr><td>Reference traceability</td><td>Only three general links appear; specific event and proposal links are missing.</td><td>Include direct event listings and proposal guidelines; retain the unresolved bio limitation.</td></tr>
+      <tr><td>Use in the meeting</td><td>The attachment has no editable notes, portable saved notes, or print button.</td><td>Provide editable notes, local browser saving, downloadable copy with notes, and print / PDF controls. (This merged agenda adds typed or spoken answers that Livingston can send to Albert.)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="panel sources" id="sources">
+  <h2>Reference links</h2>
+  <p style="color:var(--muted)">Official pages reviewed October 21, 2026. We will confirm changes before submitting. The band bio is included as supplied context.</p>
+  <a href="https://www.chicagoparkdistrict.com/night-out-parks-proposals" target="_blank" rel="noopener">2027 proposal guidelines</a>
+  <a href="https://www.chicagoparkdistrict.com/about-night-out-parks" target="_blank" rel="noopener">About Night Out in the Parks &middot; 2026 partners</a>
+  <a href="https://www.chicagoparkdistrict.com/about-us/news/chicago-park-districts-14th-season-night-out-parks-takes-switch-summer-event" target="_blank" rel="noopener">2026 season announcement</a>
+  <a href="https://www.chicagoparkdistrict.com/events/history-jamaican-music-tilton" target="_blank" rel="noopener">Tilton &middot; June 26 listing</a>
+  <a href="https://www.chicagoparkdistrict.com/events/history-jamaican-music-ada" target="_blank" rel="noopener">Ada &middot; August 1 cancellation</a>
+  <a href="https://www.chicagoparkdistrict.com/events/history-jamaican-music-ada-0" target="_blank" rel="noopener">Ada &middot; August 8 listing</a>
+  <a href="https://vimeo.com/1131003199" target="_blank" rel="noopener">NOITP virtual information session</a>
+  <a href="https://www.ifficialreggae.com/bio" target="_blank" rel="noopener">Ifficial Reggae Movement &middot; band bio</a>
+</section>
+
+<section class="panel noprint">
+  <h2>Send your answers</h2>
+  <p>When you have answered what you can, send them. Albert will receive them by email. You can send again later; the latest send is the one Albert will use.</p>
+  <div class="sendrow"><button type="button" class="big" id="sendBottom">Send my answers to Albert</button></div>
+</section>
+
+<footer>
+  <p>Updated October 21, 2026 &middot; Prepared for Albert Harris and Livingston &middot; Ifficial Reggae Movement / NOITP planning conversation. This agenda is not an official NOITP document and does not guarantee funding or event counts.</p>
+  <p>Answers and notes stay on this device until you tap Send, Copy notes or Download with notes. Avoid entering sensitive personal information on a shared device.</p>
+  <p>Ras Tafari Inc. &middot; (872) 255-9333</p>
+</footer>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+// k: "q" = question for Livingston (answer box), "a" = Albert does this (checkbox only),
+// "s" = question for NOITP staff (optional box for what Livingston already knows). "!" = Start here.
+const PREP = [
+  "Reread your notes from the first conversation and fill in each “What we heard last time” box below.",
+  "Send Livingston this agenda link ahead of time so he can prepare his answers by typing or speaking, and ask, if he is comfortable, to bring the award letter, final schedule, staff feedback, and application.",
+  "Watch the NOITP virtual information session video and skim the 2027 guidelines summary near the bottom of this page.",
+  "Confirm which Park District region (North, Central, South) Tilton and Ada fall in.",
+  "Decide what Rainbow DJ Lab and Full Spectrum would want from a collaboration before raising it.",
+  "Sketch rough 2-, 4-, and 6-event budget shells so the money conversation has something to react to (see the budget comparison worksheet).",
+  "Review the gap analysis table near the bottom of this page.",
+  "Read any answers Livingston has sent, and mark which ones still need follow-up in the meeting."
+];
+
+const S = [
+ {id:"s1", num:"01", title:"Open, recap, consent, and Livingston’s goals", time:"10 min",
+  goal:"We will restate why we are meeting again, check Albert’s recap, start with Livingston’s own priorities and definition of success, and agree what can be shared.",
+  groups:[{qs:[
+   ["a","Thank Livingston and restate the purpose: turn what we learned last time into a 2027 plan, and carry lessons into Rainbow DJ Lab and Full Spectrum."],
+   ["q","Albert will give a two-minute recap of what he understood from our first conversation. What did he get wrong, or leave out?"],
+   ["a","Confirm this is for learning and planning, not a booking commitment or promise of funding."],
+   ["q","What would make this conversation useful to you? Is your priority more income, repeat park visits, new audiences, cultural education, or a combination? How do you define success?"],
+   ["q","How many dates could the band realistically deliver, and what minimum fee, scheduling limits, and production conditions matter?"],
+   ["q","May we take notes? Which application materials, budget details, financial details, the award letter, contacts, introductions, and comments may be used or shared, and with whom?"],
+   ["q","What determined that you received two events, and what would have needed to change for you to receive six?",1]
+  ]}]},
+ {id:"s2", num:"02", title:"Lock the 2026 facts: requested → awarded → delivered, and the constraint", time:"10 min",
+  goal:"We will establish the original request, approved count, scheduled dates, completed, cancelled and rescheduled performances, and the explanation for two.",
+  groups:[
+   {label:"Counts and changes", qs:[
+    ["q","How many performances and parks did you request, receive funding for, schedule, and actually complete? How many were cancelled or rescheduled? Please confirm Tilton and Ada separately.",1],
+    ["q","Were two events your original request, the award limit, or the final outcome after changes? If the number changed, who communicated the change and why?"],
+    ["q","What actually limited the schedule: the original request, the award amount or funding, your proposed scope, park demand or interest, availability, production requirements, or another issue? What reason did staff give, and what evidence confirms it? Please separate documented feedback from your own interpretation.",1],
+    ["q","Was there an opportunity to negotiate additional dates? If so, what happened?"]
+   ]},
+   {label:"Calendar check", qs:[
+    ["q","Tilton, June 26 (4–7 p.m.): completed? What was the actual format, attendance, payment, and staff feedback?"],
+    ["q","Was August 8 at Ada the replacement for the August 1 rain cancellation? Who authorized the change? Were there any other completed or cancelled dates?"],
+    ["q","Tilton was listed for three hours and Ada for one. Were these different program formats or breaks, or did the listings include other activities? How did the fee and staffing differ?"],
+    ["q","Did the lineup that played match the bio (Livingston, Vinnie, Charles), or were more musicians involved?"]
+   ]}
+  ]},
+ {id:"s3", num:"03", title:"Application strengths, funding, finances, and paperwork", time:"12 min",
+  goal:"We will understand what made the application work, what the money covered, whether it was financially worthwhile, and what the process demanded.",
+  groups:[
+   {label:"The application", qs:[
+    ["q","Would you be comfortable walking Albert through your submitted narrative, budget, work samples, award letter, final schedule, and staff feedback? These may explain the two-event outcome better than the application alone."],
+    ["q","How did you describe Jamaican musical history, live instrumentation, storytelling, and audience participation?"],
+    ["q","Which elements (narrative, work samples, budget details, or relationships) do you believe helped make the application successful? Which materials were strongest, and which need improvement?"],
+    ["q","What specific feedback did staff give? What did staff explicitly say versus what you inferred or assessed yourself? What would you keep (retain) or change next time?"],
+    ["q","Did the proposal include multiple parks or repeat visits? Were alternatives offered for different funding levels?"]
+   ]},
+   {label:"The money", qs:[
+    ["q","What amount did you request and receive, if you are comfortable sharing?"],
+    ["q","Was it a total project award (project funding) or a payment tied to each performance (a per-event fee)?"],
+    ["q","What expenses remained uncovered? Which costs did the award not cover?"],
+    ["q","After musician pay, production, transport, outreach, administration, and cancellation costs, was the engagement financially worthwhile? How long did payment take?"]
+   ]},
+   {label:"The paperwork", qs:[
+    ["q","What was required for contracting, insurance, clearances, reporting, invoicing, and payment? What took longer than expected, and what paperwork would you prepare earlier next time?"],
+    ["q","Did you carry $1 million general liability naming the Park District as additional insured? Were fingerprint or background checks required?"],
+    ["q","Did Chicago residency verification at application, contracting, and payment cause any friction?"]
+   ]}
+  ]},
+ {id:"s4", num:"04", title:"How park bookings actually happen: selection, relationships, authority, availability", time:"10 min",
+  goal:"We will learn who chose the parks, how an award became confirmed dates, who holds authority, and what availability was offered.",
+  groups:[
+   {label:"Park selection", qs:[
+    ["q","Who selected Tilton and Ada: your band, the central NOITP team, your liaison, or individual park staff?",1],
+    ["q","Could you suggest additional parks? Were any parks resistant, and if so, why?"],
+    ["q","Which regions did your parks fall in? The guidelines prioritize projects willing to present in the North, Central, and South regions."]
+   ]},
+   {label:"Relationships", qs:[
+    ["q","Did you know either park supervisor beforehand? Did a park request your band?"],
+    ["q","Which staff roles proved most helpful in moving a booking forward?"],
+    ["q","When should a returning artist approach parks: before applying, or only after an award?"]
+   ]},
+   {label:"Approval versus booking", qs:[
+    ["q","After acceptance, what exact steps turned the award into confirmed performances (a confirmed date)?",1],
+    ["q","Who had final authority over dates, locations, fees, and additional spending, and who had authority to add performances?"],
+    ["q","Could you propose more locations or negotiate more dates or other changes after the award? Who could approve that change?"]
+   ]},
+   {label:"Scheduling", qs:[
+    ["q","How broad was the availability you offered? Did weekday, daytime, geographic, or band-scheduling restrictions reduce placements or opportunities?"],
+    ["q","Could you accept indoor fall or winter performances? The season runs through December 31. What would make that feasible or difficult?"],
+    ["q","How did the mid-March schedule-confirmation deadline work for the band?"]
+   ]}
+  ]},
+ {id:"s5", num:"05", title:"Delivery, promotion, results, rain, payment, and lessons", time:"10 min",
+  goal:"We will capture production realities, attendance, feedback, payment timing, what Livingston would do differently, and what transfers to Albert’s programs.",
+  groups:[
+   {label:"Production and weather", qs:[
+    ["q","What did you supply versus the park: sound, engineer, power distribution, shelter, seating, transport, and staffing?"],
+    ["q","What requirements made a park difficult or expensive to serve?"],
+    ["q","After costs, what was the true net return?"],
+    ["q","How did rain affect rescheduling, payment, and unrecoverable costs? Was there an indoor or rain alternative, and would one have helped?"]
+   ]},
+   {label:"Promotion and audience", qs:[
+    ["q","What did your band do to bring local residents, and what did the park do? Did you use the printed marketing pieces NOITP provides?",1],
+    ["q","Which local partners helped attract residents? Which methods produced attendance you could actually trace?"],
+    ["q","Approximately how many attended and actively participated at each completed event, and how were those numbers estimated?"],
+    ["q","For each completed event, what local outreach happened, what host feedback and return interest followed, and what records support those results?"]
+   ]},
+   {label:"Feedback, evidence, and payment", qs:[
+    ["q","What did park staff and residents say afterward? Any written feedback, complaints, testimonials, return invitations, or referrals?"],
+    ["q","Are there consented photos or testimonials we can use?"],
+    ["q","What evidence and reports were required afterward? How long did payment take after an accepted invoice?"],
+    ["q","What paperwork would you prepare earlier next time, and what would you do differently overall?"]
+   ]},
+   {label:"Lessons for Albert", qs:[
+    ["q","What should Albert learn for Rainbow DJ Lab / Full Spectrum, and what would not transfer because the format, staffing, or applicant is different?"]
+   ]}
+  ],
+  extra:`<p style="color:var(--muted);font-size:15px">Record event-by-event answers in the <a href="#worksheets">2026 event evidence record</a>, keeping fact, interpretation, and staff confirmation separate.</p>`},
+ {id:"s6", num:"06", title:"Design a larger, sustainable 2027 schedule: growth options and repeat-visit value", time:"15 min",
+  goal:"We will compare repeat visits, wider reach, and 2 / 4 / 6-event options, then pick a provisional target, format, and per-park plan, and the conditions needed to make it feasible. Increase events per park, not just total parks.",
+  groups:[
+   {label:"Target", qs:[
+    ["q","If you were aiming for six paid events next season, what would need to change first: demand, funding, availability, format, or production?",1],
+    ["q","Which is the better next step for your band: repeat visits at existing parks, more parks, or a balanced approach? Would three parks with two distinct visits each work better than six parks with one visit? Why?"],
+    ["a","Compare the four growth options below and choose one provisionally. Do not select an event count until capacity and budget are clear."]
+   ]},
+   {label:"Parks and hosts", qs:[
+    ["q","Which three parks should be proposed? Which previous host would welcome a return, and which new park is a realistic next introduction?"],
+    ["q","Would Tilton or Ada want, and support, a second distinct visit next season? What local demand or staff feedback would justify it? Can we get a short statement of interest, understood as support rather than funding approval?"],
+    ["q","What does each park need to provide?"]
+   ]},
+   {label:"Program", qs:[
+    ["q","Which two connected experiences can you confidently deliver? For each, what are the audience, participant activity, length, learning goals or community benefit, and reason to return? Can two visits deliver different content and a clear progression without repeating the same show?"],
+    ["q","Who leads the teaching segments? Charles already teaches music theory and keyboard to youth."],
+    ["q","What accessibility measures are realistic: mobile access, bilingual narrative, ASL interpretation, audio description?"]
+   ]},
+   {label:"Budget and capacity", qs:[
+    ["q","What 2-, 4-, and 6-event budgets keep musician pay fair and reflect only genuine shared savings? Where are there real shared savings, and what costs must remain fully funded for every event?"],
+    ["q","What is the minimum sustainable fee per event?"],
+    ["q","What self-contained technical package (technical rider, setup timeline, staffing responsibilities), promotion package, weather or indoor alternative, accessibility plan, and local outreach commitments would make hosting simpler and reduce hosting work?"],
+    ["q","Can the band offer realistic weekday, daytime, geographic, and indoor options across all three regions without overpromising?"],
+    ["q","What local outreach partner could each proposed park work with (school, library, community organization, or neighborhood business), and what would that partner specifically contribute?"]
+   ]},
+   {label:"Evidence and collaboration", qs:[
+    ["q","What evidence will demonstrate demand and justify expansion next time?"],
+    ["q","What would a collaboration with Rainbow DJ Lab / Full Spectrum contribute? If it is useful, what would each person contribute, who would be the applicant or lead, how would costs be allocated, and what approvals would be needed? Would it mean separate or joint applications? We will discuss artistic fit and separate responsibilities before making any commitment, and will not assume a joint application or pooled funding."]
+   ]}
+  ],
+  extra:`<div class="scroll"><table>
+   <thead><tr><th>Option</th><th>Proposed scope</th><th>Decision test</th></tr></thead>
+   <tbody>
+    <tr><td><b>Return and improve</b></td><td>2 events at 2 parks</td><td>Can stronger results and host relationships establish a sustainable base?</td></tr>
+    <tr><td><b>Balanced expansion</b></td><td>4 events across 2–4 parks</td><td>Can the band expand without overstretching production or outreach?</td></tr>
+    <tr><td><b>Connected visits</b></td><td>6 events: 2 visits at each of 3 parks</td><td>Do hosts want a progression, and will NOITP approve and fund it?</td></tr>
+    <tr><td><b>Broader reach</b></td><td>6 events at 6 parks</td><td>Does geographic reach justify the added relationship and transport work?</td></tr>
+   </tbody></table></div>
+   <p style="color:var(--muted);font-size:15px">We will choose based on community demand, band capacity, fair compensation, and approved funding. These are discussion options, not published award tiers.</p>
+   <div class="callout green"><b>Two-visit concept for Livingston to shape.</b> Visit 1: Jamaican musical history, rhythm, instruments, and audience participation. Visit 2: a distinct interactive reggae concert that builds on the first visit.</div>
+   <h3>Park-by-park strategy table</h3>
+   <div class="scroll"><table>
+    <thead><tr><th>Park</th><th>Current evidence / status</th><th>Return and expansion question</th><th>Two-visit concept</th><th>Outreach partner and host needs</th><th>Evidence to collect</th></tr></thead>
+    <tbody>
+     <tr><td><b>Tilton</b></td><td>Listed June 26, 2026, 4–7 p.m.; we will confirm completion and results.</td><td>Would staff support two visits next season? What worked and what needs improvement?</td><td>Visit 1: Jamaican rhythms, instruments, and musical history. Visit 2: interactive reggae concert building on Visit 1.</td><td>Identify a local school, library, community organization, or neighborhood business. Confirm the park’s sound, power, shelter, and staffing role.</td><td>Attendance, participation, staff observations, consented photos/testimonials, return-interest statement.</td></tr>
+     <tr><td><b>Ada</b></td><td>August 1 cancelled due to rain; the August 8 listing may be the replacement. We will confirm what actually happened.</td><td>Did the rain cancellation affect interest or payment? Would staff support two visits next season?</td><td>Same connected sequence, adapted to Ada’s audience and space; include a weather alternative.</td><td>Identify a local outreach partner; clarify the indoor/rain backup and who authorizes changes.</td><td>Replacement authorization, attendance, costs, staff feedback, return-interest statement.</td></tr>
+     <tr><td><b>Proposed third park</b></td><td>To be identified based on geography, demand, and staff interest.</td><td>Which park is a realistic introduction? Who can introduce the band?</td><td>Two visits with a clear progression, not the same show twice.</td><td>Local partner, technical rider, setup timeline, promotion package, and park responsibilities.</td><td>Expression of interest, outreach plan, attendance evidence, staff feedback.</td></tr>
+    </tbody></table></div>
+   <label class="f" for="growth">Preferred option and conditions<textarea id="growth" rows="3" placeholder="Preferred option, reasons, minimum viable fee, availability, per-park plan, and conditions."></textarea></label>`},
+ {id:"s7", num:"07", title:"Map host relationships and approval questions", time:"10 min",
+  goal:"We will decide which hosts to approach, in what order and by whom, and separate host interest from formal booking and funding approval.",
+  groups:[{qs:[
+   ["q","Which existing host should be approached first, by whom, and with what specific request for feedback or return interest?"],
+   ["q","Which new park is a realistic candidate? What local outreach partner, audience need, production fit, and available dates would it have?"],
+   ["q","What must the central NOITP team confirm about repeat visits, funded event counts, park expressions of interest, alternate budgets, and independently funded additions?"],
+   ["q","How will we distinguish a host’s interest from formal booking and funding approval? What is the sequence from introduction to confirmed contract?"],
+   ["q","What materials should be ready before the application deadline, and what is the band’s actual availability?"]
+  ]}],
+  extra:`<p style="color:var(--muted);font-size:15px">Record each host in the <a href="#worksheets">park-by-park growth worksheet</a>.</p>`},
+ {id:"s8", num:"08", title:"Questions only NOITP staff can answer", time:"5 min",
+  goal:"We will agree which questions go to staff, who sends them, and whether we attend office hours. These need authoritative answers, not assumptions from another partner’s experience.",
+  noHeard:true,
+  groups:[{qs:[
+   ["s","Can a partner propose multiple performances (repeat visits) at the same park, and how are those requests evaluated?"],
+   ["s","Who determines the funded event count, and can allocations change after selection?"],
+   ["s","Can park supervisors submit (provide) expressions of interest before an award?"],
+   ["s","How should a proposal present and submit alternative budgets for different numbers of events?"],
+   ["s","Can additional independently funded performances (dates) be incorporated, and what approvals apply?"],
+   ["s","What evidence most strongly supports an expanded schedule for a returning partner?"],
+   ["s","Are indoor and weekday options available, and how are they requested?"],
+   ["s","What are the cancellation, rescheduling, invoicing, and payment terms?"],
+   ["s","When will 2027 acceptance notices go out? The page still shows a stale 2026 date."],
+   ["a","Decide who emails these questions, and which of us attends an office-hours session (Nov 16, 17, or 18)."]
+  ]}],
+  extra:`<div class="copybox"><span>Send to:</span><code>noitp@chicagoparkdistrict.com</code></div>
+   <label class="f" for="staff">Questions to send, person responsible, and answers received<textarea id="staff" rows="3" placeholder="Questions to send, person responsible, and answers received."></textarea></label>`},
+ {id:"s9", num:"09", title:"Decisions, introductions, owners, and next steps", time:"13 min",
+  goal:"We will leave with decisions, named owners, real deadlines, and a next meeting, recorded in the action register below.",
+  noHeard:true,
+  groups:[
+   {label:"Decide", qs:[
+    ["q","What was the main constraint on the 2026 schedule, what evidence supports that conclusion, and what action will resolve it?"],
+    ["q","What provisional 2027 target, preferred format, park mix and per-park strategy, and minimum sustainable fee will we choose? Or, what evidence is still missing before we decide?"],
+    ["q","Which application materials may be shared?"]
+   ]},
+   {label:"Introductions", qs:[
+    ["q","Would you be comfortable introducing Albert to your liaison or the staff at a successful host park?"],
+    ["q","May Albert mention our conversations when approaching them?"]
+   ]},
+   {label:"Commit", qs:[
+    ["a","Assign a named owner and a real deadline to each action. Confirm which questions go to NOITP staff and who will contact NOITP for authoritative answers. Confirm permission for any introduction or shared material."],
+    ["a","No commitments will depend on unconfirmed funding."],
+    ["a","Book the next working session or check-in, ideally a draft review in mid-November."]
+   ]},
+   {label:"Before we leave, confirm we have all five", qs:[
+    ["a","His requested-versus-awarded event count."],
+    ["a","The reason for any reduction or expansion constraint."],
+    ["a","Permission to review useful application materials."],
+    ["a","A clear account of results, including attendance and staff feedback."],
+    ["a","One agreed next step toward a larger, park-by-park schedule."]
+   ]}
+  ]}
+];
+
+const ACTIONS = [
+ ["Confirm 2026 requested / awarded / scheduled / completed counts and the limiting factor in writing","Before Nov 1"],
+ ["Share agreed application, budget, award letter, and staff feedback","Before Nov 1"],
+ ["Request Tilton and Ada (previous host) feedback, return interest, and a short statement of interest","Nov 13"],
+ ["Draft the two-visit program descriptions, technical rider, promotion package, and weather alternative","Nov 13"],
+ ["Identify the proposed third park and its local outreach partner","Nov 20"],
+ ["Build 2 / 4 / 6-event budgets (program options and scalable budgets)","Nov 20"],
+ ["Line up one local outreach partner per proposed park","Nov 25"],
+ ["Email NOITP about repeat visits, allocations, park expressions of interest, indoor/weekday options, and payment terms; attend an office-hours session","Nov 16–18"],
+ ["Draft application, internal review, submit","Submit by Dec 4"],
+ ["Agree provisional 2027 target, application responsibilities, and next meeting","At the meeting"]
+];
+
+const PARKS = ["Tilton • prior listing; completion to confirm","Ada • prior listings; completion to confirm","New park candidate • to identify"];
+const EVENTS = ["Tilton • June 26","Ada • August 1 cancellation","Ada • August 8 • replacement to confirm"];
+const BUDGET = ["Musician and rehearsal compensation","Sound / engineer / production","Transport / load-in crew","Outreach / accessibility / administration","Insurance allocation / weather contingency","Total full delivery cost","Confirmed funding / pending funding","Unfunded gap and minimum acceptable fee"];
+
+/* ---------- render ---------- */
+const $ = id => document.getElementById(id);
+$('prepList').innerHTML = PREP.map((t,i)=>`<div class="item"><label class="q" for="prep-${i}"><input type="checkbox" id="prep-${i}"><span>${t}</span></label></div>`).join('');
+
+const ITEMS = []; // every rendered question: {id, section, text, kind}
+const host = $('sections'), jump = $('jump'), ros = $('rosBody');
+let clock = 0;
+S.forEach(sec=>{
+  const mins = parseInt(sec.time,10);
+  const h = Math.floor(clock/60), m = String(clock%60).padStart(2,'0');
+  ros.insertAdjacentHTML('beforeend',`<tr><td class="t">${h}:${m}</td><td><a href="#${sec.id}">${sec.num} · ${sec.title}</a></td><td class="t">${mins}</td></tr>`);
+  clock += mins;
+  jump.insertAdjacentHTML('beforeend',`<option value="${sec.id}">${sec.num} · ${sec.title}</option>`);
+  let qi = 0, html = `<div class="sec-head"><span class="num">${sec.num}</span><div><h2>${sec.title}</h2><p class="goal">${sec.goal}</p></div><span class="mins">${sec.time}</span></div>`;
+  sec.groups.forEach(g=>{
+    html += `<div class="group">${g.label?`<h3>${g.label}</h3>`:''}`;
+    g.qs.forEach(([kind, text, pri])=>{
+      const id = `${sec.id}-q${qi++}`;
+      const who = kind==='a' ? 'Albert' : kind==='s' ? 'For NOITP staff' : 'For Livingston';
+      html += `<div class="item"><label class="q" for="${id}"><input type="checkbox" id="${id}"><span>${pri?'<b class="tag">Start here</b> ':''}${text}<span class="who">· ${who}</span></span></label>`;
+      if (kind !== 'a') {
+        const lbl = kind==='s' ? 'What Livingston already knows (optional)' : 'Livingston’s answer';
+        html += `<div class="ans"><span class="lbl">${lbl}<button type="button" class="mic" data-for="${id}-a">Speak</button></span><textarea id="${id}-a" rows="2" aria-label="${lbl}"></textarea></div>`;
+        ITEMS.push({id, section:`${sec.num}. ${sec.title}`, text, kind});
+      }
+      html += `</div>`;
+    });
+    html += '</div>';
+  });
+  if (sec.extra) html += sec.extra;
+  html += sec.noHeard
+    ? `<div class="notes single"><label class="f" for="${sec.id}-notes">Albert: notes, answers, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Record answers, who owns what, and follow-ups."></textarea></label></div>`
+    : `<div class="notes"><label class="f" for="${sec.id}-heard">Albert: what we heard last time<textarea id="${sec.id}-heard" rows="4" placeholder="Fill in before the meeting from your first-conversation notes."></textarea></label><label class="f" for="${sec.id}-notes">Albert: in the meeting, answers, evidence, decisions<textarea id="${sec.id}-notes" rows="4" placeholder="Distinguish confirmed facts from interpretations. Capture follow-up questions."></textarea></label></div>`;
+  const el = document.createElement('section'); el.className = 'agenda'; el.id = sec.id; el.innerHTML = html; host.appendChild(el);
+});
+const hh = Math.floor(clock/60), mm = String(clock%60).padStart(2,'0');
+ros.insertAdjacentHTML('beforeend',`<tr><td class="t">${hh}:${mm}</td><td>End</td><td class="t">${clock}</td></tr>`);
+[["actions","Action register"],["worksheets","Worksheets"],["optional","Optional follow-up questions"],["playbook","Growth playbook"],["guidelines","2027 guidelines and calendar"],["gap","Gap analysis"],["sources","Reference links"]]
+  .forEach(([v,t])=>jump.insertAdjacentHTML('beforeend',`<option value="${v}">${t}</option>`));
+
+$('actBody').innerHTML = ACTIONS.map((a,i)=>`<tr>
+ <td><input type="text" id="act${i}-a" aria-label="Action ${i+1}" value="${a[0]}"></td>
+ <td><input type="text" id="act${i}-o" aria-label="Owner ${i+1}" placeholder="Albert / Livingston"></td>
+ <td><input type="text" id="act${i}-d" aria-label="Due ${i+1}" placeholder="${a[1]}"></td>
+ <td><input type="text" id="act${i}-s" aria-label="Status ${i+1}"></td></tr>`).join('');
+const cell = (id, label, val) => `<td><textarea id="${id}" aria-label="${label}">${val||''}</textarea></td>`;
+$('parkBody').innerHTML = PARKS.map((p,i)=>`<tr>${cell(`park${i}-0`,'Park / status',p)}${cell(`park${i}-1`,'Return value and evidence')}${cell(`park${i}-2`,'Outreach / production fit')}${cell(`park${i}-3`,'Approval needed')}${cell(`park${i}-4`,'Owner / next step / due')}</tr>`).join('');
+$('evBody').innerHTML = EVENTS.map((e,i)=>`<tr>${cell(`ev${i}-0`,'Event / completed?',e)}${cell(`ev${i}-1`,'Audience / participation')}${cell(`ev${i}-2`,'Promotion / host feedback')}${cell(`ev${i}-3`,'Cost / payment / evidence')}</tr>`).join('');
+$('budBody').innerHTML = BUDGET.map((b,i)=>`<tr>${cell(`bud${i}-0`,'Cost / funding item',b)}${cell(`bud${i}-1`,'2 events')}${cell(`bud${i}-2`,'4 events')}${cell(`bud${i}-3`,'6 events')}</tr>`).join('');
+
+/* ---------- storage + progress ---------- */
+const KEY = 'albert-livingston-agenda-merged-v1', status = $('status');
+const fields = [...document.querySelectorAll('input,textarea')].filter(f=>f.id && !['fallback','website'].includes(f.id));
+const boxes = [...document.querySelectorAll('#sections input[type=checkbox]')];
+function progress(){
+  const done = boxes.filter(b=>b.checked).length;
+  $('progText').textContent = `${done} / ${boxes.length} covered`;
+  $('meterFill').style.width = (boxes.length ? done/boxes.length*100 : 0) + '%';
+}
+try { const saved = JSON.parse(localStorage.getItem(KEY)||'{}'); fields.forEach(f=>{ if (f.id in saved) { f.type==='checkbox' ? f.checked = saved[f.id] : f.value = saved[f.id]; } }); }
+catch(e){ status.textContent = 'This browser is not saving notes. Use Send, Copy notes or Download with notes to keep them.'; }
+function save(){
+  try { const d = {}; fields.forEach(f=>d[f.id] = f.type==='checkbox' ? f.checked : f.value); localStorage.setItem(KEY, JSON.stringify(d)); status.textContent = 'Saved on this device.'; }
+  catch(e){ status.textContent = 'This browser is not saving notes. Use Send, Copy notes or Download with notes to keep them.'; }
+}
+fields.forEach(f=>f.addEventListener(f.type==='checkbox' ? 'change' : 'input', ()=>{ save(); progress(); }));
+progress();
+jump.addEventListener('change',()=>{ const t = $(jump.value); if (t) t.scrollIntoView({behavior:'smooth', block:'start'}); jump.value=''; });
+
+/* ---------- speech to text ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recBtn = null;
+function stopRec(){ if (rec) { try { rec.stop(); } catch(e){} } }
+document.querySelectorAll('.mic').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const box = $(btn.dataset.for);
+    if (!SR) { box.focus(); status.textContent = 'Speak is not available in this browser. Tap the answer box and use the microphone key on your keyboard.'; return; }
+    if (recBtn === btn) { stopRec(); return; }
+    stopRec();
+    rec = new SR(); rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = false;
+    recBtn = btn; btn.classList.add('on'); btn.textContent = 'Stop';
+    status.textContent = 'Listening. Speak your answer, then tap Stop.';
+    rec.onresult = ev => {
+      let said = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) if (ev.results[i].isFinal) said += ev.results[i][0].transcript;
+      said = said.trim();
+      if (!said) return;
+      box.value = box.value ? box.value.replace(/\s*$/,'') + ' ' + said : said.charAt(0).toUpperCase() + said.slice(1);
+      save();
+    };
+    rec.onerror = ev => { status.textContent = ev.error === 'not-allowed' ? 'Microphone permission was blocked. Allow it, or use the microphone key on your keyboard.' : 'Speak stopped (' + ev.error + '). Tap Speak to try again.'; };
+    rec.onend = () => { btn.classList.remove('on'); btn.textContent = 'Speak'; if (recBtn === btn) { recBtn = null; rec = null; } if (/Listening/.test(status.textContent)) status.textContent = 'Saved on this device.'; };
+    try { rec.start(); } catch(e) { rec.onend(); }
+  });
+});
+
+/* ---------- copy / download ---------- */
+const v = id => ($(id)||{}).value || '';
+function summary(){
+  const L = ['ALBERT + LIVINGSTON · IFFICIAL REGGAE × NOITP · WORKING SESSION 2', `Date: ${v('m-date')}   Location: ${v('m-loc')}`, `Participants: ${v('m-who')}   Note taker: ${v('m-notes')}`, `Answers from: ${v('r-name')} ${v('r-contact')}`, ''];
+  L.push('ALBERT’S PREP'); PREP.forEach((t,i)=>L.push(`  [${$('prep-'+i).checked?'x':' '}] ${t}`)); L.push('');
+  S.forEach(sec=>{
+    L.push(`${sec.num}. ${sec.title.toUpperCase()}`);
+    let qi = 0;
+    sec.groups.forEach(g=>g.qs.forEach(([kind, text])=>{ const id = `${sec.id}-q${qi++}`; L.push(`  [${$(id).checked?'x':' '}] ${text}`); if (v(id+'-a')) L.push(`      Answer: ${v(id+'-a')}`); }));
+    if (!sec.noHeard && v(`${sec.id}-heard`)) L.push(`  Heard last time: ${v(sec.id+'-heard')}`);
+    if (v(`${sec.id}-notes`)) L.push(`  Notes: ${v(sec.id+'-notes')}`);
+    if (sec.id==='s6' && v('growth')) L.push(`  Preferred option: ${v('growth')}`);
+    if (sec.id==='s8' && v('staff')) L.push(`  Staff questions / answers: ${v('staff')}`);
+    L.push('');
+  });
+  L.push('ACTIONS'); ACTIONS.forEach((a,i)=>L.push(`  - ${v('act'+i+'-a')} | Owner: ${v('act'+i+'-o')} | Due: ${v('act'+i+'-d')} | Status: ${v('act'+i+'-s')}`));
+  L.push('', 'PARK-BY-PARK WORKSHEET'); PARKS.forEach((p,i)=>L.push(`  - ${[0,1,2,3,4].map(c=>v(`park${i}-${c}`)).join(' | ')}`));
+  L.push('', '2026 EVENT EVIDENCE'); EVENTS.forEach((e,i)=>L.push(`  - ${[0,1,2,3].map(c=>v(`ev${i}-${c}`)).join(' | ')}`));
+  L.push('', 'BUDGET (2 | 4 | 6 events)'); BUDGET.forEach((b,i)=>L.push(`  - ${[0,1,2,3].map(c=>v(`bud${i}-${c}`)).join(' | ')}`));
+  L.push('', `OPTIONAL FOLLOW-UP: ${v('optionalNotes')}`, `DECISION: ${v('decision')}`);
+  return L.join('\n');
+}
+const fb = $('fallback');
+$('copyBtn').addEventListener('click',()=>{
+  const text = summary();
+  const showFallback = ()=>{ fb.hidden = false; fb.value = text; fb.focus(); fb.select(); status.textContent = 'Copy was blocked here. The notes are selected below; copy them manually.'; };
+  try { navigator.clipboard.writeText(text).then(()=>{ fb.hidden = true; status.textContent = 'Notes copied as plain text.'; }, showFallback); } catch(e){ showFallback(); }
+});
+$('copyEmail').addEventListener('click',()=>{
+  try { navigator.clipboard.writeText('noitp@chicagoparkdistrict.com').then(()=>{ status.textContent = 'Email address copied.'; }, ()=>{ status.textContent = 'Select the address to copy it.'; }); } catch(e){ status.textContent = 'Select the address to copy it.'; }
+});
+$('dlBtn').addEventListener('click',()=>{
+  const copy = document.documentElement.cloneNode(true);
+  copy.querySelectorAll('input,textarea').forEach(f=>{
+    const live = document.getElementById(f.id); if (!live) return;
+    if (f.tagName==='TEXTAREA') f.textContent = live.value;
+    else if (f.type==='checkbox') { live.checked ? f.setAttribute('checked','') : f.removeAttribute('checked'); }
+    else f.setAttribute('value', live.value);
+  });
+  copy.querySelectorAll('script').forEach(s=>s.remove());
+  const blob = new Blob(['<!doctype html>\n'+copy.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a'), u = URL.createObjectURL(blob);
+  a.href = u; a.download = 'Albert-and-Livingston-Agenda-With-Notes.html'; a.click(); setTimeout(()=>URL.revokeObjectURL(u), 1000);
+});
+
+/* ---------- send answers to Albert ---------- */
+function collect(){
+  const answers = ITEMS.filter(it=>v(it.id+'-a').trim()).map(it=>({section: it.section, question: it.text, answer: v(it.id+'-a').trim()}));
+  const extra = {};
+  const add = (k, id) => { if (v(id).trim()) extra[k] = v(id).trim(); };
+  add('Meeting date / time','m-date'); add('Location / call link','m-loc'); add('Note taker','m-notes');
+  S.forEach(sec=>{ add(`${sec.num} what we heard last time`, sec.id+'-heard'); add(`${sec.num} meeting notes`, sec.id+'-notes'); });
+  add('Preferred growth option and conditions','growth'); add('NOITP staff questions / answers','staff');
+  add('Optional follow-up topics','optionalNotes'); add('Agreed decision','decision');
+  ACTIONS.forEach((a,i)=>{ const o=v(`act${i}-o`), d=v(`act${i}-d`), s=v(`act${i}-s`); if (o||d||s) extra[`Action: ${v('act'+i+'-a')}`] = `Owner: ${o} | Due: ${d} | Status: ${s}`; });
+  const ws = (rows, prefix, cols, name) => rows.forEach((r,i)=>{ const vals = Array.from({length:cols},(_,c)=>v(`${prefix}${i}-${c}`)); if (vals.slice(1).some(x=>x.trim())) extra[`${name}: ${vals[0]}`] = vals.slice(1).join(' | '); });
+  ws(PARKS,'park',5,'Park worksheet'); ws(EVENTS,'ev',4,'Event evidence'); ws(BUDGET,'bud',4,'Budget (2|4|6)');
+  return {answers, extra};
+}
+let sending = false;
+async function send(){
+  const ss = $('sendStatus');
+  const say = t => { ss.textContent = t; status.textContent = t; };
+  if (sending) return;
+  if ($('website').value) return;
+  const name = v('r-name').trim();
+  if (!name) { say('Please type your name at the top first.'); $('r-name').focus(); $('howto').scrollIntoView({behavior:'smooth'}); return; }
+  const {answers, extra} = collect();
+  if (!answers.length && !Object.keys(extra).length) { say('Nothing to send yet. Type or speak at least one answer.'); return; }
+  if (typeof window.sfProtectedInsert !== 'function') { say('Sending is not available right now. Use Copy notes or Download with notes and email them to Albert.'); return; }
+  // Keep each send under the form's size limit by splitting long answer sets.
+  const parts = []; let cur = [];
+  answers.forEach(a=>{ cur.push(a); if (JSON.stringify(cur).length > 40000) { cur.pop(); parts.push(cur); cur = [a]; } });
+  parts.push(cur);
+  sending = true; say('Sending…');
+  try {
+    for (let i = 0; i < parts.length; i++) {
+      const {error} = await window.sfProtectedInsert('noitp_agenda_answers', {
+        agenda_key: 'albert-livingston-noitp-2026-10', respondent_name: name, respondent_contact: v('r-contact').trim() || null,
+        part_label: `${i+1} of ${parts.length}`, answers: parts[i], extra: i === parts.length-1 ? extra : {}, source_page: location.href.split('#')[0]
+      });
+      if (error) throw new Error(error.message);
+    }
+    say(`Sent to Albert: ${answers.length} answer${answers.length===1?'':'s'}. Thank you. You can add more and send again.`);
+  } catch(e) {
+    say('Could not send: ' + e.message + ' Your answers are still saved here. Try again, or use Copy notes and email them to Albert.');
+  } finally { sending = false; }
+}
+['sendTop','sendMain','sendBottom'].forEach(id=>$(id).addEventListener('click', send));
+</script>
+</body>
+</html>

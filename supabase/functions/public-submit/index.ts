@@ -63,6 +63,7 @@ const FORMS: Record<string, FormConfig> = {
   fs_partner_responses: { columns: ["pitch_key", "decision", "contact_name", "contact_title", "phone", "email", "message", "selections"] },
   fs_guest_dj_responses: { columns: ["invite_key", "decision", "missions", "sounds", "months", "frequency", "age_group", "contact_name", "email", "phone", "message"] },
   lr_venue_responses: { columns: ["pitch_key", "venue_name", "decision", "preferred_night", "cadence", "deal_pref", "contact_name", "contact_title", "phone", "email", "city", "message"] },
+  noitp_agenda_answers: { columns: ["agenda_key", "respondent_name", "respondent_contact", "part_label", "answers", "extra", "source_page"] },
   yawd_waitlist: { columns: ["full_name", "email", "phone", "zip", "customer_type", "business_name", "interests", "message", "source"] },
   // trcevent.com
   event_notify_signups: { columns: ["event_slug", "event_name", "brand", "email"] },
