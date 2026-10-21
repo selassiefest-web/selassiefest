@@ -147,3 +147,14 @@ Hi AlphaTheta team! I'm Stephen Henry with Ras Tafari Inc., a Chicago nonprofit 
 Follow-up if no reply in 5 days: "Hi again! Just checking this reached the right person. Happy to answer questions on a quick call: (872) 255-9333."
 
 Also: comment on a Start From Scratch or education post with something real (not the link). Cold-linking in comments looks like spam.
+
+## On The Rise DJ Academy: curriculum alignment (studied 2026-10-21)
+
+Sources: https://ontheriseacademy.com/dj-courses-london/ , https://ontheriseacademy.com/education-partners/ , https://ontheriseacademy.com/pioneer-dj-alphatheta-start-from-scratch-free-dj-production-workshops/
+- They are listed as Pioneer DJ's "Official Education Partner EMEA" (also Westend DJ retail partner, Mixed In Key education partner). So they know who at AlphaTheta manages education. Ask them that.
+- Paid courses: 1-on-1 (4 to 16 hours, 175 to 550 GBP), 8-week group (8 x 2 hours, 400 GBP), 4-week pathway (4 x 2 hours, 195 GBP). Software: Serato, Rekordbox, Traktor; vinyl, CDJs, controllers. Tutor Terry Ryan. The page lists no module list, class size, ages or certification.
+- Their Start From Scratch workshops (Oct 2024) were free, one-off sessions: scratching, production, DJing, at their studio and Camden Collective. No age range or follow-on program stated.
+- Overlap with our 14 Missions: basics and structure (Meet the Machine, Beats Bars and Phrases, Mix on the One), beatmatching, EQ blends (Three Knobs), cues and loops, library organisation (Build Your Crate; their "Get Organised"), set building.
+- We add: Mic/MC and Word Flip, Theme Clash (TV and ad themes), Rainbow Showcase, hearing-safety orientation, a girls-only track, accommodations, free year-round entry for grades 6 to 12.
+- They add: scratching and turntablism, vinyl, a production workshop, named software lessons.
+- Suggestions (not curriculum changes): use Rekordbox (AlphaTheta's own software) for the pilot; offer scratch as a guest-DJ topic and a short production workshop as an optional block.
