@@ -15,7 +15,6 @@
       --muted: #B9B9B9;
       --green: #0E5E36;
       --gold: #E5A93C;
-      --red: #C83737;
       --card: rgba(255,255,255,0.04);
       --line: rgba(255,255,255,0.10);
     }
@@ -30,26 +29,32 @@
     .eyebrow { letter-spacing: .18em; text-transform: uppercase; font-size: .78rem; color: var(--gold); font-weight: 500; }
     h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 300; line-height: 1.08; margin: 14px 0 18px; }
     h1 b { font-weight: 600; }
-    .lede { font-size: 1.25rem; font-weight: 300; max-width: 760px; color: #e6e6e6; }
-    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .lede { font-size: 1.25rem; font-weight: 300; max-width: 780px; color: #e6e6e6; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
     .btn { display: inline-block; padding: 13px 22px; border-radius: 8px; font-weight: 500; font-size: 1rem; border: 1px solid var(--gold); }
     .btn.primary { background: var(--gold); color: #111; }
     .btn.primary:hover { text-decoration: none; filter: brightness(1.08); }
     .btn.ghost { color: var(--gold); }
+    .btn.quiet { border-color: var(--line); color: var(--muted); }
     section { padding: 56px 0; border-bottom: 1px solid var(--line); }
     h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 400; margin-bottom: 8px; }
-    h2 + .sub { color: var(--muted); max-width: 720px; margin-bottom: 26px; }
+    h2 + .sub { color: var(--muted); max-width: 760px; margin-bottom: 26px; }
     h3 { font-size: 1.15rem; font-weight: 500; margin-bottom: 8px; color: var(--gold); }
     p { margin-bottom: 12px; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
-    .card ul, .plain ul { list-style: none; }
-    .card li, .plain li { padding: 7px 0 7px 22px; position: relative; border-bottom: 1px solid var(--line); }
-    .card li:last-child, .plain li:last-child { border-bottom: 0; }
-    .card li::before, .plain li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    .card ul { list-style: none; }
+    .card li { padding: 7px 0 7px 22px; position: relative; border-bottom: 1px solid var(--line); }
+    .card li:last-child { border-bottom: 0; }
+    .card li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
     .lead-card { border-color: var(--gold); }
     .lead-card h3 { color: var(--text); }
+    .tier { display: flex; flex-direction: column; }
+    .tier .size { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .tier .big { font-size: 1.7rem; font-weight: 300; color: var(--gold); line-height: 1.1; margin: 6px 0 10px; }
+    .tier ul { margin-bottom: 14px; }
+    .tier .btn { margin-top: auto; text-align: center; }
     .stat { font-size: 2.3rem; font-weight: 300; color: var(--gold); line-height: 1; }
     .stat small { display: block; font-size: .9rem; color: var(--muted); margin-top: 6px; font-weight: 400; }
     .timeline { list-style: none; border-left: 2px solid var(--green); margin-left: 6px; }
@@ -63,60 +68,178 @@
     table { width: 100%; border-collapse: collapse; }
     td, th { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
     th { color: var(--gold); font-weight: 500; font-size: .9rem; }
+    .yes { background: #121a15; border-top: 1px solid var(--green); border-bottom: 1px solid var(--green); }
+    details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+    summary { cursor: pointer; font-weight: 500; font-size: 1.05rem; }
+    details p { margin-top: 10px; color: #dcdcdc; }
     footer { padding: 40px 0 60px; color: var(--muted); font-size: .92rem; }
     @media (max-width: 760px) {
       .grid2, .grid3 { grid-template-columns: 1fr; }
       header.hero { padding: 48px 0 40px; }
       section { padding: 40px 0; }
+      .scroll { overflow-x: auto; }
     }
   </style>
 </head>
 <body>
 
 <div class="banner">
-  <div class="wrap"><strong>A proposal prepared by Ras Tafari Inc. for AlphaTheta.</strong> AlphaTheta has not reviewed or endorsed it, and no agreement exists. Everything here is an offer to talk.</div>
+  <div class="wrap"><strong id="bannerWho">A proposal prepared by Ras Tafari Inc. for AlphaTheta.</strong> AlphaTheta has not reviewed or endorsed it, and no agreement exists. Everything here is an offer to talk.</div>
 </div>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">A proposal for AlphaTheta</div>
+    <div class="eyebrow">A proposal for AlphaTheta Music Americas</div>
     <h1>Start From Scratch,<br /><b>in Chicago.</b></h1>
-    <p class="lede">Bring Start From Scratch to the city where house music was born. You lead the program. A Chicago host partner is already in place with the students, the room, the instructors and the 501(c)(3) to make it run.</p>
+    <p class="lede">You equipped Girls Make Beats Miami in 2024 and you run Start From Scratch through local hosts in Lagos, Europe and London. Chicago, where house music began, is ready to be the next host. You lead. We bring the students, the room, the instructors and the 501(c)(3).</p>
     <div class="cta-row">
-      <a class="btn primary" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20request%20for%20a%20call">Request a 20-minute call</a>
-      <a class="btn ghost" href="tel:+18722559333">Call (872) 255-9333</a>
+      <a class="btn primary" href="#yes">Say yes in one click</a>
       <a class="btn ghost" href="#announcement">See a draft announcement</a>
+      <a class="btn quiet" href="tel:+18722559333">Call (872) 255-9333</a>
     </div>
   </div>
 </header>
 
+<section class="yes" id="yes">
+  <div class="wrap">
+    <h2>The easiest ways to answer</h2>
+    <p class="sub">Pick one. Each opens a pre-written email to Stephen Henry, so replying takes ten seconds. A clear "no" is a useful answer too.</p>
+    <div class="grid3">
+      <div class="card tier">
+        <div class="size">Smallest yes</div>
+        <div class="big">A 20-minute call</div>
+        <p>Any weekday, on your calendar in Pacific time. We bring the plan; you bring the direction.</p>
+        <a class="btn primary" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20yes%2C%20let%27s%20talk&amp;body=Best%20times%20(Pacific)%3A%0A">Yes, let's talk</a>
+      </div>
+      <div class="card tier">
+        <div class="size">Not you? Point us on</div>
+        <div class="big">Right person</div>
+        <p>If someone else runs Start From Scratch in the US, tell us who and we will take it from there.</p>
+        <a class="btn ghost" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20please%20contact&amp;body=The%20right%20person%20is%3A%0A">Here is who to contact</a>
+      </div>
+      <div class="card tier">
+        <div class="size">Not right now</div>
+        <div class="big">A clear no</div>
+        <p>A short "not now" lets us close the loop respectfully. We will not keep writing.</p>
+        <a class="btn quiet" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20not%20now">Not now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
-    <h2>Why Chicago, and why now</h2>
-    <p class="sub">Your program has proved the model abroad. Chicago is where the music began.</p>
+    <h2>You already do this. Chicago is the next place.</h2>
+    <p class="sub">Three things AlphaTheta has already shown the world, and where Chicago fits.</p>
     <div class="grid3">
-      <div class="card"><div class="stat">7,500+<small>new DJs trained, as stated on the Start From Scratch site</small></div></div>
-      <div class="card"><div class="stat">250+<small>workshops in 20+ countries across Europe, the Middle East and Africa</small></div></div>
+      <div class="card"><div class="stat">7,500+<small>new DJs trained, 250+ workshops, 20+ countries, per the Start From Scratch site</small></div></div>
+      <div class="card"><div class="stat" style="font-size:1.6rem;line-height:1.15">Local hosts<small>HOMECOMING in Lagos, Boudica in Europe, On The Rise DJ Academy in London. A host model that already works.</small></div></div>
       <div class="card"><div class="stat" style="font-size:1.6rem;line-height:1.15">A potential US launch<small>We found no US host city on the program's pages. We propose Chicago, subject to AlphaTheta's confirmation.</small></div></div>
     </div>
-    <p style="margin-top:22px">House music was born in Chicago's clubs and warehouses. A free, community-led DJ program on the city's South Side, led by AlphaTheta, would connect Start From Scratch's mission to the place where the culture it teaches began. Source for the figures above: <a href="https://alphatheta.com/en/landing/start-from-scratch/" target="_blank" rel="noopener">AlphaTheta's Start From Scratch page</a>.</p>
+    <p style="margin-top:22px"><b>Girls Make Beats, Miami, 2024.</b> AlphaTheta Music Americas gave the chapter DDJ-REV1 controllers and DM-50D monitors, and said it is committed to giving back to the industry and to equal chances for young women (<a href="https://www.musicincmag.com/news/detail/pioneer-dj-makes-donation-to-girls-make-beats" target="_blank" rel="noopener">Music Inc.</a>). Our Empress Decks girls-only track, taught by women DJs, is built for the same purpose. Sources for the figures and hosts: <a href="https://alphatheta.com/en/landing/start-from-scratch/" target="_blank" rel="noopener">Start From Scratch</a> and its <a href="https://alphatheta.com/en/landing/start-from-scratch/partners/" target="_blank" rel="noopener">partners page</a>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Built for who Start From Scratch serves</h2>
+    <p class="sub">Your program names four communities. Here is how the Chicago class meets each one, and where we would welcome your guidance.</p>
+    <div class="card scroll">
+      <table>
+        <tr><th>Start From Scratch audience</th><th>What the Chicago class already does</th></tr>
+        <tr><td>Women and girls</td><td>Empress Decks, a girls-only track taught by women DJs, and a different woman DJ guest every week</td></tr>
+        <tr><td>People of Colour</td><td>A free class in South Shore, a predominantly Black Chicago neighborhood, on a public park site</td></tr>
+        <tr><td>Neurodiverse people</td><td>Volume-limited headphones, free earplugs, a quieter workspace and visual step guides</td></tr>
+        <tr><td>LGBTQIA+ people</td><td>Open to every student. We would welcome your guidance on inclusive practice and on how Start From Scratch hosts handle it.</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The teaching fits what you already teach</h2>
+    <p class="sub">Start From Scratch workshops cover scratching, production and DJing. Our 14 Missions cover the DJing core, plus the live-performance skills students use at showcases.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Our 14 Missions (42 skills)</h3>
+        <ul>
+          <li>Meet the Machine, Build Your Crate</li>
+          <li>Beats, Bars and Phrases, Mix on the One</li>
+          <li>Tempo, Beatmatch by Ear, The Three Knobs (EQ)</li>
+          <li>Make a Third Song, Hot Cues and Loops</li>
+          <li>Word Flip, Theme Clash Lab, Mic, MC and Live Lab</li>
+          <li>Build Your Set, Rainbow Showcase</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Where AlphaTheta would shape it</h3>
+        <ul>
+          <li><b>Software:</b> we would teach on <b>Rekordbox</b>, your own software, so every student learns on AlphaTheta end to end</li>
+          <li><b>Scratching:</b> a guest-DJ topic or workshop block, in the style of your scratching workshops</li>
+          <li><b>Production:</b> an optional short block, as in your production workshops</li>
+          <li><b>Your standards:</b> we adopt your framework and wording wherever you prefer</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">Our class is slower and longer than a short course: students work through the 14 Missions at their own pace, in 2-hour classes, with about 7 hours of hands-on deck time in all.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Three sizes of yes</h2>
+    <p class="sub">Start small or lead. Every size is real, and each one grows into the next.</p>
+    <div class="grid3">
+      <div class="card tier">
+        <div class="size">Equip one</div>
+        <div class="big">1 station</div>
+        <ul>
+          <li>1 student controller, for example the DDJ-REV1 you gave Girls Make Beats</li>
+          <li>1 pair of AlphaTheta headphones</li>
+          <li>Your name on the station</li>
+        </ul>
+        <a class="btn ghost" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20equip%20one%20station">Choose this</a>
+      </div>
+      <div class="card tier">
+        <div class="size">Founding partner</div>
+        <div class="big">4 stations</div>
+        <ul>
+          <li>4 matching controllers and headphones</li>
+          <li>An instructor demonstration setup</li>
+          <li>Founding-partner billing at every showcase</li>
+        </ul>
+        <a class="btn ghost" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20founding%20partner%20(4%20stations)">Choose this</a>
+      </div>
+      <div class="card tier lead-card">
+        <div class="size">Flagship</div>
+        <div class="big">Start From Scratch Chicago</div>
+        <ul>
+          <li>12 matching stations, instructor setup and monitors</li>
+          <li>The Start From Scratch name and your direction on the program</li>
+          <li>Guest experts and a path into your Accelerator Programme</li>
+          <li>Lead recognition and the US case study</li>
+        </ul>
+        <a class="btn primary" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20flagship%20partnership">Lead it</a>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">Equipment is examples only; you choose the models. Loaned or demonstration gear is welcome. No cash is requested from AlphaTheta. We raise the operating budget.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
     <h2>You lead. We host.</h2>
-    <p class="sub">The way Start From Scratch already works with local partners abroad: the brand leads and a local host makes it real. We would be the Chicago host and follow your direction.</p>
+    <p class="sub">The way Start From Scratch already works with HOMECOMING, Boudica and On The Rise: the brand leads and a local host makes it real.</p>
     <div class="grid2">
       <div class="card lead-card">
         <h3>AlphaTheta leads</h3>
         <ul>
           <li>The Start From Scratch name and framework for Chicago</li>
-          <li>Direction on curriculum, standards and how the program is described</li>
-          <li>12 matching student controllers and headphones, plus an instructor demo setup</li>
+          <li>Direction on curriculum, software and how the program is described</li>
+          <li>Student stations and an instructor setup</li>
           <li>Guest experts, artists and product specialists</li>
-          <li>A path from our students into the Accelerator Programme</li>
-          <li>The story, the media and the US case study</li>
+          <li>The Accelerator pathway, media and the US case study</li>
         </ul>
       </div>
       <div class="card">
@@ -131,7 +254,6 @@
         </ul>
       </div>
     </div>
-    <p class="note" style="margin-top:16px">Prefer a different split, a different name or a different role for us? We will follow your lead. The goal is a strong Chicago launch under your flagship.</p>
   </div>
 </section>
 
@@ -145,53 +267,21 @@
           <li><b>Opens January 12, 2027.</b> Every Tuesday, 4 to 6 pm, year-round (39 class Tuesdays in 2027)</li>
           <li><b>Free</b> to students and families</li>
           <li><b>Grades 6 to 12</b>, open to all ages</li>
-          <li><b>12 student stations</b>, so every learner has their own gear during instruction</li>
-          <li><b>14 Missions, 42 skills</b>, worked at each student's own pace, finishing with a final set</li>
+          <li><b>12 student stations</b>, so every learner has their own gear</li>
+          <li><b>14 Missions, 42 skills</b>, each student at their own pace, ending with a final set</li>
         </ul>
       </div>
       <div class="card">
         <ul>
-          <li><b>Two resident instructors</b>, paid per session, plus a <b>weekly guest woman DJ</b></li>
-          <li><b>Empress Decks</b>, a girls-only track taught by women DJs</li>
-          <li><b>Accommodations</b> for neurodiverse and sensory-sensitive students: volume-limited headphones, free earplugs, a quieter workspace and visual step guides</li>
+          <li><b>Two resident instructors</b> plus a <b>weekly guest woman DJ</b></li>
+          <li><b>Empress Decks</b>, the girls-only track</li>
+          <li><b>Accommodations</b> for neurodiverse and sensory-sensitive students</li>
           <li><b>Public showcases</b> where students perform what they make</li>
           <li><b>Written plan and budget</b>, ready to share</li>
         </ul>
       </div>
     </div>
     <p style="margin-top:18px"><a href="/full-spectrum/dj-lab-2027.html">Read the full program plan</a></p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>The classroom: 12 complete stations</h2>
-    <p class="sub">The one concrete need. A matching set means one way to teach, one way to maintain it, and one look at the showcases.</p>
-    <div class="card plain">
-      <table>
-        <tr><th>Item</th><th>Quantity</th><th>Notes</th></tr>
-        <tr><td>Student DJ controller (matching model)</td><td>12</td><td>One per student; compatible with the class software</td></tr>
-        <tr><td>Wired DJ headphones</td><td>12</td><td>One per student; spare pads</td></tr>
-        <tr><td>Computer or device per station</td><td>12</td><td>Where the controller requires it</td></tr>
-        <tr><td>Software access</td><td>12</td><td>Licences for the chosen DJ software</td></tr>
-        <tr><td>Stand or work surface, cables, protective storage</td><td>12 sets</td><td>Secure storage between sessions; equipment stays for future cohorts</td></tr>
-        <tr><td>Instructor demonstration setup</td><td>1</td><td>Player and mixer or controller, so students learn on your professional gear</td></tr>
-        <tr><td>Shared sound system</td><td>1</td><td>For class and showcases</td></tr>
-      </table>
-    </div>
-    <p class="note" style="margin-top:14px">Our plan puts the first-year class operating budget at about $58,300 (instructors, insurance, showcases, safety and licensing), being raised through grants and donations. Equipment, roughly $20,000 in all, is the gap a lead partner can close directly.</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>A pathway, not a one-off workshop</h2>
-    <p class="sub">Start From Scratch workshops open doors. In Chicago the doors would open every week, all year, with a visible destination.</p>
-    <div class="grid3">
-      <div class="card"><h3>Learn</h3><p>Students work through 14 Missions at their own pace, with a stamped skills passport.</p></div>
-      <div class="card"><h3>Play</h3><p>Public showcases where students perform their own mixes for families and neighbors.</p></div>
-      <div class="card"><h3>Advance</h3><p>Graduating students are put forward for your Accelerator Programme and industry pathways.</p></div>
-    </div>
   </div>
 </section>
 
@@ -214,10 +304,11 @@
 
 <section>
   <div class="wrap">
-    <h2>A timeline we can hold</h2>
+    <h2>What happens after yes</h2>
     <ul class="timeline" style="margin-top:20px">
-      <li><b>Now to mid-December 2026</b>One call. Agree the name, the roles and what AlphaTheta supplies.</li>
-      <li><b>December 2026 to early January 2027</b>Equipment delivered, instructors onboarded, enrollment opens.</li>
+      <li><b>Week 1</b>A 20-minute call. We agree the name, the size of yes and who at AlphaTheta we work with.</li>
+      <li><b>Weeks 2 to 4</b>You approve wording and the software choice. We confirm the room and enroll students. Equipment ships.</li>
+      <li><b>Early January 2027</b>Instructors trained on your stations. Photo and video consent in place.</li>
       <li><b>January 12, 2027</b>First Tuesday. The class opens whether or not this is settled by then, and we would welcome your involvement at any point.</li>
       <li><b>Spring 2027 (target)</b>First public student showcase and first impact report to you.</li>
     </ul>
@@ -232,6 +323,19 @@
       <div class="card"><h3>Results</h3><p>Attendance, instructional hours, completed student mixes and performances, reported after the first term and each term after.</p></div>
       <div class="card"><h3>Stories</h3><p>Student and showcase content for your channels, shared only with family consent.</p></div>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Questions you may have</h2>
+    <details><summary>What would AlphaTheta have to do?</summary><p>Say which size of yes you prefer, approve the wording, and send or loan the gear. We run everything else and report back to you.</p></details>
+    <details><summary>Does AlphaTheta have to give money?</summary><p>No cash is requested. We are raising the operating budget (instructors, insurance, showcases, licensing and safety) through grants and donations.</p></details>
+    <details><summary>Who is responsible for the children and the room?</summary><p>We are. Enrollment, background checks, insurance, safety and day-to-day operations are ours and are in our operating budget. Photos and video are shared only with family consent.</p></details>
+    <details><summary>Who keeps the equipment?</summary><p>It stays with the program for future cohorts, in secure storage. Loaned or demonstration equipment is welcome, and you can name the stations.</p></details>
+    <details><summary>Can AlphaTheta control the brand?</summary><p>Yes. You approve how the Start From Scratch name and your marks are used, and review materials before they go public.</p></details>
+    <details><summary>Has Start From Scratch run in the US before?</summary><p>We could not find a US host on the program's pages, but we cannot rule one out. If one exists, we would welcome an introduction to it. If not, Chicago could be the first, subject to your confirmation.</p></details>
+    <details><summary>What if the answer is no?</summary><p>We open on January 12 with the plan we have, and we part as friends. A short "not now" is a welcome reply.</p></details>
   </div>
 </section>
 
@@ -253,7 +357,7 @@
     <h2>Let's talk</h2>
     <p class="sub">Twenty minutes. We will bring the plan. You bring the direction.</p>
     <div class="cta-row" style="margin-top:0">
-      <a class="btn primary" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20request%20for%20a%20call">stephen@selassiefest.com</a>
+      <a class="btn primary" href="mailto:stephen@selassiefest.com?subject=Start%20From%20Scratch%20Chicago%3A%20yes%2C%20let%27s%20talk&amp;body=Best%20times%20(Pacific)%3A%0A">stephen@selassiefest.com</a>
       <a class="btn ghost" href="tel:+18722559333">(872) 255-9333</a>
     </div>
   </div>
@@ -262,15 +366,22 @@
 <footer>
   <div class="wrap">
     <p><b>Stephen Henry</b>, President, Ras Tafari Inc., a 501(c)(3) public charity (IRS determination June 2026). 1401 E. 71st St., Chicago, IL 60619. IRS letter, budget and schedule available on request.</p>
-    <p class="note">This page is a proposal and not an announcement. It does not use AlphaTheta's logos or marks, and AlphaTheta and Start From Scratch are named only to describe the proposal. Not an offer of any agreement until both sides sign one.</p>
+    <p class="note">This page is a proposal and not an announcement. It does not use AlphaTheta's logos or marks, and AlphaTheta, Start From Scratch and product names are used only to describe the proposal. Not an offer of any agreement until both sides sign one.</p>
   </div>
 </footer>
 
 <script src="/assets/js/supabase-client.js"></script>
 <script>
-  // Counts a view when the link carries ?k=<pitch key>, using the same RPC as /partner/.
+  // ?k=<pitch key> counts a view (same RPC as /partner/). Optional ?n=<first name> personalizes the banner.
   (function () {
-    var m = /[?&]k=([a-z0-9]{6,12})(?:&|$)/.exec(location.search);
+    var q = location.search;
+    var m = /[?&]k=([a-z0-9]{6,12})(?:&|$)/.exec(q);
+    var n = /[?&]n=([A-Za-z][A-Za-z\-' ]{0,29})(?:&|$)/.exec(q);
+    if (n) {
+      var name = decodeURIComponent(n[1].replace(/\+/g, ' ')).trim();
+      var el = document.getElementById('bannerWho');
+      if (el && name) el.textContent = 'A proposal prepared for ' + name + ' by Ras Tafari Inc.';
+    }
     if (!m || !window.sfSupabaseReady) return;
     window.sfSupabaseReady.then(function (c) { return c.rpc('fs_pitch_view', { p_key: m[1] }); }).catch(function () {});
   })();
