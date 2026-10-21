@@ -1,0 +1,13 @@
+-- Equipment-maker prospects for the 12-station Rainbow DJ Lab. Outreach only; none has a verified open application.
+-- Pages checked 2026-10-20: Shure donations page has no readable details (use their contact link); inMusic site has no giving/education contact.
+update fs_grant_deadlines
+   set notes = notes || ' Ask: 12 matching student controllers, 12 headphones, instructor demo setup. Offer lead / founding / supporting partner tiers.'
+ where funder = 'AlphaTheta / Pioneer DJ' and notes not like '%matching student controllers%';
+
+insert into fs_grant_deadlines (funder, program, kind, deadline_date, opens_date, amount, verified, url, notes, verified_on, level, project, priority, status, eligibility, next_step)
+select * from (values
+('inMusic Brands (Numark, Denon DJ, Rane, Akai, Alto)','Equipment / education partnership','relationship',null::date,null::date,'equipment',false,'https://www.inmusicbrands.com/','One coordinated proposal, separate brand asks: Numark student controllers, Denon DJ or Rane instructor setup, Akai production tools, Alto speakers. Native Instruments is in this group; coordinate, do not send separately. Site lists no giving contact; use general support (support.inmusicstore.com) and ask for education partnerships or brand marketing.','2026-10-20'::date,'corporate','djclass',1,'to_research','No published application.','Send a partnership inquiry with the 12-station list; compare against the AlphaTheta ask.'),
+('Shure','Donations','relationship',null::date,null::date,'12 headphones, 2 mics, optional wireless mic',false,'https://www.shure.com/en-US/donations','US donations page exists but its details did not load for us. Eligibility and how to apply unconfirmed; use https://service.shure.com/s/contact-us?language=en_US&region=en-US.','2026-10-20'::date,'corporate','djclass',1,'to_research','Unknown until we open the page in a browser.','Open the donations page in a browser and read the application rules.'),
+('Roland','Education partnerships / equipment donations','relationship',null::date,null::date,'beat-making gear, keyboards, software',false,'https://www.rolandmusiced.com/company/','Documents donations and education partnerships internationally; no open US application verified.','2026-10-20'::date,'corporate','wednesdays',2,'to_research','Unknown.','Email their music education team for Full Spectrum beat-making.')
+) as v(funder,program,kind,deadline_date,opens_date,amount,verified,url,notes,verified_on,level,project,priority,status,eligibility,next_step)
+where not exists (select 1 from fs_grant_deadlines g where g.funder = v.funder and g.program = v.program);
