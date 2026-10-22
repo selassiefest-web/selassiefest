@@ -183,3 +183,24 @@ Thank you,
 Stephen Henry
 President, Ras Tafari Inc.
 (872) 255-9333 | stephen@selassiefest.com
+
+---
+
+## 8. Reloop  (email; SENT 2026-10-21 11:52 PM to info@reloop.com; follow up Nov 4)
+
+Subject: Youth DJ class in Chicago: request for the US education or marketing contact
+
+Hello Reloop team,
+
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). We are opening Rainbow DJ Lab, a free, year-round DJ class on Chicago's South Side, every Tuesday from 4 to 6 pm beginning January 12, 2027. It is built for grades 6 to 12 and open to all ages, with 12 student stations, a girls-only track taught by women DJs, and accommodations for neurodiverse students. Students work through 14 Missions at their own pace, from beatmatching and EQ to building a full set, and perform at public showcases.
+
+We would welcome Reloop's support with student controllers, a turntable setup for demonstrations, or headphones. Any portion of the 12 stations helps, and the equipment stays with the program for future students. We would recognize Reloop on our website and at showcases, and send an impact report after the first term (attendance, instructional hours, student mixes completed and performances).
+
+Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html
+
+Could you forward this to your US education or marketing representative, or tell me who I should write to? We can send our IRS determination letter (EIN 42-3036705), budget and schedule.
+
+Thank you,
+Stephen Henry
+President, Ras Tafari Inc.
+(872) 255-9333 | stephen@selassiefest.com
