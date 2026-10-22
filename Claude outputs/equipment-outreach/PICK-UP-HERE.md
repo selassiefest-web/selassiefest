@@ -19,10 +19,11 @@ Stephen is Ras Tafari Inc.'s president. Ras Tafari takes the back seat: AlphaThe
 | Chris Shapiro, Director of Sales US and Canada | LinkedIn invitation with note (the last personalized invitation this month) | Oct 28 |
 | Grace Ladoja (@graceladoja), HOMECOMING founder | Instagram DM asking who runs Start From Scratch | Oct 26, then DM @ourhomecoming |
 | Samantha Togni, Boudica | Message (channel not recorded) | Oct 28 |
+| AlphaTheta Music Americas, 1-844-784-0000 | Call; automatic text routed us to marketing.us@alphatheta.com; email SENT there 11:04 pm Oct 21 with the tracked link | Email 2 on Oct 27 |
 | On The Rise DJ Academy, London (Pioneer DJ's Official Education Partner EMEA) | Contact form, then WhatsApp message and voicemail to +44 790 4567838 | Oct 23 |
 
 ## Still to do, one at a time
-1. Call AlphaTheta Music Americas, 1-844-784-0000, 11 am to 1 pm Chicago time (9 to 11 am Pacific): ask for community or education partnerships. Script is in `alphatheta-campaign.md`. Not yet done as of this note.
+1. DONE Oct 21: called 1-844-784-0000; an automatic text routed us to marketing.us@alphatheta.com. Email sent there 11:04 pm Oct 21 (with the tracked link). Follow up Oct 27 if silent.
 2. Oct 23: second WhatsApp or call to On The Rise. Ask: who at AlphaTheta manages your education partnership?
 3. Oct 26: check views and bounce-back; DM @ourhomecoming if Grace has not replied.
 4. Oct 27: call Powell (424-488-0480) if silent.

@@ -169,3 +169,30 @@ Add &n=FirstName to greet a person in the banner ("A proposal prepared for John 
 - Grace: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Grace
 - Samantha: https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce&n=Samantha
 Every link counts a view on the same AlphaTheta row (the count cannot say who). The links already sent do not have &n=, which is fine: they show the generic banner.
+
+## Marketing Division: marketing.us@alphatheta.com (routed by AlphaTheta, 2026-10-21)
+
+Calling 1-844-784-0000 on Oct 21 brought an automatic text: "For customers interested in contacting our Marketing Division please send your inquiry to marketing.us@alphatheta.com". AlphaTheta published this address to us, so it is fair to use. A shared inbox means a team reads it: ask them to forward it, not to decide.
+
+To: marketing.us@alphatheta.com
+Subject: Partnership proposal: Start From Scratch in Chicago (please route to community or education programs)
+
+Hello AlphaTheta Marketing team,
+
+I called AlphaTheta Music Americas today, and your text reply directed me to this address.
+
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). We are opening a free DJ class on Chicago's South Side on January 12, 2027, every Tuesday, for grades 6 to 12 (all ages welcome), with 12 student stations, a girls-only track taught by women DJs, accommodations for neurodiverse students and public student showcases.
+
+Start From Scratch has trained new DJs from underrepresented communities across Europe, the Middle East and Africa. We would like to propose that AlphaTheta lead a Chicago launch of Start From Scratch, with us as your local host partner: you set the direction, and we bring the students, the room, the instructors, the showcases and a 501(c)(3) that reports results back to you.
+
+The full proposal is on one page, with a draft announcement your team could adapt:
+https://selassiefest.com/startfromscratch-chicago/?k=d97jdsce
+
+Two questions: who at AlphaTheta runs Start From Scratch or US community partnerships, and has the program operated in the United States before? I would be grateful if you could forward this to that person. I am glad to set up a 20-minute call at their convenience.
+
+Thank you,
+Stephen Henry
+President, Ras Tafari Inc.
+(872) 255-9333 | stephen@selassiefest.com
+
+Follow-up on Oct 27 if there is no reply: use Email 2 above, addressed to "AlphaTheta Marketing team".
