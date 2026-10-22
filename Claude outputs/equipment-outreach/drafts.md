@@ -162,3 +162,24 @@ If this form is not the right door for an education program, we would be gratefu
 ### Focusrite form: "Additional information" (paste this; then tick every genre)
 
 We selected every genre on purpose. Our students learn to mix everything into music: records from every genre, and also the sounds of everyday media such as TV shows and ads, which they sample, cut and blend into their own tracks. A student might build a set from reggae, hip-hop, house and gospel, then work a TV theme or a commercial hook into the mix. So no single genre describes the work; the skill is blending them. Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html. We can send our IRS determination letter, budget and schedule on request.
+
+---
+
+## 7. Roland Music Education  (email; SENT 2026-10-21 11:46 PM to rolandmusiced@rolandus.com; follow up Nov 4, then call 323-890-3700)
+
+Subject: Equipment and instruction support for a free Chicago youth DJ class
+
+Hello Roland Music Education team,
+
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). We are opening Rainbow DJ Lab, a free, year-round DJ and beat-making class on Chicago's South Side, every Tuesday from 4 to 6 pm beginning January 12, 2027. It is built for grades 6 to 12 and open to all ages, with 12 student stations, a girls-only track taught by women DJs, and accommodations for neurodiverse students. Students work through 14 Missions at their own pace and perform at public showcases.
+
+We would welcome Roland's support in two ways: equipment for beat-making (any portion of the 12 stations helps), and instructional support, such as a guest session or teaching materials from your education team. The equipment stays with the program for future students. We would recognize Roland on our website and at showcases, and send an impact report after the first term (attendance, instructional hours, student work completed and performances).
+
+Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html
+
+Could you tell me whether Roland considers requests like this, and who I should speak with? We can send our IRS determination letter (EIN 42-3036705), budget and schedule.
+
+Thank you,
+Stephen Henry
+President, Ras Tafari Inc.
+(872) 255-9333 | stephen@selassiefest.com
