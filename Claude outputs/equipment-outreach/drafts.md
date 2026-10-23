@@ -204,3 +204,31 @@ Thank you,
 Stephen Henry
 President, Ras Tafari Inc.
 (872) 255-9333 | stephen@selassiefest.com
+
+---
+
+## 9. Audio-Technica  (email; SENT 2026-10-22 to artistrelations@atus.com, the Artist Relations address printed on https://www.audio-technica.com/en-us/contact; follow up Nov 5, then call 330-686-2600 x5000)
+
+Other published lines if this goes nowhere: main 330-686-2600; Audio Solutions Team 330-686-2600 x5000. Precedent: headphone donation reported by the Museum of Making Music.
+
+Subject: Headphones and microphones for a free youth DJ class in Chicago
+
+Hello Audio-Technica Artist Relations team,
+
+I am Stephen Henry, President of Ras Tafari Inc., a Chicago 501(c)(3). We are opening Rainbow DJ Lab, a free, year-round DJ class on Chicago's South Side, every Tuesday from 4 to 6 pm beginning January 12, 2027. It is built for grades 6 to 12 and open to all ages, with 12 student stations. Students work through 14 Missions and 42 Passport skills at their own pace, a guest woman DJ teaches every week, and students perform at public showcases at Rainbow Beach Park.
+
+Every student needs to hear their own mix, so listening gear is the heart of each station. Would Audio-Technica consider one of these?
+1. Equip one student station: DJ headphones and a microphone.
+2. Supply headphones for all 12 students.
+3. Become the Lab's listening partner: headphones, spare ear pads, and microphones for teaching and showcases.
+
+The equipment stays with the program for future students. We would recognize Audio-Technica on our website and at showcases, and send an impact report after the first term (attendance, instructional hours, student mixes completed and performances).
+
+Program page: https://selassiefest.com/full-spectrum/dj-lab-2027.html
+
+If requests like this belong with another team, could you forward it or tell me who to write to? We can send our IRS determination letter (EIN 42-3036705), budget and schedule.
+
+Thank you,
+Stephen Henry
+President, Ras Tafari Inc.
+(872) 255-9333 | stephen@selassiefest.com
