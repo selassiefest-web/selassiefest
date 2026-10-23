@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Always give full file paths or URLs
+
+Whenever you tell the user where a file is, give the complete absolute path (e.g. `C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\partner-letters\print.js`) or the full URL (e.g. `https://selassiefest.com/partner/?k=...`). Never give a bare filename, a partial path, or a path relative to some folder the user may not be in. The user opens these files by hand, and a partial path sends them hunting. This applies to every file you create, edit, recover or mention, including PDFs, letters, scripts and downloads.
+
+## Browser access (Claude in Chrome)
+
+Claude has driven the user's Chrome many times in past sessions (DNS panels, grant portals, forms, uploads) through the `mcp__claude-in-chrome__*` tools: `navigate`, `computer`, `find`, `form_input`, `get_page_text`, `read_page`, `javascript_tool`, `file_upload`, `tabs_create_mcp`, `tabs_context_mcp` and the rest. The extension is installed and onboarded on this PC. The tools exist only when the session was started with Chrome on. **Always start sessions with `C:\Users\mkepr\Documents\GitHub\selassiefest\start-claude-chrome.bat`** (it runs `claude --chrome`; add `-c` to resume), or turn it on once for good: type `/chrome` and choose "Enabled by default". If a session has no `mcp__claude-in-chrome__*` tools (check with ToolSearch "chrome"), do not tell the user browser access is impossible. Tell them this session started without Chrome, and that typing `/chrome` or restarting with the launcher brings it back. Past uses can be found by searching the session transcripts in `C:\Users\mkepr\.claude\projects\C--Users-mkepr-Documents-GitHub-selassiefest\*.jsonl` for `mcp__claude-in-chrome__`.
+
 ## What this is
 
 A plain static HTML/CSS/JS site for SelassieFest (a roots reggae & cultural festival, run by Ras Tafari Inc, a 501c3). There is no build system, no package manager, and no server-side rendering — every page is a hand-authored, self-contained `.html` file, typically with its CSS inlined in a `<style>` block in the `<head>`. There is nothing to `npm install`, build, lint, or test in the traditional sense.
@@ -14,6 +22,10 @@ A plain static HTML/CSS/JS site for SelassieFest (a roots reggae & cultural fest
 - **No shared includes/templating**: header, nav, and footer markup is duplicated verbatim across every page in the main site rather than pulled from a partial/include. When changing global nav or footer content, you generally need to update it in every page that has it (grep for the markup, e.g. `<nav class="main-nav">`, across `*.html`). Watch for nav "drift" — different pages can accumulate slightly different copies of the same nav over time (see `repair-9.ps1` for a past example of consolidating divergent copies back to one canonical version).
 - **Images**: pages reference local images via root-absolute `<img src="/...">`. When adding images, verify the file actually exists on disk at that path — broken image links are a known recurring issue on this site. A fallback placeholder exists at `/assets/images/placeholder.svg`.
 - **Sitemap/robots**: `sitemap.xml` and `robots.txt` are maintained by hand at the repo root and should be updated when pages are added or removed.
+
+## Rainbow DJ Lab: one current model
+
+The DJ Lab is a **year-round program, every Tuesday 4 to 6 pm, opening Jan 12, 2027 (39 class Tuesdays, 12 stations)**. Children join any Tuesday and work through 14 Missions (42 Passport skills) at their own pace; graduation is all 42 stamped plus a final set. Two resident instructors are paid **$250 a session** each; the weekly guest woman DJ is $200 an hour. The source of truth is `full-spectrum/dj-lab-2027.html`. This is the only model: any other schedule, curriculum length, graduation rule, pay rate or budget total you find for the DJ Lab is stale, so fix it and tell the user. The `dj-lab/` family site is generated from its `.md` files by `dj-lab/_build/build.py` (edit the `.md`, then rebuild with `C:\Users\mkepr\AppData\Local\Python\bin\python.exe dj-lab/_build/build.py`).
 
 ## Repo structure
 
