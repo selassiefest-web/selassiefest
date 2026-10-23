@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="A message from your future DJs: a short, kid-voiced deck about Full Spectrum's free DJ class and family music nights at Rainbow Beach Park.">
+<title>A Message From Your Future DJs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&family=Patrick+Hand&display=swap">
+<style>
+  :root{
+    --bg:#FFF8EC; --paper:#FFFFFF; --ink:#1B1D33; --ink-soft:#4A4E6A; --line:#EADFC8;
+    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --bg:#12142A; --paper:#1B1E38; --ink:#F2F3FA; --ink-soft:#B9BDD6; --line:#2C3054; }
+  }
+  :root[data-theme="dark"]{ --bg:#12142A; --paper:#1B1E38; --ink:#F2F3FA; --ink-soft:#B9BDD6; --line:#2C3054; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:inherit;}
+  .stripe{height:8px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
+  .kid{font-family:"Patrick Hand","Comic Sans MS",cursive;}
+
+  #deck{position:fixed; inset:8px 0 64px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px 16px; overflow-y:auto;
+    opacity:0; transform:translateX(40px); transition:opacity .35s ease, transform .35s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .slide.off-left{transform:translateX(-40px);}
+  .card{width:100%; max-width:860px;}
+
+  .kicker{font-size:.78rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--r2); margin-bottom:12px;}
+  h1,h2{font-family:"Montserrat",sans-serif; font-weight:900; letter-spacing:-0.02em; line-height:1.05;}
+  h1{font-size:clamp(2.1rem,7vw,4rem); margin-bottom:16px;}
+  h2{font-size:clamp(1.6rem,5vw,2.8rem); margin-bottom:18px;}
+  .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  p.lead{font-size:clamp(1.05rem,2.6vw,1.3rem); line-height:1.55; color:var(--ink-soft); margin-bottom:14px;}
+
+  .bubble{position:relative; background:var(--paper); border:3px solid var(--ink); border-radius:22px; padding:16px 20px; margin:0 0 18px;
+    font-family:"Patrick Hand","Comic Sans MS",cursive; font-size:clamp(1.25rem,3.4vw,1.75rem); line-height:1.3; box-shadow:5px 5px 0 var(--ink);}
+  .bubble::after{content:""; position:absolute; left:34px; bottom:-16px; width:24px; height:24px; background:var(--paper); border-right:3px solid var(--ink); border-bottom:3px solid var(--ink); transform:rotate(45deg);}
+  .bubble.r::after{left:auto; right:34px;}
+  .who{display:block; font-family:"Inter",sans-serif; font-size:.78rem; font-weight:700; color:var(--ink-soft); margin-top:6px; letter-spacing:.02em;}
+  .bubbles{display:grid; gap:10px;}
+  @media (min-width:720px){ .bubbles.two{grid-template-columns:1fr 1fr; gap:18px;} }
+
+  .logo{width:96px; height:96px; border-radius:24px; display:flex; align-items:center; justify-content:center; margin:0 auto 18px;
+    background:var(--paper); border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink); overflow:hidden;
+    font-family:"Montserrat",sans-serif; font-weight:900; font-size:2rem;}
+  .logo img{width:100%; height:100%; object-fit:contain; background:#fff;}
+  /* A real logo replaces the initials: the badge grows to the logo's shape (wide logos stay readable). */
+  .logo.has-img{width:auto; height:auto; max-width:min(320px, 80vw); padding:10px 14px; background:#fff;}
+  .logo.has-img img{width:auto; height:auto; max-width:100%; max-height:84px; display:block;}
+  .logo.has-img.wide img{max-height:64px;}
+  .center{text-align:center;}
+  .crayon{display:inline-block; padding:4px 12px; border-radius:999px; background:var(--r3); color:#1B1D33; font-weight:800; font-size:.85rem; transform:rotate(-2deg);}
+
+  .facts{background:var(--paper); border:2px solid var(--line); border-radius:18px; padding:18px 20px;}
+  .facts h3{font-family:"Montserrat",sans-serif; font-size:1rem; margin-bottom:10px;}
+  .facts ul{list-style:none; display:grid; gap:10px;}
+  .facts li{display:flex; gap:12px; align-items:flex-start; line-height:1.45;}
+  .dot{flex:0 0 14px; height:14px; border-radius:50%; margin-top:5px;}
+  .stamp{display:inline-block; border:3px solid var(--r1); color:var(--r1); font-weight:900; font-family:"Montserrat",sans-serif; padding:4px 10px; border-radius:8px; transform:rotate(-4deg); letter-spacing:.06em; font-size:.85rem; margin-bottom:12px;}
+
+  ol.demands{list-style:none; counter-reset:d; display:grid; gap:12px;}
+  ol.demands li{counter-increment:d; background:var(--paper); border:3px solid var(--ink); border-radius:16px; padding:12px 16px 12px 58px; position:relative; box-shadow:4px 4px 0 var(--ink); line-height:1.4;}
+  ol.demands li::before{content:counter(d); position:absolute; left:14px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--r4); color:#fff; font-weight:900; display:flex; align-items:center; justify-content:center; font-family:"Montserrat",sans-serif;}
+  ol.demands li:nth-child(2)::before{background:var(--r5);} ol.demands li:nth-child(3)::before{background:var(--r6);} ol.demands li:nth-child(4)::before{background:var(--r7);}
+  ol.demands b{display:block; font-size:1.05rem;}
+  ol.demands .kid{display:block; font-size:1.15rem; color:var(--ink-soft);}
+
+  .cta{display:inline-flex; align-items:center; gap:10px; padding:16px 30px; border-radius:999px; color:#fff; font-weight:900; font-size:1.1rem; text-decoration:none;
+    background:linear-gradient(90deg,var(--r1),var(--r2),var(--r4),var(--r5),var(--r7)); box-shadow:4px 4px 0 var(--ink); margin:8px 0 14px;}
+  .small{font-size:.82rem; color:var(--ink-soft); line-height:1.55;}
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:64px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
+  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center;}
+  .navbtn:disabled{opacity:.3; cursor:default;}
+  .dots{display:flex; gap:6px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:10px; height:10px; border-radius:50%; background:var(--line);}
+  .dots button.on{background:var(--r2); width:24px; border-radius:6px;}
+  .hero{width:100%; max-width:min(640px, calc(36vh * 1.5)); margin:0 auto 16px; border-radius:20px; overflow:hidden; border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); background:var(--paper);}
+  .hero img{display:block; width:100%; height:auto; aspect-ratio:3/2; object-fit:cover;}
+  .hero figcaption{font-size:.72rem; color:var(--ink-soft); padding:6px 10px; text-align:left;}
+  /* Illustrated slides: picture beside the words on wide screens, stacked on phones. */
+  .split{width:100%; max-width:1100px; display:grid; gap:18px; align-items:center;}
+  @media (min-width:900px){ .split{grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px;} }
+  .sq{position:relative; container-type:inline-size; width:100%; max-width:min(560px, 62vh); margin:0 auto; border-radius:20px; overflow:hidden; border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); background:#fff;}
+  .sq img{display:block; width:100%; height:auto;}
+  .sq.wide{max-width:min(560px, 80vh);}
+  .side .card{max-width:none;}
+  /* The cover art says "[CENTER]"; this label covers it with the real name. */
+  .ovl{position:absolute; left:60.3%; top:18.6%; width:31%; height:8.2%; background:#FCFCF0; border-radius:8px;
+    display:flex; align-items:center; justify-content:flex-start; color:#1F6B2E; font-family:"Patrick Hand","Comic Sans MS",cursive; font-weight:700; line-height:1; white-space:nowrap;}
+  .sound{position:fixed; top:16px; left:16px; z-index:5; font-size:.8rem; font-weight:700; padding:6px 12px; border-radius:999px; border:2px solid var(--ink); background:var(--paper);}
+  .sound[hidden]{display:none;}
+  .theme{position:fixed; top:16px; right:16px; z-index:5; font-size:.75rem; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:var(--paper);}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<button class="theme" id="theme" aria-label="Switch light or dark">◐</button>
+<button class="sound" id="sound" aria-pressed="false" hidden>🔊 Play the kids' voices</button>
+<main id="deck" aria-live="polite"></main>
+<nav class="ctl">
+  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+// One deck, twelve centers. Each center's link is /full-spectrum/daycare-deck/?k=<partner pitch_key>.
+// Facts per center come from Claude outputs/partner-letters/wave3-childcare-2026-10-19/childcare-facts.md.
+// Program facts follow full-spectrum/dj-lab-2027.html and full-spectrum/calendar-2027.html.
+// Logos: drop a file at /full-spectrum/daycare-deck/logos/<n>.png (n = center number) and it replaces the initials.
+const CENTERS = {
+  "3vm4u7k4": { n: 1, name: "Solar Kids University", short: "Solar Kids", street: "1713 E. 75th St.", group: "school",
+    fact: "Your before- and after-school program serves children ages 5 to 13.",
+    brag: "We have UNIVERSITY in our name. We are basically already in college. Let us DJ.",
+    who: "Mia, 9, Solar Kids University, Class of 2034 (self-appointed)" },
+  "2gxzpz79": { n: 2, name: "Wee Care Nursery School and Kindergarten", short: "Wee Care", street: "1845 E. 79th St.", group: "young",
+    fact: "You care for children from infancy through kindergarten readiness.",
+    brag: "We are WEE. We are not DEAF. We heard there's a DJ class and we want IN.",
+    who: "Jordan, 4, Wee Care, kindergarten-ready (and DJ-ready)" },
+  "e6xbt4en": { n: 3, name: "Prodigy Child Learning Center", short: "Prodigy", street: "1921-1925 E. 79th St.", group: "school",
+    fact: "Between your main center, your annex for children up to age 12 and your Head Start families, you reach little ones and school-age children.",
+    brag: "It says PRODIGY on the building. You can't put that on the building and then tell us we can't DJ.",
+    who: "Andre, 10, Prodigy Annex (across the street, louder over here)" },
+  "96upead9": { n: 4, name: "Loren Children Learning Center", short: "Loren", street: "2106-2110 E. 79th St.", group: "young",
+    fact: "Your families on 79th Street are a short walk from Rainbow Beach.",
+    brag: "The beach is RIGHT THERE. We can see it from the window. Okay, we can't. But we can FEEL it.",
+    who: "Zoe, 5, Loren, beach expert" },
+  "2r6ppe58": { n: 5, name: "St. Jude Educational Institute", short: "St. Jude", street: "2219 E. 79th St.", group: "school",
+    fact: "You care for children from age 2 through 12.",
+    brag: "Some of us are 12 and some of us are 2. The 12s will DJ. The 2s will be the crowd. The 2s are VERY good at being a crowd.",
+    who: "Marcus, 11, St. Jude, speaking for the 2-year-olds (they said yes)" },
+  "m89q7c4a": { n: 6, name: "Greater Learning Opportunity Academy", short: "Greater Learning", street: "2301-2305 E. 79th St.", group: "young",
+    fact: "Your families with infants, toddlers and preschoolers are just blocks from Rainbow Beach.",
+    brag: "Even the babies want in. We asked them. They said \"ba.\" We are counting that as a yes.",
+    who: "Ava, 4, Greater Learning, official baby translator" },
+  "jnec7gaw": { n: 7, name: "Tiny Tots Academy", short: "Tiny Tots", street: "2409 E. 79th St. and 2454-2460 E. 79th St.", group: "young",
+    fact: "With two locations on 79th Street, including care for families who work evenings, you reach many of the parents we most want to invite.",
+    brag: "We have TWO buildings and we stay up LATE. We are tiny, but we are NIGHT people.",
+    who: "Elijah, 4, Tiny Tots (both locations), professional night owl" },
+  "wdqmwwqq": { n: 8, name: "A Haven for Little Ones 2", short: "A Haven 2", street: "2548-2552 E. 79th St.", group: "young",
+    fact: "Your center welcomes children with special needs, and our family nights are planned the same way: every child can take part.",
+    brag: "At our school EVERYBODY gets a turn. So everybody gets a turn at the dance floor. That's the rule. We made it.",
+    who: "Nia, 5, A Haven for Little Ones 2, rule-maker" },
+  "jk6jxe5j": { n: 9, name: "Little Miracles Daycare & Learning Academy", short: "Little Miracles", street: "2671-2673 E. 75th St.", group: "young",
+    fact: "As a new center on 75th Street, you are getting to know the families on these blocks.",
+    brag: "We're the NEW kids on 75th Street. We just got here and we already have demands. That's how you know we're serious.",
+    who: "Kai, 4, Little Miracles, newest member of the block" },
+  "v6ntecgu": { n: 10, name: "Little Folks Daycare", short: "Little Folks", street: "2527 E. 73rd St.", group: "young",
+    fact: "For more than 30 years, Little Folks has helped children of all abilities learn alongside their peers.",
+    brag: "Little Folks has been here since 1994. That's like a HUNDRED years. Rochelle, it's time for a party.",
+    who: "Imani, 5, Little Folks, history buff" },
+  "emck2vb2": { n: 11, name: "Higher Learning Daycare & Education Center", short: "Higher Learning", street: "2526 E. 73rd St.", group: "young",
+    fact: "Your play-based, hands-on approach is the spirit of our family nights too.",
+    brag: "You said we learn by PLAYING. Okay. We would like to PLAY some MUSIC. On SPEAKERS. Very LOUD. For LEARNING.",
+    who: "Caleb, 4, Higher Learning, play-based (very)" },
+  "nqw5hwz6": { n: 12, name: "Kenyatta's Day Care & Learning Center", short: "Kenyatta's", street: "2334 E. 75th St.", group: "school",
+    fact: "Your after-school program serves children ages 6 to 12.",
+    brag: "Half of us are already old enough for the DJ class. The other half are \"basically old enough.\" Brenda, we did the math.",
+    who: "Destiny, 11, Kenyatta's After-School, math department" },
+};
+const FALLBACK = { n: 0, name: "Your Center", short: "your center", street: "", group: "young", fact: "", brag: "We heard there's a free DJ class. We would like to be considered. Strongly.", who: "A kid near Rainbow Beach" };
+
+const k = new URLSearchParams(location.search).get("k");
+const C = CENTERS[k] || FALLBACK;
+const school = C.group === "school";
+const PAGE = CENTERS[k] ? "https://selassiefest.com/partner/?k=" + k : "https://selassiefest.com/full-spectrum/";
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const initials = C.short.replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+const logo = C.n ? `<div class="logo"><img src="/full-spectrum/daycare-deck/logos/${C.n}.png" alt="${esc(C.name)} logo" onload="this.parentNode.classList.add('has-img'); if (this.naturalWidth > this.naturalHeight * 2) this.parentNode.classList.add('wide')" onerror="this.parentNode.textContent='${initials}'"></div>` : `<div class="logo">🎧</div>`;
+const bubble = (t, who, right) => `<div class="bubble${right ? " r" : ""}">${t}<span class="who">${esc(who)}</span></div>`;
+document.title = C.n ? `A Message for ${C.short} From Your Future DJs` : "A Message From Your Future DJs";
+
+const SLIDES = [
+  // 1. Cover
+  `<div class="card center">${logo}
+    <div class="kicker">An urgent message for the grown-ups at ${esc(C.name)}</div>
+    <h1>From your <span class="rb">future DJs</span></h1>
+    <p class="lead kid" style="font-size:1.5rem">(please read this before snack)</p>
+    <span class="crayon">Free · Rainbow Beach Park · 2027</span></div>`,
+
+  // 2. The discovery
+  `<div class="card"><div class="kicker">Breaking news, from the rug</div>
+    <h2>We found out about the DJ class.</h2>
+    <div class="bubbles two">
+      ${bubble("Somebody's big brother said there's a FREE DJ class at Rainbow Beach Park. FREE. Like recess, but with SPEAKERS.", "Overheard at pickup")}
+      ${bubble("We have been practicing. On the block corner. With a block. It's going great.", "The block-corner DJ crew", true)}
+    </div>
+    <p class="lead">It's called <b>Full Spectrum</b>, and a South Side nonprofit, Ras Tafari Inc., is applying to the Chicago Park District to bring it to the beach in 2027. Every part is free.</p></div>`,
+
+  // 3. Center-specific brag
+  `<div class="card"><div class="kicker">Why ${esc(C.short)} should be first</div>
+    ${bubble(esc(C.brag), C.who)}
+    ${C.fact ? `<p class="lead">The grown-up version: ${esc(C.fact)}</p>` : ""}</div>`,
+
+  // 4. The age situation
+  school
+    ? `<div class="card"><div class="kicker">The age situation</div>
+      <h2>Some of us are <span class="rb">old enough.</span><br>The rest of us are close.</h2>
+      ${bubble("The DJ class is for grades 6 to 12, and it's open to ALL ages. ALL. That's the word they used. We checked.", "The fact-checking committee")}
+      <p class="lead">Your older kids can join the DJ class. The younger ones can come to the free family music nights on the beach, and dance like it's their job.</p></div>`
+    : `<div class="card"><div class="kicker">The age situation</div>
+      <h2>Okay. We're <span class="rb">four.</span> We know.</h2>
+      ${bubble("We did the math. The DJ class is for big kids, grades 6 to 12. We'll be in 6th grade in like a THOUSAND years. That is TOO LONG.", "Everyone in the 4s room")}
+      ${bubble("So here is our plan: tell our big brothers and sisters and cousins about the DJ class. And put US on the DANCE FLOOR at the family nights.", "The planning committee (also the 4s room)", true)}</div>`,
+
+  // 5. The grown-up facts
+  `<div class="card"><span class="stamp">GROWN-UP FACTS</span>
+    <h2>What's actually happening</h2>
+    <div class="facts"><ul>
+      <li><span class="dot" style="background:var(--r1)"></span><span><b>Rainbow DJ Lab:</b> a free DJ class every Tuesday, 4 to 6 pm, starting January 12, 2027. Built for grades 6 to 12, open to all ages. Students work through 14 Missions at their own pace, on program equipment.</span></li>
+      <li><span class="dot" style="background:var(--r3)"></span><span><b>Rainbow Wednesdays:</b> free, alcohol-free family music nights on the beach from June 2, 2027, 6:00 to 8:30 pm, with Open Decks for young DJs and a Youth Showcase.</span></li>
+      <li><span class="dot" style="background:var(--r5)"></span><span><b>Family parties:</b> the Kids Kostume Party in late October, and Noon Year's Eve on December 31, a family countdown to noon with kid DJs.</span></li>
+      <li><span class="dot" style="background:var(--r7)"></span><span><b>Who runs it:</b> Ras Tafari Inc., a South Side 501(c)(3). Every part is free to families.</span></li>
+    </ul></div></div>`,
+
+  // 6. The demands
+  `<div class="card"><div class="kicker">Our demands (we wrote them down)</div>
+    <h2>Dear staff of ${esc(C.short)}:</h2>
+    <ol class="demands">
+      ${school
+        ? `<li><b>Tell our parents about the DJ class.</b><span class="kid">Put it in the folder. The REAL folder. Not the one that falls behind the cubbies.</span></li>
+           <li><b>Let them bring a free 30-minute DJ demo to our after-school group.</b><span class="kid">They bring the equipment. We bring the energy. Fair trade.</span></li>
+           <li><b>Tell our grown-ups about the family nights on the beach.</b><span class="kid">Little brothers and sisters can come too. Somebody has to hold the snacks.</span></li>`
+        : `<li><b>Tell our grown-ups about the free family nights on the beach.</b><span class="kid">Put a flyer in the folder. Or tape it to us. We don't mind.</span></li>
+           <li><b>Tell families with older kids about the DJ class.</b><span class="kid">Our big cousins NEED this. They keep using our toy keyboard.</span></li>`}
+      <li><b>Write a short letter of support for the Chicago Park District application.</b><span class="kid">Use your fancy grown-up words. Like "furthermore."</span></li>
+      <li><b>Tell other grown-ups.</b><span class="kid">The center down the street. Your auntie. The mail carrier. Everybody.</span></li>
+    </ol></div>`,
+
+  // 7. What we offer in return
+  `<div class="card"><div class="kicker">What you get if you say yes</div>
+    <h2>We are prepared to <span class="rb">negotiate.</span></h2>
+    <div class="bubbles two">
+      ${bubble("We will nap. On purpose. With our eyes CLOSED. (For one day.)", "The nap committee")}
+      ${bubble("We will stop asking \"is it Tuesday\" every day. We will only ask on days that are not Tuesday.", "The calendar committee", true)}
+      ${bubble("We will put the blocks away. All of them. Even the one under the radiator.", "The cleanup committee")}
+      ${bubble("When we're famous, we will say your name at the Grammys. First. Before our moms.", "The future-famous committee", true)}
+    </div></div>`,
+
+  // 8. The future
+  `<div class="card center"><div class="kicker">Summer 2027 · Rainbow Beach · a Wednesday night</div>
+    <h2>Picture it.</h2>
+    <figure class="hero"><img src="/full-spectrum/daycare-deck/img/future-djs-stage.jpg" alt="Three young DJs in headphones mixing on turntables on an outdoor stage." width="1400" height="933" loading="lazy"><figcaption>Illustration. Summer 2027, as imagined.</figcaption></figure>
+    ${bubble(school
+      ? `The sun is going down. The Youth Showcase starts. A kid from ${esc(C.short)} steps up to the decks. The whole beach is dancing. That kid is ME.`
+      : `The sun is going down. The music is playing. A big kid from the DJ class is on the decks. And on the front of the dance floor, doing the BEST dancing in all of Chicago: the ${esc(C.short)} crew.`, "Everybody, at the same time")}
+    <p class="lead">Free classes, free family nights, a beach full of neighbors. It starts with one grown-up saying yes.</p></div>`,
+
+  // 9. Ask
+  `<div class="card center">${logo}
+    <div class="kicker">Okay, grown-ups. Your turn.</div>
+    <h2>Say yes in one tap.</h2>
+    <a class="cta" href="${PAGE}">Open ${esc(C.short)}'s page →</a>
+    <p class="lead">One tap says yes or asks us to call. You can also speak or type a letter of support and sign it with your finger.</p>
+    <p class="small">Stephen Henry, President, Ras Tafari Inc. · (872) 255-9333 · stephen@selassiefest.com<br>
+    <a href="/full-spectrum/dj-lab-2027.html">Rainbow DJ Lab</a> · <a href="/full-spectrum/calendar-2027.html">2027 calendar</a></p>
+    <p class="small" style="margin-top:14px"><i>The kid quotes in this deck are imagined by Ras Tafari Inc. No real children were quoted. (They were busy.) Full Spectrum depends on Chicago Park District approval.</i></p></div>`,
+];
+
+// Slide art (index = slide number - 1). Slide 3 art is per center: one panel each for Solar Kids, Greater Learning, Tiny Tots, Little Folks.
+const ART = { 0: ["slide-1.jpg", "A preschooler in headphones points at you while a friend cheers into a microphone: an urgent message from your future DJs."],
+  1: ["slide-2.jpg", "Preschoolers on the classroom rug share the news about a free DJ class."],
+  3: ["slide-4.jpg", "A big kid with headphones and three little ones explain the age situation: put us on the dance floor."],
+  4: ["slide-5.jpg", "A preschooler holds up the facts: free DJ classes on Tuesdays from January 12, 2027, plus all-ages family events."],
+  6: ["slide-7.jpg", "Preschoolers napping on cots, one peeking: we will nap, on purpose, for one day."] };
+const PANEL = { 1: "Solar Kids", 6: "Greater Learning", 7: "Tiny Tots", 10: "Little Folks" };
+if (PANEL[C.n]) ART[2] = ["slide-3-" + C.n + ".jpg", C.short + " explains why they should be first."];
+const label = esc(C.short) + ":";
+const ovl = `<div class="ovl" style="font-size:${Math.min(7.5, 76 / label.length).toFixed(2)}cqw; padding-left:1.2cqw">${label}</div>`;
+Object.entries(ART).forEach(([i, [file, alt]]) => {
+  const wide = file.startsWith("slide-3-") ? " wide" : "";
+  SLIDES[i] = `<div class="split"><figure class="sq${wide}"><img src="/full-spectrum/daycare-deck/img/${file}" alt="${esc(alt)}" width="1100" height="1100"${i > 0 ? ' loading="lazy"' : ""}>${i == 0 && C.n ? ovl : ""}</figure><div class="side">${SLIDES[i]}</div></div>`;
+});
+
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+SLIDES.forEach((html, i) => {
+  const s = document.createElement("section"); s.className = "slide"; s.innerHTML = html; s.setAttribute("aria-label", `Slide ${i + 1} of ${SLIDES.length}`); deck.appendChild(s);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+// Narration: a center's own clip /full-spectrum/daycare-deck/audio/<center number>-<slide number>.mp3 (e.g. 2-1.mp3 = Wee Care,
+// slide 1) wins; otherwise the shared clip audio/all-<slide number>.mp3 plays for every center. The button appears only if
+// some clip exists; once on, each slide plays its clip when it opens.
+const snd = document.getElementById("sound"), player = new Audio();
+let soundOn = false;
+const AUD = "/full-spectrum/daycare-deck/audio/";
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok).catch(() => false);
+// Find each slide's clip once: the center's own first, then the shared one.
+const ready = Promise.all(SLIDES.map(async (_, i) => {
+  const own = C.n ? AUD + C.n + "-" + (i + 1) + ".mp3" : null;
+  const all = AUD + "all-" + (i + 1) + ".mp3";
+  found[i] = (own && await head(own)) ? own : (await head(all)) ? all : null;
+})).then(() => { if (Object.values(found).some(Boolean)) snd.hidden = false; });
+function playSlide(i){ player.pause(); if (!soundOn || !found[i]) return; player.src = found[i]; player.play().catch(() => {}); }
+snd.onclick = () => { soundOn = !soundOn; snd.setAttribute("aria-pressed", soundOn); snd.textContent = soundOn ? "🔇 Mute" : "🔊 Play the kids' voices"; playSlide(cur); };
+function go(i){
+  cur = Math.max(0, Math.min(SLIDES.length - 1, i));
+  [...deck.children].forEach((s, j) => { s.classList.toggle("on", j === cur); s.classList.toggle("off-left", j < cur); });
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === SLIDES.length - 1;
+  if (typeof playSlide === "function" && soundOn) playSlide(cur);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => { if (e.key === "ArrowRight" || e.key === " ") go(cur + 1); if (e.key === "ArrowLeft") go(cur - 1); });
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+const root = document.documentElement;
+try { const t = localStorage.getItem("dcdeck-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+document.getElementById("theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("dcdeck-theme", root.dataset.theme); } catch (e) {}
+};
+go(0);
+</script>
+</body>
+</html>
