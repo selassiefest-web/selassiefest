@@ -7,7 +7,8 @@
 // Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, RTI_SIGN_ADMIN_SECRET.
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
 const ADMIN_SECRET = Deno.env.get("RTI_SIGN_ADMIN_SECRET") ?? "";
-const FROM_EMAIL = "Stephen Henry, Ras Tafari Inc. <hello@selassiefest.com>";
+// From a real, monitored mailbox (stephen@) rather than hello@: better trust with Gmail and Outlook filters.
+const FROM_EMAIL = "Stephen Henry, Ras Tafari Inc. <stephen@selassiefest.com>";
 const isEmail = (s: string) => /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:]+$/.test(s);
 
 Deno.serve(async (req) => {
