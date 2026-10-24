@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Rainbow DJ Lab: a free Tuesday DJ class on Chicago's South Side, and a proposed Beat Track for Roland's education team to help shape. Prepared by Ras Tafari Inc. for Jared Selter.">
+<title>Rainbow DJ Lab for Roland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  :root{
+    --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93;
+    --line:#E5E0D6; --accent:#2F3DB5; --sun:#B87503; --pad-off:#E9E4DA;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+      --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --pad-off:#23273F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+    --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --pad-off:#23273F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--accent);}
+  .bar{height:7px; background:var(--spectrum);}
+  .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line);}
+
+  #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 28px; overflow-y:auto;
+    opacity:0; transform:translateX(36px); transition:opacity .35s ease, transform .35s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .slide.off-left{transform:translateX(-36px);}
+  .card{width:100%; max-width:980px;}
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none;} }
+
+  .eyebrow{font:700 .72rem/1 "Inter",sans-serif; letter-spacing:.18em; text-transform:uppercase; color:var(--sun); margin-bottom:12px;}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; letter-spacing:-0.015em; line-height:1.1; text-wrap:balance;}
+  h1{font-size:clamp(2.1rem,6.4vw,3.9rem); font-weight:900; margin-bottom:14px;}
+  h2{font-size:clamp(1.5rem,4.2vw,2.5rem); font-weight:800; margin-bottom:14px;}
+  h3{font-size:1.02rem; font-weight:800; margin-bottom:4px;}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.02rem,2.3vw,1.22rem); color:var(--ink-soft); max-width:66ch; margin-bottom:14px;}
+  .muted{color:var(--ink-soft);}
+  .small{font-size:.82rem; color:var(--ink-soft); line-height:1.5;}
+  .mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;}
+  p{margin-bottom:8px;}
+
+  .box{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 18px;}
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+  .grid4{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;}
+  @media (max-width:820px){ .grid2,.grid3{grid-template-columns:1fr;} .grid4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .stat b{display:block; font:900 1.7rem/1.1 "Montserrat",sans-serif;}
+  .stat span{font-size:.84rem; color:var(--ink-soft);}
+  .tag{display:inline-block; font:700 .7rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; padding:5px 9px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); margin-bottom:8px;}
+  ul.ticks{list-style:none; display:grid; gap:8px;}
+  ul.ticks li{padding-left:22px; position:relative;}
+  ul.ticks li::before{content:""; position:absolute; left:2px; top:.5em; width:10px; height:10px; border-radius:3px; background:var(--c,var(--r4));}
+
+  /* cover: 16 steps in four groups, the way a rhythm machine lays them out */
+  .steps{display:grid; grid-template-columns:repeat(16,1fr); gap:5px; max-width:640px; margin:22px auto 6px;}
+  .steps i{aspect-ratio:1; border-radius:5px; background:var(--pad-off); animation:blink 2.4s infinite; animation-play-state:paused;}
+  .slide.on .steps i{animation-play-state:running;}
+  .steps i:nth-child(4n+1){background:var(--c);}
+  @keyframes blink{0%,100%{filter:none} 50%{filter:brightness(1.25)}}
+  @media (prefers-reduced-motion:reduce){ .steps i{animation:none;} }
+  .center{text-align:center;}
+  .for{font-size:.95rem; color:var(--ink-soft);}
+  .for b{color:var(--ink);}
+
+  /* the Tuesday timeline */
+  .tl{display:grid; gap:0;}
+  .tl .row{display:grid; grid-template-columns:104px 1fr; gap:14px; padding:10px 0 10px 12px; border-bottom:1px dashed var(--line); border-left:4px solid var(--c,var(--line));}
+  .tl .row:last-child{border-bottom:0;}
+  .tl .t{font:700 .9rem "Inter",sans-serif; font-variant-numeric:tabular-nums;}
+  .tl .w span{color:var(--ink-soft); font-size:.92rem;}
+  .loop{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px;}
+  .loop .b{padding:8px 12px; border-radius:10px; background:var(--surface-2); font-weight:700; font-size:.9rem;}
+  .loop .b.hi{background:var(--ink); color:var(--bg);}
+  .loop .ar{color:var(--ink-faint); font-weight:700;}
+
+  /* the "rhymes with your work" table */
+  .rhyme{display:grid; gap:6px;}
+  .rhyme .r{display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); gap:10px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:8px 14px;}
+  .rhyme .q{font-size:.92rem;}
+  .rhyme .q b{display:block; font-family:"Montserrat",sans-serif; font-size:1rem;}
+  .rhyme .q span{color:var(--ink-faint); font-size:.78rem;}
+  .rhyme .eq{text-align:center; color:var(--sun); font-weight:900;}
+  .rhyme .a{font-size:.92rem;}
+  @media (max-width:640px){ .rhyme .r{grid-template-columns:1fr;} .rhyme .eq{display:none;} .rhyme .a{border-top:1px dashed var(--line); padding-top:8px;} }
+
+  /* the beat grid */
+  .seq{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; max-width:860px;}
+  .seqrow{display:grid; grid-template-columns:62px repeat(16,minmax(0,1fr)); gap:4px; align-items:center; margin-bottom:5px;}
+  .seqrow .nm{font:700 .74rem "Inter",sans-serif; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);}
+  .pad{aspect-ratio:1; min-height:18px; border-radius:6px; background:var(--pad-off); border:0; position:relative;}
+  .pad:nth-of-type(4n+1){box-shadow:inset 0 -3px 0 rgba(0,0,0,.12);}
+  .pad.on{background:var(--c);}
+  .pad.now{outline:2px solid var(--ink); outline-offset:1px;}
+  .pad:focus-visible{outline:3px solid var(--sun); outline-offset:1px;}
+  .seqctl{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:10px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px; font-weight:800; font-size:.95rem; text-decoration:none; background:var(--ink); color:var(--bg);}
+  .btn.ghost{background:none; color:var(--ink); border:2px solid var(--ink);}
+  .btn.spec{background:var(--spectrum); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35);}
+  .seqctl label{font-size:.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:8px;}
+  @media (max-width:560px){ .seqrow{grid-template-columns:44px repeat(16,minmax(0,1fr)); gap:2px;} .pad{border-radius:3px; min-height:14px;} }
+
+  /* stages */
+  .stage{border-top:6px solid var(--c); }
+  .stage .n{font:900 .78rem "Montserrat",sans-serif; color:var(--c); letter-spacing:.1em; text-transform:uppercase;}
+  .stage .ev{margin-top:8px; font-size:.84rem; color:var(--ink-soft); border-top:1px dashed var(--line); padding-top:8px;}
+  .stage .ev b{color:var(--ink);}
+
+  /* options */
+  .opt{position:relative;}
+  .opt .lbl{font:900 1.6rem/1 "Montserrat",sans-serif; color:var(--c); margin-bottom:6px;}
+  .opt ul{padding-left:18px; color:var(--ink-soft); font-size:.9rem;}
+  .req{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
+  .req span{font-size:.84rem; padding:6px 11px; border-radius:999px; border:1px solid var(--line); background:var(--surface);}
+
+  table{width:100%; border-collapse:collapse; font-size:.92rem;}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:last-child td{border-bottom:0;}
+  th{font:700 .7rem "Inter",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); background:var(--surface-2);}
+  .tw{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px;}
+
+  .note{border-left:5px solid var(--sun); background:var(--surface); border-radius:0 12px 12px 0; padding:12px 14px; font-size:.9rem; margin-top:14px;}
+  .ctarow{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:14px 0;}
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
+  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .navbtn:disabled{opacity:.3; cursor:default;}
+  .mid{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0;}
+  .playrow{display:flex; gap:8px; align-items:center;}
+  .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:800; font-size:.9rem; white-space:nowrap;}
+  .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
+  .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
+  .dots button.on{background:var(--sun); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:var(--spectrum); transition:width .2s linear;}
+  .theme{position:fixed; top:12px; right:12px; z-index:5; font-size:.75rem; padding:5px 9px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink);}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl,.theme{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="banner">Prepared by Ras Tafari Inc. for Jared Selter, Roland. Roland has not reviewed or endorsed it; everything here is a proposal to talk through.</div>
+<button class="theme" id="theme" aria-label="Switch light or dark">◐</button>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide"><div class="card center">
+  <div class="eyebrow">For Jared Selter · Director of Education, Roland</div>
+  <h1>Play the record.<br><span class="rb">Then make your own.</span></h1>
+  <p class="lede" style="margin:0 auto 6px">Rainbow DJ Lab is a free Tuesday class on Chicago's South Side. We built the DJ side. This deck is about the piece we'd like to build with you: the beat.</p>
+  <div class="steps" aria-hidden="true">
+    <i style="--c:var(--r1)"></i><i></i><i></i><i></i><i style="--c:var(--r2)"></i><i></i><i></i><i></i>
+    <i style="--c:var(--r4)"></i><i></i><i></i><i></i><i style="--c:var(--r6)"></i><i></i><i></i><i></i>
+  </div>
+  <p class="for" style="margin-top:14px"><b>Stephen Henry</b>, President, Ras Tafari Inc. · Chicago · October 2026</p>
+  <p class="small">Press ▶ Play below to hear it, or use the arrows. About eight minutes.</p>
+</div></section>
+
+<!-- 2 · The short version -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">You asked for a deck. Here's the short version.</div>
+  <h2>A neighborhood lab where access turns into musicianship, and musicianship turns into a performance.</h2>
+  <div class="grid3">
+    <div class="box"><span class="tag">What it is</span><p>A free, year-round DJ class. Every Tuesday, 4 to 6 pm, at Rainbow Beach Park, from <b>January 12, 2027</b>. Twelve stations, one instrument per child.</p></div>
+    <div class="box"><span class="tag">What's missing</span><p>Our 14 Missions teach students to play other people's music well. They don't yet teach them to <b>make their own</b>. That's where Roland comes in.</p></div>
+    <div class="box"><span class="tag">What we're asking</span><p>A 30-minute call to scope a first phase: production tools for the room, a training session for our two instructors, and a report your team can use.</p></div>
+  </div>
+  <div class="note"><b>One update to my October 21 note.</b> The model is simpler now: one class for everyone, grades 6 to 12 and open to all ages, with a different woman DJ teaching every week instead of a separate girls-only track.</div>
+</div></section>
+
+<!-- 3 · Who gets to be a sound creator -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 1</div>
+  <h2>Who gets to be a <span class="rb">sound creator?</span></h2>
+  <p class="lede">On Chicago's South Side, the answer shouldn't depend on whether a family can buy a controller or pay for lessons. So the Lab costs nothing, and nobody waits for a semester to start.</p>
+  <div class="grid4">
+    <div class="box stat"><b>$0</b><span>to families, every Tuesday, all year</span></div>
+    <div class="box stat"><b>39</b><span>class Tuesdays in 2027 (holiday weeks and CPS spring break skipped)</span></div>
+    <div class="box stat"><b>6–12</b><span>grades it's built for; open to all ages</span></div>
+    <div class="box stat"><b>Any</b><span>Tuesday a station is free, a new student can start</span></div>
+  </div>
+  <p class="small" style="margin-top:12px">The Chicago Park District offered the Rainbow Beach Park fieldhouse game room for Tuesdays, 4 to 6 pm; the use agreement is in progress. Ras Tafari Inc. is a Chicago 501(c)(3), EIN 42-3036705.</p>
+</div></section>
+
+<!-- 4 · What's already built -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 2</div>
+  <h2>What we've already designed</h2>
+  <div class="grid2">
+    <div class="box"><h3>The curriculum</h3>
+      <ul class="ticks">
+        <li style="--c:var(--r1)"><b>14 Missions, 42 Passport skills, 7 colors.</b> Red "Meet the Machine" through Violet "Rainbow Showcase."</li>
+        <li style="--c:var(--r3)"><b>Graduation is mastery, not a date:</b> all 42 skills stamped, plus a final set played live.</li>
+        <li style="--c:var(--r5)"><b>Stamps never expire.</b> Showing up doesn't stamp a skill; missing a week doesn't erase one.</li>
+      </ul></div>
+    <div class="box"><h3>The room and the people</h3>
+      <ul class="ticks">
+        <li style="--c:var(--r4)"><b>12 stations</b>, each with its own controller, laptop and volume-limited headphones.</li>
+        <li style="--c:var(--r6)"><b>Two resident DJ instructors</b>, one man and one woman, each coaching six students.</li>
+        <li style="--c:var(--r7)"><b>A different woman DJ every week</b> teaches her signature technique in the last 30 minutes.</li>
+      </ul></div>
+  </div>
+  <div class="grid3" style="margin-top:12px">
+    <div class="box"><h3>A class app</h3><p class="small">Rolling enrollment, make-ups and a personal Passport for every child. Families get a private link that shows only their own child.</p></div>
+    <div class="box"><h3>Safety in writing</h3><p class="small">Release only to listed adults with an ID check; consent recorded before any check-in or performance; 85 dB headphones.</p></div>
+    <div class="box"><h3>A published budget</h3><p class="small">$95,589 for the first year: $75,123 cash and $20,466 in stations we're seeking in-kind. <a href="/full-spectrum/dj-lab-2027.html">See the full plan</a>.</p></div>
+  </div>
+</div></section>
+
+<!-- 5 · A Tuesday -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 3 · What does a child actually do?</div>
+  <h2>One Tuesday, start to finish</h2>
+  <div class="grid2" style="align-items:start">
+    <div class="box tl">
+      <div class="row" style="--c:var(--line)"><div class="t">3:30</div><div class="w"><b>Instructors set up</b><br><span>12 stations out and tested before anyone arrives.</span></div></div>
+      <div class="row" style="--c:var(--r4)"><div class="t">4:00–5:30</div><div class="w"><b>Core lab, nine blocks</b><br><span>Every child at their own station on their own Mission. Snacks from a neighborhood restaurant at the Move Break.</span></div></div>
+      <div class="row" style="--c:var(--r7)"><div class="t">5:30–6:00</div><div class="w"><b>Guest woman DJ</b><br><span>Her story, her signature technique, then every child tries it on their own deck.</span></div></div>
+      <div class="row" style="--c:var(--line)"><div class="t">6:00</div><div class="w"><b>Pickup</b><br><span>Signed out to an authorized adult.</span></div></div>
+    </div>
+    <div>
+      <p class="lede" style="font-size:1.05rem">The heart of the 90 minutes is a loop:</p>
+      <div class="loop">
+        <span class="b">Mission Card</span><span class="ar">→</span>
+        <span class="b hi">Watch Me Think</span><span class="ar">→</span>
+        <span class="b hi">Deck Time</span><span class="ar">→</span>
+        <span class="b hi">Spotlight</span><span class="ar">→</span>
+        <span class="b">Check Out</span>
+      </div>
+      <p style="margin-top:12px">An instructor thinks out loud at the decks. Every child goes to work alone on their own instrument. Then the room comes back together and a few students play what they made.</p>
+      <p class="muted">It's the same cycle Berklee's SP-404 Lab runs: instruction, independent creation, then the group reconvenes to share. Because nobody shares a controller, each child gets the full 30 minutes of Deck Time, not 7½.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 6 · Rhymes with your work -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Why it's built this way</div>
+  <h2>We studied your work. It already lines up.</h2>
+  <div class="rhyme">
+    <div class="r"><div class="q"><b>"To anyone, at any level"</b><span>Your words on opening 1500 Sound Academy's curriculum as a self-paced program</span></div><div class="eq">=</div>
+      <div class="a"><b>Free, and join any Tuesday.</b> Each child works their own next Mission at their own pace; progress carries over.</div></div>
+    <div class="r"><div class="q"><b>Self-paced, with real feedback on student projects</b><span>The full 1500 program: instructor office hours and personal feedback</span></div><div class="eq">=</div>
+      <div class="a"><b>Two instructors, six students each.</b> Every skill is stamped in person by someone who watched the child do it.</div></div>
+    <div class="r"><div class="q"><b>"Playable like a guitar or piano"</b><span>You, on the SP-404, Roland × Berklee, 2026</span></div><div class="eq">=</div>
+      <div class="a"><b>One instrument per child.</b> A guitar lab, not a demo table. Thirty minutes of hands-on time every class.</div></div>
+    <div class="r"><div class="q"><b>Finish with an original track, certified by a passing project</b><span>The Roland Cloud course you built and led for We Make Noise, 2024</span></div><div class="eq">=</div>
+      <div class="a"><b>Graduation is earned, not attended:</b> 42 stamped skills and a live set. The Beat Track would end the same way yours did, with an original instrumental.</div></div>
+    <div class="r"><div class="q"><b>An 808 overview, then a woman artist builds a beat live</b><span>"808 goes Lo-Fi," GRAMMY Museum, with Sarah the Illstrumentalist, 2024</span></div><div class="eq">=</div>
+      <div class="a"><b>Every Tuesday ends with a woman DJ</b> showing her technique live, then every child tries it on their own deck.</div></div>
+    <div class="r"><div class="q"><b>A community-driven academy with a Roland Room</b><span>1500 Sound Academy, Inglewood, 2019</span></div><div class="eq">=</div>
+      <div class="a"><b>A neighborhood lab on the South Side</b>, with snacks bought from local restaurants every week.</div></div>
+  </div>
+  <p class="small" style="margin-top:10px">Sources: <a href="https://www.roland.com/us/company/press_releases/2026/Roland-and-Berklee-College-of-Music-Bring-Hardware/" target="_blank" rel="noopener">Roland press release, 2026</a> · <a href="https://articles.roland.com/lo-fi-education-the-sp-404-in-the-classroom/" target="_blank" rel="noopener">"Lo-Fi Education," Roland Articles</a> · <a href="https://www.we-make-noise.org/post/we-make-noise-roland-cloud-music-producers" target="_blank" rel="noopener">We Make Noise × Roland Cloud</a> · <a href="https://grammymuseum.org/event/roland-cloud-808-goes-lo-fi-workshops-ft-sarah-the-illstrumentalist/" target="_blank" rel="noopener">GRAMMY Museum, 2024</a> · <a href="https://www.prnewswire.com/news-releases/1500-sound-academy-partners-with-yellowbrick-to-offer-its-acclaimed-music-curriculum-as-an-on-demand-online-program-301268203.html" target="_blank" rel="noopener">1500 Sound Academy × Yellowbrick</a> · <a href="https://www.roland.com/us/company/press_releases/2019/ROLAND-ANNOUNCES-COLLABORATION-WITH-1500-SOUND-ACA/" target="_blank" rel="noopener">Roland × 1500 Sound Academy, 2019</a></p>
+</div></section>
+
+<!-- 7 · Where Roland fits -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 4 · Where Roland fits</div>
+  <h2>The Beat Track: <span class="rb">make the beat, then play it out.</span></h2>
+  <p class="lede">We'd like to add a production track alongside the Passport, designed with your team. The DJ curriculum stays exactly as it is; the Beat Track plugs into the Missions that already point toward it.</p>
+  <div class="grid3">
+    <div class="box" style="border-top:6px solid var(--r4)"><span class="tag">Green · Mission 8</span><h3>Make a Third Song</h3><p class="small">Students already blend two records into something new. The Beat Track lets them build the third part themselves.</p></div>
+    <div class="box" style="border-top:6px solid var(--r5)"><span class="tag">Blue · Mission 9</span><h3>Hot Cues and Loops</h3><p class="small">Loops and cue points are pad thinking. It's the natural door into sampling and sequencing.</p></div>
+    <div class="box" style="border-top:6px solid var(--r7)"><span class="tag">Violet · Missions 13–14</span><h3>Build Your Set, Rainbow Showcase</h3><p class="small">The payoff: a student drops a beat they made inside the final set they play for the neighborhood.</p></div>
+  </div>
+  <p class="small" style="margin-top:12px">The Beat Track is optional and never required to graduate, the same way the weekly guest sessions add to the Passport without gating it.</p>
+</div></section>
+
+<!-- 8 · Try it -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Beat Track, step one · try it</div>
+  <h2>A child's first ten minutes</h2>
+  <p class="lede" style="font-size:1.02rem">Sixteen steps, four sounds, one tempo. Tap the squares, then press play. This is the first thing a student would make, on their own instrument, before anything fancier.</p>
+  <div class="seq" id="seq" role="group" aria-label="16-step beat grid"></div>
+  <div class="seqctl">
+    <button class="btn" id="seqPlay">▶ Play the beat</button>
+    <button class="btn ghost" id="seqClear">Clear</button>
+    <button class="btn ghost" id="seqReset">Starter pattern</button>
+    <label>Tempo <input type="range" id="bpm" min="70" max="130" value="92" aria-label="Tempo in beats per minute"> <span class="mono" id="bpmv">92</span> BPM</label>
+  </div>
+  <p class="small" style="margin-top:8px">Sounds are synthesized in your browser; no samples, nothing recorded. The narration pauses while the beat plays.</p>
+</div></section>
+
+<!-- 9 · Pattern to performance -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 6 · What will students create?</div>
+  <h2>From a pattern to a performance</h2>
+  <div class="grid4">
+    <div class="box stage" style="--c:var(--r1)"><div class="n">Beat 1</div><h3>First Pattern</h3><p class="small">Program a 16-step kick, snare and hat pattern and hold it steady while it loops.</p>
+      <div class="ev"><b>Evidence:</b> a saved one-bar loop at the student's chosen tempo.</div></div>
+    <div class="box stage" style="--c:var(--r3)"><div class="n">Beat 2</div><h3>Sample and Flip</h3><p class="small">Record or load a sound, chop it, and assign the pieces to pads. Play them by hand.</p>
+      <div class="ev"><b>Evidence:</b> a kit of the student's own chops, played live for an instructor.</div></div>
+    <div class="box stage" style="--c:var(--r5)"><div class="n">Beat 3</div><h3>Original Instrumental</h3><p class="small">A drum beat, chords, a melody and one sound of their own design, arranged into about a minute of original music.</p>
+      <div class="ev"><b>Evidence:</b> an exported track, plus a short "what I was going for" from the student.</div></div>
+    <div class="box stage" style="--c:var(--r7)"><div class="n">Beat 4</div><h3>Play It Out</h3><p class="small">Perform the beat live, or mix it into their final set at a Rainbow Showcase.</p>
+      <div class="ev"><b>Evidence:</b> a recorded performance, with family consent.</div></div>
+  </div>
+  <p class="small" style="margin-top:12px">Each stage is stamped by an instructor against a short rubric we'd like to write with your team, so "done" means the same thing every Tuesday. Beat 3 borrows the finish line of your Roland Cloud course: a beat, chords, melody and sound design in one original instrumental, and a project that has to pass.</p>
+</div></section>
+
+<!-- 10 · Tools -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 4, continued · Which tools?</div>
+  <h2>We'll bring the requirements. You know the instruments.</h2>
+  <div class="req">
+    <span>✓ Hands-on: a child plays it, not just clicks it</span>
+    <span>✓ Works beside our 12 Windows laptops</span>
+    <span>✓ Set up and packed in 30 minutes</span>
+    <span>✓ Volume-limited headphones</span>
+    <span>✓ Student work saved between Tuesdays</span>
+    <span>✓ The DJ controller stays one per child</span>
+  </div>
+  <div class="grid4">
+    <div class="box opt" style="--c:var(--r4)"><div class="lbl">A</div><h3>Software first</h3><ul><li>Roland's free Zenbeats app on our 12 laptops (the one you taught the 808 with at the GRAMMY Museum)</li><li>Roland Cloud access for the two instructors</li><li>One SP-404MKII as the instructor's demo station</li></ul></div>
+    <div class="box opt" style="--c:var(--r5)"><div class="lbl">B</div><h3>A bank of six</h3><ul><li>Six SP-404MKIIs on a rotation</li><li>Students on the Beat Track use one during Deck Time 2</li><li>Each child still has their own unit while working</li></ul></div>
+    <div class="box opt" style="--c:var(--r6)"><div class="lbl">C</div><h3>The full room</h3><ul><li>Twelve SP-404MKIIs, one at every station</li><li>The Berklee room, at neighborhood scale</li><li>Every Mission can include a beat</li></ul></div>
+    <div class="box opt" style="--c:var(--r7)"><div class="lbl">D</div><h3>Your pick</h3><ul><li>AIRA Compact, a TR, or a mix we haven't named</li><li>Whatever you've seen a 12-year-old learn fastest on</li></ul></div>
+  </div>
+  <p class="small" style="margin-top:12px">Any portion helps. Equipment is donated to Ras Tafari Inc., stays with the Lab for future students, and is logged in and out every Tuesday.</p>
+</div></section>
+
+<!-- 11 · Instructors -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 5 · How do instructors get ready?</div>
+  <h2>Two instructors who can teach it the Roland way</h2>
+  <div class="grid2">
+    <div class="box">
+      <ul class="ticks">
+        <li style="--c:var(--r1)"><b>One training session in December</b> for both resident instructors. Virtual is fine.</li>
+        <li style="--c:var(--r2)"><b>Teaching materials</b> we can adapt for ages 11 to 17, including the SP-404 Lab course model, if it fits.</li>
+        <li style="--c:var(--r4)"><b>A named contact</b> for questions during the first phase.</li>
+        <li style="--c:var(--r6)"><b>One Tuesday guest session</b> in the format you ran at the GRAMMY Museum: a short look at the 808, then a woman producer from Roland's artists building a beat live, then every child tries it.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>What our instructors already do</h3>
+      <p class="small">Both residents teach every Passport skill, coach six students each and keep the records. They're paid $250 a session, which covers setup, pack-up and stamps, so the Beat Track gets taught by people who are in the room every week, not by a visitor.</p>
+      <h3 style="margin-top:12px">What the guest slot gives you</h3>
+      <p class="small">A fixed 30 minutes every Tuesday: 5 minutes of story, 10 of technique, 10 of every child trying it, 5 of questions. A Roland session would slot straight in.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 12 · Measure -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Question 7 · How will we know it worked?</div>
+  <h2>Evidence your team can use</h2>
+  <div class="tw"><table>
+    <thead><tr><th>What we measure</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td><b>Skill growth</b></td><td>A first-Tuesday recording and a later one from the same student (with family consent), plus Beat Track stamps against the shared rubric.</td></tr>
+      <tr><td><b>Real time on the instruments</b></td><td>Attendance and hands-on hours per station, from the class app.</td></tr>
+      <tr><td><b>Original work</b></td><td>Number of finished instrumentals, and how many were performed in public.</td></tr>
+      <tr><td><b>A classroom field report</b></td><td>Where beginners stalled, what setup cost us time, which teaching moves worked. Written for your product and education teams.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid3" style="margin-top:12px">
+    <div class="box stat"><b>Mar 30</b><span>Phase 1 review and first report to Roland</span></div>
+    <div class="box stat"><b>May 18</b><span>Spring Rainbow Showcase</span></div>
+    <div class="box stat"><b>Dec 14</b><span>Year-end Showcase and full-year report</span></div>
+  </div>
+</div></section>
+
+<!-- 13 · What Roland gets -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">How Roland wins</div>
+  <h2>What we'd deliver, and what we won't promise</h2>
+  <div class="tw"><table>
+    <thead><tr><th>For Roland</th><th>What we deliver</th></tr></thead>
+    <tbody>
+      <tr><td><b>Instruments that get played</b></td><td>Every unit tied to specific lessons and used every Tuesday, 39 weeks a year.</td></tr>
+      <tr><td><b>Proof of educational value</b></td><td>Before-and-after audio, stamped skills and instructor notes.</td></tr>
+      <tr><td><b>Better-prepared educators</b></td><td>Two instructors trained to teach the production activities you agree to.</td></tr>
+      <tr><td><b>A community story you can trust</b></td><td>Consented student work showing access turning into creative achievement.</td></tr>
+      <tr><td><b>Honest classroom feedback</b></td><td>The field report, from twelve beginners in a park fieldhouse.</td></tr>
+      <tr><td><b>A tested first phase</b></td><td>Jan 12 to Mar 30, documented, so we can both decide whether to grow it.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:10px">Recognition on our site and at showcases, with Roland approving any use of its name or marks. We promise learning and good stewardship. Whether any student or instructor ever buys Roland gear is not something we can promise, and we won't.</p>
+</div></section>
+
+<!-- 14 · The ask -->
+<section class="slide"><div class="card center">
+  <div class="eyebrow">Question 8 · The decision</div>
+  <h2>A 30-minute call to scope Phase 1</h2>
+  <p class="lede" style="margin:0 auto 14px">If it's a fit, we'd leave the call with three things: a tool path (A, B, C or your pick), a December date for instructor training, and an agreed report. The Lab opens January 12 either way. With Roland, it opens with a beat.</p>
+  <div class="ctarow">
+    <a class="btn spec" href="mailto:stephen@selassiefest.com?subject=Rainbow%20DJ%20Lab%20%C3%97%20Roland%3A%20scoping%20call&amp;body=Hi%20Stephen%2C%0A%0AI%20reviewed%20the%20deck.%20">Email Stephen to set a time</a>
+    <a class="btn ghost" href="/partner/?k=rqkuqps4">Pick what fits</a>
+  </div>
+  <p class="for"><b>Stephen Henry</b>, President, Ras Tafari Inc.<br>(872) 255-9333 · <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a><br>7700 S. Stony Island Ave., Chicago, IL 60649</p>
+  <p class="small" style="margin-top:12px"><a href="/full-spectrum/dj-lab-2027.html">Full program plan, schedule and budget</a> · IRS determination letter available on request (EIN 42-3036705)</p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
+  <div class="prog" id="prog"></div>
+  <div class="mid">
+    <div class="playrow">
+      <button class="play" id="play" aria-label="Play the narrated deck">▶ Play</button>
+      <button class="auto" id="auto" aria-pressed="true" title="Move to the next slide when each one finishes">Auto-advance</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+</nav>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+// Rainbow DJ Lab pitch for Jared Selter (Roland). Program facts follow full-spectrum/dj-lab-2027.html.
+// ?k=rqkuqps4 counts a view on the Partner Tracker row "Roland (Music Education)" (same RPC as /partner/).
+(function () {
+  var m = /[?&]k=([a-z0-9]{6,12})(?:&|$)/.exec(location.search);
+  if (!m || !window.sfSupabaseReady) return;
+  window.sfSupabaseReady.then(function (c) { return c.rpc('fs_pitch_view', { p_key: m[1] }); }).catch(function () {});
+})();
+
+// The beat grid (slide 8): four synthesized voices, a lookahead scheduler, 16 steps.
+const VOICES = [["Kick", "--r1"], ["Snare", "--r3"], ["Clap", "--r5"], ["Hat", "--r7"]];
+const STARTER = ["1000001010100000", "0000100000001000", "0000000000001000", "1010101010101011"];
+let pattern = STARTER.map((r) => r.split("").map(Number));
+const seq = document.getElementById("seq");
+function drawGrid(){
+  seq.innerHTML = VOICES.map(([nm, c], v) => `<div class="seqrow"><span class="nm">${nm}</span>` +
+    pattern[v].map((on, s) => `<button class="pad${on ? " on" : ""}" style="--c:var(${c})" data-v="${v}" data-s="${s}" aria-pressed="${!!on}" aria-label="${nm}, step ${s + 1}"></button>`).join("") + "</div>").join("");
+}
+drawGrid();
+seq.addEventListener("click", (e) => {
+  const p = e.target.closest(".pad"); if (!p) return;
+  const v = +p.dataset.v, s = +p.dataset.s; pattern[v][s] ^= 1;
+  p.classList.toggle("on", !!pattern[v][s]); p.setAttribute("aria-pressed", !!pattern[v][s]);
+  if (pattern[v][s] && !beatOn) { ensureCtx(); hit(v, ctx.currentTime + 0.01); }
+});
+let ctx = null, noiseBuf = null, beatOn = false, step = 0, nextT = 0, tick = null;
+function ensureCtx(){
+  if (ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+  const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+}
+function noise(t, len, type, freq, gain){
+  const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  src.buffer = noiseBuf; f.type = type; f.frequency.value = freq;
+  g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + len);
+  src.connect(f).connect(g).connect(ctx.destination); src.start(t); src.stop(t + len + 0.02);
+}
+function hit(v, t){
+  if (v === 0) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.35);
+    g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.5);
+  } else if (v === 1) {
+    noise(t, 0.18, "bandpass", 1800, 0.5);
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "triangle"; o.frequency.value = 190;
+    g.gain.setValueAtTime(0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.15);
+  } else if (v === 2) {
+    [0, 0.012, 0.024].forEach((d) => noise(t + d, 0.09, "bandpass", 1200, 0.45));
+  } else {
+    noise(t, 0.05, "highpass", 7000, 0.28);
+  }
+}
+const bpmIn = document.getElementById("bpm"), bpmV = document.getElementById("bpmv"), seqPlay = document.getElementById("seqPlay");
+bpmIn.oninput = () => { bpmV.textContent = bpmIn.value; };
+function showStep(s){ seq.querySelectorAll(".pad").forEach((p) => p.classList.toggle("now", +p.dataset.s === s)); }
+function schedule(){
+  const sixteenth = 60 / +bpmIn.value / 4;
+  while (nextT < ctx.currentTime + 0.12) {
+    const s = step;
+    pattern.forEach((row, v) => { if (row[s]) hit(v, nextT); });
+    setTimeout(() => { if (beatOn) showStep(s); }, Math.max(0, (nextT - ctx.currentTime) * 1000));
+    nextT += sixteenth; step = (step + 1) % 16;
+  }
+}
+function beat(on){
+  if (on === beatOn) return;
+  beatOn = on;
+  if (on) {
+    ensureCtx(); ctx.resume(); step = 0; nextT = ctx.currentTime + 0.05; tick = setInterval(schedule, 25); schedule();
+    if (playing) pauseDeck();
+  } else { clearInterval(tick); showStep(-1); }
+  seqPlay.textContent = on ? "■ Stop" : "▶ Play the beat";
+}
+seqPlay.onclick = () => beat(!beatOn);
+document.getElementById("seqClear").onclick = () => { pattern = pattern.map((r) => r.map(() => 0)); drawGrid(); };
+document.getElementById("seqReset").onclick = () => { pattern = STARTER.map((r) => r.split("").map(Number)); drawGrid(); };
+
+// Deck engine (same as the daycare decks). Narration clips: /full-spectrum/roland/audio/<slide number>.mp3.
+// A slide with no clip yet waits long enough to read it, then advances.
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const AUD = "/full-spectrum/roland/audio/";
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(slides.map(async (_, i) => { const u = AUD + (i + 1) + ".mp3"; found[i] = (await head(u)) ? u : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
+function setBtn(){
+  playBtn.textContent = playing ? "⏸ Pause" : (cur === N - 1 && atEnd ? "↺ Replay" : "▶ Play");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+}
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  if (!resume) { player.pause(); prog.style.width = "0"; tLeft = 0; }
+  if (!playing) return;
+  if (found[i]) {
+    if (!resume || player.src.indexOf(found[i]) < 0) { player.src = found[i]; player.currentTime = 0; }
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("timeupdate", () => { if (player.duration) prog.style.width = (100 * player.currentTime / player.duration) + "%"; });
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  beat(false);
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); if (auto && playing && player.ended) finishSlide(); };
+function go(i){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => { s.classList.toggle("on", j === cur); s.classList.toggle("off-left", j < cur); });
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1;
+  atEnd = false; beat(false);
+  startSlide(cur); setBtn();
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, input") && (e.key === " " || e.key === "Enter")) return;
+  if (e.target.closest("input")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.target.closest(".seq") ? null : e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+const root = document.documentElement;
+try { const t = localStorage.getItem("rolanddeck-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+document.getElementById("theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("rolanddeck-theme", root.dataset.theme); } catch (e) {}
+};
+go(0);
+</script>
+</body>
+</html>
