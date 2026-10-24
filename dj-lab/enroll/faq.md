@@ -27,7 +27,7 @@ They're planned for **Rainbow Beach Park, 3111 E. 77th St.**: indoors at the fie
 **Junior DJs (ages 8–11).** Drop-off is allowed once you've signed an authorized-pickup list. Girls about 9–17 may also choose **Empress Decks**, a girls-only track taught by women DJs. Rainbow Beach Park staff welcome the girls' focus (girls' participation has long trailed boys' across the Park District); written confirmation will be part of the park agreement. Every group learns the same core curriculum, adapted by age group and challenge level.
 
 ### 8. Does my child need experience or equipment?
-No. We will provide controllers (Hercules DJControl Inpulse 300 MK2), laptops, headphones and earplugs. Ras Tafari Inc. is seeking grants and donations for this gear. The lights under the jog wheels help beginners learn to beatmatch.
+No. We will provide controllers, laptops, headphones and earplugs. Ras Tafari Inc. is seeking grants and donations for this gear, and the controller brand will be chosen with our equipment partner.
 
 ## Safety
 

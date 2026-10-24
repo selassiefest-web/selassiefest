@@ -27,7 +27,7 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Payroll costs if the instructors are employees | Reserve of about 10% of the $19,500 instructor pay; $0 if they are independent trainers | $1,950 | |
 | Class app, family email and hosting | Estimate, about $50 a month | $600 | |
 | **Total cash** | | **$75,123** | |
-| Controllers: Hercules DJControl Inpulse 300 MK2 | **Being sought** through grants and donations; 13 × about $200 (12 stations + a spare) | | $2,600 |
+| DJ controllers (brand open to our equipment partner) | **Being sought** through grants and donations; 13 × about $200 (12 stations + a spare) | | $2,600 |
 | Windows laptops (Core i5, 8 GB, 64-bit) | **Being sought** through grants and donations; 13 × about $575 | | $7,475 |
 | Volume-limited headphones (85 dB) | **Being sought** through grants and donations; 13 × about $30 | | $390 |
 | Power strips, cable management | **Being sought** through grants and donations; 13 × about $17 + about $150 of cord covers and ties | | $380 |

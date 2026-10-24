@@ -318,7 +318,7 @@ Ras Tafari retains this agreement and any amendments; the board resolution and r
 
 | Item | Serial / ID | Condition | Insured value | Location |
 |---|---|---|---|---|
-| Hercules DJControl Inpulse 300 MK2 | | | | |
+| DJ controllers (brand to be confirmed) | | | | |
 | Laptop | | | | |
 | Headphones | | | | |
 | Cables / adapters | | | | |

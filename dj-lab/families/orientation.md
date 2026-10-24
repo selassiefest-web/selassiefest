@@ -24,7 +24,7 @@ You'll meet the adults who will work with your child. Every one of them must fin
 
 ### 2. Try the gear
 
-- Kids (and grown-ups) try a **Hercules DJControl Inpulse 300 MK2** controller. The lights under the jog wheels show when two songs are lined up.
+- Kids (and grown-ups) try a beginner DJ controller and see how two songs get lined up.
 - Try the headphones and hear what the capped volume sounds like. Pick up free earplugs if your child wants them.
 - See how a station works: 4 kids, one controller, rotating jobs (DJ, Co-pilot, Hype and Logger).
 

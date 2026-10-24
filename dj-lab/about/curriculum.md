@@ -77,7 +77,7 @@ Spotlight is volunteers only. Coaches never call on a child who didn't sign up. 
 
 ## Gear and music
 
-- **Controllers:** Hercules DJControl Inpulse 300 MK2. Lights under the jog wheels guide beatmatching in the early Missions.
+- **Controllers:** one beginner DJ controller per station, chosen with our equipment partner. We look for controllers with visual beatmatching guides for the early Missions.
 - **Software:** Serato DJ Lite from Mission 9 on.
 - **Hearing:** headphone volume is capped on every laptop, and earplugs are available free. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
 - **Clean lyrics only:** radio edits, checked when crates are built.

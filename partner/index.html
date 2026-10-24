@@ -139,6 +139,8 @@
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   var key = (new URLSearchParams(location.search).get('k') || '').trim().toLowerCase();
+  // The DJ Lab plan shows each partner its own brand on the budget lines it would supply (fs_partners.gear).
+  if (/^[a-z0-9]{6,12}$/.test(key)) document.querySelectorAll('a[href^="/full-spectrum/dj-lab-2027.html"]').forEach(function(a){ a.href = '/full-spectrum/dj-lab-2027.html?k=' + key; });
   var decision = null;
   if (new URLSearchParams(location.search).get('paid') === '1'){
     var pb = document.createElement('div'); pb.className = 'paid'; pb.textContent = 'Thank you! Your gift was received. A receipt is on its way to your email.';
