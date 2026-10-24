@@ -10,21 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
+  /* One dark, cinematic look in every color scheme: each slide sits on a photo (img/sNN.jpg) with a dark left side. */
   :root{
-    --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93;
-    --line:#E5E0D6; --accent:#2F3DB5; --sun:#B87503; --pad-off:#E9E4DA;
-    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+    color-scheme:dark;
+    --bg:#08090F; --surface:rgba(18,20,32,.84); --surface-2:rgba(34,37,56,.9); --ink:#F2F0EA; --ink-soft:#C9C5BC; --ink-faint:#9A968E;
+    --line:rgba(255,255,255,.12); --accent:#FFB25C; --sun:#F59E3A; --pad-off:#2A2C3C;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
     --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
-      --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --pad-off:#23273F;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
-    --line:#272B44; --accent:#9AA6FF; --sun:#F5B53A; --pad-off:#23273F;
+    --veil:linear-gradient(90deg,rgba(8,9,15,.94) 0%,rgba(8,9,15,.86) 38%,rgba(8,9,15,.5) 70%,rgba(8,9,15,.35) 100%);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{height:100%;}
@@ -36,7 +29,10 @@
 
   #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
   .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 28px; overflow-y:auto;
+    background:var(--bg) center right / cover no-repeat;
     opacity:0; transform:translateX(36px); transition:opacity .35s ease, transform .35s ease; pointer-events:none;}
+  .box,.seq,.tw,.req span,.rhyme .r{-webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  @media (max-width:720px){ .slide{background-position:70% center;} }
   .slide.on{opacity:1; transform:none; pointer-events:auto;}
   .slide.off-left{transform:translateX(-36px);}
   .card{width:100%; max-width:980px;}
@@ -67,7 +63,7 @@
   ul.ticks li::before{content:""; position:absolute; left:2px; top:.5em; width:10px; height:10px; border-radius:3px; background:var(--c,var(--r4));}
 
   /* cover: 16 steps in four groups, the way a rhythm machine lays them out */
-  .steps{display:grid; grid-template-columns:repeat(16,1fr); gap:5px; max-width:640px; margin:22px auto 6px;}
+  .steps{display:grid; grid-template-columns:repeat(16,1fr); gap:5px; max-width:460px; margin:22px 0 6px;}
   .steps i{aspect-ratio:1; border-radius:5px; background:var(--pad-off); animation:blink 2.4s infinite; animation-play-state:paused;}
   .slide.on .steps i{animation-play-state:running;}
   .steps i:nth-child(4n+1){background:var(--c);}
@@ -134,7 +130,7 @@
   .tw{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px;}
 
   .note{border-left:5px solid var(--sun); background:var(--surface); border-radius:0 12px 12px 0; padding:12px 14px; font-size:.9rem; margin-top:14px;}
-  .ctarow{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:14px 0;}
+  .ctarow{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0;}
 
   nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
   .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
@@ -148,25 +144,23 @@
   .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
   .dots button.on{background:var(--sun); width:22px;}
   .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:var(--spectrum); transition:width .2s linear;}
-  .theme{position:fixed; top:12px; right:12px; z-index:5; font-size:.75rem; padding:5px 9px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink);}
   @media print{
     body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
-    nav.ctl,.theme{display:none;}
+    nav.ctl{display:none;}
   }
 </style>
 </head>
 <body>
 <div class="bar"></div>
 <div class="banner">Prepared by Ras Tafari Inc. for Jared Selter, Roland. Roland has not reviewed or endorsed it; everything here is a proposal to talk through.</div>
-<button class="theme" id="theme" aria-label="Switch light or dark">◐</button>
 
 <main id="deck" aria-live="polite">
 
 <!-- 1 · Cover -->
-<section class="slide"><div class="card center">
+<section class="slide"><div class="card">
   <div class="eyebrow">For Jared Selter · Director of Education, Roland</div>
   <h1>Play the record.<br><span class="rb">Then make your own.</span></h1>
-  <p class="lede" style="margin:0 auto 6px">Rainbow DJ Lab is a free Tuesday class on Chicago's South Side. We built the DJ side. This deck is about the piece we'd like to build with you: the beat.</p>
+  <p class="lede" style="margin:0 0 6px; max-width:46ch">Rainbow DJ Lab is a free Tuesday class on Chicago's South Side. We built the DJ side. This deck is about the piece we'd like to build with you: the beat.</p>
   <div class="steps" aria-hidden="true">
     <i style="--c:var(--r1)"></i><i></i><i></i><i></i><i style="--c:var(--r2)"></i><i></i><i></i><i></i>
     <i style="--c:var(--r4)"></i><i></i><i></i><i></i><i style="--c:var(--r6)"></i><i></i><i></i><i></i>
@@ -400,10 +394,10 @@
 </div></section>
 
 <!-- 14 · The ask -->
-<section class="slide"><div class="card center">
+<section class="slide"><div class="card">
   <div class="eyebrow">Question 8 · The decision</div>
   <h2>A 30-minute call to scope Phase 1</h2>
-  <p class="lede" style="margin:0 auto 14px">If it's a fit, we'd leave the call with three things: a tool path (A, B, C or your pick), a December date for instructor training, and an agreed report. The Lab opens January 12. With Roland, it opens with a beat.</p>
+  <p class="lede" style="margin:0 0 14px; max-width:52ch">If it's a fit, we'd leave the call with three things: a tool path (A, B, C or your pick), a December date for instructor training, and an agreed report. The Lab opens January 12. With Roland, it opens with a beat.</p>
   <div class="ctarow">
     <a class="btn spec" href="mailto:stephen@selassiefest.com?subject=Rainbow%20DJ%20Lab%20%C3%97%20Roland%3A%20scoping%20call&amp;body=Hi%20Stephen%2C%0A%0AI%20reviewed%20the%20deck.%20">Email Stephen to set a time</a>
     <a class="btn ghost" href="/partner/?k=rqkuqps4">Pick what fits</a>
@@ -584,13 +578,15 @@ document.addEventListener("keydown", (e) => {
 let x0 = null;
 deck.addEventListener("touchstart", (e) => { x0 = e.target.closest(".seq") ? null : e.touches[0].clientX; }, { passive: true });
 deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
-const root = document.documentElement;
-try { const t = localStorage.getItem("rolanddeck-theme"); if (t) root.dataset.theme = t; } catch (e) {}
-document.getElementById("theme").onclick = () => {
-  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  root.dataset.theme = dark ? "light" : "dark";
-  try { localStorage.setItem("rolanddeck-theme", root.dataset.theme); } catch (e) {}
-};
+// Slide photos: /full-spectrum/roland/img/s01.jpg … s14.jpg (one per slide, in order), behind a dark veil so the text stays readable.
+// Only the current slide and its neighbors load, so the first screen appears fast.
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted) return;
+  s.dataset.painted = "1";
+  s.style.backgroundImage = `var(--veil), url("/full-spectrum/roland/img/s${String(i + 1).padStart(2, "0")}.jpg")`;
+}
+const goBase = go;
+go = function (i) { goBase(i); [cur - 1, cur, cur + 1, cur + 2].forEach(paint); };
 go(0);
 </script>
 </body>
