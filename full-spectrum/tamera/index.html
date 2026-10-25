@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Tamera Fair, Premier Child Care Centers: a personal, child-narrated invitation from Ras Tafari Inc. to make The Purple Turtle the live centerpiece of Full Spectrum's family nights at Rainbow Beach Park, with Tamera shaping who takes part and how.">
+<title>Tamera Fair, Premier Child Care Centers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&family=Patrick+Hand&display=swap">
+<style>
+  /* One evening-purple look in every color scheme (a nod to The Purple Turtle). Optional slide photos: img/sNN.jpg. */
+  :root{
+    color-scheme:dark;
+    --bg:#110B22; --surface:rgba(30,21,56,.86); --surface-2:rgba(52,37,92,.9); --ink:#F5F1FA; --ink-soft:#CFC5E2; --ink-faint:#9E92B8;
+    --line:rgba(255,255,255,.13); --lav:#C9A7FF; --gold:#F2B544; --paper:#FFFBF2; --paper-ink:#1E1633;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --veil:linear-gradient(90deg,rgba(17,11,34,.95) 0%,rgba(17,11,34,.88) 40%,rgba(17,11,34,.55) 72%,rgba(17,11,34,.4) 100%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--gold);}
+  .bar{height:7px; background:var(--spectrum);}
+  .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line);}
+
+  #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 28px; overflow-y:auto;
+    background:radial-gradient(ellipse at 85% 20%,rgba(163,91,196,.28),transparent 60%) var(--bg) center right / cover no-repeat;
+    opacity:0; transform:translateX(36px); transition:opacity .35s ease, transform .35s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .slide.off-left{transform:translateX(-36px);}
+  .card{width:100%; max-width:1000px;}
+  @media (max-width:720px){ .slide{background-position:70% center;} }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none;} }
+
+  .eyebrow{font:700 .72rem/1.3 "Inter",sans-serif; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:12px;}
+  h1,h2,h3{font-family:"Montserrat","Inter",sans-serif; letter-spacing:-0.015em; line-height:1.1; text-wrap:balance;}
+  h1{font-size:clamp(2.1rem,6.2vw,3.9rem); font-weight:900; margin-bottom:12px;}
+  h2{font-size:clamp(1.5rem,4.2vw,2.5rem); font-weight:800; margin-bottom:14px;}
+  h3{font-size:1.02rem; font-weight:800; margin-bottom:4px;}
+  .lav{color:var(--lav);}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.02rem,2.3vw,1.2rem); color:var(--ink-soft); max-width:68ch; margin-bottom:14px;}
+  .small{font-size:.82rem; color:var(--ink-soft); line-height:1.5;}
+  p{margin-bottom:8px;}
+
+  .box{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 18px; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+  @media (max-width:820px){ .grid2,.grid3{grid-template-columns:1fr;} }
+  .tag{display:inline-block; font:700 .7rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; padding:5px 9px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); margin-bottom:8px;}
+  .top{border-top:6px solid var(--c,var(--lav));}
+
+  /* Her own published words, shown as quotes with their source underneath */
+  .quote{border-left:5px solid var(--c,var(--lav)); background:var(--surface); border-radius:0 14px 14px 0; padding:12px 16px;}
+  .quote q{display:block; font:700 1.02rem/1.4 "Montserrat",sans-serif; quotes:"\201C" "\201D";}
+  .quote .src{display:block; font-size:.74rem; color:var(--ink-faint); margin-top:6px;}
+  .quote .so{display:block; margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); font-size:.9rem; color:var(--ink-soft);}
+  .quote .so b{color:var(--ink);}
+
+  /* The narrator's aside: a kid's speech bubble on every slide */
+  .bubble{position:relative; display:inline-block; max-width:560px; background:var(--paper); color:var(--paper-ink); border:3px solid #000; border-radius:20px; padding:10px 16px; margin-top:16px;
+    font:1.28rem/1.3 "Patrick Hand","Comic Sans MS",cursive; box-shadow:5px 5px 0 var(--lav);}
+  .bubble::after{content:""; position:absolute; left:30px; bottom:-14px; width:20px; height:20px; background:var(--paper); border-right:3px solid #000; border-bottom:3px solid #000; transform:rotate(45deg);}
+  .bubble .who{display:block; font:700 .72rem "Inter",sans-serif; color:#5B4F74; margin-top:4px;}
+
+  /* Mission rows */
+  .mrow{display:grid; grid-template-columns:150px minmax(0,1fr); gap:12px; align-items:start; padding:10px 12px; border-bottom:1px dashed var(--line);}
+  .mrow:last-child{border-bottom:0;}
+  .mrow .m{font:800 .8rem/1.25 "Montserrat",sans-serif; color:var(--c);}
+  .mrow .m span{display:block; font:600 .68rem "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);}
+  @media (max-width:640px){ .mrow{grid-template-columns:1fr; gap:2px;} }
+
+  /* The cue sheet: story moment, the song that answers it, the DJ move */
+  .cue{display:grid; grid-template-columns:minmax(0,1fr) 200px minmax(0,1.6fr); gap:12px; align-items:start; padding:5px 12px; border-bottom:1px dashed var(--line); border-left:4px solid var(--c,transparent); font-size:.86rem; line-height:1.4;}
+  .cue:last-child{border-bottom:0;}
+  .cue span:nth-child(2) b{display:block; font:800 .95rem/1.25 "Montserrat",sans-serif; color:var(--c);}
+  .cue span:nth-child(2) i{display:block; font:500 .76rem "Inter",sans-serif; color:var(--ink-faint); font-style:normal;}
+  .cue em{display:block; font:700 .68rem "Inter",sans-serif; font-style:normal; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px;}
+  .cue-h{border-left-color:transparent; font:700 .68rem "Inter",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);}
+  .cue-h span:nth-child(2){font:inherit; color:inherit;}
+  @media (max-width:700px){ .cue{grid-template-columns:1fr; gap:2px;} .cue-h{display:none;} }
+
+  /* The age ladder: example roles, the "who" left blank for her */
+  .ladder{display:grid; gap:6px;}
+  @media (min-width:900px){ .ladder{grid-template-columns:1fr 1fr;} }
+  .ladder + div .bubble{margin-top:10px;}
+  .rung{display:grid; grid-template-columns:34px minmax(0,1fr) 150px; gap:12px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:6px 14px;}
+  .rung .n{width:30px; height:30px; border-radius:50%; background:var(--c); color:#fff; font:900 .9rem "Montserrat",sans-serif; display:flex; align-items:center; justify-content:center;}
+  .rung .you{font:1.15rem "Patrick Hand","Comic Sans MS",cursive; color:var(--gold); border-bottom:2px dashed var(--gold); text-align:center; padding-bottom:2px;}
+  @media (max-width:640px){ .rung{grid-template-columns:30px minmax(0,1fr);} .rung .you{grid-column:2; text-align:left;} }
+
+  ol.asks{list-style:none; counter-reset:a; display:grid; gap:8px;}
+  @media (min-width:820px){ ol.asks{grid-template-columns:1fr 1fr;} }
+  ol.asks li{counter-increment:a; position:relative; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 14px 10px 58px;}
+  ol.asks li::before{content:counter(a); position:absolute; left:14px; top:10px; width:32px; height:32px; border-radius:50%; background:var(--c,var(--r4)); color:#fff; font:900 1rem "Montserrat",sans-serif; display:flex; align-items:center; justify-content:center;}
+  ol.asks b{display:block;}
+
+  /* Cover motif: a shell of eight glowing pads */
+  .shell{display:grid; grid-template-columns:repeat(8,34px); gap:6px; margin:14px 0 4px;}
+  .shell i{width:34px; height:30px; clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); background:var(--c); opacity:.85; animation:glow 2.6s infinite; animation-play-state:paused;}
+  .shell i:nth-child(odd){animation-delay:1.3s;}
+  .slide.on .shell i{animation-play-state:running;}
+  @keyframes glow{0%,100%{filter:none} 50%{filter:brightness(1.35)}}
+  @media (prefers-reduced-motion:reduce){ .shell i{animation:none;} }
+
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:999px; font-weight:800; font-size:.95rem; text-decoration:none; background:var(--ink); color:var(--bg);}
+  .btn.ghost{background:none; color:var(--ink); border:2px solid var(--ink);}
+  .btn.spec{background:var(--spectrum); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.35);}
+  .ctarow{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0;}
+  .note{border-left:5px solid var(--gold); background:var(--surface); border-radius:0 12px 12px 0; padding:12px 14px; font-size:.9rem; margin-top:14px;}
+  .for{font-size:.95rem; color:var(--ink-soft);}
+  .for b{color:var(--ink);}
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
+  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .navbtn:disabled{opacity:.3; cursor:default;}
+  .mid{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0;}
+  .playrow{display:flex; gap:8px; align-items:center;}
+  .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:800; font-size:.9rem; white-space:nowrap;}
+  .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
+  .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
+  .dots button.on{background:var(--lav); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:var(--spectrum); transition:width .2s linear;}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="banner">A personal invitation from Ras Tafari Inc. to Tamera Fair. Everything here is a proposal to shape together. Full Spectrum depends on Chicago Park District approval.</div>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">A personal invitation · Rainbow Beach Park · 2027</div>
+  <h1>Tamera Fair,<br><span class="lav">Premier Child Care Centers</span></h1>
+  <h2 style="font-size:clamp(1.3rem,3.4vw,2rem)"><span class="rb">Grapie needs a sound system.</span></h2>
+  <p class="lede" style="max-width:56ch">A proposal to make <b>The Purple Turtle</b> the live centerpiece of Full Spectrum's free family nights at Rainbow Beach Park, with you deciding which children take part, and how.</p>
+  <div class="shell" aria-hidden="true">
+    <i style="--c:var(--r7)"></i><i style="--c:var(--r6)"></i><i style="--c:var(--r5)"></i><i style="--c:var(--r4)"></i>
+    <i style="--c:var(--r3)"></i><i style="--c:var(--r2)"></i><i style="--c:var(--r1)"></i><i style="--c:var(--lav)"></i>
+  </div>
+  <div><span class="bubble">"Dear Ms. Fair, we need to talk about your turtle."<span class="who">Your narrator, age 5 (imagined, very serious)</span></span></div>
+  <p class="for" style="margin-top:18px"><b>Stephen Henry</b>, President, Ras Tafari Inc. · Chicago · October 2026</p>
+  <p class="small">Press ▶ Play below to hear it from our narrator, or use the arrows. About ten minutes. <a href="/full-spectrum/tamera/kids.html">The kids made their own version, too →</a></p>
+</div></section>
+
+<!-- 2 · Then and now -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Where this starts</div>
+  <h2>You helped artists find their voice.<br><span class="lav">Now it's the children's turn.</span></h2>
+  <div class="grid2">
+    <div class="box top" style="--c:var(--gold)"><span class="tag">Then · late 1990s and early 2000s</span>
+      <p><b>Mariah Management</b>, the company you formed to manage recording artists, including the Jamaican artist <b>Shadow</b>.</p>
+      <p class="small">You've watched raw talent become an artist: a sound, a stage, a crowd, a story.</p></div>
+    <div class="box top" style="--c:var(--lav)"><span class="tag">Now · 2027</span>
+      <p>Full Spectrum is that same journey, built for children: a free DJ class every Tuesday and free family music nights at Rainbow Beach.</p>
+      <p class="small">We'd like the artist manager and the educator in the same meeting. That's you, twice.</p></div>
+  </div>
+  <div><span class="bubble">"We formed a group. Our manager is tying somebody's shoe right now."<span class="who">The narrator, booking agent</span></span></div>
+</div></section>
+
+<!-- 3 · You already made room for music -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">You've done this before</div>
+  <h2>You've already given children a music room.<br><span class="lav">Some of them were two.</span></h2>
+  <div class="grid2" style="align-items:start">
+    <div class="quote" style="--c:var(--gold)">
+      <q>provided music lessons to hundreds of children in the west side of Chicago for over eight years</q>
+      <span class="src">Tamera Fair, on George "GEO" Cooper, in "George (GEO) Cooper: Shadow Warrior," Enigma In Black, July 7, 2017</span>
+      <span class="so"><b>What that profile describes:</b> the Ella Sheppard School of Music, founded in 2009, giving free lessons to children ages 2 to 14 in space you provided at a Premier center on the West Side.</span>
+    </div>
+    <div class="box">
+      <h3>Why it matters here</h3>
+      <p class="small">You've already shown that music education belongs inside early childhood, and that a two-year-old and a fourteen-year-old can share the same music room. Full Spectrum asks you to take that instinct outdoors, onto a stage, with a whole neighborhood listening.</p>
+    </div>
+  </div>
+  <div><span class="bubble">"Some of them were TWO. Ms. Fair, that is evidence."<span class="who">The narrator, still learning shoes</span></span></div>
+</div></section>
+
+<!-- 4 · Premier's own words -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Hands-on learning · cultural exposure · beyond the classroom</div>
+  <h2>Premier already teaches this way.<br><span class="lav">We're adding a crossfader.</span></h2>
+  <div class="grid3">
+    <div class="quote" style="--c:var(--r4)"><q>Students steer their way through the learning process with both self selected activities and direct teaching tools.</q>
+      <span class="src">thepremierchildcare.com</span>
+      <span class="so"><b>In the DJ Lab:</b> every child works on their own next Mission at their own pace, after an instructor shows the move at the decks.</span></div>
+    <div class="quote" style="--c:var(--r5)"><q>In a ten month period, students are exposed to ten different cultures.</q>
+      <span class="src">thepremierchildcare.com</span>
+      <span class="so"><b>In the DJ Lab:</b> every culture comes with a soundtrack. Children can score the culture of the month and play it back to their families.</span></div>
+    <div class="quote" style="--c:var(--r2)"><q>Monthly field trips, along with various monthly academic and cultural themes, broaden our student's learning horizons.</q>
+      <span class="src">thepremierchildcare.com</span>
+      <span class="so"><b>At Rainbow Beach:</b> the field trip has a stage, a sound system and the lake behind it.</span></div>
+  </div>
+  <div><span class="bubble">"It says we STEER. Ask anybody who has seen us on a tricycle."<span class="who">The narrator, licensed tricyclist</span></span></div>
+</div></section>
+
+<!-- 5 · The book -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">The Purple Turtle: Modi's Magical Adventures · with Tonia Evans</div>
+  <h2>Grapie already hands out hall passes.</h2>
+  <div class="grid2" style="align-items:start">
+    <div style="display:grid; gap:10px">
+      <div class="quote" style="--c:var(--lav)"><q>We want our adult buyers to give a hall pass or permission to let kids be kids</q>
+        <span class="src">Tamera Fair and Tonia Evans, series announcement, November 8, 2023</span></div>
+      <div class="quote" style="--c:var(--r7)"><q>imaginative and educational storytelling</q><q style="margin-top:6px">igniting their imagination and promoting a sense of belonging</q>
+        <span class="src">Press release, November 27, 2024</span></div>
+      <div class="quote" style="--c:var(--r6)"><q>aimed at inspiring children to have imagination and creativity</q>
+        <span class="src">ABC7 Chicago, February 12, 2025</span></div>
+    </div>
+    <div class="box">
+      <h3>The world is already built</h3>
+      <p class="small">Modi finds Grapie, a magical, talking purple turtle, who leads special kids into a world of mermaids, seahorses, unicorns and fairies.</p>
+      <h3 style="margin-top:12px">The question nobody has answered yet</h3>
+      <p style="font:800 1.25rem/1.3 'Montserrat',sans-serif; color:var(--gold)">What does that world sound like?</p>
+      <p class="small">We'd like the children to find out, with real instruments, and perform the answer.</p>
+    </div>
+  </div>
+  <div><span class="bubble">"We would like a hall pass. To the DJ booth."<span class="who">The narrator, special kid (we checked)</span></span></div>
+</div></section>
+
+<!-- 6 · The centerpiece -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">The heart of the partnership</div>
+  <h2>Modi &amp; Grapie Live:<br><span class="rb">The Story Comes Alive</span></h2>
+  <p class="lede">A live story-and-DJ show, co-created with you and Tonia Evans, as the centerpiece of a Rainbow Wednesdays family night at Rainbow Beach Park. Not a reading corner. Not a side table. The main event.</p>
+  <div class="grid3">
+    <div class="box top" style="--c:var(--lav)"><span class="tag">You and Tonia</span><h3>Bring the story</h3><p class="small">You choose the scene, how Modi and Grapie appear, and which words come off the page.</p></div>
+    <div class="box top" style="--c:var(--gold)"><span class="tag">The children</span><h3>Bring the sound</h3><p class="small">They narrate, voice the characters, cue the entrances, build the waves and the weather, and mix it live.</p></div>
+    <div class="box top" style="--c:var(--r4)"><span class="tag">The families</span><h3>Answer back</h3><p class="small">A beach full of parents, grandparents and neighbors becomes part of the show: call-backs, cheers, the gasp before Grapie arrives.</p></div>
+  </div>
+  <div><span class="bubble">"Grapie gets top billing. We voted. Everybody, except Tyler. Tyler wanted a shark."<span class="who">The narrator, election official</span></span></div>
+</div></section>
+
+<!-- 7 · The curriculum, pointed at the story -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">How it works · Rainbow DJ Lab Missions</div>
+  <h2>Our DJ Missions, pointed at your story</h2>
+  <div class="box" style="padding:4px 6px">
+    <div class="mrow" style="--c:var(--r5)"><div class="m"><span>Mission 9</span>Hot Cues and Loops</div><div>Grapie gets an entrance button that lands exactly on time. A short loop brings a running joke back.</div></div>
+    <div class="mrow" style="--c:var(--r5)"><div class="m"><span>Mission 10</span>Word Flip</div><div>The story talks back: recorded lines answer the live narrator, and the crowd answers both.</div></div>
+    <div class="mrow" style="--c:var(--r6)"><div class="m"><span>Mission 11</span>Theme Clash Lab</div><div>A scene gets very serious, a surprise theme interrupts, the whole beach dances, and the children bring the story home.</div></div>
+    <div class="mrow" style="--c:var(--r6)"><div class="m"><span>Mission 12</span>Mic, MC and Live Lab</div><div>Children narrate on the beat, voice characters, read the crowd and play alongside a live musician.</div></div>
+    <div class="mrow" style="--c:var(--r4)"><div class="m"><span>Mission 8</span>Make a Third Song</div><div>A character's words over music the children built: a story moment no one has heard before.</div></div>
+    <div class="mrow" style="--c:var(--r7)"><div class="m"><span>Missions 13–14</span>Build Your Set · Rainbow Showcase</div><div>The whole show mapped, rehearsed and performed for families.</div></div>
+  </div>
+  <p class="small" style="margin-top:8px">Any words, names or scenes from The Purple Turtle come only from material you and Tonia approve.</p>
+  <div><span class="bubble">"We pressed Grapie's entrance eleven times. He is very punctual now."<span class="who">The narrator, Mission 9 (in progress)</span></span></div>
+</div></section>
+
+<!-- 8 · A first cue sheet -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Word Flip · Theme Clash · a first sketch</div>
+  <h2>When the story speaks, <span class="rb">a song answers.</span></h2>
+  <div class="box" style="padding:4px 6px">
+    <div class="cue cue-h"><span>In the story</span><span>The song answers</span><span>The DJ move</span></div>
+    <div class="cue" style="--c:var(--r5)"><span><b>Modi finds out Grapie can talk</b></span><span><b>"Talk"</b><i>Khalid</i></span><span>A tiny silence, the hook asks its question, Grapie answers, and one word loops into the beat. <em>Word Flip</em></span></div>
+    <div class="cue" style="--c:var(--gold)"><span><b>Grapie's grand entrance</b></span><span><b>Also sprach Zarathustra</b><i>the "2001" theme</i></span><span>The biggest music in the world, for the smallest turtle, on a hot cue. <em>Hot Cues and Loops</em></span></div>
+    <div class="cue" style="--c:var(--r4)"><span><b>Into the magic world: mermaids and seahorses</b></span><span><b>"Under the Sea"</b><i>Samuel E. Wright</i></span><span>Calypso under the narration while the children add the bubbles and the waves. <em>Make a Third Song</em></span></div>
+    <div class="cue" style="--c:var(--r6)"><span><b>A very serious moment</b></span><span><b>"Turtle Power"</b><i>Partners in Kryme</i></span><span>Sixteen bars of surprise, everybody dances, then straight back to the story. <em>Theme Clash Lab</em></span></div>
+    <div class="cue" style="--c:var(--r1)"><span><b>The brave part</b> (<i>The Purple Turtle Be Brave</i>)</span><span><b>"Three Little Birds"</b><i>Bob Marley</i></span><span>A child on the mic leads the whole beach in the chorus. <em>Mic, MC and Live Lab</em></span></div>
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:0 22px; align-items:flex-end">
+    <p class="small" style="flex:1 1 300px; margin:8px 0 0">A first sketch from the books' published descriptions. The real cue sheet gets built with you and Tonia, page by page, with clean versions you approve.</p>
+    <span class="bubble" style="margin-top:10px">"We tried Turtle Power during nap. We are not allowed to try Turtle Power during nap."<span class="who">The narrator, Theme Clash (suspended)</span></span>
+  </div>
+</div></section>
+
+<!-- 9 · Her call on ages -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Your expertise sets the shape</div>
+  <h2>The plan says grades 6 to 12.<br><span class="lav">You draw the starting line.</span></h2>
+  <p class="lede">The DJ Lab is built for grades 6 to 12 and open to all ages. You know what a three-year-old, a five-year-old and a nine-year-old are ready for. We'd rather build to your judgment than to a birthday. Rehearsal length, adults per child and which center goes first are yours to set too.</p>
+  <div class="ladder">
+    <div class="rung" style="--c:var(--r7)"><span class="n">1</span><span>Press one glowing pad at the right moment, with a grown-up alongside</span><span class="you">who? your call</span></div>
+    <div class="rung" style="--c:var(--r6)"><span class="n">2</span><span>Lead the crowd's call-back, or be the waves</span><span class="you">who? your call</span></div>
+    <div class="rung" style="--c:var(--r5)"><span class="n">3</span><span>Voice Modi or Grapie on the microphone</span><span class="you">who? your call</span></div>
+    <div class="rung" style="--c:var(--r4)"><span class="n">4</span><span>Run the cues, loops and Word Flips</span><span class="you">who? your call</span></div>
+    <div class="rung" style="--c:var(--r3)"><span class="n">5</span><span>Mix and run the whole show</span><span class="you">who? your call</span></div>
+  </div>
+  <div><span class="bubble">"They keep asking our birthdays. Ms. Fair has actually MET us."<span class="who">The narrator, age 5 and three-quarters</span></span></div>
+</div></section>
+
+<!-- 10 · Imaginative learning -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Imaginative learning, out loud</div>
+  <h2>What does <span class="rb">brave</span> sound like?</h2>
+  <p class="lede">Your second book is <i>The Purple Turtle Be Brave</i>. In the show, children imagine a feeling, choose a sound for it, try it, listen back and change their minds.</p>
+  <div class="grid3">
+    <div class="box top" style="--c:var(--r1)"><h3>Listening</h3><p class="small">Hearing the room, the cue and each other.</p></div>
+    <div class="box top" style="--c:var(--r2)"><h3>Sequencing</h3><p class="small">What comes first, next and last in a scene.</p></div>
+    <div class="box top" style="--c:var(--r3)"><h3>Expressive language</h3><p class="small">Telling a story into a real microphone.</p></div>
+    <div class="box top" style="--c:var(--r4)"><h3>Feelings into sound</h3><p class="small">Picking the sound that matches brave, silly or surprised.</p></div>
+    <div class="box top" style="--c:var(--r5)"><h3>Teamwork</h3><p class="small">A show only works when everyone hits their cue.</p></div>
+    <div class="box top" style="--c:var(--r7)"><h3>Belonging</h3><p class="small">Seeing themselves in the story, and hearing themselves in it.</p></div>
+  </div>
+  <p class="small" style="margin-top:8px">These are proposed learning aims. You set the goals for your children.</p>
+  <div><span class="bubble">"I made the rain too dramatic. It sounded like the whole ocean came to snack time. We revised."<span class="who">The narrator, sound designer</span></span></div>
+</div></section>
+
+<!-- 11 · What Premier gets -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">What Premier gets</div>
+  <h2>Your brand already has a story.<br><span class="lav">This gives it a soundtrack.</span></h2>
+  <div class="grid3">
+    <div class="box top" style="--c:var(--r4)"><h3>Free, for every family</h3><p class="small">No fees for families and no budget line for Premier. Ras Tafari Inc. provides the instructors and arranges the equipment.</p></div>
+    <div class="box top" style="--c:var(--lav)"><h3>A live stage for The Purple Turtle</h3><p class="small">A new chapter performed, not only read, in front of a beach full of families.</p></div>
+    <div class="box top" style="--c:var(--gold)"><h3>Your names on it</h3><p class="small">"Created with Tamera Fair and Tonia Evans" on the program and from the stage, and a Premier Child Care Centers night at Rainbow Wednesdays.</p></div>
+    <div class="box top" style="--c:var(--r5)"><h3>A path for older children</h3><p class="small">School-age children and big siblings can join the free DJ Lab any Tuesday, 4 to 6 pm, all year.</p></div>
+    <div class="box top" style="--c:var(--r6)"><h3>All four centers</h3><p class="small">Pill Hill, Near the Pier, West Austin and East Side families all welcome, starting wherever you choose.</p></div>
+    <div class="box top" style="--c:var(--r2)"><h3>First on the South Side</h3><p class="small">The operator who put sound-based imagination on the beach, before anyone else.</p></div>
+  </div>
+  <div><span class="bubble">"We will also nap. On purpose. With our eyes closed. For one day."<span class="who">The nap committee</span></span></div>
+</div></section>
+
+<!-- 12 · The ask -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">The ask</div>
+  <h2>Four small yeses. <span class="lav">No money.</span></h2>
+  <ol class="asks">
+    <li style="--c:var(--lav)"><b>A creative session with you and Tonia Evans, about 45 minutes</b><span class="small">Choose the scene, draw the starting lines, and name what the children get to invent.</span></li>
+    <li style="--c:var(--gold)"><b>One Premier liaison to plan with us</b><span class="small">The person who knows your calendar, your rooms and your families.</span></li>
+    <li style="--c:var(--r4)"><b>Permission to tell Premier families</b><span class="small">About the free DJ Lab, the family nights and Modi &amp; Grapie Live.</span></li>
+    <li style="--c:var(--r5)"><b>A one-page letter of support</b><span class="small">On Premier letterhead, for our Chicago Park District application.</span></li>
+  </ol>
+  <p class="note"><b>Then a small rehearsal at Pill Hill</b>, before the big night, so you see it before anyone else does.</p>
+  <div><span class="bubble">"We can provide the paper. Please provide the grown-up handwriting."<span class="who">The narrator, legal department</span></span></div>
+</div></section>
+
+<!-- 13 · Close -->
+<section class="slide"><div class="card">
+  <div class="eyebrow">Tamera Fair, Premier Child Care Centers</div>
+  <h2>You gave us a world to imagine.<br><span class="rb">Help us give it a sound.</span></h2>
+  <div><span class="bubble">"Grapie is already on the agenda. We withdrew his parking-space request. He can ride with us."<span class="who">The narrator, signing off</span></span></div>
+  <div class="ctarow" style="margin-top:22px">
+    <a class="btn spec" href="mailto:stephen@selassiefest.com?subject=Modi%20%26%20Grapie%20Live%3A%20let%27s%20meet&amp;body=Hi%20Stephen%2C%0A%0AI%20watched%20the%20deck.%20">Yes, let's meet</a>
+    <a class="btn ghost" href="tel:+18722559333">Call (872) 255-9333</a>
+    <a class="btn ghost" href="/full-spectrum/tamera/kids.html">The kids' version</a>
+  </div>
+  <p class="for"><b>Stephen Henry</b>, President, Ras Tafari Inc.<br>(872) 255-9333 · <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a><br>1401 E. 71st St., Chicago, IL 60619</p>
+  <p class="small" style="margin-top:12px"><a href="/full-spectrum/dj-lab-2027.html">Rainbow DJ Lab plan</a> · <a href="/full-spectrum/calendar-2027.html">2027 calendar</a></p>
+  <p class="small" style="margin-top:10px"><i>The Purple Turtle, Modi and Grapie belong to Tamera Fair and Tonia Evans; nothing here uses them without their agreement. The narrator and the kid quotes are imagined by Ras Tafari Inc. Full Spectrum depends on Chicago Park District approval.</i></p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
+  <div class="prog" id="prog"></div>
+  <div class="mid">
+    <div class="playrow">
+      <button class="play" id="play" aria-label="Play the narrated deck">▶ Play</button>
+      <button class="auto" id="auto" aria-pressed="true" title="Move to the next slide when each one finishes">Auto-advance</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+// Executive deck for Tamera Fair (Premier Child Care Centers). The kids' version is /full-spectrum/tamera/kids.html.
+// Program facts follow full-spectrum/dj-lab-2027.html and full-spectrum/calendar-2027.html.
+// Sources for her quotes: thepremierchildcare.com; einpresswire.com (Nov 8, 2023 and Nov 27, 2024); ABC7 Chicago (Feb 12, 2025);
+// Enigma In Black (Jul 7, 2017). Mariah Management and Shadow: Stephen Henry's own account.
+// Deck engine (same as the Roland and daycare decks). Narration clips: /full-spectrum/tamera/audio/<slide number>.mp3.
+// A slide with no clip yet waits long enough to read it, then advances.
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const AUD = "/full-spectrum/tamera/audio/";
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(slides.map(async (_, i) => { const u = AUD + (i + 1) + ".mp3"; found[i] = (await head(u)) ? u : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
+function setBtn(){
+  playBtn.textContent = playing ? "⏸ Pause" : (cur === N - 1 && atEnd ? "↺ Replay" : "▶ Play");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+}
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  if (!resume) { player.pause(); prog.style.width = "0"; tLeft = 0; }
+  if (!playing) return;
+  if (found[i]) {
+    if (!resume || player.src.indexOf(found[i]) < 0) { player.src = found[i]; player.currentTime = 0; }
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("timeupdate", () => { if (player.duration) prog.style.width = (100 * player.currentTime / player.duration) + "%"; });
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); if (auto && playing && player.ended) finishSlide(); };
+// Slide photos are optional: drop /full-spectrum/tamera/img/s01.jpg … s13.jpg and they appear behind a dark veil.
+// Only the current slide and its neighbors are checked, so the first screen appears fast.
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted) return;
+  s.dataset.painted = "1";
+  const u = `/full-spectrum/tamera/img/s${String(i + 1).padStart(2, "0")}.jpg`;
+  head(u).then((ok) => { if (ok) s.style.backgroundImage = `var(--veil), url("${u}")`; });
+}
+function go(i){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => { s.classList.toggle("on", j === cur); s.classList.toggle("off-left", j < cur); });
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1;
+  atEnd = false;
+  startSlide(cur); setBtn();
+  [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, a") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+go(0);
+</script>
+</body>
+</html>
