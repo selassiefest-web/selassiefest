@@ -135,8 +135,9 @@
       return fl.op === '<' ? v < fl.v : fl.op === '<=' ? v <= fl.v : fl.op === '>' ? v > fl.v : fl.op === '>=' ? v >= fl.v : v === fl.v;
     });
   }
+  var STATUS = { dropped: 'Dropped the course', medical: 'Medical leave', other: 'Left out' };
   function visibleRows() { return cur.rows.filter(passes); }
-  function analysisRows() { return visibleRows().filter(function (r) { return !ui.off[r.student]; }); }
+  function analysisRows() { return visibleRows().filter(function (r) { return !ui.off[r.student] && !r.data.status; }); }
   function colValues(col, rows) { return rows.map(function (r) { return show(r, col); }).filter(isNum); }
 
   /* ---------------- loading ---------------- */
@@ -237,6 +238,8 @@
       work.forEach(function (c) { var cr = corr(rows.map(function (r) { return pctOf(r, ex); }), rows.map(function (r) { return pctOf(r, c); })); if (isNum(cr.r) && cr.n >= 8 && (!best || Math.abs(cr.r) > Math.abs(best.r))) best = { c: c, r: cr.r, n: cr.n }; });
       if (best) story.push('Of the coursework columns, <b>' + esc(best.c.label) + '</b> tracks ' + esc(ex.label) + ' most closely (r = ' + f(best.r, 2) + ', n = ' + best.n + '). With a class this size, treat it as a hint to follow up, not proof.');
     }
+    var leftOut = cur.rows.filter(function (r) { return r.data.status; });
+    if (leftOut.length) story.push('Left out of every figure on this page: ' + leftOut.map(function (r) { return esc(r.student) + ' (' + esc((STATUS[r.data.status] || r.data.status).toLowerCase()) + ')'; }).join(', ') + '.');
     h += '<div class="card2" style="margin-bottom:16px"><h3>What the numbers say</h3>' + story.map(function (x) { return '<p style="margin-bottom:8px;line-height:1.55">' + x + '</p>'; }).join('') + '</div>';
 
     h += '<div class="grid2">';
@@ -355,7 +358,7 @@
     var h = '<div class="bar"><button class="b' + (ui.edit ? ' on' : '') + '" id="edit" type="button">' + (ui.edit ? 'Editing: on' : 'Edit scores') + '</button>' +
       '<button class="b pri" id="save" type="button"' + (cur.dirty ? '' : ' disabled') + '>Save changes</button>' +
       '<button class="b" id="csv" type="button">Download CSV (current view)</button>' +
-      '<span>Click a column heading to sort. Untick a student to leave them out of the statistics. Red is below the pass line. Clear a cell while editing to mark it excused.</span></div>';
+      '<span>Click a column heading to sort. Untick a student to leave them out of the statistics. Students marked dropped or on leave are always left out (change that under Edit scores). Red is below the pass line. Clear a cell while editing to mark it excused.</span></div>';
     h += '<div class="scroll" style="max-height:70vh"><table class="t"><thead><tr class="grp"><th></th><th class="l"></th>' +
       groups.map(function (g) { return '<th colspan="' + g.n + '" style="text-align:center">' + esc(g.g) + '</th>'; }).join('') + '</tr><tr><th></th><th class="l" data-sort="_n">Student</th>' +
       cur.columns.map(function (c) { return '<th data-sort="' + esc(c.key) + '">' + esc(c.label) + (ui.sortKey === c.key ? (ui.sortDir > 0 ? ' ▲' : ' ▼') : '') + (c.formula ? '<span class="tag">calc</span>' : '') + '</th>'; }).join('') + '</tr>';
@@ -363,7 +366,8 @@
       return '<th style="color:var(--text-dim);cursor:default">' + (ui.edit && !c.formula ? '<input type="number" data-max="' + esc(c.key) + '" value="' + (c.max == null ? '' : c.max) + '" step="any">' : (c.max == null ? '' : c.max)) + '</th>';
     }).join('') + '</tr></thead><tbody>';
     rows.forEach(function (r) {
-      h += '<tr class="' + (ui.off[r.student] ? 'off' : '') + '"><td><input type="checkbox" data-inc="' + esc(r.student) + '"' + (ui.off[r.student] ? '' : ' checked') + ' aria-label="Include ' + esc(r.student) + '"></td><td class="l">' + esc(r.student) + '</td>' +
+      h += '<tr class="' + (ui.off[r.student] || r.data.status ? 'off' : '') + '"><td><input type="checkbox" data-inc="' + esc(r.student) + '"' + (ui.off[r.student] || r.data.status ? '' : ' checked') + (r.data.status ? ' disabled' : '') + ' aria-label="Include ' + esc(r.student) + '"></td><td class="l">' + esc(r.student) +
+        (ui.edit ? ' <select data-status="' + esc(r.student) + '" aria-label="Status for ' + esc(r.student) + '"><option value="">active</option>' + Object.keys(STATUS).map(function (k) { return '<option value="' + k + '"' + (r.data.status === k ? ' selected' : '') + '>' + STATUS[k] + '</option>'; }).join('') + '</select>' : (r.data.status ? '<span class="tag">' + esc(STATUS[r.data.status] || r.data.status) + '</span>' : '')) + '</td>' +
         cur.columns.map(function (c) {
           if (ui.edit && !c.formula) { var v = r.data[c.key]; return '<td><input type="number" step="any" data-cell="' + esc(r.student) + '|' + esc(c.key) + '" value="' + (isNum(v) ? v : '') + '"></td>'; }
           return fmtCell(r, c);
@@ -583,6 +587,7 @@
   document.addEventListener('change', async function (e) {
     var t = e.target;
     if (t.id === 'setpick') { pick(t.value); render(); }
+    else if (t.dataset.status != null) { var sr = cur.rows.filter(function (r) { return r.student === t.dataset.status; })[0]; if (t.value) sr.data.status = t.value; else delete sr.data.status; cur.dirty = true; say('Unsaved changes. Press Save changes to keep it.'); render(); }
     else if (t.id === 'ins-exam') { ui.exam = t.value; render(); }
     else if (t.id === 'unit') { ui.pct = t.value === 'pct'; render(); }
     else if (t.id === 'pass') { ui.pass = Math.max(0, Math.min(100, +t.value || 0)); render(); }
