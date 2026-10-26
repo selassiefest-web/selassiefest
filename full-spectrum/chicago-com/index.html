@@ -17,6 +17,7 @@
     --line:rgba(255,255,255,.14); --lav:#C9A7FF; --gold:#F2B544;
     --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
     --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --fade:linear-gradient(90deg,#0E0B1E 0%,rgba(14,11,30,0) 32%);
     --veil:linear-gradient(90deg,rgba(14,11,30,.96) 0%,rgba(14,11,30,.86) 42%,rgba(14,11,30,.5) 74%,rgba(14,11,30,.3) 100%);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
@@ -37,6 +38,8 @@
   .card{width:100%; max-width:1040px;}
   .card > *{max-width:660px;}
   @media (max-width:720px){ .slide{background-position:70% center;} }
+  /* These photos fill the frame edge to edge, so on wide screens each one sits full-height on the right and the words get the left. */
+  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 112px) * 1.7505) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
   @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
   /* Laptop-height windows: tighten so every slide fits without scrolling */
   @media (min-width:721px) and (max-height:780px){
@@ -118,7 +121,7 @@
 <main id="deck" aria-live="polite">
 
 <!-- 1 · Cover -->
-<section class="slide" data-img="09-ladder-generations.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c01.jpg"><div class="card">
   <div class="eq" aria-hidden="true"><span style="--c:var(--r1);animation-delay:-.2s"></span><span style="--c:var(--r2);animation-delay:-.5s"></span><span style="--c:var(--r3);animation-delay:-.1s"></span><span style="--c:var(--r4);animation-delay:-.7s"></span><span style="--c:var(--r5);animation-delay:-.3s"></span><span style="--c:var(--r6);animation-delay:-.9s"></span><span style="--c:var(--r7);animation-delay:-.4s"></span></div>
   <div class="eyebrow">For Rashanah and the chicago.com South Shore team</div>
   <h1>Young <span class="rb">South Shore</span></h1>
@@ -127,7 +130,7 @@
 </div></section>
 
 <!-- 2 · The moment -->
-<section class="slide" data-img="03-bring-it-home.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c02.jpg"><div class="card">
   <div class="eyebrow">The moment</div>
   <h2>chicago.com is building neighborhood habits <span class="lav">right now.</span></h2>
   <p class="lede">South Shore went live this month as one of five pilot communities. The habits people form in a pilot year (where they post, who they follow, which neighbors they trust) tend to last.</p>
@@ -135,7 +138,7 @@
 </div></section>
 
 <!-- 3 · Why youth means growth -->
-<section class="slide" data-img="10-diversity.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c03.jpg"><div class="card">
   <div class="eyebrow">Why youth contributors grow the platform</div>
   <h2>A young contributor <span class="lav">never comes alone.</span></h2>
   <ul class="list">
@@ -147,7 +150,7 @@
 </div></section>
 
 <!-- 4 · Precedent -->
-<section class="slide" data-img="11-inclusivity.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c04.jpg"><div class="card">
   <div class="eyebrow">A natural next step</div>
   <h2>chicago.com already <span class="lav">makes room for this.</span></h2>
   <ul class="list">
@@ -159,7 +162,7 @@
 </div></section>
 
 <!-- 5 · What we bring -->
-<section class="slide" data-img="cal-01-winter-fieldhouse-class.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c05.jpg"><div class="card">
   <div class="eyebrow">What we bring · Full Spectrum at Rainbow Beach</div>
   <h2>A year of youth music <span class="lav">to write about.</span></h2>
   <div class="big">
@@ -172,7 +175,7 @@
 </div></section>
 
 <!-- 6 · The showcase -->
-<section class="slide" data-img="05-b-rainbow-wednesdays.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c06.jpg"><div class="card">
   <div class="eyebrow">What young people would publish</div>
   <h2>Their work, <span class="rb">shown to their neighbors.</span></h2>
   <ul class="list">
@@ -185,7 +188,7 @@
 </div></section>
 
 <!-- 7 · A sample -->
-<section class="slide" data-img="cal-03-remix-the-record.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c07.jpg"><div class="card">
   <div class="eyebrow">A sample contribution</div>
   <h2>"The first time I made <span class="lav">two songs fit together."</span></h2>
   <p class="lede">A student explains what they tried, what sounded wrong, and what finally worked, with a short clip or an approved photo. It closes by asking neighbors to share a musical memory or a word of encouragement.</p>
@@ -193,7 +196,7 @@
 </div></section>
 
 <!-- 8 · The pilot -->
-<section class="slide" data-img="cal-07-graduation-set.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c08.jpg"><div class="card">
   <div class="eyebrow">A six-week pilot</div>
   <h2>One youth story a week, <span class="lav">starting with the Lab.</span></h2>
   <ul class="list">
@@ -204,7 +207,7 @@
 </div></section>
 
 <!-- 9 · Safeguards -->
-<section class="slide" data-img="06-c-stage-show.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c09.jpg"><div class="card">
   <div class="eyebrow">Safe and supported</div>
   <h2>Young people own their stories. <span class="lav">Adults keep them safe.</span></h2>
   <ul class="list">
@@ -216,7 +219,7 @@
 </div></section>
 
 <!-- 10 · Measures -->
-<section class="slide" data-img="07-d-festival.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c10.jpg"><div class="card">
   <div class="eyebrow">What the pilot measures</div>
   <h2>Proof for chicago.com, <span class="lav">not just for us.</span></h2>
   <div class="big">
@@ -228,7 +231,7 @@
 </div></section>
 
 <!-- 11 · The ask -->
-<section class="slide" data-img="08-e-holiday-parties.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c11.jpg"><div class="card">
   <div class="eyebrow">What we are asking</div>
   <h2>Help us set up <span class="rb">Full Spectrum on chicago.com.</span></h2>
   <ol class="asks">
@@ -240,7 +243,7 @@
 </div></section>
 
 <!-- 12 · Close -->
-<section class="slide" data-img="15-close-rainbow.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chicago-com/img/c12.jpg"><div class="card">
   <div class="eyebrow">Our neighborhood, in our own words</div>
   <h2>The voices that build chicago.com in South Shore <span class="rb">can start young.</span></h2>
   <p class="lede">Ras Tafari Inc. brings the young people, the families, the adult editor and a year of music at Rainbow Beach. chicago.com brings the place where South Shore listens.</p>
@@ -271,7 +274,7 @@
 // (My Block, My Hood, My City is a verified partner); chicago.com/terms-of-use (not directed to children under 13; written parental
 // permission for photos of children under 13). Program facts: dj-lab-2027.html and the Full Spectrum proposal.
 // Narration clips (optional): /full-spectrum/chicago-com/audio/<slide number>.mp3. A slide with no clip waits long enough to read it.
-// Slide photos come from /full-spectrum/img/, named in each slide's data-img.
+// Slide photos: /full-spectrum/chicago-com/img/c01.jpg to c12.jpg (Stephen's set, 10/25), named in each slide's data-img.
 const deck = document.getElementById("deck"), dots = document.getElementById("dots");
 const prev = document.getElementById("prev"), next = document.getElementById("next");
 const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
@@ -330,8 +333,8 @@ autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", aut
 function paint(i){
   const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
   s.dataset.painted = "1";
-  const u = `/full-spectrum/img/${s.dataset.img}`;
-  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), url("${u}")`; s.classList.add("photo"); } });
+  const u = s.dataset.img.startsWith("/") ? s.dataset.img : `/full-spectrum/img/${s.dataset.img}`;
+  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${u}")`; s.classList.add("photo"); } });
 }
 function go(i){
   cur = Math.max(0, Math.min(N - 1, i));
