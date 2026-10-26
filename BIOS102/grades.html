@@ -159,7 +159,7 @@
   /* ---------------- shell ---------------- */
   function shell() {
     $('app').insertAdjacentHTML('beforeend',
-      '<h1>Gradebook</h1><p class="lede">Instructor-only. Names are first name and last initial; nothing here is visible to students. Excused or missing scores are blank and are left out of every statistic, never counted as zero.</p>' +
+      '<h1>Gradebook</h1><p class="lede">Instructor-only. Names are first names, with a last initial only where two students share one; nothing here is visible to students. Excused or missing scores are blank and are left out of every statistic, never counted as zero.</p>' +
       '<div class="bar" id="topbar2"></div>' +
       '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
       '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
@@ -365,7 +365,7 @@
 
   /* ---------------- Import & manage ---------------- */
   function viewManage() {
-    var h = '<div class="grid2"><div class="card2"><h3>Import a Canvas gradebook CSV</h3><p class="help" style="margin-top:0">Export from Canvas (Grades &rarr; Export). The file is read in your browser; student names are cut down to first name + last initial <b>before</b> anything is saved, and IDs, logins and emails are never kept.</p>' +
+    var h = '<div class="grid2"><div class="card2"><h3>Import a Canvas gradebook CSV</h3><p class="help" style="margin-top:0">Export from Canvas (Grades &rarr; Export). The file is read in your browser; student names are cut down to first name (plus a last initial only where two students share a first name) <b>before</b> anything is saved, and IDs, logins and emails are never kept.</p>' +
       '<input type="file" id="imp-file" accept=".csv,text/csv"><div id="imp-body"></div></div>' +
       '<div class="card2"><h3>Gradebooks</h3>' + (sets.length ? sets.map(function (s) { return '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><span>' + esc(s.name) + ' <span class="help">(' + s.rows.length + ' students)</span></span><span><button class="b" data-open="' + s.id + '" type="button">Open</button> <button class="b danger" data-del="' + s.id + '" type="button">Delete</button></span></div>'; }).join('') : '<p class="help">None saved.</p>') +
       '<div class="help">Importing with the same name replaces that gradebook. Keep a copy of the Canvas CSV if you may want the original back.</div></div></div>';
@@ -383,10 +383,11 @@
     if (f_ !== '' || row.length) { row.push(f_); rows.push(row); }
     return rows;
   }
-  function shortName(full) {
+  // First name only; the last initial is added later, and only where two students share a first name.
+  function nameParts(full) {
     full = full.trim(); var p;
-    if (full.indexOf(',') >= 0) { p = full.split(','); var first = p[1].trim().split(/\s+/)[0], last = p[0].trim(); return first + ' ' + last.charAt(0).toUpperCase() + '.'; }
-    p = full.split(/\s+/); return p.length > 1 ? p[0] + ' ' + p[p.length - 1].charAt(0).toUpperCase() + '.' : full;
+    if (full.indexOf(',') >= 0) { p = full.split(','); return { first: p[1].trim().split(/\s+/)[0], init: p[0].trim().charAt(0).toUpperCase() }; }
+    p = full.split(/\s+/); return { first: p[0], init: p.length > 1 ? p[p.length - 1].charAt(0).toUpperCase() : '' };
   }
   var imp = null;
   function startImport(text, fname) {
@@ -417,10 +418,12 @@
     });
     var rows = imp.students.map(function (r) {
       var d = {}; cols.forEach(function (c) { var v = parseFloat(r[c.src]); d[c.key] = isNum(v) ? v : null; });
-      return { student: shortName(r[imp.si]), data: d };
+      return { parts: nameParts(r[imp.si]), data: d };
     });
+    var firsts = {}; rows.forEach(function (r) { firsts[r.parts.first] = (firsts[r.parts.first] || 0) + 1; });
+    rows.forEach(function (r) { r.student = firsts[r.parts.first] > 1 && r.parts.init ? r.parts.first + ' ' + r.parts.init + '.' : r.parts.first; delete r.parts; });
     var names = rows.map(function (r) { return r.student; });
-    if (new Set(names).size !== names.length) { say('Two students would show the same name (same first name and last initial). Stopping so nobody is merged; tell me and I will add a disambiguator.'); return; }
+    if (new Set(names).size !== names.length) { say('Two students would show the same name even with a last initial. Stopping so nobody is merged.'); return; }
     var name = $('imp-name').value.trim() || 'BIOS 102 gradebook', columns = cols.map(function (c) { return { key: c.key, label: c.label, max: c.max, group: c.group }; });
     try { await window.sfSupabase.bios102GradesSave(session.sessionToken, name, columns, rows); } catch (e) { say('Could not save: ' + (e.message || e)); return; }
     await reloadSets(name); say('Imported ' + rows.length + ' students into "' + name + '".'); ui.tab = 'book'; render();
