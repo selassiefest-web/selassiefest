@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Edit Answers | Partner Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{ --bg:#FAF8F4; --surface:#FFFFFF; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93; --line:#E5E0D6; --line-strong:#D2CBBD;
+    --accent:#2F3DB5; --accent-ink:#FFFFFF; --sun:#B87503; --green:#1F7A3E; --red:#C0392B; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+    --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --sun:#F5B53A; --green:#5BD08A; --red:#FF7A70; } }
+  :root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3;
+    --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --sun:#F5B53A; --green:#5BD08A; --red:#FF7A70; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15.5px; line-height:1.5;}
+  a{color:var(--accent);}
+  h1,h2{font-family:"Montserrat","Inter",sans-serif; font-weight:800; margin:0;}
+  button,input,textarea,select{font:inherit; color:inherit;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 16px;}
+  header{padding:24px 0 8px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-end;}
+  h1{font-size:1.4rem;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px; margin:14px 0;}
+  .f{display:grid; gap:4px; margin-bottom:10px;}
+  .f label{font-size:0.78rem; font-weight:700; color:var(--ink-soft);}
+  .f input,.f textarea,.f select{padding:9px 11px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--bg); width:100%;}
+  .f textarea{min-height:80px; resize:vertical;}
+  .f textarea.tall{min-height:260px; font-family:ui-monospace,Consolas,monospace; font-size:0.86rem;}
+  .row{display:grid; grid-template-columns:70px 1fr 170px; gap:10px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media (max-width:640px){ .row,.row2{grid-template-columns:1fr;} }
+  .hint{font-size:0.76rem; color:var(--ink-faint);}
+  .btn{display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:999px; border:1.5px solid var(--line-strong); background:var(--surface); font-weight:600; font-size:0.88rem; cursor:pointer; text-decoration:none; color:var(--ink);}
+  .btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+  .btn.danger{color:var(--red);}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;}
+  .msg{font-size:0.88rem;} .msg.err{color:var(--red);} .msg.ok{color:var(--green);}
+  .ahead{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;}
+  .ahead h2{font-size:1.05rem;}
+  .ver{font-size:0.8rem; color:var(--ink-faint);}
+  details{margin-top:10px;} summary{cursor:pointer; font-size:0.86rem; font-weight:600; color:var(--ink-soft);}
+  .hist{list-style:none; padding:0; margin:8px 0 0; font-size:0.84rem;} .hist li{padding:6px 0; border-bottom:1px solid var(--line);}
+  .note{background:var(--bg); border:1.5px dashed var(--line-strong); border-radius:12px; padding:10px 12px; margin-top:8px;}
+  .chk{display:flex; gap:6px; align-items:center; font-size:0.86rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1 id="title">Edit answers</h1><div class="hint" id="sub"></div></div>
+    <div class="actions"><a class="btn" id="viewBtn" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i> Open their page</a>
+      <button class="btn" id="copyBtn"><i class="fa-solid fa-link"></i> Copy their link</button>
+      <a class="btn" href="/full-spectrum/partners.html"><i class="fa-solid fa-arrow-left"></i> Tracker</a></div>
+  </header>
+  <div id="main"><div class="card">Loading&hellip;</div></div>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function fmtWhen(ts){ var d = new Date(ts); return d.toLocaleDateString('en-US',{month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit'}); }
+  var session = null; try { session = JSON.parse(localStorage.getItem('fsPartnerSession') || 'null'); } catch(e){}
+  var partnerId = new URLSearchParams(location.search).get('p') || '';
+  var data = null;
+
+  function bail(html){ $('main').innerHTML = '<div class="card">' + html + '</div>'; }
+  async function rpc(name, args){ var c = await window.sfSupabaseReady; var r = await c.rpc(name, args); if (r.error) throw r.error; return r.data; }
+  function publicUrl(){ return 'https://selassiefest.com/partner/answers/?k=' + data.partner.pitch_key; }
+
+  // Evidence is edited one per line: label | link | note
+  function evToText(ev){ return (ev || []).map(function(e){ return [e.label || '', e.href || '', e.note || ''].join(' | ').replace(/( \| )+$/, ''); }).join('\n'); }
+  function textToEv(t){ return t.split(/\r?\n/).map(function(l){ var p = l.split('|').map(function(x){ return x.trim(); }); return p[0] ? { label:p[0], href:p[1] || '', note:p[2] || '' } : null; }).filter(Boolean); }
+  function textToList(t){ return t.split(/\r?\n/).map(function(x){ return x.replace(/^[-•*]\s*/, '').trim(); }).filter(Boolean); }
+
+  async function load(){
+    data = await rpc('fs_partner_qa_load', { p_session: session.sessionToken, p_partner: partnerId });
+    if (!data || !data.partner) return bail('Partner not found.');
+    render();
+  }
+
+  function form(a, n){
+    var id = a ? a.id : 'new';
+    var hist = a ? (data.history || []).filter(function(h){ return h.answer_id === a.id; }) : [];
+    return '<div class="card" data-id="' + id + '">' +
+      '<div class="ahead"><h2>' + (a ? esc(a.sort + '. ' + a.topic) : 'Add an answer') + '</h2>' +
+        (a ? '<span class="ver">v' + a.version + ' · ' + esc(a.updated_by || '') + ' · ' + fmtWhen(a.updated_at) + (a.published ? '' : ' · <b>hidden</b>') + '</span>' : '') + '</div>' +
+      '<div class="row"><div class="f"><label>Order</label><input data-k="sort" type="number" min="1" value="' + (a ? a.sort : n) + '"></div>' +
+        '<div class="f"><label>Topic (short heading)</label><input data-k="topic" value="' + esc(a ? a.topic : '') + '"></div>' +
+        '<div class="f"><label>Status</label><select data-k="status">' + [['answered','Answered'],['partial','Partly answered'],['pending','Being prepared']].map(function(s){
+          return '<option value="' + s[0] + '"' + ((a ? a.status : 'pending') === s[0] ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="f"><label>Their question, word for word</label><textarea data-k="question">' + esc(a ? a.question : '') + '</textarea></div>' +
+      '<div class="f"><label>Summary bullets (one per line)</label><textarea data-k="summary">' + esc(a ? (a.summary || []).join('\n') : '') + '</textarea></div>' +
+      '<div class="f"><label>Full answer</label><textarea class="tall" data-k="detail">' + esc(a ? a.detail || '' : '') + '</textarea>' +
+        '<span class="hint">Blank line = new paragraph · "- " starts a bullet · "### " a subhead · **bold** · [label](/path or https://link)</span></div>' +
+      '<div class="f"><label>Documents and evidence (one per line: label | link | note)</label><textarea data-k="evidence">' + esc(a ? evToText(a.evidence) : '') + '</textarea></div>' +
+      '<div class="row2"><div class="f"><label>Still open: what it is waiting on</label><input data-k="waiting_on" value="' + esc(a ? a.waiting_on || '' : '') + '" placeholder="e.g. Marlon Reid’s answers, expected Oct 28"></div>' +
+        '<div class="f"><label>&nbsp;</label><label class="chk"><input type="checkbox" data-k="published"' + (!a || a.published ? ' checked' : '') + '> Show on their page</label></div></div>' +
+      '<div class="note"><div class="f" style="margin:0"><label>What changed (shown in their change log)</label><input data-k="note" placeholder="' + (a ? 'e.g. Added Marlon Reid’s 12 years on 71st Street' : 'First answer posted') + '"></div>' +
+        (a ? '<label class="chk" style="margin-top:6px"><input type="checkbox" data-k="quiet"> Minor fix: keep it out of their change log</label>' : '') + '</div>' +
+      '<div class="actions"><button class="btn primary" data-act="save">' + (a ? 'Save changes' : 'Add answer') + '</button>' +
+        (a ? '<button class="btn danger" data-act="del">Delete</button>' : '') + '<span class="msg"></span></div>' +
+      (hist.length ? '<details><summary>History (' + hist.length + ')</summary><ul class="hist">' + hist.map(function(h){
+        return '<li><b>v' + h.version + '</b> · ' + fmtWhen(h.changed_at) + ' · ' + esc(h.changed_by) + (h.public ? '' : ' · <i>not shown</i>') + '<br>' + esc(h.note) + '</li>'; }).join('') + '</ul></details>' : '') +
+    '</div>';
+  }
+
+  function render(){
+    var p = data.partner, A = data.answers || [];
+    document.title = 'Answers for ' + p.name;
+    $('title').textContent = 'Answers for ' + p.name;
+    $('sub').textContent = 'Their page has been opened ' + (p.qa_views || 0) + ' time' + (p.qa_views === 1 ? '' : 's') + (p.qa_last_viewed ? ', last ' + fmtWhen(p.qa_last_viewed) : '') + '. Signed in as ' + session.displayName + '.';
+    $('viewBtn').href = '/partner/answers/?k=' + p.pitch_key + '&preview=1';
+    $('viewBtn').innerHTML = '<i class="fa-solid fa-eye"></i> Preview their page';
+    $('main').innerHTML =
+      '<div class="card" id="intro"><div class="f"><label>Page heading</label><input id="qaTitle" value="' + esc(p.qa_title || '') + '" placeholder="Our answers to ' + esc(p.name) + '’s questions"></div>' +
+        '<div class="f"><label>Opening note</label><textarea id="qaIntro" style="min-height:140px">' + esc(p.qa_intro || '') + '</textarea></div>' +
+        '<div class="actions"><button class="btn primary" id="introSave">Save heading and note</button><span class="msg" id="introMsg"></span></div></div>' +
+      A.map(function(a){ return form(a); }).join('') + form(null, A.length + 1);
+    $('introSave').addEventListener('click', async function(){
+      var m = $('introMsg'); m.className = 'msg'; m.textContent = 'Saving…';
+      try { await rpc('fs_partner_qa_intro_save', { p_session: session.sessionToken, p_partner: partnerId, p_title: $('qaTitle').value, p_intro: $('qaIntro').value }); m.className = 'msg ok'; m.textContent = 'Saved.'; }
+      catch(err){ m.className = 'msg err'; m.textContent = err.message; }
+    });
+    document.querySelectorAll('[data-act]').forEach(function(b){ b.addEventListener('click', act); });
+  }
+
+  async function act(e){
+    var card = e.target.closest('.card'), id = card.getAttribute('data-id'), m = card.querySelector('.actions .msg');
+    function v(k){ var el = card.querySelector('[data-k="' + k + '"]'); return el ? (el.type === 'checkbox' ? el.checked : el.value) : null; }
+    m.className = 'msg'; m.textContent = 'Saving…';
+    try {
+      if (e.target.closest('[data-act]').getAttribute('data-act') === 'del'){
+        if (!confirm('Delete this answer and its history? This cannot be undone.')){ m.textContent = ''; return; }
+        await rpc('fs_partner_qa_delete', { p_session: session.sessionToken, p_id: id });
+      } else {
+        var payload = { sort: Number(v('sort')) || 1, topic: v('topic'), question: v('question'), summary: textToList(v('summary')),
+          detail: v('detail'), evidence: textToEv(v('evidence')), status: v('status'), waiting_on: v('waiting_on'), published: v('published') };
+        await rpc('fs_partner_qa_save', { p_session: session.sessionToken, p_partner: partnerId, p_id: id === 'new' ? null : id, p: payload, p_note: v('note'), p_public: !v('quiet') });
+      }
+      await load();
+    } catch(err){ m.className = 'msg err'; m.textContent = err.message; }
+  }
+
+  $('copyBtn').addEventListener('click', function(){ if (data) navigator.clipboard.writeText(publicUrl()).then(function(){ $('copyBtn').innerHTML = '<i class="fa-solid fa-check"></i> Copied'; }); });
+
+  (async function(){
+    if (!session || !session.sessionToken) return bail('Please <a href="/full-spectrum/partners.html">sign in to the partner tracker</a> first, then come back to this page.');
+    if (!/^[0-9a-f-]{36}$/i.test(partnerId)) return bail('Open this page from a partner’s “Answers” button in the <a href="/full-spectrum/partners.html">tracker</a>.');
+    try { await load(); } catch(err){ bail(/session/i.test(err.message) ? 'Your session ended. Please <a href="/full-spectrum/partners.html">sign in again</a>.' : 'Could not load: ' + esc(err.message)); }
+  })();
+})();
+</script>
+</body>
+</html>

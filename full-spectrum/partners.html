@@ -291,7 +291,7 @@
 <script>
 (function(){
   var STAGES = [['not_contacted','Not contacted','var(--line-strong)'],['reached_out','Reached out','var(--r5)'],['in_conversation','In conversation','var(--r6)'],
-    ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)']];
+    ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)'],['not_qualified','Not qualified yet','var(--r3)']];
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
   var TYPES = {in_kind:'In-kind', financial:'Financial / sponsor', grant:'Grant funder', programming:'Strategic programming', marketing:'Marketing & promotion'};
   var PARTS = {classes:'DJ classes', wednesdays:'Rainbow Wednesdays', stage:'Stage shows', festivals:'Festivals', parties:'Fall & holiday parties', empress:'Empress Decks', all:'Whole program'};
@@ -419,6 +419,7 @@
           '<button class="btn small" data-act="edit" data-id="' + p.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
           (p.pitch_key ? '<button class="btn small" data-act="copy" data-id="' + p.id + '"><i class="fa-solid fa-link"></i> Copy link</button>' : '') +
           (p.pitch_key ? '<a class="btn small" href="' + pitchUrl(p) + '" target="_blank" rel="noopener"><i class="fa-solid fa-qrcode"></i> Pitch page' + (p.pitch_views ? ' &middot; ' + p.pitch_views + ' view' + (p.pitch_views === 1 ? '' : 's') : '') + '</a>' : '') +
+          (p.pitch_key ? '<a class="btn small" href="/partner/answers/edit.html?p=' + p.id + '" target="_blank" rel="noopener"><i class="fa-solid fa-list-check"></i> Answers' + (p.qa_views ? ' &middot; ' + p.qa_views + ' view' + (p.qa_views === 1 ? '' : 's') : '') + '</a>' : '') +
         '</div>' +
         '<div class="details' + (state.open[p.id] ? ' open' : '') + '"><dl>' +
           (p.ask && !p.pitch ? '<dt>Our ask</dt><dd>' + esc(p.ask) + '</dd>' : '') +
