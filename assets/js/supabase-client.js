@@ -631,6 +631,11 @@ window.sfSupabase = {
   bios102MockRequestAccess(sessionToken) { return this.bios102Rpc('bios102_mock_request_access', { p_session: sessionToken }); },
   bios102MockStart(sessionToken) { return this.bios102Rpc('bios102_mock_start', { p_session: sessionToken }); },
   bios102MockGrade(sessionToken, answers) { return this.bios102Rpc('bios102_mock_grade', { p_session: sessionToken, p_answers: answers }); },
+  // Instructor gradebook (/BIOS102/grades.html) -- see supabase/bios102-grades.sql.
+  bios102GradesIsInstructor(sessionToken) { return this.bios102Rpc('bios102_grades_is_instructor', { p_session: sessionToken }); },
+  bios102GradesLoad(sessionToken) { return this.bios102Rpc('bios102_grades_load', { p_session: sessionToken }); },
+  bios102GradesSave(sessionToken, name, columns, rows) { return this.bios102Rpc('bios102_grades_save', { p_session: sessionToken, p_name: name, p_columns: columns, p_rows: rows }); },
+  bios102GradesDelete(sessionToken, setId) { return this.bios102Rpc('bios102_grades_delete', { p_session: sessionToken, p_set: setId }); },
   bios102MockAdminLoad(sessionToken) { return this.bios102Rpc('bios102_mock_admin_load', { p_session: sessionToken }); },
   bios102MockSetAccess(sessionToken, email, mode) { return this.bios102Rpc('bios102_mock_set_access', { p_session: sessionToken, p_email: email, p_mode: mode }); },
 

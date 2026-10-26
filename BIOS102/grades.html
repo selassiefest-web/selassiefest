@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | Gradebook (instructors)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+  <style>
+    .wrap.wide { max-width: 1280px; }
+    .gate { max-width: 560px; margin: 60px auto; text-align: center; color: var(--text-dim); }
+    .bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); font-size: 0.88rem; color: var(--text-dim); }
+    .bar label { display: inline-flex; align-items: center; gap: 6px; }
+    .bar b { color: var(--text); font-weight: 500; }
+    select, input[type=number], input[type=text], input[type=search] { font-family: inherit; font-size: 0.88rem; padding: 6px 9px; border-radius: 6px; border: 1px solid var(--border); background: #0b1210; color: var(--text); }
+    select:focus, input:focus { outline: none; border-color: var(--accent); }
+    .b { font-family: inherit; font-size: 0.84rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,.05); color: var(--text); cursor: pointer; }
+    .b:hover { border-color: var(--accent); }
+    .b.on, .b.pri { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .b:disabled { opacity: .4; cursor: default; }
+    .b.danger { border-color: rgba(200,90,90,.5); color: var(--danger); }
+    .tabs2 { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 16px; border-bottom: 1px solid var(--border); }
+    .tabs2 button { font-family: inherit; font-size: .92rem; padding: 9px 16px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text-dim); cursor: pointer; }
+    .tabs2 button.on { color: var(--accent); border-bottom-color: var(--accent); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-panel); color: var(--text); }
+    .chip button { background: none; border: 0; color: var(--text-dim); cursor: pointer; margin-left: 4px; }
+    .scroll { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+    table.t { border-collapse: collapse; width: 100%; font-size: .86rem; }
+    table.t th, table.t td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    table.t th:first-child, table.t td:first-child, table.t th.l, table.t td.l { text-align: left; }
+    table.t thead th { position: sticky; top: 0; background: #121a17; color: var(--accent); font-weight: 500; cursor: pointer; z-index: 1; }
+    table.t thead tr.grp th { color: var(--amber); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; cursor: default; }
+    table.t tbody tr:hover { background: rgba(255,255,255,.03); }
+    table.t tr.off td { opacity: .4; }
+    table.t td.low { color: var(--danger); }
+    table.t td.none { color: var(--text-dim); font-style: italic; }
+    table.t td input[type=number] { width: 78px; padding: 3px 6px; text-align: right; }
+    table.t td.calc { background: rgba(224,169,64,.06); }
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .card2 { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); padding: 14px 16px; }
+    .card2 h3 { font-weight: 500; font-size: 1rem; margin-bottom: 8px; }
+    .help { font-size: .8rem; color: var(--text-dim); margin-top: 6px; }
+    .checks { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 6px 0 12px; font-size: .86rem; }
+    .checks label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+    svg.chart { width: 100%; max-width: 760px; height: auto; background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: var(--radius); }
+    svg text { fill: #9fb3ac; font-family: Jost, sans-serif; font-size: 11px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 16px; }
+    .stat-grid div { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; background: var(--bg-panel); }
+    .stat-grid small { display: block; color: var(--text-dim); font-size: .74rem; }
+    .stat-grid b { font-size: 1.15rem; font-weight: 500; }
+    .msg { font-size: .85rem; min-height: 1.3em; color: var(--amber); margin: 6px 0; }
+    .tag { display: inline-block; font-size: .7rem; padding: 1px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-left: 6px; }
+  </style>
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+  <div class="wrap wide" id="app">
+    <div class="gate" id="gate">Checking your instructor access&hellip;</div>
+  </div>
+  <footer class="site-foot">BIOS102 Lab Companion &middot; instructor tools &middot; student grades, do not share</footer>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  var session = BIOS.requireSession();
+  if (!session) return;
+  BIOS.mountTopbar(session);
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').replace(/^(\d)/, 'c$1') || 'col'; }
+
+  /* ---------------- statistics helpers ---------------- */
+  var isNum = function (v) { return typeof v === 'number' && isFinite(v); };
+  function mean(a) { return a.reduce(function (s, x) { return s + x; }, 0) / a.length; }
+  function sorted(a) { return a.slice().sort(function (x, y) { return x - y; }); }
+  function quant(a, p) { var s = sorted(a), i = (s.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return s[lo] + (s[hi] - s[lo]) * (i - lo); }
+  function sd(a) { if (a.length < 2) return NaN; var m = mean(a); return Math.sqrt(a.reduce(function (s, x) { return s + (x - m) * (x - m); }, 0) / (a.length - 1)); }
+  function corr(x, y) {
+    var px = [], py = [];
+    for (var i = 0; i < x.length; i++) if (isNum(x[i]) && isNum(y[i])) { px.push(x[i]); py.push(y[i]); }
+    if (px.length < 3) return { r: NaN, n: px.length, px: px, py: py };
+    var mx = mean(px), my = mean(py), sxy = 0, sxx = 0, syy = 0;
+    for (var j = 0; j < px.length; j++) { sxy += (px[j] - mx) * (py[j] - my); sxx += (px[j] - mx) * (px[j] - mx); syy += (py[j] - my) * (py[j] - my); }
+    var slope = sxy / sxx;
+    return { r: sxy / Math.sqrt(sxx * syy), n: px.length, px: px, py: py, slope: slope, icpt: my - slope * mx };
+  }
+  function f(v, d) { return isNum(v) ? v.toFixed(d == null ? 1 : d) : '-'; }
+
+  /* ---------------- state ---------------- */
+  var sets = [], cur = null;          // cur = { id, name, columns, rows, dirty }
+  var ui = { tab: 'book', pct: false, sortKey: null, sortDir: 1, edit: false, filters: [], off: {}, pass: 70, statCols: null, msg: '' };
+
+  function colByKey(k) { return cur.columns.filter(function (c) { return c.key === k; })[0]; }
+
+  /* A calculated column carries a `formula` written in other columns' keys. */
+  var FN = { min: Math.min, max: Math.max, round: Math.round, abs: Math.abs, sqrt: Math.sqrt,
+    avg: function () { var a = [].slice.call(arguments).filter(isNum); return a.length ? mean(a) : NaN; } };
+  var fnCache = {};
+  function evalFormula(col, row, depth) {
+    depth = depth || 0; if (depth > 5) return null;
+    var keys = cur.columns.filter(function (c) { return c.key !== col.key; }).map(function (c) { return c.key; });
+    var ck = col.key + '|' + col.formula + '|' + keys.join(',');
+    if (!(ck in fnCache)) {
+      var stripped = col.formula.replace(/[a-z_][a-z0-9_]*/gi, function (w) { return (keys.indexOf(w) >= 0 || w in FN) ? '' : '@'; });
+      if (/@/.test(stripped) || /[^0-9+\-*\/().,\s<>=!?:&|%]/.test(stripped)) fnCache[ck] = null;
+      else { try { fnCache[ck] = new Function(keys.join(','), 'min', 'max', 'round', 'abs', 'sqrt', 'avg', '"use strict"; return (' + col.formula + ');'); } catch (e) { fnCache[ck] = null; } }
+    }
+    var fn = fnCache[ck]; if (!fn) return null;
+    var args = cur.columns.filter(function (c) { return c.key !== col.key; }).map(function (c) { var v = val(row, c, depth + 1); return isNum(v) ? v : NaN; });
+    try { var r = fn.apply(null, args.concat([FN.min, FN.max, FN.round, FN.abs, FN.sqrt, FN.avg])); return isNum(r) ? r : null; } catch (e) { return null; }
+  }
+  function val(row, col, depth) {
+    if (col.formula) return evalFormula(col, row, depth);
+    var v = row.data[col.key]; return isNum(v) ? v : null;
+  }
+  function show(row, col) {          // value in the units the page is currently showing
+    var v = val(row, col);
+    if (v == null) return null;
+    return ui.pct && col.max ? v / col.max * 100 : v;
+  }
+
+  function passes(row) {
+    return ui.filters.every(function (fl) {
+      var c = colByKey(fl.key); if (!c) return true;
+      var v = show(row, c);
+      if (fl.op === 'blank') return v == null;
+      if (fl.op === 'has') return v != null;
+      if (v == null) return false;
+      return fl.op === '<' ? v < fl.v : fl.op === '<=' ? v <= fl.v : fl.op === '>' ? v > fl.v : fl.op === '>=' ? v >= fl.v : v === fl.v;
+    });
+  }
+  function visibleRows() { return cur.rows.filter(passes); }
+  function analysisRows() { return visibleRows().filter(function (r) { return !ui.off[r.student]; }); }
+  function colValues(col, rows) { return rows.map(function (r) { return show(r, col); }).filter(isNum); }
+
+  /* ---------------- loading ---------------- */
+  async function load() {
+    var ok;
+    try { ok = await window.sfSupabase.bios102GradesIsInstructor(session.sessionToken); } catch (e) { ok = false; }
+    if (!ok) { $('gate').innerHTML = '<h2>Instructors only</h2><p>This page is for course instructors. If you are one and see this, log in again from the BIOS102 home page.</p>'; return; }
+    try {
+      var d = await window.sfSupabase.bios102GradesLoad(session.sessionToken);
+      sets = d.sets || [];
+    } catch (e) { $('gate').textContent = 'Could not load the gradebook: ' + (e.message || e); return; }
+    if (sets.length) pick(sets[0].id); else { cur = { id: null, name: 'New gradebook', columns: [], rows: [], dirty: false }; }
+    $('gate').remove(); shell(); render();
+  }
+  function pick(id) {
+    var s = sets.filter(function (x) { return x.id === id; })[0];
+    cur = { id: s.id, name: s.name, columns: JSON.parse(JSON.stringify(s.columns)), rows: JSON.parse(JSON.stringify(s.rows)), dirty: false };
+    ui.off = {}; ui.filters = []; ui.sortKey = null; ui.statCols = null; fnCache = {};
+  }
+
+  /* ---------------- shell ---------------- */
+  function shell() {
+    $('app').insertAdjacentHTML('beforeend',
+      '<h1>Gradebook</h1><p class="lede">Instructor-only. Names are first name and last initial; nothing here is visible to students. Excused or missing scores are blank and are left out of every statistic, never counted as zero.</p>' +
+      '<div class="bar" id="topbar2"></div>' +
+      '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
+      '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
+    $('tabs').innerHTML = [['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['manage', 'Import & manage']]
+      .map(function (t) { return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
+    $('tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { ui.tab = b.dataset.tab; render(); } });
+  }
+  function say(m) { ui.msg = m; if ($('msg')) $('msg').textContent = m; }
+
+  function renderTop() {
+    var opts = sets.map(function (s) { return '<option value="' + s.id + '"' + (cur.id === s.id ? ' selected' : '') + '>' + esc(s.name) + '</option>'; }).join('');
+    var colOpts = cur.columns.map(function (c) { return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>'; }).join('');
+    $('topbar2').innerHTML =
+      (sets.length ? '<label>Gradebook <select id="setpick">' + opts + '</select></label>' : '<b>No gradebook yet. Use Import &amp; manage.</b>') +
+      '<label>Show <select id="unit"><option value="pts"' + (ui.pct ? '' : ' selected') + '>points</option><option value="pct"' + (ui.pct ? ' selected' : '') + '>percent of max</option></select></label>' +
+      '<label>Pass line <input type="number" id="pass" min="0" max="100" value="' + ui.pass + '" style="width:64px">%</label>' +
+      '<span>Filter:</span><label><select id="f-col"><option value="">column&hellip;</option>' + colOpts + '</select></label>' +
+      '<select id="f-op"><option>&lt;</option><option>&lt;=</option><option>&gt;</option><option>&gt;=</option><option>=</option><option value="blank">is blank</option><option value="has">has a score</option></select>' +
+      '<input type="number" id="f-val" step="any" style="width:80px" placeholder="value">' +
+      '<button class="b" type="button" id="f-add">Add</button>' +
+      '<span style="margin-left:auto"><b>' + analysisRows().length + '</b> of ' + cur.rows.length + ' students in the analysis</span>';
+    $('chips').innerHTML = ui.filters.map(function (fl, i) {
+      var c = colByKey(fl.key);
+      return '<span class="chip">' + esc(c ? c.label : fl.key) + ' ' + esc(fl.op === 'blank' ? 'is blank' : fl.op === 'has' ? 'has a score' : fl.op + ' ' + fl.v) + '<button type="button" data-rmf="' + i + '" aria-label="Remove filter">&times;</button></span>';
+    }).join('') + (ui.filters.length ? '<button class="b" type="button" id="f-clear">Clear filters</button>' : '');
+    $('tabs').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === ui.tab); });
+  }
+
+  function render() {
+    renderTop();
+    ({ book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, manage: viewManage })[ui.tab]();
+    $('msg').textContent = ui.msg;
+  }
+
+  /* ---------------- Gradebook ---------------- */
+  function fmtCell(row, col) {
+    var v = show(row, col);
+    if (v == null) return '<td class="none' + (col.formula ? ' calc' : '') + '">excused</td>';
+    var low = col.max && (val(row, col) / col.max * 100) < ui.pass;
+    return '<td class="' + (low ? 'low ' : '') + (col.formula ? 'calc' : '') + '">' + f(v, ui.pct ? 1 : (Number.isInteger(v) ? 0 : 2)) + (ui.pct && col.max ? '%' : '') + '</td>';
+  }
+  function viewBook() {
+    var rows = visibleRows().slice();
+    if (ui.sortKey) {
+      var sc = colByKey(ui.sortKey);
+      rows.sort(function (a, b) {
+        if (ui.sortKey === '_n') return a.student.localeCompare(b.student) * ui.sortDir;
+        var x = show(a, sc), y = show(b, sc);
+        if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1;
+        return (x - y) * ui.sortDir;
+      });
+    }
+    var groups = []; cur.columns.forEach(function (c) { var g = c.group || ''; var last = groups[groups.length - 1]; if (last && last.g === g) last.n++; else groups.push({ g: g, n: 1 }); });
+    var h = '<div class="bar"><button class="b' + (ui.edit ? ' on' : '') + '" id="edit" type="button">' + (ui.edit ? 'Editing: on' : 'Edit scores') + '</button>' +
+      '<button class="b pri" id="save" type="button"' + (cur.dirty ? '' : ' disabled') + '>Save changes</button>' +
+      '<button class="b" id="csv" type="button">Download CSV (current view)</button>' +
+      '<span>Click a column heading to sort. Untick a student to leave them out of the statistics. Red is below the pass line. Clear a cell while editing to mark it excused.</span></div>';
+    h += '<div class="scroll" style="max-height:70vh"><table class="t"><thead><tr class="grp"><th></th><th class="l"></th>' +
+      groups.map(function (g) { return '<th colspan="' + g.n + '" style="text-align:center">' + esc(g.g) + '</th>'; }).join('') + '</tr><tr><th></th><th class="l" data-sort="_n">Student</th>' +
+      cur.columns.map(function (c) { return '<th data-sort="' + esc(c.key) + '">' + esc(c.label) + (ui.sortKey === c.key ? (ui.sortDir > 0 ? ' ▲' : ' ▼') : '') + (c.formula ? '<span class="tag">calc</span>' : '') + '</th>'; }).join('') + '</tr>';
+    h += '<tr><th></th><th class="l" style="color:var(--text-dim)">Max points</th>' + cur.columns.map(function (c) {
+      return '<th style="color:var(--text-dim);cursor:default">' + (ui.edit && !c.formula ? '<input type="number" data-max="' + esc(c.key) + '" value="' + (c.max == null ? '' : c.max) + '" step="any">' : (c.max == null ? '' : c.max)) + '</th>';
+    }).join('') + '</tr></thead><tbody>';
+    rows.forEach(function (r) {
+      h += '<tr class="' + (ui.off[r.student] ? 'off' : '') + '"><td><input type="checkbox" data-inc="' + esc(r.student) + '"' + (ui.off[r.student] ? '' : ' checked') + ' aria-label="Include ' + esc(r.student) + '"></td><td class="l">' + esc(r.student) + '</td>' +
+        cur.columns.map(function (c) {
+          if (ui.edit && !c.formula) { var v = r.data[c.key]; return '<td><input type="number" step="any" data-cell="' + esc(r.student) + '|' + esc(c.key) + '" value="' + (isNum(v) ? v : '') + '"></td>'; }
+          return fmtCell(r, c);
+        }).join('') + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    h += '<div class="grid2" style="margin-top:16px"><div class="card2"><h3>Add a calculated column</h3>' +
+      '<input type="text" id="cc-label" placeholder="Name, e.g. Exam average" style="width:100%;margin-bottom:6px">' +
+      '<input type="text" id="cc-formula" placeholder="Formula, e.g. avg(exam1/120, quizzes/30)*100" style="width:100%;margin-bottom:6px">' +
+      '<div style="display:flex;gap:8px;align-items:center"><input type="number" id="cc-max" placeholder="Max (optional)" style="width:130px"><button class="b pri" id="cc-add" type="button">Add column</button></div>' +
+      '<div class="help">Use column keys: ' + cur.columns.filter(function (c) { return !c.formula; }).map(function (c) { return '<code>' + esc(c.key) + '</code>'; }).join(' ') + '. Functions: avg (skips blank scores), min, max, round, abs, sqrt. Any other math with a blank score gives a blank.</div></div>' +
+      '<div class="card2"><h3>Remove a column</h3><select id="rm-col">' + cur.columns.map(function (c) { return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>'; }).join('') + '</select> <button class="b danger" id="rm-go" type="button">Remove</button><div class="help">Only changes the saved gradebook after you press Save changes.</div></div></div>';
+    $('view').innerHTML = h;
+  }
+
+  /* ---------------- Statistics ---------------- */
+  function pickCols() { return (ui.statCols && ui.statCols.length ? ui.statCols : cur.columns.map(function (c) { return c.key; })).filter(function (k) { return colByKey(k); }); }
+  function colChecks(id) {
+    var chosen = pickCols();
+    return '<div class="checks" id="' + id + '">' + cur.columns.map(function (c) { return '<label><input type="checkbox" data-sc="' + esc(c.key) + '"' + (chosen.indexOf(c.key) >= 0 ? ' checked' : '') + '>' + esc(c.label) + '</label>'; }).join('') + '</div>';
+  }
+  function statRow(c, rows) {
+    var a = colValues(c, rows), all = rows.length;
+    if (!a.length) return { c: c, n: 0, miss: all };
+    var m = mean(a), s = sd(a), passN = a.filter(function (x) { var pc = c.max ? (ui.pct ? x : x / c.max * 100) : x; return pc >= ui.pass; }).length;
+    return { c: c, n: a.length, miss: all - a.length, mean: m, med: quant(a, .5), sd: s, cv: s / m * 100, min: Math.min.apply(null, a), q1: quant(a, .25), q3: quant(a, .75), max: Math.max.apply(null, a), sum: a.reduce(function (x, y) { return x + y; }, 0), pass: passN / a.length * 100 };
+  }
+  function viewStats() {
+    var rows = analysisRows(), keys = pickCols();
+    var h = '<div class="bar"><b>Columns</b></div>' + colChecks('sc') + '<div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>N</th><th>Excused/blank</th><th>Mean</th><th>Median</th><th>Std dev</th><th>CV %</th><th>Min</th><th>Q1</th><th>Q3</th><th>Max</th><th>IQR</th><th>Range</th><th>Sum</th><th>% at/above pass</th></tr></thead><tbody>';
+    var data = keys.map(function (k) { return statRow(colByKey(k), rows); });
+    data.forEach(function (s) {
+      h += '<tr><td class="l">' + esc(s.c.label) + '</td>' + (s.n ? [s.n, s.miss, f(s.mean, 2), f(s.med, 2), f(s.sd, 2), f(s.cv, 1), f(s.min, 1), f(s.q1, 1), f(s.q3, 1), f(s.max, 1), f(s.q3 - s.q1, 1), f(s.max - s.min, 1), f(s.sum, 1), f(s.pass, 0) + '%'].map(function (x) { return '<td>' + x + '</td>'; }).join('') : '<td colspan="14" style="text-align:left;color:var(--text-dim)">No scores yet</td>') + '</tr>';
+    });
+    h += '</tbody></table></div><div class="help">Units follow the Show setting above (' + (ui.pct ? 'percent of max' : 'points') + '). Standard deviation is the sample version (n&minus;1). Quartiles use linear interpolation.</div>';
+    var withN = keys.map(colByKey).filter(function (c) { return colValues(c, rows).length >= 3; });
+    if (withN.length > 1) {
+      h += '<h2 style="margin-top:26px">Correlations</h2><div class="scroll"><table class="t"><thead><tr><th class="l"></th>' + withN.map(function (c) { return '<th style="cursor:default">' + esc(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>';
+      withN.forEach(function (a) {
+        h += '<tr><td class="l">' + esc(a.label) + '</td>' + withN.map(function (b) {
+          var r = corr(rows.map(function (x) { return show(x, a); }), rows.map(function (x) { return show(x, b); })).r;
+          var alpha = isNum(r) ? Math.min(1, Math.abs(r)) * .55 : 0, bg = r >= 0 ? '63,174,116' : '200,90,90';
+          return '<td style="background:rgba(' + bg + ',' + alpha + ')">' + (a === b ? '1' : f(r, 2)) + '</td>';
+        }).join('') + '</tr>';
+      });
+      h += '</tbody></table></div><div class="help">Pairs are compared only where both scores exist. With about 20 students, treat |r| under 0.4 as weak evidence.</div>';
+    }
+    $('view').innerHTML = h;
+  }
+
+  /* ---------------- Charts ---------------- */
+  function opt(selected) { return cur.columns.map(function (c) { return '<option value="' + esc(c.key) + '"' + (c.key === selected ? ' selected' : '') + '>' + esc(c.label) + '</option>'; }).join(''); }
+  function viewCharts() {
+    if (!cur.columns.length) { $('view').innerHTML = '<div class="card2">No columns yet. Import a gradebook first.</div>'; return; }
+    var cs = ui.chart = ui.chart || { x: null, y: null, bins: 8 };
+    var keys = cur.columns.map(function (c) { return c.key; });
+    if (!cs.x || !colByKey(cs.x)) cs.x = keys[0]; if (!cs.y || !colByKey(cs.y)) cs.y = keys[Math.min(3, keys.length - 1)];
+    var rows = analysisRows();
+    var h = '<div class="grid2"><div><div class="bar"><b>Histogram</b><select id="h-col">' + opt(cs.x) + '</select><label>bins <input type="number" id="h-bins" min="3" max="20" value="' + cs.bins + '" style="width:60px"></label></div>' + histogram(colByKey(cs.x), rows, cs.bins) + '</div>' +
+      '<div><div class="bar"><b>Scatter</b><select id="s-x">' + opt(cs.x) + '</select> vs <select id="s-y">' + opt(cs.y) + '</select></div>' + scatter(colByKey(cs.x), colByKey(cs.y), rows) + '</div></div>' +
+      '<div class="bar" style="margin-top:18px"><b>Box plots</b> of the columns ticked on the Statistics tab (shown as percent of max where a max exists)</div>' + boxplots(rows);
+    $('view').innerHTML = h;
+  }
+  var NS = 'http://www.w3.org/2000/svg';
+  function histogram(c, rows, bins) {
+    var a = colValues(c, rows); if (a.length < 2) return '<div class="card2">Not enough scores.</div>';
+    var lo = Math.min.apply(null, a), hi = Math.max.apply(null, a); if (lo === hi) { lo -= 1; hi += 1; }
+    var w = (hi - lo) / bins, counts = new Array(bins).fill(0);
+    a.forEach(function (x) { counts[Math.min(bins - 1, Math.floor((x - lo) / w))]++; });
+    var W = 640, Hh = 300, L = 44, B = 40, T = 24, R = 12, mx = Math.max.apply(null, counts), bw = (W - L - R) / bins, s = '';
+    counts.forEach(function (n, i) {
+      var bh = (Hh - T - B) * n / mx, x = L + i * bw, y = Hh - B - bh;
+      s += '<rect x="' + (x + 1) + '" y="' + y + '" width="' + (bw - 2) + '" height="' + bh + '" fill="#3fae74" opacity=".85"/>' + (n ? '<text x="' + (x + bw / 2) + '" y="' + (y - 4) + '" text-anchor="middle">' + n + '</text>' : '') +
+        '<text x="' + (x + bw / 2) + '" y="' + (Hh - B + 14) + '" text-anchor="middle">' + f(lo + i * w, 0) + '</text>';
+    });
+    s += '<text x="' + (W / 2) + '" y="' + (Hh - 6) + '" text-anchor="middle">' + esc(c.label) + (ui.pct && c.max ? ' (%)' : '') + '  ·  n = ' + a.length + ', mean ' + f(mean(a), 1) + '</text>';
+    var m = mean(a), mxp = L + (m - lo) / (hi - lo) * (W - L - R);
+    s += '<line x1="' + mxp + '" x2="' + mxp + '" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#e0a940" stroke-dasharray="4 3"/><text x="' + mxp + '" y="' + (T - 6) + '" text-anchor="middle" style="fill:#e0a940">mean</text>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Histogram of ' + esc(c.label) + '">' + s + '</svg>';
+  }
+  function scatter(cx, cy, rows) {
+    var X = rows.map(function (r) { return show(r, cx); }), Y = rows.map(function (r) { return show(r, cy); });
+    var cr = corr(X, Y); if (cr.n < 3) return '<div class="card2">Need at least 3 students with both scores.</div>';
+    var W = 640, Hh = 300, L = 48, B = 40, T = 16, R = 14;
+    var xl = Math.min.apply(null, cr.px), xh = Math.max.apply(null, cr.px), yl = Math.min.apply(null, cr.py), yh = Math.max.apply(null, cr.py);
+    if (xl === xh) { xl--; xh++; } if (yl === yh) { yl--; yh++; }
+    var sx = function (v) { return L + (v - xl) / (xh - xl) * (W - L - R); }, sy = function (v) { return Hh - B - (v - yl) / (yh - yl) * (Hh - B - T); };
+    var s = '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#555"/><line x1="' + L + '" x2="' + L + '" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#555"/>';
+    s += '<line x1="' + sx(xl) + '" y1="' + sy(cr.icpt + cr.slope * xl) + '" x2="' + sx(xh) + '" y2="' + sy(cr.icpt + cr.slope * xh) + '" stroke="#e0a940" stroke-dasharray="5 3"/>';
+    var k = 0; rows.forEach(function (r) {
+      var xv = show(r, cx), yv = show(r, cy); if (!isNum(xv) || !isNum(yv)) return;
+      s += '<circle cx="' + sx(xv) + '" cy="' + sy(yv) + '" r="5" fill="#3fae74" opacity=".85"><title>' + esc(r.student) + ': ' + f(xv, 1) + ', ' + f(yv, 1) + '</title></circle>'; k++;
+    });
+    s += '<text x="' + (W / 2) + '" y="' + (Hh - 6) + '" text-anchor="middle">' + esc(cx.label) + '  →  ' + esc(cy.label) + '</text>';
+    s += '<text x="' + (L + 6) + '" y="' + (T + 10) + '">r = ' + f(cr.r, 2) + '   R² = ' + f(cr.r * cr.r, 2) + '   n = ' + cr.n + '   slope ' + f(cr.slope, 2) + '</text>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Scatter plot">' + s + '</svg>';
+  }
+  function boxplots(rows) {
+    var keys = pickCols().map(colByKey).filter(function (c) { return c.max && colValues(c, rows).length >= 3; });
+    if (!keys.length) return '<div class="card2">No columns with enough scores.</div>';
+    var W = Math.max(520, 90 * keys.length + 60), Hh = 300, L = 40, B = 44, T = 14, s = '';
+    for (var g = 0; g <= 100; g += 20) { var yy = Hh - B - (Hh - B - T) * g / 100; s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + yy + '" y2="' + yy + '" stroke="#2a3330"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" text-anchor="end">' + g + '</text>'; }
+    var Y = function (v) { return Hh - B - (Hh - B - T) * Math.max(0, Math.min(110, v)) / 100; };
+    keys.forEach(function (c, i) {
+      var a = colValues(c, rows).map(function (v) { return ui.pct ? v : v / c.max * 100; }), cx = L + 50 + i * 90;
+      var q1 = quant(a, .25), q3 = quant(a, .75), md = quant(a, .5), iqr = q3 - q1, lo = Math.min.apply(null, a.filter(function (v) { return v >= q1 - 1.5 * iqr; })), hi = Math.max.apply(null, a.filter(function (v) { return v <= q3 + 1.5 * iqr; }));
+      s += '<line x1="' + cx + '" x2="' + cx + '" y1="' + Y(lo) + '" y2="' + Y(hi) + '" stroke="#9fb3ac"/><rect x="' + (cx - 20) + '" y="' + Y(q3) + '" width="40" height="' + Math.max(1, Y(q1) - Y(q3)) + '" fill="rgba(63,174,116,.35)" stroke="#3fae74"/><line x1="' + (cx - 20) + '" x2="' + (cx + 20) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#e0a940" stroke-width="2"/>';
+      a.forEach(function (v) { if (v < lo || v > hi) s += '<circle cx="' + cx + '" cy="' + Y(v) + '" r="3" fill="none" stroke="#c85a5a"/>'; });
+      s += '<text x="' + cx + '" y="' + (Hh - B + 16) + '" text-anchor="middle">' + esc(c.label.length > 13 ? c.label.slice(0, 12) + '…' : c.label) + '</text>';
+    });
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Box plots" style="max-width:' + W + 'px">' + s + '</svg><div class="help">Box = middle 50%, orange line = median, whiskers reach the furthest score within 1.5&times;IQR, red circles are outliers.</div>';
+  }
+
+  /* ---------------- Students ---------------- */
+  function viewPeople() {
+    if (!cur.columns.length) { $('view').innerHTML = '<div class="card2">No columns yet. Import a gradebook first.</div>'; return; }
+    var pc = ui.pcol = (ui.pcol && colByKey(ui.pcol)) ? ui.pcol : (cur.columns[0] || {}).key;
+    var c = colByKey(pc), rows = analysisRows(), a = colValues(c || {}, rows), m = a.length ? mean(a) : NaN, s = sd(a);
+    var rk = rows.filter(function (r) { return isNum(show(r, c)); }).sort(function (x, y) { return show(y, c) - show(x, c); });
+    var h = '<div class="bar"><b>Rank by</b><select id="p-col">' + opt(pc) + '</select><span>z-score = standard deviations from the class mean. Flagged: |z| &ge; 1.5.</span></div><div class="scroll" style="max-height:48vh"><table class="t"><thead><tr><th class="l">#</th><th class="l">Student</th><th>Score</th><th>z</th><th>Percentile</th><th>vs mean</th></tr></thead><tbody>';
+    rk.forEach(function (r, i) {
+      var v = show(r, c), z = (v - m) / s, below = a.filter(function (x) { return x < v; }).length / a.length * 100;
+      h += '<tr><td class="l">' + (i + 1) + '</td><td class="l"><a href="#" data-stu="' + esc(r.student) + '">' + esc(r.student) + '</a></td><td>' + f(v, 1) + '</td><td' + (Math.abs(z) >= 1.5 ? ' style="color:var(--amber)"' : '') + '>' + f(z, 2) + '</td><td>' + f(below, 0) + '</td><td>' + (v - m >= 0 ? '+' : '') + f(v - m, 1) + '</td></tr>';
+    });
+    var excl = rows.filter(function (r) { return !isNum(show(r, c)); });
+    h += '</tbody></table></div>' + (excl.length ? '<div class="help">Left out (no score): ' + excl.map(function (r) { return esc(r.student); }).join(', ') + '</div>' : '');
+    if (ui.stu) {
+      var r0 = cur.rows.filter(function (r) { return r.student === ui.stu; })[0];
+      if (r0) {
+        h += '<h2 style="margin-top:24px">' + esc(r0.student) + '</h2><div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>Score</th><th>Class mean</th><th>Difference</th><th>z</th></tr></thead><tbody>' + cur.columns.map(function (col) {
+          var v = show(r0, col), vals = colValues(col, analysisRows()), mm = vals.length ? mean(vals) : NaN, ss = sd(vals);
+          return '<tr><td class="l">' + esc(col.label) + '</td><td>' + (v == null ? 'excused' : f(v, 1)) + '</td><td>' + f(mm, 1) + '</td><td>' + (v == null ? '-' : (v - mm >= 0 ? '+' : '') + f(v - mm, 1)) + '</td><td>' + (v == null ? '-' : f((v - mm) / ss, 2)) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+      }
+    }
+    $('view').innerHTML = h;
+  }
+
+  /* ---------------- Import & manage ---------------- */
+  function viewManage() {
+    var h = '<div class="grid2"><div class="card2"><h3>Import a Canvas gradebook CSV</h3><p class="help" style="margin-top:0">Export from Canvas (Grades &rarr; Export). The file is read in your browser; student names are cut down to first name + last initial <b>before</b> anything is saved, and IDs, logins and emails are never kept.</p>' +
+      '<input type="file" id="imp-file" accept=".csv,text/csv"><div id="imp-body"></div></div>' +
+      '<div class="card2"><h3>Gradebooks</h3>' + (sets.length ? sets.map(function (s) { return '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><span>' + esc(s.name) + ' <span class="help">(' + s.rows.length + ' students)</span></span><span><button class="b" data-open="' + s.id + '" type="button">Open</button> <button class="b danger" data-del="' + s.id + '" type="button">Delete</button></span></div>'; }).join('') : '<p class="help">None saved.</p>') +
+      '<div class="help">Importing with the same name replaces that gradebook. Keep a copy of the Canvas CSV if you may want the original back.</div></div></div>';
+    $('view').innerHTML = h;
+  }
+  function parseCSV(t) {
+    var rows = [], row = [], f_ = '', q = false;
+    for (var i = 0; i < t.length; i++) {
+      var ch = t[i];
+      if (q) { if (ch === '"') { if (t[i + 1] === '"') { f_ += '"'; i++; } else q = false; } else f_ += ch; }
+      else if (ch === '"') q = true; else if (ch === ',') { row.push(f_); f_ = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; row.push(f_); rows.push(row); row = []; f_ = ''; }
+      else f_ += ch;
+    }
+    if (f_ !== '' || row.length) { row.push(f_); rows.push(row); }
+    return rows;
+  }
+  function shortName(full) {
+    full = full.trim(); var p;
+    if (full.indexOf(',') >= 0) { p = full.split(','); var first = p[1].trim().split(/\s+/)[0], last = p[0].trim(); return first + ' ' + last.charAt(0).toUpperCase() + '.'; }
+    p = full.split(/\s+/); return p.length > 1 ? p[0] + ' ' + p[p.length - 1].charAt(0).toUpperCase() + '.' : full;
+  }
+  var imp = null;
+  function startImport(text, fname) {
+    var rows = parseCSV(text), H = rows[0] || [], si = H.indexOf('Student');
+    if (si < 0) { $('imp-body').innerHTML = '<p class="help" style="color:var(--danger)">This does not look like a Canvas gradebook export (no Student column).</p>'; return; }
+    var possible = rows.filter(function (r) { return /points possible/i.test(r[si] || ''); })[0] || [];
+    var students = rows.slice(1).filter(function (r) { return r[si] && !/points possible|student, test/i.test(r[si]) && r[si].trim(); });
+    var skip = /^(Student|ID|SIS User ID|SIS Login ID|Root Account|Section)$|Unposted|Final Points|\(OLD_|Extra Credit/;
+    var cand = [];
+    H.forEach(function (name, i) {
+      if (skip.test(name)) return;
+      var vals = students.map(function (r) { return parseFloat(r[i]); }).filter(isNum);
+      if (!vals.length) return;
+      var isAssign = /\(\d{4,}\)\s*$/.test(name), isTotal = /^(Current|Final) (Points|Score)$/.test(name) || / Current Points$/.test(name) || (/ Current Score$/.test(name) && false);
+      cand.push({ i: i, name: name, on: isAssign || isTotal || name === 'Current Score' || name === 'Final Score', max: parseFloat(possible[i]) });
+    });
+    imp = { students: students, si: si, cand: cand, fname: fname };
+    $('imp-body').innerHTML = '<div class="help">Found ' + students.length + ' students and ' + cand.length + ' score columns. Tick the ones to keep:</div><div class="checks" id="imp-cols">' + cand.map(function (c, k) { return '<label><input type="checkbox" data-ic="' + k + '"' + (c.on ? ' checked' : '') + '>' + esc(c.name) + '</label>'; }).join('') + '</div>' +
+      '<input type="text" id="imp-name" value="' + esc(sets.length ? 'Imported ' + new Date().toISOString().slice(0, 10) : 'BIOS 102 gradebook') + '" style="width:100%;margin-bottom:8px" aria-label="Gradebook name"><button class="b pri" id="imp-go" type="button">Import and save</button><div class="help">A blank score in Canvas becomes excused/missing, not zero. Category maximums are not in the export; set them later with Edit scores.</div>';
+  }
+  async function finishImport() {
+    var keep = imp.cand.filter(function (c, k) { var el = document.querySelector('[data-ic="' + k + '"]'); return el && el.checked; });
+    if (!keep.length) { say('Tick at least one column.'); return; }
+    var used = {}, cols = keep.map(function (c) {
+      var label = c.name.replace(/\s*\(\d{4,}\)\s*$/, '').replace(/ Current Points$/, ' (points)'), key = slug(label), n = 1; while (used[key]) key = slug(label) + '_' + (++n); used[key] = 1;
+      var group = /\(\d{4,}\)\s*$/.test(c.name) ? 'Assignments' : /^(Current|Final) /.test(c.name) ? 'Canvas' : 'Categories';
+      return { key: key, label: label, max: isNum(c.max) ? c.max : (/Score$/.test(c.name) ? 100 : null), group: group, src: c.i };
+    });
+    var rows = imp.students.map(function (r) {
+      var d = {}; cols.forEach(function (c) { var v = parseFloat(r[c.src]); d[c.key] = isNum(v) ? v : null; });
+      return { student: shortName(r[imp.si]), data: d };
+    });
+    var names = rows.map(function (r) { return r.student; });
+    if (new Set(names).size !== names.length) { say('Two students would show the same name (same first name and last initial). Stopping so nobody is merged; tell me and I will add a disambiguator.'); return; }
+    var name = $('imp-name').value.trim() || 'BIOS 102 gradebook', columns = cols.map(function (c) { return { key: c.key, label: c.label, max: c.max, group: c.group }; });
+    try { await window.sfSupabase.bios102GradesSave(session.sessionToken, name, columns, rows); } catch (e) { say('Could not save: ' + (e.message || e)); return; }
+    await reloadSets(name); say('Imported ' + rows.length + ' students into "' + name + '".'); ui.tab = 'book'; render();
+  }
+  async function reloadSets(selectName) {
+    var d = await window.sfSupabase.bios102GradesLoad(session.sessionToken); sets = d.sets || [];
+    var s = sets.filter(function (x) { return x.name === selectName; })[0] || sets[0];
+    if (s) pick(s.id); else cur = { id: null, name: 'New gradebook', columns: [], rows: [], dirty: false };
+  }
+
+  /* ---------------- events ---------------- */
+  function csvOut() {
+    var rows = visibleRows(), head = ['Student'].concat(cur.columns.map(function (c) { return c.label; }));
+    var lines = [head].concat(rows.map(function (r) { return [r.student].concat(cur.columns.map(function (c) { var v = show(r, c); return v == null ? '' : v; })); }));
+    var txt = lines.map(function (l) { return l.map(function (x) { x = String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(','); }).join('\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], { type: 'text/csv' })); a.download = (cur.name || 'gradebook').replace(/[^a-z0-9]+/gi, '-') + '.csv'; a.click();
+  }
+  document.addEventListener('change', async function (e) {
+    var t = e.target;
+    if (t.id === 'setpick') { pick(t.value); render(); }
+    else if (t.id === 'unit') { ui.pct = t.value === 'pct'; render(); }
+    else if (t.id === 'pass') { ui.pass = Math.max(0, Math.min(100, +t.value || 0)); render(); }
+    else if (t.dataset.inc != null) { if (t.checked) delete ui.off[t.dataset.inc]; else ui.off[t.dataset.inc] = 1; render(); }
+    else if (t.dataset.sc != null) { var chosen = pickCols(); var k = t.dataset.sc; ui.statCols = t.checked ? chosen.concat([k]) : chosen.filter(function (x) { return x !== k; }); render(); }
+    else if (t.dataset.cell != null) { var p = t.dataset.cell.split('|'), row = cur.rows.filter(function (r) { return r.student === p[0]; })[0]; row.data[p[1]] = t.value === '' ? null : +t.value; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
+    else if (t.dataset.max != null) { var c = colByKey(t.dataset.max); c.max = t.value === '' ? null : +t.value; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
+    else if (t.id === 'h-col') { ui.chart.x = t.value; render(); } else if (t.id === 'h-bins') { ui.chart.bins = Math.max(3, Math.min(20, +t.value || 8)); render(); }
+    else if (t.id === 's-x') { ui.chart.x = t.value; render(); } else if (t.id === 's-y') { ui.chart.y = t.value; render(); }
+    else if (t.id === 'p-col') { ui.pcol = t.value; render(); }
+    else if (t.id === 'imp-file' && t.files[0]) { var rd = new FileReader(); rd.onload = function () { startImport(String(rd.result), t.files[0].name); }; rd.readAsText(t.files[0]); }
+  });
+  document.addEventListener('click', async function (e) {
+    var t = e.target.closest('button, a[data-stu], th[data-sort]'); if (!t) return;
+    if (t.dataset.sort) { ui.sortDir = ui.sortKey === t.dataset.sort ? -ui.sortDir : 1; ui.sortKey = t.dataset.sort; render(); }
+    else if (t.dataset.stu) { e.preventDefault(); ui.stu = t.dataset.stu; render(); }
+    else if (t.id === 'f-add') { var k = $('f-col').value, op = $('f-op').value, v = parseFloat($('f-val').value); if (!k) return say('Pick a column to filter.'); if (op !== 'blank' && op !== 'has' && !isNum(v)) return say('Enter a value.'); ui.filters.push({ key: k, op: op, v: v }); say(''); render(); }
+    else if (t.dataset.rmf != null) { ui.filters.splice(+t.dataset.rmf, 1); render(); }
+    else if (t.id === 'f-clear') { ui.filters = []; render(); }
+    else if (t.id === 'edit') { ui.edit = !ui.edit; render(); }
+    else if (t.id === 'csv') csvOut();
+    else if (t.id === 'save') {
+      t.disabled = true; say('Saving…');
+      try { await window.sfSupabase.bios102GradesSave(session.sessionToken, cur.name, cur.columns, cur.rows); cur.dirty = false; var d = await window.sfSupabase.bios102GradesLoad(session.sessionToken); sets = d.sets || []; say('Saved.'); } catch (err) { t.disabled = false; say('Could not save: ' + (err.message || err)); }
+      render();
+    }
+    else if (t.id === 'cc-add') {
+      var label = $('cc-label').value.trim(), formula = $('cc-formula').value.trim();
+      if (!label || !formula) return say('Give the column a name and a formula.');
+      var col = { key: slug(label), label: label, max: $('cc-max').value === '' ? null : +$('cc-max').value, group: 'Calculated', formula: formula };
+      while (colByKey(col.key)) col.key += '_2';
+      cur.columns.push(col); fnCache = {};
+      if (cur.rows.length && cur.rows.every(function (r) { return val(r, col) == null; })) { cur.columns.pop(); return say('That formula gave no result for any student. Check the column keys listed below the form.'); }
+      cur.dirty = true; say('Column added. Press Save changes to keep it.'); render();
+    }
+    else if (t.id === 'rm-go') { var rk = $('rm-col').value; cur.columns = cur.columns.filter(function (c) { return c.key !== rk; }); cur.rows.forEach(function (r) { delete r.data[rk]; }); fnCache = {}; cur.dirty = true; say('Column removed. Press Save changes to keep it.'); render(); }
+    else if (t.id === 'imp-go') finishImport();
+    else if (t.dataset.open) { pick(t.dataset.open); ui.tab = 'book'; render(); }
+    else if (t.dataset.del) {
+      if (t.dataset.armed !== '1') { t.dataset.armed = '1'; t.textContent = 'Click again to delete'; setTimeout(function () { t.dataset.armed = ''; t.textContent = 'Delete'; }, 3500); return; }
+      try { await window.sfSupabase.bios102GradesDelete(session.sessionToken, t.dataset.del); await reloadSets(); say('Deleted.'); render(); } catch (err) { say('Could not delete: ' + (err.message || err)); }
+    }
+  });
+  window.addEventListener('beforeunload', function (e) { if (cur && cur.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  load();
+})();
+</script>
+</body>
+</html>
