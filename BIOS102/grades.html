@@ -51,6 +51,7 @@
     .stat-grid small { display: block; color: var(--text-dim); font-size: .74rem; }
     .stat-grid b { font-size: 1.15rem; font-weight: 500; }
     .msg { font-size: .85rem; min-height: 1.3em; color: var(--amber); margin: 6px 0; }
+    .ins-h { font-weight: 500; font-size: 1rem; margin: 0 0 8px; color: var(--text); }
     .tag { display: inline-block; font-size: .7rem; padding: 1px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-left: 6px; }
   </style>
 </head>
@@ -93,7 +94,7 @@
 
   /* ---------------- state ---------------- */
   var sets = [], cur = null;          // cur = { id, name, columns, rows, dirty }
-  var ui = { tab: 'book', pct: false, sortKey: null, sortDir: 1, edit: false, filters: [], off: {}, pass: 70, statCols: null, msg: '' };
+  var ui = { tab: 'insights', pct: false, sortKey: null, sortDir: 1, edit: false, filters: [], off: {}, pass: 70, statCols: null, msg: '' };
 
   function colByKey(k) { return cur.columns.filter(function (c) { return c.key === k; })[0]; }
 
@@ -163,7 +164,7 @@
       '<div class="bar" id="topbar2"></div>' +
       '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
       '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
-    $('tabs').innerHTML = [['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['manage', 'Import & manage']]
+    $('tabs').innerHTML = [['insights', 'Insights'], ['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['manage', 'Import & manage']]
       .map(function (t) { return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
     $('tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { ui.tab = b.dataset.tab; render(); } });
   }
@@ -190,8 +191,146 @@
 
   function render() {
     renderTop();
-    ({ book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, manage: viewManage })[ui.tab]();
+    ({ insights: viewInsights, book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, manage: viewManage })[ui.tab]();
     $('msg').textContent = ui.msg;
+  }
+
+  /* ---------------- Insights ---------------- */
+  var RED = [200, 90, 90], AMB = [224, 169, 64], GRN = [63, 174, 116];
+  function heat(p) {
+    var a, b, t; p = Math.max(0, Math.min(100, p));
+    if (p < 60) { a = RED; b = AMB; t = p / 60; } else { a = AMB; b = GRN; t = (p - 60) / 40; }
+    return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * t); }).join(',') + ')';
+  }
+  function pctOf(r, c) { var v = val(r, c); return v != null && c.max ? v / c.max * 100 : null; }
+  function tile(label, big, sub) { return '<div><small>' + label + '</small><b>' + big + '</b><small>' + (sub || '') + '</small></div>'; }
+  function short12(s) { return s.length > 12 ? s.slice(0, 11) + '…' : s; }
+
+  function viewInsights() {
+    var scored = cur.columns.filter(function (c) { return c.max; });
+    if (!scored.length || !cur.rows.length) { $('view').innerHTML = '<div class="card2">No gradebook yet. Use Import &amp; manage.</div>'; return; }
+    var rows = analysisRows();
+    var exams = scored.filter(function (c) { return /exam/i.test(c.label) || c.group === 'Exams'; }).filter(function (c) { return rows.filter(function (r) { return pctOf(r, c) != null; }).length >= 3; });
+    var ex = ui.exam && colByKey(ui.exam) && exams.indexOf(colByKey(ui.exam)) >= 0 ? colByKey(ui.exam) : exams[0];
+    var work = scored.filter(function (c) { return c !== ex && !/exam/i.test(c.label) && rows.some(function (r) { return pctOf(r, c) != null; }); });
+    var h = '<div class="bar"><b>Insights</b>' + (exams.length ? '<label>Exam <select id="ins-exam">' + exams.map(function (c) { return '<option value="' + esc(c.key) + '"' + (c === ex ? ' selected' : '') + '>' + esc(c.label) + '</option>'; }).join('') + '</select></label>' : '') +
+      '<span>Everything below is in percent of each column’s maximum, so different-sized columns compare fairly. Excused or blank scores are left out, never counted as zero.</span></div>';
+
+    var story = [];
+    if (ex) {
+      var pairs = rows.map(function (r) { return { s: r.student, p: pctOf(r, ex) }; }).filter(function (x) { return x.p != null; });
+      var a = pairs.map(function (x) { return x.p; }), n = a.length, m = mean(a), md = quant(a, 0.5), s = sd(a), q1 = quant(a, 0.25), q3 = quant(a, 0.75);
+      var below = pairs.filter(function (x) { return x.p < ui.pass; }), exc = rows.length - n;
+      h += '<div class="stat-grid">' + tile(esc(ex.label) + ' mean', f(m, 1) + '%', 'median ' + f(md, 1) + '%') + tile('Spread (std dev)', f(s, 1) + ' pts', 'middle half ' + f(q1, 0) + '–' + f(q3, 0) + '%') +
+        tile('Range', f(Math.min.apply(null, a), 0) + '–' + f(Math.max.apply(null, a), 0) + '%', n + ' students tested' + (exc ? ', ' + exc + ' excused' : '')) +
+        tile('At or above ' + ui.pass + '%', f((n - below.length) / n * 100, 0) + '%', (n - below.length) + ' of ' + n) + '</div>';
+      story.push('<b>' + n + ' students</b> sat ' + esc(ex.label) + (exc ? ' (' + exc + ' excused and left out)' : '') + '. The class averaged <b>' + f(m, 1) + '%</b> (median ' + f(md, 1) + '%); half the class scored between ' + f(q1, 0) + '% and ' + f(q3, 0) + '%.');
+      if (Math.abs(m - md) >= 2) story.push(m < md ? 'The mean sits below the median: a few low scores pull the average down, so the typical student did better than the average suggests.' : 'The mean sits above the median: a few high scores lift the average, so the typical student did a little worse than the average suggests.');
+      story.push(below.length ? '<b>' + below.length + '</b> scored below the ' + ui.pass + '% line: ' + below.sort(function (x, y) { return x.p - y.p; }).map(function (x) { return esc(x.s) + ' (' + f(x.p, 0) + '%)'; }).join(', ') + '.' : 'Everyone tested is at or above the ' + ui.pass + '% line.');
+    }
+    work.forEach(function (c) {
+      var zeros = rows.filter(function (r) { return pctOf(r, c) === 0; });
+      if (zeros.length && /lab|assign|quiz|report/i.test(c.label)) story.push('<b>' + esc(c.label) + ':</b> ' + zeros.length + ' student' + (zeros.length > 1 ? 's have' : ' has') + ' a zero (' + zeros.map(function (r) { return esc(r.student); }).join(', ') + '). That is probably missing work, not low skill; worth a check before reading it as performance.');
+    });
+    if (ex) {
+      var best = null;
+      work.forEach(function (c) { var cr = corr(rows.map(function (r) { return pctOf(r, ex); }), rows.map(function (r) { return pctOf(r, c); })); if (isNum(cr.r) && cr.n >= 8 && (!best || Math.abs(cr.r) > Math.abs(best.r))) best = { c: c, r: cr.r, n: cr.n }; });
+      if (best) story.push('Of the coursework columns, <b>' + esc(best.c.label) + '</b> tracks ' + esc(ex.label) + ' most closely (r = ' + f(best.r, 2) + ', n = ' + best.n + '). With a class this size, treat it as a hint to follow up, not proof.');
+    }
+    h += '<div class="card2" style="margin-bottom:16px"><h3>What the numbers say</h3>' + story.map(function (x) { return '<p style="margin-bottom:8px;line-height:1.55">' + x + '</p>'; }).join('') + '</div>';
+
+    h += '<div class="grid2">';
+    if (ex) h += '<div><h3 class="ins-h">Grade distribution: ' + esc(ex.label) + '</h3>' + bandChart(ex, rows) + '</div>';
+    h += '<div><h3 class="ins-h">Every student against the class</h3>' + stripChart(scored.filter(function (c) { return rows.some(function (r) { return pctOf(r, c) != null; }); }), rows) + '</div></div>';
+    h += '<h3 class="ins-h" style="margin-top:22px">Heat map: where each student stands in each column</h3>' + heatmap(scored, rows, ex);
+    if (ex && work.length) h += '<div class="grid2" style="margin-top:22px"><div><h3 class="ins-h">What goes with ' + esc(ex.label) + '?</h3>' + corrBars(ex, work, rows) + '</div><div><h3 class="ins-h">Who may need a conversation</h3>' + attention(ex, scored, rows) + '</div></div>';
+    $('view').innerHTML = h;
+  }
+
+  function bandChart(ex, rows) {
+    var bands = [['A', 90, 101, GRN], ['B', 80, 90, [120, 190, 90]], ['C', 70, 80, AMB], ['D', 60, 70, [214, 130, 70]], ['F', 0, 60, RED]], a = rows.map(function (r) { return pctOf(r, ex); }).filter(isNum);
+    var counts = bands.map(function (b) { return a.filter(function (x) { return x >= b[1] && x < b[2]; }).length; }), mx = Math.max(1, Math.max.apply(null, counts));
+    var W = 520, Hh = 300, L = 30, B = 46, T = 30, bw = (W - L - 14) / bands.length, s = '';
+    bands.forEach(function (b, i) {
+      var bh = (Hh - T - B) * counts[i] / mx, x = L + i * bw + 10, y = Hh - B - bh, col = 'rgb(' + b[3].join(',') + ')', cx = x + (bw - 20) / 2;
+      s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 20) + '" height="' + Math.max(bh, 2) + '" rx="6" fill="' + col + '"/>' +
+        '<text x="' + cx + '" y="' + (y - 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:16px;font-weight:500">' + counts[i] + '</text>' +
+        '<text x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle">' + f(counts[i] / a.length * 100, 0) + '%</text>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:14px">' + b[0] + '</text>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[0] === 'A' ? '90+' : b[0] === 'F' ? '<60' : b[1] + '–' + (b[2] - 1)) + '</text>';
+    });
+    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#3a4642"/>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Grade distribution">' + s + '</svg>';
+  }
+
+  function stripChart(cols, rows) {
+    var W = Math.max(520, 96 * cols.length + 60), Hh = 330, L = 40, B = 50, T = 14, s = '';
+    var Y = function (v) { return Hh - B - (Hh - B - T) * Math.max(0, Math.min(105, v)) / 100; };
+    for (var g = 0; g <= 100; g += 20) s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke="#26302d"/><text x="' + (L - 6) + '" y="' + (Y(g) + 4) + '" text-anchor="end">' + g + '</text>';
+    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(ui.pass) + '" y2="' + Y(ui.pass) + '" stroke="#e0a940" stroke-dasharray="4 4" opacity=".7"/><text x="' + (W - 10) + '" y="' + (Y(ui.pass) - 4) + '" text-anchor="end" style="fill:#e0a940">pass line</text>';
+    cols.forEach(function (c, i) {
+      var cx = L + 46 + i * 96, pts = rows.map(function (r) { return { s: r.student, p: pctOf(r, c) }; }).filter(function (x) { return x.p != null; }).sort(function (x, y) { return x.p - y.p; });
+      if (!pts.length) return;
+      var a = pts.map(function (x) { return x.p; }), q1 = quant(a, 0.25), q3 = quant(a, 0.75), md = quant(a, 0.5);
+      s += '<rect x="' + (cx - 24) + '" y="' + Y(q3) + '" width="48" height="' + Math.max(2, Y(q1) - Y(q3)) + '" rx="6" fill="rgba(63,174,116,.13)"/>';
+      var placed = [];
+      pts.forEach(function (x) {
+        var k = placed.filter(function (q) { return Math.abs(q.y - Y(x.p)) < 9; }).length, off = k === 0 ? 0 : (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 10;
+        placed.push({ y: Y(x.p) });
+        s += '<circle cx="' + (cx + off) + '" cy="' + Y(x.p) + '" r="4.5" fill="' + heat(x.p) + '" stroke="#0b1210" stroke-width="1"><title>' + esc(x.s) + ': ' + f(x.p, 0) + '%</title></circle>';
+      });
+      s += '<line x1="' + (cx - 26) + '" x2="' + (cx + 26) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#eef3f0" stroke-width="2"/>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 16) + '" text-anchor="middle" style="fill:#eef3f0">' + esc(short12(c.label)) + '</text>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 30) + '" text-anchor="middle">median ' + f(md, 0) + '%</text>';
+    });
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Dot plot of each column" style="max-width:' + W + 'px">' + s + '</svg><div class="help">Each dot is a student (hover for the name). White line = median; shaded box = middle half of the class.</div>';
+  }
+
+  function heatmap(cols, rows, ex) {
+    cols = cols.filter(function (c) { return rows.some(function (r) { return pctOf(r, c) != null; }); });
+    var key = ex || cols[0], order = rows.slice().sort(function (x, y) { var a = pctOf(x, key), b = pctOf(y, key); return (b == null ? -1 : b) - (a == null ? -1 : a); });
+    var cw = 96, rh = 26, L = 96, T = 40, W = L + cols.length * cw + 10, Hh = T + order.length * rh + 8;
+    var s = '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#161e1b"/><line x1="0" y1="0" x2="0" y2="6" stroke="#2c3733" stroke-width="2"/></pattern></defs>';
+    cols.forEach(function (c, i) { s += '<text x="' + (L + i * cw + cw / 2) + '" y="' + (T - 14) + '" text-anchor="middle" style="fill:#eef3f0">' + esc(short12(c.label)) + '</text>'; });
+    order.forEach(function (r, j) {
+      var y = T + j * rh;
+      s += '<text x="' + (L - 10) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="end" style="fill:#eef3f0">' + esc(r.student) + '</text>';
+      cols.forEach(function (c, i) {
+        var p = pctOf(r, c), x = L + i * cw;
+        if (p == null) s += '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="' + (cw - 4) + '" height="' + (rh - 4) + '" rx="5" fill="url(#hatch)"><title>' + esc(r.student) + ', ' + esc(c.label) + ': excused / no score</title></rect>';
+        else s += '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="' + (cw - 4) + '" height="' + (rh - 4) + '" rx="5" fill="' + heat(p) + '" opacity=".92"><title>' + esc(r.student) + ', ' + esc(c.label) + ': ' + f(p, 0) + '%</title></rect><text x="' + (x + cw / 2) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="middle" style="fill:#0b1210;font-weight:500">' + f(p, 0) + '</text>';
+      });
+    });
+    return '<div class="scroll"><svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Heat map" style="max-width:' + W + 'px;border:0">' + s + '</svg></div><div class="help">Rows are ordered by ' + esc(key.label) + ', best at the top. Green is strong, amber is middling, red needs attention, hatched means excused or not scored yet.</div>';
+  }
+
+  function corrBars(ex, work, rows) {
+    var items = work.map(function (c) { var cr = corr(rows.map(function (r) { return pctOf(r, ex); }), rows.map(function (r) { return pctOf(r, c); })); return { c: c, r: cr.r, n: cr.n }; }).filter(function (x) { return isNum(x.r); }).sort(function (a, b) { return Math.abs(b.r) - Math.abs(a.r); });
+    if (!items.length) return '<div class="card2">Not enough overlapping scores.</div>';
+    var W = 520, rh = 38, Hh = items.length * rh + 44, mid = 300, half = 190, s = '<line x1="' + mid + '" x2="' + mid + '" y1="6" y2="' + (Hh - 28) + '" stroke="#3a4642"/>';
+    items.forEach(function (it, i) {
+      var y = 10 + i * rh, w = Math.abs(it.r) * half, x = it.r >= 0 ? mid : mid - w, col = it.r >= 0 ? '#3fae74' : '#c85a5a', weak = Math.abs(it.r) < 0.4;
+      s += '<text x="' + (mid - half - 6) + '" y="' + (y + 19) + '" text-anchor="end" style="fill:#eef3f0">' + esc(it.c.label) + '</text><rect x="' + x + '" y="' + y + '" width="' + Math.max(w, 2) + '" height="26" rx="5" fill="' + col + '" opacity="' + (weak ? 0.45 : 0.95) + '"/><text x="' + (it.r >= 0 ? mid + w + 6 : mid - w - 6) + '" y="' + (y + 18) + '" text-anchor="' + (it.r >= 0 ? 'start' : 'end') + '" style="fill:#eef3f0">' + f(it.r, 2) + '</text>';
+    });
+    s += '<text x="' + mid + '" y="' + (Hh - 8) + '" text-anchor="middle">0 = no link  ·  +1 = rise together  ·  faded = weak (|r| &lt; 0.4)</text>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Correlation with exam">' + s + '</svg>';
+  }
+
+  function attention(ex, scored, rows) {
+    var out = [];
+    rows.forEach(function (r) {
+      var why = [], e = pctOf(r, ex);
+      if (e != null && e < ui.pass) why.push(esc(ex.label) + ' ' + f(e, 0) + '%');
+      scored.forEach(function (c) {
+        if (c === ex || /exam/i.test(c.label)) return;
+        var p = pctOf(r, c); if (p == null) return;
+        if (p === 0) why.push('no ' + esc(c.label) + ' recorded'); else if (p < ui.pass) why.push(esc(c.label) + ' ' + f(p, 0) + '%');
+      });
+      if (why.length) out.push({ s: r.student, why: why, k: why.length + (e != null && e < ui.pass ? 2 : 0) });
+    });
+    out.sort(function (a, b) { return b.k - a.k; });
+    if (!out.length) return '<div class="card2">No one is below the ' + ui.pass + '% line in anything. Change the pass line at the top to look closer.</div>';
+    return '<div class="card2">' + out.map(function (o) { return '<div style="padding:7px 0;border-bottom:1px solid var(--border)"><b>' + esc(o.s) + '</b><div class="help" style="margin:2px 0 0">' + o.why.join(' · ') + '</div></div>'; }).join('') + '<div class="help">Below the ' + ui.pass + '% pass line, or a zero (often missing work, not low skill). Excused scores are never flagged.</div></div>';
   }
 
   /* ---------------- Gradebook ---------------- */
@@ -444,6 +583,7 @@
   document.addEventListener('change', async function (e) {
     var t = e.target;
     if (t.id === 'setpick') { pick(t.value); render(); }
+    else if (t.id === 'ins-exam') { ui.exam = t.value; render(); }
     else if (t.id === 'unit') { ui.pct = t.value === 'pct'; render(); }
     else if (t.id === 'pass') { ui.pass = Math.max(0, Math.min(100, +t.value || 0)); render(); }
     else if (t.dataset.inc != null) { if (t.checked) delete ui.off[t.dataset.inc]; else ui.off[t.dataset.inc] = 1; render(); }
