@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Signature Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#7B7F93; --line:#E5E0D6;
+    --accent:#2F3DB5; --ok:#1F7A3E; --ok-bg:#E1F1E6; --warn:#9A6206; --warn-bg:#FCF1DC; --err:#C0392B; --err-bg:#FBEAEA; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3; --line:#272B44;
+    --accent:#9AA6FF; --ok:#6FD39A; --ok-bg:#16301F; --warn:#F2BE5C; --warn-bg:#3A2D12; --err:#FF8A7D; --err-bg:#3A1A1A; } }
+  :root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#878CA3; --line:#272B44;
+    --accent:#9AA6FF; --ok:#6FD39A; --ok-bg:#16301F; --warn:#F2BE5C; --warn-bg:#3A2D12; --err:#FF8A7D; --err-bg:#3A1A1A; }
+  *{box-sizing:border-box;} body{margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Inter",-apple-system,"Segoe UI",Roboto,sans-serif;}
+  .wrap{max-width:1000px; margin:0 auto; padding:20px 16px 40px;}
+  h1{font:900 1.7rem "Montserrat",sans-serif; margin:0 0 4px;} a{color:var(--accent);}
+  .muted{color:var(--ink-soft);} .small{font-size:.84rem;}
+  .tabs{display:flex; gap:6px; flex-wrap:wrap; margin:16px 0;}
+  .tabs button{font:600 .86rem "Inter",sans-serif; padding:7px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
+  .tabs button.on{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:14px;}
+  @media (max-width:760px){ .card{grid-template-columns:1fr;} }
+  .card h3{margin:0 0 4px; font:800 1.05rem "Montserrat",sans-serif;}
+  .tag{display:inline-block; font:700 .7rem "Inter",sans-serif; letter-spacing:.06em; text-transform:uppercase; padding:3px 8px; border-radius:999px; margin:0 4px 4px 0; background:var(--surface-2); color:var(--ink-soft);}
+  .tag.ok{background:var(--ok-bg); color:var(--ok);} .tag.warn{background:var(--warn-bg); color:var(--warn);} .tag.err{background:var(--err-bg); color:var(--err);}
+  .sig{background:#fff; border:1px solid var(--line); border-radius:10px; width:100%;}
+  .act{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; align-items:center;}
+  .act button{font:700 .82rem "Inter",sans-serif; padding:7px 11px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer;}
+  .act button.ok{background:var(--ok-bg); color:var(--ok); border-color:transparent;} .act button.err{background:var(--err-bg); color:var(--err); border-color:transparent;}
+  select,input[type=text]{font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px 8px;}
+  .top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
+  .btn{font:800 .9rem "Inter",sans-serif; padding:9px 16px; border-radius:999px; border:0; background:var(--accent); color:#fff; cursor:pointer;}
+  .rules{background:var(--surface-2); border-radius:12px; padding:12px 14px; font-size:.88rem;}
+  .rules ul{margin:6px 0 0; padding-left:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Signature review</h1><div class="muted small">Residents' letter of support for Full Spectrum · public page: <a href="/full-spectrum/sign/">/full-spectrum/sign/</a></div></div>
+    <div><button class="btn" id="print" hidden>Print the signed letter</button> <button class="btn" id="csv" hidden style="background:var(--ink-soft)">Download CSV</button></div>
+  </div>
+  <div id="gate" class="rules" style="margin-top:16px">Loading…</div>
+  <div id="app" hidden>
+    <div class="rules" style="margin-top:14px"><b>How to rule on a signature</b> (the same tests used for petition signatures):
+      <ul>
+        <li><b>Genuine and own person:</b> a real signature, not printed initials, and not one hand signing for several people (compare signatures at the same address).</li>
+        <li><b>Residence:</b> the matched address and community area are on the card. Off the South Side cannot reach this queue.</li>
+        <li><b>Voter registration:</b> open the Chicago Board lookup and search the signer's name and address. Found → <i>Accept (registered voter)</i>. Not found, or you didn't check → <i>Accept as resident</i>, which is counted separately.</li>
+        <li><b>Strike</b> anything that fails, with the reason. Every ruling is logged with your name.</li>
+      </ul></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  var KEY = 'fsPartnerSession';  // same sign-in as /full-spectrum/partners.html
+  var REASONS = { NOT_GENUINE:'Signature not genuine / not signed in own person', NOT_IN_AREA:'Resides outside the South Side', ADDRESS:'Address incomplete or not where signer lives',
+    NOT_REGISTERED:'Not registered at this address', DUPLICATE:'Signed more than once', PATTERN:'Part of a pattern (same hand or batch)', UNDER_18:'Under 18', UNCONFIRMED:'Email never confirmed', OTHER:'Other (see note)' };
+  var TABS = [['pending_review','To review'],['unconfirmed','Awaiting email confirmation'],['accepted','Accepted: registered voters'],['resident','Accepted: residents'],['struck','Struck'],['all','All']];
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var session = null; try { session = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){}
+  var rows = [], tab = 'pending_review';
+  if (!session || !session.sessionToken) { $('gate').innerHTML = 'Please sign in on the <a href="/full-spectrum/partners.html">Full Spectrum partner tracker</a> first, then come back to this page.'; return; }
+
+  async function rpc(name, args){ var c = await window.sfSupabaseReady; var r = await c.rpc(name, args); if (r.error) throw r.error; return r.data; }
+  async function load(){
+    try { rows = await rpc('rs_review_list', { p_session: session.sessionToken }) || []; }
+    catch(e){ $('gate').innerHTML = /session/i.test(e.message) ? 'Your session ended. Please sign in again on the <a href="/full-spectrum/partners.html">partner tracker</a>.' : 'Could not load: ' + esc(e.message); return; }
+    $('gate').hidden = true; $('app').hidden = false; $('print').hidden = false; $('csv').hidden = false; render();
+  }
+  function counts(st){ return st === 'all' ? rows.length : rows.filter(function(r){ return r.status === st; }).length; }
+  function render(){
+    $('tabs').innerHTML = TABS.map(function(t){ return '<button data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '">' + t[1] + ' (' + counts(t[0]) + ')</button>'; }).join('');
+    var list = rows.filter(function(r){ return tab === 'all' || r.status === tab; });
+    var byAddr = {}; rows.forEach(function(r){ if (r.status !== 'struck') byAddr[r.matched_address] = (byAddr[r.matched_address] || 0) + 1; });
+    $('list').innerHTML = list.length ? list.map(function(r){
+      var tags = [
+        '<span class="tag ' + (r.area_tier === 'rainbow_beach' ? 'ok' : '') + '">' + esc(r.community_area) + (r.area_tier === 'rainbow_beach' ? ' · Rainbow Beach area' : '') + '</span>',
+        r.email_confirmed_at ? '<span class="tag ok">Email confirmed</span>' : '<span class="tag warn">Email not confirmed</span>',
+        r.says_registered ? '<span class="tag">Says registered voter</span>' : '',
+        r.voter_check === 'registered' ? '<span class="tag ok">Voter verified</span>' : r.voter_check === 'not_found' ? '<span class="tag warn">Voter not found</span>' : '',
+        r.pattern_flag ? '<span class="tag err">Several from one device</span>' : '',
+        byAddr[r.matched_address] > 1 ? '<span class="tag warn">' + byAddr[r.matched_address] + ' signers at this address</span>' : '',
+        r.status === 'struck' ? '<span class="tag err">Struck: ' + esc(REASONS[r.reason_code] || r.reason_code) + '</span>' : ''
+      ].join('');
+      var lookup = 'https://chicagoelections.gov/voting/your-voter-information';
+      return '<div class="card"><div>' +
+        '<h3>' + esc(r.first_name + ' ' + r.last_name) + '</h3>' +
+        '<div class="small">' + esc(r.street) + (r.unit ? ', #' + esc(r.unit) : '') + ', ' + esc(r.zip) + ' → matched <b>' + esc(r.matched_address) + '</b></div>' +
+        '<div class="small muted">' + esc(r.email) + ' · signed ' + new Date(r.created_at).toLocaleString() + (r.reviewed_by ? ' · ruled by ' + esc(r.reviewed_by) : '') + '</div>' +
+        '<div style="margin-top:6px">' + tags + '</div>' +
+        (r.comment ? '<div class="small" style="margin-top:4px"><i>“' + esc(r.comment) + '”</i></div>' : '') +
+        (r.review_note ? '<div class="small muted">Note: ' + esc(r.review_note) + '</div>' : '') +
+        '<div class="act" data-id="' + r.id + '">' +
+          '<a class="small" href="' + lookup + '" target="_blank" rel="noopener">Check voter registration ↗</a>' +
+          '<button class="ok" data-do="accepted">Accept (registered voter)</button>' +
+          '<button data-do="resident">Accept as resident</button>' +
+          '<select data-reason><option value="">Strike for…</option>' + Object.keys(REASONS).map(function(k){ return '<option value="' + k + '">' + REASONS[k] + '</option>'; }).join('') + '</select>' +
+          '<input type="text" data-note placeholder="Note (optional)" size="16">' +
+          '<button class="err" data-do="struck">Strike</button>' +
+        '</div></div>' +
+        '<div><img class="sig" alt="Signature of ' + esc(r.first_name + ' ' + r.last_name) + '" src="' + esc(r.signature_png) + '"></div></div>';
+    }).join('') : '<p class="muted">Nothing here.</p>';
+  }
+  document.addEventListener('click', async function(e){
+    var t = e.target.closest('#tabs button'); if (t) { tab = t.dataset.t; render(); return; }
+    var b = e.target.closest('.act button'); if (!b) return;
+    var box = b.closest('.act'), id = box.dataset.id, st = b.dataset.do;
+    var reason = box.querySelector('[data-reason]').value, note = box.querySelector('[data-note]').value;
+    if (st === 'struck' && !reason) { alert('Choose a reason to strike this signature.'); return; }
+    var voter = st === 'accepted' ? 'registered' : (st === 'resident' ? (confirm('Did you look this person up and NOT find them registered? OK = not found, Cancel = not checked') ? 'not_found' : 'not_checked') : '');
+    try { await rpc('rs_review_decide', { p_session: session.sessionToken, p_id: id, p_status: st, p_reason: reason || null, p_voter: voter, p_note: note }); await load(); }
+    catch(err){ alert('Could not save: ' + err.message); }
+  });
+
+  // The deliverable: the letter with every accepted signer (name, address, community area, signature).
+  var LETTER = '<p><b>To the Chicago Park District and the Office of Mayor Brandon Johnson:</b></p><p>We, the undersigned residents of Chicago’s South Side, support <b>Full Spectrum at Rainbow Beach</b>, a free, year-round music and culture program for young people and families proposed by Ras Tafari Inc., a South Side 501(c)(3).</p><p>We ask the Chicago Park District to approve it, beginning with the <b>Rainbow DJ Lab</b>: a free DJ class every Tuesday from 4 to 6 pm in the Rainbow Beach fieldhouse, starting January 12, 2027, followed in summer by Rainbow Wednesdays, free family music nights on the beach.</p><p>A program like this keeps our park busy all year, gives our young people skills, mentors and a stage close to home, and costs our families nothing.</p>';
+  function signed(){ return rows.filter(function(r){ return r.status === 'accepted' || r.status === 'resident'; })
+    .sort(function(a,b){ return (a.status === b.status ? 0 : a.status === 'accepted' ? -1 : 1) || a.community_area.localeCompare(b.community_area) || a.last_name.localeCompare(b.last_name); }); }
+  $('print').onclick = function(){
+    var list = signed(), nv = list.filter(function(r){ return r.status === 'accepted'; }).length;
+    var w = window.open('', '_blank'); if (!w) { alert('Allow pop-ups for this page to print.'); return; }
+    w.document.write('<!doctype html><meta charset="utf-8"><title>Residents’ letter of support: Full Spectrum at Rainbow Beach</title><style>body{font:12px/1.45 Helvetica,Arial,sans-serif;color:#111;margin:36px} h1{font-size:18px} table{width:100%;border-collapse:collapse;margin-top:14px} th,td{border:1px solid #bbb;padding:4px 6px;text-align:left;vertical-align:middle} th{background:#eee} img{height:38px} .n{width:24px}</style>' +
+      '<h1>Residents’ letter of support: Full Spectrum at Rainbow Beach</h1>' + LETTER +
+      '<p>' + list.length + ' signatures, each confirmed by email and reviewed line by line: ' + nv + ' verified registered voters at the address shown, and ' + (list.length - nv) + ' South Side residents. As of ' + new Date().toLocaleDateString() + '.</p>' +
+      '<table><tr><th class="n">#</th><th>Name</th><th>Residence address</th><th>Community area</th><th>Status</th><th>Signature</th></tr>' +
+      list.map(function(r, i){ return '<tr><td>' + (i + 1) + '</td><td>' + esc(r.first_name + ' ' + r.last_name) + '</td><td>' + esc(r.matched_address) + (r.unit ? ' #' + esc(r.unit) : '') + '</td><td>' + esc(r.community_area) + '</td><td>' + (r.status === 'accepted' ? 'Registered voter' : 'Resident') + '</td><td><img src="' + esc(r.signature_png) + '"></td></tr>'; }).join('') +
+      '</table><p style="margin-top:14px">Collected by Ras Tafari Inc., 1401 E. 71st St., Chicago, IL 60619 · Stephen Henry, President · (872) 255-9333</p>');
+    w.document.close(); setTimeout(function(){ w.print(); }, 500);
+  };
+  $('csv').onclick = function(){
+    var cols = ['status','first_name','last_name','matched_address','unit','community_area','area_tier','voter_check','email','created_at','reviewed_by','reviewed_at','reason_code','review_note'];
+    var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    var csv = cols.join(',') + '\n' + rows.map(function(r){ return cols.map(function(c){ return q(r[c]); }).join(','); }).join('\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' })); a.download = 'full-spectrum-resident-signatures.csv'; a.click();
+  };
+  load();
+})();
+</script>
+</body>
+</html>
