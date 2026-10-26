@@ -17,6 +17,7 @@
     --line:rgba(255,255,255,.14); --lav:#C9A7FF; --gold:#F2B544;
     --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
     --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --fade:linear-gradient(90deg,#0E0B1E 0%,rgba(14,11,30,0) 32%);
     --veil:linear-gradient(90deg,rgba(14,11,30,.96) 0%,rgba(14,11,30,.86) 42%,rgba(14,11,30,.5) 74%,rgba(14,11,30,.3) 100%);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
@@ -37,6 +38,8 @@
   .card{width:100%; max-width:1040px;}
   .card > *{max-width:660px;}
   @media (max-width:720px){ .slide{background-position:70% center;} }
+  /* These photos fill the frame edge to edge, so on wide screens each one sits full-height on the right and the words get the left. */
+  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 112px) * 1.7505) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
   @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
   /* Laptop-height windows: tighten so every slide fits without scrolling */
   @media (min-width:721px) and (max-height:780px){
@@ -118,7 +121,7 @@
 <main id="deck" aria-live="polite">
 
 <!-- 1 · Cover -->
-<section class="slide" data-img="01-title-beach-evening.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m01.jpg"><div class="card">
   <div class="eq" aria-hidden="true"><span style="--c:var(--r1);animation-delay:-.2s"></span><span style="--c:var(--r2);animation-delay:-.5s"></span><span style="--c:var(--r3);animation-delay:-.1s"></span><span style="--c:var(--r4);animation-delay:-.7s"></span><span style="--c:var(--r5);animation-delay:-.3s"></span><span style="--c:var(--r6);animation-delay:-.9s"></span><span style="--c:var(--r7);animation-delay:-.4s"></span></div>
   <div class="eyebrow">For Tonya Love Trice · South Shore Chamber of Commerce and CDC</div>
   <h1>From the Lake <span class="rb">to 71st Street</span></h1>
@@ -127,7 +130,7 @@
 </div></section>
 
 <!-- 2 · Neighbors -->
-<section class="slide" data-img="03-bring-it-home.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m02.jpg"><div class="card">
   <div class="eyebrow">Same street, same mission</div>
   <h2>We are already <span class="lav">neighbors.</span></h2>
   <ul class="list">
@@ -139,7 +142,7 @@
 </div></section>
 
 <!-- 3 · Her work -->
-<section class="slide" data-img="09-ladder-generations.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m03.jpg"><div class="card">
   <div class="eyebrow">Why we came to you</div>
   <h2>Block by block, <span class="lav">for more than a decade.</span></h2>
   <ul class="list">
@@ -152,7 +155,7 @@
 </div></section>
 
 <!-- 4 · The idea -->
-<section class="slide" data-img="05-b-rainbow-wednesdays.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m04.jpg"><div class="card">
   <div class="eyebrow">One idea</div>
   <h2>The lake draws the crowd. <span class="rb">The corridor keeps it.</span></h2>
   <ul class="list">
@@ -163,7 +166,7 @@
 </div></section>
 
 <!-- 5 · Year one -->
-<section class="slide" data-img="cal-01-winter-fieldhouse-class.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m05.jpg"><div class="card">
   <div class="eyebrow">Full Spectrum, year one (2027)</div>
   <h2>Twelve months of free music <span class="lav">in South Shore.</span></h2>
   <div class="big">
@@ -176,7 +179,7 @@
 </div></section>
 
 <!-- 6 · Already in the plan -->
-<section class="slide" data-img="10-diversity.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m06.jpg"><div class="card">
   <div class="eyebrow">South Shore Quality-of-Life Plan (2022)</div>
   <h2>It is already <span class="lav">in your plan.</span></h2>
   <ul class="list">
@@ -189,7 +192,7 @@
 </div></section>
 
 <!-- 7 · Money that stays local -->
-<section class="slide" data-img="08-e-holiday-parties.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m07.jpg"><div class="card">
   <div class="eyebrow">Built to spend locally</div>
   <h2>Money that stays <span class="rb">on the corridor.</span></h2>
   <ul class="list">
@@ -201,7 +204,7 @@
 </div></section>
 
 <!-- 8 · Corridor Nights -->
-<section class="slide" data-img="07-d-festival.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m08.jpg"><div class="card">
   <div class="eyebrow">Proposed together</div>
   <h2>Corridor Nights: <span class="lav">71st Street on the beach.</span></h2>
   <p class="lede">One Rainbow Wednesday a month spotlights 71st Street: vendor tables for member businesses, shout-outs from the stage, and a shop-local map in every family's hand, pointing them up the street.</p>
@@ -209,7 +212,7 @@
 </div></section>
 
 <!-- 9 · Ready -->
-<section class="slide" data-img="11-inclusivity.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m09.jpg"><div class="card">
   <div class="eyebrow">Already in motion</div>
   <h2>Ready for <span class="lav">a partner.</span></h2>
   <ul class="list">
@@ -221,7 +224,7 @@
 </div></section>
 
 <!-- 10 · The asks -->
-<section class="slide" data-img="cal-07-graduation-set.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m10.jpg"><div class="card">
   <div class="eyebrow">How you can help</div>
   <h2>Three things now. <span class="rb">Three as we grow.</span></h2>
   <ol class="asks">
@@ -235,7 +238,7 @@
 </div></section>
 
 <!-- 11 · Timeline -->
-<section class="slide" data-img="06-c-stage-show.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m11.jpg"><div class="card">
   <div class="eyebrow">The year ahead</div>
   <h2>From one letter <span class="lav">to a full season.</span></h2>
   <ul class="list">
@@ -248,7 +251,7 @@
 </div></section>
 
 <!-- 12 · Close -->
-<section class="slide" data-img="15-close-rainbow.jpg"><div class="card">
+<section class="slide" data-img="/full-spectrum/chamber/img/m12.jpg"><div class="card">
   <div class="eyebrow">Next step</div>
   <h2>One letter. One introduction. <span class="rb">One walk on the beach.</span></h2>
   <p class="lede">That is what it takes to put Full Spectrum in front of the Park District and its first funders this winter, with South Shore's own business community beside it.</p>
@@ -280,7 +283,7 @@
 // southshorechamberinc.org (1750 E. 71st; CDC convenes the QLP; SSA #42 on 71st and Stony Island); chicagodefender.com/woe-member/tonya-love-trice;
 // chicagoqlps.org/south-shore-2022 (QLP strategies quoted on slide 6); chicago.gov BACP 2022 storefront activations (Connect South Shore Art Gallery, 71st St.).
 // Program facts: dj-lab-2027.html ($20 x 15 people snacks = $300 a Tuesday x 39 = $11,700) and the Full Spectrum proposal.
-// Narration clips (optional): /full-spectrum/chamber/audio/<slide number>.mp3. Slide photos come from /full-spectrum/img/.
+// Narration clips (optional): /full-spectrum/chamber/audio/<slide number>.mp3. Slide photos: /full-spectrum/chamber/img/m01.jpg to m12.jpg (Stephen's set, 10/25).
 const deck = document.getElementById("deck"), dots = document.getElementById("dots");
 const prev = document.getElementById("prev"), next = document.getElementById("next");
 const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
@@ -339,8 +342,8 @@ autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", aut
 function paint(i){
   const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
   s.dataset.painted = "1";
-  const u = `/full-spectrum/img/${s.dataset.img}`;
-  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), url("${u}")`; s.classList.add("photo"); } });
+  const u = s.dataset.img.startsWith("/") ? s.dataset.img : `/full-spectrum/img/${s.dataset.img}`;
+  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${u}")`; s.classList.add("photo"); } });
 }
 function go(i){
   cur = Math.max(0, Math.min(N - 1, i));
