@@ -134,19 +134,11 @@
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="brand">
-      <a href="/BIOS102/dashboard.html" style="color:inherit;text-decoration:none;">BIOS102 <span>Lab Companion</span></a>
-      <small>Cnidaria Video Quiz</small>
-    </div>
-    <div class="session-info">
-      <a href="/BIOS102/index.html">Log in for the full dashboard &rarr;</a>
-    </div>
-  </div>
+  <div id="topbar" class="topbar"></div>
 
   <div class="wrap">
     <h1>Shape of Life: Cnidaria</h1>
-    <p class="lede">Lab 7 movie worksheet as an interactive quiz. Watch the film with the pause, slow-motion, loop and caption controls, and answer each worksheet question the moment its clue plays. Your answers stay in this browser only.</p>
+    <p class="lede">Lab 7 movie worksheet as an interactive quiz. Watch the film with the pause, slow-motion, loop and caption controls, and answer each worksheet question the moment its clue plays. Your progress saves to your account automatically, so you can stop on one device and pick up on another.</p>
 
     <div class="modebar">
       <span>Quiz style:</span>
@@ -254,6 +246,7 @@
       <h2 style="margin:0;">Worksheet questions</h2>
       <div class="meter"><i id="meter"></i></div>
       <div class="stat" id="stat"></div>
+      <span class="stat" id="save-status">Loading your saved work&hellip;</span>
       <button class="cb" type="button" id="reset">Start over</button>
     </div>
     <div class="qgrid" id="qgrid"></div>
@@ -262,15 +255,22 @@
 
   <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
 
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
 <script>
 (function () {
+  var session = BIOS.requireSession();
+  if (!session) return;
+  BIOS.mountTopbar(session);
   'use strict';
 
   var VIDEO_SRC = '/BIOS102/media/cnidarians.mp4';
   var DUR_GUESS = 883.8;
   var FRAME = 1 / 29.97;
   var RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-  var STORE = 'bios102-cnidaria-video-quiz-v1';
+  var STORE = 'bios102-cnidaria-video-quiz-v1-' + String(session.email || 'anon').toLowerCase();
+  var STORAGE_ID = 9201;            // exercise_number sentinel, same trick as the mock quizzes (9102, 9103)
+  var TABLE_NAME = 'Cnidaria Video Quiz';
 
   function T(s) { var p = s.split(':'); return (+p[0]) * 60 + (+p[1]); }
   function fmt(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2); }
@@ -450,10 +450,47 @@
   var QBY = {}; Q.forEach(function (q) { QBY[q.id] = q; });
 
   /* ---------- State ---------- */
-  var S = { answers: {}, bookmarks: [], mode: 'ask', cc: true, capsize: 1, rate: 1, vol: 1, pos: 0 };
+  var S = { answers: {}, bookmarks: [], mode: 'ask', cc: true, capsize: 1, rate: 1, vol: 1, pos: 0, updatedAt: 0 };
   try { var raw = localStorage.getItem(STORE); if (raw) { var o = JSON.parse(raw); for (var k in o) S[k] = o[k]; } } catch (e) {}
   var saveT = 0;
-  function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+  var quiet = 0, serverReady = false, dirty = false, saving = false, flushTimer = 0, lastFlush = 0;
+  function setStatus(text, isErr) { var el = $('save-status'); el.textContent = text; el.style.color = isErr ? 'var(--danger)' : ''; }
+  function localSave() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+  function save() {
+    if (quiet) return;   // page setup is not a student change
+    S.updatedAt = Date.now(); localSave(); dirty = true;
+    if (!serverReady) return;
+    clearTimeout(flushTimer); flushTimer = setTimeout(flush, 1000);
+  }
+  async function flush() {
+    if (!dirty || saving || !serverReady) return;
+    saving = true; dirty = false; lastFlush = Date.now(); setStatus('Saving…');
+    try {
+      await window.sfSupabase.bios102SaveStudentTable({ sessionToken: session.sessionToken, exerciseNumber: STORAGE_ID, tableName: TABLE_NAME, columns: [], rows: [{ cnidariaVideoQuiz: S }] });
+      setStatus('Saved to your account');
+    } catch (err) {
+      console.error('Could not save video quiz progress', err); dirty = true;
+      setStatus("Couldn't save to your account. Your work is kept on this device and will retry.", true);
+    } finally { saving = false; if (dirty) { clearTimeout(flushTimer); flushTimer = setTimeout(flush, 5000); } }
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(); });
+  function validState(r) { return r && typeof r === 'object' && r.answers && typeof r.answers === 'object' && Array.isArray(r.bookmarks); }
+  async function loadServer() {
+    try {
+      var tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+      var row = tables.find(function (t) { return t.exercise_number === STORAGE_ID && t.table_name === TABLE_NAME; });
+      var remote = row && Array.isArray(row.rows) && row.rows[0] ? row.rows[0].cnidariaVideoQuiz : null;
+      serverReady = true;
+      if (validState(remote) && (remote.updatedAt || 0) > (S.updatedAt || 0)) {
+        S = remote; localSave(); applyRemote(); setStatus('Saved to your account');
+      } else if (S.updatedAt && (!validState(remote) || S.updatedAt > (remote.updatedAt || 0))) { dirty = true; flush(); }
+      else setStatus('Saved to your account');
+    } catch (err) {
+      console.error('Could not load video quiz progress', err);
+      setStatus("Couldn't reach your account. Your work is kept on this device for now.", true);
+      setTimeout(loadServer, 15000);
+    }
+  }
 
   var V = $('v'), stage = $('stage'), player = $('player');
   var loop = { a: null, b: null };
@@ -628,7 +665,7 @@
   V.addEventListener('pause', function () { cancelAnimationFrame(raf); paint(); });
   V.addEventListener('seeking', function () { lastT = V.currentTime; });
   V.addEventListener('seeked', function () { lastT = V.currentTime; paint(true); });
-  V.addEventListener('timeupdate', function () { if (V.paused) paint(); var n = Date.now(); if (n - saveT > 2000) { saveT = n; S.pos = V.currentTime; save(); } });
+  V.addEventListener('timeupdate', function () { if (V.paused) paint(); var n = Date.now(); if (n - saveT > 2000) { saveT = n; S.pos = V.currentTime; localSave(); if (n - lastFlush > 20000) { dirty = true; flush(); } } });
   V.addEventListener('ended', function () { paint(); var open = Q.filter(function (q) { return !done(q); }); if (open.length) say(open.length + ' question' + (open.length > 1 ? 's' : '') + ' still open below.'); });
   V.addEventListener('loadedmetadata', function () {
     drawMarks(); paint(true);
@@ -787,13 +824,24 @@
   $('m-ask').addEventListener('click', function () { setMode('ask'); });
   $('m-free').addEventListener('click', function () { setMode('free'); });
 
+  function applyRemote() {
+    quiet++;
+    setMode(S.mode || 'ask'); applyCC(); capSize(); setRate(S.rate || 1);
+    V.volume = S.vol == null ? 1 : S.vol; $('c-vol').value = V.volume;
+    skipped = {}; closeOv(); renderAll(); quiet--;
+    if (S.pos > 5 && V.readyState >= 1 && V.currentTime < 2 && S.pos < dur() - 5) { V.currentTime = S.pos; say('Picked up where you left off on another device (' + fmt(S.pos) + ').'); }
+  }
+
   /* ---------- Boot ---------- */
+  quiet = 1;
   player.style.setProperty('--capsize', S.capsize);
   V.volume = S.vol; $('c-vol').value = S.vol;
   setMode(S.mode); applyCC(); drawCues(''); drawBm(); renderAll();
   V.src = VIDEO_SRC; V.playbackRate = S.rate; $('c-rate').value = String(S.rate);
   V.addEventListener('loadedmetadata', function () { V.playbackRate = S.rate; });
   paint(true);
+  quiet = 0;
+  loadServer();
 })();
 </script>
 </body>
