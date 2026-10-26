@@ -481,13 +481,97 @@
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Box plots" style="max-width:' + W + 'px">' + s + '</svg><div class="help">Box = middle 50%, orange line = median, whiskers reach the furthest score within 1.5&times;IQR, red circles are outliers.</div>';
   }
 
+  /* ---------------- Excuse machine ---------------- */
+  // Canvas grades this course by TOTAL POINTS (no category weights): grade = points earned / points possible.
+  // An excused assignment is removed from both sides, so it helps when the score on it was below the student's
+  // overall average and hurts when it was above. Item list = the published assignments in the Canvas course
+  // (Assignments page, read 2026-10-26). Quiz 7 was published after the grade export, so the export's totals
+  // do not include it yet.
+  var BASE_FINAL = 430;   // 15 assignments + 30 participation + 35 lab reports + 60 quizzes + 290 exams
+  var ITEMS = [
+    ['Assignments', 'Lab 1a: Scientific Method', 1.75], ['Assignments', 'Lab 1a: Phylogeny Reading', 2.5], ['Assignments', 'Lab 1a: Evolution Videos', 2],
+    ['Assignments', 'Lab 1a: Strange Fish (Part I)', 2], ['Assignments', 'Lab 1a: Strange Fish (Part II)', 5], ['Assignments', 'Lab 1a: Strange Fish (Part III)', 1.75],
+    ['Participation', 'Lab 1', 3], ['Participation', 'Labs 2/3', 3], ['Participation', 'Lab 4', 3], ['Participation', 'Lab 5', 3], ['Participation', 'Lab 6', 3],
+    ['Participation', 'Lab 7', 3], ['Participation', 'Lab 8', 3], ['Participation', 'Lab 9', 3], ['Participation', 'Lab 10', 3], ['Participation', 'Lab 11', 3],
+    ['Lab Reports', 'Pilobolus Lab Write-Up', 15], ['Lab Reports', 'Animal Behavior Lab Write-Up', 20],
+    ['Quizzes', 'Quiz 1', 10], ['Quizzes', 'Quiz 2', 10], ['Quizzes', 'Quiz 3', 10], ['Quizzes', 'Quiz 4', 10], ['Quizzes', 'Quiz 5', 10], ['Quizzes', 'Quiz 6', 10],
+    ['Quizzes', 'Quiz 7 (published after the grade export)', 10, 'late'],
+    ['Exams', 'Exam 1', 120, 'exam1'], ['Exams', 'Exam 2', 50, 'exam2'], ['Exams', 'Exam 3', 120, 'exam3']
+  ].map(function (a) { return { g: a[0], n: a[1], p: a[2], key: a[3] && a[3] !== 'late' ? a[3] : null, late: a[3] === 'late' }; });
+  var STATES = { posted: 'Graded and posted (counts in Current)', unposted: 'Graded, not posted yet', missing: 'Not graded or missing (a zero in Final)' };
+
+  function mDefaults(r, i) {
+    var it = ITEMS[i], v = it.key ? r.data[it.key] : null;
+    if (it.key) return isNum(v) ? { status: 'posted', score: v } : { status: 'missing', score: 0 };
+    return { status: 'posted', score: null };
+  }
+  function mCompute(r, list) {
+    var cv = r.data.cv; if (!cv) return null;
+    var cur = { n: cv.cp, d: cv.cd }, fin = { n: cv.fp, d: cv.fd }, p = 0, skipped = [], bad = [];
+    list.forEach(function (e) {
+      var it = ITEMS[e.item]; if (it.late) { skipped.push(it.n); return; }
+      var s = e.status === 'missing' ? 0 : e.score;
+      if (!isNum(s)) { bad.push(it.n); return; }
+      p += it.p;
+      if (e.status === 'posted') { cur.n -= s; cur.d -= it.p; }
+      fin.n -= s;
+      fin.d -= it.p;
+    });
+    var pc = function (o) { return o.d > 0 ? o.n / o.d * 100 : null; };
+    return { before: { cur: cv.cd ? cv.cp / cv.cd * 100 : null, fin: cv.fp / cv.fd * 100 }, after: { cur: pc(cur), fin: pc(fin) }, removed: p, skipped: skipped, bad: bad, cur: cur, fin: fin, cv: cv };
+  }
+  function pcell(v) { return v == null ? '-' : f(v, 2) + '%'; }
+  function dcell(a, b) { if (a == null || b == null) return '-'; var d = b - a; return '<span style="color:' + (Math.abs(d) < 0.005 ? 'var(--text-dim)' : d > 0 ? 'var(--accent)' : 'var(--danger)') + '">' + (d >= 0 ? '+' : '') + f(d, 2) + ' pts</span>'; }
+
+  function machineCard(r) {
+    var cv = r.data.cv, st = ui.exc = ui.exc || {}, list = st[r.student] = st[r.student] || [];
+    var h = '<div class="card2" style="margin-top:24px"><h3>Excuse machine: what if ' + esc(r.student) + ' were excused from an assignment?</h3>' +
+      '<p class="help" style="margin-top:0">This course is graded on <b>total points</b> (earned ÷ possible, no category weights). Excusing an assignment removes it from <b>both</b> the points earned and the points possible. So an excuse helps when the score on that assignment was below the student’s overall percentage, and hurts when it was above.</p>';
+    if (!cv) return h + '<p class="help">No Canvas point totals are stored for this student. Re-import the Canvas CSV to enable this.</p></div>';
+
+    var base = BASE_FINAL - cv.fd;
+    if (base > 0.01) h += '<div class="hint" style="background:var(--accent-soft)">Canvas <b>already excuses ' + f(base, 2).replace(/\.00$/, '') + ' points</b> for ' + esc(r.student) + ': the Final total is out of ' + f(cv.fd, 0) + ', not ' + BASE_FINAL + '. Those points are already out of the figures below.</div>';
+    var exBlank = (r.data.excused || []).filter(function (k) { return !isNum(r.data[k]); });
+    exBlank.forEach(function (k) {
+      var ii = ITEMS.findIndex(function (x) { return x.key === k; }); if (ii < 0) return;
+      var m = mCompute(r, [{ item: ii, status: 'missing', score: 0 }]);
+      h += '<div class="hint" style="background:var(--amber-soft)"><b>' + esc(ITEMS[ii].n) + ' is excused here but still counts as zero in Canvas’s Final score.</b> Marking it <i>Excused</i> in the Canvas gradebook would move ' + esc(r.student) + '’s Final from <b>' + pcell(m.before.fin) + '</b> to <b>' + pcell(m.after.fin) + '</b> (Current stays ' + pcell(m.before.cur) + ').</div>';
+    });
+
+    var pick = ui.exPick = ui.exPick || { item: 0, status: 'posted', score: null };
+    if (!ITEMS[pick.item]) pick.item = 0;
+    var groups = {}; ITEMS.forEach(function (it, i) { (groups[it.g] = groups[it.g] || []).push('<option value="' + i + '"' + (i === pick.item ? ' selected' : '') + '>' + esc(it.n) + ' (' + it.p + ' pts)</option>'); });
+    h += '<div class="bar" style="margin-top:12px"><label>Excuse <select id="ex-item">' + Object.keys(groups).map(function (g) { return '<optgroup label="' + g + '">' + groups[g].join('') + '</optgroup>'; }).join('') + '</select></label>' +
+      '<label>Status <select id="ex-status">' + Object.keys(STATES).map(function (k) { return '<option value="' + k + '"' + (pick.status === k ? ' selected' : '') + '>' + STATES[k] + '</option>'; }).join('') + '</select></label>' +
+      (pick.status === 'missing' ? '' : '<label>Score earned <input type="number" id="ex-score" step="any" min="0" style="width:84px" value="' + (isNum(pick.score) ? pick.score : '') + '"> of ' + ITEMS[pick.item].p + '</label>') +
+      '<button class="b pri" type="button" id="ex-add">Add to the what-if</button></div>';
+    if (ITEMS[pick.item].key) h += '<div class="help" style="margin:-6px 0 8px">' + (isNum(r.data[ITEMS[pick.item].key]) ? 'Score filled in from the gradebook.' : 'No score on file for this exam.') + '</div>';
+    if (ITEMS[pick.item].late) h += '<div class="help" style="color:var(--amber);margin:-6px 0 8px">Quiz 7 was published after the grade export, so it is not in these totals yet. Re-import the Canvas CSV once it is graded.</div>';
+
+    if (list.length) {
+      h += '<div class="chips" style="margin:8px 0">' + list.map(function (e, i) { var it = ITEMS[e.item]; return '<span class="chip">' + esc(it.n) + ' · ' + (e.status === 'missing' ? 'missing' : f(e.score, 2).replace(/\.00$/, '') + '/' + it.p) + '<button type="button" data-exrm="' + i + '" aria-label="Remove">&times;</button></span>'; }).join('') + '<button class="b" type="button" id="ex-clear">Clear</button></div>';
+      var m = mCompute(r, list);
+      h += '<div class="scroll"><table class="t"><thead><tr><th class="l"></th><th>Now</th><th>If excused</th><th>Change</th></tr></thead><tbody>' +
+        '<tr><td class="l">Current score <span class="help">(graded work so far)</span></td><td>' + pcell(m.before.cur) + '</td><td>' + pcell(m.after.cur) + '</td><td>' + dcell(m.before.cur, m.after.cur) + '</td></tr>' +
+        '<tr><td class="l">Final score <span class="help">(everything, ungraded = 0)</span></td><td>' + pcell(m.before.fin) + '</td><td>' + pcell(m.after.fin) + '</td><td>' + dcell(m.before.fin, m.after.fin) + '</td></tr>' +
+        '<tr><td class="l">Points earned / possible (Current)</td><td>' + f(m.cv.cp, 2) + ' / ' + f(m.cv.cd, 2) + '</td><td>' + f(m.cur.n, 2) + ' / ' + f(m.cur.d, 2) + '</td><td></td></tr>' +
+        '<tr><td class="l">Points earned / possible (Final)</td><td>' + f(m.cv.fp, 2) + ' / ' + f(m.cv.fd, 2) + '</td><td>' + f(m.fin.n, 2) + ' / ' + f(m.fin.d, 2) + '</td><td></td></tr></tbody></table></div>';
+      var say2 = 'Excusing ' + list.map(function (e) { return esc(ITEMS[e.item].n); }).join(' and ') + ' takes ' + f(m.removed, 2).replace(/\.00$/, '') + ' points out of what is counted. ';
+      if (m.after.cur != null && m.before.cur != null) say2 += 'The Current score ' + (Math.abs(m.after.cur - m.before.cur) < 0.005 ? 'does not change' : (m.after.cur > m.before.cur ? 'rises' : 'falls') + ' from ' + pcell(m.before.cur) + ' to ' + pcell(m.after.cur)) + '; ';
+      say2 += 'the Final score ' + (Math.abs(m.after.fin - m.before.fin) < 0.005 ? 'does not change' : (m.after.fin > m.before.fin ? 'rises' : 'falls') + ' from ' + pcell(m.before.fin) + ' to ' + pcell(m.after.fin)) + '.';
+      h += '<p style="margin-top:10px;line-height:1.55">' + say2 + '</p>';
+      if (m.skipped.length) h += '<div class="help">Not counted (not in the grade export yet): ' + esc(m.skipped.join(', ')) + '.</div>';
+    } else h += '<div class="help">Add one or more assignments to see the effect on this student’s Current and Final scores.</div>';
+    return h + '<div class="help" style="margin-top:8px">Check against Canvas before telling a student: the Current score counts only posted grades, and the Final score counts every published assignment. Until the semester ends the Final score is low for everyone (exams not yet taken count as zero), so read the <i>change</i> in it, not the level. Excused work is a what-if here; nothing changes in Canvas or in the saved gradebook.</div></div>';
+  }
+
   /* ---------------- Students ---------------- */
   function viewPeople() {
     if (!cur.columns.length) { $('view').innerHTML = '<div class="card2">No columns yet. Import a gradebook first.</div>'; return; }
     var pc = ui.pcol = (ui.pcol && colByKey(ui.pcol)) ? ui.pcol : (cur.columns[0] || {}).key;
     var c = colByKey(pc), rows = analysisRows(), a = colValues(c || {}, rows), m = a.length ? mean(a) : NaN, s = sd(a);
     var rk = rows.filter(function (r) { return isNum(show(r, c)); }).sort(function (x, y) { return show(y, c) - show(x, c); });
-    var h = '<div class="bar"><b>Rank by</b><select id="p-col">' + opt(pc) + '</select><span>z-score = standard deviations from the class mean. Flagged: |z| &ge; 1.5.</span></div><div class="scroll" style="max-height:48vh"><table class="t"><thead><tr><th class="l">#</th><th class="l">Student</th><th>Score</th><th>z</th><th>Percentile</th><th>vs mean</th></tr></thead><tbody>';
+    var h = '<div class="bar"><b>Student</b><select id="p-stu"><option value="">choose&hellip;</option>' + cur.rows.map(function (x) { return '<option value="' + esc(x.student) + '"' + (x.student === ui.stu ? ' selected' : '') + '>' + esc(x.student) + (x.data.status ? ' (' + esc((STATUS[x.data.status] || '').toLowerCase()) + ')' : '') + '</option>'; }).join('') + '</select><b style="margin-left:14px">Rank by</b><select id="p-col">' + opt(pc) + '</select><span>z-score = standard deviations from the class mean. Flagged: |z| &ge; 1.5.</span></div><div class="scroll" style="max-height:48vh"><table class="t"><thead><tr><th class="l">#</th><th class="l">Student</th><th>Score</th><th>z</th><th>Percentile</th><th>vs mean</th></tr></thead><tbody>';
     rk.forEach(function (r, i) {
       var v = show(r, c), z = (v - m) / s, below = a.filter(function (x) { return x < v; }).length / a.length * 100;
       h += '<tr><td class="l">' + (i + 1) + '</td><td class="l"><a href="#" data-stu="' + esc(r.student) + '">' + esc(r.student) + '</a></td><td>' + f(v, 1) + '</td><td' + (Math.abs(z) >= 1.5 ? ' style="color:var(--amber)"' : '') + '>' + f(z, 2) + '</td><td>' + f(below, 0) + '</td><td>' + (v - m >= 0 ? '+' : '') + f(v - m, 1) + '</td></tr>';
@@ -501,6 +585,7 @@
           var v = show(r0, col), vals = colValues(col, analysisRows()), mm = vals.length ? mean(vals) : NaN, ss = sd(vals);
           return '<tr><td class="l">' + esc(col.label) + '</td><td>' + (v == null ? 'excused' : f(v, 1)) + '</td><td>' + f(mm, 1) + '</td><td>' + (v == null ? '-' : (v - mm >= 0 ? '+' : '') + f(v - mm, 1)) + '</td><td>' + (v == null ? '-' : f((v - mm) / ss, 2)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
+        h += machineCard(r0);
       }
     }
     $('view').innerHTML = h;
@@ -547,7 +632,7 @@
       var isAssign = /\(\d{4,}\)\s*$/.test(name), isTotal = /^(Current|Final) (Points|Score)$/.test(name) || / Current Points$/.test(name) || (/ Current Score$/.test(name) && false);
       cand.push({ i: i, name: name, on: isAssign || isTotal || name === 'Current Score' || name === 'Final Score', max: parseFloat(possible[i]) });
     });
-    imp = { students: students, si: si, cand: cand, fname: fname };
+    imp = { students: students, si: si, cand: cand, fname: fname, H: H };
     $('imp-body').innerHTML = '<div class="help">Found ' + students.length + ' students and ' + cand.length + ' score columns. Tick the ones to keep:</div><div class="checks" id="imp-cols">' + cand.map(function (c, k) { return '<label><input type="checkbox" data-ic="' + k + '"' + (c.on ? ' checked' : '') + '>' + esc(c.name) + '</label>'; }).join('') + '</div>' +
       '<input type="text" id="imp-name" value="' + esc(sets.length ? 'Imported ' + new Date().toISOString().slice(0, 10) : 'BIOS 102 gradebook') + '" style="width:100%;margin-bottom:8px" aria-label="Gradebook name"><button class="b pri" id="imp-go" type="button">Import and save</button><div class="help">A blank score in Canvas becomes excused/missing, not zero. Category maximums are not in the export; set them later with Edit scores.</div>';
   }
@@ -561,6 +646,11 @@
     });
     var rows = imp.students.map(function (r) {
       var d = {}; cols.forEach(function (c) { var v = parseFloat(r[c.src]); d[c.key] = isNum(v) ? v : null; });
+      var ci = ['Current Points', 'Current Score', 'Final Points', 'Final Score'].map(function (k) { return imp.H.indexOf(k); });
+      if (ci.every(function (x) { return x >= 0; })) {
+        var cp = parseFloat(r[ci[0]]), cs = parseFloat(r[ci[1]]), fp = parseFloat(r[ci[2]]), fs = parseFloat(r[ci[3]]), q4 = function (x) { return Math.round(x * 4) / 4; };
+        if (isNum(cp) && cs > 0 && isNum(fp) && fs > 0) d.cv = { cp: cp, cd: q4(cp / cs * 100), fp: fp, fd: q4(fp / fs * 100) };
+      }
       return { parts: nameParts(r[imp.si]), data: d };
     });
     var firsts = {}; rows.forEach(function (r) { firsts[r.parts.first] = (firsts[r.parts.first] || 0) + 1; });
@@ -589,6 +679,9 @@
     if (t.id === 'setpick') { pick(t.value); render(); }
     else if (t.dataset.status != null) { var sr = cur.rows.filter(function (r) { return r.student === t.dataset.status; })[0]; if (t.value) sr.data.status = t.value; else delete sr.data.status; cur.dirty = true; say('Unsaved changes. Press Save changes to keep it.'); render(); }
     else if (t.id === 'ins-exam') { ui.exam = t.value; render(); }
+    else if (t.id === 'ex-item') { var rs = cur.rows.filter(function (r) { return r.student === ui.stu; })[0]; var d0 = mDefaults(rs, +t.value); ui.exPick = { item: +t.value, status: d0.status, score: d0.score }; render(); }
+    else if (t.id === 'ex-status') { ui.exPick.status = t.value; if (t.value === 'missing') ui.exPick.score = 0; render(); }
+    else if (t.id === 'ex-score') { ui.exPick.score = t.value === '' ? null : +t.value; }
     else if (t.id === 'unit') { ui.pct = t.value === 'pct'; render(); }
     else if (t.id === 'pass') { ui.pass = Math.max(0, Math.min(100, +t.value || 0)); render(); }
     else if (t.dataset.inc != null) { if (t.checked) delete ui.off[t.dataset.inc]; else ui.off[t.dataset.inc] = 1; render(); }
@@ -598,6 +691,7 @@
     else if (t.id === 'h-col') { ui.chart.x = t.value; render(); } else if (t.id === 'h-bins') { ui.chart.bins = Math.max(3, Math.min(20, +t.value || 8)); render(); }
     else if (t.id === 's-x') { ui.chart.x = t.value; render(); } else if (t.id === 's-y') { ui.chart.y = t.value; render(); }
     else if (t.id === 'p-col') { ui.pcol = t.value; render(); }
+    else if (t.id === 'p-stu') { ui.stu = t.value || null; render(); }
     else if (t.id === 'imp-file' && t.files[0]) { var rd = new FileReader(); rd.onload = function () { startImport(String(rd.result), t.files[0].name); }; rd.readAsText(t.files[0]); }
   });
   document.addEventListener('click', async function (e) {
@@ -624,6 +718,15 @@
       cur.dirty = true; say('Column added. Press Save changes to keep it.'); render();
     }
     else if (t.id === 'rm-go') { var rk = $('rm-col').value; cur.columns = cur.columns.filter(function (c) { return c.key !== rk; }); cur.rows.forEach(function (r) { delete r.data[rk]; }); fnCache = {}; cur.dirty = true; say('Column removed. Press Save changes to keep it.'); render(); }
+    else if (t.id === 'ex-add') {
+      var pk = ui.exPick || { item: 0, status: 'posted', score: null }, it0 = ITEMS[pk.item], sc = $('ex-score') ? $('ex-score').value : '';
+      if (pk.status !== 'missing' && sc === '') { say('Enter the score this student earned on ' + it0.n + ', or choose "Not graded or missing".'); return; }
+      var lst = ui.exc[ui.stu] = ui.exc[ui.stu] || [];
+      if (lst.some(function (e) { return e.item === pk.item; })) { say(it0.n + ' is already in the what-if.'); return; }
+      lst.push({ item: pk.item, status: pk.status, score: pk.status === 'missing' ? 0 : +sc }); say(''); render();
+    }
+    else if (t.dataset.exrm != null) { ui.exc[ui.stu].splice(+t.dataset.exrm, 1); render(); }
+    else if (t.id === 'ex-clear') { ui.exc[ui.stu] = []; render(); }
     else if (t.id === 'imp-go') finishImport();
     else if (t.dataset.open) { pick(t.dataset.open); ui.tab = 'book'; render(); }
     else if (t.dataset.del) {
