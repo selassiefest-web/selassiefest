@@ -169,7 +169,7 @@
 
     html += '<h2 class="sec" id="glance">At a glance</h2><p class="small" style="margin:0 0 10px">The short answer to each question. Tap “Read the full answer” for the detail and the documents behind it.</p>';
     html += '<ol class="glance">' + A.map(function(a, i){
-      return '<li><div class="ghead"><h3><span class="num" style="background:' + COLORS[i % COLORS.length] + '">' + (i + 1) + '</span>' + esc(a.topic) + '</h3>' +
+      return '<li id="g' + (i + 1) + '"><div class="ghead"><h3><span class="num" style="background:' + COLORS[i % COLORS.length] + '">' + (i + 1) + '</span>' + esc(a.topic) + '</h3>' +
         '<span>' + (d.preview && !a.published ? '<span class="chip pending">hidden</span> ' : '') + (isNew(a) ? '<span class="chip new">Updated ' + esc(fmtDay(a.updated_at)) + '</span> ' : '') + chip(a.status) + '</span></div>' +
         ((a.summary || []).length ? '<ul>' + a.summary.map(function(s){ return '<li>' + inline(s) + '</li>'; }).join('') + '</ul>' : '') +
         (a.waiting_on && a.status !== 'answered' ? '<div class="waiting"><i class="fa-solid fa-hourglass-half"></i> Still open: ' + inline(a.waiting_on) + '</div>' : '') +
@@ -189,7 +189,9 @@
           return '<li><i class="fa-solid ' + (h ? 'fa-link' : 'fa-file-lines') + '"></i> ' + (h ? '<a href="' + esc(h) + '"' + (/^https:/.test(h) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(e.label) + '</a>' : esc(e.label)) +
             (e.note ? ' <span class="n">· ' + esc(e.note) + '</span>' : '') + '</li>';
         }).join('') + '</ul></div>' : '') +
-        '<div class="foot"><span>Version ' + a.version + ' · updated ' + esc(fmtDay(a.updated_at)) + '</span><a class="noprint" href="#glance">Back to the summary <i class="fa-solid fa-arrow-up"></i></a></div>' +
+        '<div class="foot"><span>Version ' + a.version + ' · updated ' + esc(fmtDay(a.updated_at)) + '</span><span class="noprint nav">' +
+          (i + 1 < A.length ? '<a href="#q' + (i + 2) + '">Next: ' + esc(A[i + 1].topic) + ' <i class="fa-solid fa-arrow-down"></i></a>' : '') +
+          '<a href="#g' + (i + 1) + '">Back to this summary <i class="fa-solid fa-arrow-up"></i></a></span></div>' +
       '</section>';
     }).join('');
 
