@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Young South Shore: a proposal to chicago.com to open South Shore to youth contributors, starting with Full Spectrum at Rainbow Beach, from Ras Tafari Inc.">
+<title>Young South Shore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Same evening look as the Tamera Fair deck. Each slide's photo is set by data-img and sits behind a dark veil. */
+  :root{
+    color-scheme:dark;
+    --bg:#0E0B1E; --surface:rgba(28,21,52,.84); --ink:#F5F1FA; --ink-soft:#D3CAE4; --ink-faint:#A094BA;
+    --line:rgba(255,255,255,.14); --lav:#C9A7FF; --gold:#F2B544;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --veil:linear-gradient(90deg,rgba(14,11,30,.96) 0%,rgba(14,11,30,.86) 42%,rgba(14,11,30,.5) 74%,rgba(14,11,30,.3) 100%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--gold);}
+  .bar{height:7px; background:var(--spectrum);}
+  .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line);}
+
+  #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 30px; overflow-y:auto;
+    background:radial-gradient(ellipse at 85% 20%,rgba(163,91,196,.28),transparent 60%) var(--bg) center right / cover no-repeat;
+    opacity:0; transform:scale(1.02); transition:opacity .5s ease, transform .9s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .slide::after{content:"Concept visualization"; position:absolute; right:12px; bottom:8px; font-size:.66rem; color:rgba(255,255,255,.55); display:none;}
+  .slide.photo::after{display:block;}
+  .card{width:100%; max-width:1040px;}
+  .card > *{max-width:660px;}
+  @media (max-width:720px){ .slide{background-position:70% center;} }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
+  /* Laptop-height windows: tighten so every slide fits without scrolling */
+  @media (min-width:721px) and (max-height:780px){
+    .slide{padding:14px 16px 18px;}
+    h1{font-size:clamp(2.4rem,6vw,4.4rem);} h2{font-size:clamp(1.7rem,4vw,2.7rem); margin-bottom:10px;}
+    .lede{font-size:1.05rem; margin-bottom:10px;} .eyebrow{margin-bottom:8px;} .quote{padding:9px 14px; margin-bottom:9px;}
+  }
+
+  .eyebrow{font:700 .74rem/1.3 "Inter",sans-serif; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:12px;}
+  h1,h2{font-family:"Montserrat","Inter",sans-serif; letter-spacing:-0.02em; line-height:1.04; text-wrap:balance;}
+  h1{font-size:clamp(2.6rem,8vw,5.4rem); font-weight:900; margin-bottom:14px;}
+  h2{font-size:clamp(1.9rem,5.4vw,3.4rem); font-weight:900; margin-bottom:14px;}
+  .lav{color:var(--lav);}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.05rem,2.4vw,1.28rem); color:var(--ink-soft); margin-bottom:14px;}
+  .small{font-size:.8rem; color:var(--ink-faint); line-height:1.5;}
+
+  .big{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:6px 0 14px;}
+  .card > .big{max-width:860px;}
+  @media (max-width:760px){ .big{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .stat{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--c,var(--lav)); border-radius:14px; padding:12px 14px; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .stat b{display:block; font:900 clamp(1.6rem,4vw,2.3rem)/1.05 "Montserrat",sans-serif;}
+  .stat span{font-size:.84rem; color:var(--ink-soft);}
+
+  .ladder{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:6px 0 14px; align-items:end;}
+  .card > .ladder{max-width:860px;}
+  @media (max-width:760px){ .ladder{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .rung{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 12px; border-left:5px solid var(--c); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .rung:nth-child(1){margin-bottom:0;} .rung:nth-child(2){margin-bottom:10px;} .rung:nth-child(3){margin-bottom:20px;} .rung:nth-child(4){margin-bottom:30px;}
+  @media (max-width:760px){ .rung{margin-bottom:0 !important;} }
+  .rung b{display:block; font:900 1.15rem "Montserrat",sans-serif; color:var(--c);}
+  .rung span{font-size:.84rem; color:var(--ink-soft);}
+
+  .list{list-style:none; display:grid; gap:8px; margin-bottom:12px;}
+  .list li{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:9px 14px 9px 40px; position:relative; color:var(--ink-soft); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .list li::before{content:""; position:absolute; left:15px; top:15px; width:11px; height:11px; border-radius:50%; background:var(--c,var(--lav));}
+  .list b{color:var(--ink);}
+
+  ol.asks{list-style:none; counter-reset:a; display:grid; gap:9px; margin-bottom:12px;}
+  .card > ol.asks{max-width:860px;}
+  @media (min-width:860px){ ol.asks{grid-template-columns:1fr 1fr;} }
+  ol.asks li{counter-increment:a; position:relative; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:11px 14px 11px 58px; color:var(--ink-soft); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  ol.asks li::before{content:counter(a); position:absolute; left:14px; top:11px; width:32px; height:32px; border-radius:50%; background:var(--c); color:#fff; font:900 1rem "Montserrat",sans-serif; display:flex; align-items:center; justify-content:center;}
+  ol.asks b{display:block; color:var(--ink); font-size:1.02rem;}
+
+  .quote{border-left:5px solid var(--gold); background:var(--surface); border-radius:0 14px 14px 0; padding:12px 16px; margin-bottom:12px; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .quote p{font:700 1.05rem/1.45 "Montserrat",sans-serif;}
+  .quote .src{display:block; font-size:.74rem; color:var(--ink-faint); margin-top:6px;}
+
+  .cta{display:inline-flex; align-items:center; gap:10px; padding:13px 24px; border-radius:999px; color:#fff; font-weight:900; text-decoration:none; background:var(--spectrum); text-shadow:0 1px 2px rgba(0,0,0,.35); margin:4px 8px 12px 0;}
+  .eq{display:flex; gap:6px; align-items:flex-end; height:46px; margin-bottom:16px;}
+  .eq span{width:10px; border-radius:5px 5px 2px 2px; background:var(--c); height:60%; animation:bounce 1.1s ease-in-out infinite; animation-play-state:paused;}
+  .slide.on .eq span{animation-play-state:running;}
+  @keyframes bounce{0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);}}
+  @media (prefers-reduced-motion:reduce){ .eq span{animation:none;} }
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
+  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .navbtn:disabled{opacity:.3; cursor:default;}
+  .mid{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0;}
+  .playrow{display:flex; gap:8px; align-items:center;}
+  .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:800; font-size:.9rem; white-space:nowrap;}
+  .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
+  .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
+  .dots button.on{background:var(--lav); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:var(--spectrum); transition:width .2s linear;}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="banner">Prepared for the chicago.com South Shore team by Ras Tafari Inc. A proposal: Full Spectrum is a first-year program and depends on Chicago Park District approval.</div>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide" data-img="09-ladder-generations.jpg"><div class="card">
+  <div class="eq" aria-hidden="true"><span style="--c:var(--r1);animation-delay:-.2s"></span><span style="--c:var(--r2);animation-delay:-.5s"></span><span style="--c:var(--r3);animation-delay:-.1s"></span><span style="--c:var(--r4);animation-delay:-.7s"></span><span style="--c:var(--r5);animation-delay:-.3s"></span><span style="--c:var(--r6);animation-delay:-.9s"></span><span style="--c:var(--r7);animation-delay:-.4s"></span></div>
+  <div class="eyebrow">For Rashanah and the chicago.com South Shore team</div>
+  <h1>Young <span class="rb">South Shore</span></h1>
+  <p class="lede">Youth voices on chicago.com, starting with Full Spectrum at Rainbow Beach. Today's young contributors are tomorrow's members.</p>
+  <p class="small">A proposal from Ras Tafari Inc., a South Side 501(c)(3)</p>
+</div></section>
+
+<!-- 2 · The moment -->
+<section class="slide" data-img="03-bring-it-home.jpg"><div class="card">
+  <div class="eyebrow">The moment</div>
+  <h2>chicago.com is building neighborhood habits <span class="lav">right now.</span></h2>
+  <p class="lede">South Shore went live this month as one of five pilot communities. The habits people form in a pilot year (where they post, who they follow, which neighbors they trust) tend to last.</p>
+  <p class="lede">Today the platform is built for adults. We think its fastest path to a loyal South Shore community runs through its young people.</p>
+</div></section>
+
+<!-- 3 · Why youth means growth -->
+<section class="slide" data-img="10-diversity.jpg"><div class="card">
+  <div class="eyebrow">Why youth contributors grow the platform</div>
+  <h2>A young contributor <span class="lav">never comes alone.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Every post brings readers:</b> parents, grandparents, cousins and classmates sign up to see it, comment and share</li>
+    <li style="--c:var(--r3)"><b>Steady, local, positive content:</b> a new youth story every week, rooted in a South Shore park</li>
+    <li style="--c:var(--r5)"><b>Loyalty that starts early:</b> the teenager who first publishes on chicago.com at 15 is the member, donor and steward at 25</li>
+    <li style="--c:var(--r7)"><b>A story funders support:</b> youth voice, local arts and news literacy, in a South Side pilot community</li>
+  </ul>
+</div></section>
+
+<!-- 4 · Precedent -->
+<section class="slide" data-img="11-inclusivity.jpg"><div class="card">
+  <div class="eyebrow">A natural next step</div>
+  <h2>chicago.com already <span class="lav">makes room for this.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r2)"><b>Kids &amp; Family</b> is already a section of the site</li>
+    <li style="--c:var(--r4)"><b>Verified partners</b> already publish guides, including a South and West Side youth organization, My Block, My Hood, My City</li>
+    <li style="--c:var(--r6)"><b>A community calendar</b> where anyone can share events</li>
+  </ul>
+  <p class="lede">What is missing is a supported way for young people to contribute in their own voice. We propose to pilot it in South Shore.</p>
+</div></section>
+
+<!-- 5 · What we bring -->
+<section class="slide" data-img="cal-01-winter-fieldhouse-class.jpg"><div class="card">
+  <div class="eyebrow">What we bring · Full Spectrum at Rainbow Beach</div>
+  <h2>A year of youth music <span class="lav">to write about.</span></h2>
+  <div class="big">
+    <div class="stat" style="--c:var(--r1)"><b>Jan 12</b><span>Rainbow DJ Lab opens: free, every Tuesday 4–6 pm</span></div>
+    <div class="stat" style="--c:var(--r3)"><b>468</b><span>free DJ Lab seats in 2027: 12 decks × 39 Tuesdays</span></div>
+    <div class="stat" style="--c:var(--r5)"><b>14</b><span>Rainbow Wednesdays on the beach, goal of 300 neighbors a night</span></div>
+    <div class="stat" style="--c:var(--r7)"><b>$0</b><span>for families, every part</span></div>
+  </div>
+  <p class="lede">Full Spectrum is a first-year program proposed to the Chicago Park District. Every part is free.</p>
+</div></section>
+
+<!-- 6 · The showcase -->
+<section class="slide" data-img="05-b-rainbow-wednesdays.jpg"><div class="card">
+  <div class="eyebrow">What young people would publish</div>
+  <h2>Their work, <span class="rb">shown to their neighbors.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Lab notes:</b> a first blend, a breakthrough, a skill explained in their own words</li>
+    <li style="--c:var(--r3)"><b>Mix of the month:</b> a student set, with the story behind the song choices</li>
+    <li style="--c:var(--r4)"><b>Remix the Record (February):</b> songs about real Black history, every fact checked against two sources, published with the sources</li>
+    <li style="--c:var(--r5)"><b>Beach night recaps:</b> photo stories from Rainbow Wednesdays, with permission from everyone pictured</li>
+    <li style="--c:var(--r7)"><b>Interviews:</b> young reporters talk with each week's guest woman DJ</li>
+  </ul>
+</div></section>
+
+<!-- 7 · A sample -->
+<section class="slide" data-img="cal-03-remix-the-record.jpg"><div class="card">
+  <div class="eyebrow">A sample contribution</div>
+  <h2>"The first time I made <span class="lav">two songs fit together."</span></h2>
+  <p class="lede">A student explains what they tried, what sounded wrong, and what finally worked, with a short clip or an approved photo. It closes by asking neighbors to share a musical memory or a word of encouragement.</p>
+  <p class="small">An illustrative story idea. No real student quotes or results are implied.</p>
+</div></section>
+
+<!-- 8 · The pilot -->
+<section class="slide" data-img="cal-07-graduation-set.jpg"><div class="card">
+  <div class="eyebrow">A six-week pilot</div>
+  <h2>One youth story a week, <span class="lav">starting with the Lab.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r2)"><b>Before launch:</b> agree on the publishing route, permissions, editorial roles and moderation with the chicago.com team and the South Shore steward</li>
+    <li style="--c:var(--r4)"><b>Weeks 1–6 (January–February 2027):</b> one contribution each week, rotating authors and formats, timed to the DJ Lab's first weeks and Remix the Record</li>
+    <li style="--c:var(--r6)"><b>After week 6:</b> review youth feedback, neighbor response and staff time, then decide together what comes next</li>
+  </ul>
+</div></section>
+
+<!-- 9 · Safeguards -->
+<section class="slide" data-img="06-c-stage-show.jpg"><div class="card">
+  <div class="eyebrow">Safe and supported</div>
+  <h2>Young people own their stories. <span class="lav">Adults keep them safe.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Permission first:</b> written parent or guardian permission and each young person's own agreement; participation is always voluntary</li>
+    <li style="--c:var(--r3)"><b>An adult editor</b> from Ras Tafari Inc. coaches contributors, checks permissions and prepares each post; teens publish through an approved adult route</li>
+    <li style="--c:var(--r5)"><b>Privacy:</b> first-name or group credit, no contact details or schedules, no photo without permission (written permission for anyone under 13)</li>
+    <li style="--c:var(--r7)"><b>chicago.com's standards apply:</b> your team chooses the publishing location and how comments are handled</li>
+  </ul>
+</div></section>
+
+<!-- 10 · Measures -->
+<section class="slide" data-img="07-d-festival.jpg"><div class="card">
+  <div class="eyebrow">What the pilot measures</div>
+  <h2>Proof for chicago.com, <span class="lav">not just for us.</span></h2>
+  <div class="big">
+    <div class="stat" style="--c:var(--r1)"><b>Sign-ups</b><span>new South Shore members who joined through Full Spectrum families</span></div>
+    <div class="stat" style="--c:var(--r3)"><b>Returns</b><span>readers who come back for the next youth story</span></div>
+    <div class="stat" style="--c:var(--r5)"><b>Replies</b><span>neighbors who comment, encourage and share</span></div>
+    <div class="stat" style="--c:var(--r7)"><b>Voices</b><span>young people who want to keep contributing</span></div>
+  </div>
+</div></section>
+
+<!-- 11 · The ask -->
+<section class="slide" data-img="08-e-holiday-parties.jpg"><div class="card">
+  <div class="eyebrow">What we are asking</div>
+  <h2>Help us set up <span class="rb">Full Spectrum on chicago.com.</span></h2>
+  <ol class="asks">
+    <li style="--c:var(--r1)"><b>Partner status</b>for Ras Tafari Inc. in South Shore, so Full Spectrum can publish guides like other partners.</li>
+    <li style="--c:var(--r3)"><b>Full Spectrum on the calendar</b>the DJ Lab Tuesdays and Rainbow Wednesdays listed on the South Shore community calendar.</li>
+    <li style="--c:var(--r5)"><b>A "Young South Shore" pilot</b>a home for one youth contribution a week, for six weeks, starting January 2027.</li>
+    <li style="--c:var(--r7)"><b>A named contact</b>and the steward's guidance on age rules, permissions and moderation before we begin.</li>
+  </ol>
+</div></section>
+
+<!-- 12 · Close -->
+<section class="slide" data-img="15-close-rainbow.jpg"><div class="card">
+  <div class="eyebrow">Our neighborhood, in our own words</div>
+  <h2>The voices that build chicago.com in South Shore <span class="rb">can start young.</span></h2>
+  <p class="lede">Ras Tafari Inc. brings the young people, the families, the adult editor and a year of music at Rainbow Beach. chicago.com brings the place where South Shore listens.</p>
+  <a class="cta" href="mailto:stephen@selassiefest.com?subject=Young%20South%20Shore%20on%20chicago.com">Email Stephen Henry →</a>
+  <a class="cta" href="/full-spectrum/">About Full Spectrum →</a>
+  <p class="small">Stephen Henry, President, Ras Tafari Inc. · 1401 E. 71st St., Chicago 60619 · (872) 255-9333 · stephen@selassiefest.com<br>
+  Full Spectrum is a first-year program and depends on Chicago Park District approval. Photos are concept visualizations.</p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
+  <div class="prog" id="prog"></div>
+  <div class="mid">
+    <div class="playrow">
+      <button class="play" id="play" aria-label="Play the narrated deck">▶ Play</button>
+      <button class="auto" id="auto" aria-pressed="true" title="Move to the next slide when each one finishes">Auto-advance</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+// Young South Shore: a proposal to chicago.com (Chicago Public Media) for youth contributors, starting with Full Spectrum.
+// chicago.com facts: Chicago Public Media press release, Oct. 7, 2026 (five pilot communities incl. South Shore); chicago.com/partners
+// (My Block, My Hood, My City is a verified partner); chicago.com/terms-of-use (not directed to children under 13; written parental
+// permission for photos of children under 13). Program facts: dj-lab-2027.html and the Full Spectrum proposal.
+// Narration clips (optional): /full-spectrum/chicago-com/audio/<slide number>.mp3. A slide with no clip waits long enough to read it.
+// Slide photos come from /full-spectrum/img/, named in each slide's data-img.
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const AUD = "/full-spectrum/chicago-com/audio/";
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(slides.map(async (_, i) => { const u = AUD + (i + 1) + ".mp3"; found[i] = (await head(u)) ? u : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
+function setBtn(){
+  playBtn.textContent = playing ? "⏸ Pause" : (cur === N - 1 && atEnd ? "↺ Replay" : "▶ Play");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+}
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  if (!resume) { player.pause(); prog.style.width = "0"; tLeft = 0; }
+  if (!playing) return;
+  if (found[i]) {
+    if (!resume || player.src.indexOf(found[i]) < 0) { player.src = found[i]; player.currentTime = 0; }
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("timeupdate", () => { if (player.duration) prog.style.width = (100 * player.currentTime / player.duration) + "%"; });
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); if (auto && playing && player.ended) finishSlide(); };
+// Only the current slide and its neighbors load their photos, so the first screen appears fast.
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
+  s.dataset.painted = "1";
+  const u = `/full-spectrum/img/${s.dataset.img}`;
+  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), url("${u}")`; s.classList.add("photo"); } });
+}
+function go(i){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1;
+  atEnd = false;
+  startSlide(cur); setBtn();
+  [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, a") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+go(0);
+</script>
+</body>
+</html>
