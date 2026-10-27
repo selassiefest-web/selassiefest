@@ -637,6 +637,8 @@ window.sfSupabase = {
   bios102GradesSave(sessionToken, name, columns, rows) { return this.bios102Rpc('bios102_grades_save', { p_session: sessionToken, p_name: name, p_columns: columns, p_rows: rows }); },
   // A student's own row only (/BIOS102/my-grades.html) -- see supabase/bios102-grades-student.sql.
   bios102GradesMine(sessionToken) { return this.bios102Rpc('bios102_grades_mine', { p_session: sessionToken }); },
+  // Instructor read of the Cnidaria video quiz (Lab 7 points) -- see supabase/bios102-video-quiz-results.sql.
+  bios102VideoQuizResults(sessionToken) { return this.bios102Rpc('bios102_video_quiz_results', { p_session: sessionToken }); },
   bios102GradesDelete(sessionToken, setId) { return this.bios102Rpc('bios102_grades_delete', { p_session: sessionToken, p_set: setId }); },
   bios102MockAdminLoad(sessionToken) { return this.bios102Rpc('bios102_mock_admin_load', { p_session: sessionToken }); },
   bios102MockSetAccess(sessionToken, email, mode) { return this.bios102Rpc('bios102_mock_set_access', { p_session: sessionToken, p_email: email, p_mode: mode }); },

@@ -171,7 +171,7 @@
       '<div class="bar" id="topbar2"></div>' +
       '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
       '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
-    $('tabs').innerHTML = [['insights', 'Insights'], ['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['manage', 'Import & manage']]
+    $('tabs').innerHTML = [['insights', 'Insights'], ['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['quiz', 'Video quiz'], ['manage', 'Import & manage']]
       .map(function (t) { return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
     $('tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { ui.tab = b.dataset.tab; render(); } });
   }
@@ -198,7 +198,7 @@
 
   function render() {
     renderTop();
-    ({ insights: viewInsights, book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, manage: viewManage })[ui.tab]();
+    ({ insights: viewInsights, book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, quiz: viewQuiz, manage: viewManage })[ui.tab]();
     $('msg').textContent = ui.msg;
   }
 
@@ -341,6 +341,69 @@
     out.sort(function (a, b) { return b.k - a.k; });
     if (!out.length) return '<div class="card2">No one is below the ' + ui.pass + '% line in anything. Change the pass line at the top to look closer.</div>';
     return '<div class="card2">' + out.map(function (o) { return '<div style="padding:7px 0;border-bottom:1px solid var(--border)"><b>' + esc(o.s) + '</b><div class="help" style="margin:2px 0 0">' + o.why.join(' · ') + '</div></div>'; }).join('') + '<div class="help">Below the ' + ui.pass + '% pass line, or a zero (often missing work, not low skill). Excused scores are never flagged.</div></div>';
+  }
+
+  /* ---------------- Video quiz (Lab 7 points) ---------------- */
+  // Finishing = all 11 questions answered (a revealed answer counts). Finishing earns the 3 Lab 7 participation points.
+  var VQ = [['tent', 'Tentacles'], ['move', 'First to move'], ['sets', 'Muscle sets'], ['nerve', 'Nerve cells'], ['nema', 'Nematocyst function'], ['touch', 'Nematocyst reach'],
+    ['polyp', 'Polyp'], ['stom', 'Stomphia escape'], ['swim', 'First to swim'], ['med', 'Medusa'], ['praya', 'Praya']];
+  function vqShort(list) {
+    var firsts = {}; list.forEach(function (s) { var f1 = s.name.split(' ')[0]; firsts[f1] = (firsts[f1] || 0) + 1; });
+    return list.map(function (s) { var p = s.name.split(' '), f1 = p[0]; return Object.assign({}, s, { short: firsts[f1] > 1 && p.length > 1 ? f1 + ' ' + p[p.length - 1].charAt(0) + '.' : f1 }); });
+  }
+  function vqSummarize(s) {
+    var a = (s.state && s.state.answers) || {}, done = 0, ok = 0, first = 0, tries = 0, hints = 0, revealed = 0, last = 0;
+    VQ.forEach(function (q) {
+      var x = a[q[0]]; if (!x) return;
+      if (x.ok || x.revealed) done++; if (x.ok) ok++; if (x.ok && x.tries === 1) first++; if (x.revealed && !x.ok) revealed++;
+      tries += x.tries || 0; if (x.hinted) hints++; if (x.at && x.at > last) last = x.at;
+    });
+    var completedAt = s.state && s.state.completedAt ? s.state.completedAt : (done === VQ.length ? (last || (s.updated_at ? Date.parse(s.updated_at) : 0)) : 0);
+    return { done: done, ok: ok, first: first, tries: tries, hints: hints, revealed: revealed, completedAt: completedAt, status: done === VQ.length ? 'Finished' : done > 0 ? 'In progress' : 'Not started',
+      attempts: ((s.state && s.state.attempts) || []).length, pos: s.state && s.state.pos };
+  }
+  function vqWhen(ms) { return ms ? new Date(ms).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '-'; }
+  async function viewQuiz() {
+    if (!ui.vq) {
+      $('view').innerHTML = '<div class="card2">Loading the video quiz results&hellip;</div>';
+      try { ui.vq = vqShort((await window.sfSupabase.bios102VideoQuizResults(session.sessionToken)).students || []); }
+      catch (e) { $('view').innerHTML = '<div class="card2">Could not load the video quiz results: ' + esc(e.message || e) + '</div>'; return; }
+    }
+    var L = ui.vq.map(function (s) { return { s: s, m: vqSummarize(s) }; });
+    var fin = L.filter(function (x) { return x.m.status === 'Finished'; }), prog = L.filter(function (x) { return x.m.status === 'In progress'; }), none = L.filter(function (x) { return x.m.status === 'Not started'; });
+    var h = '<div class="bar"><b>Cnidaria video quiz</b><span>Finishing (all 11 questions answered) earns the <b>3 Lab 7 participation points</b>. Retries are allowed and a student who starts over keeps their finish.</span><button class="b" type="button" id="vq-reload">Reload</button><button class="b" type="button" id="vq-csv">Download CSV (Lab 7 points)</button></div>';
+    h += '<div class="stat-grid">' + tile('Finished', fin.length + ' of ' + L.length, 'earn the 3 points') + tile('In progress', String(prog.length), prog.map(function (x) { return esc(x.s.short); }).join(', ') || '&nbsp;') + tile('Not started', String(none.length), none.map(function (x) { return esc(x.s.short); }).join(', ') || '&nbsp;') +
+      tile('Average correct (finished)', fin.length ? f(mean(fin.map(function (x) { return x.m.ok; })), 1) + ' of ' + VQ.length : '-', fin.length ? 'first try ' + f(mean(fin.map(function (x) { return x.m.first; })), 1) : '') + '</div>';
+    h += '<div class="scroll"><table class="t"><thead><tr><th class="l">Student</th><th>Status</th><th>Finished</th><th>Answered</th><th>Correct</th><th>First try</th><th>Tries</th><th>Hints</th><th>Shown answers</th><th>Restarts</th></tr></thead><tbody>';
+    L.forEach(function (x) {
+      var m = x.m, col = m.status === 'Finished' ? 'var(--accent)' : m.status === 'In progress' ? 'var(--amber)' : 'var(--text-dim)';
+      h += '<tr><td class="l"><details><summary style="cursor:pointer">' + esc(x.s.short) + '</summary>' + vqDetail(x.s) + '</details></td><td style="color:' + col + '">' + m.status + '</td><td>' + vqWhen(m.completedAt) + '</td><td>' + m.done + '/' + VQ.length + '</td><td>' + m.ok + '</td><td>' + m.first + '</td><td>' + m.tries + '</td><td>' + m.hints + '</td><td>' + m.revealed + '</td><td>' + m.attempts + '</td></tr>';
+    });
+    h += '</tbody></table></div><div class="help">Click a name for every question: how many tries, which wrong answers they chose, whether they used the hint or revealed the answer.</div>';
+    // which questions the class finds hard
+    h += '<h2 style="margin-top:24px">Which questions are hard?</h2><div class="scroll"><table class="t"><thead><tr><th class="l">Question</th><th>Answered</th><th>Right first try</th><th>Average tries</th><th>Answer shown</th><th>Hint used</th></tr></thead><tbody>';
+    VQ.forEach(function (q) {
+      var xs = L.map(function (x) { return x.s.state && x.s.state.answers && x.s.state.answers[q[0]]; }).filter(function (a) { return a && (a.ok || a.revealed || a.tries); });
+      var d = xs.filter(function (a) { return a.ok || a.revealed; });
+      h += '<tr><td class="l">' + esc(q[1]) + '</td><td>' + d.length + '</td><td>' + (d.length ? f(d.filter(function (a) { return a.ok && a.tries === 1; }).length / d.length * 100, 0) + '%' : '-') + '</td><td>' + (xs.length ? f(mean(xs.map(function (a) { return a.tries || 0; })), 1) : '-') + '</td><td>' + d.filter(function (a) { return a.revealed && !a.ok; }).length + '</td><td>' + xs.filter(function (a) { return a.hinted; }).length + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    $('view').innerHTML = h;
+  }
+  function vqDetail(s) {
+    var a = (s.state && s.state.answers) || {};
+    return '<table class="t" style="margin:8px 0;min-width:420px"><thead><tr><th class="l">Question</th><th>Result</th><th>Tries</th><th class="l">Wrong answers chosen</th></tr></thead><tbody>' + VQ.map(function (q) {
+      var x = a[q[0]];
+      var res = !x ? 'not answered' : x.ok ? (x.tries === 1 ? 'correct, first try' : 'correct after ' + x.tries) : x.revealed ? 'answer shown' : 'in progress';
+      return '<tr><td class="l">' + esc(q[1]) + '</td><td>' + res + (x && x.hinted ? ' (hint)' : '') + '</td><td>' + (x ? (x.tries || 0) : '-') + '</td><td class="l">' + (x && x.wrong && x.wrong.length ? x.wrong.map(function (w) { return esc(String(w).slice(0, 60)); }).join('; ') : '') + '</td></tr>';
+    }).join('') + '</tbody></table>';
+  }
+  function vqCsv() {
+    var lines = [['Student', 'Status', 'Finished', 'Answered', 'Correct', 'Lab 7 points']].concat(ui.vq.map(function (s) {
+      var m = vqSummarize(s); return [s.short, m.status, m.completedAt ? new Date(m.completedAt).toISOString() : '', m.done, m.ok, m.status === 'Finished' ? 3 : 0];
+    }));
+    var txt = lines.map(function (l) { return l.map(function (x) { x = String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(','); }).join('\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], { type: 'text/csv' })); a.download = 'lab7-video-quiz-points.csv'; a.click();
   }
 
   /* ---------------- Gradebook ---------------- */
@@ -861,6 +924,8 @@
       var rr = cur.rows.filter(function (r) { return r.student === ui.stu; })[0], P2 = projState(rr);
       remItems(rr).items.forEach(function (it) { P2.pct[it.key] = t.dataset.pjset === 'usual' ? P2.usual : +t.dataset.pjset; }); render();
     }
+    else if (t.id === 'vq-reload') { ui.vq = null; render(); }
+    else if (t.id === 'vq-csv') vqCsv();
     else if (t.id === 'imp-go') finishImport();
     else if (t.dataset.open) { pick(t.dataset.open); ui.tab = 'book'; render(); }
     else if (t.dataset.del) {

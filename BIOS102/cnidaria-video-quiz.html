@@ -138,7 +138,7 @@
 
   <div class="wrap">
     <h1>Shape of Life: Cnidaria</h1>
-    <p class="lede">Lab 7 movie worksheet as an interactive quiz. Watch the film with the pause, slow-motion, loop and caption controls, and answer each worksheet question the moment its clue plays. Your progress saves to your account automatically, so you can stop on one device and pick up on another.</p>
+    <p class="lede">Lab 7 movie worksheet as an interactive quiz. <b>Finishing it earns your 3 Lab 7 participation points.</b> Watch the film with the pause, slow-motion, loop and caption controls, and answer each worksheet question the moment its clue plays. Your progress saves to your account automatically, so you can stop on one device and pick up on another.</p>
 
     <div class="modebar">
       <span>Quiz style:</span>
@@ -242,6 +242,7 @@
       </dl>
     </details>
 
+    <div id="lab7"></div>
     <div class="scorebox">
       <h2 style="margin:0;">Worksheet questions</h2>
       <div class="meter"><i id="meter"></i></div>
@@ -458,6 +459,9 @@
   function localSave() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
   function save() {
     if (quiet) return;   // page setup is not a student change
+    // Finishing = every question answered (a shown answer counts). It earns the 3 Lab 7 participation points,
+    // so the first finish time is kept even if the student later starts over.
+    if (!S.completedAt && Q.every(done)) S.completedAt = Date.now();
     S.updatedAt = Date.now(); localSave(); dirty = true;
     if (!serverReady) return;
     clearTimeout(flushTimer); flushTimer = setTimeout(flush, 1000);
@@ -771,6 +775,9 @@
     Q.forEach(function (q) { var a = S.answers[q.id]; if (done(q)) ans++; if (a && a.ok) { ok++; if (a.tries === 1) first++; } });
     $('meter').style.width = (ans / n * 100) + '%';
     $('stat').innerHTML = 'Answered <b>' + ans + '/' + n + '</b> &middot; correct <b>' + ok + '</b> &middot; first try <b>' + first + '</b>';
+    $('lab7').innerHTML = S.completedAt
+      ? '<div class="done-box" style="margin:0 0 16px"><b>Finished</b> on ' + new Date(S.completedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + '. This earns your <b>3 Lab 7 participation points</b>, and starting over will not take it away.</div>'
+      : '<div class="done-box" style="margin:0 0 16px;background:var(--amber-soft);border-color:var(--amber)">Answer all ' + n + ' questions to earn your <b>3 Lab 7 participation points</b>. You have done <b>' + ans + ' of ' + n + '</b>.</div>';
     var f = $('finish');
     if (ans === n) {
       var missed = Q.filter(function (q) { return !(S.answers[q.id] && S.answers[q.id].ok); });
@@ -788,6 +795,7 @@
     if (ok) { a.ok = true; a.val = val; }
     else if (q.kind === 'binary') { a.revealed = true; a.wrong.push(val); }
     else { a.wrong.push(val); if (a.wrong.length >= 3 && q.kind === 'choice') a.revealed = true; if (q.kind === 'text' && a.wrong.length >= 3) a.revealed = true; }
+    if (a.ok || a.revealed) a.at = Date.now();
     save(); renderAll();
   }
 
@@ -797,7 +805,7 @@
     if (a === 'pick') answer(q, b.dataset.v);
     else if (a === 'check') { var i = $('in-' + b.dataset.ctx + '-' + q.id); if (i && i.value.trim()) answer(q, i.value); else if (i) i.focus(); }
     else if (a === 'hint') { (S.answers[q.id] || (S.answers[q.id] = { tries: 0, wrong: [] })).hinted = true; save(); renderAll(); }
-    else if (a === 'show') { var s = S.answers[q.id] || (S.answers[q.id] = { tries: 0, wrong: [] }); s.revealed = true; s.tries = Math.max(1, s.tries); save(); renderAll(); }
+    else if (a === 'show') { var s = S.answers[q.id] || (S.answers[q.id] = { tries: 0, wrong: [] }); s.revealed = true; s.at = Date.now(); s.tries = Math.max(1, s.tries); save(); renderAll(); }
     else if (a === 'redo') { delete S.answers[q.id]; delete skipped[q.id]; save(); renderAll(); }
     else if (a === 'clip') playClip(q, b.dataset.ov === '1');
     else if (a === 'skip') { skipped[q.id] = 1; closeOv(); play(); }
@@ -813,7 +821,9 @@
   $('reset').addEventListener('click', function () {
     var b = this;
     if (!resetArmed) { resetArmed = 1; b.textContent = 'Click again to clear answers'; setTimeout(function () { resetArmed = 0; b.textContent = 'Start over'; }, 3500); return; }
-    resetArmed = 0; b.textContent = 'Start over'; S.answers = {}; skipped = {}; save(); closeOv(); seek(0); renderAll(); say('Answers cleared.');
+    resetArmed = 0; b.textContent = 'Start over';
+    S.attempts = (S.attempts || []).concat([{ at: Date.now(), answered: Q.filter(done).length, correct: Q.filter(function (q) { return S.answers[q.id] && S.answers[q.id].ok; }).length }]);
+    S.answers = {}; skipped = {}; save(); closeOv(); seek(0); renderAll(); say('Answers cleared.');
   });
 
   function setMode(m) {
