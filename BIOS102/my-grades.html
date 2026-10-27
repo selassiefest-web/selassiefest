@@ -88,9 +88,8 @@
   function cvOf() { return { cp: cv.cp, cd: cv.cd, fp: cv.fp, fd: cv.fd + LATE, g: cv.g }; }
   function autoExcused() { return (data.excused || []).filter(function (k) { return !isNum(data[k]); }); }
   function exPoints(keys) { return keys.reduce(function (s, k) { var it = ITEMS.filter(function (x) { return x.key === k; })[0]; return s + (it ? it.p : 0); }, 0); }
-  // BIOS102 12-step scale, highest first: [letter, lowest percent]
-  var BANDS = [['A', 92], ['A-', 90], ['B+', 88], ['B', 82], ['B-', 80], ['C+', 78], ['C', 72], ['C-', 70], ['D+', 68], ['D', 62], ['D-', 60], ['F', 0]];
-  function bandOf(p) { for (var i = 0; i < BANDS.length; i++) if (p >= BANDS[i][1]) return BANDS[i][0]; return 'F'; }
+  // Letter grades come from the database scale via the shared BIOS helpers (BIOS102/js/app.js).
+  var bandOf = BIOS.bandOf, fg = BIOS.fmtGrade, clampNum = BIOS.clampNum;
 
   /* ---- make-up work: graded points that are lost today and could be turned in ---- */
   function lostGroups() {
@@ -141,11 +140,11 @@
     var groups = {}; ITEMS.forEach(function (it, i) { (groups[it.g] = groups[it.g] || []).push('<option value="' + i + '"' + (i === S.pick.item ? ' selected' : '') + '>' + esc(it.n) + ' (' + it.p + ' pts)</option>'); });
     h += '<div class="ctl"><label>Excuse <select id="ex-item">' + Object.keys(groups).map(function (g) { return '<optgroup label="' + g + '">' + groups[g].join('') + '</optgroup>'; }).join('') + '</select></label>' +
       '<label>Status of that work <select id="ex-status">' + Object.keys(STATES).map(function (k) { return '<option value="' + k + '"' + (S.pick.status === k ? ' selected' : '') + '>' + STATES[k] + '</option>'; }).join('') + '</select></label>' +
-      (S.pick.status === 'missing' ? '' : '<label>Score you earned <input type="number" id="ex-score" step="any" min="0" style="width:84px" value="' + (isNum(S.pick.score) ? S.pick.score : '') + '"> of ' + ITEMS[S.pick.item].p + '</label>') +
+      (S.pick.status === 'missing' ? '' : '<label>Score you earned <input type="number" id="ex-score" step="any" min="0" max="' + ITEMS[S.pick.item].p + '" style="width:84px" value="' + (isNum(S.pick.score) ? S.pick.score : '') + '"> of ' + ITEMS[S.pick.item].p + '</label>') +
       '<button class="b pri" type="button" id="ex-add">Add to the comparison</button></div>';
     if (!S.exc.length) return h + '<div class="help">Add an assignment to compare <b>not excused</b> with <b>excused</b>.</div></div>';
     var m = excuseCalc(S.exc), D0 = c.fd, D1 = m.fin.d;
-    // "not excused" = the course as it stands without these excuses (c.fd already leaves out anything excused in the export)
+    // "not excused" = the course with every point still in it (c.fd still counts any exam the export marks excused; the pages subtract those separately)
     var tg0 = c.fp / D0 * 100, tg1 = D1 > 0 ? m.fin.n / D1 * 100 : null, w0 = 100 / D0, w1 = D1 > 0 ? 100 / D1 : null;
     var names = S.exc.map(function (e) { return esc(ITEMS[e.item].n); }).join(' and ');
     h += '<div class="chips">' + S.exc.map(function (e, i) { return '<span class="chip">' + esc(ITEMS[e.item].n) + ' · ' + (e.status === 'missing' ? 'no score' : num(e.score) + '/' + ITEMS[e.item].p) + '<button type="button" data-exrm="' + i + '" aria-label="Remove">&times;</button></span>'; }).join('') + '<button class="b" type="button" id="ex-clear">Clear</button></div>';
@@ -221,15 +220,15 @@
   }
   function pjOutHTML() {
     var k = pjCalc(); if (k.pct == null) return '<div class="help">Nothing left to project.</div>';
-    var h = '<div class="tiles"><div><small>Your projected final grade</small><b>' + f(k.pct, 1) + '%</b><small>grade band ' + bandOf(k.pct) + '</small></div>' +
+    var h = '<div class="tiles"><div><small>Your projected final grade</small><b>' + fg(k.pct, 1) + '%</b><small>grade band ' + bandOf(k.pct) + '</small></div>' +
       '<div><small>Points you would have at the end</small><b>' + num(k.N) + '</b><small>out of ' + num(k.D) + '</small></div>' +
       '<div><small>Points of work left to earn</small><b>' + num(k.rem) + '</b><small>still ahead of you</small></div></div>';
-    h += '<p class="lead">If you score ' + k.items.filter(function (it) { return !k.P.ex[it.key]; }).map(function (it) { return f(k.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', your course ends at <b>' + f(k.pct, 1) + '%</b> (' + num(k.N) + ' of ' + num(k.D) + ' points).' + (k.rec > 0 ? ' That includes <b>' + num(k.rec) + ' points</b> of make-up work from the box above.' : '') + '</p>';
+    h += '<p class="lead">If you score ' + k.items.filter(function (it) { return !k.P.ex[it.key]; }).map(function (it) { return f(k.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', your course ends at <b>' + fg(k.pct, 1) + '%</b> (' + num(k.N) + ' of ' + num(k.D) + ' points).' + (k.rec > 0 ? ' That includes <b>' + num(k.rec) + ' points</b> of make-up work from the box above.' : '') + '</p>';
     if (k.exp > 0 && k.pct0 != null) h += '<p class="lead">With the same scores and <b>nothing</b> excused you would finish at <b>' + f(k.pct0, 1) + '%</b> (out of ' + num(k.base) + ' points). The ' + num(k.exp) + ' excused points change your result by <b>' + (k.pct - k.pct0 >= 0 ? '+' : '') + f(k.pct - k.pct0, 1) + ' percentage points</b>.</p>';
     var T = k.P.target, t;
     if (k.need == null) t = 'There is no remaining work to earn.';
     else if (k.need <= 0) t = 'A final grade of ' + T + '% is already secured, whatever the rest turns out to be.';
-    else if (k.need > 100.0001) { var best = (k.c.fp + k.rec + k.rem) / k.D * 100; t = T + '% is out of reach from here (it would take more than 100% on everything left). The most you can finish with is <b>' + f(best, 1) + '%</b> (grade band ' + bandOf(best) + '), so try a target you can reach, or see what an excuse or make-up work would change.'; }
+    else if (k.need > 100.0001) { var best = (k.c.fp + k.rec + k.rem) / k.D * 100; t = T + '% is out of reach from here (it would take more than 100% on everything left). The most you can finish with is <b>' + fg(best, 1) + '%</b> (grade band ' + bandOf(best) + '), so try a target you can reach, or see what an excuse or make-up work would change.'; }
     else t = 'To finish with <b>at least ' + T + '%</b>, you need an average of <b>' + f(k.need, 1) + '%</b> on the ' + num(k.rem) + ' points still to earn (' + num((T / 100) * k.D - k.c.fp - k.rec) + ' more points).';
     return h + '<div class="note">' + t + '</div>';
   }
@@ -247,7 +246,7 @@
         '<span><input type="number" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' style="width:62px"> %</span>' +
         '<label class="x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
     }).join('');
-    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the BIOS102 scale (A 92, A- 90, B+ 88, B 82, B- 80, C+ 78, C 72, C- 70, D+ 68, D 62, D- 60). This is a what-if: it changes nothing in your actual grades.</div></div>';
+    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the BIOS102 scale (' + BIOS.scaleText() + '). This is a what-if: it changes nothing in your actual grades.</div></div>';
   }
 
   /* ---- my scores ---- */
@@ -279,7 +278,12 @@
     var t = e.target; if (!D) return;
     if (t.id === 'ex-item') { var d0 = defaults(+t.value); S.pick = { item: +t.value, status: d0.status, score: d0.score }; $('sec-excuse').outerHTML = excuseHTML(); }
     else if (t.id === 'ex-status') { S.pick.status = t.value; if (t.value === 'missing') S.pick.score = 0; $('sec-excuse').outerHTML = excuseHTML(); }
-    else if (t.id === 'ex-score') S.pick.score = t.value === '' ? null : +t.value;
+    else if (t.id === 'ex-score') {
+      var mx = ITEMS[S.pick.item].p, sv = t.value === '' ? null : clampNum(t.value, 0, mx);
+      if (t.value !== '' && sv === null) t.value = '';            // not a number: discard it
+      else if (sv !== null && String(sv) !== String(+t.value)) t.value = sv;   // out of range: pull it back inside 0 to the item's points
+      S.pick.score = sv;
+    }
     else if (t.dataset && t.dataset.pjx != null) { var P = pjState(); if (t.checked) P.ex[t.dataset.pjx] = true; else delete P.ex[t.dataset.pjx]; $('sec-proj').outerHTML = projectionHTML(); }
   });
   document.addEventListener('input', function (e) {
@@ -290,7 +294,9 @@
       $('pj-out').innerHTML = pjOutHTML();
     } else if (t.id === 'pj-target') { pjState().target = Math.max(0, Math.min(100, +t.value || 0)); $('pj-out').innerHTML = pjOutHTML(); }
     else if (t.dataset.mk != null) {
-      var m = S.mk[t.dataset.mk] || (S.mk[t.dataset.mk] = { pts: 0, credit: 80 }); m[t.dataset.f] = +t.value;
+      var m = S.mk[t.dataset.mk] || (S.mk[t.dataset.mk] = { pts: 0, credit: 80 }), lg = lostGroups().filter(function (g) { return g.key === t.dataset.mk; })[0];
+      if (!lg || (t.dataset.f !== 'pts' && t.dataset.f !== 'credit')) return;
+      m[t.dataset.f] = clampNum(t.value, 0, t.dataset.f === 'pts' ? lg.L : 100) || 0;
       $('mkp-' + t.dataset.mk).textContent = num(m.pts); $('mkc-' + t.dataset.mk).textContent = m.credit + '%';
       $('mk-out').innerHTML = makeupOut(); $('pj-out') && ($('pj-out').innerHTML = pjOutHTML());
     }
@@ -298,10 +304,10 @@
   document.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t || !D) return;
     if (t.id === 'ex-add') {
-      var it = ITEMS[S.pick.item], sc = $('ex-score') ? $('ex-score').value : '';
-      if (S.pick.status !== 'missing' && sc === '') { $('ex-score').focus(); return; }
+      var it = ITEMS[S.pick.item], sc = $('ex-score') ? clampNum($('ex-score').value, 0, it.p) : 0;
+      if (S.pick.status !== 'missing' && sc === null) { $('ex-score').focus(); return; }
       if (S.exc.some(function (x) { return x.item === S.pick.item; })) return;
-      S.exc.push({ item: S.pick.item, status: S.pick.status, score: S.pick.status === 'missing' ? 0 : +sc }); $('sec-excuse').outerHTML = excuseHTML();
+      S.exc.push({ item: S.pick.item, status: S.pick.status, score: S.pick.status === 'missing' ? 0 : sc }); $('sec-excuse').outerHTML = excuseHTML();
     } else if (t.dataset.exrm != null) { S.exc.splice(+t.dataset.exrm, 1); $('sec-excuse').outerHTML = excuseHTML(); }
     else if (t.id === 'ex-clear') { S.exc = []; $('sec-excuse').outerHTML = excuseHTML(); }
     else if (t.dataset.set != null) { var P = pjState(); remItems().forEach(function (it) { P.pct[it.key] = t.dataset.set === 'usual' ? P.usual : +t.dataset.set; }); $('sec-proj').outerHTML = projectionHTML(); }
@@ -322,6 +328,7 @@
     else try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
     catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
     if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = banner + '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
+    await BIOS.loadGradeScale(session.sessionToken);
     data = D.data; cv = data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });

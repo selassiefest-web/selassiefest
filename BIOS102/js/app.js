@@ -175,7 +175,58 @@ window.BIOS = (() => {
     }));
   }
 
+  // ---- Letter-grade scale: one list for grades.html and my-grades.html ----
+  // The source of truth is the bios102_grade_scale table (supabase/bios102-grade-scale.sql).
+  // DEFAULT_SCALE is only the fallback used if that read fails, so a grade is never blank.
+  const DEFAULT_SCALE = [
+    { letter: 'A', min: 92 }, { letter: 'A-', min: 90 }, { letter: 'B+', min: 88 }, { letter: 'B', min: 82 },
+    { letter: 'B-', min: 80 }, { letter: 'C+', min: 78 }, { letter: 'C', min: 72 }, { letter: 'C-', min: 70 },
+    { letter: 'D+', min: 68 }, { letter: 'D', min: 62 }, { letter: 'D-', min: 60 }, { letter: 'F', min: 0 },
+  ];
+  let gradeScale = DEFAULT_SCALE.slice();
+
+  function cleanScale(list) {
+    if (!Array.isArray(list) || list.length < 2) return null;
+    const out = list.map((s) => ({ letter: String(s.letter), min: Number(s.min) }));
+    if (out.some((s) => !/^[A-Z][+-]?$/.test(s.letter) || !isFinite(s.min) || s.min < 0 || s.min > 100)) return null;
+    out.sort((a, b) => b.min - a.min);
+    return out[out.length - 1].min === 0 ? out : null;   // the lowest step must start at 0
+  }
+  async function loadGradeScale(sessionToken) {
+    try {
+      const got = cleanScale(await window.sfSupabase.bios102GradeScaleGet(sessionToken));
+      if (got) gradeScale = got;
+    } catch (e) { /* keep the fallback */ }
+    return gradeScale;
+  }
+  function getGradeScale() { return gradeScale.slice(); }
+  function setGradeScaleLocal(list) { const c = cleanScale(list); if (c) gradeScale = c; return gradeScale; }
+  // Scores come out of divisions, so 92 can arrive as 91.99999999999999; settle that before comparing.
+  function settle(p) { return Math.round(p * 1e6) / 1e6; }
+  function bandOf(p) {
+    p = settle(p);
+    for (let i = 0; i < gradeScale.length; i++) if (p >= gradeScale[i].min) return gradeScale[i].letter;
+    return gradeScale[gradeScale.length - 1].letter;
+  }
+  // A percent to show next to its letter. Normally d decimals, but never a rounded number that
+  // crosses a cutoff (91.96 must not read "92.0%" beside "A-"): add decimals, then truncate.
+  function fmtGrade(p, d) {
+    if (typeof p !== 'number' || !isFinite(p)) return '-';
+    d = d == null ? 1 : d;
+    const band = bandOf(p);
+    for (let k = d; k <= 4; k++) { const s = p.toFixed(k); if (bandOf(parseFloat(s)) === band) return s; }
+    return (Math.floor(settle(p) * 1e4) / 1e4).toFixed(4);
+  }
+  // A typed number held inside [lo, hi]; null when it is not a usable number at all.
+  function clampNum(v, lo, hi) {
+    const n = typeof v === 'number' ? v : parseFloat(v);
+    if (!isFinite(n)) return null;
+    return Math.max(lo, Math.min(hi, n));
+  }
+  function scaleText() { return gradeScale.map((s) => s.letter + ' ' + s.min).join(', '); }
+
   return {
+    loadGradeScale, getGradeScale, setGradeScaleLocal, bandOf, fmtGrade, clampNum, scaleText,
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,
     getExamRanges, getExamRange, getExercisesForExam, isComparableKey, getExerciseCallout,

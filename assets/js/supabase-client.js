@@ -635,6 +635,9 @@ window.sfSupabase = {
   bios102GradesIsInstructor(sessionToken) { return this.bios102Rpc('bios102_grades_is_instructor', { p_session: sessionToken }); },
   bios102GradesLoad(sessionToken) { return this.bios102Rpc('bios102_grades_load', { p_session: sessionToken }); },
   bios102GradesSave(sessionToken, name, columns, rows) { return this.bios102Rpc('bios102_grades_save', { p_session: sessionToken, p_name: name, p_columns: columns, p_rows: rows }); },
+  // Letter-grade scale, one list for both grade pages -- see supabase/bios102-grade-scale.sql.
+  bios102GradeScaleGet(sessionToken) { return this.bios102Rpc('bios102_grade_scale_get', { p_session: sessionToken }); },
+  bios102GradeScaleSet(sessionToken, scale) { return this.bios102Rpc('bios102_grade_scale_set', { p_session: sessionToken, p_scale: scale }); },
   // A student's own row only (/BIOS102/my-grades.html) -- see supabase/bios102-grades-student.sql.
   bios102GradesMine(sessionToken) { return this.bios102Rpc('bios102_grades_mine', { p_session: sessionToken }); },
   // Instructor read of the Cnidaria video quiz (Lab 7 points) -- see supabase/bios102-video-quiz-results.sql.

@@ -154,6 +154,7 @@
     try {
       var d = await window.sfSupabase.bios102GradesLoad(session.sessionToken);
       sets = d.sets || [];
+      await BIOS.loadGradeScale(session.sessionToken);
     } catch (e) { $('gate').textContent = 'Could not load the gradebook: ' + (e.message || e); return; }
     if (sets.length) pick(sets[0].id); else { cur = { id: null, name: 'New gradebook', columns: [], rows: [], dirty: false }; }
     $('gate').remove(); shell(); render();
@@ -258,16 +259,17 @@
   }
 
   function bandChart(ex, rows) {
-    var bands = BANDS.map(function (b, i) { return [b[0], b[1], i ? BANDS[i - 1][1] : 101, b[2]]; }), a = rows.map(function (r) { return pctOf(r, ex); }).filter(isNum);
+    var BANDS = BIOS.getGradeScale(), tone = { A: GRN, B: [120, 190, 90], C: AMB, D: [214, 130, 70], F: RED };
+    var bands = BANDS.map(function (b, i) { return [b.letter, b.min, i ? BANDS[i - 1].min : Infinity, tone[b.letter.charAt(0)] || AMB]; }), a = rows.map(function (r) { return pctOf(r, ex); }).filter(isNum);
     var counts = bands.map(function (b) { return a.filter(function (x) { return x >= b[1] && x < b[2]; }).length; }), mx = Math.max(1, Math.max.apply(null, counts));
-    var W = 760, Hh = 300, L = 30, B = 46, T = 30, bw = (W - L - 14) / bands.length, s = '';
+    var W = Math.max(520, 62 * bands.length + 44), Hh = 300, L = 30, B = 46, T = 30, bw = (W - L - 14) / bands.length, s = '';
     bands.forEach(function (b, i) {
       var bh = (Hh - T - B) * counts[i] / mx, x = L + i * bw + 4, y = Hh - B - bh, col = 'rgb(' + b[3].join(',') + ')', cx = x + (bw - 8) / 2;
       s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 8) + '" height="' + Math.max(bh, 2) + '" rx="5" fill="' + col + '"/>' +
         '<text x="' + cx + '" y="' + (y - 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:15px;font-weight:500">' + counts[i] + '</text>' +
         '<text x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle">' + f(counts[i] / a.length * 100, 0) + '%</text>' +
         '<text x="' + cx + '" y="' + (Hh - B + 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:14px">' + b[0] + '</text>' +
-        '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[0] === 'F' ? '<60' : b[1] + '+') + '</text>';
+        '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[1] === 0 ? '<' + (bands[i - 1] ? bands[i - 1][1] : 0) : b[1] + '+') + '</text>';
     });
     s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#3a4642"/>';
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Grade distribution">' + s + '</svg>';
@@ -645,10 +647,8 @@
 
   /* ---------------- Projection: "what if I score this on the rest?" ---------------- */
   var STD_FD = { assignments: 15, participation: 30, labs: 35, quizzes: 60 };
-  // BIOS102 12-step scale, highest first: [letter, lowest percent, chart colour]
-  var BANDS = [['A', 92, GRN], ['A-', 90, GRN], ['B+', 88, [120, 190, 90]], ['B', 82, [120, 190, 90]], ['B-', 80, [120, 190, 90]],
-    ['C+', 78, AMB], ['C', 72, AMB], ['C-', 70, AMB], ['D+', 68, [214, 130, 70]], ['D', 62, [214, 130, 70]], ['D-', 60, [214, 130, 70]], ['F', 0, RED]];
-  function bandOf(p) { for (var i = 0; i < BANDS.length; i++) if (p >= BANDS[i][1]) return BANDS[i][0]; return 'F'; }
+  // Letter grades come from the database scale via the shared BIOS helpers (BIOS102/js/app.js).
+  var bandOf = BIOS.bandOf, fg = BIOS.fmtGrade, clampNum = BIOS.clampNum;
 
   // Work still to be earned, derived from each student's own totals: points in the whole course minus points
   // already graded (posted or not). Exams are tracked per exam; quizzes are 10 points each, so any quiz that is
@@ -694,10 +694,10 @@
   function projOutHTML(r) {
     var c = projCalc(r), nm = esc(r.student), h = '';
     if (c.pct == null) return '<div class="help">Nothing left to project.</div>';
-    h += '<div class="stat-grid"><div><small>Projected final grade</small><b>' + f(c.pct, 1) + '%</b><small>grade band ' + bandOf(c.pct) + '</small></div>' +
+    h += '<div class="stat-grid"><div><small>Projected final grade</small><b>' + fg(c.pct, 1) + '%</b><small>grade band ' + bandOf(c.pct) + '</small></div>' +
       '<div><small>Points earned at the end</small><b>' + num(c.N) + '</b><small>out of ' + num(c.D) + '</small></div>' +
       '<div><small>Still to earn</small><b>' + num(c.remPts) + '</b><small>points of work left</small></div></div>';
-    var s = 'If ' + nm + ' scores ' + c.ri.items.filter(function (it) { return !c.P.ex[it.key]; }).map(function (it) { return f(c.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', the course ends at <b>' + f(c.pct, 1) + '%</b> (' + num(c.N) + ' of ' + num(c.D) + ' points).';
+    var s = 'If ' + nm + ' scores ' + c.ri.items.filter(function (it) { return !c.P.ex[it.key]; }).map(function (it) { return f(c.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', the course ends at <b>' + fg(c.pct, 1) + '%</b> (' + num(c.N) + ' of ' + num(c.D) + ' points).';
     h += '<p style="line-height:1.6;margin:8px 0">' + s + '</p>';
     if (c.exPts > 0 && c.pct0 != null) h += '<p style="line-height:1.6;margin:8px 0">With the same scores and <b>nothing</b> excused the course would end at <b>' + f(c.pct0, 1) + '%</b> (out of ' + num(c.D0) + ' points). The ' + num(c.exPts) + ' excused points change the result by <b>' + (c.pct - c.pct0 >= 0 ? '+' : '') + f(c.pct - c.pct0, 1) + ' points</b>.</p>';
     var T = c.P.target, t;
@@ -725,7 +725,7 @@
         '<label class="pj-x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
     }).join('');
     h += '<div id="pj-out" style="margin-top:14px">' + projOutHTML(r) + '</div>' +
-      '<div class="help" style="margin-top:8px">The grade band uses the BIOS102 scale (A 92, A- 90, B+ 88, B 82, B- 80, C+ 78, C 72, C- 70, D+ 68, D 62, D- 60). This is a what-if and changes nothing in the saved gradebook.</div></div>';
+      '<div class="help" style="margin-top:8px">The grade band uses the BIOS102 scale (' + BIOS.scaleText() + '). This is a what-if and changes nothing in the saved gradebook.</div></div>';
     return h;
   }
 
@@ -761,6 +761,9 @@
       '<input type="file" id="imp-file" accept=".csv,text/csv"><div id="imp-body"></div></div>' +
       '<div class="card2"><h3>Gradebooks</h3>' + (sets.length ? sets.map(function (s) { return '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><span>' + esc(s.name) + ' <span class="help">(' + s.rows.length + ' students)</span></span><span><button class="b" data-open="' + s.id + '" type="button">Open</button> <button class="b danger" data-del="' + s.id + '" type="button">Delete</button></span></div>'; }).join('') : '<p class="help">None saved.</p>') +
       '<div class="help">Importing with the same name replaces that gradebook but keeps the statuses (dropped, medical leave), excused marks, column maximums and calculated columns you set. Keep a copy of the Canvas CSV if you may want the original back.</div></div></div>';
+    h += '<div class="card2" style="margin-top:16px"><h3>Letter-grade scale</h3><p class="help" style="margin-top:0">One scale for this page and every student’s My grades page, stored in the database. A score gets the highest letter whose minimum it reaches. Minimums must go down from top to bottom, and the last one must be 0.</p><div id="sc-rows">' +
+      BIOS.getGradeScale().map(function (b, i) { return '<label style="display:inline-block;margin:0 14px 8px 0"><b style="display:inline-block;min-width:26px">' + esc(b.letter) + '</b> from <input type="number" step="0.01" min="0" max="100" data-sc-min="' + i + '" value="' + b.min + '" style="width:72px"' + (b.min === 0 ? ' disabled' : '') + '>%</label>'; }).join('') +
+      '</div><button class="b pri" type="button" id="sc-save">Save scale</button></div>';
     $('view').innerHTML = h;
   }
   function parseCSV(t) {
@@ -876,13 +879,21 @@
     else if (t.dataset.pjx != null) { var P1 = projState(cur.rows.filter(function (r) { return r.student === ui.stu; })[0]); if (t.checked) P1.ex[t.dataset.pjx] = true; else delete P1.ex[t.dataset.pjx]; render(); }
     else if (t.id === 'ex-item') { var rs = cur.rows.filter(function (r) { return r.student === ui.stu; })[0]; var d0 = mDefaults(rs, +t.value); ui.exPick = { item: +t.value, status: d0.status, score: d0.score }; render(); }
     else if (t.id === 'ex-status') { ui.exPick.status = t.value; if (t.value === 'missing') ui.exPick.score = 0; render(); }
-    else if (t.id === 'ex-score') { ui.exPick.score = t.value === '' ? null : +t.value; }
+    else if (t.id === 'ex-score') {
+      var xi = ITEMS[ui.exPick.item], xs = t.value === '' ? null : clampNum(t.value, 0, xi.p);
+      if (t.value !== '' && xs === null) t.value = ''; else if (xs !== null && String(xs) !== String(+t.value)) { t.value = xs; say('A score on ' + xi.n + ' is held between 0 and ' + xi.p + '.'); }
+      ui.exPick.score = xs;
+    }
     else if (t.id === 'unit') { ui.pct = t.value === 'pct'; if (ui.filters.length) { ui.filters = []; say('Units changed, so the filters were cleared (their values meant points or percent).'); } render(); }
     else if (t.id === 'pass') { ui.pass = Math.max(0, Math.min(100, +t.value || 0)); render(); }
     else if (t.dataset.inc != null) { if (t.checked) delete ui.off[t.dataset.inc]; else ui.off[t.dataset.inc] = 1; render(); }
     else if (t.dataset.sc != null) { var chosen = pickCols(); var k = t.dataset.sc; ui.statCols = t.checked ? chosen.concat([k]) : chosen.filter(function (x) { return x !== k; }); render(); }
-    else if (t.dataset.cell != null) { var p = t.dataset.cell.split('|'), row = cur.rows.filter(function (r) { return r.student === p[0]; })[0]; row.data[p[1]] = t.value === '' ? null : +t.value; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
-    else if (t.dataset.max != null) { var c = colByKey(t.dataset.max); c.max = t.value === '' ? null : +t.value; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
+    else if (t.dataset.cell != null) { var p = t.dataset.cell.split('|'), row = cur.rows.filter(function (r) { return r.student === p[0]; })[0]; var nv = t.value === '' ? null : parseFloat(t.value);
+      if (nv !== null && (!isFinite(nv) || nv < 0)) { t.value = row.data[p[1]] == null ? '' : row.data[p[1]]; return say('A score must be a number, zero or more. The cell was put back.'); }
+      row.data[p[1]] = nv; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
+    else if (t.dataset.max != null) { var c = colByKey(t.dataset.max), mv = t.value === '' ? null : parseFloat(t.value);
+      if (mv !== null && (!isFinite(mv) || mv <= 0)) { t.value = c.max == null ? '' : c.max; return say('A maximum must be a number above zero. It was put back.'); }
+      c.max = mv; cur.dirty = true; say('Unsaved changes.'); $('save').disabled = false; }
     else if (t.id === 'h-col') { ui.chart.x = t.value; render(); } else if (t.id === 'h-bins') { ui.chart.bins = Math.max(3, Math.min(20, +t.value || 8)); render(); }
     else if (t.id === 's-x') { ui.chart.x = t.value; render(); } else if (t.id === 's-y') { ui.chart.y = t.value; render(); }
     else if (t.id === 'p-col') { ui.pcol = t.value; render(); }
@@ -906,7 +917,7 @@
     else if (t.id === 'cc-add') {
       var label = $('cc-label').value.trim(), formula = $('cc-formula').value.trim();
       if (!label || !formula) return say('Give the column a name and a formula.');
-      var col = { key: slug(label), label: label, max: $('cc-max').value === '' ? null : +$('cc-max').value, group: 'Calculated', formula: formula };
+      var col = { key: slug(label), label: label, max: $('cc-max').value === '' || !(parseFloat($('cc-max').value) > 0) ? null : parseFloat($('cc-max').value), group: 'Calculated', formula: formula };
       while (colByKey(col.key)) col.key += '_2';
       cur.columns.push(col); fnCache = {};
       if (cur.rows.length && cur.rows.every(function (r) { return val(r, col) == null; })) { cur.columns.pop(); return say('That formula gave no result for any student. Check the column keys listed below the form.'); }
@@ -914,11 +925,11 @@
     }
     else if (t.id === 'rm-go') { var rk = $('rm-col').value; cur.columns = cur.columns.filter(function (c) { return c.key !== rk; }); cur.rows.forEach(function (r) { delete r.data[rk]; }); fnCache = {}; cur.dirty = true; say('Column removed. Press Save changes to keep it.'); render(); }
     else if (t.id === 'ex-add') {
-      var pk = ui.exPick || { item: 0, status: 'posted', score: null }, it0 = ITEMS[pk.item], sc = $('ex-score') ? $('ex-score').value : '';
-      if (pk.status !== 'missing' && sc === '') { say('Enter the score this student earned on ' + it0.n + ', or choose "No score".'); return; }
+      var pk = ui.exPick || { item: 0, status: 'posted', score: null }, it0 = ITEMS[pk.item], sc = $('ex-score') ? clampNum($('ex-score').value, 0, it0.p) : 0;
+      if (pk.status !== 'missing' && sc === null) { say('Enter the score this student earned on ' + it0.n + ', or choose "No score".'); return; }
       var lst = ui.exc[ui.stu] = ui.exc[ui.stu] || [];
       if (lst.some(function (e) { return e.item === pk.item; })) { say(it0.n + ' is already in the what-if.'); return; }
-      lst.push({ item: pk.item, status: pk.status, score: pk.status === 'missing' ? 0 : +sc }); say(''); render();
+      lst.push({ item: pk.item, status: pk.status, score: pk.status === 'missing' ? 0 : sc }); say(''); render();
     }
     else if (t.dataset.exrm != null) { ui.exc[ui.stu].splice(+t.dataset.exrm, 1); render(); }
     else if (t.id === 'ex-clear') { ui.exc[ui.stu] = []; render(); }
@@ -929,6 +940,13 @@
     else if (t.id === 'vq-reload') { ui.vq = null; render(); }
     else if (t.id === 'vq-csv') vqCsv();
     else if (t.id === 'imp-go') finishImport();
+    else if (t.id === 'sc-save') {
+      var cur0 = BIOS.getGradeScale(), nxt = cur0.map(function (b, i) { var inp = document.querySelector('[data-sc-min="' + i + '"]'); return { letter: b.letter, min: b.min === 0 ? 0 : clampNum(inp && inp.value, 0, 100) }; });
+      if (nxt.some(function (b) { return b.min === null; })) return say('Every minimum needs to be a number from 0 to 100.');
+      for (var q = 1; q < nxt.length; q++) if (!(nxt[q].min < nxt[q - 1].min)) return say('Minimums must go down from ' + nxt[0].letter + ' to ' + nxt[nxt.length - 1].letter + ' with no repeats.');
+      say('Saving the scale…');
+      window.sfSupabase.bios102GradeScaleSet(session.sessionToken, nxt).then(function (saved) { BIOS.setGradeScaleLocal(saved); say('Grade scale saved.'); render(); }).catch(function (err) { say('Could not save the scale: ' + (err.message || err)); });
+    }
     else if (t.dataset.open) { pick(t.dataset.open); ui.tab = 'book'; render(); }
     else if (t.dataset.del) {
       if (t.dataset.armed !== '1') { t.dataset.armed = '1'; t.textContent = 'Click again to delete'; setTimeout(function () { t.dataset.armed = ''; t.textContent = 'Delete'; }, 3500); return; }
