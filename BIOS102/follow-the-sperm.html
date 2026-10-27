@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>BIOS102 Lab Companion | Follow the Sperm</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/BIOS102/css/style.css">
+<style>
+/* Layout: one calm lab-handout column. Boldness lives in the journey diagram; the rest stays quiet. */
+:root {
+  --bg: #EAF2F3;
+  --surface: #FFFFFF;
+  --ink: #0E2A33;
+  --muted: #4B6870;
+  --line: #B9D0D5;
+  --water: #D3E8EC;
+  --sponge: #F0C75E;
+  --wall: #F6E3A6;
+  --sperm: #D6336C;
+  --ok: #17784D;
+  --ok-bg: #DDF1E7;
+  --err: #B3341C;
+  --err-bg: #FBE3DC;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #08171C; --surface: #0F2630; --ink: #E3F0F2; --muted: #93B0B8; --line: #24444F;
+    --water: #123541; --sponge: #D4AC3F; --wall: #5B4E22; --sperm: #FF6B9A;
+    --ok: #4CC38A; --ok-bg: #123D2C; --err: #FF8A6E; --err-bg: #46201A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #08171C; --surface: #0F2630; --ink: #E3F0F2; --muted: #93B0B8; --line: #24444F;
+  --water: #123541; --sponge: #D4AC3F; --wall: #5B4E22; --sperm: #FF6B9A;
+  --ok: #4CC38A; --ok-bg: #123D2C; --err: #FF8A6E; --err-bg: #46201A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 18px; line-height: 1.55;
+  padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.4rem, 3.4vw, 1.9rem); font-weight: 800; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 10px; }
+.lede { max-width: 62ch; color: var(--muted); font-size: 1.1rem; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 16px; min-width: 0; }
+.panel > .head { display: grid; gap: 6px; }
+
+/* Part 1: paragraph */
+.para { font-size: 1.22rem; line-height: 2.05; max-width: 70ch; }
+.w { all: unset; display: inline; cursor: pointer; padding: 2px 1px; border-radius: 4px; }
+.w:hover { background: var(--water); }
+.w:focus-visible { outline: 3px solid var(--sperm); outline-offset: 1px; }
+.w.miss { background: var(--err-bg); color: var(--err); text-decoration: line-through; }
+.w.found { background: var(--err-bg); color: var(--err); font-weight: 600; text-decoration: underline wavy; text-underline-offset: 5px; }
+.w.fixed { background: var(--ok-bg); color: var(--ok); font-weight: 600; text-decoration: none; cursor: default; }
+.status { min-height: 1.6em; font-weight: 600; }
+.status.bad { color: var(--err); }
+.status.good { color: var(--ok); }
+.fixrow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.fixrow[hidden] { display: none; }
+input[type="text"] {
+  font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line);
+  border-radius: 8px; padding: 9px 12px; min-width: 0; width: min(100%, 15rem);
+}
+input[type="text"]:focus-visible { outline: 3px solid var(--sperm); outline-offset: 1px; border-color: var(--sperm); }
+button.btn {
+  font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 9px 16px;
+  background: var(--ink); color: var(--bg); border: 2px solid var(--ink);
+}
+button.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+button.btn:hover:not(:disabled) { border-color: var(--sperm); }
+button.btn:disabled { opacity: 0.4; cursor: default; }
+button.btn:focus-visible, .chip:focus-visible, .opt:focus-visible { outline: 3px solid var(--sperm); outline-offset: 2px; }
+.explain { background: var(--ok-bg); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; }
+.explain[hidden] { display: none; }
+.explain b { font-family: var(--font-display); }
+
+/* Part 2: journey */
+.stage { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--water); }
+.stage svg { display: block; width: 100%; height: auto; }
+.stepbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--font-mono); font-size: 0.9rem; cursor: pointer; width: 2.6rem; height: 2.6rem;
+  border-radius: 50%; border: 2px solid var(--line); background: var(--surface); color: var(--ink);
+  display: grid; place-items: center;
+}
+.chip[aria-current="step"] { background: var(--sperm); border-color: var(--sperm); color: #fff; }
+.chip.done { border-color: var(--sperm); }
+.caption { display: grid; gap: 6px; min-height: 8.5rem; }
+.caption h3 { font-family: var(--font-display); font-size: 1.35rem; margin: 0; }
+.caption p { max-width: 68ch; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.key { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.95rem; color: var(--muted); }
+.key span { display: inline-flex; align-items: center; gap: 7px; }
+.key i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid var(--ink); }
+
+/* svg tokens */
+.sv-body { fill: var(--wall); stroke: var(--ink); stroke-width: 3; }
+.sv-cavity { fill: var(--water); }
+.sv-pore { fill: var(--ink); }
+.sv-collar { fill: none; stroke: var(--sponge); stroke-width: 5; stroke-linecap: round; }
+.sv-chamber { fill: var(--sponge); stroke: var(--ink); stroke-width: 2; }
+.sv-egg { fill: var(--surface); stroke: var(--ink); stroke-width: 3; transition: fill 0.5s; }
+.sv-egg.zyg { fill: var(--sperm); }
+.sv-amoeba { fill: none; stroke: var(--ink); stroke-width: 3; stroke-dasharray: 5 4; opacity: 0; transition: opacity 0.4s; }
+.sv-text { font-family: var(--font-body); font-weight: 600; font-size: 17px; fill: var(--ink); }
+.sv-text.sm { font-size: 15px; fill: var(--muted); font-weight: 400; }
+.sv-flow { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 3 7; opacity: 0.8; }
+.sv-sperm { fill: var(--sperm); }
+.sv-tail { fill: none; stroke: var(--sperm); stroke-width: 3; stroke-linecap: round; }
+.sv-larva { fill: var(--sperm); stroke: var(--ink); stroke-width: 2; opacity: 0; transition: opacity 0.4s; }
+.sv-ring { fill: none; stroke: var(--sperm); stroke-width: 4; opacity: 0; transition: opacity 0.3s; }
+.sv-ring.on { opacity: 1; }
+#traveler { transition: transform 1.3s cubic-bezier(.5,.1,.3,1); }
+#tag { transition: transform 1.3s cubic-bezier(.5,.1,.3,1); }
+@media (prefers-reduced-motion: reduce) { #traveler, #tag { transition: none; } }
+
+/* Part 3: quick check */
+.q { display: grid; gap: 10px; padding-top: 6px; }
+.q + .q { border-top: 1px solid var(--line); padding-top: 18px; }
+.q p.t { font-weight: 600; }
+.opts { display: grid; gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; border: 2px solid var(--line); background: var(--bg);
+  color: var(--ink); border-radius: 10px; padding: 10px 14px;
+}
+.opt:hover:not(:disabled) { border-color: var(--sperm); }
+.opt.right { background: var(--ok-bg); border-color: var(--ok); }
+.opt.wrong { background: var(--err-bg); border-color: var(--err); }
+.fb { min-height: 1.5em; font-size: 0.98rem; color: var(--muted); }
+.tally { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 520px) { body { font-size: 17px; } .panel { padding: 16px; } .para { font-size: 1.1rem; } }
+</style>
+</head>
+<body>
+<div id="topbar" class="topbar"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Exercise 7 &middot; Phylum Porifera</div>
+    <h1>Follow the Sperm</h1>
+    <p class="lede">A sponge cannot swim to a mate. First fix the error hiding in the textbook paragraph, then trace one sperm cell from its birth in one sponge to the egg it fertilizes in another.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="h-fix">
+    <div class="head">
+      <div class="eyebrow">Find and fix</div>
+      <h2 id="h-fix">One word in this paragraph is wrong</h2>
+      <p>Tap the word you think is incorrect. Then type the right one.</p>
+    </div>
+    <p class="para" id="para" aria-label="Paragraph about sponge reproduction. Each word is a button."></p>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <div class="fixrow" id="fixrow" hidden>
+      <label for="answer" style="font-weight:600">Correct word:</label>
+      <input type="text" id="answer" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <button class="btn" id="check" type="button">Check</button>
+    </div>
+    <div class="explain" id="explain" hidden>
+      <p><b>Mesohyl</b> is the jelly-like layer between a sponge's outer cells and its collar cells. Amoebocytes crawl through it, and eggs develop in it.</p>
+      <p><b>Mesophyll</b> is the middle tissue of a plant leaf, where photosynthesis happens. Sponges are animals, so the word cannot apply to them.</p>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-journey">
+    <div class="head">
+      <div class="eyebrow">The journey</div>
+      <h2 id="h-journey">One sperm, nine stops</h2>
+      <p>Press Next or pick a stop. The pink dot is the sperm cell. Sponge A is the sender and Sponge B is the receiver.</p>
+    </div>
+
+    <div class="stage">
+      <svg viewBox="0 0 760 410" role="img" aria-label="Two vase-shaped sponges. A sperm cell leaves the left sponge through its osculum, drifts through the water, enters the right sponge through a pore, travels through a radial canal, is caught by a collar cell, is carried by an amoebocyte to an egg in the mesohyl, and fertilizes it.">
+        <defs>
+          <symbol id="vase" viewBox="0 0 220 260" overflow="visible">
+            <rect class="sv-body" x="0" y="40" width="220" height="220" rx="34"/>
+            <rect class="sv-cavity" x="60" y="38" width="100" height="162"/>
+            <path d="M60 40 V200 M160 40 V200" stroke="var(--ink)" stroke-width="3" fill="none"/>
+            <path class="sv-collar" d="M64 70 V190 M156 70 V190"/>
+          </symbol>
+        </defs>
+        <!-- sea floor -->
+        <rect x="0" y="360" width="760" height="50" fill="var(--wall)" opacity="0.55"/>
+
+        <!-- Sponge A -->
+        <use href="#vase" x="50" y="100" width="220" height="260"/>
+        <text class="sv-text" x="160" y="392" text-anchor="middle">Sponge A</text>
+        <circle class="sv-pore" cx="50" cy="300" r="4"/><circle class="sv-pore" cx="50" cy="330" r="4"/>
+        <circle class="sv-pore" cx="270" cy="300" r="4"/><circle class="sv-pore" cx="270" cy="330" r="4"/>
+
+        <!-- Sponge B -->
+        <use href="#vase" x="480" y="100" width="220" height="260"/>
+        <text class="sv-text" x="590" y="392" text-anchor="middle">Sponge B</text>
+        <circle class="sv-pore" cx="480" cy="260" r="6"/>
+        <circle class="sv-pore" cx="480" cy="330" r="4"/>
+        <circle class="sv-pore" cx="700" cy="300" r="4"/>
+        <ellipse class="sv-chamber" cx="512" cy="262" rx="18" ry="24"/>
+        <path d="M498 262 H480" stroke="var(--ink)" stroke-width="2" stroke-dasharray="2 4"/>
+        <circle class="sv-egg" id="egg" cx="506" cy="326" r="13"/>
+
+        <!-- flow hint from A osculum toward B -->
+        <path class="sv-flow" d="M160 125 C 230 70, 330 90, 400 190 S 450 255, 478 260"/>
+
+        <!-- focus rings -->
+        <ellipse class="sv-ring" id="ring-osc" cx="160" cy="140" rx="52" ry="14"/>
+        <circle class="sv-ring" id="ring-pore" cx="480" cy="260" r="16"/>
+        <ellipse class="sv-ring" id="ring-choano" cx="512" cy="262" rx="26" ry="32"/>
+        <circle class="sv-ring" id="ring-collar" cx="520" cy="262" r="12"/>
+        <ellipse class="sv-ring" id="ring-meso" cx="506" cy="318" rx="30" ry="26"/>
+        <ellipse class="sv-ring" id="ring-osc2" cx="590" cy="140" rx="52" ry="14"/>
+
+        <!-- labels -->
+        <text class="sv-text sm" x="160" y="218" text-anchor="middle">spongocoel</text>
+        <text class="sv-text sm" x="590" y="218" text-anchor="middle">spongocoel</text>
+        <text class="sv-text sm" x="278" y="132" text-anchor="start">osculum</text>
+        <text class="sv-text sm" x="708" y="132" text-anchor="start">osculum</text>
+
+        <!-- amoebocyte + larva -->
+        <g id="traveler" transform="translate(80 300)">
+          <circle class="sv-amoeba" id="amoeba" r="17"/>
+          <path class="sv-tail" d="M-5 0 C -14 -5, -19 5, -28 0"/>
+          <circle class="sv-sperm" id="head" r="6.5"/>
+          <ellipse class="sv-larva" id="larva" rx="15" ry="10"/>
+        </g>
+        <g id="tag" transform="translate(80 300)">
+          <text class="sv-text" id="tagtext" x="0" y="-26" text-anchor="middle"></text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="stepbar" id="stepbar" role="group" aria-label="Journey stops"></div>
+
+    <div class="caption" id="caption" aria-live="polite">
+      <h3 id="cap-title"></h3>
+      <p id="cap-body"></p>
+    </div>
+
+    <div class="controls">
+      <button class="btn ghost" id="prev" type="button">Back</button>
+      <button class="btn" id="next" type="button">Next</button>
+      <button class="btn ghost" id="play" type="button">Play all</button>
+    </div>
+
+    <div class="key" aria-hidden="true">
+      <span><i style="background:var(--wall)"></i>mesohyl (jelly layer)</span>
+      <span><i style="background:var(--sponge)"></i>collar cells (choanocytes)</span>
+      <span><i style="background:var(--surface)"></i>egg</span>
+      <span><i style="background:var(--sperm)"></i>sperm / zygote / larva</span>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-check">
+    <div class="head">
+      <div class="eyebrow">Quick check</div>
+      <h2 id="h-check">Can you explain it?</h2>
+    </div>
+    <div id="quiz"></div>
+    <div class="tally" id="tally" aria-live="polite"></div>
+  </section>
+</div>
+
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
+<script>
+(function () { var s = BIOS.requireSession(); if (s) BIOS.mountTopbar(s); })();
+
+/* ---------- Progress tracking: saved to the student's account (exercise 9202) ---------- */
+var FS = (function () {
+  var session = BIOS.requireSession();
+  var STORAGE_ID = 9202, TABLE_NAME = 'Follow the Sperm';
+  var S = { v: 1, openedAt: Date.now(), found: false, foundAt: 0, fixed: false, fixedAt: 0, picks: [], typos: [], quiz: {}, maxStop: 0, updatedAt: 0 };
+  var dirty = false, saving = false, ready = false, loaders = [];
+  function touch() { S.updatedAt = Date.now(); dirty = true; flush(); }
+  async function flush() {
+    if (!session || !dirty || saving || !ready) return;
+    saving = true; dirty = false;
+    try {
+      await window.sfSupabase.bios102SaveStudentTable({ sessionToken: session.sessionToken, exerciseNumber: STORAGE_ID, tableName: TABLE_NAME, columns: [], rows: [{ followSperm: S }] });
+    } catch (err) { console.error('Could not save progress', err); dirty = true; }
+    saving = false;
+    if (dirty) setTimeout(flush, 300);
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(); });
+  (async function () {
+    if (!session) return;
+    try {
+      var tables = await window.sfSupabase.bios102LoadStudentTables(session.sessionToken);
+      var row = tables.find(function (t) { return t.exercise_number === STORAGE_ID && t.table_name === TABLE_NAME; });
+      var remote = row && Array.isArray(row.rows) && row.rows[0] ? row.rows[0].followSperm : null;
+      if (remote && remote.v === 1) {
+        // Keep the earliest times and every miss already on record.
+        S.openedAt = remote.openedAt || S.openedAt;
+        S.found = !!remote.found; S.foundAt = remote.foundAt || 0;
+        S.fixed = !!remote.fixed; S.fixedAt = remote.fixedAt || 0;
+        S.picks = remote.picks || []; S.typos = remote.typos || [];
+        S.quiz = remote.quiz || {}; S.maxStop = remote.maxStop || 0;
+      }
+    } catch (err) { console.error('Could not load progress', err); }
+    ready = true;
+    loaders.forEach(function (f) { f(S); });
+    touch();   // records the first open
+  })();
+  return {
+    onLoad: function (f) { if (ready) f(S); else loaders.push(f); },
+    miss: function (w) { if (S.found) return; S.picks.push({ w: String(w).replace(/[^A-Za-z-]/g, '').slice(0, 40), at: Date.now() }); touch(); },
+    found: function () { if (!S.found) { S.found = true; S.foundAt = Date.now(); touch(); } },
+    typo: function (v) { if (!S.fixed) { S.typos.push({ w: String(v).slice(0, 40), at: Date.now() }); touch(); } },
+    fixed: function () { if (!S.fixed) { S.fixed = true; S.fixedAt = Date.now(); touch(); } },
+    stop: function (i) { if (i > S.maxStop) { S.maxStop = i; touch(); } },
+    quiz: function (qi, first) { if (!(qi in S.quiz)) { S.quiz[qi] = first ? 1 : 0; touch(); } }
+  };
+})();
+
+
+/* ---------- Part 1: find and fix ---------- */
+(function () {
+  var text = "Most sponges can reproduce both sexually and asexually. They reproduce sexually by producing eggs and sperm in the mesophyll; most are hermaphroditic, which means that one sponge can produce both types of gametes. The fertilized eggs become motile larvae that swim about. Sponges reproduce asexually by budding and by forming gemmules (clusters of amoebocytes enclosed in hard spicules). These clusters can withstand adverse conditions that would kill the adult sponge.";
+  var para = document.getElementById('para');
+  var status = document.getElementById('status');
+  var fixrow = document.getElementById('fixrow');
+  var explain = document.getElementById('explain');
+  var answer = document.getElementById('answer');
+  var wrongWord = null, misses = 0, solved = false;
+
+  text.split(' ').forEach(function (tok, i, arr) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'w'; b.textContent = tok;
+    b.addEventListener('click', function () { pick(b, tok); });
+    para.appendChild(b);
+    if (i < arr.length - 1) para.appendChild(document.createTextNode(' '));
+  });
+
+  // Come back to a finished fix after a reload or on another device.
+  FS.onLoad(function (S) {
+    if (!S.fixed) return;
+    var btns = para.querySelectorAll('button.w');
+    for (var i = 0; i < btns.length; i++) {
+      if (clean(btns[i].textContent) === 'mesophyll') {
+        wrongWord = btns[i]; solved = true;
+        btns[i].classList.add('fixed');
+        btns[i].textContent = 'mesohyl' + (btns[i].textContent.match(/[;,.]$/) || [''])[0];
+      }
+    }
+    fixrow.hidden = true; explain.hidden = false;
+    status.className = 'status good';
+    status.textContent = 'You already fixed this one. Follow the sperm below.';
+  });
+
+  function clean(s) { return s.toLowerCase().replace(/[^a-z]/g, ''); }
+
+  function pick(btn, tok) {
+    if (solved || wrongWord) return;
+    if (clean(tok) === 'mesophyll') {
+      wrongWord = btn; btn.classList.add('found'); FS.found();
+      status.className = 'status good';
+      status.textContent = 'Yes, that is the error. Mesophyll belongs to plants. What is the correct sponge word?';
+      fixrow.hidden = false; answer.focus();
+    } else {
+      misses++; FS.miss(tok);
+      btn.classList.add('miss');
+      status.className = 'status bad';
+      status.textContent = '"' + tok.replace(/[^A-Za-z-]/g, '') + '" is correct. ' + (misses >= 2 ? 'Hint: look at where the eggs and sperm are made, and think about which kingdom uses that word.' : 'Try another word.');
+      setTimeout(function () { btn.classList.remove('miss'); }, 1400);
+    }
+  }
+
+  function check() {
+    var v = clean(answer.value);
+    if (v === 'mesohyl') {
+      solved = true; FS.fixed();
+      wrongWord.classList.remove('found'); wrongWord.classList.add('fixed');
+      wrongWord.textContent = 'mesohyl' + (wrongWord.textContent.match(/[;,.]$/) || [''])[0];
+      fixrow.hidden = true; explain.hidden = false;
+      status.className = 'status good';
+      status.textContent = 'Fixed. Now follow the sperm below.';
+    } else {
+      FS.typo(answer.value);
+      status.className = 'status bad';
+      status.textContent = v === 'mesophyll'
+        ? 'That is the word we are replacing. Sponge tissue starts with meso- and ends in -hyl.'
+        : 'Not quite. The sponge layer between the outer cells and the collar cells starts with meso- and ends in -hyl.';
+    }
+  }
+  document.getElementById('check').addEventListener('click', check);
+  answer.addEventListener('keydown', function (e) { if (e.key === 'Enter') check(); });
+})();
+
+/* ---------- Part 2: the journey ---------- */
+(function () {
+  var steps = [
+    { x: 80, y: 300, tag: 'made in A', ring: null,
+      t: 'Sperm form in Sponge A',
+      b: 'Sponge A makes sperm inside its body. Most sponges are hermaphroditic, so the same sponge also makes eggs, but it usually releases sperm and keeps its eggs. That timing helps push fertilization toward a different sponge.' },
+    { x: 160, y: 118, tag: 'out the osculum', ring: 'ring-osc',
+      t: 'Sperm leave through the osculum',
+      b: 'Water flowing through the spongocoel carries the sperm out of the large opening at the top, the osculum.' },
+    { x: 350, y: 190, tag: 'adrift', ring: null,
+      t: 'Sperm drift in open water',
+      b: 'An adult sponge is sessile and cannot move toward a mate. The current does the traveling, so most sperm are lost and a sponge must release a great many.' },
+    { x: 480, y: 260, tag: 'into B', ring: 'ring-pore',
+      t: 'Water pulls sperm into Sponge B',
+      b: 'Sponge B is filter feeding. It draws water through tiny pores in its body wall into the incurrent canals, and a sperm cell rides in with the water.' },
+    { x: 505, y: 262, tag: 'radial canal', ring: 'ring-choano',
+      t: 'The water carries it into a radial canal',
+      b: 'After the pore and incurrent canal, the water flows into a radial canal. In a sponge like Grantia, collar cells line the radial canals, so the sperm has reached the part of the sponge where water is filtered.' },
+    { x: 520, y: 262, tag: 'caught', ring: 'ring-collar',
+      t: 'A collar cell traps the sperm',
+      b: 'Choanocytes (collar cells) catch food from the water, and they also catch the sperm. The sperm cannot reach the egg on its own from here.' },
+    { x: 508, y: 306, tag: 'carried', ring: 'ring-meso', amoeba: true,
+      t: 'An amoebocyte carries it to the egg',
+      b: 'The collar cell passes the sperm to an amoebocyte. This roaming amoebocyte crawls through the mesohyl and delivers the sperm to an egg. This hand-off is how cross fertilization is completed.' },
+    { x: 506, y: 326, tag: 'fertilization', ring: 'ring-meso', zygote: true,
+      t: 'Fertilization in the mesohyl',
+      b: 'The sperm fuses with the egg. The fertilized egg, called a zygote, begins to divide inside Sponge B.' },
+    { x: 620, y: 62, tag: 'larva', ring: 'ring-osc2', larva: true,
+      t: 'A swimming larva leaves',
+      b: 'The embryo becomes a <strong>motile larva</strong> that exits through Sponge B\'s osculum and swims about. It later settles, attaches, and grows into a sessile adult. This is the only mobile stage of the sponge.' }
+  ];
+  var cur = 0, timer = null;
+  var trav = document.getElementById('traveler'), tag = document.getElementById('tag');
+  var tagtext = document.getElementById('tagtext');
+  var egg = document.getElementById('egg'), amoeba = document.getElementById('amoeba');
+  var head = document.getElementById('head'), larva = document.getElementById('larva');
+  var rings = ['ring-osc', 'ring-pore', 'ring-choano', 'ring-collar', 'ring-meso', 'ring-osc2'];
+  var bar = document.getElementById('stepbar');
+  var chips = [];
+
+  steps.forEach(function (s, i) {
+    var c = document.createElement('button');
+    c.type = 'button'; c.className = 'chip'; c.textContent = i + 1;
+    c.setAttribute('aria-label', 'Stop ' + (i + 1) + ': ' + s.t);
+    c.addEventListener('click', function () { stopPlay(); go(i); });
+    bar.appendChild(c); chips.push(c);
+  });
+
+  function go(i) {
+    cur = Math.max(0, Math.min(steps.length - 1, i));
+    var s = steps[cur];
+    trav.setAttribute('transform', 'translate(' + s.x + ' ' + s.y + ')');
+    tag.setAttribute('transform', 'translate(' + s.x + ' ' + s.y + ')');
+    tagtext.textContent = s.tag;
+    rings.forEach(function (r) { document.getElementById(r).classList.toggle('on', r === s.ring); });
+    amoeba.style.opacity = s.amoeba ? 1 : 0;
+    egg.classList.toggle('zyg', !!s.zygote || !!s.larva);
+    larva.style.opacity = s.larva ? 1 : 0;
+    head.style.opacity = s.larva ? 0 : 1;
+    egg.style.opacity = s.larva ? 0.5 : 1;
+    document.getElementById('cap-title').textContent = (cur + 1) + '. ' + s.t;
+    document.getElementById('cap-body').innerHTML = s.b;
+    chips.forEach(function (c, k) {
+      if (k === cur) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current');
+      c.classList.toggle('done', k < cur);
+    });
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === steps.length - 1;
+    FS.stop(cur);
+  }
+  function stopPlay() {
+    if (timer) { clearInterval(timer); timer = null; document.getElementById('play').textContent = 'Play all'; }
+  }
+  document.getElementById('prev').addEventListener('click', function () { stopPlay(); go(cur - 1); });
+  document.getElementById('next').addEventListener('click', function () { stopPlay(); go(cur + 1); });
+  document.getElementById('play').addEventListener('click', function () {
+    if (timer) { stopPlay(); return; }
+    if (cur === steps.length - 1) go(0);
+    this.textContent = 'Pause';
+    timer = setInterval(function () {
+      if (cur >= steps.length - 1) { stopPlay(); return; }
+      go(cur + 1);
+    }, 4200);
+  });
+  go(0);
+})();
+
+/* ---------- Part 3: quick check ---------- */
+(function () {
+  var qs = [
+    { q: 'Where do the eggs develop and get fertilized?',
+      o: ['In the spongocoel', 'In the mesohyl', 'In the osculum', 'In the collar cells'], a: 1,
+      f: 'The mesohyl is the jelly-like layer where eggs develop and the sperm is delivered.' },
+    { q: 'Which cell carries the sperm from the collar cell to the egg?',
+      o: ['Porocyte', 'Epidermal cell', 'Amoebocyte', 'Spicule'], a: 2,
+      f: 'Amoebocytes crawl through the mesohyl, so they can deliver the sperm.' },
+    { q: 'Why does a sponge depend on water currents for fertilization?',
+      o: ['Adult sponges are sessile and cannot move toward a mate', 'Sperm cannot survive outside water', 'Sponges have no eggs', 'Larvae carry the sperm'], a: 0,
+      f: 'Adults are attached to one place, so moving water carries the sperm between sponges.' },
+    { q: 'What does the fertilized egg become?',
+      o: ['A gemmule', 'A bud', 'A motile larva', 'A spicule'], a: 2,
+      f: 'The zygote develops into a swimming larva. Gemmules and buds belong to asexual reproduction.' }
+  ];
+  var root = document.getElementById('quiz'), tally = document.getElementById('tally');
+  var score = 0, answered = 0;
+  qs.forEach(function (item, qi) {
+    var box = document.createElement('div'); box.className = 'q';
+    var p = document.createElement('p'); p.className = 't'; p.textContent = item.q; box.appendChild(p);
+    var opts = document.createElement('div'); opts.className = 'opts'; box.appendChild(opts);
+    var fb = document.createElement('div'); fb.className = 'fb'; fb.setAttribute('aria-live', 'polite'); box.appendChild(fb);
+    var btns = [];
+    item.o.forEach(function (label, oi) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = label;
+      b.addEventListener('click', function () {
+        if (b.classList.contains('wrong') || box.dataset.done) return;
+        if (oi === item.a) {
+          b.classList.add('right'); box.dataset.done = '1';
+          if (!box.dataset.missed) score++;
+          FS.quiz(qi, !box.dataset.missed);
+          answered++;
+          fb.textContent = item.f;
+          btns.forEach(function (x) { x.disabled = true; });
+          tally.textContent = answered + ' of ' + qs.length + ' answered, ' + score + ' correct on the first try.';
+        } else {
+          b.classList.add('wrong'); b.disabled = true; box.dataset.missed = '1';
+          fb.textContent = 'Not that one. Try again.';
+        }
+      });
+      opts.appendChild(b); btns.push(b);
+    });
+    root.appendChild(box);
+  });
+})();
+</script>
+</body>
+</html>

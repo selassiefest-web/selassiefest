@@ -219,6 +219,60 @@ function videoReportHtml(students: VStudent[], excluded: number) {
 const footer = `<p style="color:#5b6b7a;font-size:0.85rem;">Sent automatically from the
   <a href="https://selassiefest.com/BIOS102/dashboard.html">BIOS102 Lab Companion</a>. Instructor accounts are not included.</p>`;
 
+// ── Follow the Sperm (BIOS102/follow-the-sperm.html) ─────────────────────
+// Saved under exercise_number 9202 as rows[0].followSperm:
+//   { found, foundAt, fixed, fixedAt, picks[{w,at}], typos[{w,at}], quiz{qi:1|0}, maxStop, openedAt }
+// "Found" = tapped the wrong word (mesophyll); "fixed" = also typed mesohyl.
+async function spermReport(admin: ReturnType<typeof createClient>) {
+  const { data: roster, error: rErr } = await admin.from("bios102_students").select("email, display_name, major, allowed_pages");
+  if (rErr) throw rErr;
+  const { data: tables, error: tErr } = await admin.from("bios102_student_tables")
+    .select("email, rows, updated_at").eq("exercise_number", 9202).eq("table_name", "Follow the Sperm");
+  if (tErr) throw tErr;
+  const { data: gr, error: gErr } = await admin.from("bios102_grade_rows").select("email, data");
+  if (gErr) throw gErr;
+  const dropped = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
+  const byEmail = new Map((tables ?? []).map((t) => [String(t.email).toLowerCase(), t]));
+  const rows = (roster ?? [])
+    .filter((s) => !/^instructor/i.test(s.major ?? "") && !s.allowed_pages && !dropped.has(String(s.email).toLowerCase()))
+    .map((s) => {
+      const t = byEmail.get(String(s.email).toLowerCase());
+      const st = t && Array.isArray(t.rows) && t.rows[0] ? t.rows[0].followSperm : null;
+      const q = st?.quiz && typeof st.quiz === "object" ? Object.values(st.quiz as Record<string, number>) : [];
+      return {
+        name: s.display_name as string, opened: !!st, found: !!st?.found, foundAt: st?.foundAt ?? 0,
+        fixed: !!st?.fixed, fixedAt: st?.fixedAt ?? 0,
+        wrongTaps: Array.isArray(st?.picks) ? st.picks.length : 0,
+        typos: Array.isArray(st?.typos) ? st.typos.length : 0,
+        stops: st ? (st.maxStop ?? 0) + 1 : 0,
+        quizDone: q.length, quizFirst: q.filter((x) => x === 1).length,
+        last: t ? t.updated_at : null,
+      };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+  const found = rows.filter((r) => r.found);
+  const fixed = rows.filter((r) => r.fixed);
+  const openedNotFound = rows.filter((r) => r.opened && !r.found);
+  const notOpened = rows.filter((r) => !r.opened);
+  const td = "padding:6px 10px;border-bottom:1px solid #d5dde3;";
+  const tbl = (head: string[], body: string[][]) => body.length
+    ? `<table style="border-collapse:collapse;font-size:0.92rem;margin:6px 0 18px;"><tr>${head.map((h) => `<th style="${td}text-align:left;background:#eef3f6;">${h}</th>`).join("")}</tr>${body.map((r) => `<tr>${r.map((c) => `<td style="${td}">${c}</td>`).join("")}</tr>`).join("")}</table>`
+    : `<p style="color:#5b6b7a;margin:6px 0 18px;">None.</p>`;
+  const html = `
+    <p>Follow the Sperm (Exercise 7), status as of ${when(Date.now())}. ${rows.length} students on the roster.</p>
+    <p><strong>${found.length}</strong> found the wrong word (&ldquo;mesophyll&rdquo;); <strong>${fixed.length}</strong> also typed the right one (&ldquo;mesohyl&rdquo;); ${openedNotFound.length} opened it but have not found it; ${notOpened.length} have not opened it.</p>
+    <h3 style="margin:18px 0 0;">Found the wrong word (${found.length})</h3>
+    ${tbl(["Student", "Found it", "Wrong taps first", "Fixed it", "Wrong typed", "Journey stops seen", "Quick check (first try)"],
+      found.map((r) => [`<strong>${escapeHtml(r.name)}</strong>`, when(r.foundAt), String(r.wrongTaps),
+        r.fixed ? when(r.fixedAt) : "not yet", String(r.typos), `${r.stops} of 9`, r.quizDone ? `${r.quizFirst} of ${r.quizDone} answered` : "none"]))}
+    <h3 style="margin:0;">Opened, have not found it (${openedNotFound.length})</h3>
+    ${list(openedNotFound.map((r) => `<strong>${escapeHtml(r.name)}</strong> &middot; ${r.wrongTaps} wrong tap${r.wrongTaps === 1 ? "" : "s"}`))}
+    <h3 style="margin:0;">Have not opened it (${notOpened.length})</h3>
+    ${list(notOpened.map((r) => `<strong>${escapeHtml(r.name)}</strong>`))}
+    <p style="color:#5b6b7a;font-size:0.85rem;">&ldquo;Wrong taps first&rdquo; counts other words tapped before the student found the error. Dropped and on-leave students and instructor accounts are not included.
+    Sent automatically from the <a href="https://selassiefest.com/BIOS102/dashboard.html">BIOS102 Lab Companion</a>.</p>`;
+  return { html, subject: `Follow the Sperm: ${found.length} of ${rows.length} found the wrong word` };
+}
+
 Deno.serve(async (req) => {
   if (!WEBHOOK_SECRET || req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -265,6 +319,19 @@ Deno.serve(async (req) => {
       const to = body.test ? TO : g.email;
       await send("BIOS102: your access to the Cnidaria video quiz and study lesson", html, to, INSTRUCTOR);
       return new Response(JSON.stringify({ ok: true, sent: true, to }), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
+    }
+  }
+
+  // {"mode":"sperm"} emails the Follow the Sperm report (who found the wrong word) to the instructor.
+  // {"test":true} sends it to Stephen instead.
+  if (mode === "sperm") {
+    try {
+      const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const { html, subject } = await spermReport(admin);
+      await send(subject, html, body.test ? TO : INSTRUCTOR);
+      return new Response(JSON.stringify({ ok: true, sent: true, to: body.test ? TO : INSTRUCTOR }), { status: 200 });
     } catch (err) {
       return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
     }
@@ -318,15 +385,17 @@ Deno.serve(async (req) => {
       // {"lesson":"videograde"} announces the Cnidaria video quiz (3 Lab 7 points, due Tue Oct 27 3pm) and the My grades planner.
       // Students the gradebook marks dropped or on leave are left out.
       const videograde = body.lesson === "videograde";
+      // {"lesson":"sperm"} tells students Follow the Sperm (Exercise 7) is required.
+      const sperm = body.lesson === "sperm";
       let excluded = new Set<string>();
-      if (videograde) {
+      if (videograde || sperm) {
         const { data: gr, error: gErr } = await admin.from("bios102_grade_rows").select("email, data");
         if (gErr) throw gErr;
         excluded = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
       }
       const recipients = body.test
         ? [{ email: TO, name: "Preview Student" }]
-        : videograde ? students.filter((s) => !excluded.has(String(s.email).toLowerCase())) : students;
+        : (videograde || sperm) ? students.filter((s) => !excluded.has(String(s.email).toLowerCase())) : students;
       const failed: string[] = [];
       // {"lesson":"spores"} announces the Studio vs. Duplex lesson instead of a quiz.
       const spores = body.lesson === "spores";
@@ -336,8 +405,15 @@ Deno.serve(async (req) => {
       const mockopen = body.lesson === "mockopen";
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
-        const subject = videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
-        const html = videograde ? `
+        const subject = sperm ? "BIOS102 required: Follow the Sperm (Exercise 7)" : videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
+        const html = sperm ? `
+              <p>Hi ${first},</p>
+              <p><strong>You are required to complete &ldquo;Follow the Sperm,&rdquo; an Exercise 7 (Porifera) activity on the BIOS102 Lab Companion.</strong> It takes about 10 minutes.</p>
+              <p>First you find and fix the one wrong word hiding in a paragraph about sponge reproduction. Then you follow one sperm cell, stop by stop, from Sponge A to the egg it fertilizes in Sponge B, and answer four quick-check questions.</p>
+              <p><a href="https://selassiefest.com/BIOS102/follow-the-sperm.html">Open Follow the Sperm</a></p>
+              <p>Log in the usual way: go to <a href="https://selassiefest.com/BIOS102/index.html">selassiefest.com/BIOS102</a>, type your class email, and click the link that arrives. Your progress saves to your account, and I can see who has found the wrong word. You can also reach it from the Exercise 7 card on your dashboard.</p>
+              <p>If something does not load, reply to this email.</p>
+              <p>Professor Harris</p>` : videograde ? `
               <p>Hi ${first},</p>
               <p>Two new things are ready on the BIOS102 Lab Companion. Both need you to log in the usual way: go to <a href="https://selassiefest.com/BIOS102/index.html">selassiefest.com/BIOS102</a>, type your class email, and click the link that arrives.</p>
               <p><strong>1. Cnidaria video quiz (Lab 7 movie worksheet). Completing it earns your 3 Lab 7 participation points. It is due Tuesday, Oct 27 at 3:00 PM Central.</strong><br>
