@@ -66,7 +66,9 @@ button:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-vi
 textarea,input[type=text]{width:100%;font:inherit;padding:12px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
 textarea{min-height:90px;resize:vertical}
 .chip{font-weight:600;padding:10px 12px;border:2px dashed var(--line);background:transparent;border-radius:99px;cursor:pointer;text-align:left}
-.sortcard{text-align:center;padding:26px 16px}
+.sortcard{text-align:center;padding:18px 16px}
+.sortcard .guess{margin:10px 0 0}
+#fb .fb{margin:0 0 10px}
 .sortcard .name{font-size:1.7rem;font-weight:800;line-height:1.15}
 .guess{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0;font-weight:600;cursor:pointer}
 .guess input{width:22px;height:22px}
@@ -627,7 +629,7 @@ function makeSort(root,state,onUpdate,onDone){
     root.innerHTML='<p class="muted small">Card '+(Math.min(doneCount+1,state.total))+' of '+state.total+'</p>'+
       '<div class="card sortcard"><div class="name">'+esc(c.n)+'</div>'+
       '<label class="guess"><input type="checkbox" id="g"> I’m just guessing</label></div>'+
-      '<div class="row">'+opts.map(function(o){return '<button class="btn" data-a="'+o.v+'">'+o.l+'<br><small>'+o.s+'</small></button>'}).join('')+'</div>'+
+      '<div class="row" id="opts">'+opts.map(function(o){return '<button class="btn" data-a="'+o.v+'">'+o.l+'<br><small>'+o.s+'</small></button>'}).join('')+'</div>'+
       '<div id="fb" aria-live="polite"></div>';
     Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){
       b.addEventListener('click',function(){answer(c,this.getAttribute('data-a'))});
@@ -645,7 +647,8 @@ function makeSort(root,state,onUpdate,onDone){
       if(mi>=0&&state.first[c.id].ok)S.missed.splice(mi,1);
     }
     save();
-    Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){b.disabled=true});
+    // swap the answer buttons for the feedback so Next card appears in the same spot, no scrolling
+    root.querySelector('#opts').classList.add('hide');
     var msg=ok?(sure?'Correct, and you knew it.':'Correct! You were guessing, but your instincts were right.')
               :(sure?'Not quite. You felt sure, so this one is worth noticing.':'Not quite. Good that you flagged it as a guess.');
     root.querySelector('#fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'">'+(ok?'✓ ':'✗ ')+msg+
