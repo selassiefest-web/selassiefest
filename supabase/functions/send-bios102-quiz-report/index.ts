@@ -324,6 +324,28 @@ Deno.serve(async (req) => {
     }
   }
 
+  // {"mode":"welcome","email":"..."} sends a roster instructor their sign-in steps. test:true goes to Stephen.
+  if (mode === "welcome") {
+    try {
+      const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const { data: g, error } = await admin.from("bios102_students")
+        .select("email, display_name, major").ilike("email", String(body.email ?? "")).maybeSingle();
+      if (error) throw error;
+      if (!g || !/^instructor/i.test(g.major ?? "")) return new Response(JSON.stringify({ error: "not an instructor on the roster" }), { status: 400 });
+      const html = `<p>Hello,</p>
+        <p>You now have an instructor login for the BIOS102 Lab Companion.</p>
+        <p>Go to <a href="https://selassiefest.com/BIOS102/index.html">https://selassiefest.com/BIOS102/index.html</a>, enter <strong>${escapeHtml(g.email)}</strong>, and click the link that is emailed to you. The link takes you to the dashboard.</p>
+        <p>The new Exercise 7 activity is at <a href="https://selassiefest.com/BIOS102/follow-the-sperm.html">https://selassiefest.com/BIOS102/follow-the-sperm.html</a>.</p>
+        <p>If the sign-in email does not arrive, check your spam folder, or reply to this message.</p>
+        <p>Professor Harris</p>`;
+      const to = body.test ? TO : g.email;
+      await send("BIOS102 Lab Companion: your login is ready", html, to, INSTRUCTOR);
+      return new Response(JSON.stringify({ ok: true, sent: true, to }), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
+    }
+  }
+
   // {"mode":"instructors","to":[...]} tells lab instructors about Follow the Sperm, including the planted error.
   // {"test":true} sends one copy to Stephen instead.
   if (mode === "instructors") {
