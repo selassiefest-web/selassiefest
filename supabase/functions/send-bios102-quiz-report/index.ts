@@ -90,11 +90,11 @@ function studentLine(s: Student) {
   return bits.join(" &middot; ");
 }
 
-async function send(subject: string, html: string, to = TO) {
+async function send(subject: string, html: string, to = TO, replyTo?: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to, subject, html }),
+    body: JSON.stringify({ from: FROM, to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) }),
   });
   if (!res.ok) throw new Error(await res.text());
 }
@@ -239,6 +239,32 @@ Deno.serve(async (req) => {
         body.test ? TO : INSTRUCTOR,
       );
       return new Response(JSON.stringify({ ok: true, sent: true, to: body.test ? TO : INSTRUCTOR, finished: fin }), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
+    }
+  }
+
+  // {"mode":"guest","email":"..."} sends a page-restricted student their sign-in instructions.
+  // Only roster rows with allowed_pages qualify; `test: true` sends the copy to Stephen instead.
+  if (mode === "guest") {
+    try {
+      const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const { data: g, error } = await admin.from("bios102_students")
+        .select("email, display_name, allowed_pages").ilike("email", String(body.email ?? "")).maybeSingle();
+      if (error) throw error;
+      if (!g || !g.allowed_pages) return new Response(JSON.stringify({ error: "not a page-restricted student" }), { status: 400 });
+      const html = `<p>Hello,</p>
+        <p>Professor Harris has given you access to two pages of the BIOS102 Lab Companion:</p>
+        <ul>
+          <li><a href="https://selassiefest.com/BIOS102/cnidaria-video-quiz.html">Cnidaria Video Quiz</a></li>
+          <li><a href="https://selassiefest.com/BIOS102/porifera-cnidaria.html">Sponges vs. Stingers study lesson</a> (Porifera and Cnidaria)</li>
+        </ul>
+        <p>To sign in, go to <a href="https://selassiefest.com/BIOS102/index.html">https://selassiefest.com/BIOS102/index.html</a>,
+        enter <strong>${escapeHtml(g.email)}</strong>, and open the link that is emailed to you. It takes you straight to the video quiz, and your progress saves to your account.</p>
+        <p style="color:#5b6b7a;font-size:0.85rem;">Questions? Reply to this email to reach Professor Harris.</p>`;
+      const to = body.test ? TO : g.email;
+      await send("BIOS102: your access to the Cnidaria video quiz and study lesson", html, to, INSTRUCTOR);
+      return new Response(JSON.stringify({ ok: true, sent: true, to }), { status: 200 });
     } catch (err) {
       return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
     }
