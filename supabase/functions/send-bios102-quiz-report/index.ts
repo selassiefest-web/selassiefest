@@ -324,6 +324,34 @@ Deno.serve(async (req) => {
     }
   }
 
+  // {"mode":"instructors","to":[...]} tells lab instructors about Follow the Sperm, including the planted error.
+  // {"test":true} sends one copy to Stephen instead.
+  if (mode === "instructors") {
+    try {
+      const to: string[] = body.test ? [TO] : (Array.isArray(body.to) ? body.to.map(String) : []);
+      if (!to.length) return new Response(JSON.stringify({ error: "no recipients" }), { status: 400 });
+      const html = `<p>Hello,</p>
+        <p>I have added a required Exercise 7 (Porifera) activity for BIOS102 students, <strong>Follow the Sperm</strong>. It takes about 10 minutes. You can open it here:</p>
+        <p><a href="https://selassiefest.com/BIOS102/follow-the-sperm.html">https://selassiefest.com/BIOS102/follow-the-sperm.html</a></p>
+        <p>Sign in at <a href="https://selassiefest.com/BIOS102/index.html">selassiefest.com/BIOS102</a> with your UWP email. It also appears on the Exercise 7 card on the dashboard.</p>
+        <p><strong>A note about the incorrect word.</strong> The first part is a paragraph on sponge reproduction with one deliberately wrong word. Students tap the word they think is wrong, then type the correction.</p>
+        <ul>
+          <li>The wrong word is <strong>&ldquo;mesophyll&rdquo;</strong> (the middle tissue of a plant leaf, so it cannot apply to a sponge). It appears in the sentence about producing eggs and sperm.</li>
+          <li>The correct word is <strong>&ldquo;mesohyl&rdquo;</strong>, the jelly-like layer between a sponge's outer cells and its collar cells, where amoebocytes crawl and eggs develop.</li>
+        </ul>
+        <p>The second part follows one sperm cell from Sponge A through the osculum, the water, a pore, a radial canal, a collar cell and an amoebocyte to the egg in Sponge B (nine stops). The third part is a four-question quick check.</p>
+        <p>The tool records who finds the wrong word and who fixes it, and I receive that report, so please point your students to it.</p>
+        <p>Professor Harris</p>`;
+      for (const t of to) {
+        await send("BIOS102 Exercise 7: Follow the Sperm (note on the incorrect word)", html, t, INSTRUCTOR);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      return new Response(JSON.stringify({ ok: true, sent: to.length, to }), { status: 200 });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: String((err as Error)?.message ?? err) }), { status: 500 });
+    }
+  }
+
   // {"mode":"sperm"} emails the Follow the Sperm report (who found the wrong word) to the instructor.
   // {"test":true} sends it to Stephen instead.
   if (mode === "sperm") {
