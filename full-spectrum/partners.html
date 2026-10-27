@@ -150,9 +150,9 @@
   </header>
 
   <div class="tabs" role="tablist">
-    <button class="tab on" id="tabPartners" data-tab="partners" role="tab">Partners</button>
-    <button class="tab" id="tabGrants" data-tab="grants" role="tab">Grants <span class="p-cat" id="grantBadge"></span></button>
-    <button class="tab" id="tabLetters" data-tab="letters" role="tab">Letters <span class="p-cat" id="letterBadge"></span></button>
+    <button class="tab on" id="tabPartners" data-tab="partners" role="tab" aria-selected="true">Partners</button>
+    <button class="tab" id="tabGrants" data-tab="grants" role="tab" aria-selected="false">Grants <span class="p-cat" id="grantBadge"></span></button>
+    <button class="tab" id="tabLetters" data-tab="letters" role="tab" aria-selected="false">Letters <span class="p-cat" id="letterBadge"></span></button>
   </div>
   <div id="partnersView">
   <div class="stages" id="stages"></div>
@@ -345,8 +345,10 @@
       'Student laptop | | 1 | laptop\nDJ software license | One station license or a classroom plan | 1 | license\nStudent workbook printing | 13 copies for a lesson | 13 | copies\nCourse workbook package | One agreed class set | 1 | set\nBusiness-card printing | Sponsor QR-code cards, one campaign batch | 1 | batch\nStudent certificates | One class set | 1 | set\nDesign, hosting or technical services | | 1 | service']
   };
   var KEY = 'fsPartnerSession';
-  var state = { session:null, partners:[], activity:[], grants:[], grantsOk:true, stageFilter:'', gStatusFilter:'active', tab:'partners', open:{} };
+  var state = { session:null, partners:[], activity:[], grants:[], grantsOk:true, stageFilter:'', gStatusFilter:'active', tab:'partners', open:{}, outgoing:[], letters:[] };
   var $ = function(id){ return document.getElementById(id); };
+  // returnValue survives between opens, so reset it: otherwise Esc after an earlier Save would save again.
+  function openDlg(id){ var d = $(id); d.returnValue = ''; d.showModal(); }
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function loadSession(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
   function saveSession(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
@@ -429,12 +431,13 @@
       STAGES.map(function(s){ return '<button class="stage-chip' + (state.stageFilter === s[0] ? ' on' : '') + '" data-stage="' + s[0] + '" style="border-left:5px solid ' + s[2] + '"><b>' + (counts[s[0]] || 0) + '</b><span>' + s[1] + '</span></button>'; }).join('') +
       (committed ? '<div class="stage-chip" style="cursor:default"><b>$' + committed.toLocaleString() + '</b><span>Committed value</span></div>' : '');
     var rows = filtered(), t0 = today(), wk = new Date(t0); wk.setDate(wk.getDate() + 7);
+    var logs = {}; state.activity.forEach(function(a){ (logs[a.partner_id] = logs[a.partner_id] || []).push(a); });
     $('count').textContent = 'Showing ' + rows.length + ' of ' + state.partners.length + ' partners';
     $('list').innerHTML = rows.map(function(p){
       var st = STAGE[p.stage] || {label:p.stage, color:'var(--line-strong)'};
       var d = parseDate(p.next_step_due), cls = d ? (d < t0 ? 'over' : (d <= wk ? 'soon' : '')) : '';
       var contacts = (p.contacts || []).map(function(c){ return esc(c.name) + (c.role ? ' <span class="p-cat">(' + esc(c.role) + ')</span>' : '') + (c.email ? ' &middot; <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' : '') + (c.phone ? ' &middot; <a href="tel:' + esc(c.phone.replace(/[^0-9+]/g,'')) + '">' + esc(c.phone) + '</a>' : ''); }).join('<br>');
-      var log = state.activity.filter(function(a){ return a.partner_id === p.id; });
+      var log = logs[p.id] || [];
       return '<div class="card p" style="--sc:' + st.color + '">' +
         '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + '</span></div>' +
         '<div class="chips">' + (p.partner_types || []).map(function(t){ return '<span class="chip">' + esc(TYPES[t] || t) + '</span>'; }).join('') + (p.program_parts || []).map(function(t){ return '<span class="chip part">' + esc(PARTS[t] || t) + '</span>'; }).join('') + '</div>' +
@@ -564,7 +567,7 @@
     }).join('');
   }
 
-  $('outgoing') && $('outgoing').addEventListener('click', async function(e){
+  $('outgoing').addEventListener('click', async function(e){
     var b = e.target.closest('button'); if (!b) return;
     var ls = state.outgoing || [];
     if (b.dataset.printOne) { printLetters(ls.filter(function(l){ return l.id === b.dataset.printOne; })); return; }
@@ -623,6 +626,7 @@
   });
   ['tabPartners','tabGrants','tabLetters'].forEach(function(id){ $(id).addEventListener('click', function(){
     state.tab = $(id).getAttribute('data-tab');
+    ['tabPartners','tabGrants','tabLetters'].forEach(function(t){ $(t).setAttribute('aria-selected', String($(t).getAttribute('data-tab') === state.tab)); });
     $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants'); $('tabLetters').classList.toggle('on', state.tab === 'letters');
     $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants'; $('lettersView').hidden = state.tab !== 'letters';
     $('addBtn').style.display = state.tab === 'partners' ? '' : 'none'; }); });
@@ -637,7 +641,7 @@
     set('gSubmitted', g.submitted_on); set('gDecision', g.decision_on); set('gNext', g.next_step); set('gNextDue', g.next_step_due); set('gOwner', g.owner); set('gUrl', g.url);
     set('gElig', g.eligibility); set('gMatch', g.match_required); set('gNotes', g.notes);
     $('gVerified').checked = !!g.verified; $('gActive').checked = g.active !== false; $('gDelete').style.display = id ? '' : 'none';
-    $('grantDlg').showModal();
+    openDlg('grantDlg');
   }
   $('gAdd').addEventListener('click', function(){ openGrant(null); });
   $('grantDlg').addEventListener('close', async function(){
@@ -666,7 +670,7 @@
     $('logKind').value = 'call'; $('logSummary').value = '';
     $('logStage').value = p.stage === 'not_contacted' ? 'reached_out' : p.stage;
     $('logNext').value = p.next_step || ''; $('logDue').value = p.next_step_due || '';
-    $('logDlg').showModal();
+    openDlg('logDlg');
   }
   $('logDlg').addEventListener('close', async function(){
     if ($('logDlg').returnValue !== 'save' || !logId) return;
@@ -695,7 +699,7 @@
     Object.keys(FLY_SIZES).forEach(function(k){ $('flyS_' + k).value = (f.sizes || {})[k] || ''; });
     $('flyNote').value = f.note || '';
     $('flyRemove').hidden = !p.flyer;
-    $('flyDlg').showModal();
+    openDlg('flyDlg');
   }
   $('flyDlg').addEventListener('close', async function(){
     if ($('flyDlg').returnValue !== 'save' || !flyId) return;
@@ -708,7 +712,7 @@
   });
   $('flyRemove').addEventListener('click', async function(){
     if (!flyId || !confirm('Remove this flyer from their page? The steps and sizes are cleared.')) return;
-    $('flyDlg').close();
+    $('flyDlg').close('cancel');
     try { await rpc('fs_flyer_staff_save', { p_session: state.session.sessionToken, p_partner: flyId, p: { on: false } }); await load(); } catch(err){ alert('Could not remove: ' + err.message); }
   });
 
@@ -726,7 +730,7 @@
     document.querySelectorAll('#eTypes input').forEach(function(i){ i.checked = (p.partner_types || []).indexOf(i.value) >= 0; });
     document.querySelectorAll('#eParts input').forEach(function(i){ i.checked = (p.program_parts || []).indexOf(i.value) >= 0; });
     $('eDelete').style.display = id ? '' : 'none';
-    $('editDlg').showModal();
+    openDlg('editDlg');
   }
   $('addBtn').addEventListener('click', function(){ openEdit(null); });
   $('editDlg').addEventListener('close', async function(){
