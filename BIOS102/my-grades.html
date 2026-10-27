@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>BIOS102 Lab Companion | My grades</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/style.css" />
+  <style>
+    .wrap.mid { max-width: 920px; }
+    .card2 { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); padding: 16px 18px; margin-bottom: 18px; }
+    .card2 h2 { font-size: 1.15rem; margin-bottom: 6px; }
+    .help { font-size: .84rem; color: var(--text-dim); line-height: 1.55; margin-top: 6px; }
+    .lead { font-size: .92rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px; }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 8px 0 12px; }
+    .tiles div { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: rgba(255,255,255,.03); }
+    .tiles small { display: block; color: var(--text-dim); font-size: .78rem; line-height: 1.4; }
+    .tiles b { display: block; font-size: 1.7rem; font-weight: 500; margin: 2px 0; }
+    table.t { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    table.t th, table.t td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; font-variant-numeric: tabular-nums; }
+    table.t th:first-child, table.t td:first-child { text-align: left; }
+    table.t thead th { color: var(--accent); font-weight: 500; }
+    .scroll { overflow-x: auto; }
+    .bar { height: 7px; border-radius: 4px; background: rgba(255,255,255,.1); overflow: hidden; min-width: 90px; }
+    .bar i { display: block; height: 100%; background: var(--accent); }
+    .ctl { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; margin: 10px 0; font-size: .88rem; color: var(--text-dim); }
+    select, input[type=number] { font-family: inherit; font-size: .9rem; padding: 6px 9px; border-radius: 6px; border: 1px solid var(--border); background: #0b1210; color: var(--text); }
+    .b { font-family: inherit; font-size: .86rem; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,.05); color: var(--text); cursor: pointer; }
+    .b:hover { border-color: var(--accent); }
+    .b.pri { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chip { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-panel); }
+    .chip button { background: none; border: 0; color: var(--text-dim); cursor: pointer; margin-left: 4px; }
+    .note { margin: 10px 0; padding: 10px 14px; border-radius: 8px; font-size: .9rem; line-height: 1.55; background: var(--accent-soft); }
+    .note.amber { background: var(--amber-soft); }
+    .row { display: grid; grid-template-columns: minmax(140px, 210px) minmax(110px, 1fr) 86px 96px; gap: 10px; align-items: center; padding: 8px 2px; border-bottom: 1px solid var(--border); }
+    .row.ex { opacity: .5; }
+    .row small { display: block; color: var(--text-dim); font-size: .76rem; }
+    .row input[type=range] { width: 100%; accent-color: var(--accent); }
+    .row.mk { grid-template-columns: minmax(150px, 220px) 1fr 1fr; }
+    .mk .cell { font-size: .82rem; color: var(--text-dim); }
+    .mk .cell input[type=range] { width: 100%; accent-color: var(--accent); }
+    @media (max-width: 640px) { .row, .row.mk { grid-template-columns: 1fr; } }
+    .x { font-size: .84rem; color: var(--text-dim); display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="topbar" class="topbar"></div>
+  <div class="wrap mid" id="app"><p class="lead" id="loading">Loading your grades&hellip;</p></div>
+  <footer class="site-foot">BIOS102 Lab Companion &middot; your grades are private to you and your instructors</footer>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/BIOS102/js/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  var session = BIOS.requireSession();
+  if (!session) return;
+  BIOS.mountTopbar(session);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var isNum = function (v) { return typeof v === 'number' && isFinite(v); };
+  var num = function (n) { return String(Math.round(n * 100) / 100); };
+  var f = function (v, d) { return isNum(v) ? v.toFixed(d == null ? 1 : d) : '-'; };
+  var pc = function (v) { return v == null ? '-' : f(v, 2) + '%'; };
+
+  /* ---- how this course is graded (published assignments in the Canvas course) ---- */
+  // Total points, no category weights: grade = points earned / points in the whole course.
+  // An excused assignment leaves the course entirely (it is not a zero and not a score).
+  var LATE = 10;          // Quiz 7 was published after the grade export the totals come from
+  var BASE = 440;         // 15 assignments + 30 participation + 35 lab write-ups + 70 quizzes + 290 exams
+  var ITEMS = [
+    ['Assignments', 'Lab 1a: Scientific Method', 1.75], ['Assignments', 'Lab 1a: Phylogeny Reading', 2.5], ['Assignments', 'Lab 1a: Evolution Videos', 2],
+    ['Assignments', 'Lab 1a: Strange Fish (Part I)', 2], ['Assignments', 'Lab 1a: Strange Fish (Part II)', 5], ['Assignments', 'Lab 1a: Strange Fish (Part III)', 1.75],
+    ['Participation', 'Lab 1', 3], ['Participation', 'Labs 2/3', 3], ['Participation', 'Lab 4', 3], ['Participation', 'Lab 5', 3], ['Participation', 'Lab 6', 3],
+    ['Participation', 'Lab 7', 3], ['Participation', 'Lab 8', 3], ['Participation', 'Lab 9', 3], ['Participation', 'Lab 10', 3], ['Participation', 'Lab 11', 3],
+    ['Lab write-ups', 'Pilobolus Lab Write-Up', 15], ['Lab write-ups', 'Animal Behavior Lab Write-Up', 20],
+    ['Quizzes', 'Quiz 1', 10], ['Quizzes', 'Quiz 2', 10], ['Quizzes', 'Quiz 3', 10], ['Quizzes', 'Quiz 4', 10], ['Quizzes', 'Quiz 5', 10], ['Quizzes', 'Quiz 6', 10], ['Quizzes', 'Quiz 7', 10],
+    ['Exams', 'Exam 1', 120, 'exam1'], ['Exams', 'Exam 2', 50, 'exam2'], ['Exams', 'Exam 3', 120, 'exam3']
+  ].map(function (a) { return { g: a[0], n: a[1], p: a[2], key: a[3] || null }; });
+  var STD = { assignments: 15, participation: 30, labs: 35, quizzes: 60 };
+  var GROUP_LABEL = { assignments: 'Lab 1a assignments', participation: 'Lab participation', labs: 'Lab write-ups', quizzes: 'Quizzes' };
+
+  var D = null, data = null, cv = null, S = { exc: [], pick: { item: 0, status: 'posted', score: null }, mk: {}, pj: null, init: false };
+
+  function cvOf() { return { cp: cv.cp, cd: cv.cd, fp: cv.fp, fd: cv.fd + LATE, g: cv.g }; }
+  function autoExcused() { return (data.excused || []).filter(function (k) { return !isNum(data[k]); }); }
+  function exPoints(keys) { return keys.reduce(function (s, k) { var it = ITEMS.filter(function (x) { return x.key === k; })[0]; return s + (it ? it.p : 0); }, 0); }
+  function bandOf(p) { return p >= 90 ? 'A' : p >= 80 ? 'B' : p >= 70 ? 'C' : p >= 60 ? 'D' : 'F'; }
+
+  /* ---- make-up work: graded points that are lost today and could be turned in ---- */
+  function lostGroups() {
+    var g = cv.g || {}, out = [];
+    ['assignments', 'participation', 'labs', 'quizzes'].forEach(function (k) {
+      var x = g[k]; if (!x || !isNum(x.cd) || !isNum(x.cp)) return;
+      var L = x.cd - x.cp; if (L > 0.01) out.push({ key: k, L: L, cp: x.cp, cd: x.cd });
+    });
+    return out;
+  }
+  function mkRecovered() {
+    var tot = 0;
+    lostGroups().forEach(function (g) { var m = S.mk[g.key]; if (m && m.pts > 0) tot += Math.min(m.pts, g.L) * m.credit / 100; });
+    return tot;
+  }
+
+  /* ---- excuse machine ---- */
+  function excuseCalc(list) {
+    var c = cvOf(), cur = { n: c.cp, d: c.cd }, fin = { n: c.fp, d: c.fd }, p = 0;
+    list.forEach(function (e) {
+      var it = ITEMS[e.item], s = e.status === 'missing' ? 0 : e.score; p += it.p;
+      if (e.status === 'posted') { cur.n -= s; cur.d -= it.p; }
+      fin.n -= s; fin.d -= it.p;
+    });
+    return { cur: cur, fin: fin, removed: p, base: c.fd, c: c };
+  }
+  function defaults(i) {
+    var it = ITEMS[i], v = it.key ? data[it.key] : null;
+    return it.key ? (isNum(v) ? { status: 'posted', score: v } : { status: 'missing', score: 0 }) : { status: 'posted', score: null };
+  }
+  var STATES = { posted: 'Graded and posted', unposted: 'Graded, not posted yet', missing: 'No score (not taken or not graded)' };
+
+  function excuseHTML() {
+    var c = cvOf(), h = '<div class="card2" id="sec-excuse"><h2>If I were excused from an assignment</h2>' +
+      '<p class="lead">A grade is <b>points earned ÷ points in the whole course</b> (' + BASE + ' points). When an assignment is <b>excused</b>, it is taken out of the course completely: it is not counted as a zero and it is not counted as a score. The course gets smaller and your grade is worked out on what is left.</p>';
+    var pre = BASE - c.fd; if (pre > 0.01) h += '<div class="note">You are already excused from <b>' + num(pre) + ' points</b> of work, so the whole course is <b>' + num(c.fd) + ' points</b> for you. That is already counted in every number here.</div>';
+    var ae = autoExcused(); if (ae.length) h += '<div class="note amber">You are excused from <b>' + ae.map(function (k) { return ITEMS.filter(function (x) { return x.key === k; })[0].n; }).join(' and ') + '</b>, so the course is <b>' + num(c.fd - exPoints(ae)) + ' points</b> for you. Use the box below to see what that excuse does, compared with not being excused.</div>';
+    var groups = {}; ITEMS.forEach(function (it, i) { (groups[it.g] = groups[it.g] || []).push('<option value="' + i + '"' + (i === S.pick.item ? ' selected' : '') + '>' + esc(it.n) + ' (' + it.p + ' pts)</option>'); });
+    h += '<div class="ctl"><label>Excuse <select id="ex-item">' + Object.keys(groups).map(function (g) { return '<optgroup label="' + g + '">' + groups[g].join('') + '</optgroup>'; }).join('') + '</select></label>' +
+      '<label>Status of that work <select id="ex-status">' + Object.keys(STATES).map(function (k) { return '<option value="' + k + '"' + (S.pick.status === k ? ' selected' : '') + '>' + STATES[k] + '</option>'; }).join('') + '</select></label>' +
+      (S.pick.status === 'missing' ? '' : '<label>Score you earned <input type="number" id="ex-score" step="any" min="0" style="width:84px" value="' + (isNum(S.pick.score) ? S.pick.score : '') + '"> of ' + ITEMS[S.pick.item].p + '</label>') +
+      '<button class="b pri" type="button" id="ex-add">Add to the comparison</button></div>';
+    if (!S.exc.length) return h + '<div class="help">Add an assignment to compare <b>not excused</b> with <b>excused</b>.</div></div>';
+    var m = excuseCalc(S.exc), D0 = c.fd, D1 = m.fin.d;
+    // "not excused" = the course as it stands without these excuses (c.fd already leaves out anything excused in the export)
+    var tg0 = c.fp / D0 * 100, tg1 = D1 > 0 ? m.fin.n / D1 * 100 : null, w0 = 100 / D0, w1 = D1 > 0 ? 100 / D1 : null;
+    var names = S.exc.map(function (e) { return esc(ITEMS[e.item].n); }).join(' and ');
+    h += '<div class="chips">' + S.exc.map(function (e, i) { return '<span class="chip">' + esc(ITEMS[e.item].n) + ' · ' + (e.status === 'missing' ? 'no score' : num(e.score) + '/' + ITEMS[e.item].p) + '<button type="button" data-exrm="' + i + '" aria-label="Remove">&times;</button></span>'; }).join('') + '<button class="b" type="button" id="ex-clear">Clear</button></div>';
+    h += '<div class="scroll"><table class="t"><thead><tr><th></th><th>Not excused</th><th>Excused from ' + names + '</th></tr></thead><tbody>' +
+      '<tr><td>Points in the whole course</td><td>' + num(D0) + '</td><td>' + num(D1) + '</td></tr>' +
+      '<tr><td>Points you have earned</td><td>' + num(c.fp) + '</td><td>' + num(m.fin.n) + '</td></tr>' +
+      '<tr><td><b>Total grade so far</b> <span class="help">(earned ÷ whole course)</span></td><td><b>' + pc(tg0) + '</b></td><td><b>' + pc(tg1) + '</b></td></tr>' +
+      '<tr><td>Average on the work graded so far</td><td>' + pc(c.cp / c.cd * 100) + '</td><td>' + pc(m.cur.d > 0 ? m.cur.n / m.cur.d * 100 : null) + '</td></tr>' +
+      '<tr><td>Each remaining point is worth, of your total grade</td><td>' + f(w0, 3) + '%</td><td>' + (w1 == null ? '-' : f(w1, 3) + '%') + '</td></tr></tbody></table></div>';
+    h += '<p class="lead" style="margin-top:12px"><b>Your workload stays the same, but each remaining point counts for more.</b> You still have all the same work left to do. What changes is the size of the course: ' + num(D0) + ' points becomes ' + num(D1) + '. With a smaller total, every point is a bigger slice: ' + f(w0, 2) + '% of your total grade before, ' + (w1 == null ? '-' : f(w1, 2)) + '% after, so each point you earn (or lose) has about ' + (w1 == null ? '-' : f((D0 / D1 - 1) * 100, 0)) + '% more influence on your final grade.</p>' +
+      '<p class="lead"><b>How an excuse compares with doing the assignment.</b> Being excused has the same effect on your percentage as scoring exactly your usual rate on that assignment. If you would have scored above your usual rate, the excuse costs you a little; if below, it helps. Doing it and earning nothing is the worst case, which is why a blank is so different from an excuse.</p>';
+    if (S.exc.every(function (e) { return e.status === 'missing'; })) {
+      var P = S.exc.reduce(function (s, e) { return s + ITEMS[e.item].p; }, 0);
+      h += '<div class="scroll"><table class="t"><thead><tr><th>If you did ' + names + ' instead</th><th>0%</th><th>60%</th><th>80%</th><th>100%</th><th>Excused</th></tr></thead><tbody><tr><td>Total grade so far</td>' +
+        [0, 60, 80, 100].map(function (s) { return '<td>' + pc((c.fp + P * s / 100) / D0 * 100) + '</td>'; }).join('') + '<td><b>' + pc(tg1) + '</b></td></tr></tbody></table></div>' +
+        '<div class="help">These totals count only work you have already earned, so they are low for everyone until the rest of the course is done. Compare the columns with each other.</div>';
+    }
+    return h + '</div>';
+  }
+
+  /* ---- make-up what-if ---- */
+  function makeupHTML() {
+    var groups = lostGroups(), c = cvOf(), h = '<div class="card2" id="sec-makeup"><h2>If I turned in missed work</h2>' +
+      '<p class="lead">Work that was not turned in counts as zero. If you turned it in and earned some credit, those points are added to what you have earned. The course stays the same size. Whether late work is accepted is your instructor’s decision; this just shows what it would be worth.</p>';
+    if (!groups.length) return h + '<div class="note">No graded points are missing right now, so there is nothing to make up. Nice.</div></div>';
+    h += groups.map(function (g) {
+      var m = S.mk[g.key] || (S.mk[g.key] = { pts: 0, credit: 80 });
+      return '<div class="row mk"><div><b>' + GROUP_LABEL[g.key] + '</b><small>' + num(g.cp) + ' of ' + num(g.cd) + ' graded points earned, ' + num(g.L) + ' not earned</small></div>' +
+        '<div class="cell">Points of missed work you would turn in: <b id="mkp-' + g.key + '">' + num(m.pts) + '</b><input type="range" min="0" max="' + g.L + '" step="0.25" value="' + m.pts + '" data-mk="' + g.key + '" data-f="pts" aria-label="Points of missed work for ' + GROUP_LABEL[g.key] + '"></div>' +
+        '<div class="cell">Credit you would earn on it: <b id="mkc-' + g.key + '">' + m.credit + '%</b><input type="range" min="0" max="100" step="5" value="' + m.credit + '" data-mk="' + g.key + '" data-f="credit" aria-label="Credit earned on missed work for ' + GROUP_LABEL[g.key] + '"></div></div>';
+    }).join('');
+    return h + '<div id="mk-out">' + makeupOut() + '</div></div>';
+  }
+  function makeupOut() {
+    var c = cvOf(), rec = mkRecovered(), D0 = c.fd - exPoints(autoExcused());
+    if (rec <= 0) return '<div class="help">Move the sliders to see what turning in missed work would be worth.</div>';
+    return '<div class="scroll"><table class="t"><thead><tr><th></th><th>Now</th><th>With the make-up work</th></tr></thead><tbody>' +
+      '<tr><td>Points you have earned</td><td>' + num(c.fp) + '</td><td>' + num(c.fp + rec) + '</td></tr>' +
+      '<tr><td><b>Total grade so far</b></td><td><b>' + pc(c.fp / D0 * 100) + '</b></td><td><b>' + pc((c.fp + rec) / D0 * 100) + '</b></td></tr>' +
+      '<tr><td>Average on the work graded so far</td><td>' + pc(c.cp / c.cd * 100) + '</td><td>' + pc((c.cp + rec) / c.cd * 100) + '</td></tr></tbody></table></div>' +
+      '<p class="lead" style="margin-top:10px">That adds <b>' + num(rec) + ' points</b>, which lifts your total grade by <b>' + f(rec / D0 * 100, 2) + ' percentage points</b>. This is also counted in the projection below.</p>';
+  }
+
+  /* ---- projection ---- */
+  function remItems() {
+    var c = cvOf(), g = c.g || {}, items = [];
+    [['exam1', 'Exam 1'], ['exam2', 'Exam 2'], ['exam3', 'Exam 3']].forEach(function (a) {
+      if (isNum(data[a[0]]) || (data.excused || []).indexOf(a[0]) >= 0) return;
+      items.push({ key: a[0], label: a[1], R: ITEMS.filter(function (x) { return x.key === a[0]; })[0].p });
+    });
+    [['quizzes', 'Remaining quizzes'], ['participation', 'Remaining lab participation'], ['labs', 'Remaining lab write-ups'], ['assignments', 'Remaining assignments']].forEach(function (a) {
+      var x = g[a[0]] || {}, fd = isNum(x.fd) ? x.fd : STD[a[0]], cd = isNum(x.cd) ? x.cd : 0;
+      if (a[0] === 'quizzes') fd += LATE;
+      var unp = Math.max(0, (x.fp || 0) - (x.cp || 0)), unpPoss = a[0] === 'quizzes' ? Math.ceil(unp / 10 - 1e-9) * 10 : unp;
+      var R = Math.max(0, fd - cd - unpPoss); if (R > 0.01) items.push({ key: a[0], label: a[1], R: R });
+    });
+    return items;
+  }
+  function pjState() {
+    if (!S.pj) {
+      var usual = cv.cd > 0 ? Math.max(0, Math.min(100, Math.round(cv.cp / cv.cd * 100))) : 85, pct = {};
+      remItems().forEach(function (it) { pct[it.key] = usual; });
+      S.pj = { pct: pct, ex: {}, target: 90, usual: usual };
+    }
+    return S.pj;
+  }
+  function pjCalc() {
+    var items = remItems(), P = pjState(), c = cvOf(), base = c.fd - exPoints(autoExcused()), rec = mkRecovered(), earned = 0, rem = 0, exp = 0, all = 0;
+    items.forEach(function (it) {
+      var v = it.R * (isNum(P.pct[it.key]) ? P.pct[it.key] : 0) / 100; all += v;
+      if (P.ex[it.key]) { exp += it.R; return; } rem += it.R; earned += v;
+    });
+    var Dn = base - exp, N = c.fp + rec + earned;
+    return { items: items, P: P, D: Dn, N: N, pct: Dn > 0 ? N / Dn * 100 : null, rem: rem, exp: exp, base: base, rec: rec,
+      pct0: base > 0 ? (c.fp + rec + all) / base * 100 : null, need: rem > 0 ? ((P.target / 100) * Dn - c.fp - rec) / rem * 100 : null, c: c };
+  }
+  function pjOutHTML() {
+    var k = pjCalc(); if (k.pct == null) return '<div class="help">Nothing left to project.</div>';
+    var h = '<div class="tiles"><div><small>Your projected final grade</small><b>' + f(k.pct, 1) + '%</b><small>grade band ' + bandOf(k.pct) + '</small></div>' +
+      '<div><small>Points you would have at the end</small><b>' + num(k.N) + '</b><small>out of ' + num(k.D) + '</small></div>' +
+      '<div><small>Points of work left to earn</small><b>' + num(k.rem) + '</b><small>still ahead of you</small></div></div>';
+    h += '<p class="lead">If you score ' + k.items.filter(function (it) { return !k.P.ex[it.key]; }).map(function (it) { return f(k.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', your course ends at <b>' + f(k.pct, 1) + '%</b> (' + num(k.N) + ' of ' + num(k.D) + ' points).' + (k.rec > 0 ? ' That includes <b>' + num(k.rec) + ' points</b> of make-up work from the box above.' : '') + '</p>';
+    if (k.exp > 0 && k.pct0 != null) h += '<p class="lead">With the same scores and <b>nothing</b> excused you would finish at <b>' + f(k.pct0, 1) + '%</b> (out of ' + num(k.base) + ' points). The ' + num(k.exp) + ' excused points change your result by <b>' + (k.pct - k.pct0 >= 0 ? '+' : '') + f(k.pct - k.pct0, 1) + ' percentage points</b>.</p>';
+    var T = k.P.target, t;
+    if (k.need == null) t = 'There is no remaining work to earn.';
+    else if (k.need <= 0) t = 'A final grade of ' + T + '% is already secured, whatever the rest turns out to be.';
+    else if (k.need > 100.0001) { var best = (k.c.fp + k.rec + k.rem) / k.D * 100; t = T + '% is out of reach from here (it would take more than 100% on everything left). The most you can finish with is <b>' + f(best, 1) + '%</b> (grade band ' + bandOf(best) + '), so try a target you can reach, or see what an excuse or make-up work would change.'; }
+    else t = 'To finish with <b>at least ' + T + '%</b>, you need an average of <b>' + f(k.need, 1) + '%</b> on the ' + num(k.rem) + ' points still to earn (' + num((T / 100) * k.D - k.c.fp - k.rec) + ' more points).';
+    return h + '<div class="note">' + t + '</div>';
+  }
+  function projectionHTML() {
+    var P = pjState(), items = remItems(), h = '<div class="card2" id="sec-proj"><h2>What if I score this on the rest of the course?</h2>' +
+      '<p class="lead">Everything you have already earned stays as it is. Move each slider to the score you expect on the work still to come, and your final grade updates. Tick <b>Excused</b> on any piece to take it out of the course.</p>';
+    if (!items.length) return h + '<div class="note">There is no work left to earn.</div></div>';
+    h += '<div class="ctl"><b style="color:var(--text)">Set all to</b><button class="b" type="button" data-set="usual">My usual rate (' + P.usual + '%)</button>' +
+      [100, 90, 80, 70].map(function (v) { return '<button class="b" type="button" data-set="' + v + '">' + v + '%</button>'; }).join('') +
+      '<label style="margin-left:auto">Target final grade <input type="number" id="pj-target" min="0" max="100" value="' + P.target + '" style="width:64px">%</label></div>';
+    h += items.map(function (it) {
+      var ex = !!P.ex[it.key], v = isNum(P.pct[it.key]) ? P.pct[it.key] : 0;
+      return '<div class="row' + (ex ? ' ex' : '') + '"><div><b>' + esc(it.label) + '</b><small>' + num(it.R) + ' points</small></div>' +
+        '<input type="range" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' aria-label="Score you expect on ' + esc(it.label) + '">' +
+        '<span><input type="number" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' style="width:62px"> %</span>' +
+        '<label class="x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
+    }).join('');
+    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the usual 90/80/70/60 cut-offs; your syllabus has the real ones. This is a what-if: it changes nothing in your actual grades.</div></div>';
+  }
+
+  /* ---- my scores ---- */
+  function scoresHTML() {
+    var c = cvOf(), base = c.fd - exPoints(autoExcused()), tg = c.fp / base * 100, avg = c.cd > 0 ? c.cp / c.cd * 100 : null;
+    var h = '<div class="card2"><h2>Where I stand</h2><div class="tiles">' +
+      '<div><small>Average on the work graded so far</small><b>' + pc(avg) + '</b><small>' + num(c.cp) + ' of ' + num(c.cd) + ' points</small></div>' +
+      '<div><small>Total grade so far (earned ÷ whole course)</small><b>' + pc(tg) + '</b><small>' + num(c.fp) + ' of ' + num(base) + ' points</small></div></div>' +
+      '<p class="lead">These two numbers answer different questions. The first is <b>how well you are doing on what has been graded</b>. The second is <b>how much of the whole course you have already earned</b>, so it is low for everyone until the rest of the course is done.</p>';
+    var cols = (D.columns || []).filter(function (x) { return x.max && !x.formula; });
+    h += '<div class="scroll"><table class="t"><thead><tr><th>Item</th><th>Score</th><th>Out of</th><th>Percent</th><th></th></tr></thead><tbody>' + cols.map(function (x) {
+      var v = data[x.key];
+      if (!isNum(v)) return '<tr><td>' + esc(x.label) + '</td><td colspan="4" style="text-align:left;color:var(--text-dim)">' + ((data.excused || []).indexOf(x.key) >= 0 ? 'Excused' : 'No score yet') + '</td></tr>';
+      var p = v / x.max * 100;
+      return '<tr><td>' + esc(x.label) + '</td><td>' + num(v) + '</td><td>' + num(x.max) + '</td><td>' + f(p, 1) + '%</td><td><div class="bar"><i style="width:' + Math.min(100, p) + '%"></i></div></td></tr>';
+    }).join('') + '</tbody></table></div><div class="help">Category rows (assignments, participation, lab write-ups, quizzes) show points earned out of the points graded so far in that category.</div></div>';
+    return h;
+  }
+
+  function render() {
+    $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Only you can see this page, along with your instructors. Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
+      scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
+  }
+
+  /* ---- events ---- */
+  document.addEventListener('change', function (e) {
+    var t = e.target; if (!D) return;
+    if (t.id === 'ex-item') { var d0 = defaults(+t.value); S.pick = { item: +t.value, status: d0.status, score: d0.score }; $('sec-excuse').outerHTML = excuseHTML(); }
+    else if (t.id === 'ex-status') { S.pick.status = t.value; if (t.value === 'missing') S.pick.score = 0; $('sec-excuse').outerHTML = excuseHTML(); }
+    else if (t.id === 'ex-score') S.pick.score = t.value === '' ? null : +t.value;
+    else if (t.dataset && t.dataset.pjx != null) { var P = pjState(); if (t.checked) P.ex[t.dataset.pjx] = true; else delete P.ex[t.dataset.pjx]; $('sec-proj').outerHTML = projectionHTML(); }
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target; if (!D || !t.dataset) return;
+    if (t.dataset.pj != null) {
+      var v = Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
+      document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
+      $('pj-out').innerHTML = pjOutHTML();
+    } else if (t.id === 'pj-target') { pjState().target = Math.max(0, Math.min(100, +t.value || 0)); $('pj-out').innerHTML = pjOutHTML(); }
+    else if (t.dataset.mk != null) {
+      var m = S.mk[t.dataset.mk] || (S.mk[t.dataset.mk] = { pts: 0, credit: 80 }); m[t.dataset.f] = +t.value;
+      $('mkp-' + t.dataset.mk).textContent = num(m.pts); $('mkc-' + t.dataset.mk).textContent = m.credit + '%';
+      $('mk-out').innerHTML = makeupOut(); $('pj-out') && ($('pj-out').innerHTML = pjOutHTML());
+    }
+  });
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t || !D) return;
+    if (t.id === 'ex-add') {
+      var it = ITEMS[S.pick.item], sc = $('ex-score') ? $('ex-score').value : '';
+      if (S.pick.status !== 'missing' && sc === '') { $('ex-score').focus(); return; }
+      if (S.exc.some(function (x) { return x.item === S.pick.item; })) return;
+      S.exc.push({ item: S.pick.item, status: S.pick.status, score: S.pick.status === 'missing' ? 0 : +sc }); $('sec-excuse').outerHTML = excuseHTML();
+    } else if (t.dataset.exrm != null) { S.exc.splice(+t.dataset.exrm, 1); $('sec-excuse').outerHTML = excuseHTML(); }
+    else if (t.id === 'ex-clear') { S.exc = []; $('sec-excuse').outerHTML = excuseHTML(); }
+    else if (t.dataset.set != null) { var P = pjState(); remItems().forEach(function (it) { P.pct[it.key] = t.dataset.set === 'usual' ? P.usual : +t.dataset.set; }); $('sec-proj').outerHTML = projectionHTML(); }
+  });
+
+  /* ---- boot ---- */
+  (async function () {
+    try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
+    catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
+    if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
+    data = D.data; cv = data.cv;
+    // exams a student is already excused from start with that excuse switched on, so the comparison is ready
+    autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
+    render();
+  })();
+})();
+</script>
+</body>
+</html>
