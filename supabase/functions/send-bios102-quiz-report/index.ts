@@ -153,7 +153,18 @@ Deno.serve(async (req) => {
       // One email per student (not one email with everyone in To), so no
       // student sees another's address. `test: true` sends a single copy
       // to Stephen instead, to proof it before the real send.
-      const recipients = body.test ? [{ email: TO, name: "Preview Student" }] : students;
+      // {"lesson":"videograde"} announces the Cnidaria video quiz (3 Lab 7 points, due Tue Oct 27 3pm) and the My grades planner.
+      // Students the gradebook marks dropped or on leave are left out.
+      const videograde = body.lesson === "videograde";
+      let excluded = new Set<string>();
+      if (videograde) {
+        const { data: gr, error: gErr } = await admin.from("bios102_grade_rows").select("email, data");
+        if (gErr) throw gErr;
+        excluded = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
+      }
+      const recipients = body.test
+        ? [{ email: TO, name: "Preview Student" }]
+        : videograde ? students.filter((s) => !excluded.has(String(s.email).toLowerCase())) : students;
       const failed: string[] = [];
       // {"lesson":"spores"} announces the Studio vs. Duplex lesson instead of a quiz.
       const spores = body.lesson === "spores";
@@ -163,8 +174,24 @@ Deno.serve(async (req) => {
       const mockopen = body.lesson === "mockopen";
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
-        const subject = mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
-        const html = mockopen ? `
+        const subject = videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
+        const html = videograde ? `
+              <p>Hi ${first},</p>
+              <p>Two new things are ready on the BIOS102 Lab Companion. Both need you to log in the usual way: go to <a href="https://selassiefest.com/BIOS102/index.html">selassiefest.com/BIOS102</a>, type your class email, and click the link that arrives.</p>
+              <p><strong>1. Cnidaria video quiz (Lab 7 movie worksheet). Completing it earns your 3 Lab 7 participation points. It is due Tuesday, Oct 27 at 3:00 PM Central.</strong><br>
+              <a href="https://selassiefest.com/BIOS102/cnidaria-video-quiz.html">Open the video quiz</a></p>
+              <p>Watch the <em>Shape of Life</em> Cnidaria film and answer all 11 worksheet questions as you go. The film pauses right after each clue and the question appears on screen. You can slow the video down, loop a section, step frame by frame, turn on captions, search the transcript, and bookmark moments. Every question has a hint and a &ldquo;watch the clue&rdquo; button. Your progress saves to your account, so you can stop on your phone and pick up on your laptop.</p>
+              <p><strong>2. My grades: your own grade planner</strong><br>
+              <a href="https://selassiefest.com/BIOS102/my-grades.html">Open My grades</a></p>
+              <p>This page lets you ask &ldquo;what if?&rdquo; questions about your grade:</p>
+              <ul>
+                <li><strong>If I were excused from an assignment:</strong> see how excusing it changes your grade. An excused assignment leaves the course entirely. It is not a zero and not a score. Your workload stays the same, but each remaining point counts for more.</li>
+                <li><strong>If I turned in missed work:</strong> see what late work would be worth. Whether late work is accepted is my decision, so this is only a what-if.</li>
+                <li><strong>What if I score this on the rest of the course?</strong> Move the sliders for what you expect on the exams, quizzes and labs still to come, and it shows your projected final grade. Type a target, like 90%, to see what average you would need.</li>
+              </ul>
+              <p>Nothing you do on the page changes your actual grade. Canvas is the official record, and the page uses a Canvas export from Oct 26, so it can lag behind. The grade bands (A, B, C and so on) use the usual 90/80/70/60 cut-offs; the syllabus has the official ones.</p>
+              <p>If a number looks wrong, or the page says your grades are not available, reply to this email.</p>
+              <p>Professor Harris</p>` : mockopen ? `
               <p>Hi ${first},</p>
               <p>The Lab Exam 1 mock exam is now open to everyone. You don't need to ask for access.</p>
               <p>It stays open until <strong>Tuesday, Oct 20, 2:00 PM Central</strong>, when the in-person exam starts. It closes at exactly 2:00, so submit before then. You can retake it as many times as you like.</p>
