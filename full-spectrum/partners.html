@@ -104,6 +104,17 @@
   .checks label{font-weight:500; color:var(--ink); display:flex; gap:5px; align-items:center;}
   .dlg-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:6px; flex-wrap:wrap;}
   .hint{font-size:0.76rem; color:var(--ink-faint);}
+  /* Partner flyer progress (fs_partners.flyer) */
+  .fly{margin-top:8px; display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px; font-size:0.78rem;}
+  .fly .lbl{font-weight:800; color:var(--ink-soft); margin-right:2px;}
+  .fly .st{padding:2px 7px; border-radius:6px; background:var(--surface-2); color:var(--ink-faint); font-weight:700;}
+  .fly .st.done{background:var(--sea-soft); color:var(--sea);}
+  .fly .st.now{background:var(--sun-soft); color:var(--sun);}
+  .fly img{height:26px; max-width:80px; object-fit:contain; border-radius:4px; background:#fff; border:1px solid var(--line);}
+  .fsteps label{display:flex; gap:8px; align-items:center; font-weight:500; color:var(--ink); font-size:0.9rem; padding:3px 0;}
+  .fsteps .when{color:var(--ink-faint); font-size:0.76rem;}
+  .fsizes{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+  @media (max-width:520px){ .fsizes{grid-template-columns:1fr 1fr;} }
   .theme-toggle{border:1px solid var(--line-strong); background:var(--surface); width:36px; height:36px; border-radius:50%; cursor:pointer;}
   footer{padding:30px 0 40px; font-size:0.8rem; color:var(--ink-faint); text-align:center;}
 </style>
@@ -287,9 +298,28 @@
   </div>
 </form></dialog>
 
+<dialog id="flyDlg"><form method="dialog" id="flyForm">
+  <h2 id="flyTitle">Flyer</h2>
+  <p class="hint" style="margin:-6px 0 12px">The partner sees these steps on their page. They send their logo and sizes and approve the proof there; tick the rest here. Print only after the Park District approves.</p>
+  <div class="f"><label>Steps</label><div class="fsteps" id="flySteps"></div></div>
+  <div class="f"><label>Their logo</label><div id="flyLogo" class="hint"></div></div>
+  <div class="f"><label for="flyProof">Proof image URL (shown on their page for approval)</label><input id="flyProof" type="url" placeholder="https://"></div>
+  <div class="f"><label>Sizes and quantities</label><div class="fsizes">
+    <label class="hint">8.5 × 11<input type="number" min="0" id="flyS_letter"></label><label class="hint">11 × 17<input type="number" min="0" id="flyS_tabloid"></label>
+    <label class="hint">4 × 6 card<input type="number" min="0" id="flyS_card"></label><label class="hint">Business cards<input type="number" min="0" id="flyS_bizcard"></label></div></div>
+  <div class="f"><label for="flyNote">Notes</label><textarea id="flyNote"></textarea></div>
+  <div class="dlg-actions">
+    <button class="btn" id="flyRemove" type="button" style="margin-right:auto; color:var(--red)">Remove flyer</button>
+    <button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="save" id="flySave">Save</button>
+  </div>
+</form></dialog>
+
 <script src="/assets/js/supabase-client.js"></script>
 <script>
 (function(){
+  // Partner flyer steps, in order. Keep in step with STEPS in /partner/index.html and fs_flyer_staff_save.
+  var FLY = [['supporter','Supporter'],['logo','Logo + sizes'],['proof','Designed'],['ok','Partner approved'],['cpd','Park District OK'],['printed','Printed'],['delivered','Delivered']];
+  var FLY_SIZES = { letter:'8.5×11', tabloid:'11×17', card:'4×6', bizcard:'biz cards' };
   var STAGES = [['not_contacted','Not contacted','var(--line-strong)'],['reached_out','Reached out','var(--r5)'],['in_conversation','In conversation','var(--r6)'],
     ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)'],['not_qualified','Not qualified yet','var(--r3)']];
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
@@ -411,6 +441,7 @@
         (p.pitch ? '<div class="pitch"><span class="lbl">Elevator pitch</span>' + esc(p.pitch) + (p.ask ? '<div class="ask">The ask: ' + esc(p.ask) + '</div>' : '') + '</div>' : '') +
         '<div class="next">' + (p.next_step ? '<strong>Next:</strong> ' + esc(p.next_step) + (d ? ' &middot; <span class="due ' + cls + '">' + (cls === 'over' ? 'overdue, ' : 'due ') + fmtDate(p.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') +
           (p.last_contact_at ? ' <span class="p-cat">&middot; last contact ' + fmtDate(p.last_contact_at) + '</span>' : '') + '</div>' +
+        flyStrip(p) +
         '<div class="p-actions">' +
           '<button class="btn small primary" data-act="log" data-id="' + p.id + '"><i class="fa-solid fa-pen"></i> Log</button>' +
           (p.phone ? '<a class="btn small" href="tel:' + esc(p.phone.replace(/[^0-9+]/g,'')) + '"><i class="fa-solid fa-phone"></i> ' + esc(p.phone) + '</a>' : '') +
@@ -420,6 +451,7 @@
           (p.pitch_key ? '<button class="btn small" data-act="copy" data-id="' + p.id + '"><i class="fa-solid fa-link"></i> Copy link</button>' : '') +
           (p.pitch_key ? '<a class="btn small" href="' + pitchUrl(p) + '" target="_blank" rel="noopener"><i class="fa-solid fa-qrcode"></i> Pitch page' + (p.pitch_views ? ' &middot; ' + p.pitch_views + ' view' + (p.pitch_views === 1 ? '' : 's') : '') + '</a>' : '') +
           (p.pitch_key ? '<a class="btn small" href="/partner/answers/edit.html?p=' + p.id + '" target="_blank" rel="noopener"><i class="fa-solid fa-list-check"></i> Answers' + (p.qa_views ? ' &middot; ' + p.qa_views + ' view' + (p.qa_views === 1 ? '' : 's') : '') + '</a>' : '') +
+          (p.pitch_key ? '<button class="btn small" data-act="flyer" data-id="' + p.id + '"><i class="fa-solid fa-image"></i> ' + (p.flyer ? 'Flyer' : 'Start flyer') + '</button>' : '') +
         '</div>' +
         '<div class="details' + (state.open[p.id] ? ' open' : '') + '"><dl>' +
           (p.ask && !p.pitch ? '<dt>Our ask</dt><dd>' + esc(p.ask) + '</dd>' : '') +
@@ -443,6 +475,7 @@
     if (act === 'toggle'){ state.open[id] = !state.open[id]; render(); }
     if (act === 'log') openLog(id);
     if (act === 'edit') openEdit(id);
+    if (act === 'flyer') openFlyer(id);
     if (act === 'copy'){ var pp = state.partners.find(function(x){ return x.id === id; });
       if (navigator.clipboard) navigator.clipboard.writeText(pitchUrl(pp)).then(function(){ b.textContent = 'Copied'; setTimeout(render, 1200); }, function(){ prompt('Copy this link', pitchUrl(pp)); });
       else prompt('Copy this link', pitchUrl(pp)); }
@@ -641,6 +674,42 @@
       p_stage: $('logStage').value, p_next_step: $('logNext').value, p_next_due: $('logDue').value || null });
       state.open[logId] = true; await load();
     } catch(err){ alert('Could not save: ' + err.message); }
+  });
+
+  // Partner flyer: one line on the card, and a dialog to tick steps, add the proof and adjust sizes.
+  function flyStrip(p){
+    var f = p.flyer; if (!f) return '';
+    var st = f.steps || {}, cur = FLY.findIndex(function(s){ return !st[s[0]]; });
+    var sizes = Object.keys(f.sizes || {}).map(function(k){ return f.sizes[k] + ' ' + (FLY_SIZES[k] || k); }).join(', ');
+    var logo = f.logo_url ? (/\.(png|jpe?g|webp|svg)$/i.test(f.logo_url) ? '<a href="' + esc(f.logo_url) + '" target="_blank" rel="noopener" title="Their logo"><img src="' + esc(f.logo_url) + '" alt="logo"></a>' : '<a href="' + esc(f.logo_url) + '" target="_blank" rel="noopener">logo file</a>') : (f.logo_link ? '<a href="' + esc(f.logo_link) + '" target="_blank" rel="noopener">logo link</a>' : '');
+    return '<div class="fly"><span class="lbl"><i class="fa-solid fa-image"></i> Flyer</span>' + FLY.map(function(s, i){ return '<span class="st' + (st[s[0]] ? ' done' : (i === cur ? ' now' : '')) + '">' + s[1] + '</span>'; }).join('') +
+      (logo ? ' ' + logo : '') + (sizes ? ' <span class="p-cat">' + esc(sizes) + '</span>' : '') + '</div>';
+  }
+  var flyId = null;
+  function openFlyer(id){
+    var p = state.partners.find(function(x){ return x.id === id; }), f = p.flyer || { steps: {} }, st = f.steps || {}; flyId = id;
+    $('flyTitle').textContent = (p.flyer ? 'Flyer: ' : 'Start a flyer: ') + p.name;
+    $('flySteps').innerHTML = FLY.map(function(s){ return '<label><input type="checkbox" data-step="' + s[0] + '"' + (st[s[0]] || (!p.flyer && s[0] === 'supporter') ? ' checked' : '') + '> ' + s[1] + (st[s[0]] ? ' <span class="when">' + fmtWhen(st[s[0]]) + '</span>' : '') + '</label>'; }).join('');
+    $('flyLogo').innerHTML = f.logo_url ? '<a href="' + esc(f.logo_url) + '" target="_blank" rel="noopener">' + esc(f.logo_name || 'Download their logo') + '</a>' : (f.logo_link ? '<a href="' + esc(f.logo_link) + '" target="_blank" rel="noopener">' + esc(f.logo_link) + '</a>' : 'Not sent yet. They upload it or paste a link on their page.');
+    $('flyProof').value = f.proof_url || '';
+    Object.keys(FLY_SIZES).forEach(function(k){ $('flyS_' + k).value = (f.sizes || {})[k] || ''; });
+    $('flyNote').value = f.note || '';
+    $('flyRemove').hidden = !p.flyer;
+    $('flyDlg').showModal();
+  }
+  $('flyDlg').addEventListener('close', async function(){
+    if ($('flyDlg').returnValue !== 'save' || !flyId) return;
+    var steps = {}, sizes = {};
+    document.querySelectorAll('#flySteps [data-step]').forEach(function(c){ steps[c.getAttribute('data-step')] = c.checked; });
+    Object.keys(FLY_SIZES).forEach(function(k){ var n = Math.round(Number($('flyS_' + k).value) || 0); if (n > 0) sizes[k] = n; });
+    try { await rpc('fs_flyer_staff_save', { p_session: state.session.sessionToken, p_partner: flyId, p: { steps: steps, sizes: sizes, proof_url: $('flyProof').value, note: $('flyNote').value } });
+      state.open[flyId] = true; await load();
+    } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  $('flyRemove').addEventListener('click', async function(){
+    if (!flyId || !confirm('Remove this flyer from their page? The steps and sizes are cleared.')) return;
+    $('flyDlg').close();
+    try { await rpc('fs_flyer_staff_save', { p_session: state.session.sessionToken, p_partner: flyId, p: { on: false } }); await load(); } catch(err){ alert('Could not remove: ' + err.message); }
   });
 
   var editId = null;

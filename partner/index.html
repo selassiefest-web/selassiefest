@@ -94,6 +94,29 @@
   .sig .who b{display:block;}
   .small{font-size:0.85rem; color:var(--ink-faint);}
   footer{padding:20px 0 40px; text-align:center; font-size:0.8rem; color:var(--ink-faint);}
+  /* Your flyer: progress steps, logo + sizes form, proof approval */
+  .fly-lead{margin:4px 0 12px; color:var(--ink-soft);}
+  .steps{list-style:none; padding:0; margin:0 0 14px; display:grid; gap:2px;}
+  .steps li{display:flex; gap:10px; align-items:center; padding:5px 0; color:var(--ink-faint); font-size:0.95rem;}
+  .steps li i{width:22px; text-align:center; font-size:1.05rem;}
+  .steps li.done{color:var(--ink);} .steps li.done i{color:var(--green);}
+  .steps li.now{color:var(--ink); font-weight:700;} .steps li.now i{color:var(--sun);}
+  .steps .when{margin-left:auto; font-size:0.78rem; color:var(--ink-faint); font-weight:500;}
+  .fbox{background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:6px;}
+  .drop{display:block; border:2px dashed var(--line-strong); border-radius:12px; padding:16px; text-align:center; cursor:pointer; background:var(--surface);}
+  .drop i{font-size:1.6rem; color:var(--accent); display:block; margin-bottom:6px;}
+  .drop input{display:none;}
+  .drop.has{border-color:var(--green); background:var(--green-soft);}
+  .or{text-align:center; font-size:0.8rem; color:var(--ink-faint); margin:8px 0;}
+  .sizes{display:grid; gap:8px; margin:6px 0 10px;}
+  .size{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:10px 12px; border:1.5px solid var(--line-strong); border-radius:12px; background:var(--surface);}
+  .size b{display:block;} .size .d{font-size:0.82rem; color:var(--ink-soft);}
+  .size input{width:78px; padding:7px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg); text-align:right;}
+  .proof{display:block; width:100%; border-radius:10px; border:1px solid var(--line); margin:6px 0 12px;}
+  .row-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .ghost{width:100%; padding:13px; border-radius:999px; border:2px solid var(--line-strong); background:var(--surface); font-weight:800; cursor:pointer;}
+  .linkbtn{background:none; border:none; color:var(--accent); font-weight:700; cursor:pointer; padding:0; margin-top:10px; font-size:0.9rem;}
+  .logo-prev{max-width:180px; max-height:90px; display:block; margin:8px auto 0; object-fit:contain;}
 </style>
 </head>
 <body>
@@ -196,6 +219,132 @@
     });
     $('form').addEventListener('submit', submit);
     wireMenu();
+    loadFlyer();
+  }
+
+  // ---- Your flyer (fs_partners.flyer; see supabase/fs-partner-flyers.sql) ----
+  var STEPS = [
+    ['supporter', 'You’re a supporter'],
+    ['logo', 'Logo and sizes received'],
+    ['proof', 'Your flyer is designed'],
+    ['ok', 'You approve your flyer'],
+    ['cpd', 'Chicago Park District approves the program'],
+    ['printed', 'Flyers printed'],
+    ['delivered', 'Delivered to you']
+  ];
+  var SIZES = [
+    ['letter', 'Regular sheet', '8.5 × 11 in, for a wall or window'],
+    ['tabloid', 'Window poster', '11 × 17 in'],
+    ['card', 'Counter card', '4 × 6 in'],
+    ['bizcard', 'Business-size cards', '3.5 × 2 in, to hand out or drop into bags']
+  ];
+  var LOGO_BASE = 'https://xdjbgcqaynnzykrglgnf.supabase.co/storage/v1/object/public/fs-partner-logos/';
+  var flyer = null, editing = false;
+
+  async function loadFlyer(){
+    try {
+      var c = await window.sfSupabaseReady;
+      var r = await c.rpc('fs_flyer_view', { p_key: key });
+      if (r.error || !r.data) return;
+      flyer = r.data; drawFlyer();
+    } catch(e){}
+  }
+  function fdate(ts){ try { return new Date(ts).toLocaleDateString('en-US', {month:'short', day:'numeric'}); } catch(e){ return ''; } }
+  function drawFlyer(){
+    var st = flyer.steps || {}, cur = STEPS.findIndex(function(s){ return !st[s[0]]; });
+    var box = $('flyer');
+    if (!box){ box = document.createElement('div'); box.className = 'card'; box.id = 'flyer'; var first = $('main').firstElementChild; $('main').insertBefore(box, first ? first.nextSibling : null); }
+    var steps = '<ol class="steps">' + STEPS.map(function(s, i){
+      var cls = st[s[0]] ? 'done' : (i === cur ? 'now' : ''), ic = st[s[0]] ? 'fa-solid fa-circle-check' : (i === cur ? 'fa-solid fa-circle-dot' : 'fa-regular fa-circle');
+      return '<li class="' + cls + '"><i class="' + ic + '"></i><span>' + s[1] + '</span>' + (st[s[0]] ? '<span class="when">' + fdate(st[s[0]]) + '</span>' : '') + '</li>';
+    }).join('') + '</ol>';
+    var body = '';
+    if (!st.logo || editing) body = logoForm();
+    else if (!flyer.proof_url) body = '<div class="fbox"><b>Thank you, we have everything.</b><p class="small" style="margin:4px 0 0">We’re designing your flyer now and will email you when it’s ready to review here.</p><button class="linkbtn" id="fEdit" type="button">Change my logo or sizes</button></div>';
+    else if (!st.ok) body = proofBox();
+    else if (!st.cpd) body = '<div class="fbox"><b>Your flyer is approved and ready.</b><p class="small" style="margin:4px 0 0">The program can begin only when the Chicago Park District approves it. As soon as it does, we print your flyers and bring them to you.</p>' + (flyer.proof_url ? '<img class="proof" src="' + esc(flyer.proof_url) + '" alt="Your flyer">' : '') + '</div>';
+    else if (!st.delivered) body = '<div class="fbox"><b>' + (st.printed ? 'Your flyers are printed and on their way.' : 'The Park District said go. We’re printing your flyers now.') + '</b></div>';
+    else body = '<div class="fbox"><b>Your flyers are delivered. Thank you!</b><p class="small" style="margin:4px 0 0">Need more? Call Stephen at <a href="tel:8722559333">872-255-9333</a>.</p></div>';
+    box.innerHTML = '<h2 style="font-size:1.15rem">Your flyer</h2>' +
+      '<p class="fly-lead small">A custom flyer with your logo at the top. It asks your customers to sign a child up for the free DJ Lab and to come out to Rainbow Wednesdays on the beach. It goes up only after the Chicago Park District approves the program.</p>' + steps + body;
+    wireFlyer();
+  }
+  function logoForm(){
+    var s = flyer.sizes || {}, had = flyer.logo_url || flyer.logo_link;
+    return '<form class="fbox open" id="fForm" novalidate style="display:block">' +
+      '<div class="f"><label>Your logo</label>' +
+        '<label class="drop' + (flyer.logo_url ? ' has' : '') + '" id="fDrop"><i class="fa-solid fa-cloud-arrow-up"></i><span id="fDropTxt">' + (flyer.logo_url ? 'Logo received: ' + esc(flyer.logo_name || 'your file') + '. Tap to replace it.' : 'Tap to choose your logo file') + '</span>' +
+        '<span class="small" style="display:block">The highest resolution you have: PNG, JPG, PDF, SVG or EPS, up to 25 MB</span>' +
+        '<input type="file" id="fFile" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/tiff,image/heic,application/pdf,.eps,.ai,application/postscript"></label>' +
+        (flyer.logo_url && /\.(png|jpe?g|webp|svg)$/i.test(flyer.logo_url) ? '<img class="logo-prev" src="' + esc(flyer.logo_url) + '" alt="Your logo">' : '') +
+      '</div>' +
+      '<div class="or">or</div>' +
+      '<div class="f"><label for="fLink">A link to your logo, if it’s online</label><input id="fLink" type="url" placeholder="https://" value="' + esc(flyer.logo_link || '') + '"></div>' +
+      '<div class="f" style="margin-top:6px"><label>Which sizes, and how many of each?</label><div class="sizes">' + SIZES.map(function(z){
+        return '<label class="size"><span><b>' + z[1] + '</b><span class="d">' + z[2] + '</span></span><input type="number" min="0" max="10000" step="1" inputmode="numeric" data-size="' + z[0] + '" value="' + (s[z[0]] || '') + '" placeholder="0" aria-label="How many: ' + z[1] + '"></label>';
+      }).join('') + '</div></div>' +
+      '<div class="f"><label for="fNote">Anything else? (optional)</label><textarea id="fNote" placeholder="Colors you prefer, where the flyer will go, the best time to drop off">' + esc(flyer.note || '') + '</textarea></div>' +
+      '<button class="submit" id="fGo" type="submit">' + (had ? 'Update my flyer details' : 'Send my logo and sizes') + '</button><p class="msg" id="fMsg"></p>' +
+      (editing ? '<button class="linkbtn" id="fCancel" type="button">Cancel</button>' : '') +
+    '</form>';
+  }
+  function proofBox(){
+    return '<div class="fbox"><b>Your flyer is ready to review.</b><p class="small" style="margin:4px 0 0">Tap the picture to see it full size.</p>' +
+      '<a href="' + esc(flyer.proof_url) + '" target="_blank" rel="noopener"><img class="proof" src="' + esc(flyer.proof_url) + '" alt="Your flyer proof"></a>' +
+      '<div class="row-btns"><button class="submit" id="fOk" type="button">Looks good</button><button class="ghost" id="fChg" type="button">Ask for a change</button></div>' +
+      '<div id="fChgBox" style="display:none; margin-top:10px"><div class="f"><label for="fChgNote">What should we change?</label><textarea id="fChgNote"></textarea></div><button class="submit" id="fChgGo" type="button">Send my changes</button></div>' +
+      '<p class="msg" id="fMsg"></p></div>';
+  }
+  function wireFlyer(){
+    var ed = $('fEdit'); if (ed) ed.addEventListener('click', function(){ editing = true; drawFlyer(); });
+    var cn = $('fCancel'); if (cn) cn.addEventListener('click', function(){ editing = false; drawFlyer(); });
+    var fi = $('fFile'); if (fi) fi.addEventListener('change', function(){
+      var f = fi.files[0]; if (!f) return;
+      $('fDrop').classList.add('has'); $('fDropTxt').textContent = 'Ready to send: ' + f.name + ' (' + (f.size / 1048576).toFixed(1) + ' MB)';
+    });
+    var ff = $('fForm'); if (ff) ff.addEventListener('submit', sendFlyer);
+    var ok = $('fOk'); if (ok) ok.addEventListener('click', function(){ approve(true, ''); });
+    var ch = $('fChg'); if (ch) ch.addEventListener('click', function(){ $('fChgBox').style.display = 'block'; $('fChgNote').focus(); });
+    var cg = $('fChgGo'); if (cg) cg.addEventListener('click', function(){ var n = $('fChgNote').value.trim(); if (!n){ $('fChgNote').focus(); return; } approve(false, n); });
+  }
+  async function sendFlyer(e){
+    e.preventDefault();
+    var msg = $('fMsg'), go = $('fGo'), file = $('fFile').files[0], link = $('fLink').value.trim();
+    var sizes = {}; document.querySelectorAll('[data-size]').forEach(function(i){ var n = Math.round(Number(i.value) || 0); if (n > 0) sizes[i.getAttribute('data-size')] = Math.min(n, 10000); });
+    msg.className = 'msg err';
+    if (!file && !link && !flyer.logo_url && !flyer.logo_link){ msg.textContent = 'Please choose your logo file, or paste a link to it.'; return; }
+    if (link && !/^https?:\/\//i.test(link)){ msg.textContent = 'The link should start with https://'; return; }
+    if (file && file.size > 26214400){ msg.textContent = 'That file is over 25 MB. Please choose a smaller one, or paste a link instead.'; return; }
+    if (!Object.keys(sizes).length){ msg.textContent = 'Please enter how many of at least one size.'; return; }
+    go.disabled = true; msg.className = 'msg'; msg.textContent = file ? 'Uploading your logo…' : 'Sending…';
+    try {
+      var c = await window.sfSupabaseReady, p = { sizes: sizes, note: $('fNote').value.trim() };
+      if (link) p.logo_link = link;
+      if (file){
+        var ext = (file.name.match(/\.[a-z0-9]{2,5}$/i) || [''])[0].toLowerCase();
+        var safe = file.name.replace(/\.[^.]*$/, '').replace(/[^a-z0-9_-]+/gi, '-').slice(0, 60) || 'logo';
+        var path = key + '/logo/' + Date.now() + '-' + safe + ext;
+        // Some browsers leave EPS/AI/HEIC types blank; the bucket only takes the types it lists, so name them by extension.
+        var type = file.type || ({'.eps':'application/postscript', '.ai':'application/postscript', '.heic':'image/heic', '.svg':'image/svg+xml', '.pdf':'application/pdf', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.tif':'image/tiff', '.tiff':'image/tiff', '.webp':'image/webp'})[ext] || '';
+        if (!type){ throw new Error('please choose a PNG, JPG, PDF, SVG or EPS file'); }
+        var up = await c.storage.from('fs-partner-logos').upload(path, file, { contentType: type, upsert: false });
+        if (up.error) throw up.error;
+        p.logo_url = LOGO_BASE + path; p.logo_name = file.name;
+      }
+      var r = await c.rpc('fs_flyer_submit', { p_key: key, p: p });
+      if (r.error) throw r.error;
+      flyer = r.data; editing = false; drawFlyer();
+      $('flyer').scrollIntoView({behavior:'smooth', block:'start'});
+    } catch(err){ go.disabled = false; msg.className = 'msg err'; msg.textContent = 'Sorry, that didn’t go through (' + (err.message || err) + '). You can also email your logo to stephen@selassiefest.com.'; }
+  }
+  async function approve(ok, note){
+    var msg = $('fMsg'); msg.className = 'msg'; msg.textContent = 'Sending…';
+    try {
+      var c = await window.sfSupabaseReady, r = await c.rpc('fs_flyer_approve', { p_key: key, p_ok: ok, p_note: note || null });
+      if (r.error) throw r.error;
+      if (ok){ flyer = r.data; drawFlyer(); }
+      else { $('fChgBox').style.display = 'none'; msg.textContent = 'Thank you. We’ll make the changes and post the new version here.'; }
+    } catch(err){ msg.className = 'msg err'; msg.textContent = 'Sorry, that didn’t go through. Please call Stephen at 872-255-9333.'; }
   }
 
   var items = [];

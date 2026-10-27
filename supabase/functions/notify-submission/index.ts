@@ -760,6 +760,20 @@ function formatFsPartnerGift(record: Record<string, any>) {
   };
 }
 
+// Partner flyer: logo/sizes sent or proof approved on a partner page -- see supabase/fs-partner-flyers.sql.
+function formatFsPartnerFlyer(record: Record<string, any>) {
+  const biz = record.partner_name || 'A partner';
+  const what = record.kind === 'logo' ? 'sent their logo and sizes' : record.kind === 'approved' ? 'approved their flyer' : 'asked for flyer changes';
+  return {
+    subject: `FLYER: ${biz} ${what}`,
+    html: `
+      <h2>${escapeHtml(biz)} ${escapeHtml(what)}</h2>
+      <p>${escapeHtml(record.summary || '')}</p>
+      <p><a href="https://selassiefest.com/full-spectrum/partners.html">Open the Partner Tracker</a> &middot; <a href="https://selassiefest.com/partner/?k=${encodeURIComponent(record.pitch_key || '')}">Their page</a></p>
+    `,
+  };
+}
+
 // Live Reggae Rotation (/live-reggae/) -- see supabase/live-reggae-rotation.sql.
 function formatLrLoginLink(record: Record<string, any>) {
   const verifyUrl = `https://selassiefest.com/live-reggae/rotation.html?token=${encodeURIComponent(record.id)}`;
@@ -1084,6 +1098,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
   },
   fs_partner_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerResponse }] },
   fs_partner_gifts: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerGift }] },
+  fs_partner_flyer_events: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsPartnerFlyer }] },
   fs_guest_dj_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsGuestDjResponse }] },
   lr_login_links: {
     notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
