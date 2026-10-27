@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Sponges vs. Stingers: Porifera and Cnidaria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#eef3f6; --ink:#14283a; --muted:#51677a; --line:#14283a; --panel:#ffffff;
+  --hi:#e0892b; --por:#b9801f; --cni:#1f7fae; --room:#f7fafc;
+  --good:#1d7a46; --goodbg:#e3f4ea; --bad:#b3261e; --badbg:#fbe9e7; --warn:#8a5a00; --warnbg:#fff3d6; --accent:#14283a;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1b26; --ink:#e6eef5; --muted:#9bb0c2; --line:#9bb0c2; --panel:#172636; --room:#1c2f42;
+    --hi:#f0a24a; --por:#e6b04a; --cni:#5ab0e6;
+    --good:#6fd39a; --goodbg:#17352a; --bad:#ff958d; --badbg:#3b1f1d; --warn:#f2c46b; --warnbg:#3a2f14; --accent:#e6eef5;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.55}
+main{max-width:760px;margin:0 auto;padding:18px 18px 120px}
+h1{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.08;margin:6px 0 6px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.35rem;margin:0 0 8px;line-height:1.2}
+h3{font-size:1.05rem;margin:18px 0 6px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.hide{display:none!important}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.bar{height:10px;background:var(--panel);border:2px solid var(--line);border-radius:99px;overflow:hidden;margin:8px 0 18px}
+.bar i{display:block;height:100%;width:0;background:var(--hi);transition:width .35s}
+.step{display:none}
+.step.on{display:block}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.why{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--hi);margin-bottom:4px}
+button{font:inherit;color:inherit}
+.btn{font-weight:800;padding:14px 18px;border:2px solid var(--line);background:var(--accent);color:var(--bg);border-radius:12px;cursor:pointer;min-height:52px}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btn.full{width:100%}
+.btn small{font-weight:400}
+button:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.rate{display:flex;gap:8px;margin:10px 0}
+.rate button{flex:1;padding:14px 0;border:2px solid var(--line);background:transparent;border-radius:10px;font-weight:800;font-size:1.1rem;cursor:pointer;min-height:52px}
+.rate button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ratelabels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.toggle{display:flex;gap:8px;margin-bottom:14px}
+.toggle button{flex:1;font-weight:600;padding:12px 10px;border:2px solid var(--line);background:transparent;border-radius:10px;cursor:pointer;min-height:56px}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.toggle small{display:block;font-weight:400;opacity:.85}
+.plan{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:10px}
+.plan svg{display:block;width:100%;height:auto}
+.plan text{font-family:inherit;fill:var(--ink)}
+.facts{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.facts li{background:var(--panel);border-left:6px solid var(--hi);padding:10px 14px;border-radius:0 8px 8px 0}
+.facts.por li{border-left-color:var(--por)}
+.facts.cni li{border-left-color:var(--cni)}
+.hook{font-size:1.4rem;font-weight:800;line-height:1.2;margin:4px 0}
+.hook b{color:var(--hi)}
+textarea,input[type=text]{width:100%;font:inherit;padding:12px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.chip{font-weight:600;padding:10px 12px;border:2px dashed var(--line);background:transparent;border-radius:99px;cursor:pointer;text-align:left}
+.sortcard{text-align:center;padding:26px 16px}
+.sortcard .name{font-size:1.7rem;font-weight:800;line-height:1.15}
+.guess{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0;font-weight:600;cursor:pointer}
+.guess input{width:22px;height:22px}
+.fb{border-radius:12px;padding:12px 14px;margin:12px 0;font-weight:600}
+.fb.ok{background:var(--goodbg);color:var(--good)}
+.fb.no{background:var(--badbg);color:var(--bad)}
+.fb span{display:block;font-weight:400;color:var(--ink)}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--muted)}
+.stat:last-child{border:0}
+table{border-collapse:collapse;width:100%}
+th,td{border:2px solid var(--line);padding:8px 10px;text-align:left;font-size:.92rem;vertical-align:top}
+th{background:var(--ink);color:var(--bg)}
+td.fn{font-weight:600;white-space:nowrap}
+.wide{overflow-x:auto}
+details{background:var(--panel);border:2px solid var(--line);border-radius:10px;margin-bottom:10px}
+summary{cursor:pointer;padding:14px;font-weight:600}
+details p{padding:0 14px 6px;color:var(--ink)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0}
+.check input{width:22px;height:22px;margin-top:3px;flex:none}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:2px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+.sticky .in{max-width:760px;margin:0 auto;display:flex;gap:10px}
+.sticky .btn.ghost{flex:0 0 auto}
+.sticky .btn:not(.ghost){flex:1}
+.banner{background:var(--goodbg);color:var(--ink);border:2px solid var(--good);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:99px;margin:0 6px 4px 0;border:2px solid}
+.tag.h{color:var(--good);border-color:var(--good);background:var(--goodbg)}
+.tag.s{color:var(--warn);border-color:var(--warn);background:var(--warnbg)}
+.tag.f{color:var(--cni);border-color:var(--cni)}
+.ans{border-top:2px dashed var(--muted);margin-top:12px;padding-top:10px}
+.ans p{padding:0;margin:0 0 8px}
+.gh{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.qrate{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.qrate button{flex:1 1 90px;font-weight:700;padding:10px 8px;border:2px solid var(--line);background:transparent;border-radius:10px;cursor:pointer;min-height:46px}
+.qrate button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.item{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.item.done{border-color:var(--good)}
+.item .pg{font-size:.78rem;color:var(--muted);font-weight:600}
+.slider{width:100%;margin:10px 0}
+.todo{margin:6px 0 0;padding-left:20px}
+.todo li{margin-bottom:4px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="topline"><span id="where">Step 1 of 10</span><span id="left">about 25 min total</span></div>
+  <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+
+  <!-- 1 INTRO -->
+  <section class="step" id="s-intro">
+    <h1>Sponges vs. Stingers</h1>
+    <p class="muted">Phylum Porifera and Phylum Cnidaria, Exercise 7. Everything here comes from your lab handout (pages 79 to 92), and each fact is tagged so you can see where it came from. One screen at a time. Close the tab any time; it remembers where you stopped.</p>
+    <div class="banner hide" id="welcomeback"></div>
+    <div class="card">
+      <span class="why">Predict first</span>
+      <h2>Before you learn anything: how well could you teach each phylum to a friend?</h2>
+      <p class="muted small">Honest guesses only. At the end we compare your gut feeling to what you actually did.</p>
+      <p><b>Porifera (sponges)</b></p>
+      <div class="rate" role="group" aria-label="Confidence in Porifera before" data-key="prePor"></div>
+      <div class="ratelabels"><span>No idea</span><span>Could teach it</span></div>
+      <p style="margin-top:16px"><b>Cnidaria (jellies, anemones, Hydra)</b></p>
+      <div class="rate" role="group" aria-label="Confidence in Cnidaria before" data-key="preCni"></div>
+      <div class="ratelabels"><span>No idea</span><span>Could teach it</span></div>
+    </div>
+    <div class="card">
+      <span class="why">How this works</span>
+      <p style="margin:0">1. Learn the big picture and make your own memory hooks. 2. Predict your score, then sort structures and classes. 3. Rate yourself on every lab station and every handout question. 4. Get a ranked list of what to study next, plus calendar reminders for short spaced reviews.</p>
+    </div>
+  </section>
+
+  <!-- 2 MAP -->
+  <section class="step" id="s-map">
+    <span class="why">Big picture</span>
+    <h2>Two phyla, same five jobs (plus germ layers)</h2>
+    <p>Both phyla are animals <b>without a coelom</b> (acoelomates, handout p. 79). The handout does not divide them into organ systems, so we organize by <b>job</b>: feeding, support, movement, sensing, reproduction. Tap both phyla to continue.</p>
+    <div class="toggle" role="group" aria-label="Choose a phylum">
+      <button id="b1" aria-pressed="true">Porifera<small>sponges &middot; Parazoa</small></button>
+      <button id="b2" aria-pressed="false">Cnidaria<small>&middot; Radiata</small></button>
+    </div>
+    <div class="plan">
+      <svg id="svgP" viewBox="0 0 600 300" role="img" aria-label="Sponge: water enters through pores into incurrent and radial canals, passes the collar cells into the spongocoel, and leaves through the osculum">
+        <path d="M200 270 C170 200 170 120 215 70 L385 70 C430 120 430 200 400 270 Z" fill="var(--room)" stroke="var(--line)" stroke-width="3"/>
+        <rect x="215" y="52" width="170" height="22" rx="8" fill="none" stroke="var(--line)" stroke-width="3"/>
+        <text x="300" y="40" font-size="15" text-anchor="middle" font-weight="800">osculum (water out)</text>
+        <path d="M300 62 V8" stroke="var(--cni)" stroke-width="4" fill="none"/><path d="M290 18 L300 6 L310 18" stroke="var(--cni)" stroke-width="4" fill="none"/>
+        <ellipse cx="300" cy="170" rx="42" ry="82" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="7 5"/>
+        <text x="300" y="168" font-size="15" text-anchor="middle" font-weight="800">spongocoel</text>
+        <text x="300" y="187" font-size="12" text-anchor="middle" style="fill:var(--muted)">central cavity</text>
+        <path d="M110 150 H178" stroke="var(--cni)" stroke-width="4"/><path d="M168 141 L180 150 L168 159" stroke="var(--cni)" stroke-width="4" fill="none"/>
+        <path d="M490 190 H422" stroke="var(--cni)" stroke-width="4"/><path d="M432 181 L420 190 L432 199" stroke="var(--cni)" stroke-width="4" fill="none"/>
+        <text x="105" y="130" font-size="14" font-weight="800">pores</text>
+        <text x="105" y="176" font-size="12" style="fill:var(--muted)">porocytes</text>
+        <path d="M184 150 H250" stroke="var(--por)" stroke-width="3" stroke-dasharray="3 4"/>
+        <text x="80" y="224" font-size="13" font-weight="600">incurrent and</text>
+        <text x="80" y="241" font-size="13" font-weight="600">radial canals</text>
+        <circle cx="258" cy="150" r="9" fill="var(--por)"/><circle cx="258" cy="190" r="9" fill="var(--por)"/><circle cx="342" cy="150" r="9" fill="var(--por)"/><circle cx="342" cy="190" r="9" fill="var(--por)"/>
+        <text x="440" y="130" font-size="14" font-weight="800">collar cells</text>
+        <text x="440" y="148" font-size="12" style="fill:var(--muted)">(choanocytes) line the</text>
+        <text x="440" y="164" font-size="12" style="fill:var(--muted)">inner surface</text>
+        <path d="M436 136 L352 150" stroke="var(--muted)" stroke-width="1.5"/>
+      </svg>
+      <svg id="svgC" class="hide" viewBox="0 0 600 300" role="img" aria-label="Cnidaria: a stationary polyp with tentacles up and mouth on top, and a free-swimming medusa with the bell on top and tentacles hanging down">
+        <text x="150" y="26" font-size="17" text-anchor="middle" font-weight="800">POLYP (sessile)</text>
+        <rect x="118" y="112" width="64" height="130" rx="14" fill="var(--room)" stroke="var(--line)" stroke-width="3"/>
+        <path d="M118 112 L96 62 M134 112 L124 56 M150 112 L150 52 M166 112 L176 56 M182 112 L204 62" stroke="var(--cni)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="150" cy="112" rx="14" ry="6" fill="var(--line)"/>
+        <text x="236" y="118" font-size="13" font-weight="600">mouth</text><path d="M232 114 L166 112" stroke="var(--muted)" stroke-width="1.5"/>
+        <text x="236" y="76" font-size="13" font-weight="600">tentacles</text><path d="M232 72 L196 66" stroke="var(--muted)" stroke-width="1.5"/>
+        <text x="236" y="180" font-size="13" font-weight="600">gastrovascular</text><text x="236" y="196" font-size="13" font-weight="600">cavity</text>
+        <rect x="256" y="148" width="0" height="0"/>
+        <rect x="132" y="130" width="36" height="104" rx="8" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M232 186 L170 186" stroke="var(--muted)" stroke-width="1.5"/>
+        <rect x="104" y="242" width="92" height="12" rx="5" fill="var(--line)"/>
+        <text x="236" y="252" font-size="13" font-weight="600">basal disc (Hydra)</text>
+        <text x="450" y="26" font-size="17" text-anchor="middle" font-weight="800">MEDUSA (free-swimming)</text>
+        <path d="M370 130 C370 66 530 66 530 130 Z" fill="var(--room)" stroke="var(--line)" stroke-width="3"/>
+        <path d="M382 130 V190 M410 130 V210 M440 130 V196 M470 130 V212 M500 130 V190 M518 130 V176" stroke="var(--cni)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M450 130 V164" stroke="var(--line)" stroke-width="7" stroke-linecap="round"/>
+        <text x="450" y="260" font-size="13" text-anchor="middle" style="fill:var(--muted)">bell on top, mouth and tentacles hang down</text>
+      </svg>
+    </div>
+    <ul class="facts por" id="facts-p">
+      <li><b>Pore-bearer.</b> &ldquo;Porifera&rdquo; means &ldquo;to bear pores.&rdquo; Water enters the <b>incurrent</b> and <b>radial</b> canals, reaches the <b>spongocoel</b>, and exits the <b>osculum</b>. <span class="tag h">Handout p. 81</span></li>
+      <li><b>Loosely assembled.</b> Cells do not form definite tissues; they can survive and reassemble even after being forced through a fine mesh. No mouth, no digestive tract. <span class="tag h">p. 81</span></li>
+      <li><b>Filter feeders.</b> Heterotrophs, adult is sessile, so people mistake sponges for plants. <b>Collar cells</b> line the inner surface and look like choanoflagellates, the protists sponges are thought to come from. <span class="tag h">p. 81</span></li>
+      <li><b>Classified by skeleton</b>: calcium carbonate (Calcarea), silica/glass (Hexactinellida), spongin protein (Demospongiae). <span class="tag h">pp. 81-83</span></li>
+    </ul>
+    <ul class="facts cni hide" id="facts-c">
+      <li><b>Stingers.</b> <b>Cnidocytes</b> hold barbed, harpoon-like <b>nematocysts</b>. Hydroids (Portuguese man-of-war), jellyfish, sea anemones, corals. <span class="tag h">Handout p. 86</span></li>
+      <li><b>Two germ layers</b> (ectoderm and endoderm), no mesoderm: epidermis, <b>mesoglea</b>, gastrodermis around a <b>gastrovascular cavity</b>. <span class="tag h">pp. 86-87</span></li>
+      <li><b>Two body forms</b>: <b>polyp</b> (sessile) and <b>medusa</b> (free-swimming). Some classes have only one form; others alternate. <span class="tag h">p. 86</span></li>
+      <li><b>Nerve nets</b>, no brain or nerve cord. Contractile cells shorten, lengthen and bend the body; the water-filled cavity is a <b>hydrostatic skeleton</b>. <span class="tag h">p. 86</span></li>
+    </ul>
+    <div class="card" style="margin-top:18px;border-color:var(--hi)">
+      <span class="why">Study focus: germ layers</span>
+      <h2>Porifera has NO germ layers. Cnidaria has TWO.</h2>
+      <p>This is one of the most testable differences. Germ layers are the embryonic layers that build the adult body. Think of a ladder:</p>
+      <div class="wide"><table>
+        <tr><th>Animal group</th><th>Germ layers</th><th>What it makes</th></tr>
+        <tr><td class="fn">Porifera (sponges)</td><td><b>None.</b> Cells are loosely assembled and form no definite tissues.</td><td>Specialized cells only (collar cells, amoebocytes, porocytes, epidermal cells), not true tissues</td></tr>
+        <tr><td class="fn">Cnidaria</td><td><b>Two</b> (diploblastic): ectoderm + endoderm. <b>No mesoderm.</b></td><td>Epidermis from ectoderm; gastrodermis from endoderm; mesoglea between them</td></tr>
+        <tr><td class="fn">Animals with a mesoderm</td><td><b>Three</b>: ectoderm, mesoderm, endoderm</td><td>Muscle, skeleton and circulatory system come from mesoderm (you meet these phyla later)</td></tr>
+      </table></div>
+      <p class="small" style="margin-top:10px"><span class="tag h">Handout pp. 81, 86-87</span> Sponge cells &ldquo;do not form definite tissues&rdquo;; cnidarians &ldquo;lack a mesoderm germ layer&rdquo; and &ldquo;have two embryonic germ layers, the ectoderm and endoderm.&rdquo; <span class="tag s">Add-on</span> The handout never uses the words &ldquo;sponges have no germ layers,&rdquo; but that is the standard textbook conclusion from having no true tissues. The three-layer row is also standard biology (review question 3). Confirm the wording with your instructor.</p>
+      <p style="margin:0"><b>Memory line:</b> <i>Sponge = zero layers, jelly = two layers, no mesoderm.</i> Epidermis = ectoderm, gastrodermis = endoderm.</p>
+    </div>
+    <h3>The two phyla side by side</h3>
+    <div class="wide">
+      <table>
+        <tr><th></th><th>Porifera</th><th>Cnidaria</th></tr>
+        <tr><td class="fn">Nickname (p. 79)</td><td>Parazoa</td><td>Radiata</td></tr>
+        <tr><td class="fn">Germ layers</td><td><b>None</b></td><td><b>Two</b> (ectoderm, endoderm); no mesoderm</td></tr>
+        <tr><td class="fn">Body wall</td><td>No definite tissues; loosely assembled cells</td><td>Two germ layers: epidermis, mesoglea, gastrodermis</td></tr>
+        <tr><td class="fn">Feeding</td><td>Filter feeding; collar cells; no mouth or gut</td><td>Tentacles with nematocysts; mouth; gastrovascular cavity</td></tr>
+        <tr><td class="fn">Support</td><td>Spicules (calcium carbonate or silica) or spongin</td><td>Hydrostatic skeleton: water-filled gastrovascular cavity</td></tr>
+        <tr><td class="fn">Movement</td><td>Adults sessile</td><td>Contractile cells; polyp sessile, medusa free-swimming</td></tr>
+        <tr><td class="fn">Sensing</td><td>Very primitive nerve integration; no complex senses</td><td>Nerve cells in irregular nerve nets; no brain or cord</td></tr>
+        <tr><td class="fn">Symmetry</td><td>Mostly none (asymmetrical); some radial</td><td>Radial <span class="tag s">inferred from &ldquo;Radiata&rdquo;</span></td></tr>
+        <tr><td class="fn">Asexual</td><td>Budding; gemmules</td><td>Budding (Hydra)</td></tr>
+        <tr><td class="fn">Sexual</td><td>Eggs and sperm made in the mesophyll; most are hermaphrodites; swimming larvae</td><td>Hydra is male (testis) or female (ovary); Obelia medusae reproduce sexually; planula larva</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3 HOOKS -->
+  <section class="step" id="s-hooks">
+    <span class="why">Make it stick</span>
+    <h2>Hooks beat rereading</h2>
+    <div class="card">
+      <p class="hook"><b>PORI</b>fera = <b>pore</b>-bearer.<br>Water in, <b>osculum</b> out.</p>
+      <p class="hook"><b>CNIDA</b>ria = <b>stingers</b>.<br>Cnidocyte holds a nematocyst.</p>
+      <p class="hook" style="margin-top:14px"><b>Polyp</b> stays put. <b>Medusa</b> moves.</p>
+      <p class="muted small">Sponge: no tissues, no gut, no nerves to speak of. Cnidarian: two layers, one opening, a nerve net.</p>
+    </div>
+    <div class="card">
+      <h2>Now make one that is yours.</h2>
+      <p class="muted small">Hooks you build yourself stick far better than ones you read. A silly picture or a rhyme works. Tap a starter and change it, or write your own.</p>
+      <div class="row" id="chips" style="margin-bottom:10px">
+        <button class="chip" type="button" data-t="Sponge = a wet bath sponge full of pores. Water goes in the sides and out the top (osculum).">Sponge = bath sponge, water out the top</button>
+        <button class="chip" type="button" data-t="Collar cells = chefs with a collar and a whip: they sweep food out of the water.">Collar cells = chefs in a collar</button>
+        <button class="chip" type="button" data-t="Cnidarian = Nettle: nematocysts are needles in stinging cells.">Cnidarian = nettle</button>
+        <button class="chip" type="button" data-t="Polyp = Pole (sits still). Medusa = Moves (floats). Anthozoa = always polyps.">Polyp = pole, Medusa = moves</button>
+      </div>
+      <label for="hook" class="small muted">Your hook (saved on this device)</label>
+      <textarea id="hook" placeholder="Type or tap a starter and then tweak it..."></textarea>
+    </div>
+  </section>
+
+  <!-- 4 SORT 1 -->
+  <section class="step" id="s-sort1">
+    <span class="why">Predict, then test</span>
+    <h2>Which phylum owns it?</h2>
+    <p class="muted small">Some structures belong to <b>both</b>, on purpose. Flip the &ldquo;just guessing&rdquo; box when you are unsure. Wrong cards come back so you get a second shot.</p>
+    <div id="sort1-root"></div>
+  </section>
+
+  <!-- 5 SORT 2 -->
+  <section class="step" id="s-sort2">
+    <span class="why">Predict, then test</span>
+    <h2>Which class?</h2>
+    <p class="muted small">Sponge classes are named for their skeleton. Cnidarian classes are named for their body form and examples. Same routine: predict, sort, compare.</p>
+    <div id="sort2-root"></div>
+  </section>
+
+  <!-- 6 LABS -->
+  <section class="step" id="s-labs">
+    <span class="why">Lab practical</span>
+    <h2>Every lab station: can you do it cold?</h2>
+    <p>Cover the labels list, then name or draw each one from memory. Tap how it went. Honest taps make the study list at the end accurate. You need to rate all of them to continue.</p>
+    <div id="labs-root"></div>
+    <p class="muted small" id="labs-count"></p>
+  </section>
+
+  <!-- 7 BANK -->
+  <section class="step" id="s-bank">
+    <span class="why">Retrieval</span>
+    <h2>Every handout question, one at a time</h2>
+    <p>For each question: <b>think or type your answer first</b>, then reveal and grade yourself. Rate at least 8 to continue; do all of them for the best study list.</p>
+    <p class="small"><span class="tag h">Handout</span> the handout says this &nbsp; <span class="tag s">Add-on</span> standard biology the handout does not state; check it against your lecture notes &nbsp; <span class="tag f">Film</span> the Shape of Life answer key.</p>
+    <p class="muted small" id="bank-count"></p>
+    <div id="bank-root"></div>
+    <p class="small muted">The 10 film questions are also in the graded <a href="/BIOS102/cnidaria-video-quiz.html">Cnidaria video quiz</a>.</p>
+  </section>
+
+  <!-- 8 RECALL -->
+  <section class="step" id="s-recall">
+    <span class="why">Brain dump</span>
+    <h2>Close your eyes if you like. What do you remember?</h2>
+    <p>Without scrolling up, write (or say out loud) <b>3 differences</b> between Porifera and Cnidaria. Messy is fine. Pulling it out of memory is what builds the memory.</p>
+    <textarea id="brain" placeholder="1.&#10;2.&#10;3."></textarea>
+    <button class="btn full" id="reveal" style="margin-top:12px" disabled>Check my answer</button>
+    <div id="key" class="hide card" style="margin-top:14px">
+      <h2>Did you get these?</h2>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Germ layers:</b> sponges have <b>none</b> (no definite tissues); cnidarians have <b>two</b>, ectoderm and endoderm, with no mesoderm.</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Body wall:</b> cnidarians have epidermis (from ectoderm), mesoglea, gastrodermis (from endoderm).</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Gut:</b> sponges have no mouth or digestive tract (water flows through pores to the osculum); cnidarians have a mouth and a gastrovascular cavity.</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Nerves:</b> sponges have very primitive nerve integration; cnidarians have nerve nets.</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Weapons and skeleton:</b> cnidarians have nematocysts and a hydrostatic skeleton; sponges have spicules or spongin.</span></label>
+      <label class="check"><input type="checkbox" class="keybox"><span><b>Body forms:</b> sponge adults are sessile; cnidarians have a sessile polyp and a free-swimming medusa.</span></label>
+      <p class="muted small" style="margin-top:8px">Tick the ones you had. Anything unticked is exactly what to review next, and that is useful information, not a failure.</p>
+    </div>
+  </section>
+
+  <!-- 9 TRAPS -->
+  <section class="step" id="s-traps">
+    <span class="why">Exam traps</span>
+    <h2>Where people lose points</h2>
+    <p class="muted small">Open all five to continue.</p>
+    <details class="trap"><summary>Sponges have an &ldquo;epidermis&rdquo; and a skeleton. Doesn&rsquo;t that mean they have germ layers?</summary><p><b>No.</b> Sponges have <b>no germ layers</b> and no definite tissues; their &ldquo;epidermal cells&rdquo; are just one of several specialized cell types. Cnidarians are the first to have two real germ layers (ectoderm and endoderm), and they still have <b>no mesoderm</b>. If a question asks how many germ layers: sponge 0, cnidarian 2.</p></details>
+    <details class="trap"><summary>Both phyla have &ldquo;epidermal&rdquo; cells. So is the epidermis a good way to tell them apart?</summary><p><b>No.</b> Sponges list epidermal cells among their specialized cells (p. 81), and cnidarians have an epidermis from ectoderm (p. 87). The difference is that sponge cells form no definite tissues, while the cnidarian epidermis is part of a real two-layer body wall.</p></details>
+    <details class="trap"><summary>The osculum is the sponge&rsquo;s mouth. True?</summary><p><b>False.</b> Sponges have no mouth or digestive tract. Water exits through the osculum, the open end. Cnidarians are the ones with a mouth and a gastrovascular cavity.</p></details>
+    <details class="trap"><summary>Are cnidarians all free-swimming, and sponges all stuck in place?</summary><p><b>Not quite.</b> Adult sponges are sessile, but a cnidarian can be a sessile <b>polyp</b> or a free-swimming <b>medusa</b>. Anthozoa (corals, anemones) are polyps only, Scyphozoa (jellyfish) are mostly medusae, and Hydrozoa like <i>Obelia</i> have both. Sponge <i>larvae</i> swim, too (p. 81).</p></details>
+    <details class="trap"><summary>Which one is hermaphroditic?</summary><p><b>Sponges</b>: most make both eggs and sperm in one animal. The handout describes <i>Hydra</i> as male (testis) or female (ovary). Both phyla also reproduce asexually by budding; only sponges make <b>gemmules</b>.</p></details>
+  </section>
+
+  <!-- 10 PLAN -->
+  <section class="step" id="s-plan">
+    <span class="why">Lock it in</span>
+    <h2>Check your gut, then plan your reviews</h2>
+    <div class="card">
+      <p><b>Now</b>, how well could you teach <b>Porifera</b>?</p>
+      <div class="rate" role="group" aria-label="Porifera confidence after" data-key="postPor"></div>
+      <p style="margin-top:14px"><b>Now</b>, how well could you teach <b>Cnidaria</b>?</p>
+      <div class="rate" role="group" aria-label="Cnidaria confidence after" data-key="postCni"></div>
+      <div class="ratelabels"><span>No idea</span><span>Could teach it</span></div>
+    </div>
+    <div class="card hide" id="calib"></div>
+    <div class="card hide" id="study"></div>
+    <div class="card">
+      <h2>Your memory plan</h2>
+      <p>One study session is not enough, and that is normal brain science, not a personal flaw. Short reviews spaced out over time move this into long-term memory. Each one takes about 60 seconds, and starts with your weakest cards.</p>
+      <div class="stat"><span>Today</span><b>Learned &#10003;</b></div>
+      <div class="stat"><span>Tomorrow</span><b id="d1"></b></div>
+      <div class="stat"><span>In 3 days</span><b id="d3"></b></div>
+      <div class="stat"><span>In 1 week</span><b id="d7"></b></div>
+      <div class="stat"><span>In 3 weeks</span><b id="d21"></b></div>
+      <p class="muted small" style="margin-top:10px">Your brain will not remind you, so let your phone do it.</p>
+      <button class="btn full" id="ics" type="button">Add review reminders to my calendar</button>
+    </div>
+  </section>
+
+  <!-- REVIEW MODE -->
+  <section class="step" id="s-review">
+    <span class="why">60-second review</span>
+    <h2>Quick check: what do you still remember?</h2>
+    <div id="review-root"></div>
+  </section>
+
+  <section class="step" id="s-reviewdone">
+    <h2 id="rd-title"></h2>
+    <p id="rd-body"></p>
+    <button class="btn full" id="rd-ics" type="button">Refresh my calendar reminders</button>
+  </section>
+</main>
+
+<div class="sticky" id="nav">
+  <div class="in">
+    <button class="btn ghost" id="back" type="button">Back</button>
+    <button class="btn" id="next" type="button">Next</button>
+  </div>
+</div>
+
+<script>
+(function(){
+var KEY='bios102_poricnid_v1';
+var DAY=86400000, GAPS=[1,3,7,21];
+
+/* ---------- content ---------- */
+var D1=[{v:'P',l:'Porifera',s:'sponge'},{v:'C',l:'Cnidaria',s:'stinger'},{v:'B',l:'Both',s:'shared'}];
+var D2=[{v:'Calcarea',l:'Calcarea',s:'sponge'},{v:'Hexactinellida',l:'Hexactinellida',s:'sponge'},{v:'Demospongiae',l:'Demospongiae',s:'sponge'},
+        {v:'Hydrozoa',l:'Hydrozoa',s:'cnidarian'},{v:'Scyphozoa',l:'Scyphozoa',s:'cnidarian'},{v:'Anthozoa',l:'Anthozoa',s:'cnidarian'}];
+var CARDS=[
+ {id:'collar',d:1,n:'Collar cells (choanocytes)',a:'P',w:'They line the sponge’s inner surface and resemble choanoflagellates (p. 81).'},
+ {id:'osculum',d:1,n:'Osculum',a:'P',w:'The sponge’s open end where water exits (p. 81). Not a mouth.'},
+ {id:'spongocoel',d:1,n:'Spongocoel',a:'P',w:'The sponge’s central cavity (p. 81).'},
+ {id:'porocyte',d:1,n:'Porocytes',a:'P',w:'Sponge cell type; the pores give the phylum its name (p. 81).'},
+ {id:'spicule',d:1,n:'Spicules (calcium carbonate or silica)',a:'P',w:'Skeleton pieces in sponges (pp. 81-83).'},
+ {id:'spongin',d:1,n:'Spongin',a:'P',w:'Protein skeleton material in sponges (p. 81).'},
+ {id:'gemmule',d:1,n:'Gemmules',a:'P',w:'Clusters of amoebocytes enclosed in hard spicules; survive conditions that would kill the adult (p. 81).'},
+ {id:'amoebo',d:1,n:'Amoebocytes',a:'P',w:'A sponge cell type; they make up gemmules (p. 81).'},
+ {id:'hermaph',d:1,n:'Hermaphroditic: one animal makes both eggs and sperm',a:'P',w:'Most sponges are hermaphrodites (p. 81). The handout describes Hydra as male or female.'},
+ {id:'nogut',d:1,n:'No mouth or digestive tract',a:'P',w:'Sponges have neither (p. 81). Cnidarians have a mouth and gastrovascular cavity.'},
+ {id:'reassemble',d:1,n:'Cells survive a fine mesh and reassemble',a:'P',w:'Sponges are so loosely assembled that disassociated cells can reassemble (p. 81).'},
+ {id:'nolayers',d:1,n:'No germ layers (no definite tissues)',a:'P',w:'Sponge cells form no definite tissues (p. 81). Germ layers are the add-on standard conclusion; cnidarians have two (pp. 86-87).'},
+ {id:'twolayers',d:1,n:'Two germ layers: ectoderm and endoderm',a:'C',w:'Cnidarians are diploblastic (pp. 86-87).'},
+ {id:'nomeso',d:1,n:'Lacks a mesoderm but has two germ layers',a:'C',w:'Cnidarians lack a mesoderm germ layer yet have ectoderm and endoderm (p. 86). Sponges have no germ layers at all.'},
+ {id:'ecto',d:1,n:'Epidermis that comes from ectoderm',a:'C',w:'Labeled “epidermis (from ectoderm)” on Hydra (p. 87). Sponges have epidermal cells but no germ layers.'},
+ {id:'nema',d:1,n:'Nematocysts',a:'C',w:'Barbed harpoon-like structures inside cnidocytes (p. 86).'},
+ {id:'cnidocyte',d:1,n:'Cnidocytes',a:'C',w:'The stinging cells that contain nematocysts (p. 86).'},
+ {id:'mesoglea',d:1,n:'Mesoglea',a:'C',w:'The layer between epidermis and gastrodermis (p. 87).'},
+ {id:'gastro',d:1,n:'Gastrodermis',a:'C',w:'The inner body-wall layer, from endoderm (p. 87).'},
+ {id:'gvc',d:1,n:'Gastrovascular cavity',a:'C',w:'Digestion and hydrostatic support in cnidarians (p. 86).'},
+ {id:'nerve',d:1,n:'Nerve nets',a:'C',w:'Irregular nets connecting sensory cells to contractile and gland cells (p. 86). Sponges have only very primitive nerve integration.'},
+ {id:'basal',d:1,n:'Basal disc',a:'C',w:'Labeled on Hydra (p. 86).'},
+ {id:'medusa',d:1,n:'Medusa form',a:'C',w:'The free-swimming cnidarian body form (p. 86).'},
+ {id:'hydranth',d:1,n:'Hydranth and gonangium',a:'C',w:'Obelia’s feeding and reproductive polyps (p. 88).'},
+ {id:'planula',d:1,n:'Planula larva',a:'C',w:'Obelia’s zygote becomes a planula that forms a new polyp colony (p. 88).'},
+ {id:'epi',d:1,n:'Epidermis / epidermal cells',a:'B',w:'Sponges list epidermal cells (p. 81); cnidarians have an epidermis from ectoderm (p. 87). The difference: sponges form no definite tissues.'},
+ {id:'bud',d:1,n:'Asexual reproduction by budding',a:'B',w:'Sponges (p. 81) and cnidarians (p. 87) both bud.'},
+ {id:'sess',d:1,n:'Sessile (attached) as an adult',a:'B',w:'Adult sponges are sessile (p. 81); a cnidarian polyp is sessile too (p. 86), though the medusa swims.'},
+ {id:'sex',d:1,n:'Sexual reproduction with eggs and sperm',a:'B',w:'Both phyla do it (pp. 81, 87).'},
+ {id:'calc',d:2,n:'Calcium carbonate spicules',a:'Calcarea',w:'“Calcium” in the name; the handout asks for exactly this (p. 82).'},
+ {id:'silica',d:2,n:'Silica (glass) skeleton',a:'Hexactinellida',w:'Silica (glass) is the primary material of this class (p. 83).'},
+ {id:'spong',d:2,n:'Spongin protein fibers',a:'Demospongiae',w:'The handout asks which class has a spongin skeleton: the one with “spongiae” in its name (p. 82).'},
+ {id:'hydra',d:2,n:'Hydra',a:'Hydrozoa',w:'Hydra, Obelia and Physalia are the Hydrozoa examples (p. 88).'},
+ {id:'obelia',d:2,n:'Obelia (colonial, polyp and medusa)',a:'Hydrozoa',w:'“More typical hydrozoan” with both polyp and free-swimming medusa (p. 88).'},
+ {id:'physalia',d:2,n:'Physalia (Portuguese man-of-war)',a:'Hydrozoa',w:'A floating colony with a gas-filled sac (p. 88).'},
+ {id:'aurelia',d:2,n:'Aurelia',a:'Scyphozoa',w:'The representative jellyfish genus (p. 89).'},
+ {id:'jelly',d:2,n:'Primarily the medusa form, very few polyp forms',a:'Scyphozoa',w:'These are the “jellyfish” (p. 89).'},
+ {id:'anem',d:2,n:'Sea anemone (solitary polyp)',a:'Anthozoa',w:'Anthozoa members are polyps, some solitary like sea anemones (p. 89).'},
+ {id:'coral',d:2,n:'Coral (colonial polyp)',a:'Anthozoa',w:'Anthozoa members are polyps, some colonial like corals (p. 89).'},
+ {id:'ponly',d:2,n:'Polyps only, no medusa form',a:'Anthozoa',w:'Anthozoa are polyps with no medusa forms (p. 89).'}
+];
+var DECKS={1:D1,2:D2};
+function find(id){for(var i=0;i<CARDS.length;i++)if(CARDS[i].id===id)return CARDS[i]}
+function ansLabel(c){var d=DECKS[c.d];for(var i=0;i<d.length;i++)if(d[i].v===c.a)return d[i].l;return c.a}
+
+var LABS=[
+ {id:'A1',g:'Porifera',t:'A1. Grantia x.s.',pg:'p. 82',w:'Sketch at 40X and 100X; at 400X a portion of a radial canal. Label: spongocoel, incurrent canals, inner lining of collar cells, and radial canal with collar cell.'},
+ {id:'A2',g:'Porifera',t:'A2. Calcium carbonate spicules w.m.',pg:'p. 82',w:'100X; lower the light. Label monaxons (pointed at both ends) and triradiates (Y-shaped). Which class has calcium carbonate? Calcarea.'},
+ {id:'A3',g:'Porifera',t:'A3. Spongin fibers teased apart',pg:'p. 82',w:'Demonstration scope. Which class has spongin? Demospongiae.'},
+ {id:'A4',g:'Porifera',t:'A4 to A6. One specimen of each sponge class',pg:'p. 83',w:'Calcarea; Hexactinellida (silica/glass; sketch whole sponge and the stereomicroscope view); Demospongiae. Be able to recognize any specimen on display.'},
+ {id:'C1',g:'Cnidaria',t:'7.2.1. Relaxed Hydra',pg:'p. 86',w:'Label gastrovascular cavity, mouth, tentacles, basal disc.'},
+ {id:'C2',g:'Cnidaria',t:'7.2.2. Startled Hydra',pg:'p. 86',w:'Sketch and describe how it reacts. (Do not bump the C1 scope; gently move the C2 dish.)'},
+ {id:'C3',g:'Cnidaria',t:'7.2.3. Hydra x.s.',pg:'p. 87',w:'Low power overall shape, then 400X of the wall. Label epidermis (from ectoderm), mesoglea, gastrodermis (from endoderm), gastrovascular cavity.'},
+ {id:'C4',g:'Cnidaria',t:'7.2.4. Hydra budding w.m.',pg:'p. 87',w:'Asexual reproduction by forming buds.'},
+ {id:'C5',g:'Cnidaria',t:'7.2.5a and b. Male and female Hydra x.s.',pg:'p. 87',w:'Male: gastrovascular cavity, body wall, testis. Female: gastrovascular cavity, body wall, ovary.'},
+ {id:'C6',g:'Cnidaria',t:'7.2.6. Obelia polyps (100X)',pg:'p. 88',w:'Feeding polyp (hydranth) with tentacles; reproductive polyp (gonangium) with medusa buds. Use brackets.'},
+ {id:'C7',g:'Cnidaria',t:'7.2.7. Obelia medusa (100X)',pg:'p. 88',w:'Side view. Label tentacles, mouth (shown pulled away from body), gastrovascular cavity (GVC).'},
+ {id:'C8',g:'Cnidaria',t:'7.2.8. Physalia (Portuguese man-of-war)',pg:'p. 88',w:'Hydrozoa; floating colony with a gas-filled sac and long tentacles of polyps.'},
+ {id:'C9',g:'Cnidaria',t:'7.2.9. Class Scyphozoa: Aurelia',pg:'p. 89',w:'Jellyfish; primarily the medusa form.'},
+ {id:'C10',g:'Cnidaria',t:'7.2.10. Class Anthozoa',pg:'p. 89',w:'Polyps only; colonial like corals or solitary like sea anemones. Sketch a representative.'}
+];
+
+var BANK=[
+ {id:'O2',g:'Objectives',n:'Objective 2',pg:'p. 81',q:'Describe the advantages of multicellularity.',
+  h:'The evolution of multicellular heterotrophs allowed exploitation of unusual resources and led to the radiation of very diverse forms. Early animals inhabited the seas, fresh water and eventually the land.',
+  s:'Cells can specialize in different jobs (division of labor, like the sponge’s collar cells and amoebocytes), and bodies can grow larger.'},
+ {id:'O3',g:'Objectives',n:'Objective 3',pg:'p. 81',q:'Understand the terms coelom, coelomate and pseudocoelomate.',
+  h:'Porifera and Cnidaria are listed as animals without a coelom (acoelomates), p. 79.',
+  s:'A coelom is a fluid-filled body cavity lined by mesoderm. A coelomate has a true coelom. A pseudocoelomate has a body cavity that is only partly lined by mesoderm. An acoelomate has no such cavity.'},
+ {id:'P1',g:'Porifera',n:'Review 1',pg:'p. 84',q:'Contrast the terms Parazoa and Eumetazoa.',
+  h:'The handout lists Porifera under Parazoa (p. 79) and says sponge cells do not form definite tissues (p. 81).',
+  s:'Parazoa: animals without true tissues or organs (the sponges). Eumetazoa: the “true animals” with true tissues, starting with the cnidarians.'},
+ {id:'P2',g:'Porifera',n:'Review 2',pg:'p. 84',q:'Explain how the two types of symmetry can be advantageous for various animals.',
+  h:'Sponges mostly have no regular form (asymmetrical); some have radial symmetry (p. 81).',
+  s:'Radial symmetry: equal access to the environment from every side, good for animals that stay put or drift. Bilateral symmetry: a front end that heads in one direction, supporting directed movement and sense organs at the head.'},
+ {id:'P3',g:'Porifera',n:'Review 3',pg:'p. 84',q:'Name the three germ layers and give an example of an organ or system derived from each.',
+  h:'Cnidarians have two germ layers, ectoderm and endoderm, and lack mesoderm; the epidermis comes from ectoderm and the gastrodermis from endoderm (pp. 86-87). Sponge cells form no definite tissues (p. 81).',
+  s:'Ectoderm: epidermis and nervous system. Mesoderm: muscle, skeleton, circulatory system. Endoderm: lining of the digestive tract. Study focus: Porifera has no germ layers, Cnidaria has two (no mesoderm).'},
+ {id:'P4',g:'Porifera',n:'Review 4',pg:'p. 84',q:'What is the importance of having a body cavity?',
+  h:'In cnidarians the water-filled gastrovascular cavity gives body support as a hydrostatic skeleton (p. 86).',
+  s:'A cavity gives organs room to grow and move independently of the body wall, cushions them, and can hold fluid that acts as a skeleton and helps move materials around.'},
+ {id:'P5',g:'Porifera',n:'Review 5',pg:'p. 84',q:'Where are the choanocytes (collar cells) located? Discuss the important functions of these cells for the sponge.',
+  h:'They line the sponge’s inner surface and are extremely similar to choanoflagellates, the flagellated protists sponges are thought to have evolved from. Sponges are filter-feeding heterotrophs.',
+  s:'Their beating flagella move water through the sponge, and the collar traps food particles, so they do the feeding.'},
+ {id:'P6',g:'Porifera',n:'Review 6',pg:'p. 85',q:'What are the functions of the amoebocytes?',
+  h:'Amoebocytes are a specialized sponge cell type, and gemmules are clusters of amoebocytes enclosed in hard spicules (p. 81).',
+  s:'They also digest and distribute food, and secrete spicules and spongin.'},
+ {id:'P7',g:'Porifera',n:'Review 7',pg:'p. 85',q:'Describe sexual reproduction in sponges. Include in your answer how cross fertilization is accomplished.',
+  h:'Eggs and sperm are produced in the mesophyll. Most sponges are hermaphroditic: one sponge makes both gametes. Fertilized eggs become motile larvae that swim about.',
+  s:'Cross fertilization: sperm are released into the water, drawn into another sponge by its water current, and carried to its eggs.'},
+ {id:'P8',g:'Porifera',n:'Review 8',pg:'p. 85',q:'Are sponges capable of asexual reproduction? Explain.',
+  h:'Yes. By budding and by forming gemmules (clusters of amoebocytes enclosed in hard spicules) that withstand adverse conditions that would kill the adult sponge.'},
+ {id:'P9',g:'Porifera',n:'Review 9',pg:'p. 85',q:'How do sponges perceive stimuli?',
+  h:'Their bodies are simple and lack complex sensory capabilities, and their nerve integration is very primitive (p. 81).',
+  s:'There are no sense organs or true nerves; individual cells respond on their own.'},
+ {id:'C1q',g:'Cnidaria',n:'Review 1',pg:'p. 90',q:'How does Hydra feed? (Include nematocysts.)',
+  h:'Cnidocytes contain small barbed harpoon-like nematocysts (p. 86). Tentacles are shown and labeled around the mouth (p. 86).',
+  s:'Prey touches the tentacles, nematocysts fire and paralyze it, and the tentacles move it into the mouth to be digested in the gastrovascular cavity.'},
+ {id:'C2q',g:'Cnidaria',n:'Review 2',pg:'p. 90',q:'What type of body symmetry does this phylum have?',
+  h:'The phylum is listed under Radiata (p. 79).',
+  s:'Radial symmetry.'},
+ {id:'C3q',g:'Cnidaria',n:'Review 3',pg:'p. 90',q:'Describe locomotion in the medusa body plan.',
+  h:'The medusa is the free-swimming form, and contractile cells in the epidermis and gastrodermis let the animal shorten, lengthen and bend (p. 86).',
+  s:'The bell contracts and pushes water out, driving the animal forward, then relaxes.'},
+ {id:'C4q',g:'Cnidaria',n:'Review 4',pg:'p. 90',q:'Describe asexual reproduction in Hydra.',
+  h:'Hydra reproduces asexually by forming buds (p. 87; demonstration of a formed bud and a budding w.m. slide).'},
+ {id:'C5q',g:'Cnidaria',n:'Review 5',pg:'p. 90',q:'What triggers sexual reproduction?',
+  h:'',
+  s:'The handout does not say. A common textbook answer for Hydra is unfavorable conditions such as cold, crowding or low food. Confirm what your instructor expects.'},
+ {id:'C6q',g:'Cnidaria',n:'Review 6',pg:'p. 90',q:'What are the two functions of the gastrovascular cavity in Cnidarians?',
+  h:'Body support (the water-filled cavity acts as a hydrostatic skeleton, p. 86) and digestion (it is labeled with the mouth).',
+  s:'Many textbooks word it as digestion and distribution of nutrients; ask which wording your instructor wants.'},
+ {id:'C7q',g:'Cnidaria',n:'Review 7',pg:'p. 91',q:'How does a hydrostatic skeleton function? Specifically in Hydra, how can it elongate its body?',
+  h:'The water-filled gastrovascular cavity supports the body, and contractile cells shorten, lengthen and bend it (p. 86).',
+  s:'Water does not compress, so when muscles squeeze the fluid-filled cavity the body is pushed longer and thinner; the opposite muscles shorten it.'},
+ {id:'C8q',g:'Cnidaria',n:'Review 8',pg:'p. 91',q:'Describe the nervous system in Hydra.',
+  h:'Nerve cells are present but not organized into a brain or nerve cord. Irregular nerve nets connect sensory cells in the body wall to contractile and gland cells (p. 86).'},
+ {id:'F1',g:'Film',n:'Movie 1',pg:'p. 92',q:'The first animal phyla to do movement was Cnidaria. TRUE or FALSE?',a:'TRUE'},
+ {id:'F2',g:'Film',n:'Movie 2',pg:'p. 92',q:'A medusa is FREE-FLOATING or STATIONARY? A polyp is FREE-FLOATING or STATIONARY?',a:'Medusa: free-floating. Polyp: stationary.'},
+ {id:'F3',g:'Film',n:'Movie 3',pg:'p. 92',q:'What structures allow Cnidarians to contract their muscles?',a:'Nerve cells.'},
+ {id:'F4',g:'Film',n:'Movie 4',pg:'p. 92',q:'Cnidarians were the first animals to develop ______ that could reach out and perceive the world.',a:'Tentacles.'},
+ {id:'F5',g:'Film',n:'Movie 5',pg:'p. 92',q:'Praya is made up of the two basic shapes, medusa and polyp. TRUE or FALSE?',a:'TRUE'},
+ {id:'F6',g:'Film',n:'Movie 6',pg:'p. 92',q:'Animals do not have to be near the predator, prey or competitor to release their nematocysts. TRUE or FALSE?',a:'FALSE. The tentacle must be touched before the weapons discharge.'},
+ {id:'F7',g:'Film',n:'Movie 7',pg:'p. 92',q:'How many sets of muscles do Cnidarians have?',a:'Two.'},
+ {id:'F8',g:'Film',n:'Movie 8',pg:'p. 92',q:'Cnidarians were the first animals to swim in the ocean. TRUE or FALSE?',a:'TRUE (the film: “may well have been”).'},
+ {id:'F9',g:'Film',n:'Movie 9',pg:'p. 92',q:'What is the function of the nematocysts?',a:'(a) They are projectiles loaded with poison that pierce their target.'},
+ {id:'F10',g:'Film',n:'Movie 10',pg:'p. 92',q:'How did Stomphia (sea anemone) get away from its predator, the starfish?',a:'(d) It frees itself from the rock and swims away.'}
+];
+function findB(id){for(var i=0;i<BANK.length;i++)if(BANK[i].id===id)return BANK[i]}
+function findL(id){for(var i=0;i<LABS.length;i++)if(LABS[i].id===id)return LABS[i]}
+
+/* ---------- state ---------- */
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+var S=load();
+S.step=S.step||0;
+['prePor','preCni','postPor','postCni'].forEach(function(k){if(S[k]===undefined)S[k]=null});
+S.hook=S.hook||''; S.brain=S.brain||''; S.missed=S.missed||[]; S.seen=S.seen||{};
+S.sort=S.sort||{}; S.labs=S.labs||{}; S.bank=S.bank||{};
+S.keyDone=!!S.keyDone; S.traps=S.traps||0; S.done=!!S.done;
+if(S.box===undefined)S.box=-1; S.due=S.due||null; S.log=S.log||[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function fmt(ms){return new Date(ms).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
+function count(o,fn){var n=0;for(var k in o)if(fn(o[k]))n++;return n}
+
+var STEPS=['intro','map','hooks','sort1','sort2','labs','bank','recall','traps','plan'];
+var MINS=[3,4,3,4,3,3,6,2,1,2];
+var reviewing=false;
+
+/* ---------- gates ---------- */
+function gate(i){
+  switch(STEPS[i]){
+    case 'intro': return S.prePor!==null&&S.preCni!==null;
+    case 'map': return !!(S.seen.p&&S.seen.c);
+    case 'hooks': return S.hook.trim().length>=3;
+    case 'sort1': return !!(S.sort[1]&&S.sort[1].done);
+    case 'sort2': return !!(S.sort[2]&&S.sort[2].done);
+    case 'labs': return count(S.labs,function(v){return !!v})>=LABS.length;
+    case 'bank': return count(S.bank,function(v){return !!v.r})>=8;
+    case 'recall': return S.keyDone;
+    case 'traps': return S.traps>=5;
+    case 'plan': return S.postPor!==null&&S.postCni!==null;
+  }
+  return true;
+}
+
+/* ---------- navigation ---------- */
+function showSection(id){
+  var all=document.querySelectorAll('.step');
+  for(var i=0;i<all.length;i++)all[i].classList.toggle('on',all[i].id===id);
+  window.scrollTo(0,0);
+}
+var lastStep=-1;
+function render(){
+  if(reviewing)return;
+  var i=S.step, last=STEPS.length-1, changed=i!==lastStep;
+  if(changed){showSection('s-'+STEPS[i]);lastStep=i}
+  $('where').textContent='Step '+(i+1)+' of '+STEPS.length;
+  var left=0;for(var k=i;k<STEPS.length;k++)left+=MINS[k];
+  $('left').textContent=i===last?'last one':'about '+Math.max(1,left)+' min left';
+  $('fill').style.width=((i+(gate(i)?1:0))/STEPS.length*100)+'%';
+  $('back').style.visibility=i===0?'hidden':'visible';
+  var nx=$('next');
+  nx.textContent=i===last?(S.done?'Done. See you tomorrow!':'Finish and save my plan'):'Next';
+  nx.disabled=!gate(i)||(i===last&&S.done);
+  if(changed){
+    if(STEPS[i]==='sort1')initSort(1);
+    if(STEPS[i]==='sort2')initSort(2);
+    if(STEPS[i]==='labs')buildLabs();
+    if(STEPS[i]==='bank')buildBank();
+    if(STEPS[i]==='plan')renderPlan();
+    if(STEPS[i]==='intro')renderWelcome();
+  } else if(STEPS[i]==='plan')renderPlan();
+}
+$('next').addEventListener('click',function(){
+  if(!gate(S.step))return;
+  if(S.step===STEPS.length-1){finish();return}
+  S.step++;save();render();
+});
+$('back').addEventListener('click',function(){if(S.step>0){S.step--;save();render()}});
+
+/* ---------- rating widgets ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('.rate'),function(g){
+  var key=g.getAttribute('data-key');
+  for(var n=1;n<=5;n++){
+    var b=document.createElement('button');b.type='button';b.textContent=n;b.setAttribute('data-n',n);
+    b.setAttribute('aria-pressed',S[key]===n?'true':'false');
+    b.addEventListener('click',function(){
+      S[key]=Number(this.getAttribute('data-n'));
+      var me=this;
+      Array.prototype.forEach.call(g.children,function(c){c.setAttribute('aria-pressed',c===me?'true':'false')});
+      save();render();
+    });
+    g.appendChild(b);
+  }
+});
+
+/* ---------- map ---------- */
+var b1=$('b1'),b2e=$('b2');
+function flip(isP){
+  $('svgP').classList.toggle('hide',!isP);$('facts-p').classList.toggle('hide',!isP);
+  $('svgC').classList.toggle('hide',isP);$('facts-c').classList.toggle('hide',isP);
+  b1.setAttribute('aria-pressed',isP);b2e.setAttribute('aria-pressed',!isP);
+  S.seen[isP?'p':'c']=1;save();render();
+}
+b1.addEventListener('click',function(){flip(true)});
+b2e.addEventListener('click',function(){flip(false)});
+S.seen.p=S.seen.p||1; // sponges are shown first
+
+/* ---------- hooks ---------- */
+$('hook').value=S.hook;
+$('hook').addEventListener('input',function(){S.hook=this.value;save();render()});
+Array.prototype.forEach.call(document.querySelectorAll('#chips .chip'),function(c){
+  c.addEventListener('click',function(){var t=this.getAttribute('data-t');$('hook').value=t;S.hook=t;save();render();$('hook').focus()});
+});
+
+/* ---------- sort engine ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function uniq(q){var m={};q.forEach(function(x){m[x]=1});return Object.keys(m).length}
+function makeSort(root,state,onUpdate,onDone){
+  function view(){
+    if(!state.queue.length){onDone();return}
+    var id=state.queue[0],c=find(id),opts=DECKS[c.d];
+    var doneCount=state.total-uniq(state.queue);
+    root.innerHTML='<p class="muted small">Card '+(Math.min(doneCount+1,state.total))+' of '+state.total+'</p>'+
+      '<div class="card sortcard"><div class="name">'+esc(c.n)+'</div>'+
+      '<label class="guess"><input type="checkbox" id="g"> I’m just guessing</label></div>'+
+      '<div class="row">'+opts.map(function(o){return '<button class="btn" data-a="'+o.v+'">'+o.l+'<br><small>'+o.s+'</small></button>'}).join('')+'</div>'+
+      '<div id="fb" aria-live="polite"></div>';
+    Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){
+      b.addEventListener('click',function(){answer(c,this.getAttribute('data-a'))});
+    });
+  }
+  function answer(c,a){
+    var sure=!root.querySelector('#g').checked, ok=a===c.a;
+    if(!state.first[c.id])state.first[c.id]={ok:ok,sure:sure};
+    state.queue.shift();
+    if(!ok){
+      state.queue.splice(Math.min(2,state.queue.length),0,c.id);
+      if(S.missed.indexOf(c.id)<0)S.missed.push(c.id);
+    } else {
+      var mi=S.missed.indexOf(c.id);
+      if(mi>=0&&state.first[c.id].ok)S.missed.splice(mi,1);
+    }
+    save();
+    Array.prototype.forEach.call(root.querySelectorAll('[data-a]'),function(b){b.disabled=true});
+    var msg=ok?(sure?'Correct, and you knew it.':'Correct! You were guessing, but your instincts were right.')
+              :(sure?'Not quite. You felt sure, so this one is worth noticing.':'Not quite. Good that you flagged it as a guess.');
+    root.querySelector('#fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'">'+(ok?'✓ ':'✗ ')+msg+
+      '<span><b>'+esc(c.n)+'</b>: '+esc(ansLabel(c))+'. '+esc(c.w)+'</span></div>'+
+      '<button class="btn full" id="nxt">'+(state.queue.length?'Next card':'See results')+'</button>';
+    var nb=root.querySelector('#nxt');nb.focus();
+    nb.addEventListener('click',function(){onUpdate();view()});
+  }
+  view();
+}
+function newSortState(ids){return {queue:shuffle(ids),total:ids.length,first:{},done:false}}
+function sortScore(st){
+  var ids=Object.keys(st.first),r={n:st.total||ids.length,ok:0,sureWrong:0,guessRight:0};
+  ids.forEach(function(k){var f=st.first[k];if(f.ok)r.ok++;if(!f.ok&&f.sure)r.sureWrong++;if(f.ok&&!f.sure)r.guessRight++});
+  return r;
+}
+function deckIds(n){return CARDS.filter(function(c){return c.d===n}).map(function(c){return c.id})}
+
+function initSort(n){
+  var root=$('sort'+n+'-root'),st=S.sort[n],N=deckIds(n).length;
+  if(st&&st.done){showSortResult(n,root);return}
+  if(!st||st.pred===undefined||st.pred===null){
+    var pre=(st&&st.predDraft)||Math.round(N*0.7);
+    root.innerHTML='<div class="card"><span class="why">Predict</span><h2>Before you start: how many of the '+N+' cards will you get right on the <u>first</u> try?</h2>'+
+      '<input class="slider" type="range" id="pr" min="0" max="'+N+'" value="'+pre+'" aria-label="Predicted first-try score">'+
+      '<p style="text-align:center;font-size:1.6rem;font-weight:800;margin:0"><span id="prv">'+pre+'</span> of '+N+'</p>'+
+      '<button class="btn full" id="lock" type="button" style="margin-top:12px">Lock in my prediction</button></div>';
+    $('pr').addEventListener('input',function(){$('prv').textContent=this.value});
+    $('lock').addEventListener('click',function(){
+      S.sort[n]=newSortState(deckIds(n));S.sort[n].pred=Number($('pr').value);save();initSort(n);
+    });
+    return;
+  }
+  if(!st.queue||!st.queue.length)S.sort[n]=st=Object.assign(newSortState(deckIds(n)),{pred:st.pred});
+  makeSort(root,st,function(){save()},function(){st.done=true;save();showSortResult(n,root);render()});
+}
+function showSortResult(n,root){
+  var st=S.sort[n],r=sortScore(st),diff=st.pred-r.ok,line;
+  if(diff>=2)line='You predicted '+st.pred+' and got '+r.ok+'. <b>Overconfident by '+diff+'.</b> That gap is what catches people on exams.';
+  else if(diff<=-2)line='You predicted '+st.pred+' and got '+r.ok+'. <b>You know more than you thought.</b>';
+  else line='You predicted '+st.pred+' and got '+r.ok+'. <b>Your sense of what you know is accurate.</b>';
+  root.innerHTML='<div class="card"><h2>'+r.ok+' of '+r.n+' right on the first try</h2><p>'+line+'</p>'+
+    '<div class="stat"><span>Sure and wrong (real blind spots)</span><b>'+r.sureWrong+'</b></div>'+
+    '<div class="stat"><span>Guessed but right</span><b>'+r.guessRight+'</b></div>'+
+    '<p class="muted small" style="margin-top:10px">'+(r.sureWrong?'The &ldquo;sure and wrong&rdquo; cards are the best things to study.':'No blind spots in this deck.')+'</p>'+
+    '<button class="btn ghost full" id="again'+n+'" type="button">Replay this deck</button></div>';
+  $('again'+n).addEventListener('click',function(){
+    // missed cards from this deck stay on the study list until answered right on a first try
+    S.sort[n]=null;save();lastStep=-1;render();
+  });
+}
+
+/* ---------- labs ---------- */
+function buildLabs(){
+  var root=$('labs-root');root.innerHTML='';
+  var cur='';
+  LABS.forEach(function(L){
+    if(L.g!==cur){cur=L.g;var h=document.createElement('div');h.className='gh';h.textContent='Phylum '+cur;root.appendChild(h)}
+    var d=document.createElement('div');d.className='item';d.id='lab-'+L.id;
+    d.innerHTML='<div class="pg">Handout '+L.pg+'</div><b>'+esc(L.t)+'</b>'+
+      '<details style="margin:8px 0 0"><summary class="small">What you need to be able to do (open after you try)</summary><p>'+esc(L.w)+'</p></details>'+
+      '<div class="qrate" role="group" aria-label="How did '+esc(L.t)+' go">'+
+      '<button type="button" data-v="2">Can do it cold</button><button type="button" data-v="1">Shaky</button><button type="button" data-v="0" data-n="1">Not yet</button></div>';
+    Array.prototype.forEach.call(d.querySelectorAll('.qrate button'),function(b){
+      b.addEventListener('click',function(){S.labs[L.id]=Number(this.getAttribute('data-v'))+1;save();paintLab(L.id);render()});
+    });
+    root.appendChild(d);paintLab(L.id);
+  });
+  labsCount();
+}
+function paintLab(id){
+  var d=$('lab-'+id),v=S.labs[id];if(!d)return;
+  Array.prototype.forEach.call(d.querySelectorAll('.qrate button'),function(b){b.setAttribute('aria-pressed',v&&Number(b.getAttribute('data-v'))+1===v?'true':'false')});
+  d.classList.toggle('done',!!v);labsCount();
+}
+function labsCount(){var n=count(S.labs,function(v){return !!v});$('labs-count').textContent=n+' of '+LABS.length+' rated'}
+
+/* ---------- question bank ---------- */
+function buildBank(){
+  var root=$('bank-root');root.innerHTML='';
+  var cur='',names={Objectives:'Objectives (p. 81)',Porifera:'Porifera review questions (pp. 84-85)',Cnidaria:'Cnidaria review questions (pp. 90-91)',Film:'“Shape of Life” movie worksheet (p. 92)'};
+  BANK.forEach(function(B){
+    if(B.g!==cur){cur=B.g;var h=document.createElement('div');h.className='gh';h.textContent=names[cur];root.appendChild(h)}
+    var st=S.bank[B.id]||(S.bank[B.id]={t:'',shown:false,r:0});
+    var d=document.createElement('div');d.className='item';d.id='bk-'+B.id;
+    var ans='';
+    if(B.a)ans+='<p><span class="tag f">Film</span>'+esc(B.a)+'</p>';
+    if(B.h)ans+='<p><span class="tag h">Handout '+B.pg+'</span>'+esc(B.h)+'</p>';
+    else if(!B.a)ans+='<p><span class="tag s">Not in the handout</span></p>';
+    if(B.s)ans+='<p><span class="tag s">Add-on</span>'+esc(B.s)+'</p>';
+    d.innerHTML='<div class="pg">'+B.n+' &middot; '+B.pg+'</div><b>'+esc(B.q)+'</b>'+
+      '<textarea aria-label="Your answer to '+esc(B.n)+'" placeholder="Your answer (optional, but trying first is what works)" style="margin-top:8px;min-height:64px"></textarea>'+
+      '<button class="btn ghost full" type="button" style="margin-top:8px;min-height:44px" data-act="show">Reveal answer</button>'+
+      '<div class="ans hide"><div>'+ans+'</div><p class="small muted" style="margin-top:6px">How did your answer compare?</p>'+
+      '<div class="qrate"><button type="button" data-v="3">Nailed it</button><button type="button" data-v="2">Partly</button><button type="button" data-v="1">Missed</button></div></div>';
+    var ta=d.querySelector('textarea');ta.value=st.t||'';
+    ta.addEventListener('input',function(){st.t=this.value;save()});
+    d.querySelector('[data-act=show]').addEventListener('click',function(){st.shown=true;save();paintBank(B.id)});
+    Array.prototype.forEach.call(d.querySelectorAll('.qrate button'),function(b){
+      b.addEventListener('click',function(){st.r=Number(this.getAttribute('data-v'));save();paintBank(B.id);bankCount();render()});
+    });
+    root.appendChild(d);paintBank(B.id);
+  });
+  bankCount();
+}
+function paintBank(id){
+  var d=$('bk-'+id),st=S.bank[id];if(!d)return;
+  d.querySelector('.ans').classList.toggle('hide',!st.shown);
+  d.querySelector('[data-act=show]').classList.toggle('hide',!!st.shown);
+  Array.prototype.forEach.call(d.querySelectorAll('.qrate button'),function(b){b.setAttribute('aria-pressed',st.r&&Number(b.getAttribute('data-v'))===st.r?'true':'false')});
+  d.classList.toggle('done',!!st.r);
+}
+function bankCount(){var n=count(S.bank,function(v){return !!v.r});$('bank-count').textContent=n+' of '+BANK.length+' graded'+(n>=8?' (you can continue)':'')}
+
+/* ---------- recall ---------- */
+$('brain').value=S.brain;
+function brainUI(){
+  $('reveal').disabled=$('brain').value.trim().length<10;
+  $('key').classList.toggle('hide',!S.keyShown);
+}
+$('brain').addEventListener('input',function(){S.brain=this.value;save();brainUI()});
+$('reveal').addEventListener('click',function(){S.keyShown=true;save();brainUI();$('key').scrollIntoView({behavior:'smooth',block:'nearest'})});
+Array.prototype.forEach.call(document.querySelectorAll('.keybox'),function(cb){
+  cb.addEventListener('change',function(){S.keyDone=true;save();render()});
+});
+brainUI();
+
+/* ---------- traps ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('details.trap'),function(d){
+  d.addEventListener('toggle',function(){
+    if(d.open&&!d.getAttribute('data-seen')){d.setAttribute('data-seen','1');S.traps++;save();render()}
+  });
+});
+
+/* ---------- plan ---------- */
+function studyList(){
+  var out=[];
+  S.missed.forEach(function(id){var c=find(id);if(c)out.push({k:'card',t:c.n+' → '+ansLabel(c)})});
+  LABS.forEach(function(L){var v=S.labs[L.id];if(v===1)out.push({k:'lab0',t:L.t+' (not yet)'});});
+  LABS.forEach(function(L){var v=S.labs[L.id];if(v===2)out.push({k:'lab1',t:L.t+' (shaky)'});});
+  BANK.forEach(function(B){var s=S.bank[B.id];if(s&&s.r===1)out.push({k:'q0',t:B.n+': '+B.q});});
+  BANK.forEach(function(B){var s=S.bank[B.id];if(s&&s.r===2)out.push({k:'q1',t:B.n+': '+B.q});});
+  return out;
+}
+function renderPlan(){
+  var base=S.done&&S.startedAt?S.startedAt:Date.now();
+  [1,3,7,21].forEach(function(g){$('d'+g).textContent=fmt(base+g*DAY)});
+  var c=$('calib'),lines=[];
+  if(S.postPor!==null&&S.postCni!==null){
+    var s1=S.sort[1]&&S.sort[1].done?sortScore(S.sort[1]):null,s2=S.sort[2]&&S.sort[2].done?sortScore(S.sort[2]):null;
+    var ok=0,n=0;[s1,s2].forEach(function(r){if(r){ok+=r.ok;n+=r.n}});
+    var pct=n?Math.round(ok/n*100):0,feel=(S.postPor+S.postCni)/2,was=(S.prePor+S.preCni)/2;
+    if(was<=2.5&&pct>=75)lines.push('You started near '+was.toFixed(1)+'/5 and got '+pct+'% on the first try. <b>You know more than you think.</b>');
+    else if(feel>=4&&pct<=62)lines.push('You feel '+feel.toFixed(1)+'/5 but scored '+pct+'% first try. <b>Feeling familiar is not the same as knowing.</b> Rely on quizzing, not rereading.');
+    else if(feel<=2.5&&pct>=75)lines.push('You feel '+feel.toFixed(1)+'/5 but got '+pct+'% first try. <b>Your gut is too harsh on you.</b>');
+    else lines.push('You rated about '+was.toFixed(1)+' before and '+feel.toFixed(1)+' after, with '+pct+'% first try. <b>Your confidence is tracking your skill.</b>');
+    var por=S.sort[1]&&S.sort[1].pred!=null&&s1?'Deck 1: predicted '+S.sort[1].pred+', got '+s1.ok+'.':'',cl=S.sort[2]&&S.sort[2].pred!=null&&s2?'Deck 2: predicted '+S.sort[2].pred+', got '+s2.ok+'.':'';
+    if(por||cl)lines.push('<span class="muted small">'+por+' '+cl+'</span>');
+    c.innerHTML='<h2>Your calibration</h2><p>'+lines.join('</p><p>')+'</p><p class="muted small">The gap between feeling and knowing is the number one reason students are surprised by exam scores. You just measured yours.</p>';
+    c.classList.remove('hide');
+  } else c.classList.add('hide');
+  var st=$('study'),list=studyList();
+  st.classList.remove('hide');
+  if(!list.length)st.innerHTML='<h2>Study next</h2><p>Nothing flagged. Every card was right, and every lab station and question you rated is solid. The reviews below keep it that way.</p>';
+  else{
+    var show=list.slice(0,12);
+    st.innerHTML='<h2>Study next ('+list.length+' flagged)</h2><p class="muted small">Ranked: cards you missed, lab stations you rated &ldquo;not yet&rdquo; or &ldquo;shaky,&rdquo; then handout questions you missed or got partly. Work from the top.</p><ol class="todo">'+
+      show.map(function(x){return '<li>'+esc(x.t)+'</li>'}).join('')+'</ol>'+(list.length>12?'<p class="muted small">&hellip;and '+(list.length-12)+' more. Reviews start with your missed cards.</p>':'');
+  }
+}
+function finish(){
+  S.done=true;S.startedAt=Date.now();S.box=0;S.due=S.startedAt+GAPS[0]*DAY;
+  S.log.push({t:S.startedAt,kind:'learn'});save();render();
+}
+
+/* ---------- calendar (.ics) ---------- */
+function two(n){return (n<10?'0':'')+n}
+function stamp(ms,h){var d=new Date(ms);return ''+d.getFullYear()+two(d.getMonth()+1)+two(d.getDate())+'T'+two(h)+'0000'}
+function downloadIcs(){
+  var base=S.startedAt||Date.now(),url='https://selassiefest.com/BIOS102/porifera-cnidaria.html?review=1';
+  var L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//BIOS102//Porifera Cnidaria Review//EN','CALSCALE:GREGORIAN'];
+  GAPS.forEach(function(g,i){
+    var ms=base+g*DAY;
+    L.push('BEGIN:VEVENT','UID:bios102-poricnid-'+base+'-'+g+'@selassiefest.com',
+      'DTSTAMP:'+stamp(Date.now(),0).replace(/T\d+/,'T000000')+'Z',
+      'DTSTART:'+stamp(ms,9),'DTEND:'+stamp(ms,9).replace('090000','091500'),
+      'SUMMARY:BIOS102 60-second review: Porifera and Cnidaria ('+(i+1)+' of 4)',
+      'DESCRIPTION:Quick memory check. No notes first! Try to answer from memory. '+url,
+      'URL:'+url,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:60-second BIOS102 review','TRIGGER:PT0M','END:VALARM','END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  var blob=new Blob([L.join('\r\n')],{type:'text/calendar'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='bios102-porifera-cnidaria-reviews.ics';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+$('ics').addEventListener('click',downloadIcs);
+$('rd-ics').addEventListener('click',downloadIcs);
+
+/* ---------- welcome back / review ---------- */
+function renderWelcome(){
+  var w=$('welcomeback');
+  if(!S.done){w.classList.add('hide');return}
+  var due=S.due&&Date.now()>=S.due;
+  w.classList.remove('hide');
+  w.innerHTML=(due?'<b>Your review is ready.</b> It takes about 60 seconds.':'<b>Welcome back!</b> Your next review is due '+fmt(S.due)+'. You can practice early; it just will not move your schedule.')+
+    '<div style="margin-top:10px"><button class="btn full" id="startrev" type="button">Start 60-second review</button></div>';
+  $('startrev').addEventListener('click',startReview);
+}
+var revState=null,revBank=null;
+function startReview(){
+  reviewing=true;$('nav').classList.add('hide');
+  $('where').textContent='Review';$('left').textContent='about 1 min';$('fill').style.width='0%';
+  showSection('s-review');
+  var pool=S.missed.filter(function(i){return !!find(i)}),all=CARDS.map(function(c){return c.id});
+  var rest=shuffle(all.filter(function(i){return pool.indexOf(i)<0}));
+  var ids=shuffle(pool.concat(rest).slice(0,6));
+  revState=newSortState(ids);
+  var weak=BANK.filter(function(B){var s=S.bank[B.id];return s&&s.r&&s.r<3&&!B.a});
+  revBank=weak.length?weak[Math.floor(Math.random()*weak.length)]:BANK[Math.floor(Math.random()*BANK.length)];
+  var root=$('review-root');
+  makeSort(root,revState,function(){},function(){reviewRecall(root)});
+}
+function reviewRecall(root){
+  var B=revBank,ans=(B.a?'<p>'+esc(B.a)+'</p>':'')+(B.h?'<p><span class="tag h">Handout '+B.pg+'</span>'+esc(B.h)+'</p>':'')+(B.s?'<p><span class="tag s">Add-on</span>'+esc(B.s)+'</p>':'');
+  root.innerHTML='<div class="card"><h2>Say it from memory</h2><p>Out loud or in your head, no peeking: <b>'+esc(B.q)+'</b></p>'+
+    '<details><summary>Show the answer</summary><div style="padding:0 14px 6px">'+ans+'</div></details>'+
+    '<p style="margin-top:12px"><b>How did you do?</b></p><div class="row"><button class="btn ghost" data-r="1">Got it</button><button class="btn ghost" data-r="0">Missed some</button></div></div>';
+  Array.prototype.forEach.call(root.querySelectorAll('[data-r]'),function(b){
+    b.addEventListener('click',function(){endReview(this.getAttribute('data-r')==='1')});
+  });
+}
+function endReview(recallOk){
+  var r=sortScore(revState),strong=recallOk&&r.n&&r.ok/r.n>=0.83,due=S.due&&Date.now()>=S.due,t,body;
+  if(revBank&&S.bank[revBank.id])S.bank[revBank.id].r=recallOk?3:Math.min(S.bank[revBank.id].r||1,2);
+  if(due){
+    if(strong){S.box=Math.min(S.box+1,GAPS.length);}else{S.box=0}
+    var next=S.box>=GAPS.length?null:GAPS[S.box];
+    S.due=next?Date.now()+next*DAY:null;
+    S.startedAt=Date.now();
+  }
+  S.log.push({t:Date.now(),kind:'review',ok:r.ok,n:r.n,recall:recallOk});save();
+  if(strong){
+    t='Nice. That is getting locked in.';
+    body=due?(S.due?'Your next review is '+fmt(S.due)+'. The gaps get longer as your memory gets stronger.':'You have finished all four reviews. This is in long-term memory. Do one last quick check the night before your exam.'):'You practiced early, so your schedule stays the same.';
+  } else {
+    t='That is useful. Forgetting is how you learn what to fix.';
+    body='You got '+r.ok+' of '+r.n+' on the first try'+(recallOk?'':' and missed some of the recall')+'. '+(due?'We will check again tomorrow, since a fast second look right after a stumble works best.':'Try the review again when it is due.')+' Want a refresher? Reopen the lesson from the start.';
+  }
+  $('rd-title').textContent=t;$('rd-body').textContent=body;showSection('s-reviewdone');
+  $('rd-ics').classList.toggle('hide',!S.due);
+}
+
+/* ---------- boot ---------- */
+if(S.step>=STEPS.length)S.step=STEPS.length-1;
+if(S.done)S.step=0;
+var wantReview=/[?&]review=1/.test(location.search);
+if(S.done&&wantReview){
+  $('nav').classList.add('hide');startReview();
+} else render();
+})();
+</script>
+</body>
+</html>
