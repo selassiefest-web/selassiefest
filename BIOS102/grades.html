@@ -688,7 +688,7 @@
     if (ui.stu) {
       var r0 = cur.rows.filter(function (r) { return r.student === ui.stu; })[0];
       if (r0) {
-        h += '<h2 style="margin-top:24px">' + esc(r0.student) + '</h2><div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>Score</th><th>Class mean</th><th>Difference</th><th>z</th></tr></thead><tbody>' + cur.columns.map(function (col) {
+        h += '<h2 style="margin-top:24px">' + esc(r0.student) + ' <a class="b" style="font-size:.8rem;text-decoration:none;margin-left:10px" target="_blank" rel="noopener" href="/BIOS102/my-grades.html?preview=' + encodeURIComponent(r0.student) + '">Preview as this student &rarr;</a></h2><div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>Score</th><th>Class mean</th><th>Difference</th><th>z</th></tr></thead><tbody>' + cur.columns.map(function (col) {
           var v = show(r0, col), vals = colValues(col, analysisRows()), mm = vals.length ? mean(vals) : NaN, ss = sd(vals);
           return '<tr><td class="l">' + esc(col.label) + '</td><td>' + (v == null ? 'excused' : f(v, 1)) + '</td><td>' + f(mm, 1) + '</td><td>' + (v == null ? '-' : (v - mm >= 0 ? '+' : '') + f(v - mm, 1)) + '</td><td>' + (v == null ? '-' : f((v - mm) / ss, 2)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';

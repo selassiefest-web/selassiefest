@@ -298,13 +298,24 @@
 
   /* ---- boot ---- */
   (async function () {
-    try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
+    var pv = new URLSearchParams(location.search).get('preview'), banner = '';
+    if (pv) {
+      // Instructor preview: bios102_grades_load only answers instructor sessions, so a student cannot use this.
+      try {
+        var all = await window.sfSupabase.bios102GradesLoad(session.sessionToken), set = (all.sets || [])[0], row = set && set.rows.filter(function (r) { return r.student === pv; })[0];
+        if (!row) { $('app').innerHTML = '<div class="card2"><h2>No student called \u201C' + esc(pv) + '\u201D in the gradebook</h2></div>'; return; }
+        D = row.data && row.data.status === 'dropped' ? { found: false } : { found: true, first: pv.split(' ')[0], columns: set.columns, data: row.data };
+        banner = '<div class="note amber" style="position:sticky;top:64px;z-index:5"><b>Instructor preview</b>: this is what <b>' + esc(pv) + '</b> sees when they log in. Students only ever receive their own row. Nothing you do here changes anything. <a href="/BIOS102/grades.html">Back to the gradebook</a></div>';
+      } catch (err) { $('app').innerHTML = '<div class="card2"><h2>Preview is for instructors</h2><p class="lead">Log in with an instructor account to preview a student\u2019s page.</p></div>'; return; }
+    }
+    else try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
     catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
-    if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
+    if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = banner + '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
     data = D.data; cv = data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
     render();
+    if (banner) $('app').insertAdjacentHTML('afterbegin', banner);
   })();
 })();
 </script>
