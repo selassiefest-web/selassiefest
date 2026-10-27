@@ -65,9 +65,12 @@ begin
   end if;
   if exists (
     select 1 from jsonb_array_elements(p_scale) x
-    where jsonb_typeof(x->'letter') <> 'string'
-       or (x->>'letter') !~ '^[A-Z][+-]?$'
-       or jsonb_typeof(x->'min') <> 'number'
+    where jsonb_typeof(x) <> 'object'
+       or coalesce(jsonb_typeof(x->'letter') <> 'string', true)
+       or coalesce(jsonb_typeof(x->'min') <> 'number', true)
+  ) or exists (
+    select 1 from jsonb_array_elements(p_scale) x
+    where (x->>'letter') !~ '^[A-Z][+-]?$'
        or (x->>'min')::numeric < 0 or (x->>'min')::numeric > 100
   ) then
     raise exception 'Each step needs a letter like A or B+ and a minimum from 0 to 100.';
