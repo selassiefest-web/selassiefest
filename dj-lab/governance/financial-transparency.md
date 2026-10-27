@@ -19,7 +19,7 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 |---|---|---:|---:|
 | Weekly operations: 2 resident instructors ($250 a session each), guest woman DJ, snacks, guest travel, supplies, Showcase supplies, 10% contingency | 39 Tuesdays; detail on the 2027 plan page | $46,723 | |
 | Earplugs, pediatric first aid/CPR/AED certification, Spanish review | about $50 + 2 adults × about $100 + about $200 | $450 | |
-| Insurance: general liability + abuse and molestation | Reserve; quote pending. Small youth programs have been quoted from about $800 to $1,600, and some carriers set a $5,000 minimum | $3,500 | |
+| Insurance: general liability + abuse and molestation | Policy in force from Oct. 22, 2026: general liability $1M / $2M plus abuse and molestation coverage $1M / $2M, Lio Insurance through S. Wolf & Associates. Reserve until the premium is entered | $3,500 | |
 | CPD background checks | Reserve; the Park District runs and pays for its own checks, to be confirmed for partner staff and guest DJs | $500 | |
 | Music public-performance licensing | Reserve; ASCAP, BMI, SESAC and GMR, or written confirmation that the Park District's licenses cover the Lab | $1,000 | |
 | Q-Ality Sound: sound, stage and lighting for the 14 Rainbow Wednesdays | $1,200 per Rainbow Wednesday × 14 | $16,800 | |
