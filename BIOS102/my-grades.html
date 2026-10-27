@@ -137,20 +137,16 @@
     var tg0 = c.fp / D0 * 100, tg1 = D1 > 0 ? m.fin.n / D1 * 100 : null, w0 = 100 / D0, w1 = D1 > 0 ? 100 / D1 : null;
     var names = S.exc.map(function (e) { return esc(ITEMS[e.item].n); }).join(' and ');
     h += '<div class="chips">' + S.exc.map(function (e, i) { return '<span class="chip">' + esc(ITEMS[e.item].n) + ' · ' + (e.status === 'missing' ? 'no score' : num(e.score) + '/' + ITEMS[e.item].p) + '<button type="button" data-exrm="' + i + '" aria-label="Remove">&times;</button></span>'; }).join('') + '<button class="b" type="button" id="ex-clear">Clear</button></div>';
+    var up = function (T) { return 10 / T * 100; };
     h += '<div class="scroll"><table class="t"><thead><tr><th></th><th>Not excused</th><th>Excused from ' + names + '</th></tr></thead><tbody>' +
       '<tr><td>Points in the whole course</td><td>' + num(D0) + '</td><td>' + num(D1) + '</td></tr>' +
       '<tr><td>Points you have earned</td><td>' + num(c.fp) + '</td><td>' + num(m.fin.n) + '</td></tr>' +
-      '<tr><td><b>Total grade so far</b> <span class="help">(earned ÷ whole course)</span></td><td><b>' + pc(tg0) + '</b></td><td><b>' + pc(tg1) + '</b></td></tr>' +
-      '<tr><td>Average on the work graded so far</td><td>' + pc(c.cp / c.cd * 100) + '</td><td>' + pc(m.cur.d > 0 ? m.cur.n / m.cur.d * 100 : null) + '</td></tr>' +
-      '<tr><td>Each remaining point is worth, of your total grade</td><td>' + f(w0, 3) + '%</td><td>' + (w1 == null ? '-' : f(w1, 3) + '%') + '</td></tr></tbody></table></div>';
-    h += '<p class="lead" style="margin-top:12px"><b>Your workload stays the same, but each remaining point counts for more.</b> You still have all the same work left to do. What changes is the size of the course: ' + num(D0) + ' points becomes ' + num(D1) + '. With a smaller total, every point is a bigger slice: ' + f(w0, 2) + '% of your total grade before, ' + (w1 == null ? '-' : f(w1, 2)) + '% after, so each point you earn (or lose) has about ' + (w1 == null ? '-' : f((D0 / D1 - 1) * 100, 0)) + '% more influence on your final grade.</p>' +
-      '<p class="lead"><b>How an excuse compares with doing the assignment.</b> Being excused has the same effect on your percentage as scoring exactly your usual rate on that assignment. If you would have scored above your usual rate, the excuse costs you a little; if below, it helps. Doing it and earning nothing is the worst case, which is why a blank is so different from an excuse.</p>';
-    if (S.exc.every(function (e) { return e.status === 'missing'; })) {
-      var P = S.exc.reduce(function (s, e) { return s + ITEMS[e.item].p; }, 0);
-      h += '<div class="scroll"><table class="t"><thead><tr><th>If you did ' + names + ' instead</th><th>0%</th><th>60%</th><th>80%</th><th>100%</th><th>Excused</th></tr></thead><tbody><tr><td>Total grade so far</td>' +
-        [0, 60, 80, 100].map(function (s) { return '<td>' + pc((c.fp + P * s / 100) / D0 * 100) + '</td>'; }).join('') + '<td><b>' + pc(tg1) + '</b></td></tr></tbody></table></div>' +
-        '<div class="help">These totals count only work you have already earned, so they are low for everyone until the rest of the course is done. Compare the columns with each other.</div>';
-    }
+      '<tr><td><b>Your total grade so far</b> <span class="help">(points earned \u00F7 points in the course)</span></td><td><b>' + pc(tg0) + '</b></td><td><b>' + pc(tg1) + '</b></td></tr>' +
+      '<tr><td>Earning 10 more points adds this much to your grade percentage</td><td>+' + f(up(D0), 1) + '</td><td>' + (D1 > 0 ? '+' + f(up(D1), 1) : '-') + '</td></tr></tbody></table></div>';
+    h += '<p class="lead" style="margin-top:12px"><b>In plain words.</b> Your grade is a fraction: the points you have earned on top, the points in the whole course on the bottom. Excusing an assignment takes it off the bottom (and off the top too, if you had a score on it). When the bottom number gets smaller, the same points are a bigger share of it.</p>' +
+      '<p class="lead"><b>With your numbers.</b> You have earned ' + num(c.fp) + ' points. Out of ' + num(D0) + ' points that is ' + pc(tg0) + '. With ' + names + ' excused the course is ' + num(D1) + ' points, and the same ' + num(m.fin.n) + ' points is ' + pc(tg1) + '.</p>' +
+      '<p class="lead"><b>Your workload does not change.</b> You still do all the same remaining work. What changes is that each point now moves your grade more: earning 10 more points adds ' + f(up(D0), 1) + ' to your percentage when the course is ' + num(D0) + ' points, and ' + (D1 > 0 ? f(up(D1), 1) : '-') + ' when it is ' + num(D1) + '.</p>' +
+      '<p class="lead"><b>Excused or not?</b> Being excused is like scoring exactly your usual percentage on that assignment. If you would have scored higher than your usual, the excuse costs you a little; if lower, it helps. Not turning something in (a zero) is the worst outcome, which is why a blank and an excuse are so different.</p>';
     return h + '</div>';
   }
 
