@@ -99,6 +99,16 @@
     });
     return out;
   }
+  // groups where nothing has been graded or earned at all (work not turned in, or not graded yet)
+  function emptyGroups() {
+    var g = cv.g || {}, out = [];
+    ['assignments', 'participation', 'labs', 'quizzes'].forEach(function (k) {
+      var x = g[k]; if (!x) return;
+      var fd = isNum(x.fd) ? x.fd : STD[k];
+      if ((x.cp || 0) === 0 && (x.fp || 0) === 0 && !(isNum(x.cd) && x.cd > 0) && fd > 0) out.push({ key: k, fd: fd });
+    });
+    return out;
+  }
   function mkRecovered() {
     var tot = 0;
     lostGroups().forEach(function (g) { var m = S.mk[g.key]; if (m && m.pts > 0) tot += Math.min(m.pts, g.L) * m.credit / 100; });
@@ -152,12 +162,13 @@
 
   /* ---- make-up what-if ---- */
   function makeupHTML() {
-    var groups = lostGroups(), c = cvOf(), h = '<div class="card2" id="sec-makeup"><h2>If I turned in missed work</h2>' +
+    var groups = lostGroups(), c = cvOf(), empty = emptyGroups(), h = '<div class="card2" id="sec-makeup"><h2>If I turned in missed work</h2>' +
       '<p class="lead">Work that was not turned in counts as zero. If you turned it in and earned some credit, those points are added to what you have earned. The course stays the same size. Whether late work is accepted is your instructor’s decision; this just shows what it would be worth.</p>';
-    if (!groups.length) return h + '<div class="note">No graded points are missing right now, so there is nothing to make up. Nice.</div></div>';
+    if (empty.length) h += '<div class="note amber"><b>Nothing has earned credit yet in: ' + empty.map(function (g) { return GROUP_LABEL[g.key] + ' (' + num(g.fd) + ' points)'; }).join(', ') + '.</b> Work that has not been turned in or graded yet is part of \u201Cthe rest of the course\u201D in the box below. Turn the slider for it up to see what turning it in would be worth.</div>';
+    if (!groups.length) return h + (empty.length ? '' : '<div class="note">No graded points are missing right now, so there is nothing to make up. Nice.</div>') + '</div>';
     h += groups.map(function (g) {
       var m = S.mk[g.key] || (S.mk[g.key] = { pts: 0, credit: 80 });
-      return '<div class="row mk"><div><b>' + GROUP_LABEL[g.key] + '</b><small>' + num(g.cp) + ' of ' + num(g.cd) + ' graded points earned, ' + num(g.L) + ' not earned</small></div>' +
+      return '<div class="row mk"><div><b>' + GROUP_LABEL[g.key] + '</b><small>' + num(g.cp) + ' of ' + num(g.cd) + ' graded points earned; ' + num(g.L) + ' not earned (work not turned in, or points you could earn back)</small></div>' +
         '<div class="cell">Points of missed work you would turn in: <b id="mkp-' + g.key + '">' + num(m.pts) + '</b><input type="range" min="0" max="' + g.L + '" step="0.25" value="' + m.pts + '" data-mk="' + g.key + '" data-f="pts" aria-label="Points of missed work for ' + GROUP_LABEL[g.key] + '"></div>' +
         '<div class="cell">Credit you would earn on it: <b id="mkc-' + g.key + '">' + m.credit + '%</b><input type="range" min="0" max="100" step="5" value="' + m.credit + '" data-mk="' + g.key + '" data-f="credit" aria-label="Credit earned on missed work for ' + GROUP_LABEL[g.key] + '"></div></div>';
     }).join('');
@@ -246,7 +257,9 @@
       '<p class="lead">These two numbers answer different questions. The first is <b>how well you are doing on what has been graded</b>. The second is <b>how much of the whole course you have already earned</b>, so it is low for everyone until the rest of the course is done.</p>';
     var cols = (D.columns || []).filter(function (x) { return x.max && !x.formula; });
     h += '<div class="scroll"><table class="t"><thead><tr><th>Item</th><th>Score</th><th>Out of</th><th>Percent</th><th></th></tr></thead><tbody>' + cols.map(function (x) {
-      var v = data[x.key];
+      var v = data[x.key], gk = cv.g && cv.g[x.key];
+      // a category with nothing graded yet is "not graded yet", not a score of zero
+      if (gk && x.key !== 'exams' && !(isNum(gk.cd) && gk.cd > 0) && !(gk.cp > 0)) return '<tr><td>' + esc(x.label) + '</td><td colspan="4" style="text-align:left;color:var(--text-dim)">Not graded yet</td></tr>';
       if (!isNum(v)) return '<tr><td>' + esc(x.label) + '</td><td colspan="4" style="text-align:left;color:var(--text-dim)">' + ((data.excused || []).indexOf(x.key) >= 0 ? 'Excused' : 'No score yet') + '</td></tr>';
       var p = v / x.max * 100;
       return '<tr><td>' + esc(x.label) + '</td><td>' + num(v) + '</td><td>' + num(x.max) + '</td><td>' + f(p, 1) + '%</td><td><div class="bar"><i style="width:' + Math.min(100, p) + '%"></i></div></td></tr>';

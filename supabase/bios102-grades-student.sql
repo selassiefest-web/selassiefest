@@ -17,19 +17,30 @@ create unique index if not exists bios102_grade_rows_set_email_uniq
   on bios102_grade_rows (set_id, lower(email)) where email is not null;
 
 -- Internal: link unlinked rows to roster accounts. Not callable from the browser.
+-- A row is linked only when EXACTLY ONE roster account fits it (so an extra roster
+-- student who shares a first name can never be picked arbitrarily), and never to an
+-- account already linked to another row of the same gradebook.
 create or replace function bios102_grades_automatch(p_set uuid)
 returns void
 language sql
 security definer
 set search_path = public
 as $$
-  update bios102_grade_rows r set email = s.email
-  from bios102_students s
-  where r.set_id = p_set and r.email is null
-    and s.major not ilike 'Instructor%'
-    and lower(split_part(r.student, ' ', 1)) = lower(split_part(s.display_name, ' ', 1))
-    and (r.student !~ '^\S+ [A-Za-z]\.$'
-         or upper(left(regexp_replace(s.display_name, '^.* ', ''), 1)) = upper(substr(r.student, length(r.student) - 1, 1)));
+  with cand as (
+    select r.id as row_id, s.email,
+           count(*) over (partition by r.id) as fits
+    from bios102_grade_rows r
+    join bios102_students s
+      on s.major not ilike 'Instructor%'
+     and lower(split_part(r.student, ' ', 1)) = lower(split_part(s.display_name, ' ', 1))
+     and (r.student !~ '^\S+ [A-Za-z]\.$'
+          or upper(left(regexp_replace(s.display_name, '^.* ', ''), 1)) = upper(substr(r.student, length(r.student) - 1, 1)))
+    where r.set_id = p_set and r.email is null
+  )
+  update bios102_grade_rows r set email = c.email
+  from cand c
+  where r.id = c.row_id and c.fits = 1
+    and not exists (select 1 from bios102_grade_rows o where o.set_id = p_set and lower(o.email) = lower(c.email));
 $$;
 revoke execute on function bios102_grades_automatch(uuid) from public, anon, authenticated;
 
@@ -120,7 +131,7 @@ begin
     'first', split_part(v_row.student, ' ', 1),
     'gradebook', v_set.name,
     'columns', v_set.columns,
-    'data', v_row.data
+    'data', v_row.data - 'status'   -- internal notes (dropped / medical leave) never go to the student
   );
 end;
 $$;

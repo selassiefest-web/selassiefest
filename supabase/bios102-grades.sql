@@ -11,6 +11,9 @@
 -- as first name + last initial only, never IDs, logins or emails. Values are
 -- jsonb keyed by column key; a null value means excused / no score (left out
 -- of every statistic, never counted as zero).
+-- NOTE: bios102_grades_load / bios102_grades_save are superseded by the versions in
+-- bios102-grades-student.sql (they carry the email link). Apply that file after this one,
+-- and never re-run only this file on a live database: it would put the old versions back.
 -- The grade rows themselves are loaded out of band or through the page's
 -- Import tab, and are never committed to this repo.
 -- ─────────────────────────────────────────────────────────────────────────
