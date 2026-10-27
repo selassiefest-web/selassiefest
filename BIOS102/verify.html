@@ -39,13 +39,16 @@
           retryLink.style.display = 'block';
           return;
         }
+        // A page-restricted student gets only their allowed pages (null = everything).
+        const allowedPages = await window.sfSupabase.bios102SessionPages(result.session_token);
         BIOS.setSession({
           sessionToken: result.session_token,
           email: result.email,
           displayName: result.display_name,
+          allowedPages: allowedPages,
         });
         statusMsg.textContent = `Welcome, ${result.display_name}! Taking you to your chapters...`;
-        window.location.href = '/BIOS102/dashboard.html';
+        window.location.href = allowedPages ? allowedPages[0] : '/BIOS102/dashboard.html';
       } catch (err) {
         console.error(err);
         statusMsg.textContent = 'Something went wrong signing you in. Please try again.';

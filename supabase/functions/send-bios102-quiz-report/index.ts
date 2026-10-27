@@ -48,7 +48,7 @@ function scoreLine(r: Round) {
 
 async function loadStudents(admin: ReturnType<typeof createClient>, storageId: number): Promise<Student[]> {
   const { data: roster, error: rErr } = await admin
-    .from("bios102_students").select("email, display_name, major");
+    .from("bios102_students").select("email, display_name, major, allowed_pages");
   if (rErr) throw rErr;
   const { data: tables, error: tErr } = await admin
     .from("bios102_student_tables").select("email, rows, updated_at").eq("exercise_number", storageId);
@@ -56,7 +56,7 @@ async function loadStudents(admin: ReturnType<typeof createClient>, storageId: n
   const byEmail = new Map((tables ?? []).map((t) => [String(t.email).toLowerCase(), t]));
 
   return (roster ?? [])
-    .filter((s) => !/^instructor/i.test(s.major ?? ""))
+    .filter((s) => !/^instructor/i.test(s.major ?? "") && !s.allowed_pages)
     .map((s) => {
       const t = byEmail.get(String(s.email).toLowerCase());
       const state = t && Array.isArray(t.rows) && t.rows[0] ? t.rows[0].mockQuiz : null;
@@ -122,7 +122,7 @@ type VStudent = {
 };
 
 async function loadVideoStudents(admin: ReturnType<typeof createClient>): Promise<{ students: VStudent[]; excluded: number }> {
-  const { data: roster, error: rErr } = await admin.from("bios102_students").select("email, display_name, major");
+  const { data: roster, error: rErr } = await admin.from("bios102_students").select("email, display_name, major, allowed_pages");
   if (rErr) throw rErr;
   const { data: tables, error: tErr } = await admin.from("bios102_student_tables")
     .select("email, rows, updated_at").eq("exercise_number", VIDEO_STORAGE_ID).eq("table_name", VIDEO_TABLE);
@@ -131,7 +131,7 @@ async function loadVideoStudents(admin: ReturnType<typeof createClient>): Promis
   if (gErr) throw gErr;
   const dropped = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
   const byEmail = new Map((tables ?? []).map((t) => [String(t.email).toLowerCase(), t]));
-  const all = (roster ?? []).filter((s) => !/^instructor/i.test(s.major ?? ""));
+  const all = (roster ?? []).filter((s) => !/^instructor/i.test(s.major ?? "") && !s.allowed_pages);
   const students = all.filter((s) => !dropped.has(String(s.email).toLowerCase())).map((s): VStudent => {
     const t = byEmail.get(String(s.email).toLowerCase());
     const state = t && Array.isArray(t.rows) && t.rows[0] ? t.rows[0].cnidariaVideoQuiz : null;

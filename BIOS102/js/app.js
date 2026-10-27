@@ -32,15 +32,24 @@ window.BIOS = (() => {
       window.location.href = '/BIOS102/index.html';
       return null;
     }
+    // A page-restricted student (session.allowedPages, set at sign-in) may only
+    // open those pages; anything else sends them to the first one.
+    const allowed = session.allowedPages;
+    if (Array.isArray(allowed) && allowed.length && allowed.indexOf(window.location.pathname) < 0) {
+      window.location.href = allowed[0];
+      return null;
+    }
     return session;
   }
 
   function mountTopbar(session) {
     const el = document.getElementById('topbar');
     if (!el) return;
+    const home = Array.isArray(session.allowedPages) && session.allowedPages.length
+      ? session.allowedPages[0] : '/BIOS102/dashboard.html';
     el.innerHTML = `
       <div class="brand">
-        <a href="/BIOS102/dashboard.html" style="color:inherit;text-decoration:none;">
+        <a href="${home}" style="color:inherit;text-decoration:none;">
           BIOS102 <span>Lab Companion</span>
         </a>
         <small>Diversity of Life</small>

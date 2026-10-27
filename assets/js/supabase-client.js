@@ -586,6 +586,15 @@ window.sfSupabase = {
     return (data && data[0]) || null;
   },
 
+  // The pages a page-restricted student may open (null = no restriction).
+  // See supabase/bios102-restricted-students.sql.
+  async bios102SessionPages(sessionToken) {
+    const client = await window.sfSupabaseReady;
+    const { data, error } = await client.rpc('bios102_session_pages', { p_session: sessionToken });
+    if (error) throw error;
+    return Array.isArray(data) && data.length ? data : null;
+  },
+
   // Loads every comparison table a student has built across all exercises.
   // sessionToken is resolved back to an email server-side (see
   // bios102_load_tables in schema.sql) -- this page never sends an email
