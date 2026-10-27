@@ -88,7 +88,9 @@
   function cvOf() { return { cp: cv.cp, cd: cv.cd, fp: cv.fp, fd: cv.fd + LATE, g: cv.g }; }
   function autoExcused() { return (data.excused || []).filter(function (k) { return !isNum(data[k]); }); }
   function exPoints(keys) { return keys.reduce(function (s, k) { var it = ITEMS.filter(function (x) { return x.key === k; })[0]; return s + (it ? it.p : 0); }, 0); }
-  function bandOf(p) { return p >= 90 ? 'A' : p >= 80 ? 'B' : p >= 70 ? 'C' : p >= 60 ? 'D' : 'F'; }
+  // BIOS102 12-step scale, highest first: [letter, lowest percent]
+  var BANDS = [['A', 92], ['A-', 90], ['B+', 88], ['B', 82], ['B-', 80], ['C+', 78], ['C', 72], ['C-', 70], ['D+', 68], ['D', 62], ['D-', 60], ['F', 0]];
+  function bandOf(p) { for (var i = 0; i < BANDS.length; i++) if (p >= BANDS[i][1]) return BANDS[i][0]; return 'F'; }
 
   /* ---- make-up work: graded points that are lost today and could be turned in ---- */
   function lostGroups() {
@@ -245,7 +247,7 @@
         '<span><input type="number" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' style="width:62px"> %</span>' +
         '<label class="x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
     }).join('');
-    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the usual 90/80/70/60 cut-offs; your syllabus has the real ones. This is a what-if: it changes nothing in your actual grades.</div></div>';
+    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the BIOS102 scale (A 92, A- 90, B+ 88, B 82, B- 80, C+ 78, C 72, C- 70, D+ 68, D 62, D- 60). This is a what-if: it changes nothing in your actual grades.</div></div>';
   }
 
   /* ---- my scores ---- */
