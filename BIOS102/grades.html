@@ -52,6 +52,12 @@
     .stat-grid b { font-size: 1.15rem; font-weight: 500; }
     .msg { font-size: .85rem; min-height: 1.3em; color: var(--amber); margin: 6px 0; }
     .ins-h { font-weight: 500; font-size: 1rem; margin: 0 0 8px; color: var(--text); }
+    .pj-row { display: grid; grid-template-columns: minmax(150px, 220px) minmax(120px, 1fr) 90px 100px; gap: 10px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--border); }
+    .pj-row.ex { opacity: .5; }
+    .pj-l small { display: block; color: var(--text-dim); font-size: .76rem; }
+    .pj-row input[type=range] { width: 100%; accent-color: var(--accent); }
+    .pj-x { font-size: .84rem; color: var(--text-dim); display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+    @media (max-width: 640px) { .pj-row { grid-template-columns: 1fr 1fr; } }
     .tag { display: inline-block; font-size: .7rem; padding: 1px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-left: 6px; }
   </style>
 </head>
@@ -487,7 +493,9 @@
   // overall average and hurts when it was above. Item list = the published assignments in the Canvas course
   // (Assignments page, read 2026-10-26). Quiz 7 was published after the grade export, so the export's totals
   // do not include it yet. User-facing wording avoids the LMS's own terms: an excuse is an excuse.
-  var BASE_FINAL = 430;   // 15 assignments + 30 participation + 35 lab reports + 60 quizzes + 290 exams
+  var LATE = 10;          // Quiz 7: published after the grade export, so the export's totals leave it out
+  var BASE_FINAL = 440;   // 15 assignments + 30 participation + 35 lab reports + 70 quizzes (7 x 10) + 290 exams
+  function cvOf(r) { var c = r.data.cv; return c ? { cp: c.cp, cd: c.cd, fp: c.fp, fd: c.fd + LATE, g: c.g } : null; }
   var ITEMS = [
     ['Assignments', 'Lab 1a: Scientific Method', 1.75], ['Assignments', 'Lab 1a: Phylogeny Reading', 2.5], ['Assignments', 'Lab 1a: Evolution Videos', 2],
     ['Assignments', 'Lab 1a: Strange Fish (Part I)', 2], ['Assignments', 'Lab 1a: Strange Fish (Part II)', 5], ['Assignments', 'Lab 1a: Strange Fish (Part III)', 1.75],
@@ -495,7 +503,7 @@
     ['Participation', 'Lab 7', 3], ['Participation', 'Lab 8', 3], ['Participation', 'Lab 9', 3], ['Participation', 'Lab 10', 3], ['Participation', 'Lab 11', 3],
     ['Lab Reports', 'Pilobolus Lab Write-Up', 15], ['Lab Reports', 'Animal Behavior Lab Write-Up', 20],
     ['Quizzes', 'Quiz 1', 10], ['Quizzes', 'Quiz 2', 10], ['Quizzes', 'Quiz 3', 10], ['Quizzes', 'Quiz 4', 10], ['Quizzes', 'Quiz 5', 10], ['Quizzes', 'Quiz 6', 10],
-    ['Quizzes', 'Quiz 7 (published after the grade export)', 10, 'late'],
+    ['Quizzes', 'Quiz 7', 10],
     ['Exams', 'Exam 1', 120, 'exam1'], ['Exams', 'Exam 2', 50, 'exam2'], ['Exams', 'Exam 3', 120, 'exam3']
   ].map(function (a) { return { g: a[0], n: a[1], p: a[2], key: a[3] && a[3] !== 'late' ? a[3] : null, late: a[3] === 'late' }; });
   var STATES = { posted: 'Graded and posted', unposted: 'Graded, not posted yet', missing: 'No score (not taken or not graded)' };
@@ -506,10 +514,10 @@
     return { status: 'posted', score: null };
   }
   function mCompute(r, list) {
-    var cv = r.data.cv; if (!cv) return null;
+    var cv = cvOf(r); if (!cv) return null;
     var cur = { n: cv.cp, d: cv.cd }, fin = { n: cv.fp, d: cv.fd }, p = 0, skipped = [], bad = [];
     list.forEach(function (e) {
-      var it = ITEMS[e.item]; if (it.late) { skipped.push(it.n); return; }
+      var it = ITEMS[e.item];
       var s = e.status === 'missing' ? 0 : e.score;
       if (!isNum(s)) { bad.push(it.n); return; }
       p += it.p;
@@ -525,7 +533,7 @@
   function dcell(a, b) { if (a == null || b == null) return '-'; var d = b - a; return '<span style="color:' + (Math.abs(d) < 0.005 ? 'var(--text-dim)' : d > 0 ? 'var(--accent)' : 'var(--danger)') + '">' + (d >= 0 ? '+' : '') + f(d, 2) + ' pts</span>'; }
 
   function machineCard(r) {
-    var cv = r.data.cv, st = ui.exc = ui.exc || {}, list = st[r.student] = st[r.student] || [], nm = esc(r.student);
+    var cv = cvOf(r), st = ui.exc = ui.exc || {}, list = st[r.student] = st[r.student] || [], nm = esc(r.student);
     var h = '<div class="card2" style="margin-top:24px"><h3>Excuse machine: how an excuse changes ' + nm + '’s grade</h3>' +
       '<p class="help" style="margin-top:0;font-size:.88rem;line-height:1.55">A grade is <b>points earned ÷ points in the whole course</b>. The whole course is ' + BASE_FINAL + ' points. When an assignment is <b>excused</b> it is taken out of the course completely: it is not counted as a zero and it is not counted as a score. The course gets smaller, and the student’s grade is worked out on what is left.</p>';
     if (!cv) return h + '<p class="help">No point totals are stored for this student. Re-import the grade export to enable this.</p></div>';
@@ -549,7 +557,7 @@
       (pick.status === 'missing' ? '' : '<label>Score earned <input type="number" id="ex-score" step="any" min="0" style="width:84px" value="' + (isNum(pick.score) ? pick.score : '') + '"> of ' + ITEMS[pick.item].p + '</label>') +
       '<button class="b pri" type="button" id="ex-add">Add to the comparison</button></div>';
     if (ITEMS[pick.item].key) h += '<div class="help" style="margin:-6px 0 8px">' + (isNum(r.data[ITEMS[pick.item].key]) ? 'Score filled in from the gradebook.' : 'No score on file for this exam.') + '</div>';
-    if (ITEMS[pick.item].late) h += '<div class="help" style="color:var(--amber);margin:-6px 0 8px">Quiz 7 was published after these totals were exported, so it is not in them yet.</div>';
+    if (ITEMS[pick.item].n === 'Quiz 7') h += '<div class="help" style="margin:-6px 0 8px">Quiz 7 counts in the whole course (it was published after the grade export), so enter its score only if it has been graded.</div>';
 
     if (!list.length) return h + '<div class="help">Add an assignment to compare <b>not excused</b> with <b>excused</b>.</div><div class="help" style="margin-top:8px">Nothing here changes the saved gradebook.</div></div>';
 
@@ -580,6 +588,90 @@
     return h + '<div class="help" style="margin-top:8px">This is a what-if. Nothing here changes the saved gradebook.</div></div>';
   }
 
+  /* ---------------- Projection: "what if I score this on the rest?" ---------------- */
+  var STD_FD = { assignments: 15, participation: 30, labs: 35, quizzes: 60 };
+  var BANDS = [['A', 90], ['B', 80], ['C', 70], ['D', 60], ['F', 0]];
+  function bandOf(p) { for (var i = 0; i < BANDS.length; i++) if (p >= BANDS[i][1]) return BANDS[i][0]; return 'F'; }
+
+  // Work still to be earned, derived from each student's own totals: points in the whole course minus points
+  // already graded (posted or not). Exams are tracked per exam; quizzes are 10 points each, so any quiz that is
+  // graded but not posted yet is rounded up to whole quizzes. Exams the student is excused from are removed.
+  function remItems(r) {
+    var cv = cvOf(r), g = cv.g || {}, items = [], autoEx = 0;
+    ['exam1', 'exam2', 'exam3'].forEach(function (k, i) {
+      var p = ITEMS.filter(function (x) { return x.key === k; })[0].p;
+      if (isNum(r.data[k])) return;
+      if ((r.data.excused || []).indexOf(k) >= 0) { autoEx += p; return; }
+      items.push({ key: k, label: 'Exam ' + (i + 1), R: p });
+    });
+    [['quizzes', 'Remaining quizzes'], ['participation', 'Remaining lab participation'], ['labs', 'Remaining lab write-ups'], ['assignments', 'Remaining assignments']].forEach(function (a) {
+      var x = g[a[0]] || {}, fd = isNum(x.fd) ? x.fd : STD_FD[a[0]], cd = isNum(x.cd) ? x.cd : 0;
+      if (a[0] === 'quizzes') fd += LATE;
+      var unp = Math.max(0, (x.fp || 0) - (x.cp || 0)), unpPoss = a[0] === 'quizzes' ? Math.ceil(unp / 10 - 1e-9) * 10 : unp;
+      var R = Math.max(0, fd - cd - unpPoss);
+      if (R > 0.01) items.push({ key: a[0], label: a[1], R: R });
+    });
+    return { items: items, base: cv.fd - autoEx, cv: cv, autoEx: autoEx };
+  }
+  function projState(r) {
+    var ps = ui.proj = ui.proj || {};
+    if (!ps[r.student]) {
+      var cv = cvOf(r), usual = cv.cd > 0 ? Math.max(0, Math.min(100, Math.round(cv.cp / cv.cd * 100))) : 85, pct = {};
+      remItems(r).items.forEach(function (it) { pct[it.key] = usual; });
+      ps[r.student] = { pct: pct, ex: {}, target: 90, usual: usual };
+    }
+    return ps[r.student];
+  }
+  function projCalc(r) {
+    var ri = remItems(r), P = projState(r), earned = 0, remPts = 0, exPts = 0;
+    ri.items.forEach(function (it) {
+      if (P.ex[it.key]) { exPts += it.R; return; }
+      remPts += it.R; earned += it.R * (isNum(P.pct[it.key]) ? P.pct[it.key] : 0) / 100;
+    });
+    var D = ri.base - exPts, N = ri.cv.fp + earned, D0 = ri.base;
+    var allPct = ri.items.reduce(function (s, it) { return s + it.R * (isNum(P.pct[it.key]) ? P.pct[it.key] : 0) / 100; }, 0);
+    return { ri: ri, P: P, D: D, N: N, pct: D > 0 ? N / D * 100 : null, remPts: remPts, exPts: exPts, earned: earned,
+      pct0: D0 > 0 ? (ri.cv.fp + allPct) / D0 * 100 : null, D0: D0,
+      need: remPts > 0 ? ((P.target / 100) * D - ri.cv.fp) / remPts * 100 : null };
+  }
+  function projOutHTML(r) {
+    var c = projCalc(r), nm = esc(r.student), h = '';
+    if (c.pct == null) return '<div class="help">Nothing left to project.</div>';
+    h += '<div class="stat-grid"><div><small>Projected final grade</small><b>' + f(c.pct, 1) + '%</b><small>grade band ' + bandOf(c.pct) + '</small></div>' +
+      '<div><small>Points earned at the end</small><b>' + num(c.N) + '</b><small>out of ' + num(c.D) + '</small></div>' +
+      '<div><small>Still to earn</small><b>' + num(c.remPts) + '</b><small>points of work left</small></div></div>';
+    var s = 'If ' + nm + ' scores ' + c.ri.items.filter(function (it) { return !c.P.ex[it.key]; }).map(function (it) { return f(c.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', the course ends at <b>' + f(c.pct, 1) + '%</b> (' + num(c.N) + ' of ' + num(c.D) + ' points).';
+    h += '<p style="line-height:1.6;margin:8px 0">' + s + '</p>';
+    if (c.exPts > 0 && c.pct0 != null) h += '<p style="line-height:1.6;margin:8px 0">With the same scores and <b>nothing</b> excused the course would end at <b>' + f(c.pct0, 1) + '%</b> (out of ' + num(c.D0) + ' points). The ' + num(c.exPts) + ' excused points change the result by <b>' + (c.pct - c.pct0 >= 0 ? '+' : '') + f(c.pct - c.pct0, 1) + ' points</b>.</p>';
+    var T = c.P.target, t;
+    if (c.need == null) t = 'There is no remaining work to earn.';
+    else if (c.need <= 0) t = 'A final grade of ' + T + '% is already secured, whatever the rest turns out to be.';
+    else if (c.need > 100.0001) t = 'A final grade of ' + T + '% cannot be reached: it would take ' + f(c.need, 0) + '% on all the remaining work.';
+    else t = 'To finish with <b>at least ' + T + '%</b>, ' + nm + ' needs an average of <b>' + f(c.need, 1) + '%</b> on the ' + num(c.remPts) + ' points still to earn (' + num((T / 100) * c.D - c.ri.cv.fp) + ' more points).';
+    return h + '<div class="hint" style="background:var(--accent-soft)">' + t + '</div>';
+  }
+  function projectionCard(r) {
+    if (!r.data.cv) return '';
+    var ri = remItems(r), P = projState(r), nm = esc(r.student);
+    var h = '<div class="card2" style="margin-top:20px"><h3>Projection: what if ' + nm + ' scores this on the rest of the course?</h3>' +
+      '<p class="help" style="margin-top:0;font-size:.88rem;line-height:1.55">Everything already earned stays as it is. Move each slider to the score ' + nm + ' expects on the work still to come, and the final grade updates. Tick <b>Excused</b> on any piece to take it out of the course.</p>';
+    if (ri.autoEx > 0) h += '<div class="hint" style="background:var(--amber-soft)">Already excused from ' + num(ri.autoEx) + ' points, so the whole course is ' + num(ri.base) + ' points for ' + nm + '.</div>';
+    if (!ri.items.length) return h + '<div class="help">No work is left to earn.</div></div>';
+    h += '<div class="bar" style="margin-top:10px"><b>Set all to</b>' +
+      '<button class="b" type="button" data-pjset="usual">Usual rate (' + P.usual + '%)</button>' + [100, 90, 80, 70].map(function (v) { return '<button class="b" type="button" data-pjset="' + v + '">' + v + '%</button>'; }).join('') +
+      '<label style="margin-left:auto">Target final grade <input type="number" id="pj-target" min="0" max="100" value="' + P.target + '" style="width:64px">%</label></div>';
+    h += ri.items.map(function (it) {
+      var ex = !!P.ex[it.key], v = isNum(P.pct[it.key]) ? P.pct[it.key] : 0;
+      return '<div class="pj-row' + (ex ? ' ex' : '') + '"><div class="pj-l"><b>' + esc(it.label) + '</b><small>' + num(it.R) + ' points</small></div>' +
+        '<input type="range" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' aria-label="Expected score on ' + esc(it.label) + '">' +
+        '<span><input type="number" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' style="width:62px"> %</span>' +
+        '<label class="pj-x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
+    }).join('');
+    h += '<div id="pj-out" style="margin-top:14px">' + projOutHTML(r) + '</div>' +
+      '<div class="help" style="margin-top:8px">The grade band uses the usual 90/80/70/60 cut-offs; check the syllabus for the real ones. This is a what-if and changes nothing in the saved gradebook.</div></div>';
+    return h;
+  }
+
   /* ---------------- Students ---------------- */
   function viewPeople() {
     if (!cur.columns.length) { $('view').innerHTML = '<div class="card2">No columns yet. Import a gradebook first.</div>'; return; }
@@ -600,7 +692,7 @@
           var v = show(r0, col), vals = colValues(col, analysisRows()), mm = vals.length ? mean(vals) : NaN, ss = sd(vals);
           return '<tr><td class="l">' + esc(col.label) + '</td><td>' + (v == null ? 'excused' : f(v, 1)) + '</td><td>' + f(mm, 1) + '</td><td>' + (v == null ? '-' : (v - mm >= 0 ? '+' : '') + f(v - mm, 1)) + '</td><td>' + (v == null ? '-' : f((v - mm) / ss, 2)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
-        h += machineCard(r0);
+        h += machineCard(r0) + projectionCard(r0);
       }
     }
     $('view').innerHTML = h;
@@ -664,7 +756,17 @@
       var ci = ['Current Points', 'Current Score', 'Final Points', 'Final Score'].map(function (k) { return imp.H.indexOf(k); });
       if (ci.every(function (x) { return x >= 0; })) {
         var cp = parseFloat(r[ci[0]]), cs = parseFloat(r[ci[1]]), fp = parseFloat(r[ci[2]]), fs = parseFloat(r[ci[3]]), q4 = function (x) { return Math.round(x * 4) / 4; };
-        if (isNum(cp) && cs > 0 && isNum(fp) && fs > 0) d.cv = { cp: cp, cd: q4(cp / cs * 100), fp: fp, fd: q4(fp / fs * 100) };
+        if (isNum(cp) && cs > 0 && isNum(fp) && fs > 0) {
+          d.cv = { cp: cp, cd: q4(cp / cs * 100), fp: fp, fd: q4(fp / fs * 100) };
+          var gg = {};
+          [['assignments', 'Assignments'], ['participation', 'Participation Points'], ['labs', 'Lab Reports'], ['quizzes', 'Quizzes'], ['exams', 'Exams']].forEach(function (x) {
+            var a = ['Current Points', 'Final Points', 'Current Score', 'Final Score'].map(function (k) { return imp.H.indexOf(x[1] + ' ' + k); });
+            if (a.some(function (i) { return i < 0; })) return;
+            var gcp = parseFloat(r[a[0]]), gfp = parseFloat(r[a[1]]), gcs = parseFloat(r[a[2]]), gfs = parseFloat(r[a[3]]);
+            gg[x[0]] = { cp: isNum(gcp) ? gcp : null, fp: isNum(gfp) ? gfp : null, cd: gcs > 0 ? q4(gcp / gcs * 100) : null, fd: gfs > 0 ? q4(gfp / gfs * 100) : null };
+          });
+          d.cv.g = gg;
+        }
       }
       return { parts: nameParts(r[imp.si]), data: d };
     });
@@ -694,6 +796,7 @@
     if (t.id === 'setpick') { pick(t.value); render(); }
     else if (t.dataset.status != null) { var sr = cur.rows.filter(function (r) { return r.student === t.dataset.status; })[0]; if (t.value) sr.data.status = t.value; else delete sr.data.status; cur.dirty = true; say('Unsaved changes. Press Save changes to keep it.'); render(); }
     else if (t.id === 'ins-exam') { ui.exam = t.value; render(); }
+    else if (t.dataset.pjx != null) { var P1 = projState(cur.rows.filter(function (r) { return r.student === ui.stu; })[0]); if (t.checked) P1.ex[t.dataset.pjx] = true; else delete P1.ex[t.dataset.pjx]; render(); }
     else if (t.id === 'ex-item') { var rs = cur.rows.filter(function (r) { return r.student === ui.stu; })[0]; var d0 = mDefaults(rs, +t.value); ui.exPick = { item: +t.value, status: d0.status, score: d0.score }; render(); }
     else if (t.id === 'ex-status') { ui.exPick.status = t.value; if (t.value === 'missing') ui.exPick.score = 0; render(); }
     else if (t.id === 'ex-score') { ui.exPick.score = t.value === '' ? null : +t.value; }
@@ -742,12 +845,25 @@
     }
     else if (t.dataset.exrm != null) { ui.exc[ui.stu].splice(+t.dataset.exrm, 1); render(); }
     else if (t.id === 'ex-clear') { ui.exc[ui.stu] = []; render(); }
+    else if (t.dataset.pjset != null) {
+      var rr = cur.rows.filter(function (r) { return r.student === ui.stu; })[0], P2 = projState(rr);
+      remItems(rr).items.forEach(function (it) { P2.pct[it.key] = t.dataset.pjset === 'usual' ? P2.usual : +t.dataset.pjset; }); render();
+    }
     else if (t.id === 'imp-go') finishImport();
     else if (t.dataset.open) { pick(t.dataset.open); ui.tab = 'book'; render(); }
     else if (t.dataset.del) {
       if (t.dataset.armed !== '1') { t.dataset.armed = '1'; t.textContent = 'Click again to delete'; setTimeout(function () { t.dataset.armed = ''; t.textContent = 'Delete'; }, 3500); return; }
       try { await window.sfSupabase.bios102GradesDelete(session.sessionToken, t.dataset.del); await reloadSets(); say('Deleted.'); render(); } catch (err) { say('Could not delete: ' + (err.message || err)); }
     }
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target, rr = cur && cur.rows.filter(function (r) { return r.student === ui.stu; })[0];
+    if (!rr) return;
+    if (t.dataset && t.dataset.pj != null) {
+      var v = Math.max(0, Math.min(100, +t.value || 0)); projState(rr).pct[t.dataset.pj] = v;
+      document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
+      $('pj-out').innerHTML = projOutHTML(rr);
+    } else if (t.id === 'pj-target') { projState(rr).target = Math.max(0, Math.min(100, +t.value || 0)); $('pj-out').innerHTML = projOutHTML(rr); }
   });
   window.addEventListener('beforeunload', function (e) { if (cur && cur.dirty) { e.preventDefault(); e.returnValue = ''; } });
 
