@@ -89,6 +89,14 @@
   .gstat b{color:var(--ink);}
   .g-meta{margin-top:6px; font-size:0.88rem; color:var(--ink-soft);}
   .gstatus{padding:4px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--surface); font-size:0.8rem; font-weight:700;}
+  .gaps{margin-top:8px; font-size:0.88rem;}
+  .gaps summary{cursor:pointer; font-weight:700; color:var(--ink-soft);}
+  .gaps .gate{margin:8px 0 0; padding:9px 12px; border-radius:10px; background:var(--surface-2);}
+  .gaps .gate p{margin:2px 0 4px; color:var(--ink-soft);}
+  .gaps .gate ul{margin:0; padding-left:18px;}
+  .gaps .gate li{margin:2px 0;}
+  .chip.ok{background:var(--green-soft); color:var(--green);}
+  .chip.gap{background:var(--red-soft); color:var(--red);}
   .warn{background:var(--red-soft); color:var(--red); padding:8px 12px; border-radius:10px; font-size:0.86rem; margin-bottom:12px;}
   dialog{border:none; border-radius:16px; padding:0; width:min(640px,calc(100vw - 24px)); background:var(--surface); color:var(--ink); box-shadow:0 20px 60px rgba(0,0,0,0.35);}
   dialog::backdrop{background:rgba(10,12,24,0.55);}
@@ -185,6 +193,7 @@
       <select id="gLevel"><option value="">All levels</option></select>
       <select id="gProject"><option value="">All projects</option></select>
       <select id="gKind"><option value="">Any window</option></select>
+      <select id="gGate"><option value="">Any readiness</option><option value="ready">Ready now (no open gates)</option></select>
       <select id="gDue"><option value="">Any date</option><option value="soon">Closing in 60 days</option><option value="over">Next step overdue</option></select>
       <button class="btn small primary" id="gAdd"><i class="fa-solid fa-plus"></i> Add funder</button>
     </div>
@@ -250,6 +259,7 @@
   <div class="f"><label for="gElig">Who can apply / what blocks us</label><input id="gElig"></div>
   <div class="f"><label for="gMatch">Match required</label><input id="gMatch"></div>
   <div class="f"><label for="gNotes">Notes</label><textarea id="gNotes"></textarea></div>
+  <div class="f"><label>Gates still needed before we can ask</label><div class="checks" id="gGatesE"></div></div>
   <div class="checks" style="margin-bottom:10px"><label><input type="checkbox" id="gVerified"> Dates and rules confirmed on the funder's own site</label><label><input type="checkbox" id="gActive"> Show in the weekly email</label></div>
   <div class="dlg-actions">
     <button class="btn" id="gDelete" type="button" style="margin-right:auto; color:var(--red)">Delete</button>
@@ -332,6 +342,46 @@
   var GLEVEL = {federal:'Federal', state:'Illinois', county:'Cook County', city:'City of Chicago', corporate:'Corporate', foundation:'Foundation'};
   var GPROJECT = {djclass:'DJ classes', wednesdays:'Rainbow Wednesdays', selassiefest:'SelassieFest', heritage:'Caribbean heritage', parties:'Fall & holiday parties', org:'Whole organization'};
   var GDONE = ['submitted','awarded','declined','not_eligible','skip'];
+  // Readiness gates: what a funder needs from us before we can ask. Tags per funder live in fs_grant_deadlines.gates
+  // (supabase/fs-grant-gates.sql). Flip done:true here when a gate closes and every funder it blocked moves up.
+  // Each fix is [text, link or null]. Tags are working estimates: confirm against the funder's own guidelines.
+  var GATES = {
+    g0:{ label:'Compliance and identity', due:'Nov 17, 2026', done:false,
+      what:'Funders check registration and identity first. A mismatch or a missing filing stops the application there.',
+      fix:[['File the Illinois Attorney General charitable registration (CO-1 and CO-2, due Nov 17)','https://charitable.illinoisattorneygeneral.gov/'],
+        ['Finish SAM.gov full registration (the UEI is already issued; a validation case is open)','https://sam.gov/'],
+        ['Get the board consent adopting SelassieFest, Rainbow DJ Lab and Full Spectrum signed, then upload it to the AG filing',null],
+        ['Use one address everywhere (1401 E 71st St): IRS Form 8822-B, then the site, Chase and the bylaws','https://www.irs.gov/forms-pubs/about-form-8822-b'],
+        ['Park District insurance certificate and ARCS status','/full-spectrum/arcs-status.html']] },
+    g1:{ label:'Evidence and governance', due:'Jan to Jun 2027', done:false,
+      what:'Funders want a clear program, a budget, an independent board and proof it works. Documents close this fast; outcome data needs the first cohort.',
+      fix:[['Use the DJ Lab model (14 Missions, 42 Passport skills) as the program description and outcome measure','/full-spectrum/dj-lab-2027.html'],
+        ['Write a one-page logic model and a 3-year budget (funder kits live here)','/rti/funders/'],
+        ['Collect letters of support (target 5)','/support-letter/'],
+        ['Add 2 to 4 independent board or advisory members and adopt conflict-of-interest, whistleblower and gift-acceptance policies',null],
+        ['Record skill stamps and attendance from the first Tuesday (Jan 12, 2027) so there is real data by June',null]] },
+    g2:{ label:'Reviewed financials', due:'Spring 2027', done:false,
+      what:'Larger funders ask for statements a CPA has reviewed, a Form 990 and a Candid profile. A first-year organization has none of these yet.',
+      fix:[['Close the first-year books and give the CPA the RTI finance page','/rti/finance/'],
+        ['Have an outside CPA compile or review the 2026 statements',null],
+        ['Prepare the first Form 990 or 990-EZ for 2026 (due mid-May 2027)','https://www.irs.gov/forms-pubs/about-form-990'],
+        ['Complete the Candid (GuideStar) profile','https://candid.org/'],
+        ['Collect W-9s from everyone paid over $600 and file 1099-NECs by Jan 31, 2027','https://www.irs.gov/forms-pubs/about-form-1099-nec']] },
+    g3:{ label:'Track record', due:'Jun 2027 and after', done:false,
+      what:'Many funders want one to three years of operation. The organization was created June 8, 2026 and classes begin Jan 12, 2027, so only time closes this fully.',
+      fix:[['Run the first year of classes and log attendance and stamps','/full-spectrum/dj-lab-2027.html'],
+        ['Until then, borrow credibility: Park District ARCS partnership, After School Matters, partner letters','/full-spectrum/arcs-status.html'],
+        ['Ask the funder what a first-year group can count as track record, or whether a lead partner can apply with us',null]] },
+    g4:{ label:'Relationship or invitation', due:'Ongoing', done:false,
+      what:'Some funders only fund people they already know, or fund through a school or lead organization.',
+      fix:[['Ask for a 20-minute fit call with the program officer before applying',null],
+        ['Get a warm introduction from a partner already on the tracker',null],
+        ['Ask a partner school or established organization to apply, with RTI as the arts partner',null],
+        ['Send the letter-of-support link to warm partners first','/support-letter/']] }
+  };
+  var GATE_IDS = Object.keys(GATES);
+  function openGates(g){ return (g.gates || []).filter(function(id){ return GATES[id] && !GATES[id].done; }); }
+  function fixLink(f){ var u = f[1]; return u ? '<a href="' + esc(u) + '"' + (/^https?:/.test(u) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(f[0]) + '</a>' : esc(f[0]); }
   var TEMPLATES = {
     restaurant: ['Restaurants, cafes and bakeries',
       'Sponsor Lesson 1 meals | 13 student meals for one lesson | 13 | meals\nSponsor an entire lesson | Meals for the class on a lesson date we agree on | 1 | lesson\nBecome the official meal sponsor | Meals through a course or season: per lesson, monthly or full program | 1 | season\nStudent refreshments | Water, fruit or snacks for one lesson or event | 1 | lesson\nSponsor a Child DJ | Cover a student\u2019s meals and materials; matched privately by the program | 1 | student'],
@@ -506,11 +556,14 @@
   fillSel($('gLevelE'), [['','-']].concat(Object.keys(GLEVEL).map(function(k){ return [k, GLEVEL[k]]; })));
   fillSel($('gProjectE'), [['','-']].concat(Object.keys(GPROJECT).map(function(k){ return [k, GPROJECT[k]]; })));
   [['gLevel',GLEVEL],['gProject',GPROJECT],['gKind',GKIND]].forEach(function(x){ $(x[0]).innerHTML += Object.keys(x[1]).map(function(k){ return '<option value="' + k + '">' + x[1][k] + '</option>'; }).join(''); });
+  $('gGate').innerHTML += GATE_IDS.map(function(id){ return '<option value="' + id + '">Needs: ' + esc(GATES[id].label) + '</option>'; }).join('');
+  $('gGatesE').innerHTML = GATE_IDS.map(function(id){ return '<label><input type="checkbox" value="' + id + '"> ' + esc(GATES[id].label) + '</label>'; }).join('');
 
   function gFiltered(){
-    var q = $('gq').value.trim().toLowerCase(), lv = $('gLevel').value, pj = $('gProject').value, kd = $('gKind').value, du = $('gDue').value;
+    var q = $('gq').value.trim().toLowerCase(), lv = $('gLevel').value, pj = $('gProject').value, kd = $('gKind').value, du = $('gDue').value, gt = $('gGate').value;
     var rows = state.grants.filter(function(g){
       if (state.gStatusFilter === 'active' ? (GDONE.indexOf(g.status) >= 0 || !g.active) : (state.gStatusFilter && g.status !== state.gStatusFilter)) return false;
+      if (gt === 'ready' ? openGates(g).length : (gt && openGates(g).indexOf(gt) < 0)) return false;
       if (lv && g.level !== lv) return false; if (pj && g.project !== pj) return false; if (kd && g.kind !== kd) return false;
       if (du === 'soon'){ var n = g.deadline_date ? daysTo(g.deadline_date) : null; if (n === null || n < 0 || n > 60) return false; }
       if (du === 'over'){ var m = g.next_step_due ? daysTo(g.next_step_due) : null; if (m === null || m >= 0) return false; }
@@ -580,6 +633,16 @@
     }
   });
 
+  // "What's missing" for one funder: its open gates, each with what it is and the steps and links to close it.
+  function gapsBlock(g){
+    var og = openGates(g), key = 'gap' + g.id;
+    if (GDONE.indexOf(g.status) >= 0 || !g.active) return '';
+    if (!og.length) return '<div class="gaps"><span class="chip ok">Nothing missing: ready to ask</span></div>';
+    return '<details class="gaps"' + (state.open[key] ? ' open' : '') + ' data-gapkey="' + key + '"><summary>What\'s missing (' + og.length + '): ' + og.map(function(id){ return esc(GATES[id].label); }).join(', ') + '</summary>' +
+      og.map(function(id){ var x = GATES[id];
+        return '<div class="gate"><b>' + esc(x.label) + '</b> <span class="p-cat">&middot; target ' + esc(x.due) + '</span><p>' + esc(x.what) + '</p><ul>' + x.fix.map(function(f){ return '<li>' + fixLink(f) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</details>';
+  }
+
   function renderGrants(){
     $('grantWarn').innerHTML = state.grantsOk ? '' : '<div class="warn">The grant pipeline is not set up in the database yet. Apply supabase/fs-grants-pipeline.sql, then reload.</div>';
     var gs = state.grants, counts = {}; gs.forEach(function(g){ counts[g.status] = (counts[g.status] || 0) + 1; });
@@ -588,7 +651,8 @@
     var reqd = gs.filter(function(g){ return g.status === 'submitted'; }).reduce(function(s, g){ return s + (Number(g.amount_requested) || 0); }, 0);
     var awd = gs.reduce(function(s, g){ return s + (Number(g.amount_awarded) || 0); }, 0);
     $('grantBadge').textContent = closing.length ? '(' + closing.length + ' closing)' : '';
-    $('gstat').innerHTML = '<span><b>' + open.length + '</b> open to work on</span><span><b>' + closing.length + '</b> closing within 30 days</span>' +
+    var ready = open.filter(function(g){ return !openGates(g).length; }).length;
+    $('gstat').innerHTML = '<span><b>' + open.length + '</b> open to work on</span><span><b>' + ready + '</b> ready to ask now</span><span><b>' + closing.length + '</b> closing within 30 days</span>' +
       (reqd ? '<span><b>' + money(reqd) + '</b> submitted, awaiting decision</span>' : '') + (awd ? '<span><b>' + money(awd) + '</b> awarded</span>' : '');
     $('gstages').innerHTML = '<button class="stage-chip' + (state.gStatusFilter === 'active' ? ' on' : '') + '" data-gs="active"><b>' + open.length + '</b><span>Open pipeline</span></button>' +
       '<button class="stage-chip' + (!state.gStatusFilter ? ' on' : '') + '" data-gs=""><b>' + gs.length + '</b><span>All funders</span></button>' +
@@ -610,6 +674,7 @@
         '<div class="g-meta">' + [esc(dl), g.amount ? 'Award: ' + esc(g.amount) : '', g.amount_requested ? 'Asking ' + money(g.amount_requested) : '', g.amount_awarded ? 'Awarded ' + money(g.amount_awarded) : '', g.owner ? 'Owner: ' + esc(g.owner) : ''].filter(Boolean).join(' &middot; ') + '</div>' +
         (g.eligibility ? '<div class="g-meta"><strong>Eligibility:</strong> ' + esc(g.eligibility) + (g.match_required ? ' &middot; <strong>Match:</strong> ' + esc(g.match_required) : '') + '</div>' : '') +
         (g.notes ? '<div class="g-meta">' + esc(g.notes) + '</div>' : '') +
+        gapsBlock(g) +
         '<div class="next">' + (g.next_step ? '<strong>Next:</strong> ' + esc(g.next_step) + (nd !== null ? ' &middot; <span class="due ' + ncls + '">' + (ncls === 'over' ? 'overdue, ' : 'due ') + fmtDate(g.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') + '</div>' +
         '<div class="p-actions"><button class="btn small primary" data-gact="edit" data-gid="' + g.id + '"><i class="fa-solid fa-pen-to-square"></i> Edit</button>' +
           (g.url && /^https?:/.test(g.url) ? '<a class="btn small" href="' + esc(g.url) + '" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Funder page</a>' : '') + '</div></div>';
@@ -617,7 +682,8 @@
   }
 
   $('gstages').addEventListener('click', function(e){ var b = e.target.closest('[data-gs]'); if (!b) return; state.gStatusFilter = b.getAttribute('data-gs'); renderGrants(); });
-  ['gq','gLevel','gProject','gKind','gDue'].forEach(function(id){ $(id).addEventListener('input', renderGrants); });
+  ['gq','gLevel','gProject','gKind','gDue','gGate'].forEach(function(id){ $(id).addEventListener('input', renderGrants); });
+  $('glist').addEventListener('toggle', function(e){ var d = e.target; if (d.dataset && d.dataset.gapkey) state.open[d.dataset.gapkey] = d.open; }, true);
   $('glist').addEventListener('click', function(e){ var b = e.target.closest('[data-gact]'); if (b) openGrant(b.getAttribute('data-gid')); });
   $('glist').addEventListener('change', async function(e){
     var sel = e.target.closest('.gstatus'); if (!sel) return;
@@ -640,6 +706,7 @@
     set('gLevelE', g.level); set('gProjectE', g.project); set('gAmount', g.amount); set('gPriority', g.priority || 2); set('gReq', g.amount_requested); set('gAwd', g.amount_awarded);
     set('gSubmitted', g.submitted_on); set('gDecision', g.decision_on); set('gNext', g.next_step); set('gNextDue', g.next_step_due); set('gOwner', g.owner); set('gUrl', g.url);
     set('gElig', g.eligibility); set('gMatch', g.match_required); set('gNotes', g.notes);
+    document.querySelectorAll('#gGatesE input').forEach(function(i){ i.checked = (g.gates || []).indexOf(i.value) >= 0; });
     $('gVerified').checked = !!g.verified; $('gActive').checked = g.active !== false; $('gDelete').style.display = id ? '' : 'none';
     openDlg('grantDlg');
   }
@@ -649,7 +716,8 @@
     var v = function(k){ return $(k).value; };
     var payload = { funder:v('gFunder'), program:v('gProgram'), status:v('gStatus'), kind:v('gKindE'), opens_date:v('gOpens'), deadline_date:v('gDeadline'), level:v('gLevelE'), project:v('gProjectE'),
       amount:v('gAmount'), priority:v('gPriority'), amount_requested:v('gReq'), amount_awarded:v('gAwd'), submitted_on:v('gSubmitted'), decision_on:v('gDecision'), next_step:v('gNext'),
-      next_step_due:v('gNextDue'), owner:v('gOwner'), url:v('gUrl'), eligibility:v('gElig'), match_required:v('gMatch'), notes:v('gNotes'), verified:$('gVerified').checked, active:$('gActive').checked };
+      next_step_due:v('gNextDue'), owner:v('gOwner'), url:v('gUrl'), eligibility:v('gElig'), match_required:v('gMatch'), notes:v('gNotes'), verified:$('gVerified').checked, active:$('gActive').checked,
+      gates:Array.from(document.querySelectorAll('#gGatesE input:checked')).map(function(i){ return i.value; }) };
     try { await rpc('fs_grant_save', { p_session: state.session.sessionToken, p_id: grantId, p: payload }); await load(); } catch(err){ alert('Could not save: ' + err.message); }
   });
   $('gDelete').addEventListener('click', async function(){
