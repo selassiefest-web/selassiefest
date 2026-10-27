@@ -333,14 +333,16 @@ const P = [
 ];
 // Song sections in play order. p = panel index. The chorus after "Mek them stay" reuses panel 08.
 const SEG = [
- {n:"Intro",t:0,p:0},{n:"Call",t:3,p:1},{n:"Verse 1",t:8,p:2},{n:"Daddy",t:24,p:3},{n:"Overlooked",t:38,p:4},
- {n:"Youths",t:46,p:5},{n:"SIP",t:52,p:6},{n:"Chorus",t:60,p:7},{n:"Move well",t:75,p:8},{n:"Verse 2",t:82,p:9},
- {n:"Mek them stay",t:91,p:10},{n:"Chorus",t:100,p:7},{n:"Prayer",t:115,p:11},{n:"Final chorus",t:130,p:12},{n:"Outro",t:145,p:13}
+ {n:"Intro",t:0,p:0},{n:"Call",t:4,p:1},{n:"Verse 1",t:10,p:2},{n:"Daddy",t:29,p:3},{n:"Overlooked",t:46,p:4},
+ {n:"Youths",t:55,p:5},{n:"SIP",t:62,p:6},{n:"Chorus",t:72,p:7},{n:"Move well",t:90,p:8},{n:"Verse 2",t:98,p:9},
+ {n:"Mek them stay",t:109,p:10},{n:"Chorus",t:120,p:7},{n:"Prayer",t:138,p:11},{n:"Final chorus",t:156,p:12},{n:"Outro",t:174,p:13}
 ];
 const DEFAULT_LEN=180;
+// The track loads on its own, so nobody has to find the file.
+const SONG_URL="/live-reggae/jayrebl/storyboard/nuff-we-face.m4a", SONG_NAME="Nuff We Face by JayRebL.m4a";
 // Reference images (JayRebL_Fullsize_Storyboard.zip), one per panel: panel index i shows img/fs(i+1).jpg.
 const IMG=Object.fromEntries(P.map((p,i)=>[i,String(i+1).padStart(2,'0')]));
-const ALTIMG={};
+const ALTIMG={1:"02b",12:"13b",13:"14b"};
 // DALL-E prompts. Each full prompt = LOOK + the scene line, so every image keeps the same man, guitar and veranda.
 const LOOK="Photorealistic 16:9 music video still, cinema camera, natural daylight, shallow depth of field, real skin texture, no retouching, no text, no watermark. Subject: a slim Jamaican reggae singer and guitarist in his thirties with dark skin, short twisted locs and a thin goatee, wearing black over-ear studio headphones with a cable, a fine silver chain, a black T-shirt with a yellow collar and yellow-and-green sleeve panels, dark jeans, black sneakers and a yellow wristband on his right wrist. He plays a heavily worn yellow Stratocaster-style electric guitar with a scratched black pickguard, on a red, gold and green strap. Hands anatomically correct, six strings visible. Setting: the veranda of an old whitewashed timber house in rural Jamaica, peeling paint, a dark open doorway, a wooden railing, a plain wooden chair, lush green trees beyond. A real, low-budget, achievable shoot.";
 const DALLE=[
@@ -406,7 +408,7 @@ const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){re
 
 /* ---------- state ---------- */
 let shots=LS.get('nwf-shots2',{});            // {p01:{main,alt,note}}
-let starts=LS.get('nwf-starts',null);
+let starts=LS.get('nwf-starts3',null);
 if(!Array.isArray(starts)||starts.length!==SEG.length) starts=SEG.map(s=>s.t);
 let song={audioUrl:null,audioName:null};
 let db=null, canWrite=false, shared=false;
@@ -432,7 +434,7 @@ grid.innerHTML=P.map((p,i)=>{const n=String(i+1).padStart(2,'0');return `
   <div class="body">
     <div><div class="k">Lyric cue</div><p class="lyric">“${esc(p.lyric)}”</p></div>
     <div><div class="k">Main shot</div><p>${esc(p.main)}</p></div>
-    <div><div class="k">Alternative · same location</div><p>${esc(p.alt)}</p>${ALTIMG[i]?`<img class="altimg" src="img/sb${ALTIMG[i]}.jpg" alt="Reference image ${ALTIMG[i]}: alternative shot" loading="lazy">`:''}</div>
+    <div><div class="k">Alternative · same location</div><p>${esc(p.alt)}</p>${ALTIMG[i]?`<img class="altimg" src="/live-reggae/jayrebl/img/nuff-we-face-${ALTIMG[i]}.jpg" alt="Reference image ${ALTIMG[i]}: alternative shot" loading="lazy">`:''}</div>
     ${p.cue?`<div><div class="k">Camera / edit cue</div><p>${esc(p.cue)}</p></div>`:''}
     <p class="dir">${esc(p.dir)}</p>
     <div class="tags">${p.pass.map(x=>`<span>${PASSES.find(q=>q[0]===x)[1]}</span>`).join('')}</div>
@@ -638,7 +640,7 @@ $('resetT').onclick=()=>{starts=SEG.map(s=>s.t);renderTiming();timingChanged()};
 function setStart(i,v){starts[i]=v;timingChanged()}
 let tWriting=0;
 async function timingChanged(){
-  LS.set('nwf-starts',starts); renderTimeline(); renderTc(); lastSeg=-1; tick(); if(grid.classList.contains('solo'))show(cur);
+  LS.set('nwf-starts3',starts); renderTimeline(); renderTc(); lastSeg=-1; tick(); if(grid.classList.contains('solo'))show(cur);
   if(!(db&&canWrite)){$('tsaved').textContent='Saved on this device';return}
   if(tWriting){tWriting=2;return}
   tWriting=1;
@@ -680,13 +682,14 @@ $('share').onclick=async()=>{
   db.doc('song/timing').onSnapshot(d=>{
     if(!d.exists)return;
     const x=d.data();
-    if(Array.isArray(x.starts)&&x.starts.length===SEG.length&&x.starts.every(v=>typeof v==='number')){starts=x.starts.slice();LS.set('nwf-starts',starts);renderTiming();renderTimeline();renderTc();lastSeg=-1;tick()}
+    if(Array.isArray(x.starts)&&x.starts.length===SEG.length&&x.starts.every(v=>typeof v==='number')){starts=x.starts.slice();LS.set('nwf-starts3',starts);renderTiming();renderTimeline();renderTc();lastSeg=-1;tick()}
     if(x.audioUrl&&x.audioUrl!==song.audioUrl){song={audioUrl:x.audioUrl,audioName:x.audioName||null};if(!localFile)useAudio(x.audioUrl,x.audioName)}
   },()=>{});
   try{assets=await claude.use('assets')}catch(e){assets=null}
   if(assets&&localFile)$('share').hidden=false;
 })();
 
+if(SONG_URL&&!audio.src)useAudio(SONG_URL,SONG_NAME);
 renderShots(); renderTc(); renderTiming(); renderTimeline(); setSync(); show(0); tick();
 </script>
 </body>
