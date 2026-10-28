@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Halloween Saturday Run</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one phone-first column; a timeline rail down the left, map card after the day, notes last. */
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --ink:#1d2433; --soft:#5b6272; --line:#dcd8cf;
+  --accent:#c2570f; --accent-soft:#fbe7d6; --go:#2f6b4f; --warn:#9a3412; --warn-bg:#fdecea; --route:#c2570f; --pin:#1d2433;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14171f; --surface:#1d2230; --ink:#eceae4; --soft:#a5abb8; --line:#2f3646;
+  --accent:#f0954a; --accent-soft:#3a2617; --go:#7cc4a0; --warn:#f6a38f; --warn-bg:#3a1e1a; --route:#f0954a; --pin:#eceae4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171f; --surface:#1d2230; --ink:#eceae4; --soft:#a5abb8; --line:#2f3646;
+  --accent:#f0954a; --accent-soft:#3a2617; --go:#7cc4a0; --warn:#f6a38f; --warn-bg:#3a1e1a; --route:#f0954a; --pin:#eceae4; color-scheme:dark}
+*{box-sizing:border-box} body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--body)}
+.wrap{max-width:720px; margin:0 auto; padding-block:28px 48px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); display:grid; gap:28px}
+h1,h2{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.1}
+h1{font-size:clamp(2rem,7vw,2.8rem); font-weight:800}
+h2{font-size:1.35rem; font-weight:600}
+.eyebrow{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.lede{color:var(--soft); margin:8px 0 0; max-width:62ch}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.flag{background:var(--warn-bg); color:var(--warn); border-radius:10px; padding:12px 14px; font-size:.95rem}
+.flag b{color:inherit}
+ol.day{list-style:none; margin:0; padding:0; display:grid; gap:0}
+.day li{display:grid; grid-template-columns:78px 1fr; gap:14px; position:relative; padding-bottom:18px}
+.day li::before{content:""; position:absolute; left:92px; top:8px; bottom:-8px; width:2px; background:var(--line)}
+.day li:last-child::before{display:none}
+.t{font-variant-numeric:tabular-nums; font-weight:700; text-align:right; font-size:.95rem; padding-top:1px}
+.t small{display:block; font-weight:400; color:var(--soft); font-size:.78rem}
+.c{min-width:0; padding-left:22px; position:relative}
+.c::before{content:""; position:absolute; left:-1px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--surface); border:3px solid var(--accent); box-sizing:border-box}
+.c.drive::before{border-color:var(--soft); width:10px; height:10px; left:0; top:7px}
+.c.night::before{background:var(--accent)}
+.c h3{margin:0; font-size:1.05rem; font-family:var(--display); font-weight:600}
+.c p{margin:4px 0 0; color:var(--soft); font-size:.95rem}
+.c.drive h3{font-family:var(--body); font-weight:400; color:var(--soft); font-size:.95rem}
+.tag{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:999px; margin-left:6px; vertical-align:2px}
+.tag.yes{background:var(--accent-soft); color:var(--accent)}
+.tag.miss{background:var(--warn-bg); color:var(--warn)}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; display:grid; gap:14px}
+.map{overflow-x:auto}
+.map svg{display:block; width:100%; max-width:520px; height:auto; margin:0 auto}
+.legs{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.legs li{display:flex; flex-wrap:wrap; gap:4px 10px; justify-content:space-between; border-top:1px solid var(--line); padding-top:8px; font-size:.95rem}
+.legs li span{color:var(--soft)}
+.btn{display:inline-block; background:var(--accent); color:var(--bg); text-decoration:none; font-weight:700; padding:10px 16px; border-radius:10px; justify-self:start}
+ul.notes{margin:0; padding-left:20px; display:grid; gap:8px}
+.muted{color:var(--soft); font-size:.88rem; margin:0}
+@media (max-width:420px){.day li{grid-template-columns:62px 1fr; gap:10px}.day li::before{left:72px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Saturday, October 31, 2026 &middot; Halloween</div>
+    <h1>Halloween Saturday Run</h1>
+    <p class="lede">Washington Park parade in the morning, the Riverwalk in the afternoon, the Land School before dark, and the Night Out portal at midnight. Drive times are estimates for a Saturday; add time for parade traffic.</p>
+  </header>
+
+  <div class="flag"><b>One overlap.</b> Most of Sir Charles &amp; The Mix (1 to 4) falls inside your parade shift, which runs until 2:30. This plan catches his last hour and drops in at the Land School afterward, while it is still open.</div>
+
+  <section>
+    <h2 style="margin-bottom:16px">The day</h2>
+    <ol class="day">
+      <li><div class="t">8:30<small>am</small></div><div class="c drive"><h3>Leave 1401 E. 71st St. for Washington Park, about 15 min</h3></div></li>
+      <li><div class="t">9:00<small>to 2:30</small></div><div class="c"><h3>LUMA8 UpsideDown parade <span class="tag yes">Said yes</span></h3><p>Volunteer handing out candy on Russell Drive, Washington Park. The parade itself is 12 to 2. Washington Park Advisory Council members may be there; the council's letter of support is still open.</p></div></li>
+      <li><div class="t">2:30<small>pm</small></div><div class="c drive"><h3>Drive to the Riverwalk, about 25 to 35 min plus parking</h3></div></li>
+      <li><div class="t">3:00<small>to 4:00</small></div><div class="c"><h3>Sir Charles &amp; The Mix, trio</h3><p>Island Party Hut, 355 Chicago Riverwalk. The show runs 1 to 4 pm: reggae, soul, R&amp;B, Caribbean grooves. You catch the last hour. No parking at the door; use a nearby garage.</p></div></li>
+      <li><div class="t">4:00<small>pm</small></div><div class="c drive"><h3>Drive to 7200 S. Dorchester, about 25 to 30 min</h3></div></li>
+      <li><div class="t">4:45<small>to 6:00</small></div><div class="c"><h3>Rebuild Foundation: The Land School</h3><p>Open for public Listening Hours Thursday to Saturday, 12 to 8 pm, so no RSVP is needed. Go as a neighbor: listen, meet the staff, and ask who handles program partnerships (operations@rebuild-foundation.org). Save the ask for a follow-up email. It is a block from the office.</p></div></li>
+      <li><div class="t">5:45<small>pm</small></div><div class="c drive"><h3>Sunset. Trick-or-treaters out; drive slowly on side streets.</h3></div></li>
+      <li><div class="t">10:30<small>pm</small></div><div class="c night"><h3>Night Out 2027: final read, with Albert</h3><p>Read every answer once more and check word counts. <a href="https://selassiefest.com/rti/night-out/">selassiefest.com/rti/night-out/</a></p></div></li>
+      <li><div class="t">11:50<small>pm</small></div><div class="c night"><h3>Albert logs in to his own Submittable account</h3></div></li>
+      <li><div class="t">12:01<small>am Nov 1</small></div><div class="c night"><h3>Submit Night Out in the Parks 2027</h3><p>Portal opens: Roots in the Parks and Anatomy of a Shoreline. <a href="https://chicagoparkdistrict.submittable.com/submit">chicagoparkdistrict.submittable.com</a>. Clocks fall back at 2 am.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Route</h2>
+    <div class="map">
+      <svg viewBox="0 0 320 380" role="img" aria-labelledby="mapt">
+        <title id="mapt">Route sketch: office to Washington Park, north to the Riverwalk, then south to the Land School</title>
+        <text x="16" y="24" fill="var(--soft)" font-size="11" font-family="var(--body)">N &#8593; &middot; sketch, not to scale</text>
+        <rect x="262" y="40" width="58" height="340" fill="var(--accent-soft)"/>
+        <text x="291" y="210" fill="var(--soft)" font-size="11" text-anchor="middle" transform="rotate(90 291 210)" font-family="var(--body)">Lake Michigan</text>
+        <path d="M206 330 L132 268" stroke="var(--route)" stroke-width="3" fill="none"/>
+        <path d="M132 268 L92 64" stroke="var(--route)" stroke-width="3" fill="none" stroke-dasharray="7 5"/>
+        <path d="M92 64 C150 120 210 250 214 334" stroke="var(--route)" stroke-width="3" fill="none" stroke-dasharray="2 5"/>
+        <circle cx="92" cy="58" r="8" fill="var(--pin)"/><text x="92" y="62" fill="var(--bg)" font-size="10" font-weight="700" text-anchor="middle">2</text>
+        <text x="106" y="46" fill="var(--ink)" font-size="12" font-weight="700" font-family="var(--body)">Island Party Hut</text>
+        <text x="106" y="60" fill="var(--soft)" font-size="11" font-family="var(--body)">355 Chicago Riverwalk</text>
+        <circle cx="132" cy="268" r="8" fill="var(--pin)"/><text x="132" y="272" fill="var(--bg)" font-size="10" font-weight="700" text-anchor="middle">1</text>
+        <text x="16" y="300" fill="var(--ink)" font-size="12" font-weight="700" font-family="var(--body)">Washington Park</text>
+        <text x="16" y="314" fill="var(--soft)" font-size="11" font-family="var(--body)">Russell Drive</text>
+        <circle cx="206" cy="336" r="7" fill="var(--surface)" stroke="var(--pin)" stroke-width="3"/>
+        <circle cx="222" cy="342" r="8" fill="var(--pin)"/><text x="222" y="346" fill="var(--bg)" font-size="10" font-weight="700" text-anchor="middle">3</text>
+        <text x="130" y="366" fill="var(--ink)" font-size="12" font-weight="700" font-family="var(--body)">Office &amp; Land School</text>
+        <text x="130" y="379" fill="var(--soft)" font-size="11" font-family="var(--body)">71st &amp; Dorchester</text>
+      </svg>
+    </div>
+    <ul class="legs">
+      <li><b>Office to 1, Washington Park</b><span>about 15 min &middot; <a href="https://www.google.com/maps/dir/1401+E+71st+St,+Chicago,+IL+60619/Russell+Dr,+Washington+Park,+Chicago,+IL/">directions</a></span></li>
+      <li><b>1 to 2, Island Party Hut</b><span>about 25 to 35 min &middot; <a href="https://www.google.com/maps/dir/Russell+Dr,+Washington+Park,+Chicago,+IL/355+Chicago+Riverwalk,+Chicago,+IL+60601/">directions</a></span></li>
+      <li><b>2 to 3, The Land School</b><span>about 25 to 30 min &middot; <a href="https://www.google.com/maps/dir/355+Chicago+Riverwalk,+Chicago,+IL+60601/7200+S+Dorchester+Ave,+Chicago,+IL+60619/">directions</a></span></li>
+    </ul>
+    <a class="btn" href="https://www.google.com/maps/dir/1401+E+71st+St,+Chicago,+IL+60619/Russell+Dr,+Washington+Park,+Chicago,+IL/355+Chicago+Riverwalk,+Chicago,+IL+60601/7200+S+Dorchester+Ave,+Chicago,+IL+60619/">Open the whole route in Google Maps</a>
+  </section>
+
+  <section class="card">
+    <h2>Also on your radar</h2>
+    <ul class="notes">
+      <li><b>No Park Advisory Council meetings on Oct 31.</b> The next one is JPAC, Monday Nov 2 at 7 pm (November meeting and officer election), Jackson Park fieldhouse, 6401 S. Stony Island Ave.</li>
+      <li><b>SSCC bylaws committee:</b> Oct 31 is only a placeholder on the committee plan (Articles V and VI). No time or place was ever confirmed. Ask La'Vonne by Thursday whether it is happening.</li>
+      <li><b>Reminders:</b> <a href="/rti/schedule/2026-10-31/day-plan.ics">add the day to your calendar</a>. It sets alerts the night before, 30 minutes before you leave for each stop, and at 11:45 pm and 12:01 am for Night Out.</li>
+    </ul>
+  </section>
+  <p class="muted">Ras Tafari Inc. &middot; (872) 255-9333</p>
+</div>
+</body>
+</html>
