@@ -80,6 +80,10 @@
   .mission[aria-pressed="true"]{background:var(--surface-2); border-color:var(--accent); border-left-color:var(--c);}
   .mission[aria-pressed="true"] .rank{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
   .mission:focus-visible{outline:3px solid var(--sun); outline-offset:2px;}
+  .land{margin-top:12px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2); padding:10px 14px; font-size:.9rem;}
+  .land b{display:block; margin-bottom:4px;}
+  .land ul{margin:0; padding-left:18px;}
+  .land .warn{color:var(--sun); font-weight:700; margin-top:6px;}
   .sug{display:inline-block; font:700 .68rem "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--sun); margin-left:6px;}
   .chips{display:flex; flex-wrap:wrap; gap:8px;}
   .chips label{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:999px; padding:7px 12px; cursor:pointer; background:var(--surface); font-size:.92rem;}
@@ -169,6 +173,7 @@
         <legend>What would you love to teach?</legend>
         <p class="hint">Tap up to three, in order of preference. Each class has a featured lesson, and we&rsquo;ll book you on a Tuesday that matches your first choice.</p>
         <div class="missions" id="missions"></div>
+        <div class="land" id="land" hidden aria-live="polite"></div>
       </fieldset>
       <fieldset style="margin-top:14px">
         <legend>The sounds you&rsquo;d bring</legend>
@@ -176,7 +181,7 @@
       </fieldset>
       <fieldset style="margin-top:14px">
         <legend>When could you come?</legend>
-        <p class="hint">Months that usually work for you in 2027.</p>
+        <p class="hint">Months that usually work for you in 2027. Each Mission is the featured lesson on only a few Tuesdays, so the dates under your picks above are the ones that matter most.</p>
         <div class="chips" id="months"></div>
         <p class="hint" style="margin-top:14px">How often?</p>
         <div class="chips" id="freq"></div>
@@ -248,6 +253,36 @@
       return '<label><input type="' + type + '" name="' + name + '" value="' + esc(v) + '">' + esc(l) + '</label>';
     }).join("");
   }
+
+  // Same class calendar and Mission rotation as /full-spectrum/dj-lab-2027.html (keep the two in step).
+  var CLOSED = {"2027-01-19":1,"2027-02-16":1,"2027-03-23":1,"2027-06-01":1,"2027-06-15":1,"2027-07-06":1,"2027-09-07":1,"2027-10-12":1,"2027-11-09":1,"2027-11-23":1,"2027-12-21":1,"2027-12-28":1};
+  var MLONG = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var DATES = {};
+  (function(){
+    var m = 0;
+    for (var d = new Date(2027,0,12); d <= new Date(2027,11,28); d.setDate(d.getDate()+7)) {
+      var k = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      if (CLOSED[k]) continue;
+      var n = (m % 14) + 1; m++;
+      (DATES[n] = DATES[n] || []).push({ mo: d.getMonth(), label: MLONG[d.getMonth()] + " " + d.getDate() });
+    }
+  })();
+  function paintLand(){
+    var box = $("land");
+    if (!picked.length) { box.hidden = true; box.innerHTML = ""; return; }
+    var months = vals("month"), anyHit = false;
+    var rows = picked.map(function(n){
+      var ds = DATES[n] || [];
+      var hit = ds.some(function(x){ return months.indexOf(MLONG[x.mo]) >= 0; });
+      if (hit) anyHit = true;
+      return '<li><b style="display:inline">Mission ' + n + ', ' + esc(MISSIONS[n-1][1]) + ':</b> ' +
+        ds.map(function(x){ return months.indexOf(MLONG[x.mo]) >= 0 ? '<strong>' + esc(x.label) + '</strong>' : esc(x.label); }).join(", ") + '</li>';
+    }).join("");
+    box.innerHTML = '<b>When your picks are the featured lesson</b><ul>' + rows + '</ul>' +
+      (months.length && !anyHit ? '<div class="warn">None of these dates fall in the months you chose. Add a month above, or leave it: we will offer you the nearest dates for each pick.</div>' : '') +
+      '<div style="margin-top:6px">Tuesdays are the only class day, so a Mission is featured on just three or four of them in the year.</div>';
+    box.hidden = false;
+  }
   function renderMissions(suggested){
     $("missions").innerHTML = MISSIONS.map(function(m, i){
       var n = i + 1, sug = suggested.indexOf(n) >= 0;
@@ -267,8 +302,9 @@
     var b = e.target.closest(".mission"); if (!b) return;
     var n = +b.getAttribute("data-m"), r = picked.indexOf(n);
     if (r >= 0) picked.splice(r, 1); else if (picked.length < 3) picked.push(n); else { $("st").className = "status"; $("st").textContent = "You can pick up to three. Tap one to remove it."; return; }
-    $("st").textContent = ""; paintRanks();
+    $("st").textContent = ""; paintRanks(); paintLand();
   });
+  $("months").addEventListener("change", paintLand);
   document.querySelectorAll('input[name="decision"]').forEach(function(r){
     r.addEventListener("change", function(){ $("more").hidden = r.value === "no" && r.checked; $("send").textContent = r.value === "no" ? "Send my answer" : "Send my answer and picks"; });
   });
@@ -314,7 +350,7 @@
       frequency: dec === "no" ? null : (vals("freq")[0] || null),
       age_group: dec === "no" ? null : (vals("age")[0] || null),
       contact_name: $("cn").value.trim() || null, email: email || null, phone: phone || null,
-      message: $("cm").value.trim() || null
+      message: ((dec === "no" || !picked.length ? "" : "Dates shown for my picks: " + picked.map(function(n){ return "M" + n + " " + (DATES[n] || []).map(function(x){ return x.label; }).join("/"); }).join("; ") + ". ") + $("cm").value.trim()).trim() || null
     };
     var btn = $("send"); btn.disabled = true; st.textContent = "Sending…";
     var r = await window.sfProtectedInsert("fs_guest_dj_responses", rec);
