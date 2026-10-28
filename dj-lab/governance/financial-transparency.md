@@ -28,17 +28,17 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Class app, family email and hosting | Estimate, about $50 a month | $600 | |
 | **Total cash** | | **$75,123** | |
 | DJ controllers (brand open to our equipment partner) | **Being sought** through grants and donations; 13 × about $200 (12 stations + a spare) | | $2,600 |
-| Apple laptops (MacBook Air 13-inch or similar), one per station and a spare | **Being sought** through grants and donations; 13 × about $999 new-retail planning price | | $12,987 |
+| Apple laptops (MacBook Pro 14-inch), one per station and a spare | **Being sought** through grants and donations; 13 × about $1,599 new-retail planning price | | $20,787 |
 | Laptop cooling stands (aluminum, vented) | **Being sought** through grants and donations; 13 × about $35 | | $455 |
 | Monitors, one per station, with cable | **Being sought** through grants and donations; 13 × about $145 | | $1,885 |
 | Volume-limited headphones (85 dB) | **Being sought** through grants and donations; 13 × about $30 | | $390 |
 | Power strips, cable management | **Being sought** through grants and donations; 13 × about $17 + about $150 of cord covers and ties | | $380 |
 | Tables for the 12 stations and spare | **Being sought** through grants and donations; 7 six-foot tables × about $80, two stations to a table | | $560 |
 | 4 modern LED DJ booths for Rainbow Wednesdays | **Being sought** through grants and donations; 4 × about $1,800 (professional LED video-panel booth). A basic LED-strip facade is about $190 to $275 each; a curved indoor LED booth about $3,600 | | $7,200 |
-| 10% equipment contingency | repairs, replacements, shipping | | $2,646 |
-| **Total equipment value** | | | **$29,103** |
+| 10% equipment contingency | repairs, replacements, shipping | | $3,426 |
+| **Total equipment value** | | | **$37,683** |
 | Program coordination | Ras Tafari Inc. officers, unpaid | | not valued |
-| **Everything, first year** | | **$75,123** | **$29,103** |
+| **Everything, first year** | | **$75,123** | **$37,683** |
 
 - **About $75,100 in cash for the first year, plus about $20,500 of equipment sought through grants and donations: about $95,600 in all.** Q-Ality Sound is $1,200 for each Rainbow Wednesday. Children join any Tuesday, so there is no fixed per-child cost.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused every Tuesday, so it doesn't need to be bought again.
