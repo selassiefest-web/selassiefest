@@ -40,7 +40,7 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Program coordination | Ras Tafari Inc. officers, unpaid | | not valued |
 | **Everything, first year** | | **$75,123** | **$59,547** |
 
-- **About $75,100 in cash for the first year, plus about $20,500 of equipment sought through grants and donations: about $95,600 in all.** Q-Ality Sound is $1,200 for each Rainbow Wednesday. Children join any Tuesday, so there is no fixed per-child cost.
+- **About $75,100 in cash for the first year, plus about $59,500 of equipment sought through grants and donations: about $134,600 in all.** Q-Ality Sound is $1,200 for each Rainbow Wednesday. Children join any Tuesday, so there is no fixed per-child cost.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused every Tuesday, so it doesn't need to be bought again.
 - **No stipends in classes.** Stipends for young performers are paid at Rainbow Wednesdays, which has its own budget.
 - **Funding:** arts and youth grants, sponsors and Ras Tafari Inc. The class is free to families. No class starts until its funding is in place.
