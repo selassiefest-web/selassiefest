@@ -313,6 +313,8 @@
   <p class="hint" style="margin:-6px 0 12px">The partner sees these steps on their page. They send their logo and sizes and approve the proof there; tick the rest here. Print only after the Park District approves.</p>
   <div class="f"><label>Steps</label><div class="fsteps" id="flySteps"></div></div>
   <div class="f"><label>Their logo</label><div id="flyLogo" class="hint"></div></div>
+  <div class="f"><label><input type="checkbox" id="flyLogoOk"> They gave permission: show their logo at the top of their page</label>
+    <input id="flyLogoUrl" type="url" placeholder="Logo image link (leave blank to use the logo they sent)" style="margin-top:6px"></div>
   <div class="f"><label for="flyProof">Proof image URL (shown on their page for approval)</label><input id="flyProof" type="url" placeholder="https://"></div>
   <div class="f"><label>Sizes and quantities</label><div class="fsizes">
     <label class="hint">8.5 × 11<input type="number" min="0" id="flyS_letter"></label><label class="hint">11 × 17<input type="number" min="0" id="flyS_tabloid"></label>
@@ -764,6 +766,7 @@
     $('flySteps').innerHTML = FLY.map(function(s){ return '<label><input type="checkbox" data-step="' + s[0] + '"' + (st[s[0]] || (!p.flyer && s[0] === 'supporter') ? ' checked' : '') + '> ' + s[1] + (st[s[0]] ? ' <span class="when">' + fmtWhen(st[s[0]]) + '</span>' : '') + '</label>'; }).join('');
     $('flyLogo').innerHTML = f.logo_url ? '<a href="' + esc(f.logo_url) + '" target="_blank" rel="noopener">' + esc(f.logo_name || 'Download their logo') + '</a>' : (f.logo_link ? '<a href="' + esc(f.logo_link) + '" target="_blank" rel="noopener">' + esc(f.logo_link) + '</a>' : 'Not sent yet. They upload it or paste a link on their page.');
     $('flyProof').value = f.proof_url || '';
+    $('flyLogoOk').checked = !!p.page_logo_ok; $('flyLogoUrl').value = p.page_logo_url || '';
     Object.keys(FLY_SIZES).forEach(function(k){ $('flyS_' + k).value = (f.sizes || {})[k] || ''; });
     $('flyNote').value = f.note || '';
     $('flyRemove').hidden = !p.flyer;
@@ -775,6 +778,7 @@
     document.querySelectorAll('#flySteps [data-step]').forEach(function(c){ steps[c.getAttribute('data-step')] = c.checked; });
     Object.keys(FLY_SIZES).forEach(function(k){ var n = Math.round(Number($('flyS_' + k).value) || 0); if (n > 0) sizes[k] = n; });
     try { await rpc('fs_flyer_staff_save', { p_session: state.session.sessionToken, p_partner: flyId, p: { steps: steps, sizes: sizes, proof_url: $('flyProof').value, note: $('flyNote').value } });
+      await rpc('fs_partner_logo_save', { p_session: state.session.sessionToken, p_partner: flyId, p_url: $('flyLogoUrl').value, p_ok: $('flyLogoOk').checked });
       state.open[flyId] = true; await load();
     } catch(err){ alert('Could not save: ' + err.message); }
   });

@@ -30,6 +30,8 @@
   .stripe{height:8px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
   .wrap{max-width:640px; margin:0 auto; padding:0 16px;}
   header{padding:30px 0 8px;}
+  /* The partner's own logo, shown only after they give permission (fs_partners.page_logo_ok). */
+  .plogo{display:block; max-width:min(220px,60%); max-height:120px; object-fit:contain; background:#fff; border-radius:12px; padding:10px 14px; margin:0 0 14px;}
   .eyebrow{font-size:0.74rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--sun);}
   h1{font-size:clamp(1.6rem,6vw,2.2rem); margin:8px 0 4px;}
   .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
@@ -123,6 +125,7 @@
 <div class="stripe"></div>
 <div class="wrap">
   <header>
+    <img class="plogo" id="plogo" alt="" hidden>
     <div class="eyebrow">Full Spectrum at Rainbow Beach</div>
     <h1 id="title">A personal invitation</h1>
     <p class="small" id="sub">From Ras Tafari Inc., the producers of SelassieFest</p>
@@ -187,6 +190,9 @@
   function render(p){
     document.title = 'For ' + p.name + ' | Full Spectrum at Rainbow Beach';
     $('title').innerHTML = 'For <span class="rb">' + esc(p.name) + '</span>';
+    if (p.logo_url && /^https:\/\/.+\.(png|jpe?g|webp|svg)(\?.*)?$/i.test(p.logo_url)){
+      var lg = $('plogo'); lg.alt = p.name + ' logo'; lg.onerror = function(){ lg.hidden = true; }; lg.src = p.logo_url; lg.hidden = false;
+    }
     $('main').innerHTML =
       '<div class="card"><div class="pitch">' + esc(p.pitch) + '</div>' +
         (p.ask ? '<div class="ask"><span class="lbl">Our ask</span><p>' + esc(p.ask) + '</p></div>' : '') + '</div>' +
