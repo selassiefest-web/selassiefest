@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="For the Frankie Knuckles Foundation: a free, year-round youth DJ class on Chicago's South Side and a summer stage on the lake, asking for the Foundation's guidance on house music history and introductions to Chicago house DJs. From Ras Tafari Inc.">
+<title>House Music, Carried Forward</title>
+<style>
+  /* Colors and type follow thefkfoundation.org: black and charcoal grounds, white type, crimson #83161A and #D7244C,
+     grays #666/#999, Palatino headings and Helvetica text. Photos are shown in black and white, like the Foundation's site. */
+  :root{
+    color-scheme:dark;
+    --bg:#000; --bg2:#0C0F12; --panel:rgba(20,20,20,.86); --ink:#FFF; --ink-soft:#CFCFCF; --ink-faint:#999;
+    --line:rgba(255,255,255,.16); --crimson:#83161A; --rose:#D7244C; --gray:#666;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --serif:Palatino,"Palatino Linotype","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans:Helvetica,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 var(--sans); overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--rose);}
+  .bar{height:5px; background:var(--crimson);}
+  .bar i{display:block; height:2px; background:var(--spectrum);}
+  .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line); letter-spacing:.02em;}
+
+  #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 30px; overflow-y:auto;
+    background:linear-gradient(180deg,#1b1b1b 0%,#000 70%);
+    opacity:0; transform:scale(1.02); transition:opacity .5s ease, transform .9s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  /* Black-and-white photo layer, faded to black on the text side */
+  .slide .ph{position:absolute; inset:0; background:center right / cover no-repeat; filter:grayscale(1) contrast(1.08) brightness(.9); opacity:0; transition:opacity .6s ease;}
+  .slide .ph.ok{opacity:1;}
+  .slide .ph::after{content:""; position:absolute; inset:0; background:linear-gradient(90deg,#000 0%,rgba(0,0,0,.9) 40%,rgba(0,0,0,.55) 72%,rgba(0,0,0,.35) 100%), linear-gradient(0deg,#000 0%,transparent 35%);}
+  .slide .tag{position:absolute; right:12px; bottom:8px; font-size:.66rem; color:rgba(255,255,255,.55); display:none;}
+  .slide.photo .tag{display:block;}
+  .card{position:relative; width:100%; max-width:1040px;}
+  .card > *{max-width:680px;}
+  @media (max-width:720px){ .slide .ph{background-position:70% center;} }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
+  @media (min-width:721px) and (max-height:780px){
+    .slide{padding:14px 16px 18px;}
+    h1{font-size:clamp(2.3rem,5.6vw,4.2rem);} h2{font-size:clamp(1.6rem,3.8vw,2.5rem); margin-bottom:10px;}
+    .lede{font-size:1.02rem; margin-bottom:10px;} .eyebrow{margin-bottom:8px;} .quote{padding:9px 14px; margin-bottom:9px;}
+    .list li, ol.asks li{padding-top:7px; padding-bottom:7px;}
+  }
+
+  .eyebrow{font:700 .72rem/1.3 var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--rose); margin-bottom:12px;}
+  h1,h2{font-family:var(--serif); font-weight:700; letter-spacing:-0.01em; line-height:1.06; text-wrap:balance;}
+  h1{font-size:clamp(2.5rem,7.4vw,5.2rem); margin-bottom:14px;}
+  h2{font-size:clamp(1.8rem,4.8vw,3.1rem); margin-bottom:14px;}
+  h1 em, h2 em{font-style:italic; color:var(--rose);}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.03rem,2.3vw,1.22rem); color:var(--ink-soft); margin-bottom:14px;}
+  .small{font-size:.8rem; color:var(--ink-faint); line-height:1.5;}
+  .rule{width:64px; height:3px; background:var(--crimson); margin:0 0 16px;}
+
+  .big{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:6px 0 14px;}
+  .card > .big{max-width:880px;}
+  @media (max-width:760px){ .big{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .stat{background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--c,var(--crimson)); padding:12px 14px;}
+  .stat b{display:block; font:700 clamp(1.6rem,4vw,2.3rem)/1.05 var(--serif);}
+  .stat span{font-size:.84rem; color:var(--ink-soft);}
+
+  .list{list-style:none; display:grid; gap:8px; margin-bottom:12px;}
+  .card > .list.wide{max-width:880px;}
+  .list li{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--c,var(--crimson)); padding:9px 14px; color:var(--ink-soft);}
+  .list b{color:var(--ink);}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+  .card > .two{max-width:900px;}
+  @media (max-width:760px){ .two{grid-template-columns:1fr;} }
+  .box{background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--c,var(--crimson)); padding:12px 14px; color:var(--ink-soft); font-size:.93rem;}
+  .box h3{font:700 1.08rem/1.25 var(--serif); color:var(--ink); margin-bottom:6px;}
+  .box ul{list-style:none; display:grid; gap:5px;}
+  .box li{padding-left:14px; position:relative;}
+  .box li::before{content:""; position:absolute; left:0; top:.6em; width:6px; height:6px; background:var(--rose);}
+  .box b{color:var(--ink);}
+
+  table.t{width:100%; border-collapse:collapse; margin-bottom:12px; font-size:.9rem; background:var(--panel);}
+  .card > table.t{max-width:900px;}
+  table.t th, table.t td{border-bottom:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  table.t th{font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);}
+  table.t td:first-child{white-space:nowrap; color:var(--ink); font-weight:700;}
+  table.t td{color:var(--ink-soft);}
+  .dot{display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:6px; vertical-align:-1px;}
+
+  ol.asks{list-style:none; counter-reset:a; display:grid; gap:9px; margin-bottom:12px;}
+  .card > ol.asks{max-width:900px;}
+  @media (min-width:860px){ ol.asks{grid-template-columns:1fr 1fr;} }
+  ol.asks li{counter-increment:a; position:relative; background:var(--panel); border:1px solid var(--line); padding:11px 14px 11px 58px; color:var(--ink-soft);}
+  ol.asks li::before{content:counter(a); position:absolute; left:14px; top:11px; width:32px; height:32px; background:var(--crimson); color:#fff; font:700 1.05rem var(--serif); display:flex; align-items:center; justify-content:center;}
+  ol.asks b{display:block; color:var(--ink); font-size:1.02rem;}
+
+  .quote{border-left:4px solid var(--rose); background:var(--panel); padding:12px 16px; margin-bottom:12px;}
+  .quote p{font:italic 700 1.1rem/1.45 var(--serif);}
+  .quote .src{display:block; font-size:.74rem; color:var(--ink-faint); margin-top:6px; font-style:normal;}
+
+  .names{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 12px;}
+  .card > .names{max-width:900px;}
+  .names span{border:1px solid var(--line); background:var(--panel); padding:5px 10px; font-size:.86rem; color:var(--ink);}
+  .names span.key{border-color:var(--rose);}
+  .names span small{color:var(--ink-faint); margin-left:4px;}
+
+  .cta{display:inline-flex; align-items:center; gap:10px; padding:12px 22px; color:#fff; font-weight:700; text-decoration:none; background:var(--crimson); border:1px solid var(--rose); margin:4px 8px 12px 0; letter-spacing:.02em;}
+  .cta.ghost{background:transparent;}
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
+  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .navbtn:disabled{opacity:.3; cursor:default;}
+  .mid{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0;}
+  .playrow{display:flex; gap:8px; align-items:center;}
+  .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:700; font-size:.9rem; white-space:nowrap;}
+  .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
+  .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:2px; background:var(--line);}
+  .dots button.on{background:var(--rose); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:3px; width:0; background:var(--rose); transition:width .2s linear;}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"><i></i></div>
+<div class="banner">Prepared for the Frankie Knuckles Foundation by Ras Tafari Inc. A proposal: apart from Jana Rush, no artist named here has agreed to take part, and both programs depend on Chicago Park District approval.</div>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide" data-img="01-title-beach-evening.jpg"><div class="card">
+  <div class="eyebrow">For Frederick Dunson, Alan S. King and Carla Agostinelli · The Frankie Knuckles Foundation</div>
+  <h1>Whose shoulders <em>they stand on.</em></h1>
+  <div class="rule"></div>
+  <p class="lede">A free, year-round DJ class for South Side young people, and a summer stage on the lake where they play for their neighbors. We want Frankie's legacy in the room from the first Tuesday, and we are asking you to help us get it right.</p>
+  <p class="small">Rainbow DJ Lab and Rainbow Wednesdays · Rainbow Beach Park, South Shore · from Ras Tafari Inc., a Chicago 501(c)(3)</p>
+</div></section>
+
+<!-- 2 · Why we wrote -->
+<section class="slide" data-img="09-ladder-generations.jpg"><div class="card">
+  <div class="eyebrow">Why we wrote to you</div>
+  <h2>Our students were born decades after the Warehouse. <em>Their music grew from it.</em></h2>
+  <div class="quote"><p>"…the advancement of Frankie Knuckles' mission as the global ambassador of house music through media, conservation and public events…"</p><span class="src">The Frankie Knuckles Foundation. Its initiatives include music in schools.</span></div>
+  <div class="quote"><p>"For most of the people that went there, it was church for them."</p><span class="src">Frankie Knuckles on the Warehouse, 1995 interview (Red Bull Music Academy). The record-store request for "Warehouse music" became "house music."</span></div>
+  <p class="lede">Ours is a classroom in a park, not a school: free, every week, in the city where house began. The young people in it, about grades 6 to 12, will learn to mix this winter. We want them to learn whose music they are mixing.</p>
+</div></section>
+
+<!-- 3 · The Lab -->
+<section class="slide" data-img="cal-01-winter-fieldhouse-class.jpg"><div class="card">
+  <div class="eyebrow">Learn · Rainbow DJ Lab · opening January 12, 2027</div>
+  <h2>Every Tuesday, 4 to 6 pm. <em>Every child on their own deck.</em></h2>
+  <div class="big">
+    <div class="stat"><b>39</b><span>class Tuesdays in 2027, in the Rainbow Beach Park fieldhouse</span></div>
+    <div class="stat"><b>12</b><span>stations, one deck per child, no sharing</span></div>
+    <div class="stat"><b>14 · 42</b><span>Missions · Passport skills, in the seven colors of the rainbow</span></div>
+    <div class="stat"><b>$0</b><span>for families</span></div>
+  </div>
+  <p class="lede">Children join any Tuesday a station is free and work at their own pace. Two resident DJ instructors, one man and one woman, teach every class. A child graduates when all 42 skills are stamped and a final set is ready, not on a date.</p>
+</div></section>
+
+<!-- 4 · A Tuesday -->
+<section class="slide" data-img="04-a-dj-classes.jpg"><div class="card">
+  <div class="eyebrow">One Tuesday, start to finish</div>
+  <h2>The last half hour belongs to <em>a guest DJ.</em></h2>
+  <table class="t">
+    <tr><th>Time</th><th>What happens</th></tr>
+    <tr><td>3:30</td><td>Instructors set up and test 12 stations</td></tr>
+    <tr><td>4:00–5:30</td><td>Core class in nine blocks: Mission Card, Watch Me Think, two rounds of Deck Time, a Move Break, the Wordplay Lab, the Spotlight</td></tr>
+    <tr><td>5:30–6:00</td><td><b style="color:#fff">Guest seat:</b> 5 minutes of her story, 10 of her signature technique, 10 with every child trying it on their own deck, 5 for questions</td></tr>
+    <tr><td>6:00</td><td>Each child signed out to an authorized adult</td></tr>
+  </table>
+  <p class="lede">A different woman DJ fills the guest seat every week: 39 visits a year, paid $200 an hour. We want Chicago house in that seat as often as we can. Chicago footwork DJ Jana Rush, who started DJing at ten, has said yes.</p>
+</div></section>
+
+<!-- 5 · Where house lives in the Missions -->
+<section class="slide" data-img="cal-03-remix-the-record.jpg"><div class="card">
+  <div class="eyebrow">Our draft · your corrections</div>
+  <h2>Where house music lives in <em>the 14 Missions.</em></h2>
+  <table class="t">
+    <tr><th>Mission</th><th>The house lesson we have in mind</th></tr>
+    <tr><td><span class="dot" style="--c:var(--r1)"></span>2 · Build Your Crate</td><td>The Chicago records every young DJ should know, chosen with you</td></tr>
+    <tr><td><span class="dot" style="--c:var(--r2)"></span>3 · Beats, Bars and Phrases</td><td>Hearing the four-on-the-floor pulse and the 8- and 16-bar phrases a house mix rides on</td></tr>
+    <tr><td><span class="dot" style="--c:var(--r4)"></span>8 · Make a Third Song</td><td>The re-edit: making a record longer and stronger for the dance floor</td></tr>
+    <tr><td><span class="dot" style="--c:var(--r6)"></span>12 · Mic, MC and Live Lab</td><td>Telling a crowd where a record comes from, in a minute or less</td></tr>
+    <tr><td><span class="dot" style="--c:var(--r7)"></span>13 · Build Your Set</td><td>A set as a journey: reading the room and taking it somewhere</td></tr>
+    <tr><td><span class="dot" style="--c:var(--r7)"></span>14 · Rainbow Showcase</td><td>Playing for families, with a guest mentor hosting</td></tr>
+  </table>
+  <p class="small">These are our proposals. Nothing on this slide is final until people who knew Frankie and his music have read it.</p>
+</div></section>
+
+<!-- 6 · Rainbow Wednesdays -->
+<section class="slide" data-img="05-b-rainbow-wednesdays.jpg"><div class="card">
+  <div class="eyebrow">Play · Rainbow Wednesdays · June 2 to Sept. 1, 2027</div>
+  <h2>Tuesday they learn it. <em>Wednesday they play it for the beach.</em></h2>
+  <ul class="list wide">
+    <li><b>14 free summer nights, 6:00 to 8:30 pm,</b> on the lakefront at Rainbow Beach. All ages, no tickets, no alcohol, clean lyrics.</li>
+    <li><b>Five segments every night:</b> Open Decks, the Youth Showcase, the Live Lab with young musicians, the Theme Clash, and Generations Back-to-Back, where a young DJ and a veteran trade records one for one.</li>
+    <li><b>June 9 is Chicago House night</b>, the season's second Wednesday: "the sound this city gave the world, re-edited by kids who were born long after the warehouse days."</li>
+  </ul>
+  <p class="lede">Rainbow Wednesdays are a proposal, like the Lab. Dates and the performance area are set with the Chicago Park District.</p>
+</div></section>
+
+<!-- 7 · The 30-minute promise -->
+<section class="slide" data-img="06-c-stage-show.jpg"><div class="card">
+  <div class="eyebrow">Our promise</div>
+  <h2>At least 30 minutes of every Wednesday belong to <em>the Lab's students.</em></h2>
+  <div class="two">
+    <div class="box"><h3>The House Minute</h3><ul>
+      <li>Before each set, the student takes the mic for one minute and teaches the beach what they learned on Tuesday</li>
+      <li>One name, one place, one record, in their own words</li>
+      <li>Written and rehearsed in class, so no one is caught cold</li>
+    </ul></div>
+    <div class="box"><h3>Then they play</h3><ul>
+      <li>Three students, about ten minutes each, inside the Youth Showcase</li>
+      <li>They mix the record they just taught, and credit the artists</li>
+      <li>The guest mentor names one specific skill out loud, and the crowd answers</li>
+    </ul></div>
+  </div>
+  <p class="lede">A child who can teach a crowd about Frankie Knuckles, then mix the music for them, walks off that stage a different kid.</p>
+</div></section>
+
+<!-- 8 · Hula Mahone -->
+<section class="slide" data-img="15-close-rainbow.jpg"><div class="card">
+  <div class="eyebrow">Proposed role · Hula Mahone</div>
+  <h2>The world stage, <em>on our beach.</em></h2>
+  <p class="lede" id="hula-lede">"Hot Hands" Hula Mahone: Chicago house vocalist and producer, co-writer of "This Is Acid," still releasing in 2026, and a regular on UK stages. He knows what it takes to walk into a booth you have never seen and win over people who have never heard of you. That is exactly what a child faces on a first Wednesday.</p>
+  <div class="two">
+    <div class="box"><h3>5:30, before the gates open</h3><ul>
+      <li>Walks each student through the booth "like a club abroad": find the cue, the headphones, the volume, the exit plan</li>
+      <li>Checks their first record and their first ten seconds</li>
+      <li>Agrees on one quiet signal: "I'm here if you need me"</li>
+    </ul></div>
+    <div class="box"><h3>On stage</h3><ul>
+      <li>Stands at the student's shoulder, hands off the controls</li>
+      <li>Teaches the crowd-reading trick he uses abroad, live, between sets</li>
+      <li>Closes the night in Generations Back-to-Back with a Lab student, record for record</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<!-- 9 · DJ Lil' John -->
+<section class="slide" data-img="10-diversity.jpg"><div class="card">
+  <div class="eyebrow">Proposed role · DJ Lil' John</div>
+  <h2>The voice that makes a kid <em>feel like the headliner.</em></h2>
+  <p class="lede" id="lj-lede">John Coleman III: eight years as a top mixer at WGCI 107.5, then the evening host on 106.3 WSRB. Radio taught him to play for everyone at once and to be on time to the second. Commercial DJing is a skill set: clean edits, tight sets, talking to a crowd. He can teach all of it.</p>
+  <div class="two">
+    <div class="box"><h3>5:30, the radio rehearsal</h3><ul>
+      <li>Runs each House Minute like a radio break: say it in 60 seconds, land it on the beat</li>
+      <li>Teaches "talking up the intro": speak over the opening and stop before the vocal</li>
+      <li>Checks every set for clean edits and an on-time ending</li>
+    </ul></div>
+    <div class="box"><h3>On stage, the host</h3><ul>
+      <li>Introduces each student like a radio guest: DJ name, the Mission they just earned, what they will teach</li>
+      <li>Hands them the mic, then gives them the room</li>
+      <li>After each set, names exactly what they did well, and leads the applause</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<!-- 10 · Confidence code -->
+<section class="slide" data-img="cal-07-graduation-set.jpg"><div class="card">
+  <div class="eyebrow">How every mentor helps on Wednesday</div>
+  <h2>The child keeps the controls. <em>The mentor keeps the faith.</em></h2>
+  <div class="quote"><p>"The feeling, the feedback that you get from the people in the room, is very, very spiritual."</p><span class="src">Frankie Knuckles, 1995 interview (Red Bull Music Academy)</span></div>
+  <ul class="list wide">
+    <li><b>Hands off.</b> The student makes every musical choice and finishes every transition. A mentor asks before touching the controls, unless staff must step in for safety.</li>
+    <li><b>One quiet signal,</b> agreed before the set, so help never looks like a rescue.</li>
+    <li><b>When a mix slips,</b> the beat keeps going, the mentor smiles, and the next transition is the fix. That is live DJing, and the crowd learns it too.</li>
+    <li><b>Praise that is specific:</b> "Did you hear that blend land on the one?" means more than "good job."</li>
+    <li><b>Every student leaves</b> with one thing that worked and one thing to try next Tuesday.</li>
+  </ul>
+</div></section>
+
+<!-- 11 · The roster -->
+<section class="slide" data-img="11-inclusivity.jpg"><div class="card">
+  <div class="eyebrow">Frederick asked which DJs are involved · the honest answer</div>
+  <h2>The DJs we would love to meet, <em>and cannot yet reach.</em></h2>
+  <p class="lede" style="margin-bottom:6px"><b style="color:#fff">Wednesday mentors and featured DJs</b>, house veterans with no connection to us today:</p>
+  <div class="names" id="men">
+    <span class="key">Hula Mahone</span><span class="key">DJ Lil' John</span><span class="key">The Chosen Few DJs <small>Alan, your brothers Wayne Williams, Terry Hunter and Mike Dunn</small></span><span>Derrick Carter</span><span>Chip E.</span><span>Iz &amp; Diz</span>
+  </div>
+  <p class="lede" style="margin-bottom:6px"><b style="color:#fff">The Tuesday guest seat</b>, women in Chicago house and dance music we have invited or plan to invite:</p>
+  <div class="names" id="women">
+    <span>DJ Lady D</span><span>DJ Heather</span><span>Colette</span><span>Lori Branch</span><span>Celeste Alexander</span><span>Rae Chardonnay</span><span>First Lady</span><span>BLU 9</span><span>Ariel Zetina</span><span class="key">Jana Rush <small>said yes</small></span>
+  </div>
+  <p class="small">Only Jana Rush has answered. Everyone else is a hope, not a booking. Teaching roles on these slides are our proposals, not services the artists advertise.</p>
+</div></section>
+
+<!-- 12 · Questions only you can answer -->
+<section class="slide" data-img="cal-02-bhm-listening-night.jpg"><div class="card">
+  <div class="eyebrow">If Frankie had designed this class</div>
+  <h2>Questions only <em>you</em> can answer.</h2>
+  <ul class="list wide">
+    <li><b>The crate.</b> Which records should every student hear before they graduate, and which should they hear first?</li>
+    <li><b>The story.</b> How do we tell the Warehouse story honestly to 11- to 17-year-olds, including the Black, Latino and gay dancers who made that floor what it was?</li>
+    <li><b>The dance floor.</b> What did Frankie believe a DJ owes the people in front of the booth?</li>
+    <li><b>The first time.</b> What would he want a young DJ to feel the first time a crowd answers back?</li>
+    <li><b>The line.</b> What should we never do with his name, his image or his music?</li>
+  </ul>
+</div></section>
+
+<!-- 13 · The asks -->
+<section class="slide" data-img="09-ladder-generations.jpg"><div class="card">
+  <div class="eyebrow">What we are asking</div>
+  <h2>Guidance where you know best. <em>Introductions where we have none.</em></h2>
+  <ol class="asks">
+    <li><b>Read our house lessons</b>Review the house thread in the 14 Missions and the House Minute scripts, and recommend the listening.</li>
+    <li><b>Open three doors first</b>Introduce us to Hula Mahone, DJ Lil' John and, Alan, your fellow Chosen Few DJs. We take it from there: scheduling, briefing, pay.</li>
+    <li><b>A word to the women we invited</b>A note from the Foundation to the women house DJs on our list may be the reason they say yes.</li>
+    <li><b>Two nights on the beach</b>Chicago House night on June 9, 2027, and Wednesday, Aug. 25, 2027: 23 years to the day after Chicago declared Frankie Knuckles Day. Shape them with us, and with your permission, present them with us.</li>
+  </ol>
+  <p class="lede">We are not asking for money today. We will never use Frankie's name, image or music in our promotion without the Foundation's written permission.</p>
+</div></section>
+
+<!-- 14 · What we bring -->
+<section class="slide" data-img="07-d-festival.jpg"><div class="card">
+  <div class="eyebrow">What Ras Tafari Inc. brings</div>
+  <h2>You open the door. <em>We do the work.</em></h2>
+  <ul class="list wide">
+    <li><b>The room:</b> the Chicago Park District offered the Rainbow Beach Park fieldhouse, Tuesdays 4–6 pm (Oct. 20, 2026)</li>
+    <li><b>The class:</b> 14 Missions, 42 skills, a class app with every child's Passport, and 12 stations planned, one per child</li>
+    <li><b>The guests' experience:</b> a briefing pack before every visit, pay on the day, background checks run by the Chicago Park District</li>
+    <li><b>Safety:</b> sign-out to authorized adults only, clean lyrics, no alcohol, liability and abuse coverage in force</li>
+    <li><b>Producers:</b> Ras Tafari Inc. produces SelassieFest, and coordinates every partner itself</li>
+  </ul>
+</div></section>
+
+<!-- 15 · Close -->
+<section class="slide" data-img="15-close-rainbow.jpg"><div class="card">
+  <div class="eyebrow">A Wednesday in June, at Rainbow Beach</div>
+  <h2>Picture it.</h2>
+  <p class="lede">A thirteen-year-old takes the mic: "Before there was house music, there was a club called the Warehouse, and a DJ named Frankie Knuckles." Then she drops the record. Her grandmother knows it. Her little brother learns it.</p>
+  <h1 style="font-size:clamp(2.1rem,6vw,4rem)">Help us carry it <em>forward.</em></h1>
+  <a class="cta" href="mailto:stephen@selassiefest.com?subject=Frankie%20Knuckles%20Foundation%20and%20the%20Rainbow%20DJ%20Lab">Set a 20-minute call →</a>
+  <a class="cta ghost" href="/full-spectrum/dj-lab-2027.html">The full DJ Lab plan →</a>
+  <p class="small">Stephen Henry, President, Ras Tafari Inc. · 1401 E. 71st St., Chicago 60619 · (872) 255-9333 · stephen@selassiefest.com<br>
+  Both programs are proposals and depend on Chicago Park District approval. No artist named in this deck has agreed to take part except as noted. Photos are concept visualizations.</p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
+  <div class="prog" id="prog"></div>
+  <div class="mid">
+    <div class="playrow">
+      <button class="play" id="play" aria-label="Play the narrated deck">▶ Play</button>
+      <button class="auto" id="auto" aria-pressed="true" title="Move to the next slide when each one finishes">Auto-advance</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+// Pitch deck for the Frankie Knuckles Foundation (Frederick Dunson, Alan S. King, Carla Agostinelli; board page thefkfoundation.org/board.html).
+// Program facts follow full-spectrum/dj-lab-2027.html (the DJ Lab source of truth) and rainbow-wednesdays/index.html.
+// Look follows thefkfoundation.org: #000/#0C0F12/#141414 grounds, #83161A and #D7244C crimson, Palatino + Helvetica.
+// Frankie quotes and the "Warehouse music" origin: daily.redbullmusicacademy.com/2018/02/frankie-knuckles-1995-interview.
+// Frankie Knuckles Day / Frankie Knuckles Way, declared Aug. 25, 2004 (DNAinfo, Apr. 1, 2014). Aug. 25, 2027 is a Wednesday (Rainbow Wednesdays calendar: Theme Clash Semifinals).
+// Hula Mahone: hulamahone.bandcamp.com; "This Is Acid" co-writer. UK stages per Stephen Henry; no public listing found Oct. 29, 2026.
+// DJ Lil' John (John Coleman III): WGCI and WSRB, robertfeder.dailyherald.com 2016-07-01. Chosen Few members: bbemusic.com/artist/terry-hunter.
+// Jana Rush: yes via the guest DJ invitation form, Oct. 27, 2026 (fs_guest_dj_responses). No other artist has agreed.
+// Narration clips: /full-spectrum/frankie/audio/<slide number>.mp3. A slide with no clip yet waits long enough to read it, then advances.
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const ph = document.createElement("div"); ph.className = "ph"; s.prepend(ph);
+  const tag = document.createElement("div"); tag.className = "tag"; tag.textContent = "Concept visualization"; s.appendChild(tag);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const AUD = "/full-spectrum/frankie/audio/";
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(slides.map(async (_, i) => { const u = AUD + (i + 1) + ".mp3"; found[i] = (await head(u)) ? u : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
+function setBtn(){
+  playBtn.textContent = playing ? "⏸ Pause" : (cur === N - 1 && atEnd ? "↺ Replay" : "▶ Play");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+}
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  if (!resume) { player.pause(); prog.style.width = "0"; tLeft = 0; }
+  if (!playing) return;
+  if (found[i]) {
+    if (!resume || player.src.indexOf(found[i]) < 0) { player.src = found[i]; player.currentTime = 0; }
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("timeupdate", () => { if (player.duration) prog.style.width = (100 * player.currentTime / player.duration) + "%"; });
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); if (auto && playing && player.ended) finishSlide(); };
+// Only the current slide and its neighbors load their photos, shown in black and white.
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
+  s.dataset.painted = "1";
+  const u = `/full-spectrum/img/${s.dataset.img}`;
+  head(u).then((ok) => { if (ok) { const ph = s.querySelector(".ph"); ph.style.backgroundImage = `url("${u}")`; ph.classList.add("ok"); s.classList.add("photo"); } });
+}
+function go(i){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1;
+  atEnd = false;
+  startSlide(cur); setBtn();
+  [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, a") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+// Open on a given slide with #n (e.g. #7).
+go((parseInt(location.hash.slice(1), 10) || 1) - 1);
+</script>
+</body>
+</html>
