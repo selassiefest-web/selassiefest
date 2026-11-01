@@ -239,7 +239,7 @@ Deno.serve(async (req: Request) => {
       const fund = isFullSpectrum ? 'full-spectrum' : (FUND_PRODUCTS[body.fund] ? body.fund : 'general');
       const fundProductId = isFullSpectrum ? 'inline-full-spectrum' : FUND_PRODUCTS[fund][recurring ? 'monthly' : 'once'];
       const productRef = isFullSpectrum
-        ? { product_data: { name: 'Full Spectrum Founding Circle: gift to Ras Tafari Inc.', description: 'Tax-deductible gift to Ras Tafari Inc. (501(c)(3), EIN 42-3036705) for Full Spectrum at Rainbow Beach.' } }
+        ? { product_data: { name: 'Full Spectrum Founding Circle', description: 'Your gift to Ras Tafari Inc. for Full Spectrum at Rainbow Beach. Tax-deductible: 501(c)(3), EIN 42-3036705.' } }
         : { product: fundProductId };
 
       const metadata: Record<string, string> = {
@@ -265,9 +265,12 @@ Deno.serve(async (req: Request) => {
         ],
         customer_email: body.donorEmail || undefined,
         metadata,
+        ...(isFullSpectrum
+          ? { custom_text: { submit: { message: 'You are giving to the Full Spectrum Founding Circle at Ras Tafari Inc. Your receipt says so, and we send a written acknowledgment for your taxes.' } } }
+          : {}),
         ...(recurring
-          ? { subscription_data: { metadata } }
-          : { payment_intent_data: { metadata } }),
+          ? { subscription_data: { metadata, ...(isFullSpectrum ? { description: 'Full Spectrum Founding Circle gift to Ras Tafari Inc.' } : {}) } }
+          : { payment_intent_data: { metadata, ...(isFullSpectrum ? { description: 'Full Spectrum Founding Circle gift to Ras Tafari Inc.', statement_descriptor_suffix: 'FULL SPECTRUM' } : {}) } }),
         success_url: `${SITE_URL}/donate/success.html?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${SITE_URL}/donate/`,
       });
