@@ -804,6 +804,20 @@ function formatLrVenueResponse(record: Record<string, any>) {
   };
 }
 
+// In-kind offers from /full-spectrum/founding-circle/#items -- see supabase/fs-gifts.sql.
+function formatFsInkindOffer(record: Record<string, any>) {
+  const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  const what = record.items || record.description || 'an item';
+  return {
+    subject: `Full Spectrum in-kind offer: ${what} from ${record.donor_name || 'a supporter'}`,
+    html: `
+      <h2>New in-kind offer</h2>
+      <table style="border-collapse:collapse;">${row('Items', record.items)}${row('Description', record.description)}${row('Condition', record.condition)}${row('Delivery', record.delivery)}${row('Their value estimate', record.value_estimate)}${row('Name', record.donor_name)}${row('Email', record.donor_email)}${row('Phone', record.donor_phone)}${row('Introduced by', record.introduced_by)}</table>
+      <p style="margin-top:18px;">Reply to confirm what we can use. Track it on the <a href="https://selassiefest.com/full-spectrum/partners.html">Gifts tab</a>.</p>
+    `,
+  };
+}
+
 // Meeting agenda answers (e.g. /rti/night-out/livingston/) -- see supabase/noitp-agenda-answers.sql.
 function formatNoitpAgendaAnswers(record: Record<string, any>) {
   const who = record.respondent_name || 'Someone';
@@ -1104,6 +1118,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
   },
   lr_venue_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatLrVenueResponse }] },
+  fs_inkind_offers: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsInkindOffer }] },
   noitp_agenda_answers: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatNoitpAgendaAnswers }] },
   djlab_coach_login_links: {
     notifications: [{ to: (record) => record.email, format: formatDjlabCoachLoginLink, from: () => 'Rainbow DJ Lab <hello@selassiefest.com>' }],

@@ -146,7 +146,7 @@
   </form>
   <p style="margin-top:14px"><button class="btn" id="ikSend" type="button">Email this offer to Ras Tafari</button><button class="btn alt" id="ikCopy" type="button">Copy it instead</button></p>
   <p class="small" id="ikErr" style="color:#ff8a80;display:none"></p>
-  <p class="small">Your email app opens with the offer filled in. Press send there. We reply within a few days to confirm what we can use and how to get it to us.</p>
+  <p class="small">Your offer goes straight to Ras Tafari Inc. We reply within a few days to confirm what we can use and how to get it to us.</p>
   <h3 style="margin-top:18px">What we can accept</h3>
   <ol class="steps">
     <li>Items that are <b>clean, complete and in working order</b>, and that fit DJ learning, performance or the beach events. We may decline items we cannot use, store or safely give to young people, and we will tell you promptly.</li>
@@ -204,11 +204,16 @@ Would you be open to a short conversation? I can set it up.</textarea>
   <p class="small"><a href="/full-spectrum/joy/">Back to the deck</a> · <a href="/full-spectrum/">The Full Spectrum proposal</a></p>
 </footer>
 </div>
+<script src="/assets/js/supabase-client.js"></script>
 <script>
-// Update this number by hand from deposited donations only (cash received).
+// Fallback only. The live total comes from Supabase (fs_circle_total): deposited cash.
 const RECEIVED = 0, GOAL = 150000;
-document.getElementById("rcv").textContent = "$" + RECEIVED.toLocaleString() + " of $" + GOAL.toLocaleString();
-document.getElementById("fill").style.width = Math.min(100, 100 * RECEIVED / GOAL) + "%";
+function showTotal(n){
+  document.getElementById("rcv").textContent = "$" + Math.round(n).toLocaleString() + " of $" + GOAL.toLocaleString();
+  document.getElementById("fill").style.width = Math.min(100, 100 * n / GOAL) + "%";
+}
+showTotal(RECEIVED);
+(async () => { try { const c = await window.sfSupabaseReady; const r = await c.rpc("fs_circle_total"); if (!r.error && r.data !== null) showTotal(Number(r.data)); } catch (_) {} })();
 const msg = document.getElementById("msg");
 document.getElementById("copy").onclick = async (e) => { try { await navigator.clipboard.writeText(msg.value); e.target.textContent = "Copied"; } catch (_) { msg.select(); } };
 document.getElementById("mail").onclick = (e) => { e.preventDefault(); location.href = "mailto:?subject=" + encodeURIComponent("Full Spectrum Founding Circle") + "&body=" + encodeURIComponent(msg.value); };
@@ -228,7 +233,26 @@ function ikOk(){
   if (!g("ikName") || !g("ikEmail")) { e.textContent = "Please add your name and email so we can reply."; e.style.display = "block"; return false; }
   e.style.display = "none"; return true;
 }
-document.getElementById("ikSend").onclick = () => { if (ikOk()) location.href = "mailto:stephen@selassiefest.com?subject=" + encodeURIComponent("Full Spectrum in-kind offer") + "&body=" + encodeURIComponent(ikText()); };
+document.getElementById("ikSend").onclick = async (e) => {
+  if (!ikOk()) return;
+  const g = (id) => document.getElementById(id).value.trim(), btn = e.target, err = document.getElementById("ikErr");
+  const mail = () => { location.href = "mailto:stephen@selassiefest.com?subject=" + encodeURIComponent("Full Spectrum in-kind offer") + "&body=" + encodeURIComponent(ikText()); };
+  btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    const r = await window.sfProtectedInsert("fs_inkind_offers", {
+      items: ikList().join(", "), description: g("ikDesc"), condition: g("ikCond"), delivery: g("ikHow"),
+      donor_name: g("ikName"), donor_email: g("ikEmail"), donor_phone: g("ikPhone"), introduced_by: g("ikIntro"), value_estimate: g("ikVal"),
+    });
+    if (r.error) throw new Error(r.error.message);
+    document.getElementById("ikForm").style.display = "none"; document.getElementById("wish").style.display = "none";
+    btn.parentElement.style.display = "none"; err.style.display = "block"; err.style.color = "#9be7b0";
+    err.textContent = "Thank you. Your offer reached Ras Tafari Inc. We will reply within a few days to confirm what we can use and how to get it to us.";
+  } catch (x) {
+    btn.disabled = false; btn.textContent = "Email this offer to Ras Tafari";
+    err.style.display = "block"; err.style.color = "#ff8a80"; err.textContent = "We could not send it from this page, so your email app is opening instead. Press send there.";
+    setTimeout(mail, 1200);
+  }
+};
 document.getElementById("ikCopy").onclick = async (e) => { if (!ikOk()) return; try { await navigator.clipboard.writeText(ikText()); e.target.textContent = "Copied. Email it to stephen@selassiefest.com"; } catch (_) {} };
 </script>
 </body>

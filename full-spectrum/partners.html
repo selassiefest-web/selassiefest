@@ -161,6 +161,7 @@
     <button class="tab on" id="tabPartners" data-tab="partners" role="tab" aria-selected="true">Partners</button>
     <button class="tab" id="tabGrants" data-tab="grants" role="tab" aria-selected="false">Grants <span class="p-cat" id="grantBadge"></span></button>
     <button class="tab" id="tabLetters" data-tab="letters" role="tab" aria-selected="false">Letters <span class="p-cat" id="letterBadge"></span></button>
+    <button class="tab" id="tabGifts" data-tab="gifts" role="tab" aria-selected="false">Gifts <span class="p-cat" id="giftBadge"></span></button>
   </div>
   <div id="partnersView">
   <div class="stages" id="stages"></div>
@@ -182,6 +183,28 @@
     <h2 style="font-size:1.05rem; margin:22px 0 6px">Signed letters of support</h2>
     <p class="count" id="lcount"></p>
     <div class="list" id="llist"></div>
+  </div>
+
+  <div id="giftsView" hidden>
+    <div class="gstat" id="giftStat"></div>
+    <h2 style="font-size:1.05rem; margin:14px 0 6px">Cash gifts (Founding Circle)</h2>
+    <p class="count" id="cashNote"></p>
+    <div class="list" id="cashList"></div>
+    <details style="margin:10px 0"><summary class="btn small" style="display:inline-block">Add a gift that did not come through Stripe</summary>
+      <div class="filters" style="margin-top:8px">
+        <input type="text" id="mName" placeholder="Donor name">
+        <input type="email" id="mEmail" placeholder="Email (for the acknowledgment)">
+        <input type="number" id="mAmt" min="0" step="0.01" placeholder="Amount $">
+        <select id="mChan"><option>check</option><option>zelle</option><option>paypal</option><option>venmo</option><option>stock</option><option>daf</option><option>other</option></select>
+        <select id="mStat"><option value="deposited">Deposited</option><option value="pledged">Pledged</option></select>
+        <input type="text" id="mIntro" placeholder="Introduced by">
+        <input type="text" id="mNotes" placeholder="Notes">
+        <button class="btn small primary" id="mAdd">Add gift</button>
+      </div>
+    </details>
+    <h2 style="font-size:1.05rem; margin:22px 0 6px">Items offered (in-kind)</h2>
+    <p class="count" id="inkindNote"></p>
+    <div class="list" id="inkindList"></div>
   </div>
 
   <div id="grantsView" hidden>
@@ -439,7 +462,9 @@
     catch(err){ if (/session/i.test(err.message)) throw err; state.outgoing = []; }
     try { state.letters = await rpc('fs_support_letters_load', { p_session: state.session.sessionToken }) || []; }
     catch(err){ if (/session/i.test(err.message)) throw err; state.letters = []; }
-    buildFilters(); render(); renderGrants(); renderLetters();
+    try { state.gifts = await rpc('fs_gifts_load', { p_session: state.session.sessionToken }) || {}; }
+    catch(err){ if (/session/i.test(err.message)) throw err; state.gifts = null; }
+    buildFilters(); render(); renderGrants(); renderLetters(); renderGifts();
   }
 
   function buildFilters(){
@@ -692,11 +717,62 @@
     try { await rpc('fs_grant_save', { p_session: state.session.sessionToken, p_id: sel.getAttribute('data-gid'), p: { status: sel.value } }); await load(); }
     catch(err){ alert('Could not save: ' + err.message); }
   });
-  ['tabPartners','tabGrants','tabLetters'].forEach(function(id){ $(id).addEventListener('click', function(){
+
+  function money(n){ return '$' + Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 2 }); }
+  function fdate(v){ if (!v) return ''; var d = new Date(v); return isNaN(d) ? String(v) : d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' }); }
+  function renderGifts(){
+    var g = state.gifts;
+    if (!g) { $('giftStat').innerHTML = '<p class="count">The Gifts tab needs supabase/fs-gifts.sql applied. It has not been applied yet.</p>'; return; }
+    var cash = g.cash || [], manual = g.manual || [], inkind = g.inkind || [];
+    var stripeTotal = cash.reduce(function(a, c){ return a + Number(c.amount || 0); }, 0);
+    var manualDep = manual.filter(function(m){ return m.status === 'deposited' && m.channel !== 'stock'; }).reduce(function(a, m){ return a + Number(m.amount || 0); }, 0);
+    var pledged = manual.filter(function(m){ return m.status === 'pledged'; }).reduce(function(a, m){ return a + Number(m.amount || 0); }, 0);
+    var total = stripeTotal + manualDep, newOffers = inkind.filter(function(o){ return o.status === 'new'; }).length;
+    $('giftBadge').textContent = newOffers ? '(' + newOffers + ' new)' : '';
+    $('giftStat').innerHTML = '<div class="gs"><b>' + money(total) + '</b><span>cash deposited of $150,000 (' + Math.round(100 * total / 150000) + '%)</span></div>' +
+      '<div class="gs"><b>' + money(stripeTotal) + '</b><span>card gifts via Stripe</span></div>' +
+      '<div class="gs"><b>' + money(manualDep) + '</b><span>other deposited (check, Zelle, PayPal, Venmo)</span></div>' +
+      '<div class="gs"><b>' + money(pledged) + '</b><span>pledged, not counted</span></div>' +
+      '<div class="gs"><b>' + inkind.length + '</b><span>item offers (' + newOffers + ' new)</span></div>';
+    $('cashNote').textContent = 'Stripe gifts appear automatically. Stock is listed but never counted as cash. Send a written acknowledgment for every gift.';
+    var rows = cash.map(function(c){ return '<div class="p-card"><div class="p-head"><b>' + money(c.amount) + '</b> &middot; ' + esc(c.email || 'no email') + ' <span class="p-cat">card (Stripe)</span></div><div class="count">' + esc(fdate(c.at)) + (c.introduced_by ? ' &middot; introduced by ' + esc(c.introduced_by) : '') + (c.recurring === 'true' ? ' &middot; monthly' : '') + '</div></div>'; })
+      .concat(manual.map(function(m){ return '<div class="p-card"><div class="p-head"><b>' + money(m.amount) + '</b> &middot; ' + esc(m.donor_name) + ' <span class="p-cat">' + esc(m.channel) + ' &middot; ' + esc(m.status) + '</span></div><div class="count">' + esc(fdate(m.gift_date)) + (m.introduced_by ? ' &middot; introduced by ' + esc(m.introduced_by) : '') + (m.notes ? ' &middot; ' + esc(m.notes) : '') + ' &middot; ' + (m.ack_sent_on ? 'acknowledged ' + esc(fdate(m.ack_sent_on)) : '<button class="btn small" data-mack="' + esc(m.id) + '">Mark acknowledgment sent</button>') + '</div></div>'; }));
+    $('cashList').innerHTML = rows.length ? rows.join('') : '<p class="count">No gifts yet.</p>';
+    $('inkindNote').textContent = inkind.length ? inkind.length + ' offer' + (inkind.length === 1 ? '' : 's') + '. Reply to the donor before anything is dropped off. The acknowledgment names the item and condition, never a value.' : 'No item offers yet.';
+    var STS = ['new','accepted','scheduled','received','declined'];
+    $('inkindList').innerHTML = inkind.map(function(o){
+      return '<div class="p-card" data-oid="' + esc(o.id) + '"><div class="p-head"><b>' + esc(o.items || o.description || 'Item') + '</b> &middot; ' + esc(o.donor_name) + '</div>' +
+        '<div class="count">' + esc(fdate(o.created_at)) + ' &middot; ' + esc(o.donor_email) + (o.donor_phone ? ' &middot; ' + esc(o.donor_phone) : '') + (o.introduced_by ? ' &middot; introduced by ' + esc(o.introduced_by) : '') + '</div>' +
+        '<div>' + esc(o.description || '') + '</div><div class="count">' + esc(o.condition || '') + ' &middot; ' + esc(o.delivery || '') + (o.value_estimate ? ' &middot; their estimate: ' + esc(o.value_estimate) : '') + '</div>' +
+        '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select class="ikst">' + STS.map(function(x){ return '<option value="' + x + '"' + (x === o.status ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select>' +
+        '<input type="text" class="iknote" placeholder="Notes" value="' + esc(o.notes || '') + '" style="flex:1;min-width:160px">' +
+        '<button class="btn small" data-oack="1">' + (o.ack_sent_on ? 'Acknowledged ' + esc(fdate(o.ack_sent_on)) + ' (again)' : 'Mark acknowledgment sent') + '</button>' +
+        '<button class="btn small primary" data-osave="1">Save</button></div></div>';
+    }).join('');
+  }
+  $('giftsView').addEventListener('click', async function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    try {
+      if (b.dataset.mack) { await rpc('fs_gift_manual_ack', { p_session: state.session.sessionToken, p_id: b.dataset.mack }); await load(); return; }
+      var card = b.closest('[data-oid]');
+      if (card && (b.dataset.osave || b.dataset.oack)) {
+        await rpc('fs_inkind_update', { p_session: state.session.sessionToken, p_id: card.dataset.oid, p_status: card.querySelector('.ikst').value, p_notes: card.querySelector('.iknote').value, p_ack: !!b.dataset.oack });
+        await load(); return;
+      }
+      if (b.id === 'mAdd') {
+        var amt = parseFloat($('mAmt').value), nm = $('mName').value.trim();
+        if (!nm || !(amt >= 0)) { alert('Add the donor name and an amount.'); return; }
+        await rpc('fs_gift_manual_add', { p_session: state.session.sessionToken, p: { donor_name: nm, donor_email: $('mEmail').value, amount: amt, channel: $('mChan').value, status: $('mStat').value, introduced_by: $('mIntro').value, notes: $('mNotes').value } });
+        ['mName','mEmail','mAmt','mIntro','mNotes'].forEach(function(i){ $(i).value = ''; });
+        await load();
+      }
+    } catch(err){ alert('Could not save: ' + err.message); }
+  });
+  ['tabPartners','tabGrants','tabLetters','tabGifts'].forEach(function(id){ $(id).addEventListener('click', function(){
     state.tab = $(id).getAttribute('data-tab');
-    ['tabPartners','tabGrants','tabLetters'].forEach(function(t){ $(t).setAttribute('aria-selected', String($(t).getAttribute('data-tab') === state.tab)); });
-    $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants'); $('tabLetters').classList.toggle('on', state.tab === 'letters');
-    $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants'; $('lettersView').hidden = state.tab !== 'letters';
+    ['tabPartners','tabGrants','tabLetters','tabGifts'].forEach(function(t){ $(t).setAttribute('aria-selected', String($(t).getAttribute('data-tab') === state.tab)); });
+    $('tabPartners').classList.toggle('on', state.tab === 'partners'); $('tabGrants').classList.toggle('on', state.tab === 'grants'); $('tabLetters').classList.toggle('on', state.tab === 'letters'); $('tabGifts').classList.toggle('on', state.tab === 'gifts');
+    $('partnersView').hidden = state.tab !== 'partners'; $('grantsView').hidden = state.tab !== 'grants'; $('lettersView').hidden = state.tab !== 'letters'; $('giftsView').hidden = state.tab !== 'gifts';
     $('addBtn').style.display = state.tab === 'partners' ? '' : 'none'; }); });
 
   var grantId = null;
