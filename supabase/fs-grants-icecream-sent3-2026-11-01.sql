@@ -1,0 +1,1 @@
+update fs_grant_deadlines set status='submitted', next_step='Emailed fundraising@jenis.com 11/1; then submit their donation application with a fixed 2027 date', next_step_due='2026-11-15', notes = notes || ' EMAILED 11/1/2026 from stephen@.' where funder='Jeni''s Splendid Ice Creams' and notes not like '%EMAILED 11/1%';
