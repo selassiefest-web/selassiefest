@@ -273,6 +273,10 @@
     .fs-zelle { display: flex; gap: 14px; align-items: center; background: rgba(0,0,0,0.25); border-radius: 12px; padding: 12px; }
     .fs-qr { background: #fff; border-radius: 10px; padding: 8px; width: 110px; flex: none; }
     .fs-qr img { width: 100%; display: block; }
+    .fs-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; align-items: end; }
+    .fs-gocell { padding-bottom: 10px; }
+    .fs-gocell .fs-go { height: 46px; padding: 0 12px; }
+    @media (max-width: 640px) { .fs-form { grid-template-columns: 1fr; } .fs-gocell { padding-bottom: 0; } }
     .fs-links a { color: #F2B544; }
 
     .donate-fund-toggle {
@@ -462,13 +466,15 @@
       <button type="button" class="fs-amt" data-a="2500">$2,500</button>
       <button type="button" class="fs-amt" data-a="5000">$5,000</button>
     </div>
-    <label for="fsCustom">Or choose your own amount ($)</label>
-    <input type="number" id="fsCustom" min="1" step="1" placeholder="Any amount">
-    <label for="fsEmail">Your email (for your receipt and acknowledgment)</label>
-    <input type="email" id="fsEmail" placeholder="you@example.com" autocomplete="email">
-    <label for="fsIntro">Who introduced you? (optional)</label>
-    <input type="text" id="fsIntro" placeholder="Name of the friend who invited you" maxlength="100">
-    <button type="button" class="fs-go" id="fsGo"><i class="fas fa-lock" aria-hidden="true"></i> <span id="fsGoLabel">Give $500 to Full Spectrum</span></button>
+    <div class="fs-form">
+      <div><label for="fsCustom">Or choose your own amount ($)</label>
+      <input type="number" id="fsCustom" min="1" step="1" placeholder="Any amount"></div>
+      <div><label for="fsEmail">Your email (for your receipt and acknowledgment)</label>
+      <input type="email" id="fsEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div><label for="fsIntro">Who introduced you? (optional)</label>
+      <input type="text" id="fsIntro" placeholder="Name of the friend who invited you" maxlength="100"></div>
+      <div class="fs-gocell"><button type="button" class="fs-go" id="fsGo"><i class="fas fa-lock" aria-hidden="true"></i> <span id="fsGoLabel">Give $500 to Full Spectrum</span></button></div>
+    </div>
     <p id="fsErr" style="color:#ff8a80; font-size:.85rem; display:none; margin-top:8px;"></p>
     <div class="fs-alt">
       <h3>Or pay another way, all right here</h3>
