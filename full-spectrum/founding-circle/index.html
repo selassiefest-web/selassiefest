@@ -50,6 +50,14 @@
   ol.steps{margin:10px 0 0 22px;color:var(--ink-soft)} ol.steps li{margin-bottom:8px}
   .docs a.doc{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;text-decoration:none;color:var(--ink)}
   .docs a.doc b{display:block} .docs a.doc span{font-size:.85rem;color:var(--ink-faint)}
+  .wish{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+  .wish label{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:.92rem;color:var(--ink-soft)}
+  .wish input{margin-top:4px;accent-color:#A35BC4}
+  .ik{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .ik label.f{display:block;font-size:.82rem;color:var(--ink-faint);margin:8px 0 4px}
+  .ik input[type=text],.ik input[type=email],.ik input[type=tel],.ik select,.ik textarea{width:100%;background:#120D26;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:.95rem}
+  .ik .full{grid-column:1/-1}
+  @media(max-width:640px){.ik{grid-template-columns:1fr}}
   footer{padding:30px 0 60px;border-top:1px solid var(--line)}
 </style>
 </head>
@@ -62,7 +70,7 @@
   <h1>Build the foundation <span class="rb">for Full Spectrum.</span></h1>
   <p class="lede">A private circle of supporters, assembled through trusted relationships, giving at the level each person chooses. The shared goal: <b>$150,000 in deposited donations</b> to Ras Tafari Inc., so Full Spectrum begins on solid ground at Rainbow Beach.</p>
   <p class="small">Full Spectrum is a first-year program and depends on Chicago Park District approval. Every donation goes directly to Ras Tafari Inc., a 501(c)(3) public charity.</p>
-  <p style="margin-top:18px"><a class="btn" href="#give">Give now</a><a class="btn alt" href="#introduce">Introduce a friend</a><a class="btn alt" href="#docs">Tax documents</a></p>
+  <p style="margin-top:18px"><a class="btn" href="#give">Give now</a><a class="btn alt" href="#items">Give an item</a><a class="btn alt" href="#introduce">Introduce a friend</a><a class="btn alt" href="#docs">Tax documents</a></p>
 </header>
 
 <section id="how">
@@ -101,8 +109,50 @@
   <p>Give any amount by card on our secure donation page. The Full Spectrum Founding Circle gift box sits at the top, and your checkout and receipt name it. If you use PayPal, Venmo or Zelle instead, write <b>"Full Spectrum Founding Circle"</b> and the name of whoever introduced you in the note.</p>
   <p><a class="btn" href="/donate/?fund=full-spectrum#full-spectrum">Give to Full Spectrum online</a></p>
   <p><b>By check:</b> payable to <b>Ras Tafari Inc.</b>, memo "Full Spectrum Founding Circle", mailed to 1401 E 71st St., Chicago, IL 60619.</p>
-  <p><b>Larger gifts, stock, a donor-advised fund, or equipment:</b> email <a href="mailto:stephen@selassiefest.com?subject=Founding%20Circle%20gift">stephen@selassiefest.com</a> or call (872) 255-9333 and we will walk you through it.</p>
+  <p><b>Larger gifts, stock or a donor-advised fund:</b> email <a href="mailto:stephen@selassiefest.com?subject=Founding%20Circle%20gift">stephen@selassiefest.com</a> or call (872) 255-9333 and we will walk you through it.</p>
+  <p><b>Gear, supplies or gift bags instead of cash?</b> <a href="#items">Give an item</a>.</p>
   <p class="small">Ras Tafari Inc. sends a written acknowledgment for each gift. Only deposited cash counts toward the $150,000.</p>
+</section>
+
+<section id="items">
+  <div class="eyebrow">Give an item</div>
+  <h2>One person's extra is <span class="rb">a young DJ's start.</span></h2>
+  <p>Not everything has to be cash. If you have something in good working order that fits Full Spectrum, we would love to put it to use. Tell us what you have and we will confirm what we can use <b>before</b> you drop anything off or ship it.</p>
+  <div class="wish" id="wish">
+    <label><input type="checkbox" value="Headphones"> Headphones (DJ or studio)</label>
+    <label><input type="checkbox" value="Microphones, stands or cables"> Microphones, stands and cables</label>
+    <label><input type="checkbox" value="DJ controllers, decks or mixers"> DJ controllers, decks and mixers</label>
+    <label><input type="checkbox" value="Laptops or tablets"> Laptops and tablets</label>
+    <label><input type="checkbox" value="Speakers, monitors or PA gear"> Speakers, monitors and PA gear</label>
+    <label><input type="checkbox" value="Cables, adapters, power or cases"> Cables, adapters, power and cases</label>
+    <label><input type="checkbox" value="Vinyl, records or music media"> Vinyl, records and music media</label>
+    <label><input type="checkbox" value="Gift bags or giveaways"> Gift bags and giveaways</label>
+    <label><input type="checkbox" value="Event supplies"> Event supplies: tents, tables, chairs, banners</label>
+    <label><input type="checkbox" value="Snacks or refreshments"> Snacks and refreshments</label>
+    <label><input type="checkbox" value="Something else that fits"> Something else that fits</label>
+  </div>
+  <form class="ik" id="ikForm" onsubmit="return false">
+    <div class="full"><label class="f" for="ikDesc">Describe what you have (brand, model, how many)</label>
+      <textarea id="ikDesc" rows="3" placeholder="Example: 2 pairs of DJ headphones, used twice, with cases"></textarea></div>
+    <div><label class="f" for="ikCond">Condition</label>
+      <select id="ikCond"><option>Like new</option><option>Good, works fully</option><option>Fair, works with wear</option><option>Not sure</option></select></div>
+    <div><label class="f" for="ikHow">How would you get it to us?</label>
+      <select id="ikHow"><option>I can drop it off in Chicago</option><option>I can ship it</option><option>I need it picked up</option><option>Let us talk about it</option></select></div>
+    <div><label class="f" for="ikName">Your name</label><input type="text" id="ikName" autocomplete="name"></div>
+    <div><label class="f" for="ikEmail">Your email</label><input type="email" id="ikEmail" autocomplete="email"></div>
+    <div><label class="f" for="ikPhone">Phone (optional)</label><input type="tel" id="ikPhone" autocomplete="tel"></div>
+    <div><label class="f" for="ikIntro">Who introduced you? (optional)</label><input type="text" id="ikIntro"></div>
+    <div class="full"><label class="f" for="ikVal">Your own estimate of its value (optional, for your tax records; we do not set values)</label><input type="text" id="ikVal" placeholder="$"></div>
+  </form>
+  <p style="margin-top:14px"><button class="btn" id="ikSend" type="button">Email this offer to Ras Tafari</button><button class="btn alt" id="ikCopy" type="button">Copy it instead</button></p>
+  <p class="small" id="ikErr" style="color:#ff8a80;display:none"></p>
+  <p class="small">Your email app opens with the offer filled in. Press send there. We reply within a few days to confirm what we can use and how to get it to us.</p>
+  <h3 style="margin-top:18px">What we can accept</h3>
+  <ol class="steps">
+    <li>Items that are <b>clean, complete and in working order</b>, and that fit DJ learning, performance or the beach events. We may decline items we cannot use, store or safely give to young people, and we will tell you promptly.</li>
+    <li><b>Tax records:</b> we give you a written acknowledgment that describes the item, its condition and the date. It does not state a value, because the IRS leaves valuing the item to the donor. Non-cash gifts over $500 total need Form 8283 with your return (see the tax documents below). We are happy to sign it.</li>
+    <li>In-kind gifts are tracked <b>separately from cash</b> and do not count toward the $150,000 cash goal.</li>
+  </ol>
 </section>
 
 <section id="introduce">
@@ -162,6 +212,24 @@ document.getElementById("fill").style.width = Math.min(100, 100 * RECEIVED / GOA
 const msg = document.getElementById("msg");
 document.getElementById("copy").onclick = async (e) => { try { await navigator.clipboard.writeText(msg.value); e.target.textContent = "Copied"; } catch (_) { msg.select(); } };
 document.getElementById("mail").onclick = (e) => { e.preventDefault(); location.href = "mailto:?subject=" + encodeURIComponent("Full Spectrum Founding Circle") + "&body=" + encodeURIComponent(msg.value); };
+
+const ikList = () => [...document.querySelectorAll("#wish input:checked")].map((i) => i.value);
+function ikText(){
+  const g = (id) => document.getElementById(id).value.trim();
+  return "Full Spectrum Founding Circle: in-kind offer\n\nItems: " + (ikList().join(", ") || "(see description)") +
+    "\nDescription: " + g("ikDesc") + "\nCondition: " + g("ikCond") + "\nDelivery: " + g("ikHow") +
+    "\nDonor value estimate: " + (g("ikVal") || "none given") +
+    "\n\nName: " + g("ikName") + "\nEmail: " + g("ikEmail") + "\nPhone: " + (g("ikPhone") || "none") +
+    "\nIntroduced by: " + (g("ikIntro") || "none");
+}
+function ikOk(){
+  const e = document.getElementById("ikErr"), g = (id) => document.getElementById(id).value.trim();
+  if (!ikList().length && !g("ikDesc")) { e.textContent = "Pick at least one item or describe what you have."; e.style.display = "block"; return false; }
+  if (!g("ikName") || !g("ikEmail")) { e.textContent = "Please add your name and email so we can reply."; e.style.display = "block"; return false; }
+  e.style.display = "none"; return true;
+}
+document.getElementById("ikSend").onclick = () => { if (ikOk()) location.href = "mailto:stephen@selassiefest.com?subject=" + encodeURIComponent("Full Spectrum in-kind offer") + "&body=" + encodeURIComponent(ikText()); };
+document.getElementById("ikCopy").onclick = async (e) => { if (!ikOk()) return; try { await navigator.clipboard.writeText(ikText()); e.target.textContent = "Copied. Email it to stephen@selassiefest.com"; } catch (_) {} };
 </script>
 </body>
 </html>
