@@ -141,7 +141,7 @@ function formatCampRegistration(record: Record<string, any>) {
 }
 
 function formatDonation(record: Record<string, any>) {
-  const fundLabel = record.fund === 'scholarship' ? 'Youth Scholarship Fund' : 'General Fund';
+  const fundLabel = record.fund === 'scholarship' ? 'Youth Scholarship Fund' : record.fund === 'full-spectrum' ? 'Full Spectrum Founding Circle' : 'General Fund';
   return {
     subject: `New Donation — $${escapeHtml(record.amount)}${record.recurring === 'true' ? '/mo' : ''} (${fundLabel})`,
     html: `

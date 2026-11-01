@@ -232,15 +232,23 @@ Deno.serve(async (req: Request) => {
         general: { once: 'prod_Uq6JmXb3pIWc9Q', monthly: 'prod_Uq4ep19taCtHNe' },
         scholarship: { once: 'prod_Ur7mINiSdb8wAB', monthly: 'prod_Uq2xF7nL2NUpHf' },
       };
-      const fund = FUND_PRODUCTS[body.fund] ? body.fund : 'general';
-      const fundProductId = FUND_PRODUCTS[fund][recurring ? 'monthly' : 'once'];
+      // Full Spectrum Founding Circle gifts use an inline product name (no
+      // pre-created Stripe product) so the Checkout page and receipt say
+      // exactly what the donor is giving to. `fund` metadata carries it.
+      const isFullSpectrum = body.fund === 'full-spectrum';
+      const fund = isFullSpectrum ? 'full-spectrum' : (FUND_PRODUCTS[body.fund] ? body.fund : 'general');
+      const fundProductId = isFullSpectrum ? 'inline-full-spectrum' : FUND_PRODUCTS[fund][recurring ? 'monthly' : 'once'];
+      const productRef = isFullSpectrum
+        ? { product_data: { name: 'Full Spectrum Founding Circle: gift to Ras Tafari Inc.', description: 'Tax-deductible gift to Ras Tafari Inc. (501(c)(3), EIN 42-3036705) for Full Spectrum at Rainbow Beach.' } }
+        : { product: fundProductId };
 
-      const metadata = {
+      const metadata: Record<string, string> = {
         order_type: 'donation',
         fund,
         fund_product_id: fundProductId,
         recurring: String(recurring),
       };
+      if (body.introducedBy) metadata.introduced_by = String(body.introducedBy).slice(0, 100);
 
       const session = await stripe.checkout.sessions.create({
         mode: recurring ? 'subscription' : 'payment',
@@ -248,7 +256,7 @@ Deno.serve(async (req: Request) => {
           {
             price_data: {
               currency: 'usd',
-              product: fundProductId,
+              ...productRef,
               unit_amount: amount,
               ...(recurring ? { recurring: { interval: 'month' } } : {}),
             },
