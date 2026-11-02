@@ -29,6 +29,9 @@ const TEST_RECIPIENT = (Deno.env.get("RTI_BGCHECK_TEST_RECIPIENT") ?? "").trim()
 
 const FROM_EMAIL = "Ras Tafari Inc. <hello@selassiefest.com>";
 const VOLUNTEERS = "volunteers@chicagoparkdistrict.com";
+// Added Nov 2, 2026: the Park District reported volunteers@ never showed our applications,
+// so every application now ALSO goes to Gina Regalado (Park District) directly.
+const REGALADO = "Gina.Regalado@ChicagoParkDistrict.com";
 const STEWARDSHIP = "stewardship@chicagoparkdistrict.com";
 const STAFF_TO = "stephen@selassiefest.com";
 const STAFF_CC = ["paksipras@gmail.com"];
@@ -141,7 +144,7 @@ Deno.serve(async (req) => {
   try { body = await req.json(); } catch { return reply({ ok: false, error: "Couldn't read the request." }, 400); }
 
   // Honeypot: real people never fill the hidden "website" field. Pretend success so bots move on.
-  if (clean(body.website)) return reply({ ok: true, to: [VOLUNTEERS], cc: [] });
+  if (clean(body.website)) return reply({ ok: true, to: [VOLUNTEERS, REGALADO], cc: [] });
 
   if (!body.token) return reply({ ok: false, error: "Please wait for the security check to finish, then try again." }, 400);
   const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
@@ -190,7 +193,7 @@ Deno.serve(async (req) => {
 
   const subject = `Long Term Adult Volunteer Application - ${name} - ${park} (Ras Tafari Inc.)`;
   const text = emailBody(name, phone, email, rtiRole, park, stewardshipRole);
-  const liveTo = [VOLUNTEERS];
+  const liveTo = [VOLUNTEERS, REGALADO];
   const liveCc = [...(stewardshipRole ? [STEWARDSHIP] : []), email];
   const testing = TEST_RECIPIENT !== "";
 
