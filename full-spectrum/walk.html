@@ -76,6 +76,8 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     ]};
   }
 
+  // 15 pale tints, black text stays readable on all; neighbors always differ. Order: white, greys, blues, greens, yellows, oranges, pinks, purples.
+  var TINTS = ['#ffffff','#f1f2f4','#dfe2e6','#e3effa','#c8def2','#e4f5e6','#c6e8cb','#fdf7d3','#f6e7a0','#fde8d8','#f8cfb0','#fbe4ee','#f3c3d8','#efe6fa','#d8c7f0'];
   var idx = 0, byId = {};
   function dirs(r, prev){
     if (!r.address) return '';
@@ -93,7 +95,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     var opts = [['talked','Spoke to owner / manager'],['staff','Left with staff'],['contact','Got a contact name or email'],['closed','Closed / gone'],['skip','Not visited']]
       .map(function(o){ return '<label><input type="radio" name="o' + idx + '" value="' + o[0] + '"> ' + o[1] + '</label>'; }).join('');
     var tel = r.phone ? ' &middot; <a href="tel:' + esc(r.phone.replace(/\D/g,'')) + '">' + esc(r.phone) + '</a>' : '';
-    return '<section class="stop t' + ((idx - 1) % 5) + '" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
+    return '<section class="stop" style="background:' + TINTS[(idx - 1) % TINTS.length] + '" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
       '<h3><span class="n">' + idx + '</span> ' + esc(r.name) + ' <small>' + esc(r.category) + '</small></h3>' +
       '<p class="addr">' + esc(r.address) + tel + '</p>' + dirs(r, prev) +
       '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + scanLine(r) +
