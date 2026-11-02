@@ -109,7 +109,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     return '<section class="stop" style="background:' + TINTS[(idx - 1) % TINTS.length] + '" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
       '<h3><span class="n">' + idx + '</span> ' + esc(r.name) + ' <small>' + esc(r.category) + '</small></h3>' +
       '<p class="addr">' + esc(r.address) + tel + '</p>' + dirs(r, prev) +
-      '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + scanLine(r) +
+      '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + '<div class="sl">' + scanLine(r) + '</div><p class="scan ls"></p>' +
       '<p class="q"><b>What happened?</b></p><div class="opts">' + opts + '</div>' +
       '<input class="note" placeholder="Contact name, email, what they said">' +
       (next ? '<p class="next">&rarr; Then go to <b>' + esc(next.name) + '</b>, ' + esc((next.address || '').split(',')[0]) + '</p>' : '<p class="next">&#10003; End of the day</p>') +
@@ -145,6 +145,26 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 9'};
   function setMsg(t){ $('saveMsg').textContent = t; }
   function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
+  function lsText(p){ var sv = parseWalk(p.walk_last); if (!p.walk_at || !sv) return ''; return 'Last saved: ' + (sv.o === 'skip' ? 'not visited' : label[sv.o]) + ' by ' + (p.walk_by || '?') + ', ' + new Date(p.walk_at).toLocaleString(); }
+  function paint(s, p){ s.querySelector('.sl').innerHTML = scanLine(p); s.querySelector('.ls').textContent = lsText(p); }
+  // Every 20 s pull the latest from Supabase so a second device sees changes. A stop you are touching, or that has an unsaved answer, is left alone.
+  async function quiet(){
+    if (busy || Object.keys(q).length) return;
+    try {
+      var c = await window.sfSupabaseReady; var r = await c.rpc('fs_walk_load', { p_session: sess.sessionToken });
+      if (r.error || !r.data) return;
+      r.data.partners.forEach(function(p){
+        var s = document.querySelector('[data-id="' + p.id + '"]'); if (!s) return;
+        byId[p.id] = p; paint(s, p);
+        if (s.contains(document.activeElement)) return;
+        var sv = parseWalk(p.walk_last); if (!sv) return;
+        cur[p.id] = sv; var rd = s.querySelector('input[value="' + sv.o + '"]'); if (rd) rd.checked = true;
+        s.querySelector('.note').value = sv.t || ''; s.classList.add('done');
+      });
+      cnt();
+    } catch(e){}
+  }
+  setInterval(quiet, 20000);
   var busy = false;
   async function flush(){
     if (busy) return; busy = true;
@@ -175,7 +195,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       var rows = (r.data && r.data.partners) || [];
       byId = {}; cur = {};
       rows.forEach(function(p){ byId[p.id] = p; var sv = parseWalk(p.walk_last); if (sv) cur[p.id] = sv; if (q[p.id]) cur[p.id] = {o: q[p.id].o, t: q[p.id].t}; });
-      render(rows); flush();
+      render(rows); rows.forEach(function(p){ var s = document.querySelector('[data-id="' + p.id + '"]'); if (s) paint(s, p); }); flush();
     } catch(err){
       $('msg').hidden = false;
       $('msg').innerHTML = /session/i.test(err.message || '') ? 'Your session ended. Sign in again at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>.' : 'Could not load: ' + esc(err.message) + '. <a href="">Try again</a>';
