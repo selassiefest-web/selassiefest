@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Five scoops, one beach: Rainbow Cone and Rainbow Wednesdays at Rainbow Beach. From Ras Tafari Inc.">
+<title>Five Scoops, One Beach: Rainbow Cone + Rainbow Wednesdays</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Neuton:ital,wght@0,400;0,700;0,800;1,400&display=swap">
+<style>
+  /* Rainbow Cone's own look, read from rainbowcone.com on Nov 2, 2026: Poppins (body, headings), Neuton (serif accent),
+     brown #503B23 (text), coral #EA6D66 (buttons), mint #D1E4DD, cream #FFF1D2, sage-green badge. The five scoop colors are the five flavors. */
+  :root{
+    --bg:#FFF8EA; --cream:#FFF1D2; --mint:#D1E4DD; --brown:#503B23; --brown-soft:#7A6248; --coral:#EA6D66; --coral-d:#D4524B; --sage:#9DBA7E;
+    --choc:#503B23; --straw:#F08FA0; --palmer:#F7E6BE; --pist:#B6D08A; --orange:#F59B3A;
+    --surface:rgba(255,255,255,.86); --line:rgba(80,59,35,.18);
+    --scoops:linear-gradient(90deg,var(--choc) 0 20%,var(--straw) 0 40%,var(--palmer) 0 60%,var(--pist) 0 80%,var(--orange) 0);
+    --veil:linear-gradient(90deg,rgba(255,248,234,.97) 0%,rgba(255,248,234,.9) 44%,rgba(255,248,234,.45) 76%,rgba(255,248,234,.2) 100%);
+    --fade:linear-gradient(90deg,#FFF8EA 0%,rgba(255,248,234,0) 30%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--brown); font:15px/1.55 "Poppins",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--coral-d);}
+  .bar{height:9px; background:var(--scoops);}
+  .banner{font-size:.72rem; color:var(--brown-soft); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line); background:var(--cream);}
+
+  #deck{position:fixed; inset:37px 0 128px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 18px 30px; overflow-y:auto;
+    background:radial-gradient(ellipse at 88% 12%,rgba(234,109,102,.20),transparent 58%),radial-gradient(ellipse at 6% 96%,rgba(157,186,126,.28),transparent 55%) var(--bg) center / cover no-repeat;
+    opacity:0; transform:scale(1.02); transition:opacity .5s ease, transform .9s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .card{width:100%; max-width:1060px;}
+  .card > *{max-width:680px;}
+  .card > .wide{max-width:960px;}
+  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 165px) * 1.7768) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
+  @media (min-width:721px) and (max-height:780px){
+    .slide{padding:12px 16px 16px;} h1{font-size:clamp(2.3rem,6vw,4.2rem);} h2{font-size:clamp(1.6rem,3.8vw,2.5rem); margin-bottom:8px;}
+    .lede{font-size:1rem; margin-bottom:8px;} .eyebrow{margin-bottom:6px;}
+  }
+
+  .eyebrow{font:700 .72rem/1.3 "Poppins",sans-serif; letter-spacing:.2em; text-transform:uppercase; color:var(--coral-d); margin-bottom:10px;}
+  h1,h2{font-family:"Poppins",sans-serif; letter-spacing:-0.025em; line-height:1.05; text-wrap:balance; color:var(--brown);}
+  h1{font-size:clamp(2.6rem,8vw,5.6rem); font-weight:800; margin-bottom:12px;}
+  h2{font-size:clamp(1.8rem,5vw,3.2rem); font-weight:800; margin-bottom:12px;}
+  .serif{font-family:"Neuton",Georgia,serif; font-style:italic; font-weight:400; color:var(--coral-d); letter-spacing:0;}
+  .scoop-text{background:var(--scoops); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.02rem,2.3vw,1.25rem); color:var(--brown-soft); margin-bottom:12px;}
+  .small{font-size:.78rem; color:var(--brown-soft); line-height:1.5;}
+  .rclogo{height:84px; width:auto; margin:0 0 14px; display:block;}
+
+  /* Cover: five scoops drop onto the cone */
+  .cone{width:min(250px,44vw); margin:0 0 6px; overflow:visible;}
+  @media (min-width:760px){
+    .card.cover{display:grid; grid-template-columns:minmax(0,1fr) minmax(190px,300px); column-gap:28px; align-items:center;}
+    .card.cover > *{grid-column:1; max-width:680px;}
+    .card.cover > .cone{grid-column:2; grid-row:1 / span 6; justify-self:center; width:min(290px,34vh + 90px); max-width:none;}
+  }
+  .cone .sc{transform:translateY(-120px); opacity:0;}
+  .slide.on .cone .sc{animation:drop .7s cubic-bezier(.3,1.5,.5,1) forwards; animation-delay:calc(var(--i) * .22s + .25s);}
+  @keyframes drop{0%{transform:translateY(-140px); opacity:0;} 60%{opacity:1;} 100%{transform:none; opacity:1;}}
+  .slide.on .cone .cherry{animation:pop .4s ease 1.6s both;} @keyframes pop{from{transform:scale(0);} to{transform:scale(1);}}
+
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 14px;}
+  .card > .chips{max-width:900px;}
+  .chip{background:var(--c); color:var(--tc,#fff); font:800 clamp(1.05rem,2.6vw,1.5rem) "Poppins",sans-serif; padding:10px 20px; border-radius:999px; box-shadow:0 6px 0 rgba(80,59,35,.14);}
+  .slide.on .chip{animation:rise .6s ease both; animation-delay:calc(var(--k)*.18s);} @keyframes rise{from{transform:translateY(18px); opacity:0;} to{transform:none; opacity:1;}}
+
+  .list{list-style:none; display:grid; gap:8px; margin-bottom:12px;}
+  .list li{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 14px 10px 42px; position:relative; color:var(--brown-soft); box-shadow:0 3px 0 rgba(80,59,35,.07);}
+  .list li::before{content:""; position:absolute; left:15px; top:16px; width:12px; height:12px; border-radius:50%; background:var(--c,var(--coral));}
+  .list b{color:var(--brown);}
+
+  /* Numbers */
+  .math{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:6px 0 12px;}
+  .card > .math{max-width:900px;}
+  .num{background:var(--surface); border:1px solid var(--line); border-top:6px solid var(--c); border-radius:16px; padding:10px 16px; min-width:150px; box-shadow:0 4px 0 rgba(80,59,35,.08);}
+  .num b{display:block; font:800 clamp(1.8rem,4.6vw,2.8rem)/1 "Poppins",sans-serif; color:var(--brown);}
+  .num span{font-size:.8rem; color:var(--brown-soft);}
+  .op{align-self:center; font:800 2rem "Poppins",sans-serif; color:var(--coral);}
+  .dots53{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 8px; max-width:640px;}
+  .dots53 i{width:15px; height:15px; border-radius:50%; background:var(--c); opacity:0; transform:scale(.2);}
+  .slide.on .dots53 i{animation:pip .35s ease forwards; animation-delay:calc(var(--n)*.035s + .3s);} @keyframes pip{to{opacity:1; transform:none;}}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; font-size:.8rem; color:var(--brown-soft); margin-bottom:8px;}
+  .legend i{display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:-1px;}
+
+  /* Audience cards */
+  .aud{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:6px 0 12px;}
+  .card > .aud{max-width:960px;}
+  @media (max-width:860px){ .aud{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .a{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:14px 12px 12px; text-align:center; box-shadow:0 5px 0 rgba(80,59,35,.1); position:relative;}
+  .a::before{content:""; display:block; width:46px; height:46px; margin:-30px auto 8px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; background:var(--c); box-shadow:inset 0 -8px 0 rgba(0,0,0,.1);}
+  .a b{display:block; font:700 .95rem "Poppins",sans-serif; color:var(--brown);}
+  .a span{font-size:.78rem; color:var(--brown-soft);}
+  .slide.on .a{animation:rise .6s ease both; animation-delay:calc(var(--k)*.12s + .15s);}
+  .aud{padding-top:26px;}
+
+  /* Stand */
+  .stand{max-width:520px; margin:6px 0 12px; filter:drop-shadow(0 10px 0 rgba(80,59,35,.12));}
+  .awning{height:54px; border-radius:14px 14px 0 0; background:repeating-linear-gradient(90deg,var(--coral) 0 34px,var(--cream) 34px 68px); position:relative;}
+  .awning::after{content:""; position:absolute; left:0; right:0; bottom:-14px; height:14px; background:radial-gradient(circle at 17px 0,var(--coral) 17px,transparent 18px) 0 0/68px 14px repeat-x, radial-gradient(circle at 51px 0,var(--cream) 17px,transparent 18px) 0 0/68px 14px repeat-x;}
+  .counter{background:var(--mint); border:3px solid var(--brown); border-top:0; border-radius:0 0 14px 14px; padding:22px 16px 14px; text-align:center;}
+  .counter .sign{display:inline-block; font:800 1rem "Poppins",sans-serif; background:var(--brown); color:var(--cream); padding:6px 16px; border-radius:999px; letter-spacing:.06em;}
+  .counter .tubs{display:flex; gap:8px; justify-content:center; margin-top:10px;}
+  .counter .tubs i{width:44px; height:30px; border-radius:6px 6px 14px 14px; background:var(--c); box-shadow:inset 0 5px 0 rgba(255,255,255,.35);}
+  .counter p{font-size:.78rem; color:var(--brown-soft); margin-top:8px;}
+  @media (max-height:780px){ .stand{max-width:360px; margin:2px 0 8px;} .awning{height:34px;} .counter{padding:18px 12px 8px;} .counter .tubs i{height:22px;} .counter p{margin-top:4px;} }
+
+  /* Options */
+  .opts{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:6px 0 12px;}
+  .card > .opts{max-width:980px;}
+  @media (max-width:860px){ .opts{grid-template-columns:1fr;} }
+  .opt{text-align:left; background:var(--surface); border:2px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 5px 0 rgba(80,59,35,.1); transition:.2s; position:relative;}
+  .opt:hover{transform:translateY(-3px); border-color:var(--c);}
+  .opt .k{display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; background:var(--c); color:#fff; font:800 1rem "Poppins",sans-serif; margin-bottom:6px;}
+  .opt b{display:block; font:700 1.02rem "Poppins",sans-serif; color:var(--brown);}
+  .opt span{font-size:.82rem; color:var(--brown-soft);}
+  .opt[aria-pressed="true"]{border-color:var(--c); background:#fff; box-shadow:0 5px 0 var(--c);}
+  .opt[aria-pressed="true"]::after{content:"\2713 your pick"; position:absolute; top:10px; right:14px; font:700 .7rem "Poppins",sans-serif; color:var(--c);}
+
+  .quote{border-left:6px solid var(--coral); background:var(--surface); border-radius:0 16px 16px 0; padding:12px 16px; margin-bottom:12px; box-shadow:0 3px 0 rgba(80,59,35,.07);}
+  .quote p{font:700 1.02rem/1.45 "Poppins",sans-serif;}
+
+  .cta{display:inline-flex; align-items:center; gap:10px; padding:14px 26px; border-radius:999px; color:#fff; font-weight:800; text-decoration:none; background:var(--coral); box-shadow:0 6px 0 var(--coral-d); margin:4px 8px 14px 0; transition:.15s;}
+  .cta:hover{transform:translateY(2px); box-shadow:0 4px 0 var(--coral-d);}
+  .cta.alt{background:var(--brown); box-shadow:0 6px 0 #2f2213;}
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:128px; display:flex; flex-direction:column; justify-content:center; gap:7px; padding:8px 16px calc(8px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(255,241,210,.97);}
+  .seek-row{display:flex; align-items:center; gap:10px; width:100%; max-width:760px; margin:0 auto; font-size:.72rem; color:var(--brown-soft); font-variant-numeric:tabular-nums;}
+  .seek-row input[type=range]{flex:1; accent-color:var(--coral); height:6px; cursor:pointer;}
+  .seek-row .slide-count{min-width:54px; text-align:right;}
+  .btn-row{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .cb{width:42px; height:42px; border-radius:50%; border:1.5px solid var(--line); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:.2s; color:var(--brown); background:#fff;}
+  .cb:hover{border-color:var(--coral); color:var(--coral-d);}
+  .cb:disabled{opacity:.3; cursor:default;}
+  .cb.on{border-color:var(--coral); color:var(--coral-d);}
+  .cb.big{width:50px; height:50px; font-size:1.4rem;}
+  .cb.play{width:62px; height:62px; font-size:1.4rem; background:var(--coral); border-color:var(--coral); color:#fff; box-shadow:0 4px 0 var(--coral-d);}
+  .cb.play:hover{color:#fff; filter:brightness(1.06);}
+  .cb.pill{width:auto; border-radius:999px; padding:0 14px; font-size:.75rem; font-weight:700; letter-spacing:.06em;}
+  .cb.pill[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
+  .dots button.on{background:var(--coral); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:5px; width:0; background:var(--scoops); transition:width .2s linear;}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl{display:none;} .cone .sc,.chip,.a,.dots53 i{opacity:1 !important; transform:none !important; animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="banner">Prepared by Ras Tafari Inc. for The Original Rainbow Cone and The Buona Companies. Full Spectrum is a first-year program and depends on Chicago Park District approval. Illustrations are AI-generated.</div>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc01.jpg"><div class="card cover">
+  <img class="rclogo" src="/full-spectrum/rainbow-cone/img/rainbow-cone-logo.png" alt="The Original Rainbow Cone" onerror="this.remove()">
+  <svg class="cone" viewBox="0 0 200 330" role="img" aria-label="A five-scoop ice cream cone">
+    <path d="M52 232 L148 232 L100 322 Z" fill="#D9A35B"/><path d="M52 232 L148 232 L100 322 Z" fill="none" stroke="#503B23" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M66 252 L134 252 M78 274 L122 274 M62 232 L100 310 M138 232 L100 310 M86 232 L100 310" stroke="#B07A35" stroke-width="3" fill="none"/>
+    <g class="sc" style="--i:0"><rect x="46" y="196" width="108" height="42" rx="21" fill="#503B23"/><rect x="58" y="204" width="40" height="8" rx="4" fill="#fff" opacity=".18"/></g>
+    <g class="sc" style="--i:1"><rect x="42" y="156" width="116" height="44" rx="22" fill="#F08FA0"/><rect x="56" y="164" width="40" height="8" rx="4" fill="#fff" opacity=".35"/></g>
+    <g class="sc" style="--i:2"><rect x="40" y="114" width="120" height="46" rx="23" fill="#F7E6BE"/><circle cx="70" cy="136" r="5" fill="#C8372D"/><circle cx="112" cy="128" r="4.5" fill="#C8372D"/><circle cx="132" cy="144" r="4" fill="#8A5A2B"/><circle cx="90" cy="146" r="3.5" fill="#8A5A2B"/></g>
+    <g class="sc" style="--i:3"><rect x="44" y="74" width="112" height="46" rx="23" fill="#B6D08A"/><rect x="58" y="82" width="38" height="8" rx="4" fill="#fff" opacity=".35"/></g>
+    <g class="sc" style="--i:4"><rect x="50" y="34" width="100" height="46" rx="23" fill="#F59B3A"/><rect x="64" y="42" width="34" height="8" rx="4" fill="#fff" opacity=".4"/></g>
+    <circle class="cherry" cx="100" cy="30" r="9" fill="#C8372D" style="transform-origin:100px 30px"/>
+  </svg>
+  <div class="eyebrow">Rainbow Cone × Full Spectrum · South Shore, Chicago</div>
+  <h1>Five scoops. <span class="serif">One beach.</span></h1>
+  <p class="lede">A neighbor's invitation to put Rainbow Cone at Rainbow Wednesdays.</p>
+  <p class="small">From Ras Tafari Inc., a South Side 501(c)(3)<span class="nm-line"></span></p>
+</div></section>
+
+<!-- 2 · The name fits -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc02.jpg"><div class="card">
+  <div class="eyebrow">The name fits</div>
+  <h2>One word, <span class="serif">three places.</span></h2>
+  <div class="chips" aria-label="Rainbow Cone, Rainbow Beach, Rainbow Wednesdays">
+    <span class="chip" style="--c:var(--coral);--k:0">Rainbow Cone</span>
+    <span class="chip" style="--c:var(--sage);--k:1">Rainbow Beach</span>
+    <span class="chip" style="--c:var(--orange);--k:2">Rainbow Wednesdays</span>
+  </div>
+  <p class="lede">Your South Side institution has been scooping for a hundred years. Our summer series is called Rainbow Wednesdays, and it happens at Rainbow Beach.</p>
+  <p class="small">This is an invitation from a new neighbor. It was never meant as a request for a favor.</p>
+</div></section>
+
+<!-- 3 · What we're building -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc03.jpg"><div class="card">
+  <div class="eyebrow">What we are building</div>
+  <h2>Full Spectrum: <span class="serif">two ways to begin.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--orange)"><b>Rainbow DJ Lab:</b> free, every Tuesday, 4 to 6 pm, opening January 12, 2027. Twelve stations, 14 Missions and 42 Passport skills, so every child learns at their own pace</li>
+    <li style="--c:var(--straw)"><b>Rainbow Wednesdays:</b> 14 free summer nights at Rainbow Beach, June 2 to September 1, 2027. Youth sets with DJ mentors, neighborhood artists, and families gathering for free</li>
+  </ul>
+  <p class="small">Rainbow Wednesdays dates and space are planned and depend on the Chicago Park District. The Park District has offered the Rainbow Beach fieldhouse, and our partnership proposal is under review.</p>
+</div></section>
+
+<!-- 4 · The real numbers -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc04.jpg"><div class="card">
+  <div class="eyebrow">A correction, and the real numbers</div>
+  <h2>Not 50 a week. <span class="serif">About 1,200 scoops.</span></h2>
+  <div class="dots53" aria-hidden="true" id="dots53"></div>
+  <div class="legend"><span><i style="background:var(--coral)"></i>39 Tuesday classes</span><span><i style="background:var(--sage)"></i>14 Wednesday nights</span></div>
+  <div class="math">
+    <div class="num" style="--c:var(--coral)"><b>780</b><span>39 Tuesdays × about 20</span></div><span class="op">+</span>
+    <div class="num" style="--c:var(--sage)"><b>420</b><span>14 Wednesdays × about 30</span></div><span class="op">=</span>
+    <div class="num" style="--c:var(--orange)"><b>1,200</b><span>across 53 dates in 2027</span></div>
+  </div>
+  <p class="small">Our first note said "50 a week," which sounded like every week. These are planning numbers for a first year.</p>
+</div></section>
+
+<!-- 5 · Part 1 -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc05.jpg"><div class="card">
+  <div class="eyebrow">Part 1 · For the program</div>
+  <h2>A scoop for <span class="serif">everyone in the room.</span></h2>
+  <div class="aud wide">
+    <div class="a" style="--c:var(--straw);--k:0"><b>Students</b><span>12 at their own stations</span></div>
+    <div class="a" style="--c:var(--orange);--k:1"><b>Instructors</b><span>two resident DJs</span></div>
+    <div class="a" style="--c:var(--pist);--k:2"><b>Guest DJs</b><span>a new woman DJ each week</span></div>
+    <div class="a" style="--c:var(--palmer);--k:3"><b>Teachers</b><span>visiting and supporting</span></div>
+    <div class="a" style="--c:var(--coral);--k:4"><b>Administrators</b><span>park and program staff</span></div>
+  </div>
+  <p class="lede">About 20 scoops each Tuesday, and about 30 on each Wednesday night, as a donation or a deep discount.</p>
+  <p class="small">The treat is for the people in the room: students, instructors, guest DJs, teachers and administrators.</p>
+</div></section>
+
+<!-- 6 · Part 2 -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc06.jpg"><div class="card">
+  <div class="eyebrow">Part 2 · We buy from you</div>
+  <h2>A Rainbow Cone stand <span class="serif">on the beach.</span></h2>
+  <div class="stand" aria-label="Illustration of an ice cream stand">
+    <div class="awning"></div>
+    <div class="counter"><span class="sign">RAINBOW WEDNESDAYS · ICE CREAM</span>
+      <div class="tubs"><i style="--c:var(--choc)"></i><i style="--c:var(--straw)"></i><i style="--c:var(--palmer)"></i><i style="--c:var(--pist)"></i><i style="--c:var(--orange)"></i></div>
+      <p>Illustration only. Planning for about 150 people a night.</p></div>
+  </div>
+  <ul class="list">
+    <li style="--c:var(--coral)"><b>We would buy Rainbow Cone</b> and set up the stand for the families who come</li>
+    <li style="--c:var(--sage)"><b>Please send us</b> your lowest per-serving event price and your rules for a nonprofit that resells</li>
+  </ul>
+</div></section>
+
+<!-- 7 · Options -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc07.jpg"><div class="card">
+  <div class="eyebrow">Choose what fits you</div>
+  <h2>Pick a <span class="serif">scoop.</span></h2>
+  <div class="opts wide" id="opts" role="group" aria-label="Choose an option">
+    <button class="opt" style="--c:var(--coral)" data-o="A" aria-pressed="false"><span class="k">A</span><b>Donate or discount</b><span>Scoops for the people in the room, on Tuesdays and Wednesdays (Part 1)</span></button>
+    <button class="opt" style="--c:var(--sage)" data-o="B" aria-pressed="false"><span class="k">B</span><b>We buy and run the stand</b><span>Rainbow Cone at event pricing, sold to families at Rainbow Wednesdays (Part 2)</span></button>
+    <button class="opt" style="--c:var(--orange)" data-o="C" aria-pressed="false"><span class="k">C</span><b>Truck stop or benefit night</b><span>Rainbow Cone truck on a Wednesday, or a night with a percentage back</span></button>
+  </div>
+  <p class="small">Tap an option. It sets the subject line for your reply on the last slide. We are happy to start smaller, with one pilot night.</p>
+</div></section>
+
+<!-- 8 · Track record -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc08.jpg"><div class="card">
+  <div class="eyebrow">We have done this before</div>
+  <h2>A public event, <span class="serif">on 47 days' notice.</span></h2>
+  <div class="math">
+    <div class="num" style="--c:var(--coral)"><b>273</b><span>people at SelassieFest 2026, July 25, Chicago</span></div>
+    <div class="num" style="--c:var(--sage)"><b>47</b><span>days of planning</span></div>
+    <div class="num" style="--c:var(--orange)"><b>150</b><span>a night: our plan for Rainbow Wednesdays</span></div>
+  </div>
+  <p class="lede">Ras Tafari Inc. produced SelassieFest 2026, a free one-day roots reggae and cultural festival. We are planning Rainbow Wednesdays conservatively, at about 150 people a night.</p>
+  <p class="small">We are a new nonprofit, a 501(c)(3) since June 2026. We cannot promise attendance, only plan carefully.</p>
+</div></section>
+
+<!-- 9 · Supporters -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc09.jpg"><div class="card">
+  <div class="eyebrow">Who is already behind it</div>
+  <h2>Confirmed <span class="serif">so far.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--coral)"><b>Chicago Park District:</b> has offered the Rainbow Beach fieldhouse (our partnership proposal is under review)</li>
+    <li style="--c:var(--orange)"><b>Shure:</b> approved 12 pairs of SRH440A headphones and 2 SM58 microphones for the students</li>
+    <li style="--c:var(--sage)"><b>Algoriddim:</b> 13 one-year djay Pro DJ software licenses for the students</li>
+    <li style="--c:var(--straw)"><b>Letters of support:</b> Mile Square Health Center South Shore (UI Health) and the Avalon Regal Theater (The ART Foundation)</li>
+  </ul>
+  <p class="small">Other corporate and foundation requests are pending, and none of those is confirmed yet.</p>
+</div></section>
+
+<!-- 10 · In return -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc10.jpg"><div class="card">
+  <div class="eyebrow">What you would see</div>
+  <h2>Thanks, and <span class="serif">honest reports.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--coral)"><b>Recognition, with your permission:</b> a thank-you on our website and in our family emails, with your logo once you approve it</li>
+    <li style="--c:var(--sage)"><b>A clear report:</b> how many scoops were served, on which nights, and what they meant for the program</li>
+    <li style="--c:var(--orange)"><b>A seat at the beach:</b> your team is welcome at a Tuesday class or a Wednesday night</li>
+  </ul>
+  <p class="small">No sponsor messages on the stage. We will not use your name or logo without your written OK.</p>
+</div></section>
+
+<!-- 11 · Four answers -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc11.jpg"><div class="card">
+  <div class="eyebrow">Your four questions</div>
+  <h2>Answered, <span class="serif">in one place.</span></h2>
+  <ol class="list" style="list-style:none">
+    <li style="--c:var(--coral)"><b>Weeks per year:</b> up to 39 Tuesdays plus 14 summer Wednesdays (53 dates). A pilot night first is fine</li>
+    <li style="--c:var(--sage)"><b>Budget per serving:</b> none for Part 1, a donation or deep discount. For Part 2, tell us your event price and we set ours from it</li>
+    <li style="--c:var(--orange)"><b>Other supporters:</b> Park District offer, Shure, Algoriddim, UI Health and the Avalon Regal; the rest are pending</li>
+    <li style="--c:var(--straw)"><b>Attendance:</b> about 150 a night planned; 273 came to SelassieFest 2026</li>
+  </ol>
+</div></section>
+
+<!-- 12 · Close -->
+<section class="slide" data-img="/full-spectrum/rainbow-cone/img/rc12.jpg"><div class="card">
+  <img class="rclogo" src="/full-spectrum/rainbow-cone/img/rainbow-cone-logo.png" alt="The Original Rainbow Cone" onerror="this.remove()">
+  <div class="eyebrow">Next step</div>
+  <h2><span class="nm"></span>let's put a scoop <span class="serif">on the beach.</span></h2>
+  <p class="lede">Tell us which option fits. A short reply is plenty, and we can talk by phone if that is quicker.</p>
+  <a class="cta" id="reply" href="mailto:stephen@selassiefest.com?subject=Rainbow%20Cone%20%2B%20Rainbow%20Wednesdays">Reply to Ras Tafari Inc. →</a><a class="cta alt" href="/full-spectrum/dj-lab-2027.html">See the full plan</a>
+  <p class="small">Stephen Henry, President · Ras Tafari Inc. · 1401 E. 71st St., Chicago 60619 · (872) 255-9333 · stephen@selassiefest.com<br>
+  Full Spectrum is a first-year program and depends on Chicago Park District approval. Illustrations are AI-generated, not photos of real events or people.</p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <div class="prog" id="prog"></div>
+  <div class="seek-row">
+    <span id="tcur">0:00</span>
+    <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Narration position">
+    <span id="tdur">0:00</span>
+    <span class="slide-count" id="scount">1 / 1</span>
+  </div>
+  <div class="btn-row">
+    <button class="cb" id="replay" aria-label="Restart this slide's narration" title="Restart this slide">&#8634;</button>
+    <button class="cb big" id="prev" aria-label="Previous slide" title="Previous slide">&#9664;&#9664;</button>
+    <button class="cb play" id="play" aria-label="Play the narrated deck" title="Play / pause (space)">&#9654;</button>
+    <button class="cb big" id="next" aria-label="Next slide" title="Next slide">&#9654;&#9654;</button>
+    <button class="cb" id="mute" aria-label="Mute narration" title="Mute">&#128266;</button>
+    <button class="cb pill on" id="auto" aria-pressed="true" title="Automatically go to the next slide when narration ends">Auto</button>
+    <button class="cb pill" id="speed" title="Narration speed">1x</button>
+  </div>
+  <div class="dots" id="dots" style="margin:0 auto"></div>
+</nav>
+
+<script>
+// Rainbow Cone deck: built from the one-page reply to Staci Ybarra (Nov 2, 2026). Same player as /full-spectrum/give/.
+// Facts: dj-lab-2027.html (Tuesdays 4-6 pm from Jan 12, 2027; 39 class Tuesdays; 12 stations); Rainbow Wednesdays June 2 - Sept 1, 2027 (14 nights);
+// SelassieFest 2026: July 25, 2026, about 273 people, 47 days of planning (organization/selassiefest-2027-proposal.html). Supporters from the tracker, Nov 2.
+// Narration: record /full-spectrum/rainbow-cone/audio/rc-01.mp3 ... rc-12.mp3 (one per slide) from narration.txt; until then each slide is timed by reading length.
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+// 53 pips on the numbers slide: 39 Tuesdays then 14 Wednesdays
+const d53 = document.getElementById("dots53");
+for (let n = 0; n < 53; n++) { const i = document.createElement("i"); i.style.setProperty("--n", n); i.style.setProperty("--c", n < 39 ? "var(--coral)" : "var(--sage)"); d53.appendChild(i); }
+// Option picker feeds the reply link
+const opts = [...document.querySelectorAll("#opts .opt")], reply = document.getElementById("reply");
+const OPT = { A: "Option A: donate or discount for the program", B: "Option B: we buy and run a Rainbow Cone stand", C: "Option C: truck stop or benefit night" };
+opts.forEach((b) => b.addEventListener("click", () => {
+  opts.forEach((o) => o.setAttribute("aria-pressed", o === b));
+  const t = OPT[b.dataset.o];
+  reply.href = "mailto:stephen@selassiefest.com?subject=" + encodeURIComponent("Rainbow Cone + Rainbow Wednesdays: " + t) +
+    "&body=" + encodeURIComponent("Hello Stephen,\n\nWe would like to talk about " + t + ".\n\nName:\nRole:\nBest phone:\n");
+}));
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const FILES = Array.from({ length: N }, (_, i) => `/full-spectrum/rainbow-cone/audio/rc-${String(i + 1).padStart(2, "0")}.mp3`);
+const TRACKS = FILES.map((f, i) => ({ file: f, dur: 0, slides: [i], cuts: [] }));
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(TRACKS.map(async (t, i) => { found[i] = (await head(t.file)) ? t.file : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false, rate = 1;
+const $ = (id) => document.getElementById(id);
+const fmt = (t) => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5500, Math.min(30000, words(i) * 330));
+function setBtn(){
+  playBtn.innerHTML = playing ? "&#10074;&#10074;" : (cur === N - 1 && atEnd ? "&#8634;" : "&#9654;");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+  autoBtn.classList.toggle("on", auto);
+  $("mute").innerHTML = player.muted ? "&#128263;" : "&#128266;"; $("mute").classList.toggle("on", player.muted);
+  $("speed").textContent = rate + "x";
+}
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  const src = found[i];
+  if (!resume) { prog.style.width = "0"; tLeft = 0; }
+  if (!playing) { if (!resume) player.pause(); return; }
+  if (src) {
+    if (player.src.indexOf(src) < 0) { player.src = src; player.defaultPlaybackRate = rate; player.playbackRate = rate; }
+    if (!resume) player.currentTime = 0;
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    player.pause();
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("loadedmetadata", () => { if (found[cur]) $("tdur").textContent = fmt(player.duration); });
+player.addEventListener("timeupdate", () => {
+  if (!playing || !found[cur] || player.src.indexOf(found[cur]) < 0 || !player.duration) return;
+  const t = player.currentTime;
+  prog.style.width = Math.min(100, 100 * t / player.duration) + "%"; $("seek").value = Math.round(1000 * t / player.duration); $("tcur").textContent = fmt(t);
+});
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+$("replay").onclick = () => { playing = true; atEnd = false; ready.then(() => { startSlide(cur); setBtn(); }); };
+$("mute").onclick = () => { player.muted = !player.muted; setBtn(); };
+$("speed").onclick = () => { const r = [1, 1.25, 1.5, 0.75]; rate = r[(r.indexOf(rate) + 1) % r.length]; player.defaultPlaybackRate = rate; player.playbackRate = rate; setBtn(); };
+$("seek").addEventListener("input", (e) => { if (!found[cur] || !player.duration) return; if (player.src.indexOf(found[cur]) < 0) player.src = found[cur]; player.currentTime = (e.target.value / 1000) * player.duration; });
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); setBtn(); if (auto && playing && player.ended) finishSlide(); };
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
+  s.dataset.painted = "1";
+  head(s.dataset.img).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${s.dataset.img}")`; s.classList.add("photo"); } });
+}
+function go(i, keepAudio){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1; atEnd = false;
+  $("scount").textContent = (cur + 1) + " / " + N; $("seek").value = 0; $("tcur").textContent = "0:00"; $("tdur").textContent = fmt(readMs(cur) / 1000);
+  if (keepAudio) { prog.style.width = "0"; tLeft = 0; } else startSlide(cur);
+  setBtn();
+  [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, a") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+// Optional ?n=Name personalizes the closing heading (audio stays name-free)
+const nm = (new URLSearchParams(location.search).get("n") || "").replace(/[^\p{L}\p{M} '.-]/gu, "").trim().slice(0, 40);
+document.querySelectorAll(".nm").forEach((e) => {
+  if (nm) e.textContent = nm + ", ";
+  else { const t = e.nextSibling; if (t && t.nodeType === 3) t.textContent = t.textContent.replace(/^\s*(\w)/, (m, c) => c.toUpperCase()); }
+});
+// Own-system tracking (Supabase track_hit; see supabase/page-hits-rainbow-cone.sql): which link or QR (?src=) brought the visit, plays, clicks. No cookies, no IP, no name stored.
+const SRC = (new URLSearchParams(location.search).get("src") || "direct").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40) || "direct";
+const sent = {};
+function hit(ev){
+  const k = "rc_" + ev; if (sent[ev] || sessionStorage.getItem(k)) return; sent[ev] = 1;
+  try { sessionStorage.setItem(k, "1"); } catch (e) {}
+  fetch("https://xdjbgcqaynnzykrglgnf.supabase.co/rest/v1/rpc/track_hit", {
+    method: "POST", keepalive: true,
+    headers: { "Content-Type": "application/json", apikey: "sb_publishable_1B4Musk5YF23XHb_BEOiTA_w1DGM5P4" },
+    body: JSON.stringify({ p_page: "/full-spectrum/rainbow-cone/", p_src: SRC, p_event: ev, p_ref: document.referrer || null })
+  }).catch(() => {});
+}
+hit("view");
+playBtn.addEventListener("click", () => { if (playing) hit("play"); });
+document.querySelectorAll(".cta").forEach((a) => a.addEventListener("click", () => hit("cta")));
+opts.forEach((b) => b.addEventListener("click", () => hit("cta")));
+go(0);
+</script>
+</body>
+</html>
