@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="The joy of being part of their beginning: Full Spectrum at Rainbow Beach. From Ras Tafari Inc.">
+<title>The Joy of Being Part of Their Beginning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Same evening look as the Tamera Fair deck. Each slide's photo is set by data-img and sits behind a dark veil. */
+  :root{
+    color-scheme:dark;
+    --bg:#0E0B1E; --surface:rgba(28,21,52,.84); --ink:#F5F1FA; --ink-soft:#D3CAE4; --ink-faint:#A094BA;
+    --line:rgba(255,255,255,.14); --lav:#C9A7FF; --gold:#F2B544;
+    --r1:#E0453A; --r2:#F08A24; --r3:#E9B820; --r4:#2E9E58; --r5:#1E8FBF; --r6:#5560D8; --r7:#A35BC4;
+    --spectrum:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 0 28.57%,var(--r3) 0 42.85%,var(--r4) 0 57.14%,var(--r5) 0 71.42%,var(--r6) 0 85.71%,var(--r7) 0);
+    --fade:linear-gradient(90deg,#0E0B1E 0%,rgba(14,11,30,0) 32%);
+    --veil:linear-gradient(90deg,rgba(14,11,30,.96) 0%,rgba(14,11,30,.86) 42%,rgba(14,11,30,.5) 74%,rgba(14,11,30,.3) 100%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font:15px/1.55 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  a{color:var(--gold);}
+  .bar{height:7px; background:var(--spectrum);}
+  .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line);}
+
+  #deck{position:fixed; inset:36px 0 128px 0; overflow:hidden;}
+  .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 30px; overflow-y:auto;
+    background:radial-gradient(ellipse at 85% 20%,rgba(163,91,196,.28),transparent 60%) var(--bg) center right / cover no-repeat;
+    opacity:0; transform:scale(1.02); transition:opacity .5s ease, transform .9s ease; pointer-events:none;}
+  .slide.on{opacity:1; transform:none; pointer-events:auto;}
+  .card{width:100%; max-width:1040px;}
+  .card > *{max-width:660px;}
+  @media (max-width:720px){ .slide{background-position:70% center;} }
+  /* These photos fill the frame edge to edge, so on wide screens each one sits full-height on the right and the words get the left. */
+  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 164px) * 1.7768) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
+  @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
+  /* Laptop-height windows: tighten so every slide fits without scrolling */
+  @media (min-width:721px) and (max-height:780px){
+    .slide{padding:14px 16px 18px;}
+    h1{font-size:clamp(2.4rem,6vw,4.4rem);} h2{font-size:clamp(1.7rem,4vw,2.7rem); margin-bottom:10px;}
+    .lede{font-size:1.05rem; margin-bottom:10px;} .eyebrow{margin-bottom:8px;} .quote{padding:9px 14px; margin-bottom:9px;}
+  }
+
+  .eyebrow{font:700 .74rem/1.3 "Inter",sans-serif; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:12px;}
+  h1,h2{font-family:"Montserrat","Inter",sans-serif; letter-spacing:-0.02em; line-height:1.04; text-wrap:balance;}
+  h1{font-size:clamp(2.6rem,8vw,5.4rem); font-weight:900; margin-bottom:14px;}
+  h2{font-size:clamp(1.9rem,5.4vw,3.4rem); font-weight:900; margin-bottom:14px;}
+  .lav{color:var(--lav);}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:clamp(1.05rem,2.4vw,1.28rem); color:var(--ink-soft); margin-bottom:14px;}
+  .small{font-size:.8rem; color:var(--ink-faint); line-height:1.5;}
+
+  .big{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:6px 0 14px;}
+  .card > .big{max-width:860px;}
+  @media (max-width:760px){ .big{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .stat{background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--c,var(--lav)); border-radius:14px; padding:12px 14px; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .stat b{display:block; font:900 clamp(1.6rem,4vw,2.3rem)/1.05 "Montserrat",sans-serif;}
+  .stat span{font-size:.84rem; color:var(--ink-soft);}
+
+  .ladder{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:6px 0 14px; align-items:end;}
+  .card > .ladder{max-width:860px;}
+  @media (max-width:760px){ .ladder{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .rung{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 12px; border-left:5px solid var(--c); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .rung:nth-child(1){margin-bottom:0;} .rung:nth-child(2){margin-bottom:10px;} .rung:nth-child(3){margin-bottom:20px;} .rung:nth-child(4){margin-bottom:30px;}
+  @media (max-width:760px){ .rung{margin-bottom:0 !important;} }
+  .rung b{display:block; font:900 1.15rem "Montserrat",sans-serif; color:var(--c);}
+  .rung span{font-size:.84rem; color:var(--ink-soft);}
+
+  .list{list-style:none; display:grid; gap:8px; margin-bottom:12px;}
+  .list li{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:9px 14px 9px 40px; position:relative; color:var(--ink-soft); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .list li::before{content:""; position:absolute; left:15px; top:15px; width:11px; height:11px; border-radius:50%; background:var(--c,var(--lav));}
+  .list b{color:var(--ink);}
+
+  ol.asks{list-style:none; counter-reset:a; display:grid; gap:9px; margin-bottom:12px;}
+  .card > ol.asks{max-width:860px;}
+  @media (min-width:860px){ ol.asks{grid-template-columns:1fr 1fr;} }
+  ol.asks li{counter-increment:a; position:relative; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:11px 14px 11px 58px; color:var(--ink-soft); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  ol.asks li::before{content:counter(a); position:absolute; left:14px; top:11px; width:32px; height:32px; border-radius:50%; background:var(--c); color:#fff; font:900 1rem "Montserrat",sans-serif; display:flex; align-items:center; justify-content:center;}
+  ol.asks b{display:block; color:var(--ink); font-size:1.02rem;}
+
+  .quote{border-left:5px solid var(--gold); background:var(--surface); border-radius:0 14px 14px 0; padding:12px 16px; margin-bottom:12px; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+  .quote p{font:700 1.05rem/1.45 "Montserrat",sans-serif;}
+  .quote .src{display:block; font-size:.74rem; color:var(--ink-faint); margin-top:6px;}
+
+  .cta{display:inline-flex; align-items:center; gap:10px; padding:13px 24px; border-radius:999px; color:#fff; font-weight:900; text-decoration:none; background:var(--spectrum); text-shadow:0 1px 2px rgba(0,0,0,.35); margin:4px 8px 12px 0;}
+  .eq{display:flex; gap:6px; align-items:flex-end; height:46px; margin-bottom:16px;}
+  .eq span{width:10px; border-radius:5px 5px 2px 2px; background:var(--c); height:60%; animation:bounce 1.1s ease-in-out infinite; animation-play-state:paused;}
+  .slide.on .eq span{animation-play-state:running;}
+  @keyframes bounce{0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);}}
+  @media (prefers-reduced-motion:reduce){ .eq span{animation:none;} }
+
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:128px; display:flex; flex-direction:column; justify-content:center; gap:7px; padding:8px 16px calc(8px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(14,11,30,.96);}
+  .seek-row{display:flex; align-items:center; gap:10px; width:100%; max-width:760px; margin:0 auto; font-size:.72rem; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .seek-row input[type=range]{flex:1; accent-color:var(--gold); height:6px; cursor:pointer;}
+  .seek-row .slide-count{min-width:54px; text-align:right;}
+  .btn-row{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .cb{width:42px; height:42px; border-radius:50%; border:1px solid var(--line); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:.2s; color:var(--ink);}
+  .cb:hover{border-color:var(--gold); color:var(--gold);}
+  .cb:disabled{opacity:.3; cursor:default;}
+  .cb.on{border-color:var(--gold); color:var(--gold);}
+  .cb.big{width:50px; height:50px; font-size:1.4rem;}
+  .cb.play{width:60px; height:60px; font-size:1.4rem; background:var(--gold); border-color:var(--gold); color:#1a1200;}
+  .cb.play:hover{color:#1a1200; filter:brightness(1.1);}
+  .cb.pill{width:auto; border-radius:999px; padding:0 14px; font-size:.75rem; font-weight:700; letter-spacing:.06em;}
+  .cb.pill[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
+  .dots button.on{background:var(--lav); width:22px;}
+  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:var(--spectrum); transition:width .2s linear;}
+  @media print{
+    body{overflow:visible;} #deck{position:static;} .slide{position:static; opacity:1; transform:none; page-break-after:always; min-height:100vh;}
+    nav.ctl{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="banner">Prepared by Ras Tafari Inc. for friends of Full Spectrum. Full Spectrum is a first-year program and depends on Chicago Park District approval. Images are AI-generated illustrations.</div>
+
+<main id="deck" aria-live="polite">
+
+<!-- 1 · Cover -->
+<section class="slide" data-img="/full-spectrum/joy/img/j01.jpg"><div class="card">
+  <div class="eq" aria-hidden="true"><span style="--c:var(--r1);animation-delay:-.2s"></span><span style="--c:var(--r2);animation-delay:-.5s"></span><span style="--c:var(--r3);animation-delay:-.1s"></span><span style="--c:var(--r4);animation-delay:-.7s"></span><span style="--c:var(--r5);animation-delay:-.35s"></span><span style="--c:var(--r6);animation-delay:-.6s"></span><span style="--c:var(--r7);animation-delay:-.15s"></span></div>
+  <div class="eyebrow">Ras Tafari Inc. / Full Spectrum · Donate a station, a night, a first set</div>
+  <h1>Be the catalyst <span class="rb">for their beginning</span></h1>
+  <p class="lede">Rainbow Beach, South Shore, Chicago.</p>
+  <p class="small">From Ras Tafari Inc., a South Side 501(c)(3)</p>
+</div></section>
+
+<!-- 2 · First moment -->
+<section class="slide" data-img="/full-spectrum/joy/img/j02.jpg"><div class="card">
+  <div class="eyebrow">Imagine</div>
+  <h2>That first moment <span class="lav">behind the decks.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>The headphones go on.</b></li>
+    <li style="--c:var(--r3)"><b>The next track is ready.</b></li>
+    <li style="--c:var(--r5)"><b>A mentor offers a quiet nod.</b></li>
+  </ul>
+  <p class="lede">Imagine the smile when the transition lands and the child looks up to see their family dancing.</p>
+  <p class="small">An imagined moment that shows the planned program. It is not a story about a real child or a past event.</p>
+</div></section>
+
+<!-- 3 · Two programs -->
+<section class="slide" data-img="/full-spectrum/joy/img/j03.jpg"><div class="card">
+  <div class="eyebrow">Two ways to begin</div>
+  <h2>A place to discover <span class="rb">what they can do.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r4)"><b>Rainbow DJ Lab:</b> free, every Tuesday, 4 to 6 pm, opening January 12, 2027. 14 Missions and 42 Passport skills, a dedicated station for each child, and time to learn at their own pace</li>
+    <li style="--c:var(--r1)"><b>Rainbow Wednesdays:</b> planned free summer nights on the beach. Youth sets with DJ mentors, Chicago house-music heritage, paid neighborhood artists, and families gathering for free</li>
+  </ul>
+  <p class="small">Rainbow Wednesdays is planned for summer 2027. Dates and space are not yet confirmed by the Chicago Park District.</p>
+</div></section>
+
+<!-- 4 · Neighborhood cheers -->
+<section class="slide" data-img="/full-spectrum/joy/img/j04.jpg"><div class="card">
+  <div class="eyebrow">Rainbow Wednesdays</div>
+  <h2>The whole neighborhood <span class="lav">gets to cheer.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r2)"><b>A young person at the decks.</b></li>
+    <li style="--c:var(--r4)"><b>A proud family in the crowd.</b></li>
+    <li style="--c:var(--r6)"><b>South Shore celebrating its own.</b></li>
+  </ul>
+  <p class="lede">Rainbow Wednesdays brings the learning into a shared public experience at Rainbow Beach.</p>
+</div></section>
+
+<!-- 5 · Numbers -->
+<section class="slide" data-img="/full-spectrum/joy/img/j05.jpg"><div class="card">
+  <div class="eyebrow">First-year plans</div>
+  <h2>More moments <span class="lav">worth being there for.</span></h2>
+  <div class="big">
+    <div class="stat" style="--c:var(--r1)"><b>468</b><span>free class seats: 12 stations x 39 class Tuesdays</span></div>
+    <div class="stat" style="--c:var(--r3)"><b>14</b><span>summer beach nights, June 2 to Sept. 1, 2027</span></div>
+  </div>
+  <p class="lede">Our first-year plans create room for learning and family celebration.</p>
+  <p class="small">Class seats are session places, not distinct students. Both numbers are planning targets, not results, and the summer dates depend on Chicago Park District approval.</p>
+</div></section>
+
+<!-- 6 · What generosity makes possible -->
+<section class="slide" data-img="/full-spectrum/joy/img/j06.jpg"><div class="card">
+  <div class="eyebrow">Where support can go</div>
+  <h2>What your generosity <span class="rb">makes possible.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Time to learn:</b> patient instruction and encouragement from mentors</li>
+    <li style="--c:var(--r3)"><b>A station of their own:</b> a dedicated deck, laptop and headphones for every child</li>
+    <li style="--c:var(--r5)"><b>A first audience:</b> sound, guest DJs and neighborhood arts at the park</li>
+    <li style="--c:var(--r7)"><b>A welcoming experience:</b> the planning and practical support behind each gathering</li>
+  </ul>
+</div></section>
+
+<!-- 7 · Room for you -->
+<section class="slide" data-img="/full-spectrum/joy/img/j07.jpg"><div class="card">
+  <div class="eyebrow">An invitation</div>
+  <h2><span class="nm"></span>this beginning <span class="lav">can be yours.</span></h2>
+  <p class="lede">The program is designed and the park is the place. What it needs now is a source: the stations, the mentors' time and the first audience.</p>
+  <p class="lede">You could be the one who makes all of it real, and then share a night at Rainbow Beach with friends, watching young talent take its first steps because of you.</p>
+</div></section>
+
+<!-- 7b · What comes back to you -->
+<section class="slide" data-img="/full-spectrum/joy/img/j07.jpg"><div class="card">
+  <div class="eyebrow">What comes back to you</div>
+  <h2>The one people call <span class="rb">when they need a DJ.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>The first call:</b> when a friend asks, "Do you know a good DJ?", you know the talent, you know their development, and you can open the door</li>
+    <li style="--c:var(--r3)"><b>A living legacy:</b> the songs you grew up with, reinterpreted by young DJs who know where they came from</li>
+    <li style="--c:var(--r5)"><b>Front-row seats:</b> rehearsals, heritage listening sessions and first public sets, with clear reports on skills, performances and spending</li>
+    <li style="--c:var(--r7)"><b>First bookings:</b> your introductions can become the first paid opportunities for performers who are ready, with program safeguards</li>
+  </ul>
+  <p class="lede">The deepest return is continuity: a song from your youth comes through a young person's 2027 set, and you helped make that exchange a relationship.</p>
+  <p class="small">A gift does not create ownership, royalties or a share of students' future earnings. Any other arrangement would be separate and explicit.</p>
+</div></section>
+
+<!-- 7c · Founding Circle -->
+<section class="slide" data-img="/full-spectrum/joy/img/j08.jpg"><div class="card">
+  <div class="eyebrow">What you and we are building</div>
+  <h2>The Full Spectrum <span class="rb">Founding Circle.</span></h2>
+  <p class="lede">A private circle of supporters, each giving at the level they choose, with a shared goal of <b>$150,000 in deposited donations</b> to Ras Tafari Inc.</p>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Give:</b> every person chooses their own gift. No required levels</li>
+    <li style="--c:var(--r4)"><b>Introduce:</b> each supporter invites two or three people they trust, never as a condition of giving</li>
+    <li style="--c:var(--r6)"><b>Gather:</b> small conversations and heritage listening sessions where friends hear the plan and meet the team</li>
+  </ul>
+  <p class="small">Your role: <b>Founding Connector</b>. You open the first doors; Ras Tafari handles follow-up, processing, acknowledgments and reporting.</p>
+</div></section>
+
+<!-- 7d · The website -->
+<section class="slide" data-img="/full-spectrum/joy/img/j09.jpg"><div class="card">
+  <div class="eyebrow">One place for you and your friends</div>
+  <h2>Easy to give. <span class="lav">Easy to share.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r2)"><b>A direct giving page:</b> card, PayPal, Venmo, check, or a call for larger gifts and equipment</li>
+    <li style="--c:var(--r3)"><b>A ready-to-send introduction:</b> a note you personalize and forward in one click</li>
+    <li style="--c:var(--r5)"><b>All the tax paperwork:</b> our IRS determination letter, EIN, and written acknowledgment of every gift, so friends can deduct with confidence</li>
+    <li style="--c:var(--r7)"><b>Honest progress:</b> cash deposited toward the $150,000, with pledges and in-kind support reported separately</li>
+  </ul>
+  <a class="cta" href="/full-spectrum/founding-circle/">See the Founding Circle page →</a>
+  <p class="small">https://selassiefest.com/full-spectrum/founding-circle/</p>
+</div></section>
+
+<!-- 8 · Everyone finds a connection -->
+<section class="slide" data-img="/full-spectrum/joy/img/j08.jpg"><div class="card">
+  <div class="eyebrow">Your choice</div>
+  <h2>Everyone finds <span class="rb">their own connection.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r2)"><b>For some, it is the music.</b></li>
+    <li style="--c:var(--r4)"><b>For others, it is a child finding confidence.</b></li>
+    <li style="--c:var(--r6)"><b>For others, it is South Shore coming together.</b></li>
+  </ul>
+  <p class="lede">Support can follow the part of the story that means the most to you.</p>
+</div></section>
+
+<!-- 9 · After the gift -->
+<section class="slide" data-img="/full-spectrum/joy/img/j09.jpg"><div class="card">
+  <div class="eyebrow">Staying connected</div>
+  <h2>The joy continues <span class="lav">after the gift.</span></h2>
+  <div class="quote"><p>You stay part of the story, not just the first chapter.</p><span class="src">What we plan to share with you</span></div>
+  <ul class="list">
+    <li style="--c:var(--r1)"><b>Milestones:</b> the first Passport stamps, first full sets and first showcase performances</li>
+    <li style="--c:var(--r3)"><b>Invitations:</b> rehearsals, heritage listening sessions and public showcases, with seats for you and your friends</li>
+    <li style="--c:var(--r4)"><b>Your song, their set:</b> nominate a track that matters to you and hear how a student reinterprets it</li>
+    <li style="--c:var(--r5)"><b>Clear reports:</b> attendance, skills demonstrated, performances completed, student feedback and exactly how support was spent</li>
+    <li style="--c:var(--r7)"><b>A say in what's next:</b> a well-documented first year shows where to grow, whether more stations, instructor training or more sessions</li>
+  </ul>
+  <p class="small">Stories and photographs will respect family consent and student privacy.</p>
+</div></section>
+
+<!-- 10 · Close -->
+<section class="slide" data-img="/full-spectrum/joy/img/j10.jpg"><div class="card">
+  <div class="eyebrow">Next step</div>
+  <h2><span class="nm"></span>you can be <span class="rb">the spark.</span></h2>
+  <p class="lede">Imagine hearing that first set, and knowing your generosity is what made the beginning possible.</p>
+  <p class="small">Full Spectrum at Rainbow Beach · A conversation with Albert Harris, Ras Tafari Inc. · 1401 E. 71st St., Chicago 60619 · (872) 255-9333<br>
+  Full Spectrum is a first-year program and depends on Chicago Park District approval. Images are AI-generated illustrations, not photos of real events or real people.</p>
+</div></section>
+
+<!-- 14 · Three purposes (last slide) -->
+<section class="slide" data-img="/full-spectrum/joy/img/j10.jpg"><div class="card">
+  <div class="eyebrow">What people are joining</div>
+  <h2>Three purposes, <span class="rb">one circle.</span></h2>
+  <ul class="list">
+    <li style="--c:var(--r3)"><b>Equip the next generation:</b> dedicated student DJ stations, supporting technology and dependable music resources</li>
+    <li style="--c:var(--r5)"><b>Bring heritage into the future:</b> instruction and paid guest artists who connect earlier music with contemporary sounds and techniques</li>
+    <li style="--c:var(--r7)"><b>Build a foundation for continuity:</b> operating capacity and reserves that help the program plan, deliver and pursue additional funding</li>
+  </ul>
+  <a class="cta" href="/full-spectrum/founding-circle/">Open YOUR Founding Circle →</a>
+  <p class="small">The final allocation follows the board-approved budget. Equipment donations and sponsorship commitments are tracked separately from cash.</p>
+</div></section>
+
+</main>
+
+<nav class="ctl">
+  <div class="prog" id="prog"></div>
+  <div class="seek-row">
+    <span id="tcur">0:00</span>
+    <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Narration position">
+    <span id="tdur">0:00</span>
+    <span class="slide-count" id="scount">1 / 1</span>
+  </div>
+  <div class="btn-row">
+    <button class="cb" id="replay" aria-label="Restart this slide's narration" title="Restart this slide">&#8634;</button>
+    <button class="cb big" id="prev" aria-label="Previous slide" title="Previous slide">&#9664;&#9664;</button>
+    <button class="cb play" id="play" aria-label="Play the narrated deck" title="Play / pause (space)">&#9654;</button>
+    <button class="cb big" id="next" aria-label="Next slide" title="Next slide">&#9654;&#9654;</button>
+    <button class="cb" id="mute" aria-label="Mute narration" title="Mute">&#128266;</button>
+    <button class="cb pill on" id="auto" aria-pressed="true" title="Automatically go to the next slide when narration ends">Auto</button>
+    <button class="cb pill" id="speed" title="Narration speed">1x</button>
+  </div>
+  <div class="dots" id="dots" style="margin:0 auto"></div>
+</nav>
+
+<script>
+// The Joy of Giving, GENERIC version for anyone. Optional ?n=FirstName adds the name to two slide headings (audio stays name-free). Copy of /full-spectrum/joy/ (Scott deck) (from Full_Spectrum_The_Joy_of_Giving.pptx).
+// Program facts: dj-lab-2027.html (Tuesdays 4-6 pm from Jan 12, 2027; 14 Missions, 42 Passport skills; 12 stations x 39 class Tuesdays = 468) and the Full Spectrum proposal.
+// Images are AI-generated illustrations: /full-spectrum/joy/img/j01.jpg to j10.jpg.
+// Narration: /full-spectrum/joy/audio/part1.mp3 to part5.mp3 (each covers several slides; see TRACKS). Slide photos: /full-spectrum/joy/img/m01.jpg to m12.jpg (Stephen's set, 10/25).
+const deck = document.getElementById("deck"), dots = document.getElementById("dots");
+const prev = document.getElementById("prev"), next = document.getElementById("next");
+const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
+slides.forEach((s, i) => {
+  s.setAttribute("aria-label", `Slide ${i + 1} of ${N}`);
+  const d = document.createElement("button"); d.setAttribute("aria-label", `Go to slide ${i + 1}`); d.onclick = () => go(i); dots.appendChild(d);
+});
+let cur = 0;
+const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
+const AUD = "/full-spectrum/joy/audio/";
+// Narration: five recorded parts. Each part covers several slides. "cuts" are the second marks inside a part where the next slide begins
+// (estimated from the pauses in the recording; nudge a number here if a slide changes a beat early or late).
+const TRACKS = [
+  { file: "/full-spectrum/joy/audio/part1.mp3", dur: 63.57, slides: [0, 1, 2], cuts: [13.11, 31.51] },
+  { file: "/full-spectrum/joy/audio/part2.mp3", dur: 55.78, slides: [3, 4, 5], cuts: [14.11, 36.23] },
+  { file: "/full-spectrum/give/audio/part3.mp3", dur: 98.84, slides: [6, 7, 8], cuts: [18.07, 62.51] },
+  { file: "/full-spectrum/joy/audio/part4.mp3", dur: 85.09, slides: [9, 10, 11], cuts: [32.23, 44.32] },
+  { file: "/full-spectrum/give/audio/part5.mp3", dur: 51.37, slides: [12, 13], cuts: [21.14] }
+];
+const SEG = {};
+TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : t.dur }; }));
+const found = {};
+const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
+const ready = Promise.all(TRACKS.map(async (t, i) => { const u = t.file.startsWith("/") ? t.file : AUD + t.file; found[i] = (await head(u)) ? u : null; }));
+let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
+const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
+const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
+function setBtn(){
+  playBtn.innerHTML = playing ? "&#10074;&#10074;" : (cur === N - 1 && atEnd ? "&#8634;" : "&#9654;");
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+  autoBtn.classList.toggle("on", auto);
+  $("mute").innerHTML = player.muted ? "&#128263;" : "&#128266;"; $("mute").classList.toggle("on", player.muted);
+  $("speed").textContent = rate + "x";
+}
+const $ = (id) => document.getElementById(id);
+const fmt = (t) => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+let rate = 1;
+function segLen(i){ const sg = SEG[i]; return sg ? Math.max(0, Math.min(sg.end, TRACKS[sg.t].dur) - sg.start) : 0; }
+
+function finishSlide(){
+  if (!playing) return;
+  if (!auto) { prog.style.width = "100%"; return; }
+  if (cur < N - 1) go(cur + 1);
+  else { playing = false; atEnd = true; prog.style.width = "100%"; setBtn(); }
+}
+function startSlide(i, resume){
+  clearTimeout(timer); timer = null;
+  const sg = SEG[i], src = sg && found[sg.t];
+  if (!resume) { prog.style.width = "0"; tLeft = 0; }
+  if (!playing) { if (!resume) player.pause(); return; }
+  if (src) {
+    const same = player.src.indexOf(src) >= 0;
+    if (!same) { player.src = src; player.defaultPlaybackRate = rate; player.playbackRate = rate; }
+    const t = player.currentTime;
+    if (!(same && resume && t >= sg.start - 0.05 && t < sg.end)) player.currentTime = sg.start;
+    player.play().catch(() => { playing = false; setBtn(); });
+  } else {
+    player.pause();
+    tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
+    tStart = Date.now() - (tLen - wait);
+    timer = setTimeout(finishSlide, wait);
+  }
+}
+player.addEventListener("ended", finishSlide);
+player.addEventListener("timeupdate", () => {
+  if (!playing) return;
+  const sg = SEG[cur]; if (!sg || !found[sg.t] || player.src.indexOf(found[sg.t]) < 0) return;
+  const t = player.currentTime;
+  if (t >= sg.end) {
+    if (auto && cur < N - 1 && SEG[cur + 1] && SEG[cur + 1].t === sg.t) go(cur + 1, true);
+    else if (!auto) { player.pause(); prog.style.width = "100%"; }
+    return;
+  }
+  const len = segLen(cur);
+  if (len > 0) { prog.style.width = Math.max(0, Math.min(100, 100 * (t - sg.start) / len)) + "%"; $("seek").value = Math.round(1000 * Math.max(0, t - sg.start) / len); }
+  $("tcur").textContent = fmt(t - sg.start);
+});
+setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
+function pauseDeck(){
+  playing = false; player.pause();
+  if (timer) { tLeft = Math.max(0, tLen - (Date.now() - tStart)); clearTimeout(timer); timer = null; }
+  setBtn();
+}
+function togglePlay(){
+  if (playing) { pauseDeck(); return; }
+  if (atEnd) { atEnd = false; playing = true; go(0); setBtn(); return; }
+  playing = true; ready.then(() => startSlide(cur, true)); setBtn();
+}
+playBtn.onclick = togglePlay;
+$("replay").onclick = () => { playing = true; atEnd = false; ready.then(() => { startSlide(cur); setBtn(); }); };
+$("mute").onclick = () => { player.muted = !player.muted; setBtn(); };
+$("speed").onclick = () => { const r = [1, 1.25, 1.5, 0.75]; rate = r[(r.indexOf(rate) + 1) % r.length]; player.defaultPlaybackRate = rate; player.playbackRate = rate; setBtn(); };
+$("seek").addEventListener("input", (e) => {
+  const sg = SEG[cur], src = sg && found[sg.t]; if (!src) return;
+  if (player.src.indexOf(src) < 0) player.src = src;
+  const t = sg.start + (e.target.value / 1000) * segLen(cur);
+  player.currentTime = t; $("tcur").textContent = fmt(t - sg.start);
+});
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); setBtn(); if (auto && playing && player.ended) finishSlide(); };
+// Only the current slide and its neighbors load their photos, so the first screen appears fast.
+function paint(i){
+  const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
+  s.dataset.painted = "1";
+  const u = s.dataset.img.startsWith("/") ? s.dataset.img : `/full-spectrum/img/${s.dataset.img}`;
+  head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${u}")`; s.classList.add("photo"); } });
+}
+function go(i, keepAudio){
+  cur = Math.max(0, Math.min(N - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("on", j === cur));
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
+  prev.disabled = cur === 0; next.disabled = cur === N - 1;
+  atEnd = false;
+  $("scount").textContent = (cur + 1) + " / " + N; $("seek").value = 0; $("tcur").textContent = "0:00"; $("tdur").textContent = fmt(SEG[cur] ? segLen(cur) : readMs(cur) / 1000);
+  if (keepAudio) { prog.style.width = "0"; tLeft = 0; } else startSlide(cur);
+  setBtn();
+  [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
+}
+prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("button, a") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "k") { e.preventDefault(); togglePlay(); }
+  if (e.key === "ArrowRight") go(cur + 1);
+  if (e.key === "ArrowLeft") go(cur - 1);
+});
+let x0 = null;
+deck.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+deck.addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+const nm = (new URLSearchParams(location.search).get("n") || "").replace(/[^\p{L}\p{M} '.-]/gu, "").trim().slice(0, 40);
+document.querySelectorAll(".nm").forEach((e) => {
+  if (nm) e.textContent = nm + ", ";
+  else { const t = e.nextSibling; if (t && t.nodeType === 3) t.textContent = t.textContent.charAt(0).toUpperCase() + t.textContent.slice(1); }
+});
+go(0);
+</script>
+</body>
+</html>
