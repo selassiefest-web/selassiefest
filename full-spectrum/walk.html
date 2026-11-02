@@ -9,7 +9,8 @@
 body{font:16px/1.4 system-ui,sans-serif;max-width:760px;margin:0 auto;padding:12px;color:#1a1a1a}
 h1{font-size:1.4rem}
 h2{margin-top:2rem;background:#0b5d3b;color:#fff;padding:8px 12px;border-radius:6px;font-size:1.1rem}h2 small{font-weight:400}
-.stop{border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin:10px 0}.stop.done{background:#eef8f0;border-color:#0b5d3b}
+.stop{border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin:10px 0}.t0{background:#ffffff}.t1{background:#f1f2f4}.t2{background:#dfe2e6}.t3{background:#e3effa}.t4{background:#c8def2}
+.stop{border-width:2px}.stop.done{border-left:10px solid #0b5d3b}.stop.done h3:after{content:" ¹3 done";color:#0b5d3b;font-size:.85rem;margin-left:6px}
 .stop h3{margin:0;font-size:1.05rem}.stop h3 small{color:#666;font-weight:400;font-size:.8rem}
 .n{display:inline-block;background:#b8860b;color:#fff;border-radius:50%;min-width:1.6em;text-align:center;margin-right:4px}
 .addr{margin:4px 0;font-weight:600}.was{margin:2px 0;color:#555;font-size:.9rem}.q{margin:6px 0 2px}
@@ -92,7 +93,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     var opts = [['talked','Spoke to owner / manager'],['staff','Left with staff'],['contact','Got a contact name or email'],['closed','Closed / gone'],['skip','Not visited']]
       .map(function(o){ return '<label><input type="radio" name="o' + idx + '" value="' + o[0] + '"> ' + o[1] + '</label>'; }).join('');
     var tel = r.phone ? ' &middot; <a href="tel:' + esc(r.phone.replace(/\D/g,'')) + '">' + esc(r.phone) + '</a>' : '';
-    return '<section class="stop" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
+    return '<section class="stop t' + ((idx - 1) % 5) + '" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
       '<h3><span class="n">' + idx + '</span> ' + esc(r.name) + ' <small>' + esc(r.category) + '</small></h3>' +
       '<p class="addr">' + esc(r.address) + tel + '</p>' + dirs(r, prev) +
       '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + scanLine(r) +
