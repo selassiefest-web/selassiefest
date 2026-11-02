@@ -306,7 +306,7 @@
 // The Joy of Giving: a personal pitch to Scott, a friend of Full Spectrum (from Full_Spectrum_The_Joy_of_Giving.pptx).
 // Program facts: dj-lab-2027.html (Tuesdays 4-6 pm from Jan 12, 2027; 14 Missions, 42 Passport skills; 12 stations x 39 class Tuesdays = 468) and the Full Spectrum proposal.
 // Images are AI-generated illustrations: /full-spectrum/joy/img/j01.jpg to j10.jpg.
-// Narration clips (optional): /full-spectrum/joy/audio/<slide number>.mp3. Slide photos: /full-spectrum/joy/img/m01.jpg to m12.jpg (Stephen's set, 10/25).
+// Narration: /full-spectrum/joy/audio/part1.mp3 to part5.mp3 (each covers several slides; see TRACKS). Slide photos: /full-spectrum/joy/img/m01.jpg to m12.jpg (Stephen's set, 10/25).
 const deck = document.getElementById("deck"), dots = document.getElementById("dots");
 const prev = document.getElementById("prev"), next = document.getElementById("next");
 const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
@@ -317,9 +317,20 @@ slides.forEach((s, i) => {
 let cur = 0;
 const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
 const AUD = "/full-spectrum/joy/audio/";
+// Narration: five recorded parts. Each part covers several slides. "cuts" are the second marks inside a part where the next slide begins
+// (estimated from the pauses in the recording; nudge a number here if a slide changes a beat early or late).
+const TRACKS = [
+  { file: "part1.mp3", slides: [0, 1, 2], cuts: [13.11, 31.51] },
+  { file: "part2.mp3", slides: [3, 4, 5], cuts: [14.11, 36.23] },
+  { file: "part3.mp3", slides: [6, 7, 8], cuts: [18.07, 62.51] },
+  { file: "part4.mp3", slides: [9, 10, 11], cuts: [32.23, 44.32] },
+  { file: "part5.mp3", slides: [12, 13], cuts: [21.14] }
+];
+const SEG = {};
+TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : 1e9 }; }));
 const found = {};
 const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
-const ready = Promise.all(slides.map(async (_, i) => { const u = AUD + (i + 1) + ".mp3"; found[i] = (await head(u)) ? u : null; }));
+const ready = Promise.all(TRACKS.map(async (t, i) => { const u = AUD + t.file; found[i] = (await head(u)) ? u : null; }));
 let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0, atEnd = false;
 const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
 const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
@@ -335,19 +346,35 @@ function finishSlide(){
 }
 function startSlide(i, resume){
   clearTimeout(timer); timer = null;
-  if (!resume) { player.pause(); prog.style.width = "0"; tLeft = 0; }
-  if (!playing) return;
-  if (found[i]) {
-    if (!resume || player.src.indexOf(found[i]) < 0) { player.src = found[i]; player.currentTime = 0; }
+  const sg = SEG[i], src = sg && found[sg.t];
+  if (!resume) { prog.style.width = "0"; tLeft = 0; }
+  if (!playing) { if (!resume) player.pause(); return; }
+  if (src) {
+    const same = player.src.indexOf(src) >= 0;
+    if (!same) player.src = src;
+    const t = player.currentTime;
+    if (!(same && resume && t >= sg.start - 0.05 && t < sg.end)) player.currentTime = sg.start;
     player.play().catch(() => { playing = false; setBtn(); });
   } else {
+    player.pause();
     tLen = readMs(i); const wait = resume && tLeft ? tLeft : tLen;
     tStart = Date.now() - (tLen - wait);
     timer = setTimeout(finishSlide, wait);
   }
 }
 player.addEventListener("ended", finishSlide);
-player.addEventListener("timeupdate", () => { if (player.duration) prog.style.width = (100 * player.currentTime / player.duration) + "%"; });
+player.addEventListener("timeupdate", () => {
+  if (!playing) return;
+  const sg = SEG[cur]; if (!sg || !found[sg.t] || player.src.indexOf(found[sg.t]) < 0) return;
+  const t = player.currentTime;
+  if (t >= sg.end) {
+    if (auto && cur < N - 1 && SEG[cur + 1] && SEG[cur + 1].t === sg.t) go(cur + 1, true);
+    else if (!auto) { player.pause(); prog.style.width = "100%"; }
+    return;
+  }
+  const len = Math.min(sg.end, player.duration || sg.end) - sg.start;
+  if (len > 0) prog.style.width = Math.max(0, Math.min(100, 100 * (t - sg.start) / len)) + "%";
+});
 setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
 function pauseDeck(){
   playing = false; player.pause();
@@ -368,13 +395,14 @@ function paint(i){
   const u = s.dataset.img.startsWith("/") ? s.dataset.img : `/full-spectrum/img/${s.dataset.img}`;
   head(u).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${u}")`; s.classList.add("photo"); } });
 }
-function go(i){
+function go(i, keepAudio){
   cur = Math.max(0, Math.min(N - 1, i));
   slides.forEach((s, j) => s.classList.toggle("on", j === cur));
   [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
   prev.disabled = cur === 0; next.disabled = cur === N - 1;
   atEnd = false;
-  startSlide(cur); setBtn();
+  if (keepAudio) { prog.style.width = "0"; tLeft = 0; } else startSlide(cur);
+  setBtn();
   [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
 }
 prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1);
