@@ -183,6 +183,7 @@
       var c = await window.sfSupabaseReady;
       var r = await c.rpc('fs_pitch_view', { p_key: key });
       if (r.error || !r.data || !r.data.length) return notFound();
+      var sq = new URLSearchParams(location.search).get('s'); if (sq) c.rpc('fs_scan_log', { p_key: key, p_src: sq }).then(function(){}, function(){});
       render(r.data[0]);
     } catch(e){ notFound(); }
   }

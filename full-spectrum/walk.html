@@ -27,7 +27,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 <h1>Follow-up walk: what happened at each stop</h1>
 <div id="msg">Loading…</div>
 <div id="app" hidden>
-<p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it. <span id="cnt"></span></p>
+<p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it, and shows on any device you sign in on. <span id="cnt"></span></p>
 <p><button id="clrBtn">Clear</button><button id="refBtn">Refresh scans</button></p>
 <p id="saveMsg" class="scan"></p>
 <div id="list"></div>
@@ -43,8 +43,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   var sess; try { sess = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){}
   if (!sess){ $('msg').innerHTML = 'Sign in first at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>, then reopen this page.'; return; }
 
-  var d = {}; try { d = JSON.parse(localStorage.getItem(LS) || '{}'); } catch(e){}
-  var DAYS = [
+    var DAYS = [
     ['2026-11-06', 'Friday Nov 6: weekday-only stops', 'Schools, child care centers, hospitals, fire houses and the phone list only work on a weekday. Start with the calls at 9 am, then the child care stops, then the side trips.'],
     ['2026-11-07', 'Saturday Nov 7: the shops (79th St, then 71st St)', 'Barbershops, salons, markets and restaurants are busiest and open on Saturday. Walk 79th east to west, then 71st east to west.'],
     ['2026-11-08', 'Sunday Nov 8: churches after service, then 75th St', 'Churches 12:30 to 3 pm (79th east to west, then 75th). Then walk 75th west to east. Many shops are closed Sunday: mark them Not visited and they roll to Monday Nov 9.']
@@ -78,16 +77,28 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 
   // 15 pale tints, black text stays readable on all; neighbors always differ. Order: white, greys, blues, greens, yellows, oranges, pinks, purples.
   var TINTS = ['#ffffff','#f1f2f4','#dfe2e6','#e3effa','#c8def2','#e4f5e6','#c6e8cb','#fdf7d3','#f6e7a0','#fde8d8','#f8cfb0','#fbe4ee','#f3c3d8','#efe6fa','#d8c7f0'];
-  var idx = 0, byId = {};
+  var idx = 0, byId = {}, cur = {}, cnt = function(){};
+  // Unsaved answers wait in this queue (kept on the phone) and are retried until Supabase confirms them.
+  var q = {}; try { q = JSON.parse(localStorage.getItem('walkq') || '{}'); } catch(e){}
+  var saveQ = function(){ localStorage.setItem('walkq', JSON.stringify(q)); };
+  var CODE = {'spoke to owner/manager':'talked', 'left with staff':'staff', 'got contact':'contact', 'closed/gone':'closed'};
+  function parseWalk(sum){
+    var m = /^Walk \d{4}-\d{2}-\d{2}: ([^.]*?)(?:\. ([\s\S]*))?$/.exec(sum || '');
+    if (!m) return null;
+    var o = /^not visited/.test(m[1]) ? 'skip' : CODE[m[1]];
+    return o ? {o: o, t: m[2] || ''} : null;
+  }
+  var firstAddr = function(a){ return String(a || '').split(/ and /)[0].replace(/\s+$/, '') + (/Chicago/.test(String(a || '').split(/ and /)[0]) ? '' : ', Chicago, IL'); };
   function dirs(r, prev){
     if (!r.address) return '';
-    var base = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(r.address) + (prev && prev.address ? '&origin=' + encodeURIComponent(prev.address) : '');
+    var base = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(firstAddr(r.address)) + (prev && prev.address ? '&origin=' + encodeURIComponent(firstAddr(prev.address)) : '');
     return '<p class="scan"><a href="' + base + '&travelmode=walking" target="_blank" rel="noopener">Walking directions</a> &middot; <a href="' + base + '&travelmode=driving" target="_blank" rel="noopener">Driving</a>' + (prev ? ' (from the previous stop)' : ' (from where you are)') + '</p>';
   }
   function scanLine(r){
     if (!r.pitch_key) return '';
-    var v = r.pitch_views || 0;
-    return '<p class="scan' + (v > (d._base && d._base[r.id] != null ? d._base[r.id] : 0) ? ' hit' : '') + '">QR scans: ' + v + (r.pitch_last_viewed ? ' &middot; last ' + esc(new Date(r.pitch_last_viewed).toLocaleString()) : '') + '</p>';
+    var v = r.scans || 0;
+    return '<p class="scan' + (v > 0 ? ' hit' : '') + '">QR scans: ' + v + (r.scan_last ? ' &middot; last ' + esc(new Date(r.scan_last).toLocaleString()) : '') + '</p>' +
+      (r.hours_note ? '<p class="scan">Hours: ' + esc(r.hours_note) + '</p>' : '');
   }
   function stop(r, next, prev){
     idx++;
@@ -117,15 +128,15 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     });
     $('list').innerHTML = html;
     $('app').hidden = false; $('msg').hidden = true;
-    var cnt = function(){ $('cnt').textContent = Object.keys(d).filter(function(k){ return k !== '_base' && d[k].o; }).length + ' of ' + total + ' logged.'; };
+    cnt = function(){ $('cnt').textContent = Object.keys(cur).filter(function(k){ return cur[k].o; }).length + ' of ' + total + ' logged.'; };
     document.querySelectorAll('.stop').forEach(function(s){
-      var id = s.dataset.id, v = d[id] || {};
+      var id = s.dataset.id, v = cur[id] || {};
       if (v.o){ var r = s.querySelector('input[value="' + v.o + '"]'); if (r) r.checked = true; s.classList.add('done'); }
       s.querySelector('.note').value = v.t || '';
-      var save = function(){ var r = s.querySelector('input:checked'); var t = s.querySelector('.note').value;
-        d[id] = {o: r ? r.value : '', t: t}; s.classList.toggle('done', !!r); localStorage.setItem(LS, JSON.stringify(d)); cnt();
-        if (r) saveStop(s, id, r.value, t); else setMsg('Pick what happened to save this stop.'); };
-      s.addEventListener('change', save);
+      s.addEventListener('change', function(){ var r = s.querySelector('input:checked'); var t = s.querySelector('.note').value;
+        if (!r){ setMsg('Pick what happened to save this stop.'); return; }
+        cur[id] = {o: r.value, t: t}; s.classList.add('done'); cnt();
+        q[id] = {o: r.value, t: t, name: s.dataset.name}; saveQ(); flush(); });
     });
     cnt();
   }
@@ -134,32 +145,40 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 9'};
   function setMsg(t){ $('saveMsg').textContent = t; }
   function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
-  async function saveStop(el, id, o, t){
-    var r0 = byId[id] || {};
-    var args = { p_session: sess.sessionToken, p_partner: id, p_kind: 'visit',
-      p_summary: 'Walk ' + iso(0) + ': ' + label[o] + (t ? '. ' + t : '') };
-    if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-09'; }
-    else { args.p_stage = stage[o]; args.p_next_step = o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (t || 'check in by phone'); args.p_next_due = o === 'closed' ? null : iso(7); }
-    try { var c = await window.sfSupabaseReady; var r = await c.rpc('fs_partner_log', args); if (r.error) throw r.error;
-      setMsg('Saved to tracker: ' + el.dataset.name + ' (' + new Date().toLocaleTimeString() + ')'); }
-    catch(err){ setMsg('NOT saved (' + (err.message || err) + '). Check signal and tap the answer again.'); }
+  var busy = false;
+  async function flush(){
+    if (busy) return; busy = true;
+    try {
+      var ids = Object.keys(q);
+      for (var i = 0; i < ids.length; i++){
+        var id = ids[i], it = q[id], r0 = byId[id] || {}, o = it.o, t = it.t;
+        var args = { p_session: sess.sessionToken, p_partner: id, p_kind: 'visit', p_summary: 'Walk ' + iso(0) + ': ' + label[o] + (t ? '. ' + t : '') };
+        if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-09'; }
+        else { args.p_stage = stage[o]; args.p_next_step = o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (t || 'check in by phone'); args.p_next_due = o === 'closed' ? null : iso(7); }
+        try { var c = await window.sfSupabaseReady; var r = await c.rpc('fs_partner_log', args); if (r.error) throw r.error;
+          if (q[id] && q[id].o === o && q[id].t === t) delete q[id]; saveQ();
+          setMsg('Saved to tracker: ' + (it.name || '') + ' (' + new Date().toLocaleTimeString() + ')'); }
+        catch(err){ if (/session/i.test(err.message || '')){ setMsg('Session ended. Sign in again at /full-spectrum/partners.html. Your answers are kept on this phone.'); break; }
+          break; }
+      }
+    } finally { busy = false; var n = Object.keys(q).length; if (n) setMsg(n + ' answer' + (n > 1 ? 's' : '') + ' NOT saved yet (no signal?). They are kept on this phone and retry automatically.'); }
   }
-  $('clrBtn').onclick = function(){ if (confirm('Clear all answers?')){ localStorage.removeItem(LS); location.reload(); } };
+  setInterval(flush, 15000); window.addEventListener('online', flush);
+  $('clrBtn').onclick = function(){ if (confirm('Forget unsaved answers on this phone? (Saved ones stay on the tracker.)')){ localStorage.removeItem('walkq'); location.reload(); } };
   $('refBtn').onclick = function(){ load(); };
 
   async function load(){
     try {
       var c = await window.sfSupabaseReady;
-      var r = await c.rpc('fs_partners_load', { p_session: sess.sessionToken });
+      var r = await c.rpc('fs_walk_load', { p_session: sess.sessionToken });
       if (r.error) throw r.error;
-      var all = (r.data && r.data.partners) || [];
-      var rows = all.filter(function(p){ return (p.stage === 'not_contacted' && p.next_step_due >= '2026-11-06' && p.next_step_due <= '2026-11-08') || (d[p.id] && d[p.id].o); });
-      byId = {}; rows.forEach(function(p){ byId[p.id] = p; });
-      if (!d._base){ d._base = {}; rows.forEach(function(p){ d._base[p.id] = p.pitch_views || 0; }); localStorage.setItem(LS, JSON.stringify(d)); }
-      render(rows);
+      var rows = (r.data && r.data.partners) || [];
+      byId = {}; cur = {};
+      rows.forEach(function(p){ byId[p.id] = p; var sv = parseWalk(p.walk_last); if (sv) cur[p.id] = sv; if (q[p.id]) cur[p.id] = {o: q[p.id].o, t: q[p.id].t}; });
+      render(rows); flush();
     } catch(err){
       $('msg').hidden = false;
-      $('msg').innerHTML = /session/i.test(err.message || '') ? 'Your session ended. Sign in again at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>.' : 'Could not load: ' + esc(err.message);
+      $('msg').innerHTML = /session/i.test(err.message || '') ? 'Your session ended. Sign in again at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>.' : 'Could not load: ' + esc(err.message) + '. <a href="">Try again</a>';
     }
   }
   load();
