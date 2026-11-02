@@ -346,7 +346,7 @@
 // Rainbow Cone deck: built from the one-page reply to Staci Ybarra (Nov 2, 2026). Same player as /full-spectrum/give/.
 // Facts: dj-lab-2027.html (Tuesdays 4-6 pm from Jan 12, 2027; 39 class Tuesdays; 12 stations); Rainbow Wednesdays June 2 - Sept 1, 2027 (14 nights);
 // SelassieFest 2026: July 25, 2026, about 273 people, 47 days of planning (organization/selassiefest-2027-proposal.html). Supporters from the tracker, Nov 2.
-// Narration: record /full-spectrum/rainbow-cone/audio/rc-01.mp3 ... rc-12.mp3 (one per slide) from narration.txt; until then each slide is timed by reading length.
+// Narration: four recordings in /full-spectrum/rainbow-cone/audio/ (part1-part4.mp3; see TRACKS). If one is missing, that slide is timed by reading length.
 const deck = document.getElementById("deck"), dots = document.getElementById("dots");
 const prev = document.getElementById("prev"), next = document.getElementById("next");
 const slides = [...deck.querySelectorAll(".slide")], N = slides.length;
@@ -368,8 +368,16 @@ opts.forEach((b) => b.addEventListener("click", () => {
 }));
 let cur = 0;
 const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
-const FILES = Array.from({ length: N }, (_, i) => `/full-spectrum/rainbow-cone/audio/rc-${String(i + 1).padStart(2, "0")}.mp3`);
-const TRACKS = FILES.map((f, i) => ({ file: f, dur: 0, slides: [i], cuts: [] }));
+// Narration: four recordings (ElevenLabs). Each covers several slides; "cuts" are the second marks where the next slide begins,
+// picked from the pauses in each recording (nudge a number here if a slide changes a beat early or late).
+const TRACKS = [
+  { file: "/full-spectrum/rainbow-cone/audio/part1.mp3", dur: 123.56, slides: [0, 1, 2, 3], cuts: [16.18, 38.78, 88.73] },
+  { file: "/full-spectrum/rainbow-cone/audio/part2.mp3", dur: 90.36, slides: [4, 5, 6], cuts: [28.0, 57.87] },
+  { file: "/full-spectrum/rainbow-cone/audio/part3.mp3", dur: 116.87, slides: [7, 8, 9], cuts: [37.27, 78.77] },
+  { file: "/full-spectrum/rainbow-cone/audio/part4.mp3", dur: 69.88, slides: [10, 11], cuts: [45.66] }
+];
+const SEG = {};
+TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : t.dur }; }));
 const found = {};
 const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
 const ready = Promise.all(TRACKS.map(async (t, i) => { found[i] = (await head(t.file)) ? t.file : null; }));
@@ -378,6 +386,7 @@ const $ = (id) => document.getElementById(id);
 const fmt = (t) => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
 const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
 const readMs = (i) => Math.max(5500, Math.min(30000, words(i) * 330));
+function segLen(i){ const sg = SEG[i]; return sg ? Math.max(0, Math.min(sg.end, TRACKS[sg.t].dur) - sg.start) : 0; }
 function setBtn(){
   playBtn.innerHTML = playing ? "&#10074;&#10074;" : (cur === N - 1 && atEnd ? "&#8634;" : "&#9654;");
   playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
@@ -393,12 +402,14 @@ function finishSlide(){
 }
 function startSlide(i, resume){
   clearTimeout(timer); timer = null;
-  const src = found[i];
+  const sg = SEG[i], src = sg && found[sg.t];
   if (!resume) { prog.style.width = "0"; tLeft = 0; }
   if (!playing) { if (!resume) player.pause(); return; }
   if (src) {
-    if (player.src.indexOf(src) < 0) { player.src = src; player.defaultPlaybackRate = rate; player.playbackRate = rate; }
-    if (!resume) player.currentTime = 0;
+    const same = player.src.indexOf(src) >= 0;
+    if (!same) { player.src = src; player.defaultPlaybackRate = rate; player.playbackRate = rate; }
+    const t = player.currentTime;
+    if (!(same && resume && t >= sg.start - 0.05 && t < sg.end)) player.currentTime = sg.start;
     player.play().catch(() => { playing = false; setBtn(); });
   } else {
     player.pause();
@@ -408,11 +419,18 @@ function startSlide(i, resume){
   }
 }
 player.addEventListener("ended", finishSlide);
-player.addEventListener("loadedmetadata", () => { if (found[cur]) $("tdur").textContent = fmt(player.duration); });
 player.addEventListener("timeupdate", () => {
-  if (!playing || !found[cur] || player.src.indexOf(found[cur]) < 0 || !player.duration) return;
+  if (!playing) return;
+  const sg = SEG[cur]; if (!sg || !found[sg.t] || player.src.indexOf(found[sg.t]) < 0) return;
   const t = player.currentTime;
-  prog.style.width = Math.min(100, 100 * t / player.duration) + "%"; $("seek").value = Math.round(1000 * t / player.duration); $("tcur").textContent = fmt(t);
+  if (t >= sg.end) {
+    if (auto && cur < N - 1 && SEG[cur + 1] && SEG[cur + 1].t === sg.t) go(cur + 1, true);
+    else if (!auto) { player.pause(); prog.style.width = "100%"; }
+    return;
+  }
+  const len = segLen(cur);
+  if (len > 0) { prog.style.width = Math.max(0, Math.min(100, 100 * (t - sg.start) / len)) + "%"; $("seek").value = Math.round(1000 * Math.max(0, t - sg.start) / len); }
+  $("tcur").textContent = fmt(t - sg.start);
 });
 setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
 function pauseDeck(){
@@ -429,7 +447,12 @@ playBtn.onclick = togglePlay;
 $("replay").onclick = () => { playing = true; atEnd = false; ready.then(() => { startSlide(cur); setBtn(); }); };
 $("mute").onclick = () => { player.muted = !player.muted; setBtn(); };
 $("speed").onclick = () => { const r = [1, 1.25, 1.5, 0.75]; rate = r[(r.indexOf(rate) + 1) % r.length]; player.defaultPlaybackRate = rate; player.playbackRate = rate; setBtn(); };
-$("seek").addEventListener("input", (e) => { if (!found[cur] || !player.duration) return; if (player.src.indexOf(found[cur]) < 0) player.src = found[cur]; player.currentTime = (e.target.value / 1000) * player.duration; });
+$("seek").addEventListener("input", (e) => {
+  const sg = SEG[cur], src = sg && found[sg.t]; if (!src) return;
+  if (player.src.indexOf(src) < 0) player.src = src;
+  const t = sg.start + (e.target.value / 1000) * segLen(cur);
+  player.currentTime = t; $("tcur").textContent = fmt(t - sg.start);
+});
 autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); setBtn(); if (auto && playing && player.ended) finishSlide(); };
 function paint(i){
   const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
@@ -441,7 +464,7 @@ function go(i, keepAudio){
   slides.forEach((s, j) => s.classList.toggle("on", j === cur));
   [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
   prev.disabled = cur === 0; next.disabled = cur === N - 1; atEnd = false;
-  $("scount").textContent = (cur + 1) + " / " + N; $("seek").value = 0; $("tcur").textContent = "0:00"; $("tdur").textContent = fmt(readMs(cur) / 1000);
+  $("scount").textContent = (cur + 1) + " / " + N; $("seek").value = 0; $("tcur").textContent = "0:00"; $("tdur").textContent = fmt(SEG[cur] && found[SEG[cur].t] ? segLen(cur) : readMs(cur) / 1000);
   if (keepAudio) { prog.style.width = "0"; tLeft = 0; } else startSlide(cur);
   setBtn();
   [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
