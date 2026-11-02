@@ -373,13 +373,13 @@ opts.forEach((b) => b.addEventListener("click", () => {
 }));
 let cur = 0;
 const player = new Audio(), playBtn = document.getElementById("play"), autoBtn = document.getElementById("auto"), prog = document.getElementById("prog");
-// Narration: four recordings (ElevenLabs). Each covers several slides; "cuts" are the second marks where the next slide begins,
+// Narration: four recordings (ElevenLabs, 1.2x version). Each covers several slides; "cuts" are the second marks where the next slide begins,
 // picked from the pauses in each recording (nudge a number here if a slide changes a beat early or late).
 const TRACKS = [
-  { file: "/full-spectrum/rainbow-cone/audio/part1.mp3", dur: 123.56, slides: [0, 1, 2, 3], cuts: [16.18, 38.78, 88.73] },
-  { file: "/full-spectrum/rainbow-cone/audio/part2.mp3", dur: 90.36, slides: [4, 5, 6], cuts: [28.0, 57.87] },
-  { file: "/full-spectrum/rainbow-cone/audio/part3.mp3", dur: 116.87, slides: [7, 8, 9], cuts: [37.27, 78.77] },
-  { file: "/full-spectrum/rainbow-cone/audio/part4.mp3", dur: 69.88, slides: [10, 11], cuts: [45.66] }
+  { file: "/full-spectrum/rainbow-cone/audio/part1.mp3", dur: 102.97, slides: [0, 1, 2, 3], cuts: [13.48, 32.32, 73.95] },
+  { file: "/full-spectrum/rainbow-cone/audio/part2.mp3", dur: 75.31, slides: [4, 5, 6], cuts: [23.34, 48.22] },
+  { file: "/full-spectrum/rainbow-cone/audio/part3.mp3", dur: 97.39, slides: [7, 8, 9], cuts: [31.06, 65.64] },
+  { file: "/full-spectrum/rainbow-cone/audio/part4.mp3", dur: 58.24, slides: [10, 11], cuts: [38.05] }
 ];
 const SEG = {};
 TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : t.dur }; }));
