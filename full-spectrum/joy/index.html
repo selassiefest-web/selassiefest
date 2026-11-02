@@ -28,7 +28,7 @@
   .bar{height:7px; background:var(--spectrum);}
   .banner{font-size:.74rem; color:var(--ink-faint); text-align:center; padding:5px 56px; border-bottom:1px solid var(--line);}
 
-  #deck{position:fixed; inset:36px 0 76px 0; overflow:hidden;}
+  #deck{position:fixed; inset:36px 0 128px 0; overflow:hidden;}
   .slide{position:absolute; inset:0; display:flex; align-items:safe center; justify-content:center; padding:22px 16px 30px; overflow-y:auto;
     background:radial-gradient(ellipse at 85% 20%,rgba(163,91,196,.28),transparent 60%) var(--bg) center right / cover no-repeat;
     opacity:0; transform:scale(1.02); transition:opacity .5s ease, transform .9s ease; pointer-events:none;}
@@ -39,7 +39,7 @@
   .card > *{max-width:660px;}
   @media (max-width:720px){ .slide{background-position:70% center;} }
   /* These photos fill the frame edge to edge, so on wide screens each one sits full-height on the right and the words get the left. */
-  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 112px) * 1.7768) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
+  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 164px) * 1.7768) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
   @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
   /* Laptop-height windows: tighten so every slide fits without scrolling */
   @media (min-width:721px) and (max-height:780px){
@@ -96,14 +96,20 @@
   @keyframes bounce{0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);}}
   @media (prefers-reduced-motion:reduce){ .eq span{animation:none;} }
 
-  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
-  .navbtn{width:46px; height:46px; border-radius:50%; border:2px solid var(--ink); font-size:1.3rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
-  .navbtn:disabled{opacity:.3; cursor:default;}
-  .mid{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0;}
-  .playrow{display:flex; gap:8px; align-items:center;}
-  .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:800; font-size:.9rem; white-space:nowrap;}
-  .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
-  .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
+  nav.ctl{position:fixed; left:0; right:0; bottom:0; height:128px; display:flex; flex-direction:column; justify-content:center; gap:7px; padding:8px 16px calc(8px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(14,11,30,.96);}
+  .seek-row{display:flex; align-items:center; gap:10px; width:100%; max-width:760px; margin:0 auto; font-size:.72rem; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .seek-row input[type=range]{flex:1; accent-color:var(--gold); height:6px; cursor:pointer;}
+  .seek-row .slide-count{min-width:54px; text-align:right;}
+  .btn-row{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .cb{width:42px; height:42px; border-radius:50%; border:1px solid var(--line); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:.2s; color:var(--ink);}
+  .cb:hover{border-color:var(--gold); color:var(--gold);}
+  .cb:disabled{opacity:.3; cursor:default;}
+  .cb.on{border-color:var(--gold); color:var(--gold);}
+  .cb.big{width:50px; height:50px; font-size:1.4rem;}
+  .cb.play{width:60px; height:60px; font-size:1.4rem; background:var(--gold); border-color:var(--gold); color:#1a1200;}
+  .cb.play:hover{color:#1a1200; filter:brightness(1.1);}
+  .cb.pill{width:auto; border-radius:999px; padding:0 14px; font-size:.75rem; font-weight:700; letter-spacing:.06em;}
+  .cb.pill[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
   .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center;}
   .dots button{width:9px; height:9px; border-radius:3px; background:var(--line);}
   .dots button.on{background:var(--lav); width:22px;}
@@ -290,16 +296,23 @@
 </main>
 
 <nav class="ctl">
-  <button class="navbtn" id="prev" aria-label="Previous slide">‹</button>
   <div class="prog" id="prog"></div>
-  <div class="mid">
-    <div class="playrow">
-      <button class="play" id="play" aria-label="Play the narrated deck">▶ Play</button>
-      <button class="auto" id="auto" aria-pressed="true" title="Move to the next slide when each one finishes">Auto-advance</button>
-    </div>
-    <div class="dots" id="dots"></div>
+  <div class="seek-row">
+    <span id="tcur">0:00</span>
+    <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Narration position">
+    <span id="tdur">0:00</span>
+    <span class="slide-count" id="scount">1 / 1</span>
   </div>
-  <button class="navbtn" id="next" aria-label="Next slide">›</button>
+  <div class="btn-row">
+    <button class="cb" id="replay" aria-label="Restart this slide's narration" title="Restart this slide">&#8634;</button>
+    <button class="cb big" id="prev" aria-label="Previous slide" title="Previous slide">&#9664;&#9664;</button>
+    <button class="cb play" id="play" aria-label="Play the narrated deck" title="Play / pause (space)">&#9654;</button>
+    <button class="cb big" id="next" aria-label="Next slide" title="Next slide">&#9654;&#9654;</button>
+    <button class="cb" id="mute" aria-label="Mute narration" title="Mute">&#128266;</button>
+    <button class="cb pill on" id="auto" aria-pressed="true" title="Automatically go to the next slide when narration ends">Auto</button>
+    <button class="cb pill" id="speed" title="Narration speed">1x</button>
+  </div>
+  <div class="dots" id="dots" style="margin:0 auto"></div>
 </nav>
 
 <script>
@@ -320,14 +333,14 @@ const AUD = "/full-spectrum/joy/audio/";
 // Narration: five recorded parts. Each part covers several slides. "cuts" are the second marks inside a part where the next slide begins
 // (estimated from the pauses in the recording; nudge a number here if a slide changes a beat early or late).
 const TRACKS = [
-  { file: "part1.mp3", slides: [0, 1, 2], cuts: [13.11, 31.51] },
-  { file: "part2.mp3", slides: [3, 4, 5], cuts: [14.11, 36.23] },
-  { file: "part3.mp3", slides: [6, 7, 8], cuts: [18.07, 62.51] },
-  { file: "part4.mp3", slides: [9, 10, 11], cuts: [32.23, 44.32] },
-  { file: "part5.mp3", slides: [12, 13], cuts: [21.14] }
+  { file: "part1.mp3", dur: 63.57, slides: [0, 1, 2], cuts: [13.11, 31.51] },
+  { file: "part2.mp3", dur: 55.78, slides: [3, 4, 5], cuts: [14.11, 36.23] },
+  { file: "part3.mp3", dur: 98.84, slides: [6, 7, 8], cuts: [18.07, 62.51] },
+  { file: "part4.mp3", dur: 85.09, slides: [9, 10, 11], cuts: [32.23, 44.32] },
+  { file: "part5.mp3", dur: 51.37, slides: [12, 13], cuts: [21.14] }
 ];
 const SEG = {};
-TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : 1e9 }; }));
+TRACKS.forEach((t, ti) => t.slides.forEach((sl, k) => { SEG[sl] = { t: ti, start: k ? t.cuts[k - 1] : 0, end: k < t.cuts.length ? t.cuts[k] : t.dur }; }));
 const found = {};
 const head = (u) => fetch(u, { method: "HEAD" }).then((r) => r.ok && !/text\/html/.test(r.headers.get("content-type") || "")).catch(() => false);
 const ready = Promise.all(TRACKS.map(async (t, i) => { const u = AUD + t.file; found[i] = (await head(u)) ? u : null; }));
@@ -335,9 +348,17 @@ let playing = false, auto = true, timer = null, tStart = 0, tLen = 0, tLeft = 0,
 const words = (i) => (slides[i].innerText || "").split(/\s+/).filter(Boolean).length;
 const readMs = (i) => Math.max(5000, Math.min(30000, words(i) * 300));
 function setBtn(){
-  playBtn.textContent = playing ? "⏸ Pause" : (cur === N - 1 && atEnd ? "↺ Replay" : "▶ Play");
+  playBtn.innerHTML = playing ? "&#10074;&#10074;" : (cur === N - 1 && atEnd ? "&#8634;" : "&#9654;");
   playBtn.setAttribute("aria-label", playing ? "Pause" : "Play the narrated deck");
+  autoBtn.classList.toggle("on", auto);
+  $("mute").innerHTML = player.muted ? "&#128263;" : "&#128266;"; $("mute").classList.toggle("on", player.muted);
+  $("speed").textContent = rate + "x";
 }
+const $ = (id) => document.getElementById(id);
+const fmt = (t) => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+let rate = 1;
+function segLen(i){ const sg = SEG[i]; return sg ? Math.max(0, Math.min(sg.end, TRACKS[sg.t].dur) - sg.start) : 0; }
+
 function finishSlide(){
   if (!playing) return;
   if (!auto) { prog.style.width = "100%"; return; }
@@ -351,7 +372,7 @@ function startSlide(i, resume){
   if (!playing) { if (!resume) player.pause(); return; }
   if (src) {
     const same = player.src.indexOf(src) >= 0;
-    if (!same) player.src = src;
+    if (!same) { player.src = src; player.defaultPlaybackRate = rate; player.playbackRate = rate; }
     const t = player.currentTime;
     if (!(same && resume && t >= sg.start - 0.05 && t < sg.end)) player.currentTime = sg.start;
     player.play().catch(() => { playing = false; setBtn(); });
@@ -372,8 +393,9 @@ player.addEventListener("timeupdate", () => {
     else if (!auto) { player.pause(); prog.style.width = "100%"; }
     return;
   }
-  const len = Math.min(sg.end, player.duration || sg.end) - sg.start;
-  if (len > 0) prog.style.width = Math.max(0, Math.min(100, 100 * (t - sg.start) / len)) + "%";
+  const len = segLen(cur);
+  if (len > 0) { prog.style.width = Math.max(0, Math.min(100, 100 * (t - sg.start) / len)) + "%"; $("seek").value = Math.round(1000 * Math.max(0, t - sg.start) / len); }
+  $("tcur").textContent = fmt(t - sg.start);
 });
 setInterval(() => { if (playing && timer) prog.style.width = Math.min(100, 100 * (Date.now() - tStart) / tLen) + "%"; }, 200);
 function pauseDeck(){
@@ -387,7 +409,16 @@ function togglePlay(){
   playing = true; ready.then(() => startSlide(cur, true)); setBtn();
 }
 playBtn.onclick = togglePlay;
-autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); if (auto && playing && player.ended) finishSlide(); };
+$("replay").onclick = () => { playing = true; atEnd = false; ready.then(() => { startSlide(cur); setBtn(); }); };
+$("mute").onclick = () => { player.muted = !player.muted; setBtn(); };
+$("speed").onclick = () => { const r = [1, 1.25, 1.5, 0.75]; rate = r[(r.indexOf(rate) + 1) % r.length]; player.defaultPlaybackRate = rate; player.playbackRate = rate; setBtn(); };
+$("seek").addEventListener("input", (e) => {
+  const sg = SEG[cur], src = sg && found[sg.t]; if (!src) return;
+  if (player.src.indexOf(src) < 0) player.src = src;
+  const t = sg.start + (e.target.value / 1000) * segLen(cur);
+  player.currentTime = t; $("tcur").textContent = fmt(t - sg.start);
+});
+autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", auto); setBtn(); if (auto && playing && player.ended) finishSlide(); };
 // Only the current slide and its neighbors load their photos, so the first screen appears fast.
 function paint(i){
   const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
@@ -401,6 +432,7 @@ function go(i, keepAudio){
   [...dots.children].forEach((d, j) => d.classList.toggle("on", j === cur));
   prev.disabled = cur === 0; next.disabled = cur === N - 1;
   atEnd = false;
+  $("scount").textContent = (cur + 1) + " / " + N; $("seek").value = 0; $("tcur").textContent = "0:00"; $("tdur").textContent = fmt(SEG[cur] ? segLen(cur) : readMs(cur) / 1000);
   if (keepAudio) { prog.style.width = "0"; tLeft = 0; } else startSlide(cur);
   setBtn();
   [cur - 1, cur, cur + 1, cur + 2].forEach(paint);
