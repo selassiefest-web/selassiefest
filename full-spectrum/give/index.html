@@ -450,6 +450,22 @@ document.querySelectorAll(".nm").forEach((e) => {
   if (nm) e.textContent = nm + ", ";
   else { const t = e.nextSibling; if (t && t.nodeType === 3) t.textContent = t.textContent.charAt(0).toUpperCase() + t.textContent.slice(1); }
 });
+// Own-system tracking (Supabase track_hit, see supabase/page-hits.sql): which link or QR code (?src=) brought the visit,
+// whether they pressed play, and whether they clicked through. No cookies, no IP, no name stored.
+const SRC = (new URLSearchParams(location.search).get("src") || "direct").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40) || "direct";
+const sent = {};
+function hit(ev){
+  const k = "gh_" + ev; if (sent[ev] || sessionStorage.getItem(k)) return; sent[ev] = 1;
+  try { sessionStorage.setItem(k, "1"); } catch (e) {}
+  fetch("https://xdjbgcqaynnzykrglgnf.supabase.co/rest/v1/rpc/track_hit", {
+    method: "POST", keepalive: true,
+    headers: { "Content-Type": "application/json", apikey: "sb_publishable_1B4Musk5YF23XHb_BEOiTA_w1DGM5P4" },
+    body: JSON.stringify({ p_page: "/full-spectrum/give/", p_src: SRC, p_event: ev, p_ref: document.referrer || null })
+  }).catch(() => {});
+}
+hit("view");
+playBtn.addEventListener("click", () => { if (playing) hit("play"); }); // runs after togglePlay, so playing is already true
+document.querySelectorAll(".cta").forEach((a) => a.addEventListener("click", () => hit("cta")));
 go(0);
 </script>
 </body>
