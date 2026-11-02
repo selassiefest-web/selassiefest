@@ -26,9 +26,9 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 <h1>Follow-up walk: what happened at each stop</h1>
 <div id="msg">Loading…</div>
 <div id="app" hidden>
-<p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Answers save on this device. <span id="cnt"></span></p>
-<p><button id="sqlBtn">Make SQL for the tracker</button><button id="clrBtn">Clear</button><button id="refBtn">Refresh scans</button></p>
-<pre id="sql"></pre>
+<p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it. <span id="cnt"></span></p>
+<p><button id="clrBtn">Clear</button><button id="refBtn">Refresh scans</button></p>
+<p id="saveMsg" class="scan"></p>
 <div id="list"></div>
 </div>
 <script src="/assets/js/supabase-client.js"></script>
@@ -75,13 +75,18 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     ]};
   }
 
-  var idx = 0;
+  var idx = 0, byId = {};
+  function dirs(r, prev){
+    if (!r.address) return '';
+    var base = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(r.address) + (prev && prev.address ? '&origin=' + encodeURIComponent(prev.address) : '');
+    return '<p class="scan"><a href="' + base + '&travelmode=walking" target="_blank" rel="noopener">Walking directions</a> &middot; <a href="' + base + '&travelmode=driving" target="_blank" rel="noopener">Driving</a>' + (prev ? ' (from the previous stop)' : ' (from where you are)') + '</p>';
+  }
   function scanLine(r){
     if (!r.pitch_key) return '';
     var v = r.pitch_views || 0;
     return '<p class="scan' + (v > (d._base && d._base[r.id] != null ? d._base[r.id] : 0) ? ' hit' : '') + '">QR scans: ' + v + (r.pitch_last_viewed ? ' &middot; last ' + esc(new Date(r.pitch_last_viewed).toLocaleString()) : '') + '</p>';
   }
-  function stop(r, next){
+  function stop(r, next, prev){
     idx++;
     var wasDel = /hand-delivered|delivered or emailed|Wave 2 letter/.test(r.next_step || '');
     var opts = [['talked','Spoke to owner / manager'],['staff','Left with staff'],['contact','Got a contact name or email'],['closed','Closed / gone'],['skip','Not visited']]
@@ -89,7 +94,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     var tel = r.phone ? ' &middot; <a href="tel:' + esc(r.phone.replace(/\D/g,'')) + '">' + esc(r.phone) + '</a>' : '';
     return '<section class="stop" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
       '<h3><span class="n">' + idx + '</span> ' + esc(r.name) + ' <small>' + esc(r.category) + '</small></h3>' +
-      '<p class="addr">' + esc(r.address) + tel + '</p>' +
+      '<p class="addr">' + esc(r.address) + tel + '</p>' + dirs(r, prev) +
       '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + scanLine(r) +
       '<p class="q"><b>What happened?</b></p><div class="opts">' + opts + '</div>' +
       '<input class="note" placeholder="Contact name, email, what they said">' +
@@ -105,7 +110,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       html += '<h2>' + DAYS[i][1] + ' <small>(' + L.length + ' stops)</small></h2><p>' + DAYS[i][2] + '</p>';
       if (i === 0) html += '<h3>9 am: calls and web forms (' + p.desk.length + ')</h3><table><tr><th>Who</th><th>Phone</th><th>Do</th></tr>' +
         p.desk.map(function(r){ return '<tr><td>' + esc(r.name) + '<br><small>' + esc(r.category) + '</small></td><td>' + esc(r.phone || '') + '</td><td>' + esc(r.next_step) + '</td></tr>'; }).join('') + '</table>';
-      html += L.map(function(r, j){ return stop(r, L[j+1]); }).join('');
+      html += L.map(function(r, j){ return stop(r, L[j+1], L[j-1]); }).join('');
     });
     $('list').innerHTML = html;
     $('app').hidden = false; $('msg').hidden = true;
@@ -114,27 +119,28 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       var id = s.dataset.id, v = d[id] || {};
       if (v.o){ var r = s.querySelector('input[value="' + v.o + '"]'); if (r) r.checked = true; s.classList.add('done'); }
       s.querySelector('.note').value = v.t || '';
-      var sv = function(){ var r = s.querySelector('input:checked'); d[id] = {o: r ? r.value : '', t: s.querySelector('.note').value}; s.classList.toggle('done', !!r); localStorage.setItem(LS, JSON.stringify(d)); cnt(); };
-      s.addEventListener('change', sv); s.querySelector('.note').addEventListener('input', sv);
+      var save = function(){ var r = s.querySelector('input:checked'); var t = s.querySelector('.note').value;
+        d[id] = {o: r ? r.value : '', t: t}; s.classList.toggle('done', !!r); localStorage.setItem(LS, JSON.stringify(d)); cnt();
+        if (r) saveStop(s, id, r.value, t); else setMsg('Pick what happened to save this stop.'); };
+      s.addEventListener('change', save);
     });
     cnt();
   }
 
   var stage = {talked:'in_conversation', staff:'reached_out', contact:'in_conversation', closed:'declined'};
-  var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone'};
-  var q = function(s){ return "'" + s.replace(/'/g, "''") + "'"; };
-  $('sqlBtn').onclick = function(){
-    var o = ['-- Walk results. Run with: supabase db query --linked -f <file>'], day = new Date().toISOString().slice(0,10);
-    Object.keys(d).forEach(function(id){
-      var v = d[id]; if (id === '_base' || !v.o) return;
-      var el = document.querySelector('[data-id="' + id + '"]'); var nm = el ? el.dataset.name : id;
-      if (v.o === 'skip'){ o.push("update fs_partners set next_step_due=date '2026-11-09',updated_at=now() where id='" + id + "'; -- " + nm); return; }
-      var note = 'Walk ' + day + ': ' + label[v.o] + (v.t ? '. ' + v.t : '');
-      var ns = v.o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (v.t || 'check in by phone');
-      o.push("update fs_partners set stage='" + stage[v.o] + "',last_contact_at=now(),next_step_due=" + (v.o === 'closed' ? 'null' : 'current_date+7') + ",next_step=" + q(ns) + ",notes=concat_ws(chr(10)," + 'notes,' + q(note) + "),updated_at=now() where id='" + id + "'; -- " + nm);
-    });
-    $('sql').textContent = o.join('\n');
-  };
+  var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 9'};
+  function setMsg(t){ $('saveMsg').textContent = t; }
+  function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
+  async function saveStop(el, id, o, t){
+    var r0 = byId[id] || {};
+    var args = { p_session: sess.sessionToken, p_partner: id, p_kind: 'visit',
+      p_summary: 'Walk ' + iso(0) + ': ' + label[o] + (t ? '. ' + t : '') };
+    if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-09'; }
+    else { args.p_stage = stage[o]; args.p_next_step = o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (t || 'check in by phone'); args.p_next_due = o === 'closed' ? null : iso(7); }
+    try { var c = await window.sfSupabaseReady; var r = await c.rpc('fs_partner_log', args); if (r.error) throw r.error;
+      setMsg('Saved to tracker: ' + el.dataset.name + ' (' + new Date().toLocaleTimeString() + ')'); }
+    catch(err){ setMsg('NOT saved (' + (err.message || err) + '). Check signal and tap the answer again.'); }
+  }
   $('clrBtn').onclick = function(){ if (confirm('Clear all answers?')){ localStorage.removeItem(LS); location.reload(); } };
   $('refBtn').onclick = function(){ load(); };
 
@@ -144,7 +150,8 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       var r = await c.rpc('fs_partners_load', { p_session: sess.sessionToken });
       if (r.error) throw r.error;
       var all = (r.data && r.data.partners) || [];
-      var rows = all.filter(function(p){ return p.stage === 'not_contacted' && p.next_step_due >= '2026-11-06' && p.next_step_due <= '2026-11-08'; });
+      var rows = all.filter(function(p){ return (p.stage === 'not_contacted' && p.next_step_due >= '2026-11-06' && p.next_step_due <= '2026-11-08') || (d[p.id] && d[p.id].o); });
+      byId = {}; rows.forEach(function(p){ byId[p.id] = p; });
       if (!d._base){ d._base = {}; rows.forEach(function(p){ d._base[p.id] = p.pitch_views || 0; }); localStorage.setItem(LS, JSON.stringify(d)); }
       render(rows);
     } catch(err){
