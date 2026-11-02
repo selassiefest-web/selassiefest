@@ -36,7 +36,12 @@
   .card{width:100%; max-width:1060px;}
   .card > *{max-width:680px;}
   .card > .wide{max-width:960px;}
-  @media (min-width:721px){ .slide.photo{background-size:100% 100%, calc((100vh - 165px) * 1.7768) 100%, auto 100% !important; background-position:0 0, right center, right center !important; background-repeat:no-repeat !important;} }
+  /* Your images are only a soft backdrop: a faded layer on the right, BEHIND the words and the drawn visuals (cone, dots, stand), never over them. */
+  .slide{isolation:isolate;}
+  .slide.photo::before{content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; background:var(--img) right center / auto 100% no-repeat; opacity:.4;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 50%,#000 88%); mask-image:linear-gradient(90deg,transparent 0%,transparent 50%,#000 88%);}
+  .slide:first-child.photo::before{opacity:.26;}
+  @media (max-width:720px){ .slide.photo::before{background-position:60% center; opacity:.28; -webkit-mask-image:none; mask-image:none;} }
   @media (prefers-reduced-motion:reduce){ .slide{transition:none; transform:none;} }
   @media (min-width:721px) and (max-height:780px){
     .slide{padding:12px 16px 16px;} h1{font-size:clamp(2.3rem,6vw,4.2rem);} h2{font-size:clamp(1.6rem,3.8vw,2.5rem); margin-bottom:8px;}
@@ -457,7 +462,7 @@ autoBtn.onclick = () => { auto = !auto; autoBtn.setAttribute("aria-pressed", aut
 function paint(i){
   const s = slides[i]; if (!s || s.dataset.painted || !s.dataset.img) return;
   s.dataset.painted = "1";
-  head(s.dataset.img).then((ok) => { if (ok) { s.style.backgroundImage = `var(--veil), var(--fade), url("${s.dataset.img}")`; s.classList.add("photo"); } });
+  head(s.dataset.img).then((ok) => { if (ok) { s.style.setProperty("--img", `url("${s.dataset.img}")`); s.classList.add("photo"); } });
 }
 function go(i, keepAudio){
   cur = Math.max(0, Math.min(N - 1, i));
