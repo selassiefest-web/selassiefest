@@ -10,11 +10,12 @@ body{font:16px/1.4 system-ui,sans-serif;max-width:760px;margin:0 auto;padding:12
 h1{font-size:1.4rem}
 h2{margin-top:2rem;background:#0b5d3b;color:#fff;padding:8px 12px;border-radius:6px;font-size:1.1rem}h2 small{font-weight:400}
 .stop{border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin:10px 0}.t0{background:#ffffff}.t1{background:#f1f2f4}.t2{background:#dfe2e6}.t3{background:#e3effa}.t4{background:#c8def2}
-.stop{border-width:2px}.stop.done{border-left:10px solid #0b5d3b}.stop.done h3:after{content:" ¹3 done";color:#0b5d3b;font-size:.85rem;margin-left:6px}
+.stop{border-width:2px}.stop.done{border-left:10px solid #0b5d3b}.stop.done h3:after{content:" ✓ done";color:#0b5d3b;font-size:.85rem;margin-left:6px}
 .stop h3{margin:0;font-size:1.05rem}.stop h3 small{color:#666;font-weight:400;font-size:.8rem}
 .n{display:inline-block;background:#b8860b;color:#fff;border-radius:50%;min-width:1.6em;text-align:center;margin-right:4px}
 .addr{margin:4px 0;font-weight:600}.was{margin:2px 0;color:#555;font-size:.9rem}.q{margin:6px 0 2px}
-.scan{margin:4px 0;font-size:.9rem;color:#555}.scan.hit{color:#0b5d3b;font-weight:700}
+.scan{margin:4px 0;font-size:.9rem;color:#555}.log{margin:6px 0 0;font-size:.85rem;color:#333}.log div{padding:3px 0;border-top:1px dashed #0003}.log b{color:#0b5d3b}#feed{background:#fffbe6;border:1px solid #e0c200;border-radius:8px;padding:8px 12px;margin:10px 0;font-size:.9rem}#feed div{padding:2px 0}
+.scan.hit{color:#0b5d3b;font-weight:700}
 .opts label{display:inline-block;margin:3px 10px 3px 0;padding:4px 8px;border:1px solid #bbb;border-radius:14px}
 .note{width:100%;box-sizing:border-box;padding:6px;margin-top:4px}.next{margin:8px 0 0;color:#0b5d3b}
 table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{border:1px solid #ccc;padding:4px 6px;vertical-align:top;text-align:left}
@@ -30,6 +31,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 <p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it, and shows on any device you sign in on. <span id="cnt"></span></p>
 <p><button id="clrBtn">Clear</button><button id="refBtn">Refresh scans</button></p>
 <p id="saveMsg" class="scan"></p>
+<div id="feed" hidden></div>
 <div id="list"></div>
 </div>
 <script src="/assets/js/supabase-client.js"></script>
@@ -109,7 +111,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     return '<section class="stop" style="background:' + TINTS[(idx - 1) % TINTS.length] + '" data-id="' + r.id + '" data-name="' + esc(r.name) + '">' +
       '<h3><span class="n">' + idx + '</span> ' + esc(r.name) + ' <small>' + esc(r.category) + '</small></h3>' +
       '<p class="addr">' + esc(r.address) + tel + '</p>' + dirs(r, prev) +
-      '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + '<div class="sl">' + scanLine(r) + '</div><p class="scan ls"></p>' +
+      '<p class="was">' + (wasDel ? 'Tracker says the letter was already delivered. ' : '') + esc(r.next_step) + '</p>' + '<div class="sl">' + scanLine(r) + '</div><p class="scan ls"></p><div class="log"></div>' +
       '<p class="q"><b>What happened?</b></p><div class="opts">' + opts + '</div>' +
       '<input class="note" placeholder="Contact name, email, what they said">' +
       (next ? '<p class="next">&rarr; Then go to <b>' + esc(next.name) + '</b>, ' + esc((next.address || '').split(',')[0]) + '</p>' : '<p class="next">&#10003; End of the day</p>') +
@@ -146,7 +148,16 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   function setMsg(t){ $('saveMsg').textContent = t; }
   function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
   function lsText(p){ var sv = parseWalk(p.walk_last); if (!p.walk_at || !sv) return ''; return 'Last saved: ' + (sv.o === 'skip' ? 'not visited' : label[sv.o]) + ' by ' + (p.walk_by || '?') + ', ' + new Date(p.walk_at).toLocaleString(); }
-  function paint(s, p){ s.querySelector('.sl').innerHTML = scanLine(p); s.querySelector('.ls').textContent = lsText(p); }
+  var strip = function(t){ return String(t || '').replace(/^Walk \d{4}-\d{2}-\d{2}: /, ''); };
+  var when = function(t){ return new Date(t).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}); };
+  function paint(s, p){ s.querySelector('.sl').innerHTML = scanLine(p); s.querySelector('.ls').textContent = lsText(p);
+    s.querySelector('.log').innerHTML = (p.walk_log || []).map(function(e){ return '<div><b>' + esc(e.by) + '</b> ' + esc(when(e.at)) + ': ' + esc(strip(e.text)) + '</div>'; }).join(''); }
+  function feed(){
+    var all = []; Object.keys(byId).forEach(function(id){ (byId[id].walk_log || []).forEach(function(e){ all.push({n: byId[id].name, e: e}); }); });
+    all.sort(function(a, b){ return new Date(b.e.at) - new Date(a.e.at); });
+    var f = $('feed'); if (!all.length){ f.hidden = true; return; } f.hidden = false;
+    f.innerHTML = '<b>Latest on the walk (everyone):</b>' + all.slice(0, 12).map(function(x){ return '<div><b>' + esc(x.e.by) + '</b> ' + esc(when(x.e.at)) + ', ' + esc(x.n) + ': ' + esc(strip(x.e.text)) + '</div>'; }).join('');
+  }
   // Every 20 s pull the latest from Supabase so a second device sees changes. A stop you are touching, or that has an unsaved answer, is left alone.
   async function quiet(){
     if (busy || Object.keys(q).length) return;
@@ -161,7 +172,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
         cur[p.id] = sv; var rd = s.querySelector('input[value="' + sv.o + '"]'); if (rd) rd.checked = true;
         s.querySelector('.note').value = sv.t || ''; s.classList.add('done');
       });
-      cnt();
+      cnt(); feed();
     } catch(e){}
   }
   setInterval(quiet, 20000);
@@ -195,7 +206,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       var rows = (r.data && r.data.partners) || [];
       byId = {}; cur = {};
       rows.forEach(function(p){ byId[p.id] = p; var sv = parseWalk(p.walk_last); if (sv) cur[p.id] = sv; if (q[p.id]) cur[p.id] = {o: q[p.id].o, t: q[p.id].t}; });
-      render(rows); rows.forEach(function(p){ var s = document.querySelector('[data-id="' + p.id + '"]'); if (s) paint(s, p); }); flush();
+      render(rows); rows.forEach(function(p){ var s = document.querySelector('[data-id="' + p.id + '"]'); if (s) paint(s, p); }); feed(); flush();
     } catch(err){
       $('msg').hidden = false;
       $('msg').innerHTML = /session/i.test(err.message || '') ? 'Your session ended. Sign in again at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>.' : 'Could not load: ' + esc(err.message) + '. <a href="">Try again</a>';

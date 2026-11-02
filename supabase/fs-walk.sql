@@ -39,6 +39,7 @@ begin
         'stage', p.stage, 'next_step', p.next_step, 'next_step_due', p.next_step_due, 'hours_note', p.hours_note,
         'pitch_key', p.pitch_key,
         'walk_last', (select a.summary from fs_partner_activity a where a.partner_id = p.id and a.summary like 'Walk %' order by a.created_at desc limit 1),
+        'walk_log', (select coalesce(jsonb_agg(jsonb_build_object('by', a.by_name, 'at', a.created_at, 'text', a.summary) order by a.created_at desc), '[]'::jsonb) from fs_partner_activity a where a.partner_id = p.id and a.summary like 'Walk %'),
         'walk_by', (select a.by_name from fs_partner_activity a where a.partner_id = p.id and a.summary like 'Walk %' order by a.created_at desc limit 1),
         'walk_at', (select a.created_at from fs_partner_activity a where a.partner_id = p.id and a.summary like 'Walk %' order by a.created_at desc limit 1),
         'scans', (select count(*) from fs_partner_scans s where s.pitch_key = p.pitch_key),
