@@ -14,6 +14,11 @@ Claude has driven the user's Chrome many times in past sessions (DNS panels, gra
 
 Outreach emails go out through the `rti-outreach` Edge Function (Resend), which always sends **From: Stephen Henry, Ras Tafari Inc. <stephen@selassiefest.com>**. Never use Gmail or any other route. Pattern: a small Node script in `C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\<topic>\` (that folder is gitignored and private) that POSTs `{ secret, to, cc, subject, html, text, in_reply_to?, references? }` to `https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/rti-outreach`. The secret is the first line of `legal/documents-inbox/rti-sign-admin-secret.txt` (`name=value`; use the part after the first `=`; never print it). Rules: scripts **dry-run by default** and send only with `--send`; show Stephen the formatted HTML preview first; send **only after he says "send"**; cc stephen@selassiefest.com; for a reply pass the recipient's Message-ID as `in_reply_to` and `references` so it threads; then log the send in `legal/documents-inbox/CURRENT-STATUS.md` and the tracker. The Rainbow Cone one-pager is ready: `Claude outputs\ice-cream\send-rainbow-cone-onepager.js` (email body `rainbow-cone-onepager-email.html`, deck https://selassiefest.com/full-spectrum/rainbow-cone/).
 
+## Confirmed facts (Stephen, do not re-ask or hedge)
+
+- **SelassieFest 2026 drew about 273 people.** One-day free roots reggae and cultural festival produced by Ras Tafari Inc. on July 25, 2026 at 6227 S. Prairie Ave., Chicago, planned in 47 days. **Stephen confirmed the 273 figure as solid on Nov 2, 2026.** Use "about 273" freely in funder emails and decks (Rainbow Cone deck and reply, Clayco inquiry, Eames inquiry). Source of the figure: `organization/selassiefest-2027-proposal.html`.
+- Rainbow Wednesdays planning figure is about 150 people a night (conservative; 273 is the real 2026 result).
+
 ## What this is
 
 A plain static HTML/CSS/JS site for SelassieFest (a roots reggae & cultural festival, run by Ras Tafari Inc, a 501c3). There is no build system, no package manager, and no server-side rendering — every page is a hand-authored, self-contained `.html` file, typically with its CSS inlined in a `<style>` block in the `<head>`. There is nothing to `npm install`, build, lint, or test in the traditional sense.
