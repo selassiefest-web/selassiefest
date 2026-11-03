@@ -170,6 +170,7 @@
     <select id="fType"><option value="">All partner types</option></select>
     <select id="fCat"><option value="">All categories</option></select>
     <select id="fPart"><option value="">All program parts</option></select>
+    <select id="fBall"><option value="">Anyone's move</option><option value="us">Our move</option><option value="them">Waiting on them</option><option value="cpd_hold">CPD hold</option><option value="parked">Parked / dropped</option><option value="unset">Not set</option></select>
     <select id="fDue"><option value="">Any next step</option><option value="over">Overdue</option><option value="week">Due in 7 days</option><option value="none">No next step set</option></select>
     <select id="sort"><option value="due">Sort: next step due</option><option value="name">Sort: name</option><option value="cat">Sort: category</option><option value="recent">Sort: recently updated</option></select>
   </div>
@@ -296,6 +297,7 @@
   <div class="row2">
     <div class="f"><label for="eCat">Category</label><input id="eCat" list="catList"><datalist id="catList"></datalist></div>
     <div class="f"><label for="eStage">Stage</label><select id="eStage"></select></div>
+    <div class="f"><label for="eBall">Whose move is it?</label><select id="eBall"><option value="">Not set</option><option value="us">Our move</option><option value="them">Waiting on them</option><option value="cpd_hold">CPD hold (send nothing until the GO)</option><option value="parked">Parked / dropped</option></select></div>
   </div>
   <div class="f"><label>Partner type</label><div class="checks" id="eTypes"></div></div>
   <div class="f"><label>Program parts</label><div class="checks" id="eParts"></div></div>
@@ -357,6 +359,7 @@
   var FLY_SIZES = { letter:'8.5×11', tabloid:'11×17', card:'4×6', bizcard:'biz cards' };
   var STAGES = [['not_contacted','Not contacted','var(--line-strong)'],['reached_out','Reached out','var(--r5)'],['in_conversation','In conversation','var(--r6)'],
     ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)'],['not_qualified','Not qualified yet','var(--r3)']];
+  var BALL = { us:'Our move', them:'Waiting on them', cpd_hold:'CPD hold', parked:'Parked' };
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
   var TYPES = {in_kind:'In-kind', financial:'Financial / sponsor', grant:'Grant funder', programming:'Strategic programming', marketing:'Marketing & promotion'};
   var PARTS = {classes:'DJ classes', wednesdays:'Rainbow Wednesdays', stage:'Stage shows', festivals:'Festivals', parties:'Fall & holiday parties', empress:'Empress Decks', all:'Whole program'};
@@ -481,6 +484,8 @@
     var t0 = today(), wk = new Date(t0); wk.setDate(wk.getDate() + 7);
     var rows = state.partners.filter(function(p){
       if (state.stageFilter && p.stage !== state.stageFilter) return false;
+      var ball = $('fBall').value;
+      if (ball && (ball === 'unset' ? p.ball_with : p.ball_with !== ball)) return false;
       if (t && (p.partner_types || []).indexOf(t) < 0) return false;
       if (cat && p.category !== cat) return false;
       if (part && (p.program_parts || []).indexOf(part) < 0) return false;
@@ -516,7 +521,7 @@
       var contacts = (p.contacts || []).map(function(c){ return esc(c.name) + (c.role ? ' <span class="p-cat">(' + esc(c.role) + ')</span>' : '') + (c.email ? ' &middot; <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' : '') + (c.phone ? ' &middot; <a href="tel:' + esc(c.phone.replace(/[^0-9+]/g,'')) + '">' + esc(c.phone) + '</a>' : ''); }).join('<br>');
       var log = logs[p.id] || [];
       return '<div class="card p" style="--sc:' + st.color + '">' +
-        '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + '</span></div>' +
+        '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + (BALL[p.ball_with] ? ' &middot; ' + BALL[p.ball_with] : '') + '</span></div>' +
         '<div class="chips">' + (p.partner_types || []).map(function(t){ return '<span class="chip">' + esc(TYPES[t] || t) + '</span>'; }).join('') + (p.program_parts || []).map(function(t){ return '<span class="chip part">' + esc(PARTS[t] || t) + '</span>'; }).join('') + '</div>' +
         (p.pitch ? '<div class="pitch"><span class="lbl">Elevator pitch</span>' + esc(p.pitch) + (p.ask ? '<div class="ask">The ask: ' + esc(p.ask) + '</div>' : '') + '</div>' : '') +
         '<div class="next">' + (p.next_step ? '<strong>Next:</strong> ' + esc(p.next_step) + (d ? ' &middot; <span class="due ' + cls + '">' + (cls === 'over' ? 'overdue, ' : 'due ') + fmtDate(p.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') +
@@ -549,7 +554,7 @@
 
   // Events
   $('stages').addEventListener('click', function(e){ var b = e.target.closest('[data-stage]'); if (!b) return; state.stageFilter = b.getAttribute('data-stage'); render(); });
-  ['q','fType','fCat','fPart','fDue','sort'].forEach(function(id){ $(id).addEventListener('input', render); });
+  ['q','fType','fCat','fPart','fBall','fDue','sort'].forEach(function(id){ $(id).addEventListener('input', render); });
   $('list').addEventListener('click', function(e){
     var b = e.target.closest('[data-act]'); if (!b) return; var id = b.getAttribute('data-id'), act = b.getAttribute('data-act');
     if (act === 'toggle'){ state.open[id] = !state.open[id]; render(); }
@@ -869,7 +874,7 @@
     var p = id ? state.partners.find(function(x){ return x.id === id; }) : { stage:'not_contacted', partner_types:[], program_parts:[], contacts:[], category:'' };
     editId = id || null;
     $('editTitle').textContent = id ? 'Edit: ' + p.name : 'Add partner';
-    $('eName').value = p.name || ''; $('eCat').value = p.category || ''; $('eStage').value = p.stage;
+    $('eName').value = p.name || ''; $('eCat').value = p.category || ''; $('eStage').value = p.stage; $('eBall').value = p.ball_with || '';
     $('eAsk').value = p.ask || ''; $('eItems').value = itemsToText(p.ask_items); $('eIntro').value = p.ask_intro || ''; $('ePitch').value = p.pitch || ''; $('eCommit').value = p.commitment || ''; $('eValue').value = p.commitment_value || '';
     $('eNext').value = p.next_step || ''; $('eDue').value = p.next_step_due || '';
     $('ePhone').value = p.phone || ''; $('eEmail').value = p.email || ''; $('eAddr').value = p.address || ''; $('eWeb').value = p.website || ''; $('eHours').value = p.hours_note || '';
@@ -886,7 +891,7 @@
     var checked = function(sel){ return Array.from(document.querySelectorAll(sel + ' input:checked')).map(function(i){ return i.value; }); };
     var contacts = $('eContacts').value.split('\n').map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
       var f = l.split('|').map(function(x){ return x.trim(); }); var c = { name: f[0] || '', role: f[1] || '' }; if (f[2]) c.email = f[2]; if (f[3]) c.phone = f[3]; return c; });
-    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ask: $('eAsk').value, ask_items: textToItems($('eItems').value), ask_intro: $('eIntro').value, pitch: $('ePitch').value, commitment: $('eCommit').value,
+    var payload = { name: $('eName').value, category: $('eCat').value || 'Other', stage: $('eStage').value, ball_with: $('eBall').value, ask: $('eAsk').value, ask_items: textToItems($('eItems').value), ask_intro: $('eIntro').value, pitch: $('ePitch').value, commitment: $('eCommit').value,
       commitment_value: $('eValue').value, next_step: $('eNext').value, next_step_due: $('eDue').value, phone: $('ePhone').value, email: $('eEmail').value,
       address: $('eAddr').value, website: $('eWeb').value, hours_note: $('eHours').value, notes: $('eNotes').value, contacts: contacts,
       partner_types: checked('#eTypes'), program_parts: checked('#eParts') };
@@ -900,7 +905,7 @@
   });
 
   $('csvBtn').addEventListener('click', function(){
-    var cols = ['name','category','stage','pitch_url','pitch_views','partner_types','program_parts','pitch','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
+    var cols = ['name','category','stage','ball_with','pitch_url','pitch_views','partner_types','program_parts','pitch','ask','commitment','commitment_value','next_step','next_step_due','phone','email','address','website','contacts','last_contact_at','notes'];
     var cell = function(v){ if (Array.isArray(v)) v = v.map(function(x){ return typeof x === 'object' ? [x.name,x.role,x.email,x.phone].filter(Boolean).join(' / ') : x; }).join('; '); v = v == null ? '' : String(v); return '"' + v.replace(/"/g,'""') + '"'; };
     var csv = cols.join(',') + '\n' + filtered().map(function(p){ return cols.map(function(c){ return cell(c === 'stage' ? (STAGE[p.stage] || {}).label : c === 'pitch_url' ? (p.pitch_key ? pitchUrl(p) : '') : p[c]); }).join(','); }).join('\n');
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'full-spectrum-partners.csv'; a.click();
