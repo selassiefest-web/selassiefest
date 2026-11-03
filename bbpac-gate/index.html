@@ -8,9 +8,10 @@
   <style>
     :root{--bg:#0D0D0D;--text:#F5F5F5;--dim:#b9b9b9;--green:#0E5E36;--gold:#E5A93C;--card:rgba(255,255,255,.05);--line:rgba(255,255,255,.14)}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Jost,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6;min-height:100vh}
+    html,body{margin:0;height:100%}
+    body{background:var(--bg);color:var(--text);font-family:Jost,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.6}
     .bar{height:6px;background:linear-gradient(90deg,#c83737,#e5a93c,#0e5e36,#2d6fb5,#7b3fa0)}
-    main{max-width:640px;margin:0 auto;padding:48px 22px 64px}
+    main{max-width:640px;margin:0 auto;padding:40px 22px 64px}
     a.home{color:var(--dim);text-decoration:none;font-size:.9rem}
     a.home:hover,a.home:focus{color:var(--gold);text-decoration:underline}
     h1{font-size:clamp(1.6rem,5vw,2.2rem);line-height:1.2;margin:22px 0 8px}
@@ -19,13 +20,24 @@
     .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:8px;padding:20px 22px;margin:0 0 22px}
     .card h2{font-size:1.1rem;margin:0 0 10px;color:var(--gold);letter-spacing:.03em}
     .actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0}
-    .btn{display:inline-block;padding:11px 18px;border-radius:6px;border:1px solid var(--gold);color:var(--text);text-decoration:none;font-weight:600;min-height:44px}
+    .btn{display:inline-block;padding:11px 18px;border-radius:6px;border:1px solid var(--gold);background:none;color:var(--text);text-decoration:none;font:inherit;font-weight:600;min-height:44px;cursor:pointer}
     .btn:hover,.btn:focus{background:var(--gold);color:#111}
-    .btn:focus-visible,a.home:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    .btn:focus-visible,a.home:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    input[type=email]{width:100%;padding:11px 12px;border-radius:6px;border:1px solid var(--line);background:#161616;color:var(--text);font:inherit;min-height:44px;margin:8px 0}
+    label{font-weight:600}
+    #msg{min-height:1.4em;margin:10px 0 0;color:var(--dim)}
+    #msg.err{color:#ff9a9a}#msg.ok{color:#8fe0a8}
     small{color:var(--dim)}
+    #viewer{display:none;flex-direction:column;height:100%}
+    #viewer.on{display:flex}
+    #topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:8px 14px;background:#111;border-bottom:1px solid var(--line);font-size:.9rem;flex-wrap:wrap}
+    #topbar a,#topbar button{color:var(--text);background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer;padding:6px 4px}
+    #frame{flex:1;width:100%;border:0;background:#fff}
+    #gate.off{display:none}
   </style>
 </head>
 <body>
+<div id="gate">
 <div class="bar"></div>
 <main>
   <a class="home" href="/">&larr; SelassieFest home</a>
@@ -34,7 +46,13 @@
 
   <section class="card" aria-labelledby="have">
     <h2 id="have">Already a member?</h2>
-    <p>Member sign-in is moving to a protected system. Until it opens, contact us below and we will get you in.</p>
+    <p>Enter the email address you were invited with. We will send you a one-time sign-in link.</p>
+    <form id="signin" novalidate>
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email" required>
+      <button class="btn" type="submit" id="send">Email me a sign-in link</button>
+    </form>
+    <p id="msg" role="status" aria-live="polite"></p>
   </section>
 
   <section class="card" aria-labelledby="ask">
@@ -49,5 +67,145 @@
 
   <p><small>Ras Tafari Inc, a 501(c)(3) nonprofit.</small></p>
 </main>
+</div>
+
+<div id="viewer">
+  <div id="topbar">
+    <span>BBPAC Members Area &middot; <span id="who"></span></span>
+    <span><a href="#/bbpac/">Members home</a> <button type="button" id="signout">Sign out</button></span>
+  </div>
+  <iframe id="frame" title="BBPAC members page" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads"></iframe>
+</div>
+
+<script src="/assets/js/supabase-client.js"></script>
+<script>
+(function(){
+  'use strict';
+  var KEY = 'bbpacTrackerSession';               // same key the BBPAC tracker pages use
+  var PRIVATE = /^\/(bbpac\/|bbpac-strategy\/|m4\.json$)/;
+  var cache = {};
+  var $ = function(id){ return document.getElementById(id); };
+
+  function loadSession(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
+  function saveSession(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  function clearSession(){ try { localStorage.removeItem(KEY); } catch(e){} }
+  function say(t, cls){ var m = $('msg'); m.textContent = t || ''; m.className = cls || ''; }
+
+  function targetPath(){
+    var h = location.hash;
+    if (h.indexOf('#/') === 0) { try { return decodeURIComponent(h.slice(1).split('#')[0]); } catch(e){} }
+    var p = location.pathname;
+    if (p === '/bbpac/' || p === '/bbpac/index.html') return '/bbpac/';
+    return p;
+  }
+
+  async function rpcFile(path){
+    if (cache[path]) return cache[path];
+    var s = loadSession(); if (!s) throw new Error('not signed in');
+    var c = await window.sfSupabaseReady;
+    var r = await c.rpc('bbpac_private_file', { p_session: s.sessionToken, p_path: path });
+    if (r.error) throw r.error;
+    if (!r.data || !r.data.length) return null;
+    var f = r.data[0], blob;
+    if (f.is_text) blob = new Blob([f.body], { type: f.mime });
+    else { var bin = atob(f.body), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); blob = new Blob([u], { type: f.mime }); }
+    return (cache[path] = { path: f.path, mime: f.mime, isText: f.is_text, text: f.is_text ? f.body : null, blob: blob });
+  }
+  async function blobUrl(path){ var f = await rpcFile(path); return f ? URL.createObjectURL(f.blob) : null; }
+  window.__bbpacBlob = async function(path){ var f = await rpcFile(path); if (!f) throw new Error('missing'); return { blob: f.blob, mime: f.mime }; };
+
+  function showSignIn(msg, cls){
+    $('viewer').classList.remove('on'); $('gate').classList.remove('off');
+    document.body.style.overflow = ''; if (msg) say(msg, cls);
+  }
+
+  async function renderHtml(f, path){
+    var doc = new DOMParser().parseFromString(f.text, 'text/html');
+    var base = new URL(path, location.origin); var dir = new URL('.', base).href;
+    var jobs = [];
+    doc.querySelectorAll('link[href],script[src],img[src],source[src],audio[src],video[src]').forEach(function(el){
+      var attr = el.hasAttribute('src') ? 'src' : 'href';
+      var rel = (el.getAttribute('rel') || '').toLowerCase();
+      if (el.tagName === 'LINK' && !/stylesheet|icon/.test(rel)) return;
+      var abs; try { abs = new URL(el.getAttribute(attr), base); } catch(e){ return; }
+      if (abs.origin === location.origin && PRIVATE.test(abs.pathname)) {
+        jobs.push(blobUrl(abs.pathname).then(function(u){ if (u) el.setAttribute(attr, u); }).catch(function(){}));
+      }
+    });
+    await Promise.all(jobs);
+    var b = doc.createElement('base'); b.setAttribute('href', dir); doc.head.insertBefore(b, doc.head.firstChild);
+    var shim = doc.createElement('script');
+    shim.textContent = "(function(){var of=window.fetch.bind(window);window.fetch=function(u,o){try{var a=new URL(typeof u==='string'?u:u.url,document.baseURI);if(a.origin===location.origin&&/^\\/(bbpac\\/|bbpac-strategy\\/|m4\\.json$)/.test(a.pathname)&&parent.__bbpacBlob){return parent.__bbpacBlob(a.pathname).then(function(r){return new Response(r.blob,{status:200,headers:{'Content-Type':r.mime}})})}}catch(e){}return of(u,o)}})();";
+    doc.head.insertBefore(shim, b);
+    var frame = $('frame');
+    frame.onload = function(){ hook(frame, base); var hh = location.hash.split('#')[2]; if (hh) { try { frame.contentWindow.location.hash = ''; var el = frame.contentDocument.getElementById(hh); if (el) el.scrollIntoView(); } catch(e){} } };
+    frame.srcdoc = '<!DOCTYPE html>' + doc.documentElement.outerHTML;
+  }
+
+  function hook(frame, base){
+    var d; try { d = frame.contentDocument; } catch(e){ return; }
+    d.addEventListener('click', async function(ev){
+      var a = ev.target.closest && ev.target.closest('a[href]'); if (!a) return;
+      var raw = a.getAttribute('href');
+      if (!raw || raw.charAt(0) === '#' || /^(mailto:|tel:|sms:|javascript:)/i.test(raw)) return;
+      var abs; try { abs = new URL(raw, base); } catch(e){ return; }
+      if (abs.origin !== location.origin) { a.target = '_blank'; a.rel = 'noopener noreferrer'; return; }
+      if (!PRIVATE.test(abs.pathname)) { a.target = '_top'; return; }
+      ev.preventDefault();
+      var p = abs.pathname;
+      if (/\.[a-z0-9]{2,5}$/i.test(p) && !/\.html?$/i.test(p)) {
+        var u = await blobUrl(p); if (u) window.open(u, '_blank');
+      } else {
+        location.hash = '#' + p + (abs.hash || '');
+      }
+    }, true);
+  }
+
+  async function show(path){
+    var s = loadSession();
+    if (!s) return showSignIn();
+    $('gate').classList.add('off'); $('viewer').classList.add('on'); document.body.style.overflow = 'hidden';
+    $('who').textContent = s.displayName || s.email || '';
+    try {
+      var f = await rpcFile(path);
+      if (!f) { $('frame').srcdoc = '<p style="font-family:sans-serif;padding:2em">That page was not found in the members area. <a href="#/bbpac/" target="_top">Members home</a></p>'; return; }
+      if (f.isText && /html/.test(f.mime)) return renderHtml(f, f.path);
+      window.open(URL.createObjectURL(f.blob), '_blank');
+    } catch(err){
+      var m = String((err && (err.message || err.details)) || err);
+      if (/not signed in/i.test(m)) { clearSession(); cache = {}; showSignIn('Your sign-in has expired. Enter your email to get a new link.', 'err'); }
+      else { $('frame').srcdoc = '<p style="font-family:sans-serif;padding:2em">This page could not be loaded. Please try again.</p>'; }
+    }
+  }
+
+  async function init(){
+    var params = new URLSearchParams(location.search), token = params.get('token');
+    if (token) {
+      try {
+        var r = await window.sfSupabase.bbpacTrackerVerifyLogin(token);
+        saveSession({ sessionToken: r.session_token, email: r.email, displayName: r.display_name });
+        var path = targetPath();
+        history.replaceState({}, '', '/bbpac/#' + (path === '/bbpac/' ? '/bbpac/' : path));
+      } catch(err){
+        history.replaceState({}, '', '/bbpac/');
+        return showSignIn('That sign-in link is invalid or has expired. Enter your email to get a new one.', 'err');
+      }
+    }
+    show(targetPath());
+  }
+
+  window.addEventListener('hashchange', function(){ show(targetPath()); });
+  $('signout').addEventListener('click', function(){ clearSession(); cache = {}; $('frame').srcdoc = ''; history.replaceState({}, '', '/bbpac/'); showSignIn('Signed out.', 'ok'); });
+  $('signin').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var email = $('email').value.trim(); if (!email) return say('Enter your email address first.', 'err');
+    $('send').disabled = true; say('Sending...');
+    try { await window.sfSupabase.bbpacTrackerRequestLogin(email); } catch(err){}
+    say('If that address is on the member list, a sign-in link is on its way. It works for 30 minutes.', 'ok');
+    setTimeout(function(){ $('send').disabled = false; }, 4000);
+  });
+  init();
+})();
+</script>
 </body>
 </html>
