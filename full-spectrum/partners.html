@@ -518,7 +518,9 @@
       (committed ? '<div class="stage-chip" style="cursor:default"><b>$' + committed.toLocaleString() + '</b><span>Committed value</span></div>' : '');
     var rows = filtered(), t0 = today(), wk = new Date(t0); wk.setDate(wk.getDate() + 7);
     var logs = {}; state.activity.forEach(function(a){ (logs[a.partner_id] = logs[a.partner_id] || []).push(a); });
-    $('count').textContent = 'Showing ' + rows.length + ' of ' + state.partners.length + ' partners';
+    var bc = {}; rows.forEach(function(p){ if (p.ball_with) bc[p.ball_with] = (bc[p.ball_with] || 0) + 1; });
+    $('count').textContent = 'Showing ' + rows.length + ' of ' + state.partners.length + ' partners' +
+      (Object.keys(bc).length ? ' · ' + Object.keys(BALL).filter(function(k){ return bc[k]; }).map(function(k){ return BALL[k] + ' ' + bc[k]; }).join(' · ') : '');
     $('list').innerHTML = rows.map(function(p){
       var st = STAGE[p.stage] || {label:p.stage, color:'var(--line-strong)'};
       var d = parseDate(p.next_step_due), cls = d ? (d < t0 ? 'over' : (d <= wk ? 'soon' : '')) : '';
