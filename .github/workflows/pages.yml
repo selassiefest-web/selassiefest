@@ -23,6 +23,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Keep BBPAC private (do not publish its records)
+        # The BBPAC records are sensitive and the repo is public. Serve only the members-area
+        # gate page at /bbpac/ and nothing else from these folders. See Claude outputs/bbpac-private-backup-2026-11-02.
+        run: |
+          rm -rf bbpac bbpac-strategy m4.json
+          mkdir -p bbpac
+          cp bbpac-gate/index.html bbpac/index.html
+          cp bbpac-gate/index.html bbpac/beach-map.html
+          rm -rf bbpac-gate
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
