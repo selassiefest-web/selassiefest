@@ -171,6 +171,7 @@
     <select id="fCat"><option value="">All categories</option></select>
     <select id="fPart"><option value="">All program parts</option></select>
     <select id="fBall"><option value="">Anyone's move</option><option value="us">Our move</option><option value="them">Waiting on them</option><option value="cpd_hold">CPD hold</option><option value="parked">Parked / dropped</option><option value="unset">Not set</option></select>
+    <select id="fAct"><option value="">Any kind of next step</option><option value="walk">Walk stops</option><option value="call">Needs a call</option><option value="email">Needs an email</option><option value="research">Research first</option></select>
     <select id="fDue"><option value="">Any next step</option><option value="over">Overdue</option><option value="week">Due in 7 days</option><option value="none">No next step set</option></select>
     <select id="sort"><option value="due">Sort: next step due</option><option value="name">Sort: name</option><option value="cat">Sort: category</option><option value="recent">Sort: recently updated</option></select>
   </div>
@@ -359,6 +360,7 @@
   var FLY_SIZES = { letter:'8.5×11', tabloid:'11×17', card:'4×6', bizcard:'biz cards' };
   var STAGES = [['not_contacted','Not contacted','var(--line-strong)'],['reached_out','Reached out','var(--r5)'],['in_conversation','In conversation','var(--r6)'],
     ['meeting_set','Meeting set','var(--r7)'],['committed','Committed','var(--r2)'],['confirmed','Confirmed in writing','var(--r4)'],['declined','Declined','var(--r1)'],['on_hold','On hold','var(--ink-faint)'],['not_qualified','Not qualified yet','var(--r3)']];
+  var ACT = { walk:'Walk stop', call:'Call', email:'Email', research:'Research' };
   var BALL = { us:'Our move', them:'Waiting on them', cpd_hold:'CPD hold', parked:'Parked' };
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
   var TYPES = {in_kind:'In-kind', financial:'Financial / sponsor', grant:'Grant funder', programming:'Strategic programming', marketing:'Marketing & promotion'};
@@ -485,6 +487,8 @@
     var rows = state.partners.filter(function(p){
       if (state.stageFilter && p.stage !== state.stageFilter) return false;
       var ball = $('fBall').value;
+      var act = $('fAct').value;
+      if (act && p.action_kind !== act) return false;
       if (ball && (ball === 'unset' ? p.ball_with : p.ball_with !== ball)) return false;
       if (t && (p.partner_types || []).indexOf(t) < 0) return false;
       if (cat && p.category !== cat) return false;
@@ -521,7 +525,7 @@
       var contacts = (p.contacts || []).map(function(c){ return esc(c.name) + (c.role ? ' <span class="p-cat">(' + esc(c.role) + ')</span>' : '') + (c.email ? ' &middot; <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' : '') + (c.phone ? ' &middot; <a href="tel:' + esc(c.phone.replace(/[^0-9+]/g,'')) + '">' + esc(c.phone) + '</a>' : ''); }).join('<br>');
       var log = logs[p.id] || [];
       return '<div class="card p" style="--sc:' + st.color + '">' +
-        '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + (BALL[p.ball_with] ? ' &middot; ' + BALL[p.ball_with] : '') + '</span></div>' +
+        '<div class="p-top"><div><span class="p-name">' + esc(p.name) + '</span> <span class="p-cat">' + esc(p.category) + '</span></div><span class="pill" style="background:color-mix(in srgb,' + st.color + ' 18%,transparent)">' + esc(st.label) + (BALL[p.ball_with] ? ' &middot; ' + BALL[p.ball_with] : '') + (ACT[p.action_kind] ? ' &middot; ' + ACT[p.action_kind] : '') + '</span></div>' +
         '<div class="chips">' + (p.partner_types || []).map(function(t){ return '<span class="chip">' + esc(TYPES[t] || t) + '</span>'; }).join('') + (p.program_parts || []).map(function(t){ return '<span class="chip part">' + esc(PARTS[t] || t) + '</span>'; }).join('') + '</div>' +
         (p.pitch ? '<div class="pitch"><span class="lbl">Elevator pitch</span>' + esc(p.pitch) + (p.ask ? '<div class="ask">The ask: ' + esc(p.ask) + '</div>' : '') + '</div>' : '') +
         '<div class="next">' + (p.next_step ? '<strong>Next:</strong> ' + esc(p.next_step) + (d ? ' &middot; <span class="due ' + cls + '">' + (cls === 'over' ? 'overdue, ' : 'due ') + fmtDate(p.next_step_due) + '</span>' : '') : '<span class="p-cat">No next step set</span>') +
@@ -554,7 +558,7 @@
 
   // Events
   $('stages').addEventListener('click', function(e){ var b = e.target.closest('[data-stage]'); if (!b) return; state.stageFilter = b.getAttribute('data-stage'); render(); });
-  ['q','fType','fCat','fPart','fBall','fDue','sort'].forEach(function(id){ $(id).addEventListener('input', render); });
+  ['q','fType','fCat','fPart','fBall','fAct','fDue','sort'].forEach(function(id){ $(id).addEventListener('input', render); });
   $('list').addEventListener('click', function(e){
     var b = e.target.closest('[data-act]'); if (!b) return; var id = b.getAttribute('data-id'), act = b.getAttribute('data-act');
     if (act === 'toggle'){ state.open[id] = !state.open[id]; render(); }
