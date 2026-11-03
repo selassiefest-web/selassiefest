@@ -209,6 +209,7 @@
     <button class="tab on" data-tab="week">This week</button>
     <button class="tab" data-tab="calendar">Calendar</button>
     <button class="tab" data-tab="venues">Venues</button>
+    <button class="tab" data-tab="marley">Marley show</button>
     <button class="tab" data-tab="acts">Acts</button>
     <button class="tab" data-tab="money">Money</button>
   </nav>
@@ -249,6 +250,19 @@
     </div>
     <p class="count" id="vCount"></p>
     <div class="list" id="vList"></div>
+  </section>
+
+  <!-- Marley show: one show pitched to the same clubs (supabase/lr-show-pitches.sql) -->
+  <section id="tab-marley" hidden>
+    <div class="note"><b>Bob Marley: Live Forever.</b> Jay RebL as Bob with Ifficial Reggae Movement, the full Stanley Theatre set. First choice Sat, Feb 6, 2027; other 2027 dates open; rates on request. Each club's personal page is /live-reggae/marley/?k= with its usual key. This list is private.</div>
+    <div class="stages" id="mStageChips"></div>
+    <div class="filters">
+      <input type="search" id="mSearch" placeholder="Search clubs, neighborhoods, notes…">
+      <select id="mRegion"><option value="">All areas</option></select>
+      <select id="mTier"><option value="">All tiers</option><option value="A">A: hosts reggae now</option><option value="B">B: live-music room</option><option value="C">C: Caribbean restaurant</option></select>
+    </div>
+    <p class="count" id="mCount"></p>
+    <div class="list" id="mList"></div>
   </section>
 
   <!-- Acts -->
@@ -464,6 +478,9 @@
   var STAGES = [['prospect','Prospect','var(--line-strong)'],['contacted','Contacted','var(--blue)'],['talking','Talking','var(--violet)'],
     ['trial_booked','Trial booked','var(--gold)'],['in_rotation','In rotation','var(--green)'],['paused','Paused','var(--ink-faint)'],['declined','Declined','var(--red)']];
   var STAGE = {}; STAGES.forEach(function(s){ STAGE[s[0]] = {label:s[1], color:s[2]}; });
+  var SHOW = 'marley-live-forever';
+  var MSTAGES = [['not_pitched','Not pitched','var(--line-strong)'],['sent','Sent','var(--blue)'],['talking','Talking','var(--violet)'],['booked','Booked','var(--green)'],['declined','Declined','var(--red)']];
+  var MSTAGE = {}; MSTAGES.forEach(function(s){ MSTAGE[s[0]] = {label:s[1], color:s[2]}; });
   var REGIONS = ['Chicago – South Side','Chicago – Far South Side','Chicago – West Side','Chicago – North Side','Chicago – Downtown / Near','South Suburbs','West Suburbs','North Suburbs','NW Indiana'];
   var STATUS = {hold:'Hold', offered:'Offered', confirmed:'Confirmed', played:'Played', cancelled:'Cancelled'};
   var STATUS_COLOR = {hold:'var(--gold)', offered:'var(--blue)', confirmed:'var(--green)', played:'var(--green)', cancelled:'var(--red)'};
@@ -473,7 +490,7 @@
   var NIGHTS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var FLAT = ''; // the owner sets the price, so nothing is prefilled
   var KEY = 'lrSession';
-  var state = { session:null, venues:[], acts:[], gigs:[], activity:[], tab:'week', stageFilter:'', open:{}, gen:[] };
+  var state = { session:null, venues:[], acts:[], gigs:[], activity:[], shows:[], tab:'week', stageFilter:'', mStageFilter:'', open:{}, gen:[] };
   var $ = function(id){ return document.getElementById(id); };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function loadSession(){ try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e){ return null; } }
@@ -504,6 +521,8 @@
   function mains(){ return state.acts.filter(function(a){ return a.is_main && a.active; }); }
   function liveGigs(){ return state.gigs.filter(function(g){ return g.status !== 'cancelled'; }); }
   function pitchUrl(v){ return 'https://selassiefest.com/live-reggae/venue/?k=' + v.pitch_key; }
+  function marleyUrl(v){ return 'https://selassiefest.com/live-reggae/marley/?k=' + v.pitch_key; }
+  function showPitch(id){ return state.shows.find(function(s){ return s.venue_id === id; }) || { stage: 'not_pitched', views: 0 }; }
 
   // Theme
   (function(){ var root = document.documentElement; try { var t = localStorage.getItem('lr-theme'); if (t) root.setAttribute('data-theme', t); } catch(e){}
@@ -527,16 +546,17 @@
   async function load(){
     var d = await rpc('lr_load');
     state.venues = d.venues || []; state.acts = d.acts || []; state.gigs = d.gigs || []; state.activity = d.activity || [];
+    try { state.shows = await rpc('lr_show_pitches_load', { p_show: SHOW }) || []; } catch(err){ state.shows = []; }
     render();
   }
 
-  function render(){ renderWeek(); renderCalendar(); renderVenues(); renderActs(); renderMoney(); }
+  function render(){ renderWeek(); renderCalendar(); renderVenues(); renderMarley(); renderActs(); renderMoney(); }
 
   // Tabs
   document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click', function(){
     state.tab = b.getAttribute('data-tab');
     document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x === b); });
-    ['week','calendar','venues','acts','money'].forEach(function(t){ $('tab-' + t).hidden = t !== state.tab; });
+    ['week','calendar','venues','marley','acts','money'].forEach(function(t){ $('tab-' + t).hidden = t !== state.tab; });
     try { localStorage.setItem('lr-tab', state.tab); } catch(e){}
   }); });
 
@@ -893,6 +913,61 @@
       'We\'re building a weekly live reggae night across Chicago and NW Indiana and would love ' + v.name + ' to be one of the rooms' + (v.preferred_night ? ', maybe ' + ({Mon:'Mondays',Tue:'Tuesdays',Wed:'Wednesdays',Thu:'Thursdays',Fri:'Fridays',Sat:'Saturdays',Sun:'Sundays'})[v.preferred_night] : '') + '. ' +
       'You set the price: a flat fee, or a door or bar deal that fits your room. One package covers the band, singer, DJ, street team and crew.\n\n' +
       'Here\'s a one-page with the details. You can answer right on it: ' + pitchUrl(v) + '\n\n' + BOOKER + ' · ' + BOOKER_PHONE;
+  }
+
+  // ── Marley show ───────────────────────────────────────────────────────
+  function renderMarley(){
+    var counts = {}; state.venues.forEach(function(v){ var s = showPitch(v.id).stage; counts[s] = (counts[s] || 0) + 1; });
+    $('mStageChips').innerHTML = '<button class="stage-chip' + (state.mStageFilter ? '' : ' on') + '" data-mstage=""><b>' + state.venues.length + '</b><span>All clubs</span></button>' +
+      MSTAGES.map(function(s){ return '<button class="stage-chip' + (state.mStageFilter === s[0] ? ' on' : '') + '" data-mstage="' + s[0] + '" style="border-left:4px solid ' + s[2] + '"><b>' + (counts[s[0]] || 0) + '</b><span>' + s[1] + '</span></button>'; }).join('');
+    if ($('mRegion').options.length === 1) $('mRegion').innerHTML += REGIONS.map(function(r){ return '<option>' + esc(r) + '</option>'; }).join('');
+    var q = $('mSearch').value.trim().toLowerCase(), rg = $('mRegion').value, tr = $('mTier').value, t = todayIso();
+    var order = { talking:0, booked:1, sent:2, not_pitched:3, declined:4 };
+    var list = state.venues.filter(function(v){ var p = showPitch(v.id);
+      return (!state.mStageFilter || p.stage === state.mStageFilter) && (!rg || v.region === rg) && (!tr || v.tier === tr) &&
+        (!q || [v.name, v.neighborhood, v.region, p.notes, p.last_answer].join(' ').toLowerCase().indexOf(q) >= 0); })
+      .sort(function(a, b){ var pa = showPitch(a.id), pb = showPitch(b.id);
+        return (order[pa.stage] - order[pb.stage]) || (a.tier || 'Z').localeCompare(b.tier || 'Z') || a.name.localeCompare(b.name); });
+    $('mCount').textContent = list.length + ' of ' + state.venues.length + ' clubs';
+    $('mList').innerHTML = list.length ? list.map(function(v){
+      var p = showPitch(v.id), st = MSTAGE[p.stage], due = p.next_step_due;
+      var dueCls = due ? (due < t ? 'over' : due <= addDays(t, 3) ? 'soon' : '') : '';
+      var reach = [v.phone ? '<a href="tel:' + esc(v.phone.replace(/[^\d+]/g,'')) + '">' + esc(v.phone) + '</a>' : '', v.email ? '<a href="mailto:' + esc(v.email) + '">' + esc(v.email) + '</a>' : ''].filter(Boolean);
+      return '<div class="card p" style="--sc:' + st.color + '">' +
+        '<div class="p-top"><div><span class="p-name">' + esc(v.name) + '</span>' + (v.tier ? '<span class="tier">' + v.tier + '</span>' : '') +
+        '<div class="p-sub">' + esc([v.neighborhood, v.region].filter(Boolean).join(' · ')) + '</div></div>' +
+        '<span class="pill" style="color:' + st.color + '">' + st.label + '</span></div>' +
+        (p.last_answer ? '<div class="p-line"><i class="fa-solid fa-reply"></i> ' + esc(p.last_answer) + (p.answered_at ? ' · ' + esc(fmtWhen(p.answered_at)) : '') + '</div>' : '') +
+        (p.date_agreed ? '<div class="p-line"><i class="fa-solid fa-check"></i> Date agreed: ' + esc(fmtLong(p.date_agreed)) + '</div>' : '') +
+        (reach.length ? '<div class="p-line"><i class="fa-solid fa-address-book"></i> ' + reach.join(' · ') + '</div>' : '') +
+        '<div class="p-line"><i class="fa-solid fa-eye"></i> Page opened ' + (p.views || 0) + ' time' + (p.views === 1 ? '' : 's') + (p.last_viewed ? ', last ' + esc(fmtWhen(p.last_viewed)) : '') + '</div>' +
+        (p.next_step ? '<div class="next">Next: ' + esc(p.next_step) + (due ? ' <span class="due ' + dueCls + '">· ' + (due < t ? 'overdue, ' : '') + esc(fmtMD(due)) + '</span>' : '') + '</div>' : '') +
+        (p.notes ? '<div class="p-line"><i class="fa-solid fa-note-sticky"></i> ' + esc(p.notes) + '</div>' : '') +
+        '<div class="p-actions">' +
+          (v.pitch_key ? '<button class="btn small primary" data-mpitch="' + v.id + '"><i class="fa-solid fa-paper-plane"></i> Pitch text</button>' +
+            '<a class="btn small" href="' + esc(marleyUrl(v)) + '" target="_blank" rel="noopener"><i class="fa-solid fa-up-right-from-square"></i> Their page</a>' : '') +
+          '<select class="btn small" data-mset="' + v.id + '" aria-label="Marley show stage for ' + esc(v.name) + '">' +
+            MSTAGES.map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === p.stage ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select>' +
+          '<button class="btn small" data-mnote="' + v.id + '"><i class="fa-solid fa-pen"></i> Note / next step</button></div></div>';
+    }).join('') : '<div class="card empty">No clubs match. Clear the filters.</div>';
+  }
+  $('mStageChips').addEventListener('click', function(e){ var b = e.target.closest('[data-mstage]'); if (!b) return; state.mStageFilter = b.getAttribute('data-mstage'); renderMarley(); });
+  ['mSearch','mRegion','mTier'].forEach(function(id){ $(id).addEventListener('input', renderMarley); });
+  async function saveShow(id, p){ try { await rpc('lr_show_pitch_save', { p_venue: id, p: p, p_show: SHOW }); await load(); toast('Saved'); } catch(err){ alert('Could not save: ' + err.message); } }
+  $('mList').addEventListener('change', function(e){ var s = e.target.closest('[data-mset]'); if (s) saveShow(s.getAttribute('data-mset'), { stage: s.value }); });
+  $('mList').addEventListener('click', function(e){
+    var b;
+    if ((b = e.target.closest('[data-mpitch]'))){ var v = venue(b.getAttribute('data-mpitch')); showCopy('Text or email to ' + v.name, marleyText(v)); }
+    else if ((b = e.target.closest('[data-mnote]'))){ var id = b.getAttribute('data-mnote'), p = showPitch(id);
+      var note = prompt('Note for ' + venue(id).name + ' (Marley show)', p.notes || ''); if (note === null) return;
+      var next = prompt('Next step (blank for none)', p.next_step || ''); if (next === null) return;
+      var dueIn = next.trim() ? (prompt('Due date for the next step (YYYY-MM-DD, or blank)', p.next_step_due || '') || '') : '';
+      saveShow(id, { notes: note, next_step: next, next_step_due: /^\d{4}-\d{2}-\d{2}$/.test(dueIn.trim()) ? dueIn.trim() : '' }); }
+  });
+  function marleyText(v){
+    return 'Hi, this is ' + BOOKER + '. I\'m booking a special show for 2027: Bob Marley: Live Forever. Jay RebL plays Bob Marley, backed by Ifficial Reggae Movement, and they perform his final concert (Stanley Theatre, Pittsburgh, September 23, 1980) start to finish, all 20 songs.\n\n' +
+      'Our first choice is his birthday, Saturday, February 6, 2027, and we\'d love ' + v.name + ' to host it. Other 2027 dates are open too, and you choose the deal: a flat fee, or a door or bar deal that fits your room.\n\n' +
+      'Here\'s a one-page with the details. You can answer right on it: ' + marleyUrl(v) + '\n\n' + BOOKER + ' · ' + BOOKER_PHONE;
   }
 
   var editId = null;

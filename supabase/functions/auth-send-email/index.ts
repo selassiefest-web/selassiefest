@@ -61,6 +61,13 @@ const VENTURES: Array<{ key: string; matches: (redirectTo: string) => boolean; s
   },
   {
     key: "clrwf",
+    matches: (redirectTo) => /^https:\/\/(www\.)?clrainford\.com\//.test(redirectTo),
+    senderName: "C. L. Rainford Welding & Fabrication",
+    buildLink: (d) => `https://clrainford.com/confirm-login.html?token_hash=${encodeURIComponent(d.token_hash)}&redirect_to=${encodeURIComponent(d.redirect_to)}`,
+  },
+  {
+    // Legacy path, kept until selassiefest.com/clrwf/ is fully redirected.
+    key: "clrwf-legacy",
     matches: (redirectTo) => redirectTo.startsWith("https://selassiefest.com/clrwf/"),
     senderName: "C. L. Rainford Welding & Fabrication",
     buildLink: (d) => `https://selassiefest.com/clrwf/confirm-login.html?token_hash=${encodeURIComponent(d.token_hash)}&redirect_to=${encodeURIComponent(d.redirect_to)}`,

@@ -1,7 +1,7 @@
 // Supabase Edge Function: rti-board-sign
 // Behind /rti/board/sign/: each Ras Tafari Inc. director reads a packet of
 // board documents and signs it from a personal link (?t=TOKEN, emailed by
-// Resend). Only the token's hash is stored; a new invite replaces the old link.
+// Resend). Only token hashes are stored; every link sent stays valid.
 //
 //   { action: "load", token }     The packet, every director's status and, once
 //       signed, their signature (so the signed packet can be printed).
@@ -17,6 +17,8 @@
 //   { action: "bootstrap", secret, packet }   From the CLI (RTI_SIGN_ADMIN_SECRET):
 //       emails the admin signer(s) their link to start a packet; with who: "all",
 //       every director who hasn't signed yet.
+//   { action: "remind", secret, emails, note? }   From the CLI: one email per address listing
+//       every open packet that person still has to sign, each with a fresh link.
 //
 // Deploy with --no-verify-jwt. Secrets: RESEND_API_KEY, RTI_SIGN_ADMIN_SECRET.
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -60,11 +62,13 @@ async function sendEmail(to: string, subject: string, text: string, html: string
   return res.ok;
 }
 
-// Mint a fresh link for a signer (replacing any old one) and email it
+// Mint a fresh link for a signer and email it. Earlier links keep working
+// (a director may open an older email), so the previous hash is kept.
 async function invite(supabase: any, packet: any, s: any, from: string) {
   const token = randomHex(32);
+  const old = [...(s.old_token_hashes ?? []), ...(s.token_hash ? [s.token_hash] : [])].slice(-20);
   const { error } = await supabase.from("rti_sign_signers")
-    .update({ token_hash: await sha256(token), invited_at: new Date().toISOString() }).eq("id", s.id);
+    .update({ token_hash: await sha256(token), old_token_hashes: old, invited_at: new Date().toISOString() }).eq("id", s.id);
   if (error) { console.error("rti-board-sign: token update failed", error.code); return false; }
   const link = `${PAGE_URL}?t=${token}`;
   const subject = `Please review and sign: ${packet.title}`;
@@ -117,6 +121,35 @@ Deno.serve(async (req) => {
     return reply({ ok: true, sent });
   }
 
+  // ---- CLI: one email per director listing every packet they still need to sign, each with a fresh link ----
+  if (body.action === "remind") {
+    if (!ADMIN_SECRET || String(body.secret ?? "") !== ADMIN_SECRET) return reply({ ok: false, error: "Not allowed." }, 403);
+    const emails = (Array.isArray(body.emails) ? body.emails : []).map((e: unknown) => String(e).toLowerCase());
+    if (!emails.length) return reply({ ok: false, error: "List the emails to remind." }, 400);
+    const { data: rows } = await supabase.from("rti_sign_signers").select("*").in("email", emails).is("signed_at", null).order("packet_id");
+    const { data: packets } = await supabase.from("rti_sign_packets").select("id, title, completed_at");
+    const byId = new Map((packets ?? []).map((p: any) => [p.id, p]));
+    const sent = [];
+    for (const email of emails) {
+      const mine = (rows ?? []).filter((s: any) => s.email === email && !byId.get(s.packet_id)?.completed_at);
+      if (!mine.length) continue;
+      const items: { title: string; link: string }[] = [];
+      for (const s of mine) {
+        const token = randomHex(32);
+        const old = [...(s.old_token_hashes ?? []), ...(s.token_hash ? [s.token_hash] : [])].slice(-20);
+        const { error } = await supabase.from("rti_sign_signers").update({ token_hash: await sha256(token), old_token_hashes: old, invited_at: new Date().toISOString() }).eq("id", s.id);
+        if (!error) items.push({ title: byId.get(s.packet_id)?.title ?? s.packet_id, link: `${PAGE_URL}?t=${token}` });
+      }
+      if (!items.length) continue;
+      const first = firstName(mine[0].full_name);
+      const note = String(body.note ?? "").trim();
+      const text = `Hello ${first},\n\nYou have ${items.length} Ras Tafari Inc. board document${items.length > 1 ? "s" : ""} waiting for your signature:\n\n${items.map((it, i) => `${i + 1}. ${it.title}\n   ${it.link}`).join("\n\n")}\n\n${note ? note + "\n\n" : ""}Each link is personal: it signs as you, so please don't forward it. Earlier links from us still work too.\n\nQuestions: stephen@selassiefest.com or (872) 255-9333.\n`;
+      const html = `<p>Hello ${esc(first)},</p><p>You have <b>${items.length}</b> Ras Tafari Inc. board document${items.length > 1 ? "s" : ""} waiting for your signature:</p><ol>${items.map((it) => `<li style="margin-bottom:14px"><b>${esc(it.title)}</b><br><a href="${it.link}" style="display:inline-block;margin-top:6px;background:#1f5b3a;color:#fff;padding:9px 14px;border-radius:8px;text-decoration:none;font-weight:700">Review and sign</a></li>`).join("")}</ol>${note ? `<p>${esc(note)}</p>` : ""}<p>Each link is personal: it signs as you, so please don't forward it. Earlier links from us still work too.</p><p style="color:#666;font-size:13px">Questions: stephen@selassiefest.com or (872) 255-9333.</p>`;
+      if (await sendEmail(email, `To sign: ${items.length} Ras Tafari Inc. board document${items.length > 1 ? "s" : ""}`, text, html)) sent.push({ to: maskEmail(email), count: items.length });
+    }
+    return reply({ ok: true, sent });
+  }
+
   // ---- Public progress count for a status page: numbers only, no names ----
   if (body.action === "progress") {
     const { data: packet } = await supabase.from("rti_sign_packets").select("id, completed_at").eq("id", String(body.packet ?? "")).maybeSingle();
@@ -128,7 +161,9 @@ Deno.serve(async (req) => {
   // ---- Everything else is by personal link ----
   const token = String(body.token ?? "");
   if (!/^[0-9a-f]{64}$/.test(token)) return reply({ ok: false, error: "This signing link isn't valid. Use the newest link from your email." }, 401);
-  const { data: me } = await supabase.from("rti_sign_signers").select("*").eq("token_hash", await sha256(token)).maybeSingle();
+  const hash = await sha256(token);
+  let { data: me } = await supabase.from("rti_sign_signers").select("*").eq("token_hash", hash).maybeSingle();
+  if (!me) ({ data: me } = await supabase.from("rti_sign_signers").select("*").contains("old_token_hashes", [hash]).maybeSingle());
   if (!me) return reply({ ok: false, error: "This signing link has expired or been replaced. Use the newest link from your email." }, 401);
   const { data: packet } = await supabase.from("rti_sign_packets").select("*").eq("id", me.packet_id).maybeSingle();
   if (!packet) return reply({ ok: false, error: "This packet no longer exists." }, 404);

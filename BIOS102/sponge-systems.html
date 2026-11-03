@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>BIOS102 Lab Companion | Sponge Systems Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/BIOS102/css/style.css" />
+<style>
+  :root {
+    --water: #6fb8d6;
+    --water-soft: rgba(111, 184, 214, 0.14);
+    --food: #e0a940;
+    --src-manual: #3fae74;
+    --src-quiz: #6fb8d6;
+    --src-teach: #e0a940;
+    --src-none: #c85a5a;
+  }
+  .wrap { max-width: 1040px; }
+  h3 { font-weight: 400; font-size: 1.1rem; margin: 34px 0 6px; }
+  .sub { color: var(--text-dim); font-size: 0.88rem; max-width: 70ch; margin-bottom: 14px; }
+
+  .loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 18px 0 8px; }
+  .loop > div { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; font-size: 0.86rem; color: var(--text-dim); }
+  .loop b { display: block; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+  .loop .n { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 0.78rem; margin-bottom: 6px; }
+
+  .tag { display: inline-block; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 7px; border-radius: 99px; border: 1px solid; margin: 0 4px 2px 0; white-space: nowrap; }
+  .tag.manual { color: var(--src-manual); border-color: var(--src-manual); }
+  .tag.quiz { color: var(--src-quiz); border-color: var(--src-quiz); }
+  .tag.teach { color: var(--src-teach); border-color: var(--src-teach); }
+  .tag.none { color: var(--src-none); border-color: var(--src-none); }
+  .key { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--text-dim); margin: 6px 0 4px; align-items: center; }
+
+  /* threads */
+  .thread { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin: 12px 0 6px; }
+  .step { position: relative; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin: 0 22px 10px 0; min-width: 130px; flex: 1 1 130px; font-size: 0.86rem; }
+  .step:not(:last-child)::after { content: "\2192"; position: absolute; right: -19px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; }
+  .step b { display: block; font-weight: 500; margin-bottom: 2px; }
+  .step small { color: var(--text-dim); font-size: 0.76rem; line-height: 1.35; display: block; }
+  .thread.water .step { border-color: rgba(111,184,214,.45); background: var(--water-soft); }
+  .thread.water .step::after { color: var(--water); }
+  .thread.food .step { border-color: rgba(224,169,64,.45); background: var(--amber-soft); }
+  .thread.food .step::after { color: var(--food); }
+  .thread-label { font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 18px; }
+  .thread-label.water { color: var(--water); }
+  .thread-label.food { color: var(--food); }
+
+  /* master table */
+  .fn-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+  .fn { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .fn-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .fn-head h4 { font-weight: 500; font-size: 1rem; }
+  .pill { font-size: 0.7rem; padding: 1px 8px; border-radius: 99px; }
+  .pill.water { background: var(--water-soft); color: var(--water); }
+  .pill.food { background: var(--amber-soft); color: var(--food); }
+  .pill.both { background: var(--accent-soft); color: var(--accent); }
+  .pill.neither { background: rgba(255,255,255,.07); color: var(--text-dim); }
+  .ask { font-size: 0.9rem; margin-bottom: 10px; }
+  .ask em { color: var(--text-dim); font-style: normal; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+  .predict { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .predict input[type=text] { flex: 1 1 260px; background: rgba(0,0,0,.25); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 0.88rem; }
+  .predict select, .btn { background: rgba(0,0,0,.25); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 0.84rem; cursor: pointer; }
+  .btn.primary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .reveal { display: none; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+  .fn.open .reveal { display: block; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .cols h5 { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; margin-bottom: 4px; }
+  .cols p { font-size: 0.88rem; line-height: 1.5; }
+  .grade { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.84rem; color: var(--text-dim); }
+  .grade .btn.sel { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .grade .btn.sel.wrong { border-color: var(--src-none); color: var(--src-none); background: rgba(200,90,90,.14); }
+  .gap-note { border-left: 3px solid var(--src-none); padding: 8px 12px; font-size: 0.86rem; color: var(--text-dim); background: rgba(200,90,90,.07); border-radius: 0 8px 8px 0; margin-top: 10px; }
+
+  /* scoreboard */
+  .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0; }
+  .board > div { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+  .board strong { display: block; font-size: 1.5rem; font-weight: 300; }
+  .board span { font-size: 0.78rem; color: var(--text-dim); }
+  #calib { font-size: 0.9rem; color: var(--text-dim); max-width: 70ch; min-height: 1.5em; }
+
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 10px; }
+  table.cmp th, table.cmp td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  table.cmp th { font-weight: 500; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .table-scroll { overflow-x: auto; }
+
+  .qcard { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 12px; }
+  .qcard textarea, .own textarea { width: 100%; min-height: 80px; background: rgba(0,0,0,.25); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px; font: inherit; font-size: 0.88rem; margin: 8px 0; resize: vertical; }
+  .qcard .model { display: none; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.88rem; line-height: 1.55; }
+  .qcard.open .model { display: block; }
+  .qcard .qsrc { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 4px; }
+  .own { margin-top: 12px; }
+  .saved { font-size: 0.76rem; color: var(--text-dim); }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <a href="/BIOS102/dashboard.html" style="color:inherit;text-decoration:none;">BIOS102 <span>Lab Companion</span></a>
+      <small>Sponge Systems Map</small>
+    </div>
+    <div class="session-info">
+      <a href="/BIOS102/index.html">Log in for the full dashboard &rarr;</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>Sponge Systems Map: Follow the Water, Follow the Food</h2>
+    <p class="lede">Exercise 7, Phylum Porifera (lab manual pp. 81&ndash;85, Quiz 5). A sponge has no organs, so instead of &ldquo;organ systems&rdquo; we check the <strong>12 jobs every animal has to get done</strong> and ask what a sponge uses for each one. This page also shows which jobs the manual actually covers and which it never mentions. Nothing you type leaves your own browser.</p>
+
+    <div class="loop">
+      <div><span class="n">1</span><b>Predict</b>Before you look, write what a sponge could use for the job. A wrong guess is useful.</div>
+      <div><span class="n">2</span><b>Rate your confidence</b>Guess, Think or Sure. Do this <em>before</em> revealing.</div>
+      <div><span class="n">3</span><b>Check &amp; tag</b>Reveal the answer, see where it comes from, then mark yourself right, partly or wrong.</div>
+      <div><span class="n">4</span><b>Calibrate</b>The scoreboard shows whether your &ldquo;Sure&rdquo; really means sure.</div>
+    </div>
+
+    <div class="key">
+      <span><span class="tag manual">Manual</span> the lab manual says it</span>
+      <span><span class="tag quiz">Quiz 5</span> only the quiz key shows it</span>
+      <span><span class="tag teach">Teaching</span> standard biology, not in the manual</span>
+      <span><span class="tag none">Not covered</span> never mentioned</span>
+    </div>
+
+    <h3>The two threads</h3>
+    <p class="sub">Most of what a sponge does hangs on two paths. Learn the paths first and the cell types fall into place.</p>
+
+    <div class="thread-label water">Follow the water</div>
+    <div class="thread water">
+      <div class="step"><b>Pores</b><small>tiny holes in the body wall (<em>Porifera</em> = pore-bearer). Porocytes are listed as a cell type.</small></div>
+      <div class="step"><b>Incurrent canals</b><small>water enters</small></div>
+      <div class="step"><b>Radial canals</b><small>lined by collar cells (choanocytes)</small></div>
+      <div class="step"><b>Spongocoel</b><small>central cavity</small></div>
+      <div class="step"><b>Osculum</b><small>water exits at the open end</small></div>
+    </div>
+    <p class="sub"><span class="tag manual">Manual</span> p. 81: &ldquo;Water enters the incurrent and radial canals and then passes to the central cavity called the spongocoel; water exits through the sponge&rsquo;s open end called the osculum.&rdquo; The manual never says the pores feed the incurrent canals; that link is the obvious inference.</p>
+
+    <div class="thread-label food">Follow the food</div>
+    <div class="thread food">
+      <div class="step"><b>Food in the water</b><small>particles ride the current in</small></div>
+      <div class="step"><b>Collar cells</b><small>filter and take it in <span class="tag quiz">Quiz 5 Q7: feeding</span></small></div>
+      <div class="step"><b>Amoebocytes</b><small>digest and distribute <span class="tag teach">Teaching</span> (Review Q6 asks, manual doesn&rsquo;t answer)</small></div>
+      <div class="step"><b>Every cell</b><small>no gut, so cells pass food along</small></div>
+      <div class="step"><b>Waste out</b><small>leaves with the outgoing water <span class="tag teach">Teaching</span></small></div>
+    </div>
+    <p class="sub"><span class="tag manual">Manual</span> gives only &ldquo;filter-feeding heterotrophs&rdquo; with &ldquo;no mouths or digestive tract.&rdquo; Everything between the water and the cell is something you are expected to work out. The food thread and the water thread are the same current.</p>
+
+    <h3>Scoreboard</h3>
+    <div class="board">
+      <div><strong id="b-done">0 / 12</strong><span>jobs checked</span></div>
+      <div><strong id="b-right">0</strong><span>predicted right</span></div>
+      <div><strong id="b-sure">&ndash;</strong><span>right when &ldquo;Sure&rdquo;</span></div>
+      <div><strong id="b-guess">&ndash;</strong><span>right when &ldquo;Guess&rdquo;</span></div>
+    </div>
+    <p id="calib">Work through the 12 jobs below and your calibration will show here.</p>
+
+    <h3>The 12 jobs of an animal, applied to a sponge</h3>
+    <p class="sub" id="coverage"></p>
+    <div class="fn-list" id="fns"></div>
+
+    <h3>Where the manual stops: sponge vs. cnidarian</h3>
+    <p class="sub">The same 12 jobs, side by side. The jump between the two columns is the reason Cnidaria is taught as the &ldquo;next step up.&rdquo;</p>
+    <div class="table-scroll"><table class="cmp" id="cmp">
+      <thead><tr><th>Job</th><th>Sponge (Porifera)</th><th>Cnidarian (<em>Hydra</em>)</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+
+    <h3>Explain it in your own words</h3>
+    <p class="sub">These are the manual&rsquo;s own review questions for the sponge. Write your answer first. Then compare and mark what you left out. The model answers tag each fact by where it comes from.</p>
+    <div id="qs"></div>
+
+    <h3>Write your own quiz question</h3>
+    <p class="sub">The best exam prep is writing the exam. Write one question that follows a thread (water or food) and an answer key. Aim for a &ldquo;why,&rdquo; not a &ldquo;what.&rdquo; Example: <em>&ldquo;Why can a sponge live without a mouth?&rdquo;</em></p>
+    <div class="own">
+      <textarea id="own-q" placeholder="My question..." data-save="own-q"></textarea>
+      <textarea id="own-a" placeholder="My answer key (and which thread it follows)..." data-save="own-a"></textarea>
+      <span class="saved">Saved in this browser only.</span>
+    </div>
+  </div>
+
+  <footer class="site-foot">BIOS102 Lab Companion &middot; a course tool, not affiliated with SelassieFest</footer>
+
+<script>
+(function(){
+  // tag helper
+  const T = {
+    m: '<span class="tag manual">Manual</span>',
+    q: '<span class="tag quiz">Quiz 5</span>',
+    t: '<span class="tag teach">Teaching</span>',
+    n: '<span class="tag none">Not covered</span>'
+  };
+
+  // status: full | thin | none  (how well the MANUAL covers the sponge side)
+  const FN = [
+    { id: "body", name: "Body organization", thread: "neither", status: "full",
+      ask: "What would a sponge need to have before you could call its cells a &ldquo;tissue&rdquo;? What does it have instead?",
+      ans: T.m + " p. 81: cells are &ldquo;loosely associated and do not form definite tissues.&rdquo; Four specialized cell types: collar cells (choanocytes), epidermal cells, porocytes, amoebocytes. " + T.q + " &ldquo;no definable germ layers in most specimens.&rdquo;",
+      extra: "Proof of how loose it is: force a sponge through a fine mesh and the separated cells survive and reassemble (p. 81). Try that with a <em>Hydra</em> or a person.",
+      cnid: T.m + " p. 86&ndash;87: two germ layers (ectoderm and endoderm), true tissues, contractile cells in both layers." },
+    { id: "water", name: "Water transport", thread: "water", status: "full",
+      ask: "Draw the path of one drop of water from outside the sponge to outside again. Where in that path are the collar cells?",
+      ans: T.m + " p. 81 and lab A1: water enters the incurrent and radial canals, passes to the spongocoel, and exits through the osculum. " + T.q + " Q9: collar cells line the <strong>radial</strong> canals.",
+      extra: "The pores are why the phylum is named <em>Porifera</em>. The manual lists porocytes as a cell type but never states their job; &ldquo;pore cell&rdquo; is what the name gives you.",
+      cnid: T.t + " One sac, the gastrovascular cavity, with a single opening that is both the way in and the way out. Compare a one-way current (sponge) to a two-way doorway (cnidarian)." },
+    { id: "feed", name: "Feeding", thread: "food", status: "thin",
+      ask: "A sponge has no mouth and cannot move. What brings the food to it, and which cell takes it in?",
+      ans: T.m + " p. 81: &ldquo;filter-feeding heterotrophs&rdquo; with no mouth or digestive tract. " + T.q + " Q7 lists feeding as a function of the collar cells.",
+      extra: T.t + " The collars and flagella set up the current and trap particles on the way past. The manual&rsquo;s Review Q5 asks you to discuss this, but never answers it.",
+      cnid: T.m + " p. 86 and " + T.q + " matching: stinging cells (cnidocytes with nematocysts) are used &ldquo;to obtain food.&rdquo; The animal hunts; the sponge strains." },
+    { id: "digest", name: "Digestion &amp; distribution", thread: "food", status: "thin",
+      ask: "If there is no gut, where does digestion happen, and how does food reach cells far from the canals?",
+      ans: T.m + " p. 81: no digestive tract. " + T.t + " Amoebocytes (the crawling cells of the mesophyll) digest food inside themselves and pass it on. Review Q6 asks what amoebocytes do and the manual gives only one function: they form gemmules.",
+      extra: "Digestion inside individual cells is the key contrast with the cnidarian, where food is broken down in a cavity.",
+      cnid: T.t + " Digestion begins in the gastrovascular cavity and finishes inside cells. Review Q6 (cnidarian side) asks for the cavity&rsquo;s two functions." },
+    { id: "gas", name: "Gas exchange", thread: "water", status: "thin",
+      ask: "No lungs, no gills. Where does a sponge get oxygen, and why is that the same answer as the feeding question?",
+      ans: T.q + " Q7 (which is NOT a collar-cell function): respiration, &ldquo;taking in O<sub>2</sub>,&rdquo; is on the list of things collar cells do. The manual never mentions oxygen.",
+      extra: T.t + " The same current that carries food carries oxygen. Water is both the delivery system and the air supply, which is why &ldquo;follow the water&rdquo; works for both.",
+      cnid: T.t + " Gases diffuse across the thin body wall, which is only two cell layers thick. The manual doesn&rsquo;t say." },
+    { id: "waste", name: "Waste removal", thread: "water", status: "none",
+      ask: "The manual never mentions waste. Using only the water thread, where would you predict a sponge&rsquo;s wastes go?",
+      ans: T.n + " The manual does not mention excretion or water balance for sponges.",
+      extra: T.t + " A reasonable prediction from the thread: wastes diffuse into the outgoing water and leave through the osculum. Check this against your textbook.",
+      cnid: T.n + " Not covered for cnidarians either.",
+      gap: "This is a gap, not a fact to memorize. Noticing it is the skill." },
+    { id: "sense", name: "Sensing &amp; response", thread: "neither", status: "full",
+      ask: "A sponge has no brain, no nerve cord and no nerve net. How could it still &ldquo;sense&rdquo; anything?",
+      ans: T.m + " p. 81: &ldquo;lack complex sensory capabilities,&rdquo; and &ldquo;nerve integration is very primitive.&rdquo; " + T.q + " Q7 lists &ldquo;intracellular sensing&rdquo; among collar-cell functions. Review Q9 asks how sponges perceive stimuli.",
+      extra: "The sense is at the level of single cells, not a system. Contrast a body that coordinates cells with a nervous system.",
+      cnid: T.m + " p. 86 and " + T.q + " matching: a nerve net connects sensory cells to contractile and gland cells. Nerves exist but no brain or cord." },
+    { id: "support", name: "Support &amp; skeleton", thread: "neither", status: "full",
+      ask: "Three sponge classes are defined by what their skeleton is made of. Which class is which, and what is the name hint?",
+      ans: T.m + " pp. 81&ndash;83: Calcarea = calcium carbonate spicules (monaxons and Y-shaped triradiates), Hexactinellida = glasslike silica spicules, Demospongiae = spongin protein fibers (some have silica and spongin). &ldquo;It&rsquo;s all in the name.&rdquo; " + T.q + " Some species of both Porifera and Cnidaria have a hardened exoskeleton.",
+      extra: "Spicules are skeleton pieces, not tissue. A sponge can be rigid without having any organ.",
+      cnid: T.m + " p. 86: the water-filled gastrovascular cavity is a hydrostatic skeleton." },
+    { id: "move", name: "Movement", thread: "neither", status: "full",
+      ask: "People mistake sponges for plants. What part of the life cycle moves, and what part does not?",
+      ans: T.m + " p. 81: adults are sessile (attached); the fertilized eggs become &ldquo;motile larvae that swim about.&rdquo;",
+      extra: "The moving stage disperses the species; the sessile adult feeds. This is why the water thread matters so much: an animal that cannot move must bring the world to itself.",
+      cnid: T.m + " p. 86: the polyp is sessile and the medusa is free swimming, and many species alternate between them. " + T.q + " Q6." },
+    { id: "asex", name: "Asexual reproduction", thread: "neither", status: "full",
+      ask: "Name two asexual methods in sponges, and say which one is a survival strategy rather than just growth.",
+      ans: T.m + " p. 81: budding, and gemmules, which are &ldquo;clusters of amoebocytes enclosed in hard spicules&rdquo; that &ldquo;can withstand adverse conditions that would kill the adult.&rdquo; Review Q8.",
+      extra: "Gemmules are the sponge&rsquo;s answer to bad times. Compare to what triggers sexual reproduction in <em>Hydra</em>.",
+      cnid: T.m + " p. 87: budding in <em>Hydra</em>. " + T.q + " Q8: sexual reproduction is triggered by environmental stress." },
+    { id: "sex", name: "Sexual reproduction &amp; development", thread: "neither", status: "full",
+      ask: "Where are eggs and sperm made, and what does &ldquo;hermaphroditic&rdquo; mean? What is still missing from the manual&rsquo;s description?",
+      ans: T.m + " p. 81: eggs and sperm are made in the mesophyll (the sponge term is mesohyl); most sponges are hermaphroditic; fertilized eggs become motile larvae.",
+      extra: "<strong>Gap inside the covered topic:</strong> Review Q7 asks how cross-fertilization is accomplished, and the manual doesn&rsquo;t say. " + T.t + " Sperm are released into the water, carried out through the osculum, and drawn into another sponge&rsquo;s canals, where collar cells capture them. The water thread again.",
+      cnid: T.m + " p. 87: separate testis and ovary on <em>Hydra</em>; the ovary makes a single egg. Obelia: the zygote becomes a planula larva (p. 88)." },
+    { id: "defense", name: "Defense", thread: "neither", status: "none",
+      ask: "Nothing in the manual covers how a sponge protects itself. Make one prediction using what you already know about its body.",
+      ans: T.n + " The manual does not mention defense or immunity for sponges.",
+      extra: "Students often predict spicules. That is a reasonable hypothesis, but it is a hypothesis: the manual presents spicules only as skeleton.",
+      cnid: T.m + " Stinging cells are used to obtain food (p. 86). Whether they also defend is not stated.",
+      gap: "Another gap. A correct prediction here earns no manual credit, so mark it as a hypothesis." }
+  ];
+
+  // storage helpers (may be unavailable)
+  const LS = {
+    get(k){ try { return JSON.parse(localStorage.getItem('sponge7:' + k)); } catch(e){ return null; } },
+    set(k,v){ try { localStorage.setItem('sponge7:' + k, JSON.stringify(v)); } catch(e){} }
+  };
+  const state = LS.get('state') || {};   // id -> {pred, conf, result, open}
+  const save = () => LS.set('state', state);
+
+  const pillLabel = { water: "Follow the water", food: "Follow the food", both: "Water + food", neither: "Neither thread" };
+
+  const fnsEl = document.getElementById('fns');
+  FN.forEach(f => {
+    const st = state[f.id] = state[f.id] || {};
+    const el = document.createElement('div');
+    el.className = 'fn' + (st.open ? ' open' : '');
+    el.innerHTML =
+      '<div class="fn-head"><h4>' + f.name + '</h4><span class="pill ' + f.thread + '">' + pillLabel[f.thread] + '</span></div>' +
+      '<div class="ask"><em>Ask yourself</em>' + f.ask + '</div>' +
+      '<div class="predict">' +
+        '<input type="text" placeholder="My prediction..." value="" aria-label="My prediction for ' + f.name.replace(/&amp;/g,'and') + '">' +
+        '<select aria-label="Confidence"><option value="">Confidence...</option><option value="guess">Guess</option><option value="think">Think so</option><option value="sure">Sure</option></select>' +
+        '<button class="btn primary" type="button">Reveal</button>' +
+      '</div>' +
+      '<div class="reveal">' +
+        '<div class="cols">' +
+          '<div><h5>What the sponge uses</h5><p>' + f.ans + '</p></div>' +
+          '<div><h5>Dig deeper</h5><p>' + f.extra + '</p></div>' +
+          '<div><h5>Cnidarian contrast</h5><p>' + f.cnid + '</p></div>' +
+        '</div>' +
+        (f.gap ? '<div class="gap-note">' + f.gap + '</div>' : '') +
+        '<div class="grade"><span>My prediction was:</span>' +
+          '<button class="btn" data-r="right" type="button">Right</button>' +
+          '<button class="btn" data-r="part" type="button">Partly</button>' +
+          '<button class="btn wrongbtn" data-r="wrong" type="button">Wrong or blank</button>' +
+        '</div>' +
+      '</div>';
+    const inp = el.querySelector('input'), sel = el.querySelector('select');
+    inp.value = st.pred || ''; sel.value = st.conf || '';
+    inp.addEventListener('input', () => { st.pred = inp.value; save(); });
+    sel.addEventListener('change', () => { st.conf = sel.value; save(); });
+    el.querySelector('.btn.primary').addEventListener('click', () => {
+      if (!sel.value && !el.classList.contains('open')) { sel.focus(); sel.style.borderColor = 'var(--amber)'; return; }
+      sel.style.borderColor = '';
+      el.classList.toggle('open'); st.open = el.classList.contains('open'); save();
+    });
+    const paint = () => el.querySelectorAll('.grade .btn').forEach(b => {
+      const on = st.result === b.dataset.r;
+      b.classList.toggle('sel', on);
+      b.classList.toggle('wrong', on && b.dataset.r === 'wrong');
+    });
+    el.querySelectorAll('.grade .btn').forEach(b => b.addEventListener('click', () => {
+      st.result = b.dataset.r; save(); paint(); score();
+    }));
+    paint();
+    fnsEl.appendChild(el);
+  });
+
+  // coverage summary
+  const cnt = s => FN.filter(f => f.status === s).length;
+  document.getElementById('coverage').innerHTML =
+    'Of these 12 jobs, the manual covers <strong>' + cnt('full') + '</strong> clearly, covers <strong>' + cnt('thin') +
+    '</strong> only thinly or through the quiz (feeding, digestion, gas exchange), and says <strong>nothing</strong> about <strong>' + cnt('none') +
+    '</strong> (waste removal and defense). A sponge does all 12; the manual teaches about half of them.';
+
+  // calibration scoreboard
+  function score(){
+    const done = FN.filter(f => state[f.id] && state[f.id].result);
+    const right = done.filter(f => state[f.id].result === 'right').length;
+    const rate = c => {
+      const g = done.filter(f => state[f.id].conf === c);
+      return g.length ? Math.round(100 * g.filter(f => state[f.id].result === 'right').length / g.length) + '% (' + g.length + ')' : '–';
+    };
+    document.getElementById('b-done').textContent = done.length + ' / ' + FN.length;
+    document.getElementById('b-right').textContent = right;
+    document.getElementById('b-sure').textContent = rate('sure');
+    document.getElementById('b-guess').textContent = rate('guess');
+    const sureG = done.filter(f => state[f.id].conf === 'sure');
+    const sureWrong = sureG.filter(f => state[f.id].result === 'wrong');
+    const guessRight = done.filter(f => state[f.id].conf === 'guess' && state[f.id].result === 'right');
+    let msg = 'Work through the 12 jobs below and your calibration will show here.';
+    if (done.length >= 3) {
+      if (sureWrong.length) msg = 'You were &ldquo;Sure&rdquo; and wrong on <strong>' + sureWrong.map(f => f.name).join(', ') + '</strong>. Those are your most dangerous gaps on an exam: you won&rsquo;t review what you think you know. Re-read them first.';
+      else if (guessRight.length) msg = 'You got <strong>' + guessRight.map(f => f.name).join(', ') + '</strong> right while calling it a guess. You know more than you think here, so trust the thread.';
+      else msg = 'Your confidence matches your results so far. Keep going; the real test is the jobs the manual never mentions.';
+    }
+    document.getElementById('calib').innerHTML = msg;
+  }
+  score();
+
+  // comparison table
+  const tb = document.querySelector('#cmp tbody');
+  const SPONGE_SHORT = {
+    body: "Loose cells, no definite tissues", water: "Pores &rarr; canals &rarr; spongocoel &rarr; osculum",
+    feed: "Collar cells filter the current", digest: "Inside amoebocytes", gas: "Collar cells, from the water",
+    waste: "Not covered", sense: "Primitive, cell level", support: "Spicules or spongin",
+    move: "Sessile adult, swimming larva", asex: "Buds, gemmules", sex: "Hermaphroditic, mesohyl, larva", defense: "Not covered"
+  };
+  const CNID_SHORT = {
+    body: "Two germ layers, true tissues", water: "One sac, one opening in and out",
+    feed: "Cnidocytes and nematocysts, tentacles", digest: "Cavity first, then cells", gas: "Across the thin body wall",
+    waste: "Not covered", sense: "Nerve net, no brain", support: "Hydrostatic gastrovascular cavity",
+    move: "Polyp or medusa, contractile cells", asex: "Budding", sex: "Testis and ovary; planula larva", defense: "Not covered"
+  };
+  FN.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + f.name + '</td><td>' + SPONGE_SHORT[f.id] + '</td><td>' + CNID_SHORT[f.id] + '</td>';
+    tb.appendChild(tr);
+  });
+
+  // review questions
+  const Q = [
+    { n: "Review Q1", q: "Contrast the terms Parazoa and Eumetazoa.",
+      a: T.m + " The evolution diagram groups Porifera under Parazoa and Cnidaria under Radiata. p. 81: sponge cells form no definite tissues. " + T.t + " Parazoa = &ldquo;beside the animals,&rdquo; no true tissues. Eumetazoa = &ldquo;true animals,&rdquo; real tissues, starting with cnidarians." },
+    { n: "Review Q5", q: "Where are the choanocytes (collar cells) located? Discuss the important functions of these cells for the sponge.",
+      a: T.q + " Q9: they line the radial canals. " + T.q + " Q7: functions include feeding, respiration (taking in O<sub>2</sub>), intracellular sensing and sexual reproduction, and NOT forming tissues. " + T.t + " They beat their flagella to drive the water current, which is what makes feeding and gas exchange possible. " + T.m + " p. 81: they resemble choanoflagellates, the protists sponges probably evolved from." },
+    { n: "Review Q6", q: "What are the functions of the amoebocytes?",
+      a: T.m + " p. 81: they form gemmules (clusters of amoebocytes enclosed in hard spicules). " + T.t + " They also digest and distribute food and move through the mesohyl. The manual never lists their functions in one place; this is a question you must assemble yourself." },
+    { n: "Review Q7", q: "Describe sexual reproduction in sponges. Include in your answer how cross-fertilization is accomplished.",
+      a: T.m + " p. 81: eggs and sperm are made in the mesophyll; most sponges are hermaphroditic; fertilized eggs become motile larvae. " + T.t + " Cross-fertilization: one sponge releases sperm into the water, the current carries them out the osculum and into another sponge&rsquo;s canals, and collar cells capture them for the eggs there. The manual does not say this." },
+    { n: "Review Q8", q: "Are sponges capable of asexual reproduction? Explain.",
+      a: T.m + " p. 81: yes. Budding, and gemmules that survive conditions that kill the adult." },
+    { n: "Review Q9", q: "How do sponges perceive stimuli?",
+      a: T.m + " p. 81: no complex sensory capabilities and very primitive nerve integration. " + T.q + " Q7: intracellular sensing. In other words, individual cells respond, with no nerve net or brain." }
+  ];
+  const qs = document.getElementById('qs');
+  Q.forEach(item => {
+    const key = 'q-' + item.n;
+    const c = document.createElement('div');
+    c.className = 'qcard';
+    c.innerHTML = '<div class="qsrc">' + item.n + '</div><strong style="font-weight:500">' + item.q + '</strong>' +
+      '<textarea placeholder="Write your answer before you look..." aria-label="Answer to ' + item.n + '"></textarea>' +
+      '<button class="btn primary" type="button">Compare with the model answer</button>' +
+      '<div class="model">' + item.a + '</div>';
+    const ta = c.querySelector('textarea');
+    ta.value = LS.get(key) || '';
+    ta.addEventListener('input', () => LS.set(key, ta.value));
+    c.querySelector('button').addEventListener('click', () => c.classList.toggle('open'));
+    qs.appendChild(c);
+  });
+
+  // own question
+  document.querySelectorAll('textarea[data-save]').forEach(t => {
+    t.value = LS.get(t.dataset.save) || '';
+    t.addEventListener('input', () => LS.set(t.dataset.save, t.value));
+  });
+})();
+</script>
+</body>
+</html>

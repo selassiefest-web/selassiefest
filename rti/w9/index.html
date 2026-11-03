@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ras Tafari Inc. Form W-9</title>
+<style>
+:root{--bg:#fff;--ink:#16182B;--mute:#5b6070;--line:#d6d9e2;--accent:#0b6b3a;--card:#f6f7fa;--bad:#a1281f}
+@media (prefers-color-scheme:dark){:root{--bg:#12141c;--ink:#eef0f6;--mute:#a4a9b8;--line:#2d3142;--accent:#5fd08e;--card:#1a1d29;--bad:#ff8a80}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mute);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.92rem}
+input[type=text],select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:600px){.row{grid-template-columns:1fr}}
+.note{color:var(--mute);font-size:.88rem}.warn{color:var(--bad)}
+.pad{border:1px solid var(--line);border-radius:8px;background:#fff;position:relative}
+.pad canvas{display:block;width:100%;height:150px;cursor:crosshair;touch-action:none}
+.pad .ph{position:absolute;left:12px;bottom:8px;color:#9aa;font-size:.85rem;pointer-events:none}
+button{font:inherit;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.5;cursor:not-allowed}
+.cert{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.cert input{margin-top:5px}
+#status{min-height:1.4em;margin:8px 0;font-weight:600}
+iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;margin-top:10px;background:#fff}
+</style></head><body><main>
+<h1>Ras Tafari Inc. Form W-9</h1>
+<p class="sub">IRS Form W-9 (Rev. March 2024), filled in your browser. Nothing is sent or stored anywhere. Review, sign, then download the PDF to give to the requester.</p>
+
+<div class="card">
+<label for="name">Line 1: Name of entity (must match the IRS record)</label><input type="text" id="name" value="Ras Tafari Inc.">
+<label for="biz">Line 2: Business name, if different (leave blank)</label><input type="text" id="biz" value="">
+<div class="row">
+ <div><label for="cls">Line 3a: Federal tax classification</label>
+  <select id="cls"><option value="c">C corporation</option><option value="s">S corporation</option><option value="ind">Individual / sole proprietor</option><option value="p">Partnership</option><option value="trust">Trust / estate</option><option value="llc">LLC</option><option value="other" selected>Other (501(c)(3) nonprofit corporation)</option></select></div>
+ <div><label for="exempt">Line 4: Exempt payee code</label><input type="text" id="exempt" value="1"></div>
+</div>
+<p class="note">Code 1 is "an organization exempt from tax under section 501(a)," which covers a 501(c)(3). This matches the W-9 signed Oct. 31 except for the address. Paul should confirm the classification and code with the CPA. Leave the FATCA code blank.</p>
+<label for="addr">Line 5: Address</label><input type="text" id="addr" value="1401 E. 71st St.">
+<label for="csz">Line 6: City, state, ZIP</label><input type="text" id="csz" value="Chicago, IL 60619">
+<label for="ein">Employer identification number</label><input type="text" id="ein" value="42-3036705">
+<p class="note"><b>Address note.</b> The Chicago Park District asks for a Chicago ZIP on the W-9, so this uses the office address (Illinois registered office, moved Oct. 23). The IRS record still shows South Holland until the IRS processes Form 8822-B (about early to mid December). Do not use this W-9 where the payer matches your address to the IRS record.</p>
+</div>
+
+<div class="card">
+<b>Part II. Certification</b>
+<p class="note">Under penalties of perjury, you certify: (1) the number shown is the correct taxpayer identification number; (2) the organization is not subject to backup withholding (it is exempt, or the IRS has not notified it); (3) the signer is a U.S. person; and (4) any FATCA code entered is correct.</p>
+<div class="cert"><input type="checkbox" id="cert"><label for="cert" style="margin:0;font-weight:400">I have read the certification above and it is true for Ras Tafari Inc. I am signing as its President.</label></div>
+<label>Signature</label>
+<div class="row"><div><label style="margin-top:0"><input type="radio" name="mode" value="draw" checked> Draw</label></div><div><label style="margin-top:0"><input type="radio" name="mode" value="type"> Type</label></div></div>
+<div id="drawBox"><div class="pad"><canvas id="pad" aria-label="Signature pad"></canvas><div class="ph" id="ph">Sign here</div></div><button type="button" id="clear" style="margin-top:8px">Clear and sign again</button></div>
+<div id="typeBox" hidden><input type="text" id="typed" placeholder="Type your full name" value="Stephen Henry"></div>
+<label for="date">Date</label><input type="text" id="date">
+</div>
+
+<div id="status" aria-live="polite"></div>
+<button type="button" class="go" id="make">Create my signed W-9</button>
+<button type="button" id="dl" disabled>Download PDF</button>
+<iframe id="prev" title="W-9 preview" hidden></iframe>
+<p class="note" style="margin-top:18px">Blank form source: IRS, https://www.irs.gov/pub/irs-pdf/fw9.pdf. This page only fills in the blanks; it does not change the form.</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="w9-fill.js"></script>
+<script>
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ var d=new Date();$("date").value=("0"+(d.getMonth()+1)).slice(-2)+"/"+("0"+d.getDate()).slice(-2)+"/"+d.getFullYear();
+ var cv=$("pad"),ctx,ink=false,drawing=false,last=null;
+ function size(){var w=cv.clientWidth,h=150,r=window.devicePixelRatio||1;if(cv.width===Math.round(w*r))return;cv.width=Math.round(w*r);cv.height=Math.round(h*r);ctx=cv.getContext("2d");ctx.scale(r,r);ctx.lineWidth=2.2;ctx.lineCap="round";ctx.strokeStyle="#0b0b3a";ink=false;$("ph").style.display="block"}
+ size();window.addEventListener("resize",size);
+ function pt(e){var b=cv.getBoundingClientRect();return {x:e.clientX-b.left,y:e.clientY-b.top}}
+ cv.addEventListener("pointerdown",function(e){drawing=true;last=pt(e);cv.setPointerCapture(e.pointerId);e.preventDefault()});
+ cv.addEventListener("pointermove",function(e){if(!drawing)return;var p=pt(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;ink=true;$("ph").style.display="none"});
+ ["pointerup","pointercancel"].forEach(function(n){cv.addEventListener(n,function(){drawing=false})});
+ $("clear").onclick=function(){ctx.clearRect(0,0,cv.width,cv.height);ink=false;$("ph").style.display="block"};
+ document.querySelectorAll("input[name=mode]").forEach(function(r){r.onchange=function(){var m=document.querySelector("input[name=mode]:checked").value;$("drawBox").hidden=m!=="draw";$("typeBox").hidden=m!=="type"}});
+ var blobUrl=null;
+ function status(m,bad){var s=$("status");s.textContent=m;s.className=bad?"warn":""}
+ function trimmedPng(){ // crop the drawing to its ink so it fits the signature line
+  var w=cv.width,h=cv.height,id=ctx.getImageData(0,0,w,h).data,minX=w,minY=h,maxX=0,maxY=0;
+  for(var y=0;y<h;y++)for(var x=0;x<w;x++){if(id[(y*w+x)*4+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}}
+  if(maxX<=minX)return null;var o=document.createElement("canvas");o.width=maxX-minX+1;o.height=maxY-minY+1;o.getContext("2d").drawImage(cv,minX,minY,o.width,o.height,0,0,o.width,o.height);
+  var b=atob(o.toDataURL("image/png").split(",")[1]),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+ $("make").onclick=async function(){
+  var mode=document.querySelector("input[name=mode]:checked").value;
+  if(!$("name").value.trim()||!$("addr").value.trim()||!$("csz").value.trim()||!$("ein").value.trim()){status("Fill in the name, address and EIN.",true);return}
+  if(!$("cert").checked){status("Tick the certification box before signing.",true);return}
+  var png=null,txt=null;
+  if(mode==="draw"){png=trimmedPng();if(!png){status("Sign in the box first.",true);return}}
+  else{txt=$("typed").value.trim();if(!txt){status("Type your name to sign.",true);return}}
+  try{
+   status("Building your W-9…");
+   var r=await fetch("form.pdf");if(!r.ok)throw new Error("The blank form did not load.");
+   var bytes=await r.arrayBuffer();
+   var out=await fillW9(PDFLib,bytes,{name:$("name").value.trim(),bizName:$("biz").value.trim(),cls:$("cls").value,otherText:"501(c)(3) nonprofit corporation",exempt:$("exempt").value.trim(),addr:$("addr").value.trim(),cityStateZip:$("csz").value.trim(),ein:$("ein").value.trim(),date:$("date").value.trim(),sigPng:png,sigText:txt});
+   if(blobUrl)URL.revokeObjectURL(blobUrl);blobUrl=URL.createObjectURL(new Blob([out],{type:"application/pdf"}));
+   $("prev").src=blobUrl;$("prev").hidden=false;$("dl").disabled=false;status("Done. Check the preview, then download.");
+  }catch(e){status("Something went wrong: "+(e&&e.message||e),true)}
+ };
+ $("dl").onclick=function(){if(!blobUrl)return;var a=document.createElement("a");a.href=blobUrl;a.download="Ras Tafari Inc - Form W-9.pdf";document.body.appendChild(a);a.click();a.remove()};
+})();
+</script>
+</main></body></html>

@@ -804,6 +804,23 @@ function formatLrVenueResponse(record: Record<string, any>) {
   };
 }
 
+// Marley show pitch answers (/live-reggae/marley/) -- see supabase/lr-show-pitches.sql.
+function formatLrShowResponse(record: Record<string, any>) {
+  const label = record.decision === 'host_feb6' ? 'Host it Feb 6, 2027' : record.decision === 'other_date' ? 'Talk about another date' : 'Not right now';
+  const venue = record.venue_name || 'A club';
+  const deal = record.deal_pref === 'flat' ? 'Flat fee' : record.deal_pref === 'deal' ? 'Door / bar deal' : record.deal_pref === 'talk' ? 'Wants to talk it through' : '';
+  const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
+  return {
+    subject: `${record.decision === 'host_feb6' ? 'FEB 6' : record.decision === 'other_date' ? 'Other date' : 'Not now'}: ${venue} answered the Bob Marley show pitch`,
+    html: `
+      <h2>${escapeHtml(venue)}: ${escapeHtml(label)}</h2>
+      <p>Bob Marley: Live Forever (Jay RebL with Ifficial Reggae Movement)</p>
+      <table style="border-collapse:collapse;">${row('Name', record.contact_name)}${row('Title', record.contact_title)}${row('Phone', record.phone)}${row('Email', record.email)}${row('City / area', record.city)}${row('Date wanted', record.date_wish)}${row('Deal', deal)}${row('Message', record.message)}</table>
+      <p style="margin-top:18px;">It's logged on the club${record.pitch_key ? '' : ' (added as a new club)'}. <a href="https://selassiefest.com/live-reggae/rotation.html">Open the Rotation board</a></p>
+    `,
+  };
+}
+
 // In-kind offers from /full-spectrum/founding-circle/#items -- see supabase/fs-gifts.sql.
 function formatFsInkindOffer(record: Record<string, any>) {
   const row = (k: string, v: unknown) => (v ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">${k}</td><td style="padding:4px 0;">${escapeHtml(v)}</td></tr>` : '');
@@ -1118,6 +1135,7 @@ const TABLE_CONFIG: Record<string, TableConfig> = {
     notifications: [{ to: (record) => record.email, format: formatLrLoginLink, from: () => 'Live Reggae Rotation <hello@selassiefest.com>' }],
   },
   lr_venue_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatLrVenueResponse }] },
+  lr_show_responses: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatLrShowResponse }] },
   fs_inkind_offers: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatFsInkindOffer }] },
   noitp_agenda_answers: { notifications: [{ to: () => 'stephen@selassiefest.com', format: formatNoitpAgendaAnswers }] },
   djlab_coach_login_links: {

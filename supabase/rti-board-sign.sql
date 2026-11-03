@@ -25,7 +25,8 @@ create table if not exists public.rti_sign_signers (
   title           text not null,
   email           text not null,
   is_admin        boolean not null default false,  -- can send the other directors their links
-  token_hash      text unique,            -- sha256 of the emailed link token; a new invite replaces it
+  token_hash      text unique,            -- sha256 of the newest emailed link token
+  old_token_hashes text[] not null default '{}',  -- earlier links stay valid (a re-send must not break an email already opened)
   invited_at      timestamptz,
   viewed_at       timestamptz,
   signed_at       timestamptz,
@@ -45,3 +46,6 @@ comment on table public.rti_sign_signers is 'One row per director per packet: li
 -- read nor write. Only the edge function (service role) touches these tables.
 alter table public.rti_sign_packets enable row level security;
 alter table public.rti_sign_signers enable row level security;
+
+-- Added 2026-10-18 for tables created before old_token_hashes existed
+alter table public.rti_sign_signers add column if not exists old_token_hashes text[] not null default '{}';

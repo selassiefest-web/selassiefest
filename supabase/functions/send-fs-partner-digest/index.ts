@@ -18,7 +18,7 @@ const TRACKER = "https://selassiefest.com/full-spectrum/partners.html";
 const STAGES: Record<string, string> = {
   not_contacted: "Not contacted", reached_out: "Reached out", in_conversation: "In conversation",
   meeting_set: "Meeting set", committed: "Committed", confirmed: "Confirmed in writing",
-  declined: "Declined", on_hold: "On hold",
+  declined: "Declined", on_hold: "On hold", not_qualified: "Not qualified yet",
 };
 
 function esc(s: unknown) {
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
   const staleHtml = stale.length ? `<h3 style="margin:18px 0 6px;">Gone quiet (no contact in 14+ days)</h3><ul style="padding-left:18px;">${stale.map((r) => `
       <li style="margin-bottom:6px;"><strong>${esc(r.name)}</strong> &middot; ${esc(STAGES[r.stage] ?? r.stage)} &middot;
       <span style="color:#5b6b7a;font-size:0.9rem;">${r.last ? "last contact " + fmtDate(r.last) : "no contact logged"}</span></li>`).join("")}</ul>` : "";
-  const order = ["not_contacted", "reached_out", "in_conversation", "meeting_set", "committed", "confirmed", "declined", "on_hold"];
+  const order = ["not_contacted", "reached_out", "in_conversation", "meeting_set", "committed", "confirmed", "declined", "on_hold", "not_qualified"];
   const pipeline = order.filter((k) => counts[k]).map((k) => `${esc(STAGES[k])}: <strong>${counts[k]}</strong>`).join(" &middot; ");
 
   const html = `

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio vs. Duplex: Homosporous vs. Heterosporous</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef3f6; --ink:#14283a; --muted:#51677a; --line:#14283a; --panel:#ffffff;
+  --spore:#e0892b; --male:#2a7fb8; --female:#c2417a; --room:#f7fafc;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1b26; --ink:#e6eef5; --muted:#9bb0c2; --line:#9bb0c2; --panel:#172636; --room:#1c2f42;
+    --spore:#f0a24a; --male:#5ab0e6; --female:#ec7bb0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1b26; --ink:#e6eef5; --muted:#9bb0c2; --line:#9bb0c2; --panel:#172636; --room:#1c2f42;
+  --spore:#f0a24a; --male:#5ab0e6; --female:#ec7bb0;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:28px 18px 56px}
+h1{font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.05;margin:0 0 8px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 22px;max-width:56ch}
+.toggle{display:flex;gap:8px;margin-bottom:14px}
+.toggle button{flex:1;font:inherit;font-weight:600;padding:12px 10px;border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.toggle button:focus-visible,summary:focus-visible{outline:3px solid var(--spore);outline-offset:2px}
+.toggle small{display:block;font-weight:400;opacity:.8}
+.plan{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:10px}
+.plan svg{display:block;width:100%;height:auto}
+.plan text{font-family:inherit;fill:var(--ink)}
+.hide{display:none}
+.room{fill:var(--room);stroke:var(--line);stroke-width:3}
+.wall{stroke:var(--line);stroke-width:3}
+.facts{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
+.facts li{background:var(--panel);border-left:6px solid var(--spore);padding:10px 14px;border-radius:0 8px 8px 0}
+.facts b{font-weight:800}
+.tricks{margin-top:28px;display:grid;gap:10px}
+h2{font-size:1.2rem;margin:28px 0 10px}
+details{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:0}
+summary{cursor:pointer;padding:12px 14px;font-weight:600}
+details p{margin:0;padding:0 14px 14px;color:var(--muted)}
+.wide{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{border:2px solid var(--line);padding:8px 10px;text-align:left}
+th{background:var(--ink);color:var(--bg)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Studio vs. Duplex</h1>
+  <p class="sub">Homosporous = a studio apartment: one space, everything happens in it. Heterosporous = a duplex: two units, two jobs. Tap to flip between floor plans.</p>
+
+  <div class="toggle" role="group" aria-label="Choose a floor plan">
+    <button id="b1" aria-pressed="true">Studio<small>homosporous</small></button>
+    <button id="b2" aria-pressed="false">Duplex<small>heterosporous</small></button>
+  </div>
+
+  <div class="plan">
+    <!-- STUDIO -->
+    <svg id="studio" viewBox="0 0 600 300" role="img" aria-label="Floor plan of a studio: one spore type grows into one gametophyte that makes both sperm and eggs">
+      <rect class="room" x="20" y="20" width="560" height="260" rx="6"/>
+      <text x="36" y="48" font-size="18" font-weight="800">STUDIO: one room, one spore type</text>
+      <circle cx="110" cy="170" r="30" fill="var(--spore)"/>
+      <text x="110" y="226" font-size="15" text-anchor="middle">1 kind of spore</text>
+      <path d="M150 170 H250" stroke="var(--line)" stroke-width="3" fill="none"/>
+      <path d="M250 170 l-12 -8 v16z" fill="var(--line)" transform="translate(12 0)"/>
+      <ellipse cx="400" cy="170" rx="110" ry="70" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="400" y="150" font-size="15" text-anchor="middle">bisexual gametophyte</text>
+      <text x="355" y="198" font-size="34" text-anchor="middle" fill="var(--male)" style="fill:var(--male)">♂</text>
+      <text x="445" y="198" font-size="34" text-anchor="middle" style="fill:var(--female)">♀</text>
+      <text x="400" y="248" font-size="14" text-anchor="middle" style="fill:var(--muted)">sperm + eggs from the same body</text>
+    </svg>
+    <!-- DUPLEX -->
+    <svg id="duplex" class="hide" viewBox="0 0 600 340" role="img" aria-label="Floor plan of a duplex: small microspore grows into a male gametophyte, large megaspore grows into a female gametophyte">
+      <rect class="room" x="20" y="20" width="560" height="300" rx="6"/>
+      <path class="wall" d="M240 20 V320"/>
+      <text x="36" y="48" font-size="17" font-weight="800">UNIT A</text>
+      <text x="256" y="48" font-size="17" font-weight="800">UNIT B</text>
+      <!-- A: micro -->
+      <circle cx="80" cy="150" r="13" fill="var(--spore)"/>
+      <text x="80" y="188" font-size="14" text-anchor="middle">microspore</text>
+      <text x="80" y="206" font-size="13" text-anchor="middle" style="fill:var(--muted)">small</text>
+      <path d="M100 150 H150" stroke="var(--line)" stroke-width="3"/>
+      <ellipse cx="185" cy="150" rx="32" ry="26" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="185" y="162" font-size="30" text-anchor="middle" style="fill:var(--male)">♂</text>
+      <text x="130" y="262" font-size="15" text-anchor="middle" font-weight="600">male only</text>
+      <text x="130" y="282" font-size="13" text-anchor="middle" style="fill:var(--muted)">makes sperm</text>
+      <!-- B: mega -->
+      <circle cx="320" cy="170" r="38" fill="var(--spore)"/>
+      <text x="320" y="228" font-size="14" text-anchor="middle">megaspore</text>
+      <text x="320" y="246" font-size="13" text-anchor="middle" style="fill:var(--muted)">BIG</text>
+      <path d="M368 170 H418" stroke="var(--line)" stroke-width="3"/>
+      <ellipse cx="480" cy="170" rx="55" ry="45" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="480" y="184" font-size="38" text-anchor="middle" style="fill:var(--female)">♀</text>
+      <text x="420" y="286" font-size="15" text-anchor="middle" font-weight="600">female only</text>
+      <text x="420" y="306" font-size="13" text-anchor="middle" style="fill:var(--muted)">makes eggs</text>
+    </svg>
+  </div>
+
+  <ul class="facts" id="facts-studio">
+    <li><b>1 spore type</b> grows into <b>1 gametophyte</b> with both sexes.</li>
+    <li>Gametophyte is bigger and usually <b>free-living</b>.</li>
+    <li>Examples: most ferns, horsetails, many club mosses.</li>
+  </ul>
+  <ul class="facts hide" id="facts-duplex">
+    <li><b>Micro = male.</b> Small spore, male gametophyte, sperm.</li>
+    <li><b>Mega = female.</b> Big spore, female gametophyte, eggs. Say it: "Mega eggs."</li>
+    <li>Gametophytes are <b>tiny and stay inside the spore wall</b>, fed by the parent.</li>
+    <li>Examples: <i>Selaginella</i>, <i>Isoetes</i>, water ferns, <b>all seed plants</b>. This is the stepping stone to seeds.</li>
+  </ul>
+
+  <h2>Side by side</h2>
+  <div class="wide">
+    <table>
+      <tr><th></th><th>Studio (homo)</th><th>Duplex (hetero)</th></tr>
+      <tr><td>Spore types</td><td>1</td><td>2 (micro + mega)</td></tr>
+      <tr><td>Gametophyte</td><td>Both sexes</td><td>One sex each</td></tr>
+      <tr><td>Size</td><td>Larger, free-living</td><td>Tiny, enclosed</td></tr>
+      <tr><td>Examples</td><td>Ferns, horsetails</td><td>Selaginella, seed plants</td></tr>
+    </table>
+  </div>
+
+  <h2>Quiz yourself (tap to reveal)</h2>
+  <div class="tricks">
+    <details><summary>How many spore types in a duplex?</summary><p>Two: microspores and megaspores.</p></details>
+    <details><summary>Which plant group does the studio describe?</summary><p>Homosporous plants such as most ferns and horsetails.</p></details>
+    <details><summary>Which one led to seeds?</summary><p>Heterospory. Keeping the female gametophyte inside the parent is the first step toward an ovule.</p></details>
+    <details><summary>Exam trap: is "heterosporous" the same as "dioecious"?</summary><p>No. Heterosporous is about spores. Dioecious is about separate male and female individual plants (or flowers) in seed plants.</p></details>
+  </div>
+</main>
+<script>
+(function(){
+  var b1=document.getElementById('b1'), b2=document.getElementById('b2');
+  var s=document.getElementById('studio'), d=document.getElementById('duplex');
+  var fs=document.getElementById('facts-studio'), fd=document.getElementById('facts-duplex');
+  function show(isStudio){
+    s.classList.toggle('hide',!isStudio); fs.classList.toggle('hide',!isStudio);
+    d.classList.toggle('hide',isStudio); fd.classList.toggle('hide',isStudio);
+    b1.setAttribute('aria-pressed',isStudio); b2.setAttribute('aria-pressed',!isStudio);
+  }
+  b1.addEventListener('click',function(){show(true)});
+  b2.addEventListener('click',function(){show(false)});
+})();
+</script>
+</body>
+</html>

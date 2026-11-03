@@ -115,6 +115,8 @@
   .size b{display:block;} .size .d{font-size:0.82rem; color:var(--ink-soft);}
   .size input{width:78px; padding:7px 8px; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--bg); text-align:right;}
   .proof{display:block; width:100%; border-radius:10px; border:1px solid var(--line); margin:6px 0 12px;}
+  /* Sample flyer with the partner's name where the logo goes (fs-partner-logos/<key>/sample/flyer.png). Hidden if there is none. */
+  .sample{display:block; width:100%; max-width:420px; margin:8px auto 4px; border-radius:10px; border:1px solid var(--line); box-shadow:0 6px 18px rgba(0,0,0,.18);}
   .row-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .ghost{width:100%; padding:13px; border-radius:999px; border:2px solid var(--line-strong); background:var(--surface); font-weight:800; cursor:pointer;}
   .linkbtn{background:none; border:none; color:var(--accent); font-weight:700; cursor:pointer; padding:0; margin-top:10px; font-size:0.9rem;}
@@ -252,9 +254,23 @@
     try {
       var c = await window.sfSupabaseReady;
       var r = await c.rpc('fs_flyer_view', { p_key: key });
-      if (r.error || !r.data) return;
+      if (r.error || !r.data) return drawSample();
       flyer = r.data; drawFlyer();
     } catch(e){}
+  }
+  // Before a partner sends a logo, show what their flyer could look like: a SAMPLE with their name where the logo goes.
+  var SAMPLE_URL = LOGO_BASE + key + '/sample/flyer.png';
+  function sampleImg(){ return '<img class="sample" src="' + SAMPLE_URL + '" alt="Sample flyer with your name at the top" onerror="this.remove()">'; }
+  function drawSample(){
+    var box = document.createElement('div'); box.className = 'card'; box.id = 'sampleFlyer'; box.hidden = true;
+    box.innerHTML = '<h2 style="font-size:1.15rem">What your flyer could look like</h2>' +
+      '<p class="fly-lead small">Every supporter gets a free custom flyer, counter card or poster with their own logo at the top. It asks your neighbors to sign a child up for the free DJ Lab and to come out to Rainbow Wednesdays on the beach. It goes up only after the Chicago Park District approves the program.</p>' +
+      '<img class="sample" alt="Sample flyer with your name at the top">' +
+      '<p class="small" style="margin:10px 0 0; text-align:center">Want one? Say yes below, and we’ll ask for your logo.</p>';
+    var img = box.querySelector('img');
+    img.onload = function(){ box.hidden = false; }; img.onerror = function(){ box.remove(); };
+    var ans = $('answer'); $('main').insertBefore(box, ans || null);
+    img.src = SAMPLE_URL;
   }
   function fdate(ts){ try { return new Date(ts).toLocaleDateString('en-US', {month:'short', day:'numeric'}); } catch(e){ return ''; } }
   function drawFlyer(){
@@ -266,7 +282,7 @@
       return '<li class="' + cls + '"><i class="' + ic + '"></i><span>' + s[1] + '</span>' + (st[s[0]] ? '<span class="when">' + fdate(st[s[0]]) + '</span>' : '') + '</li>';
     }).join('') + '</ol>';
     var body = '';
-    if (!st.logo || editing) body = logoForm();
+    if (!st.logo || editing) body = (!st.logo ? sampleImg() : '') + logoForm();
     else if (!flyer.proof_url) body = '<div class="fbox"><b>Thank you, we have everything.</b><p class="small" style="margin:4px 0 0">We’re designing your flyer now and will email you when it’s ready to review here.</p><button class="linkbtn" id="fEdit" type="button">Change my logo or sizes</button></div>';
     else if (!st.ok) body = proofBox();
     else if (!st.cpd) body = '<div class="fbox"><b>Your flyer is approved and ready.</b><p class="small" style="margin:4px 0 0">The program can begin only when the Chicago Park District approves it. As soon as it does, we print your flyers and bring them to you.</p>' + (flyer.proof_url ? '<img class="proof" src="' + esc(flyer.proof_url) + '" alt="Your flyer">' : '') + '</div>';
