@@ -29,7 +29,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 <div id="msg">Loading…</div>
 <div id="app" hidden>
 <p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it, and shows on any device you sign in on. <span id="cnt"></span></p>
-<p><button id="clrBtn">Clear</button><button id="refBtn">Refresh scans</button></p>
+<p><button id="clrBtn">Forget unsent</button><button id="refBtn">Refresh scans</button></p>
 <p id="saveMsg" class="scan"></p>
 <div id="feed" hidden></div>
 <div id="list"></div>
@@ -57,7 +57,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     rows.forEach(function(r){
       var a = r.address || '', ns = r.next_step || '', m = a.match(/^(\d+)(?:-\d+)?\s+E\.\s+(79th|75th|71st)\s+St/);
       var deskLike = !a || !/Chicago, IL/.test(a) || /^(Submit|Call 1-|Call 773-535-6100|Find|Email|HOLD|Use |Ask)/.test(ns) || /c\/o|Suite/.test(a);
-      if (deskLike && !(m && /hand-delivered|Deliver the letter/.test(ns))){ desk.push(r); return; }
+      if (!r.walk_last && deskLike && !(m && /hand-delivered|Deliver the letter/.test(ns))){ desk.push(r); return; }
       if (m){ var n = +m[1], st = {'79th':'79','75th':'75','71st':'71'}[m[2]];
         if (st === '75' && n < 1600){ r.n = 0; legs.side.push(r); } else { r.n = n; legs[st].push(r); } }
       else if (/75th St\. and S\. Coles/.test(a)){ r.n = 1960; legs['75'].push(r); }
@@ -130,7 +130,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     });
     $('list').innerHTML = html;
     $('app').hidden = false; $('msg').hidden = true;
-    cnt = function(){ $('cnt').textContent = Object.keys(cur).filter(function(k){ return cur[k].o; }).length + ' of ' + total + ' logged.'; };
+    cnt = function(){ $('cnt').textContent = Object.keys(cur).filter(function(k){ return cur[k].o; }).length + ' of ' + total + ' logged. QR scans so far: ' + Object.keys(byId).reduce(function(a, k){ return a + (+byId[k].scans || 0); }, 0) + '.'; };
     document.querySelectorAll('.stop').forEach(function(s){
       var id = s.dataset.id, v = cur[id] || {};
       if (v.o){ var r = s.querySelector('input[value="' + v.o + '"]'); if (r) r.checked = true; s.classList.add('done'); }
@@ -146,7 +146,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   var stage = {talked:'in_conversation', staff:'reached_out', contact:'in_conversation', closed:'declined'};
   var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 9'};
   function setMsg(t){ $('saveMsg').textContent = t; }
-  function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
+  function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.getFullYear() + '-' + ('0' + (x.getMonth() + 1)).slice(-2) + '-' + ('0' + x.getDate()).slice(-2); }
   function lsText(p){ var sv = parseWalk(p.walk_last); if (!p.walk_at || !sv) return ''; return 'Last saved: ' + (sv.o === 'skip' ? 'not visited' : label[sv.o]) + ' by ' + (p.walk_by || '?') + ', ' + new Date(p.walk_at).toLocaleString(); }
   var strip = function(t){ return String(t || '').replace(/^Walk \d{4}-\d{2}-\d{2}: /, ''); };
   var when = function(t){ return new Date(t).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}); };
@@ -163,12 +163,14 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
     if (busy || Object.keys(q).length) return;
     try {
       var c = await window.sfSupabaseReady; var r = await c.rpc('fs_walk_load', { p_session: sess.sessionToken });
+      if (r.error && /session/i.test(r.error.message || '')){ setMsg('Session ended. Sign in again at /full-spectrum/partners.html.'); return; }
       if (r.error || !r.data) return;
       r.data.partners.forEach(function(p){
         var s = document.querySelector('[data-id="' + p.id + '"]'); if (!s) return;
         byId[p.id] = p; paint(s, p);
         if (s.contains(document.activeElement)) return;
-        var sv = parseWalk(p.walk_last); if (!sv) return;
+        var sv = parseWalk(p.walk_last);
+        if (!sv){ delete cur[p.id]; s.querySelectorAll('input:checked').forEach(function(x){ x.checked = false; }); s.querySelector('.note').value = ''; s.classList.remove('done'); return; }
         cur[p.id] = sv; var rd = s.querySelector('input[value="' + sv.o + '"]'); if (rd) rd.checked = true;
         s.querySelector('.note').value = sv.t || ''; s.classList.add('done');
       });
@@ -180,6 +182,8 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   async function flush(){
     if (busy) return; busy = true;
     try {
+      var again = true, guard = 0;
+      while (again && guard++ < 5){ again = false;
       var ids = Object.keys(q);
       for (var i = 0; i < ids.length; i++){
         var id = ids[i], it = q[id], r0 = byId[id] || {}, o = it.o, t = it.t;
@@ -187,10 +191,12 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
         if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-09'; }
         else { args.p_stage = stage[o]; args.p_next_step = o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (t || 'check in by phone'); args.p_next_due = o === 'closed' ? null : iso(7); }
         try { var c = await window.sfSupabaseReady; var r = await c.rpc('fs_partner_log', args); if (r.error) throw r.error;
-          if (q[id] && q[id].o === o && q[id].t === t) delete q[id]; saveQ();
+          if (q[id] && q[id].o === o && q[id].t === t) delete q[id]; else again = true; saveQ();
           setMsg('Saved to tracker: ' + (it.name || '') + ' (' + new Date().toLocaleTimeString() + ')'); }
         catch(err){ if (/session/i.test(err.message || '')){ setMsg('Session ended. Sign in again at /full-spectrum/partners.html. Your answers are kept on this phone.'); break; }
-          break; }
+          again = false; break; }
+      }
+      if (!Object.keys(q).length) again = false;
       }
     } finally { busy = false; var n = Object.keys(q).length; if (n) setMsg(n + ' answer' + (n > 1 ? 's' : '') + ' NOT saved yet (no signal?). They are kept on this phone and retry automatically.'); }
   }
