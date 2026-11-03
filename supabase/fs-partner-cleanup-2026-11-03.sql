@@ -84,3 +84,5 @@ union all select 'reached_out with no activity', 'rows', count(*)::text from fs_
 union all select 'ball_with null (should be 0 except confirmed)', 'rows', count(*)::text from fs_partners where ball_with is null and stage <> 'confirmed'
 order by 1, 2;
 
+
+commit;
