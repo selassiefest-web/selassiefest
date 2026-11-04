@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>BIOS 102 Mock Lab Exam 2</title>
+<style>
+:root{--bg:#fff;--fg:#000;--muted:#333;--rule:#000;--good:#005a1e;--bad:#b00020;--focus:#0b3d91;--soft:#f2f2f2}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,"Segoe UI",sans-serif;font-size:19px;line-height:1.55;margin:0;padding:0 16px 90px}
+.wrap{max-width:44rem;margin:0 auto}
+.bar{padding:10px 0;font-size:.9rem;border-bottom:1px solid #bbb}.bar a{color:var(--fg)}
+header{padding:24px 0 12px;border-bottom:3px solid var(--rule)}
+h1{font-size:2rem;line-height:1.2;margin:0 0 6px}
+h2{font-size:1.4rem;margin:36px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--rule)}
+p{margin:.5em 0}.sub{color:var(--muted);margin:0}
+.box{border:2px solid var(--rule);padding:14px 18px;margin:18px 0}
+.q{padding:16px 0;border-bottom:1px solid #bbb}
+.q .t b{display:inline-block;min-width:2.2em}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.opt input{width:22px;height:22px;margin-top:3px;flex:none}
+input[type=text]{font:inherit;width:100%;padding:8px;border:2px solid #000;margin-top:6px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button{font:inherit;font-weight:bold;padding:10px 22px;border:2px solid #000;background:#fff;cursor:pointer;margin:6px 8px 6px 0}
+button.primary{background:#000;color:#fff}
+.fb{margin-top:8px;padding:8px 12px;border-left:6px solid;display:none}
+.fb.show{display:block}
+.fb.ok{border-color:var(--good);color:var(--good)}.fb.no{border-color:var(--bad);color:var(--bad)}
+.fb .src{color:var(--muted);font-size:.85em}
+.corr{display:none;margin-top:8px}.corr.show{display:block}
+.score{position:sticky;bottom:0;background:#fff;border-top:3px solid #000;padding:10px 16px;margin:0 -16px;font-weight:bold;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+.keyline{background:var(--soft);padding:8px 12px;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="bar"><a href="/BIOS102/dashboard.html">&larr; Back to dashboard</a></div>
+<header>
+<h1>BIOS 102 Mock Lab Exam 2</h1>
+<p class="sub">Lab 7 and Lab 8: Porifera, Cnidaria, Platyhelminthes, Nematoda, Annelida &middot; 60 questions</p>
+</header>
+<div class="box">
+<p><b>How it works.</b> Answer as many as you like, then press <b>Check my answers</b>. You will see which are right, the manual page where each answer lives, and the corrections for false statements. Press <b>Try again</b> to clear it and go again. Your answers stay on this device while you work.</p>
+<p>This is practice only. It does not copy the real exam stations, images or labels.</p>
+<p><a href="/BIOS102/files/BIOS102_Mock_Lab_Exam_2_Practice.pdf" target="_blank" rel="noopener">Prefer paper? Open the printable PDF.</a></p>
+</div>
+<form id="f" onsubmit="return false">
+<h2>Part 1: Phylum comparisons (1&ndash;30)</h2>
+<p>Choose the single best phylum. Compare the combination of features, not one familiar word. Choices may be used more than once.</p>
+<p class="keyline">Annelida | Cnidaria | Nematoda | Platyhelminthes | Porifera</p>
+<div id="p1"></div>
+<h2>Part 2: True / False (31&ndash;60)</h2>
+<p>Choose True or False. For each false statement, type the corrected word or phrase (do not just add &ldquo;not&rdquo;), then compare it with the correction after you check.</p>
+<div id="p2"></div>
+<p><button type="button" class="primary" id="chk">Check my answers</button><button type="button" id="rst">Try again</button></p>
+</form>
+<div class="score" id="score" aria-live="polite"><span id="s1">Answered: 0 of 60</span><span id="s2"></span></div>
+</div>
+<script>
+const D={"t1":[{"n":1,"q":"Unlike the group with definite organs, this phylum has loosely associated cells that do not form definite tissues.","a":"Porifera","p":"81, 95"},{"n":2,"q":"Unlike tapeworms, members of this phylum have a cuticle described as resisting digestive enzymes and desiccation.","a":"Nematoda","p":"96, 99"},{"n":3,"q":"Compared with the roundworms, this phylum has repetitive segments separated internally by septa.","a":"Annelida","p":"99, 102"},{"n":4,"q":"In contrast to adult sponges, this phylum includes a free-swimming body form and contractile cells in two body layers.","a":"Cnidaria","p":"81, 86"},{"n":5,"q":"Unlike the group with a complete digestive tract, this phylum includes ribbon-like animals that absorb nutrients directly through the body wall.","a":"Platyhelminthes","p":"96, 99"},{"n":6,"q":"This phylum includes animals whose dissociated cells can survive passage through a fine mesh and reassemble into an organism.","a":"Porifera","p":"81"},{"n":7,"q":"Compared with flatworms and roundworms, this phylum is described as having a spacious coelom and a closed circulatory system.","a":"Annelida","p":"102"},{"n":8,"q":"This phylum includes a colonial animal supported by a gas-filled sac with long suspended tentacles of polyps.","a":"Cnidaria","p":"88"},{"n":9,"q":"This phylum includes a parasite for which intestinal loss of iron and protein can produce anemia.","a":"Nematoda","p":"99"},{"n":10,"q":"This phylum includes a miniature intestinal parasite of dogs and a long intestinal parasite of humans who ingest infested meat.","a":"Platyhelminthes","p":"96"},{"n":11,"q":"Unlike the attached adult, the larval stage described for this phylum swims about.","a":"Porifera","p":"81"},{"n":12,"q":"Within this phylum, one marine group has parapodia, whereas common earthworms lack them.","a":"Annelida","p":"102, 106"},{"n":13,"q":"This phylum includes a colony with separate feeding and reproductive polyps, followed by a sexually reproducing swimming stage.","a":"Cnidaria","p":"88"},{"n":14,"q":"This phylum includes an intestinal parasite whose gravid females move to the rectum to release eggs requiring oxygen for maturation.","a":"Nematoda","p":"100"},{"n":15,"q":"This phylum includes parasites that lack both a mouth and a digestive tract, unlike the complete tract of roundworms.","a":"Platyhelminthes","p":"96, 99"},{"n":16,"q":"This phylum produces resistant gemmules made of clusters of amoebocytes enclosed in hard spicules.","a":"Porifera","p":"81"},{"n":17,"q":"In this phylum, a studied animal has male sperm ducts on segment XV and female oviducts on segment XIV.","a":"Annelida","p":"102"},{"n":18,"q":"Within this phylum, Scyphozoa primarily have one swimming body form, whereas Anthozoa lack that form.","a":"Cnidaria","p":"89"},{"n":19,"q":"This phylum includes cylindrical worms living in almost all environments, including soil containing millions of them.","a":"Nematoda","p":"99"},{"n":20,"q":"This phylum includes a class with common swimming Dugesia and a separate class of long ribbon-like tapeworms.","a":"Platyhelminthes","p":"95-96"},{"n":21,"q":"This phylum includes organisms whose adult bodies have neither mouths nor a digestive tract, yet are filter-feeding heterotrophs.","a":"Porifera","p":"81"},{"n":22,"q":"This phylum includes animals with bristle-like setae that aid locomotion and sometimes feeding.","a":"Annelida","p":"102"},{"n":23,"q":"Unlike the loosely associated cells of sponges, this phylum has contractile cells in both epidermis and gastrodermis.","a":"Cnidaria","p":"81, 86"},{"n":24,"q":"This phylum includes a human intestinal parasite with a sharply pointed adult female tail.","a":"Nematoda","p":"100"},{"n":25,"q":"This phylum includes animals whose organs are packed in mesodermal cells between the digestive cavity and body wall.","a":"Platyhelminthes","p":"95"},{"n":26,"q":"This phylum includes hermaphroditic animals that produce eggs and sperm in the mesohyl.","a":"Porifera","p":"81"},{"n":27,"q":"This phylum includes a studied animal in which most body segments contain paired tubular excretory organs.","a":"Annelida","p":"103"},{"n":28,"q":"This phylum includes Obelia, Physalia, and Aurelia, representing colonial and jellyfish examples.","a":"Cnidaria","p":"88-89"},{"n":29,"q":"This phylum has a fluid-filled space between body wall and digestive tract, together with separate mouth and anus.","a":"Nematoda","p":"99"},{"n":30,"q":"This phylum includes an animal with a branched gastrovascular cavity and a pharynx region examined on a whole-mount slide.","a":"Platyhelminthes","p":"96"}],"t2":[{"n":31,"q":"Adult sponges obtain food by photosynthesis.","a":"F","fix":{"from":"photosynthesis","to":"filter feeding"},"p":"81"},{"n":32,"q":"Gemmules can withstand adverse conditions that would kill an adult sponge.","a":"T","fix":null,"p":"81"},{"n":33,"q":"A sponge larva is described as motile.","a":"T","fix":null,"p":"81"},{"n":34,"q":"The adult sponge is typically motile.","a":"F","fix":{"from":"motile","to":"sessile"},"p":"81"},{"n":35,"q":"Sponge cells form definite tissues.","a":"F","fix":{"from":"form definite tissues","to":"do not form definite tissues"},"p":"81"},{"n":36,"q":"A monaxon spicule is described as Y-shaped.","a":"F","fix":{"from":"monaxon","to":"triradiate"},"p":"82"},{"n":37,"q":"Hexactinellida primarily use silica in their skeletons.","a":"T","fix":null,"p":"83"},{"n":38,"q":"A sponge can reproduce sexually by producing eggs and sperm in the mesohyl.","a":"T","fix":null,"p":"81"},{"n":39,"q":"The gastrovascular cavity provides hydrostatic support in cnidarians.","a":"T","fix":null,"p":"86"},{"n":40,"q":"Contractile cells occur only in the epidermis of cnidarians.","a":"F","fix":{"from":"only in the epidermis","to":"in both the epidermis and gastrodermis"},"p":"86"},{"n":41,"q":"Obelia feeding and reproductive polyps occur in the same colony.","a":"T","fix":null,"p":"88"},{"n":42,"q":"The free-swimming Obelia medusae reproduce asexually.","a":"F","fix":{"from":"asexually","to":"sexually"},"p":"88"},{"n":43,"q":"An Obelia zygote develops into a planula larva.","a":"T","fix":null,"p":"88"},{"n":44,"q":"Physalia is described as a solitary organism supported by a gas-filled sac.","a":"F","fix":{"from":"solitary organism","to":"floating colony"},"p":"88"},{"n":45,"q":"Scyphozoa primarily exhibit the medusa form.","a":"T","fix":null,"p":"89"},{"n":46,"q":"Anthozoa have only medusa forms.","a":"F","fix":{"from":"medusa","to":"polyp"},"p":"89"},{"n":47,"q":"Tapeworms absorb nutrients directly through their body wall.","a":"T","fix":null,"p":"96"},{"n":48,"q":"Dugesia is placed in class Cestoda.","a":"F","fix":{"from":"Cestoda","to":"Turbellaria"},"p":"95"},{"n":49,"q":"Echinococcus is described as an intestinal parasite of dogs.","a":"T","fix":null,"p":"96"},{"n":50,"q":"The flatworm body wall and digestive cavity are separated by a spacious coelom.","a":"F","fix":{"from":"a spacious coelom","to":"mesodermal cells"},"p":"95"},{"n":51,"q":"The nematode cuticle resists desiccation.","a":"T","fix":null,"p":"99"},{"n":52,"q":"The hookworms described live in the large intestine of their host.","a":"F","fix":{"from":"large","to":"small"},"p":"99"},{"n":53,"q":"Adult female Enterobius have sharply pointed tails.","a":"T","fix":null,"p":"100"},{"n":54,"q":"The whipworm described feeds on blood.","a":"F","fix":{"from":"blood","to":"tissue secretions"},"p":"100"},{"n":55,"q":"Earthworms have parapodia on their body segments.","a":"F","fix":{"from":"have","to":"lack"},"p":"102"},{"n":56,"q":"Earthworm setae are bristle-like structures.","a":"T","fix":null,"p":"102"},{"n":57,"q":"An earthworm has a closed circulatory system.","a":"T","fix":null,"p":"102"},{"n":58,"q":"The earthworm gizzard is described as grinding food.","a":"T","fix":null,"p":"103"},{"n":59,"q":"Earthworm seminal receptacles store sperm received from another earthworm.","a":"T","fix":null,"p":"103"},{"n":60,"q":"The earthworm ventral nerve cord lies above the intestine.","a":"F","fix":{"from":"above","to":"beneath"},"p":"104"}]};
+const PH=['Annelida','Cnidaria','Nematoda','Platyhelminthes','Porifera'];
+const KEY='bios102-mock-exam-2';
+let st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+const sel=(n)=>document.querySelector('input[name=a'+n+']:checked');
+document.getElementById('p1').innerHTML=D.t1.map(q=>'<div class="q" id="q'+q.n+'"><p class="t"><b>'+q.n+'.</b> '+esc(q.q)+'</p>'+
+ PH.map(p=>'<label class="opt"><input type="radio" name="a'+q.n+'" value="'+p+'"> <span>'+p+'</span></label>').join('')+'<div class="fb" id="fb'+q.n+'"></div></div>').join('');
+document.getElementById('p2').innerHTML=D.t2.map(q=>'<div class="q" id="q'+q.n+'"><p class="t"><b>'+q.n+'.</b> '+esc(q.q)+'</p>'+
+ '<label class="opt"><input type="radio" name="a'+q.n+'" value="T"> <span>True</span></label>'+
+ '<label class="opt"><input type="radio" name="a'+q.n+'" value="F"> <span>False</span></label>'+
+ '<div class="corr" id="c'+q.n+'"><label for="x'+q.n+'">If false, type the correction:</label><input type="text" id="x'+q.n+'" autocomplete="off"></div>'+
+ '<div class="fb" id="fb'+q.n+'"></div></div>').join('');
+function updCorr(n){const s=sel(n);const c=document.getElementById('c'+n);if(c)c.classList.toggle('show',!!s&&s.value==='F');}
+function count(){let n=0;for(let i=1;i<=60;i++)if(sel(i))n++;document.getElementById('s1').textContent='Answered: '+n+' of 60';}
+function restore(){for(const k in st){const el=document.querySelector('[name="'+k+'"][value="'+st[k]+'"]');if(el)el.checked=true;else{const t=document.getElementById(k);if(t&&t.type==='text')t.value=st[k];}}
+ for(let i=31;i<=60;i++)updCorr(i);count();}
+document.getElementById('f').addEventListener('change',e=>{const t=e.target;if(t.type==='radio'){st[t.name]=t.value;updCorr(+t.name.slice(1));}save();count();});
+document.getElementById('f').addEventListener('input',e=>{if(e.target.type==='text'){st[e.target.id]=e.target.value;save();}});
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+document.getElementById('chk').onclick=function(){
+ let right=0;const wrongs=[];
+ D.t1.forEach(q=>{const s=sel(q.n),v=s?s.value:'';const fb=document.getElementById('fb'+q.n);
+  const ok=v===q.a;if(ok)right++;else wrongs.push(q.n);
+  fb.className='fb show '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'&#10003; Correct: ':v?'&#10007; Not quite. The answer is ':'&#10007; Not answered. The answer is ')+'<b>'+q.a+'</b>. <span class="src">Manual p. '+esc(q.p)+'</span>';});
+ D.t2.forEach(q=>{const s=sel(q.n),v=s?s.value:'';const fb=document.getElementById('fb'+q.n);
+  const ok=v===q.a;if(ok)right++;else wrongs.push(q.n);
+  let msg=ok?'&#10003; Correct. ':v?'&#10007; Not quite. ':'&#10007; Not answered. ';
+  msg+=q.a==='T'?'This statement is <b>true</b>.':'This statement is <b>false</b>. Change &ldquo;'+esc(q.fix.from)+'&rdquo; to <b>'+esc(q.fix.to)+'</b>.';
+  if(q.a==='F'&&v==='F'){const typed=document.getElementById('x'+q.n).value.trim();
+   if(!typed)msg+=' <i>(You left the correction blank. On the real exam you need it.)</i>';
+   else if(norm(q.fix.to).split(' ').some(w=>w.length>3&&norm(typed).indexOf(w)>-1))msg+=' Your correction looks close. Compare it with the one above.';
+   else msg+=' You wrote &ldquo;'+esc(typed)+'&rdquo;. Compare it with the correction above.';}
+  fb.className='fb show '+(ok?'ok':'no');fb.innerHTML=msg+' <span class="src">Manual p. '+q.p+'</span>';});
+ document.getElementById('s2').textContent='Score: '+right+' of 60 ('+Math.round(right/.6)+'%)'+(wrongs.length?' · Missed: '+wrongs.join(', '):' · Perfect!');
+ if(wrongs.length)document.getElementById('q'+wrongs[0]).scrollIntoView({behavior:'smooth',block:'center'});
+};
+document.getElementById('rst').onclick=function(){st={};save();document.getElementById('f').reset();document.querySelectorAll('.fb').forEach(e=>e.className='fb');document.querySelectorAll('.corr').forEach(e=>e.classList.remove('show'));document.getElementById('s2').textContent='';count();scrollTo(0,0);};
+restore();
+</script>
+</body>
+</html>
