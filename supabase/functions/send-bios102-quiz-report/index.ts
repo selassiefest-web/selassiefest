@@ -437,15 +437,17 @@ Deno.serve(async (req) => {
       const videograde = body.lesson === "videograde";
       // {"lesson":"sperm"} tells students Follow the Sperm (Exercise 7) is required.
       const sperm = body.lesson === "sperm";
+      // {"lesson":"mockexam2"} announces the interactive Lab Exam 2 mock (Labs 7 and 8).
+      const mockexam2 = body.lesson === "mockexam2";
       let excluded = new Set<string>();
-      if (videograde || sperm) {
+      if (videograde || sperm || mockexam2) {
         const { data: gr, error: gErr } = await admin.from("bios102_grade_rows").select("email, data");
         if (gErr) throw gErr;
         excluded = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
       }
       const recipients = body.test
         ? [{ email: TO, name: "Preview Student" }]
-        : (videograde || sperm) ? students.filter((s) => !excluded.has(String(s.email).toLowerCase())) : students;
+        : (videograde || sperm || mockexam2) ? students.filter((s) => !excluded.has(String(s.email).toLowerCase())) : students;
       const failed: string[] = [];
       // {"lesson":"spores"} announces the Studio vs. Duplex lesson instead of a quiz.
       const spores = body.lesson === "spores";
@@ -455,8 +457,15 @@ Deno.serve(async (req) => {
       const mockopen = body.lesson === "mockopen";
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
-        const subject = sperm ? "BIOS102 required: Follow the Sperm (Exercise 7)" : videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
-        const html = sperm ? `
+        const subject = mockexam2 ? "BIOS102 Lab Exam 2 mock exam is ready (60 questions)" : sperm ? "BIOS102 required: Follow the Sperm (Exercise 7)" : videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
+        const html = mockexam2 ? `
+              <p>Hi ${first},</p>
+              <p>The <strong>Lab Exam 2 mock exam</strong> is ready, just in time for Tuesday. It covers Labs 7 and 8: Porifera, Cnidaria, Platyhelminthes, Nematoda and Annelida.</p>
+              <p><a href="https://selassiefest.com/BIOS102/mock-exam-2.html">Take the mock exam</a></p>
+              <p>There are 60 questions: 30 phylum comparisons and 30 true/false (type the correction for each false one). When you press Check, you see what you got right, the correction for anything false, and the lab manual page for every answer. Retake it as often as you like. You do not need to log in.</p>
+              <p>Prefer paper? <a href="https://selassiefest.com/BIOS102/files/BIOS102_Mock_Lab_Exam_2_Practice.pdf">Here is the printable PDF</a>.</p>
+              <p>This is practice. It is not the real exam, and the real stations will look different.</p>
+              <p>Professor Harris</p>` : sperm ? `
               <p>Hi ${first},</p>
               <p><strong>You are required to complete &ldquo;Follow the Sperm,&rdquo; an Exercise 7 (Porifera) activity on the BIOS102 Lab Companion.</strong> It takes about 10 minutes.</p>
               <p>First you find and fix the one wrong word hiding in a paragraph about sponge reproduction. Then you follow one sperm cell, stop by stop, from Sponge A to the egg it fertilizes in Sponge B, and answer four quick-check questions.</p>
