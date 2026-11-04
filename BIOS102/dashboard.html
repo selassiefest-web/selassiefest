@@ -18,6 +18,7 @@
     <h2>Concept Boosters</h2>
     <p class="lede">Short, one-screen-at-a-time lessons with practice and spaced reviews.</p>
     <div class="grid">
+<!-- RETIRED (first half of semester; restore next semester)
       <div class="ex-card exam-card">
         <span class="num">5 minutes</span>
         <h3>Studio vs. Duplex</h3>
@@ -26,6 +27,7 @@
           <a class="go" href="/BIOS102/homosporous-heterosporous.html">Start the lesson &rarr;</a>
         </div>
       </div>
+-->
       <div class="ex-card exam-card">
         <span class="num">About 25 minutes</span>
         <h3>Sponges vs. Stingers</h3>
@@ -36,6 +38,7 @@
       </div>
     </div>
 
+<!-- RETIRED (first half of semester; restore next semester)
     <h2 style="margin-top:40px;">Mock Quizzes</h2>
     <p class="lede">Auto-graded practice for the lab quizzes. Every question comes from your lab manual, and your progress saves to your account.</p>
     <div class="grid">
@@ -58,6 +61,7 @@
         </div>
       </div>
     </div>
+-->
 
     <h2 style="margin-top:40px;">Lab Exam 2 Prep</h2>
     <p class="lede">Practice for next Tuesday's exam on Labs 7 and 8 (Sponges, Stingers and Worms).</p>
@@ -72,6 +76,7 @@
       </div>
     </div>
 
+<!-- RETIRED (first half of semester; restore next semester)
     <h2 style="margin-top:40px;">Lab Exam 1 Prep</h2>
     <p class="lede">How to study for the exam, a study-session sign-up, and a mock exam that opens for a set window.</p>
     <div class="grid">
@@ -113,6 +118,7 @@
         </div>
       </div>
     </div>
+-->
 
     <h2 style="margin-top:40px;">Exam Review</h2>
     <p class="lede">Master tables pull organisms from several exercises at once, for reviewing them all together before an exam.</p>
@@ -145,7 +151,7 @@
       }
 
       // Mock quizzes save under exercise_number 910N (see mock-quiz-N.html)
-      [[9102, 'mock2-badge'], [9103, 'mock3-badge']].forEach(([storageId, badgeId]) => {
+      [].forEach(([storageId, badgeId]) => {
         const saved = savedByExercise[storageId];
         const mq = saved && Array.isArray(saved.rows) && saved.rows[0] ? saved.rows[0].mockQuiz : null;
         if (!(mq && mq.q)) return;
@@ -159,7 +165,7 @@
       });
 
       const examGrid = document.getElementById('exam-grid');
-      examGrid.innerHTML = BIOS.getExamRanges().map((exam) => {
+      examGrid.innerHTML = BIOS.getExamRanges().filter((exam) => exam.number >= 2).map((exam) => {
         const exercisesIn = BIOS.getExercisesForExam(exam.number);
         const totalOrganisms = exercisesIn.reduce((n, e) => n + e.organisms.length, 0);
         const saved = savedByExercise[exam.storageId];
@@ -183,7 +189,7 @@
       }).join('');
 
       const grid = document.getElementById('ex-grid');
-      const exercises = BIOS.getExercises();
+      const exercises = BIOS.getExercises().filter((ex) => ex.number >= 7);
       grid.innerHTML = exercises.map((ex) => {
         const saved = savedByExercise[ex.number];
         const rowCount = saved ? (saved.rows || []).length : 0;
