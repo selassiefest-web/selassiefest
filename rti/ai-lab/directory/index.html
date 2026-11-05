@@ -1,16 +1,145 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Assistant Directory</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#17243b;font:17px/1.6 system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:50px 24px}header{background:#17243b;color:white;padding:35px;border-radius:20px;margin-bottom:25px}h1{font-size:clamp(30px,5vw,46px);line-height:1.2;margin:8px 0 15px}header p{color:#d3ddf1;margin:0}label{font-weight:700}input{display:block;width:100%;padding:15px;border:1px solid #aebbd0;border-radius:10px;font:inherit;margin:8px 0 20px}ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}li{background:white;border:1px solid #dbe2ed;border-radius:14px;padding:23px}li[hidden]{display:none}a{color:#1556b8;text-underline-offset:4px}li>a{font-size:22px;font-weight:750}li p{margin:8px 0}small{color:#52627a}.note{padding:18px;background:#e8eef8;border-radius:12px}footer{margin-top:30px;font-size:14px;color:#52627a}@media print{input,label,#count{display:none}main{padding:0}header{background:white;color:black}header p{color:black}li{break-inside:avoid}a{color:black}}</style></head><body><main><header><small style="color:#b5d7ff">CLICK • EXPLORE • CREATE</small><h1>AI Assistant Directory</h1><p>Direct links to popular AI chat assistants and research tools.</p></header><p class="note">These are commonly called “AI assistants” or “chatbots.” GPT is a model family from OpenAI; Claude, Gemini, and others use their own model families. Click any name to visit its website in a new tab.</p><label for="search">Find an assistant or task</label><input id="search" type="search" placeholder="Try: Claude, research, writing, coding…"><p id="count" aria-live="polite"></p><ul id="tools">
-<li><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a><br><small>OpenAI</small><p>General assistance with writing, brainstorming, coding, and analysis.</p><small>https://chatgpt.com/</small></li>
-<li><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">Claude ↗</a><br><small>Anthropic</small><p>Writing, document analysis, coding, and extended conversations.</p><small>https://claude.ai/</small></li>
-<li><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">Perplexity ↗</a><br><small>Perplexity</small><p>Web research and answers with links to sources.</p><small>https://www.perplexity.ai/</small></li>
-<li><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini ↗</a><br><small>Google</small><p>General AI assistance for writing, learning, and brainstorming.</p><small>https://gemini.google.com/</small></li>
-<li><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer">Microsoft Copilot ↗</a><br><small>Microsoft</small><p>Questions, content drafting, and everyday assistance.</p><small>https://copilot.microsoft.com/</small></li>
-<li><a href="https://grok.com/" target="_blank" rel="noopener noreferrer">Grok ↗</a><br><small>Grok</small><p>Conversational assistance, search, and creative tasks.</p><small>https://grok.com/</small></li>
-<li><a href="https://www.meta.ai/" target="_blank" rel="noopener noreferrer">Meta AI ↗</a><br><small>Meta</small><p>General questions, ideas, and creative assistance.</p><small>https://www.meta.ai/</small></li>
-<li><a href="https://chat.mistral.ai/" target="_blank" rel="noopener noreferrer">Mistral AI / Le Chat ↗</a><br><small>Mistral AI</small><p>Chat, writing, coding, and research assistance. Also see Mistral’s current product pages for naming updates.</p><small>https://chat.mistral.ai/</small></li>
-<li><a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">DeepSeek ↗</a><br><small>DeepSeek</small><p>General chat, reasoning, and coding assistance.</p><small>https://chat.deepseek.com/</small></li>
-<li><a href="https://chat.qwen.ai/" target="_blank" rel="noopener noreferrer">Qwen ↗</a><br><small>Qwen</small><p>Chat, writing, coding, and multilingual assistance.</p><small>https://chat.qwen.ai/</small></li>
-<li><a href="https://poe.com/" target="_blank" rel="noopener noreferrer">Poe ↗</a><br><small>Quora</small><p>A platform for exploring multiple AI models and bots.</p><small>https://poe.com/</small></li>
-<li><a href="https://huggingface.co/chat/" target="_blank" rel="noopener noreferrer">HuggingChat ↗</a><br><small>Hugging Face</small><p>A chat interface for exploring open AI models.</p><small>https://huggingface.co/chat/</small></li>
-<li><a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer">NotebookLM ↗</a><br><small>Google</small><p>A research and study tool for working with sources you provide.</p><small>https://notebooklm.google.com/</small></li>
-<li><a href="https://www.kimi.com/" target="_blank" rel="noopener noreferrer">Kimi ↗</a><br><small>Moonshot AI</small><p>AI chat and assistance with documents, research, and coding.</p><small>https://www.kimi.com/</small></li>
-</ul><p id="empty" hidden>No matches. Try another name or task.</p><footer>Prepared October 31, 2026 • 14 starting points, not an exhaustive list.<br>Availability, features, account requirements, and pricing can change. Visit each linked website for current details. This directory does not rank the services.</footer></main><script>const search=document.querySelector('#search'),items=[...document.querySelectorAll('#tools li')];function filter(){const q=search.value.trim().toLowerCase();let n=0;items.forEach(item=>{item.hidden=!item.textContent.toLowerCase().includes(q);if(!item.hidden)n++});document.querySelector('#count').textContent=n+' of '+items.length+' assistants';document.querySelector('#empty').hidden=n>0}search.addEventListener('input',filter);filter();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Tool Directory</title>
+<style>
+:root{--bg:#f3f5fa;--ink:#17243b;--soft:#52627a;--card:#fff;--line:#dbe2ed;--link:#1556b8;--navy:#17243b;--chip:#e8eef8;--chip-on:#17243b;--chip-on-ink:#fff;--note:#e8eef8}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1624;--ink:#e8eefb;--soft:#a5b2c8;--card:#18223a;--line:#2a3856;--link:#8fb8ff;--navy:#0b1220;--chip:#223050;--chip-on:#8fb8ff;--chip-on-ink:#0b1220;--note:#1d2a47}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1060px;margin:auto;padding:40px 18px 60px}
+header{background:var(--navy);color:#fff;padding:34px;border-radius:20px;margin-bottom:22px}
+header small{color:#b5d7ff;letter-spacing:.14em}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:8px 0 12px}
+header p{color:#d3ddf1;margin:0}
+.note{padding:16px 18px;background:var(--note);border-radius:12px;margin:0 0 20px}
+.note b{display:block;margin-bottom:2px}
+label{font-weight:700}
+input{display:block;width:100%;padding:14px;border:1px solid var(--line);border-radius:10px;font:inherit;margin:8px 0 14px;background:var(--card);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.chip{border:0;background:var(--chip);color:var(--ink);font:600 15px system-ui,sans-serif;padding:9px 15px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
+#count{color:var(--soft);margin:0 0 12px}
+h2{font-size:1.35rem;margin:26px 0 10px}
+ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px}
+li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+li a.t{font-size:21px;font-weight:750;color:var(--link);text-underline-offset:4px}
+li .by{display:block;color:var(--soft);font-size:14px}
+li p{margin:8px 0}
+li .best{font-size:14px;color:var(--soft)}
+li .best b{color:var(--ink)}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-top:4px}
+.help{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin-top:8px}
+.help table{width:100%;border-collapse:collapse;font-size:16px}
+.help td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.help tr:last-child td{border-bottom:0}
+.help td:first-child{font-weight:700;width:38%}
+footer{margin-top:30px;font-size:14px;color:var(--soft)}
+a{color:var(--link)}
+[hidden]{display:none!important}
+@media print{input,label,.chips,#count{display:none}main{padding:0}header{background:#fff;color:#000}header p{color:#000}li{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <small>CLICK &bull; EXPLORE &bull; CREATE</small>
+  <h1>AI Tool Directory</h1>
+  <p>Chat assistants, research helpers, and tools for images, music, video, slides and more. Pick the job, then pick the tool.</p>
+</header>
+
+<div class="note">
+  <b>Before you type anything in</b>
+  Do not enter Social Security numbers, passwords, bank details, or private information about children or clients. Check every fact and every quote an AI gives you before you use it. These are commonly called &ldquo;AI assistants&rdquo; or &ldquo;chatbots.&rdquo; GPT is a model family from OpenAI; Claude, Gemini and the others use their own models.
+</div>
+
+<h2 style="margin-top:6px">Which tool for which job?</h2>
+<div class="help"><table>
+<tr><td>Write or edit a letter, email or grant answer</td><td>Claude, ChatGPT, Gemini, Copilot</td></tr>
+<tr><td>Find sources and check facts</td><td>Perplexity, Gemini, Elicit, Consensus</td></tr>
+<tr><td>Study from your own documents</td><td>NotebookLM, Claude</td></tr>
+<tr><td>Make a slide deck or flyer</td><td>Gamma, Canva</td></tr>
+<tr><td>Make a picture or logo idea</td><td>Ideogram, Adobe Firefly, Midjourney, Canva</td></tr>
+<tr><td>Turn text into a voice or narration</td><td>ElevenLabs</td></tr>
+<tr><td>Make a song or beat idea</td><td>Suno, Udio</td></tr>
+<tr><td>Notes and a summary of a meeting</td><td>Granola, Otter</td></tr>
+<tr><td>Build a small website or app</td><td>Claude Code, Cursor, Replit</td></tr>
+</table></div>
+
+<h2>Browse the directory</h2>
+<label for="search">Find a tool or a task</label>
+<input id="search" type="search" placeholder="Try: Claude, research, music, slides, coding&hellip;">
+<div class="chips" id="chips" role="group" aria-label="Filter by kind of tool"></div>
+<p id="count" aria-live="polite"></p>
+<ul id="tools"></ul>
+<p id="empty" hidden>No matches. Try another name or task.</p>
+
+<footer>Prepared October 31, 2026 and expanded November 5, 2026 &bull; a starting list, not an exhaustive one, and it does not rank the services.<br>Availability, features, account requirements, and pricing change often. Visit each website for current details.</footer>
+</main>
+
+<script>
+var TOOLS=[
+["Chat assistants","ChatGPT","OpenAI","https://chatgpt.com/","Writing, brainstorming, coding and analysis. Also hosts Custom GPTs made by other people.","writing, brainstorming"],
+["Chat assistants","Claude","Anthropic","https://claude.ai/","Writing, document analysis, coding and long conversations.","long documents, careful writing"],
+["Chat assistants","Gemini","Google","https://gemini.google.com/","General help with writing, learning and brainstorming, connected to Google tools.","Google Docs and Drive users"],
+["Chat assistants","Microsoft Copilot","Microsoft","https://copilot.microsoft.com/","Questions, drafting and everyday help, connected to Microsoft 365.","Word, Outlook, Teams users"],
+["Chat assistants","Grok","xAI","https://grok.com/","Conversational help, search and creative tasks.","quick questions, current events"],
+["Chat assistants","Meta AI","Meta","https://www.meta.ai/","General questions, ideas and creative help.","quick ideas"],
+["Chat assistants","Mistral Le Chat","Mistral AI","https://chat.mistral.ai/","Chat, writing, coding and research help. Check Mistral's product pages for current names.","writing, coding"],
+["Chat assistants","DeepSeek","DeepSeek","https://chat.deepseek.com/","General chat, reasoning and coding help.","reasoning, coding"],
+["Chat assistants","Qwen","Alibaba","https://chat.qwen.ai/","Chat, writing, coding and multilingual help.","other languages"],
+["Chat assistants","Kimi","Moonshot AI","https://www.kimi.com/","Chat with help on documents, research and coding.","long documents"],
+["Chat assistants","Poe","Quora","https://poe.com/","One place to try many AI models and bots.","comparing models"],
+["Chat assistants","HuggingChat","Hugging Face","https://huggingface.co/chat/","A chat window for exploring open AI models.","trying open models"],
+
+["Research","Perplexity","Perplexity","https://www.perplexity.ai/","Web research with answers that link to their sources.","finding sources fast"],
+["Research","NotebookLM","Google","https://notebooklm.google.com/","Study and research from the documents you give it. Can turn them into summaries and audio overviews.","studying your own files"],
+["Research","Elicit","Elicit","https://elicit.com/","Finds and summarizes academic papers.","scholarly research"],
+["Research","Consensus","Consensus","https://consensus.app/","Searches research papers and shows what they say on a question.","evidence for a claim"],
+["Research","You.com","You.com","https://you.com/","An AI search engine with chat.","search with chat"],
+
+["Presentations & design","Gamma","Gamma","https://gamma.app/","Builds slide decks, documents and web pages from an outline.","fast decks"],
+["Presentations & design","Canva","Canva","https://www.canva.com/","Design tool with AI help for flyers, slides, social posts and images.","flyers, social posts"],
+["Presentations & design","Adobe Firefly","Adobe","https://firefly.adobe.com/","Image generation and editing from Adobe.","pictures for print and web"],
+
+["Images","Ideogram","Ideogram","https://ideogram.ai/","Image generation that is especially good at readable text in pictures.","posters with words"],
+["Images","Midjourney","Midjourney","https://www.midjourney.com/","Highly artistic image generation.","art and mood boards"],
+["Images","Leonardo AI","Leonardo","https://leonardo.ai/","Image generation with many style controls.","game and character art"],
+
+["Music & voice","Suno","Suno","https://suno.com/","Makes songs with vocals from a written prompt and lyrics.","song and narration ideas"],
+["Music & voice","Udio","Udio","https://www.udio.com/","Makes songs from a text prompt.","song ideas"],
+["Music & voice","ElevenLabs","ElevenLabs","https://elevenlabs.io/","Turns text into natural voices, and can narrate in many languages.","narration, voice-overs"],
+
+["Video","Runway","Runway","https://runwayml.com/","Generates and edits video with AI.","short clips"],
+["Video","Pika","Pika","https://pika.art/","Makes short videos from text or pictures.","short social videos"],
+
+["Meetings & notes","Granola","Granola","https://www.granola.ai/","Takes notes in meetings and turns them into a clean summary.","meeting notes"],
+["Meetings & notes","Otter","Otter.ai","https://otter.ai/","Records and transcribes meetings, with summaries.","transcripts"],
+
+["Coding","Claude Code","Anthropic","https://claude.com/product/claude-code","An AI helper that builds and edits software in your own project.","building websites"],
+["Coding","Cursor","Anysphere","https://cursor.com/","A code editor with AI built in.","working in code"],
+["Coding","GitHub Copilot","GitHub","https://github.com/features/copilot","AI code suggestions inside your editor.","code suggestions"],
+["Coding","Replit","Replit","https://replit.com/","Build and run small apps in the browser with AI help.","small apps, no setup"]
+];
+var cats=["All"],i,list=document.getElementById("tools"),chips=document.getElementById("chips"),search=document.getElementById("search"),active="All";
+TOOLS.forEach(function(t){if(cats.indexOf(t[0])<0)cats.push(t[0]);});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+list.innerHTML=TOOLS.map(function(t){
+ return '<li data-cat="'+esc(t[0])+'"><a class="t" href="'+t[3]+'" target="_blank" rel="noopener noreferrer">'+esc(t[1])+' &#8599;</a><span class="by">'+esc(t[2])+'</span><span class="tag">'+esc(t[0])+'</span><p>'+esc(t[4])+'</p><div class="best"><b>Good for:</b> '+esc(t[5])+'</div></li>';
+}).join("");
+var items=[].slice.call(list.children);
+chips.innerHTML=cats.map(function(c){return '<button type="button" class="chip" aria-pressed="'+(c==="All")+'" data-c="'+esc(c)+'">'+esc(c)+'</button>';}).join("");
+chips.addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;active=b.getAttribute("data-c");[].forEach.call(chips.children,function(x){x.setAttribute("aria-pressed",x===b);});filter();});
+function filter(){
+ var q=search.value.trim().toLowerCase(),n=0;
+ items.forEach(function(li){var ok=(active==="All"||li.getAttribute("data-cat")===active)&&li.textContent.toLowerCase().indexOf(q)>-1;li.hidden=!ok;if(ok)n++;});
+ document.getElementById("count").textContent=n+" of "+items.length+" tools";
+ document.getElementById("empty").hidden=n>0;
+}
+search.addEventListener("input",filter);filter();
+</script>
+</body>
+</html>
