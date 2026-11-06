@@ -106,7 +106,7 @@ function drawWho(){
   var h='<h2>Who to contact and what to ask</h2><div class="warnbox">Every row marked <b>verify</b> comes from public search results and may be out of date. Confirm the number or address on the official site before you rely on it. The Hub never invents contact details; blank means unknown.</div>';
   E.CONTACTS.forEach(function(c){
     var n=E.nudge(P,c.id,{}),id='n-'+c.id;
-    h+='<div class="card"><h3>'+esc(c.org)+(c.verify?' <span class="pill">verify</span>':'')+'</h3><div class="note">'+esc(c.role)+'</div>'+
+    h+='<div class="card"><h3>'+esc(c.org)+(c.verify?' <span class="pill">verify</span>':'')+'</h3><div class="note">'+esc(c.role)+'</div>'+(c.src?'<div class="note ok">Source: '+esc(c.src)+'</div>':'')+
       '<div>'+[c.phone&&'Phone: '+esc(c.phone),c.email&&'Email: '+esc(c.email),c.addr&&'Address: '+esc(c.addr),c.link&&link(c.link)].filter(Boolean).join(' · ')+'</div>'+
       '<details><summary>What to ask, and a ready email draft</summary><ul>'+c.ask.map(function(q){return '<li>'+esc(q)+'</li>';}).join('')+'</ul><pre id="'+id+'">Subject: '+esc(n.subject)+'\n\n'+esc(n.body)+'</pre>'+copyBtn(id)+'</details></div>';
   });

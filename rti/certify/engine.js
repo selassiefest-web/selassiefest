@@ -9,6 +9,17 @@
 
   /* ---------- official links (confirm on the live site before relying on them) ---------- */
   var LINK = {
+    formsPage: { t: "City of Chicago: Certification and Compliance forms and documents (official list)", u: "https://www.chicago.gov/city/en/depts/dps/provdrs/cert/supp_info/mbe_wbe_certificationformsanddocuments.html" },
+    attach1: { t: "Attachment 1: Individual Statement of Ownership (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/RulesRegulations/IndividualStatementOfOwnership_Revised11.6.2017.pdf" },
+    attach2: { t: "Attachment 2: Personal Net Worth Statement (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/PNWForm_5_%201.26.2022.pdf" },
+    attach4: { t: "Attachment 4: Affidavit of Social Disadvantage (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/AffidavitofSocialDisadvantage6-6-16.pdf" },
+    attach5: { t: "Attachment 5: IRS Form 4506-T (City copy)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Outreach/F4506T.pdf" },
+    schedAChecklist: { t: "Official checklist for the new Schedule A", u: "https://www.chicago.gov/content/dam/city/depts/dps/Outreach/Checklist_for_the_New_Schedule_A.pdf" },
+    expedited: { t: "Expedited process for firms certified by another agency (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Outreach/Outside_Certification_ProcessRevised.pdf" },
+    pnwLimit: { t: "2026 Personal Net Worth limit (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/2026PersonalNetWorthLimit.pdf" },
+    grLimit: { t: "2026 Gross Receipts limit (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/2026GrossReceiptsLimit.pdf" },
+    rulesConstr: { t: "Certification regulations, construction (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/CertificationRulesConstruction_0424.pdf" },
+    keyTerms: { t: "Definition of key terms (official PDF)", u: "https://www.chicago.gov/content/dam/city/depts/dps/Certification/Certification%20Documents/Certification_Definition_of_Key_Terms-1-.pdf" },
     portal: { t: 'City of Chicago certification portal (chicago.mwdbe.com)', u: 'https://www.chicago.mwdbe.com' },
     cityPage: { t: 'City of Chicago DPS: M/WBE certification page', u: 'https://www.chicago.gov/city/en/depts/dps/provdrs/cert/svcs/minority_and_womenownedbusinessenterprisecertificationmbewbe.html' },
     cityGuide: { t: 'City of Chicago: Becoming a certified business (PDF guide)', u: 'https://www.chicago.gov/content/dam/city/depts/dps/Outreach/BECOMING%20A%20CERTIFIED%20BUSINESS_DPS.pdf' },
@@ -34,7 +45,7 @@
   /* ---------- who to contact (every row verify:true) ---------- */
   var CONTACTS = [
     { id: 'dps', org: 'City of Chicago, Dept. of Procurement Services: Certification and Compliance Division', role: 'Reviews and decides the Chicago M/WBE application. Ask for your assigned analyst by name when the file is submitted.',
-      phone: '312-744-4900', email: '', addr: 'City Hall, 121 N. LaSalle St., Room 806, Chicago, IL 60602', link: LINK.cityPage, verify: true,
+      phone: '312-744-4900', email: '', addr: '121 N. LaSalle St., Room 806, Chicago, IL 60602', link: LINK.cityPage, verify: false, src: 'Confirmed on the City M/WBE page, Nov 5, 2026. No certification email is published there.',
       ask: ['Is my file complete, and what date did your 90-day clock start?', 'Who is my assigned analyst, and what is the best way to reach them?', 'Is a site visit or interview needed, and when?'] },
     { id: 'cook', org: 'Cook County Office of Contract Compliance', role: 'Accepts Chicago M/WBE certification by reciprocity (and Chicago accepts Cook County\'s). Useful only if you already hold, or want, the other certification.',
       phone: '', email: '', addr: '', link: LINK.cookOCC, verify: true,
@@ -193,12 +204,14 @@
     function add(id, group, title, why, where, ifMissing, src) { L.push({ id: id, group: group, title: title, why: why, where: where || [], ifMissing: ifMissing || '', src: src || 'list' }); }
     add('tax', 'Tax and financial', 'Signed federal business tax returns, most recent 3 to 5 years (' + form + ') with every schedule', 'Proves the business exists, its size and who owns it.', [LINK.irsBiz], 'Ask your CPA for complete signed copies. If a year was never filed, file it first (the City cannot certify around a missing return). Copies can also be ordered from the IRS.');
     add('tax1040', 'Tax and financial', 'Each owner\'s personal federal returns (Form 1040), same years', 'Commonly requested to confirm owner income, capital and net worth. Confirm with DPS.', [LINK.irsTranscript], 'Download return transcripts from IRS Get Transcript or ask your preparer.', 'common');
-    add('f4506t', 'Tax and financial', 'IRS Form 4506-T signed by the business (and owners if asked)', 'Lets the City verify your filings directly with the IRS.', [LINK.irs4506t], 'Download, fill in your name, EIN and tax years, sign. Do not leave lines blank; ask DPS which lines they want completed.');
+    add('f4506t', 'Tax and financial', 'IRS Form 4506-T signed by the business (and owners if asked)', 'Lets the City verify your filings directly with the IRS.', [LINK.attach5, LINK.irs4506t], 'Download, fill in your name, EIN and tax years, sign. Do not leave lines blank; ask DPS which lines they want completed.');
     add('statetax', 'Tax and financial', 'State and local business tax filings', 'Shows you are current with Illinois and City taxes.', [], 'Pull your IDOR and City filings; your CPA usually has them.');
     add('fin', 'Tax and financial', 'Year-to-date profit and loss and balance sheet', 'Shows current financial health.', [], 'Ask your bookkeeper/CPA to run them from your accounting software, signed and dated this month.');
+    add('ownstmt', 'Tax and financial', "Attachment 1: Individual Statement of Ownership, one per owner (with copy of driver's license/State ID, proof of race/ethnicity, 3 years of W-2/1099s, last 3 individual federal and state returns)", 'Official City form. Asks SSN, license number and date of birth, which you write in by hand; the Hub never stores them.', [LINK.attach1], 'Use the Official Forms tab to pre-fill everything except SSN, license number and date of birth.');
+    add('social', 'Control and expertise', 'Attachment 4: Affidavit of Social Disadvantage (if the City asks for it for your category)', 'Official City form. Confirm with DPS whether your category requires it.', [LINK.attach4], 'Download, complete and sign.', 'common');
     add('capital', 'Tax and financial', 'Proof of capital: bank statements / canceled checks showing how each owner funded the business', 'The City checks that the qualifying owner, not someone else, put in the money.', [], 'Pull the bank statements for the months money went in. A drafted Capital Contribution Statement is in the Draft Documents tab, but it only describes what the bank records already prove.');
     add('bankcards', 'Tax and financial', 'Bank signature cards and banking resolution (authorized signers)', 'Shows who controls the money.', [], 'Ask your branch manager for signature cards and the resolution naming the authorized signers.');
-    add('pnw', 'Tax and financial', 'Personal Net Worth Statement for each qualifying owner', 'Completed inside the portal. We collect the figures once so you can copy them in.', [LINK.portal], 'The Portal Answers tab lists your numbers. List assets and debts honestly; do not guess.');
+    add('pnw', 'Tax and financial', 'Personal Net Worth Statement for each qualifying owner', 'Completed inside the portal. We collect the figures once so you can copy them in.', [LINK.attach2, LINK.pnwLimit, LINK.portal], 'The Portal Answers tab lists your numbers. List assets and debts honestly; do not guess.');
 
     O.forEach(function (o, i) {
       add('id' + i, 'Legal and identity', 'Proof of citizenship or permanent residency: ' + (o.name || 'owner ' + (i + 1)), 'Required for every owner claiming minority or women status.', [LINK.passport, LINK.birthCert, LINK.idme], 'Order a certified birth certificate or passport, or replace the permanent resident card, before you start. These take weeks.');
