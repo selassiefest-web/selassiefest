@@ -235,6 +235,58 @@
     rows.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
     return rows;
   };
+  /* ---------- whole ilsos.gov entity page: read every label, fill blanks only ---------- */
+  var SOS_LABELS = ['Org. Date/Admission Date', 'Annual Report Filing Date', 'Annual Report Year', 'Agent Change Date', 'Agent Information', 'Principal Address', 'Entity Name', 'Entity Type', 'Type of LLC', 'File Number', 'Jurisdiction', 'Duration', 'Status'];
+  function iso(d) { var m = /(\d{2})-(\d{2})-(\d{4})/.exec(d || ''); return m ? m[3] + '-' + m[1] + '-' + m[2] : ''; }
+  function title(s) { return String(s || '').toLowerCase().replace(/\b([a-z])/g, function (c) { return c.toUpperCase(); }).replace(/\b(Llc|Inc|Ii|Iii)\b/g, function (w) { return w.toUpperCase(); }).replace(/\b([nsew])\b/gi, function (c) { return c.toUpperCase(); }); }
+  function personName(s) { var m = /^([^,]+),\s*(.+)$/.exec(String(s || '').trim()); return m ? title(m[2] + ' ' + m[1]) : title(s); }
+  E.parseSOSPage = function (raw) {
+    var t = String(raw || '').replace(/\r/g, '').replace(/[ \t]+/g, ' ');
+    var cut = t.search(/Services and More Information|Choose a tab below/), head = cut > 0 ? t.slice(0, cut) : t;
+    var esc = function (s) { return s.replace(/[.*+?^$()|[\]\\\/]/g, '\\$&'); };
+    var re = new RegExp('(' + SOS_LABELS.map(function (l) { return esc(l).replace(/ /g, '\\s+'); }).join('|') + ')(?=\\s|:|$)', 'g'), hits = [], m;
+    while ((m = re.exec(head))) hits.push({ k: m[1], s: m.index, e: m.index + m[1].length });
+    var f = {};
+    hits.forEach(function (h, i) { var k = h.k.replace(/\s+/g, ' '), v = head.slice(h.e, i + 1 < hits.length ? hits[i + 1].s : head.length).replace(/^\s*:?\s*/, '').trim(); if (!(k in f)) f[k] = v; });
+    if (!f['Entity Name']) return { ok: false };
+    var out = { ok: true, name: f['Entity Name'].replace(/\s+/g, ' ').trim(), fileNumber: (/\d{6,}/.exec(f['File Number'] || '') || [''])[0], entityType: (f['Entity Type'] || '').replace(/\s+/g, ' ').trim(), llcType: (f['Type of LLC'] || '').trim(), jurisdiction: (f['Jurisdiction'] || '').trim().split(/\s/)[0], orgDate: iso(f['Org. Date/Admission Date']), duration: (f['Duration'] || '').trim().split(/\s/)[0] };
+    var st = /^([A-Z][A-Za-z ]*?)(?: on (\d{2}-\d{2}-\d{4}))?$/.exec((f['Status'] || '').replace(/\s+/g, ' ').trim()); out.status = st ? st[1].trim() : (f['Status'] || '').trim(); out.statusDate = st && st[2] ? iso(st[2]) : '';
+    out.annualReportDate = iso(f['Annual Report Filing Date']); out.annualReportYear = (/\d{4}/.exec(f['Annual Report Year'] || '') || [''])[0];
+    var ad = String(f['Principal Address'] || '').trim().split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+    var flat = ad.join(' '), am = /^(.*?)[\s,]+([A-Za-z .'-]+?)\s*,\s*([A-Z]{2})\s+(\d{5})/.exec(ad.length > 1 ? ad.slice(0, -1).join(' ') + ' | ' + ad[ad.length - 1] : flat);
+    if (ad.length > 1) { var last = /^([A-Za-z .'-]+?)\s*,\s*([A-Z]{2})\s+(\d{5})/.exec(ad[ad.length - 1]); if (last) out.address = { street: title(ad.slice(0, -1).join(' ')), city: title(last[1]), state: last[2], zip: last[3] }; }
+    if (!out.address) { var fm = /^(.*)\s+([A-Za-z]+)\s*,\s*([A-Z]{2})\s+(\d{5})/.exec(flat); if (fm) out.address = { street: title(fm[1]), city: title(fm[2]), state: fm[3], zip: fm[4] }; }
+    var ag = String(f['Agent Information'] || '').trim().split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+    if (ag.length) out.agent = { name: title(ag[0]), address: title(ag.slice(1).join(', ')), changed: iso(f['Agent Change Date']) };
+    var mi = t.search(/Managers\s*(?:\n|\s)\s*Address|Members\s*(?:\n|\s)\s*Address/), mans = [];
+    if (mi >= 0) {
+      var chunk = t.slice(mi).split(/Showing \d+|Previous/)[0].replace(/^(Managers|Members)\s*Address/, ''), rr = /([A-Z][A-Z'.\-]+(?: [A-Z'.\-]+)*),\s*([A-Z][A-Z'.\-]+(?: [A-Z'.\-]+)*)\s+(\d)/g, mm;
+      while ((mm = rr.exec(chunk))) { if (/^[A-Z]{2}$/.test(mm[2])) continue; /* "CHICAGO, IL 60637" is an address, not a person */ mans.push(personName(mm[1] + ', ' + mm[2])); }
+    }
+    out.managers = mans;
+    out.filings = E.parseSOS(t);
+    return out;
+  };
+  /* Fills blanks only. Never overwrites anything already entered. Returns what it did, with the reason for each. */
+  E.applySOS = function (P, s) {
+    var filled = [], kept = [], b = P.biz = P.biz || {};
+    function put(k, v, why) { if (!v) return; if (has(b[k])) { if (String(b[k]) !== String(v)) kept.push({ k: k, have: b[k], found: v }); return; } b[k] = v; filled.push({ k: k, v: v, why: why }); }
+    put('legalName', s.name, 'Entity name on the Secretary of State record');
+    put('entityType', /LLC/i.test(s.entityType) ? 'LLC' : /CORP/i.test(s.entityType) ? 'C-Corporation' : '', 'Entity type: ' + s.entityType + (/CORP/i.test(s.entityType) ? ' (S or C is a tax choice; confirm)' : ''));
+    put('stateInc', s.jurisdiction === 'IL' ? 'Illinois' : s.jurisdiction, 'Jurisdiction');
+    put('incDate', s.orgDate, 'Org. date/admission date (the legal formation date, not the operating start)');
+    if (s.address) { put('address', s.address.street, 'Principal address on record'); put('city', s.address.city, 'Principal address on record'); put('state', s.address.state, 'Principal address on record'); put('zip', s.address.zip, 'Principal address on record');
+      if (/^chicago$/i.test(s.address.city)) put('county', 'Cook', 'Inferred: the City of Chicago is in Cook County (confirm)'); }
+    var re = (s.filings || []).filter(function (r) { return r.code === 'LLC-35.40/45.65'; }).slice(-1)[0];
+    if (re) put('reinstated', re.date, 'Reinstatement filing in the file history');
+    if ((s.filings || []).length) { var line = s.filings.map(function (r) { return r.code + '\t' + r.date.slice(5, 7) + '-' + r.date.slice(8) + '-' + r.date.slice(0, 4); }).join('\n'); if (!has(P.sosRaw)) { P.sosRaw = line; filled.push({ k: 'sosRaw', v: s.filings.length + ' filings', why: 'File history' }); } }
+    P.sos = { fileNumber: s.fileNumber, status: s.status, statusDate: s.statusDate, entityType: s.entityType, llcType: s.llcType, annualReportDate: s.annualReportDate, annualReportYear: s.annualReportYear, agent: s.agent || null, managers: s.managers || [], readOn: new Date().toISOString().slice(0, 10) };
+    var O = P.owners = P.owners && P.owners.length ? P.owners : [{}];
+    if ((s.managers || []).length && !O.some(function (o) { return has(o.name); })) {
+      s.managers.forEach(function (n, i) { var o = O[i] || (O[i] = {}); o.name = n; o.title = 'Manager (from the Secretary of State; confirm who owns the company)'; filled.push({ k: 'owner ' + (i + 1) + ' name', v: n, why: 'Manager listed on the Secretary of State record. Ownership percentages are NOT public, so they stay blank.' }); });
+    }
+    return { filled: filled, kept: kept };
+  };
   E.sosAnalysis = function (raw, today) {
     var rows = E.parseSOS(raw), out = { rows: rows, notes: [] };
     if (!rows.length) return out;

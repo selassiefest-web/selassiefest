@@ -88,15 +88,49 @@ function copyBtn(id){return '<button class="btn alt sm" data-copy="'+id+'">Copy<
 function pkgBar(){
   return '<div class="row noprint" style="margin:0 0 6px">'+E.PACKAGES.map(function(p){return '<button class="btn sm '+(P.pkg===p.id?'':'alt')+'" data-pkg="'+p.id+'">'+esc(p.title)+'</button>';}).join('')+'</div><p class="note noprint">Showing: <b>'+esc(E.PACKAGES.filter(function(p){return p.id===P.pkg})[0].title)+'</b>. Your intake answers are shared by all three programs.</p>';
 }
+var lastImp=null;
+function bm(){
+  var names=['Managers','Members','Old LLC Name','Assumed Name','Series Name','File History'],text=document.body.innerText,i=0,all=[].slice.call(document.querySelectorAll('a,button,li,span,div'));
+  function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+  (async function(){
+    for(i=0;i<names.length;i++){var el=all.filter(function(e){return (e.textContent||'').trim()===names[i]&&e.children.length<=1})[0];if(el){el.click();await sleep(1000);text+='\n'+document.body.innerText;}}
+    function done(){alert('Copied the Secretary of State page ('+text.length+' characters). Now paste it into the Certification Hub.');}
+    function box(){var t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;top:10px;left:10px;width:80%;height:200px;z-index:99999';document.body.appendChild(t);t.select();alert('Press Ctrl+C to copy the selected text, then paste it into the Certification Hub.');}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,box);}else box();
+  })();
+}
+function htmlToText(h){return h.replace(/<(script|style)[\s\S]*?<\/\1>/gi,'').replace(/<\/(tr|p|div|li|h[1-6]|table)>|<br\s*\/?>/gi,'\n').replace(/<\/t[dh]>/gi,'\t').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\n[ \t]*\n+/g,'\n');}
+async function pdfToText(buf){await ensureLibs();var d=await pdfjsLib.getDocument({data:buf}).promise,out='';for(var n=1;n<=d.numPages;n++){var c=await (await d.getPage(n)).getTextContent();c.items.forEach(function(it){out+=it.str+(it.hasEOL?'\n':' ');});out+='\n';}return out;}
+function importSOS(text){
+  var s=E.parseSOSPage(text);
+  if(!s.ok){lastImp={err:'That does not look like an ilsos.gov business entity page. The Hub looks for the words "Entity Name" and the entity details. Copy the whole page (Ctrl+A, Ctrl+C) and try again.'};render();return;}
+  var r=E.applySOS(P,s);P.isSample=false;save();lastImp={ok:true,name:s.name,r:r,s:s};render();
+}
 function drawPublic(){
+  var h='<h2>Public records: read the Illinois Secretary of State page</h2><p class="sub">Open the company on ilsos.gov, give the page to the Hub, and it fills every blank that public records can answer. What is left is only what the owner has to tell us. (The State blocks programs from reading its site, so the page has to come from your browser. Its database is for individual searches only: look up one company at a time, by a person, and never bulk-copy.)</p>';
+  var code='javascript:'+encodeURIComponent('('+bm.toString()+')()');
+  h+='<div class="card"><h3>1. Open the company</h3><div class="row noprint"><a class="btn sm" href="https://apps.ilsos.gov/businessentitysearch/" target="_blank" rel="noopener">Open ilsos.gov business search</a>'+(P.biz&&P.biz.legalName?'<span class="note">Search: '+esc(P.biz.legalName)+'</span>':'')+'</div></div>';
+  h+='<div class="card"><h3>2. Give the page to the Hub (pick one)</h3>'+
+   '<p class="note"><b>A. One click (best).</b> Drag this to your bookmarks bar once: <a class="btn alt sm" href="'+code+'" onclick="return false" title="Drag me to your bookmarks bar">Copy ilsos page</a>. On the company page, click that bookmark. It opens each tab (Managers, File History and the rest), copies everything, and tells you. Then paste below.</p>'+
+   '<p class="note"><b>B. Paste.</b> On the company page press Ctrl+A, then Ctrl+C, and paste below. This copies only the tab you can see, so repeat for Managers and File History and paste them all in.</p>'+
+   '<p class="note"><b>C. Upload.</b> Save the page as PDF or HTML and choose the file: <input type="file" id="sosfile" accept=".pdf,.html,.htm,.txt" style="width:auto;display:inline-block"></p>'+
+   '<textarea id="sospage" style="min-height:140px" placeholder="Paste the ilsos.gov page text here"></textarea><div class="row"><button class="btn" data-sosimport="1">Read it and fill the blanks</button></div></div>';
+  if(lastImp){
+    if(lastImp.err)h+='<div class="warnbox"><b>Could not read it.</b> '+esc(lastImp.err)+'</div>';
+    else{var r=lastImp.r;
+      h+='<div class="card"><h3>Filled in '+r.filled.length+' blanks from the record for '+esc(lastImp.name)+'</h3><table><tr><th>Field</th><th>Value</th><th>Why</th></tr>'+r.filled.map(function(x){return '<tr><td>'+esc(x.k)+'</td><td>'+esc(x.v)+'</td><td class="note">'+esc(x.why)+'</td></tr>';}).join('')+'</table>'+
+        (r.kept.length?'<p class="note"><b>Left alone (already entered, and different from the record):</b> '+r.kept.map(function(k){return esc(k.k)+': you have "'+esc(k.have)+'", the record says "'+esc(k.found)+'"';}).join('; ')+'</p>':'')+'</div>';}
+  }
+  if(P.sos){var q=P.sos;
+    h+='<div class="card"><h3>From the Secretary of State (read '+esc(q.readOn||'')+')</h3><table>'+
+     [['File number',q.fileNumber],['Status',(q.status||'')+(q.statusDate?' on '+q.statusDate:'')],['Entity type',(q.entityType||'')+(q.llcType?', '+q.llcType:'')],['Last annual report',(q.annualReportDate||'')+(q.annualReportYear?' (year '+q.annualReportYear+')':'')],['Registered agent',q.agent?q.agent.name+', '+q.agent.address+(q.agent.changed?' (since '+q.agent.changed+')':''):''],['Managers listed',(q.managers||[]).join('; ')]].filter(function(r){return r[1]}).map(function(r){return '<tr><th style="width:30%">'+esc(r[0])+'</th><td>'+esc(r[1])+'</td></tr>';}).join('')+'</table><p class="note">The Secretary of State lists managers, not owners. Who owns the company and in what percentages is not public.</p></div>';}
   var a=E.sosAnalysis(P.sosRaw||'');
-  var h='<h2>Public records: Illinois Secretary of State file history</h2><p class="sub">Open the company on the Secretary of State site, click the <b>File History</b> tab, select the table, copy it and paste it below. The Hub reads it and tells you what it shows. (The State blocks programs from reading its pages, so the copy-and-paste step is yours.)</p>';
-  h+='<div class="row noprint"><a class="btn sm" href="https://apps.ilsos.gov/businessentitysearch/" target="_blank" rel="noopener">Open the SOS business search</a>'+(P.biz&&P.biz.legalName?'<span class="note">Search: '+esc(P.biz.legalName)+'</span>':'')+'</div>';
-  h+='<div class="card"><label>Paste the File History table here</label><textarea data-f="root|sosRaw" style="min-height:120px" placeholder="LLC-5.5   01-07-2016&#10;LLC-50.1   01-22-2021">'+esc(P.sosRaw||'')+'</textarea><div class="row"><button class="btn sm" data-pubrefresh="1">Read it</button></div></div>';
   if(a.rows.length){
-    h+='<h3>Filings found</h3><table><tr><th>Date</th><th>Form</th><th>What it is</th></tr>'+a.rows.map(function(r){return '<tr><td>'+esc(r.date)+'</td><td>'+esc(r.code)+'</td><td>'+esc(r.what)+'</td></tr>';}).join('')+'</table>';
+    h+='<h3>File history</h3><table><tr><th>Date</th><th>Form</th><th>What it is</th></tr>'+a.rows.map(function(r){return '<tr><td>'+esc(r.date)+'</td><td>'+esc(r.code)+'</td><td>'+esc(r.what)+'</td></tr>';}).join('')+'</table>';
     h+='<h3>What it tells us</h3><div class="card">'+a.notes.map(function(n){return '<div class="lv '+(n.lvl==='warn'?'warn':'')+'">'+(n.lvl==='warn'?'Check: ':'Note: ')+esc(n.t)+'</div>';}).join('')+'</div>';
-  }else h+='<p class="note">Nothing pasted yet.</p>';
+  }
+  var ms=E.missing(P);
+  h+='<h3>Still needed from the owner ('+ms.length+')</h3><div class="card">'+(ms.length?'<p class="note">Public records cannot answer these. Each one is something only the owner or their records can supply.</p>'+ms.map(function(m){return '<div class="lv"><b>'+esc(m.sec)+':</b> '+esc(m.label)+'</div>';}).join(''):'<span class="ok">Nothing left. The file is complete.</span>')+'</div>';
   return h;
 }
 function drawPlan(){
@@ -256,7 +290,13 @@ function setPath(path,key,value){
   if(m){P[m[1]][+m[2]][key]=value;}else{P[path][key]=value;}
 }
 document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var wc=document.querySelector('[data-wc="'+f+'"]');if(wc){var n=E.wordCount(t.value);wc.textContent=n+' words (City requires 500 to 1,000)'+(n<500||n>1000?' - not yet in range':' - OK');}var p=f.split('|');setPath(p[0],p[1],t.value);P.isSample=false;save();});
-document.addEventListener('change',function(e){var t=e.target;if(t.getAttribute('data-doc')){P.docs[t.getAttribute('data-doc')]=t.value;save();render();window.scrollTo(window.scrollX,window.scrollY);}
+document.addEventListener('change',function(e){var t=e.target;
+  if(t.id==='sosfile'&&t.files[0]){var fl=t.files[0],ta=document.getElementById('sospage');
+    var done=function(txt){if(ta)ta.value=txt;importSOS(txt);};
+    if(/\.pdf$/i.test(fl.name)){fl.arrayBuffer().then(function(b){return pdfToText(new Uint8Array(b));}).then(done).catch(function(){lastImp={err:'Could not read that PDF.'};render();});}
+    else{var fr=new FileReader();fr.onload=function(){done(/\.html?$/i.test(fl.name)?htmlToText(String(fr.result)):String(fr.result));};fr.readAsText(fl);}
+    return;}
+  if(t.getAttribute('data-doc')){P.docs[t.getAttribute('data-doc')]=t.value;save();render();window.scrollTo(window.scrollX,window.scrollY);}
   else if(t.getAttribute('data-f')&&t.tagName==='SELECT'){drawTabs();}
   if(t.id==='imp'&&t.files[0]){var r=new FileReader();r.onload=function(){try{P=JSON.parse(r.result);save();render();}catch(x){alert('That file could not be read.');}};r.readAsText(t.files[0]);}});
 document.addEventListener('click',function(e){
@@ -265,7 +305,7 @@ document.addEventListener('click',function(e){
   else if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
   else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
   else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
-  else if(t.getAttribute('data-pubrefresh')){render();}
+  else if(t.getAttribute('data-sosimport')){var ta=document.getElementById('sospage');importSOS(ta?ta.value:'');}
   else if(t.getAttribute('data-form')){runForm(t.getAttribute('data-form'));}
   else if(t.getAttribute('data-copy')){var el=document.getElementById(t.getAttribute('data-copy'));var txt=el.textContent;try{navigator.clipboard.writeText(txt);}catch(x){}t.textContent='Copied';setTimeout(function(){t.textContent='Copy';},1200);}
   else if(t.id==='ld'){P=JSON.parse(JSON.stringify(E.SAMPLE));P.isSample=true;save();render();}
