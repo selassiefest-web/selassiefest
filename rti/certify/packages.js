@@ -220,4 +220,44 @@
   E.eligibilityFor = function (P, pkg) { return pkg === 'cook' ? cookEligibility(P) : pkg === 'bep' ? bepEligibility(P) : []; };
   E.routeFor = function (P, pkg) { return pkg === 'cook' ? cookRoute(P) : pkg === 'bep' ? bepRoute(P) : (held(P) === 'Women\'s Business Development Center (WBDC)' || held(P) === 'Chicago MSDC or Mid-States MSDC' ? 'expedited' : 'schedA'); };
   E.plan = plan;
+
+  /* ---------- Illinois SOS "File History" reader ----------
+     Paste the table from the Secretary of State's File History tab (or type rows as: FORM-CODE  MM-DD-YYYY). */
+  var SOS_FORMS = {
+    'LLC-5.5': 'Articles of Organization (the company was legally formed)',
+    'LLC-50.1': 'Annual report',
+    'LLC-1.36/1.37': 'Change of registered agent and/or registered office',
+    'LLC-35.40/45.65': 'Reinstatement after administrative dissolution or revocation'
+  };
+  E.parseSOS = function (raw) {
+    var rows = [], re = /(LLC-[0-9.]+(?:\/[0-9.]+)?|ART-[A-Z0-9.\-]+)\s+(\d{2})-(\d{2})-(\d{4})/g, m;
+    while ((m = re.exec(String(raw || '')))) rows.push({ code: m[1], date: m[4] + '-' + m[2] + '-' + m[3], what: SOS_FORMS[m[1]] || 'Other filing (look up this form number on ilsos.gov)' });
+    rows.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    return rows;
+  };
+  E.sosAnalysis = function (raw, today) {
+    var rows = E.parseSOS(raw), out = { rows: rows, notes: [] };
+    if (!rows.length) return out;
+    var arts = rows.filter(function (r) { return r.code === 'LLC-5.5'; })[0];
+    var annual = rows.filter(function (r) { return r.code === 'LLC-50.1'; });
+    var reinst = rows.filter(function (r) { return r.code === 'LLC-35.40/45.65'; });
+    var yr = function (d) { return +d.slice(0, 4); };
+    var nowY = (today || new Date()).getFullYear();
+    if (arts) out.notes.push({ lvl: 'info', t: 'Legally formed ' + arts.date + '. That is the formation date, not proof of when the business began operating.' });
+    if (annual.length) {
+      var have = {}; annual.forEach(function (r) { have[yr(r.date)] = (have[yr(r.date)] || 0) + 1; });
+      var years = Object.keys(have).sort();
+      out.notes.push({ lvl: 'info', t: 'Annual reports shown online: ' + annual.map(function (r) { return r.date; }).join(', ') + '. The earliest shown (' + annual[0].date + ') is the earliest public proof, on this page, that the company existed and was filing in that year.' });
+      if (arts) {
+        var missing = []; for (var y = yr(arts.date) + 1; y <= nowY; y++) if (!have[y]) missing.push(y);
+        if (missing.length) out.notes.push({ lvl: 'warn', t: 'No annual report is shown online in these years: ' + missing.join(', ') + '. The SOS page says "Only documents filed online are shown," so earlier ones may have been filed on paper. Ask the client for copies, or request the full file from the Secretary of State.' });
+      }
+      var dup = Object.keys(have).filter(function (y) { return have[y] > 1; });
+      annual.forEach(function (r, i) { if (i && annual[i - 1].date === r.date) out.notes.push({ lvl: 'warn', t: 'Two annual reports were filed on the same day (' + r.date + '). That usually means a catch-up filing for missed years.' }); });
+    }
+    reinst.forEach(function (r) { out.notes.push({ lvl: 'warn', t: 'Reinstated ' + r.date + ' after administrative dissolution or revocation. Certifiers ask about the gap: get the reinstatement filing, a current certificate of good standing and an explanation of what the company did while dissolved.' }); });
+    if (rows.some(function (r) { return r.code === 'LLC-1.36/1.37'; })) out.notes.push({ lvl: 'info', t: 'Registered agent or office changed on ' + rows.filter(function (r) { return r.code === 'LLC-1.36/1.37'; }).map(function (r) { return r.date; }).join(', ') + '.' });
+    out.notes.push({ lvl: 'info', t: 'To find the real operating start date, ask the owner for the first invoice, first business bank statement, first tax return that reports income, or first contract. The Secretary of State record cannot show it.' });
+    return out;
+  };
 })(window);
