@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Certification Hub</title>
+<style>
+:root{--bg:#fff;--ink:#16182B;--mute:#5b6070;--line:#d6d9e2;--accent:#0b6b3a;--card:#f6f7fa;--bad:#a1281f;--warn:#8a5a00;--ok:#0b6b3a}
+@media (prefers-color-scheme:dark){:root{--bg:#12141c;--ink:#eef0f6;--mute:#a4a9b8;--line:#2d3142;--accent:#5fd08e;--card:#1a1d29;--bad:#ff8a80;--warn:#ffc266;--ok:#5fd08e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+h1{font-size:1.5rem;margin:0 0 4px}h2{font-size:1.15rem;margin:18px 0 6px}h3{font-size:1rem;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 12px}.note{color:var(--mute);font-size:.88rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.9rem}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:70px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.grid .full{grid-column:1/-1}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5;border-bottom:1px solid var(--line)}
+nav.tabs button{padding:7px 12px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;cursor:pointer;font:inherit;font-size:.9rem}
+nav.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn{padding:8px 14px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;cursor:pointer;font:inherit}
+.btn.alt{background:transparent;color:var(--accent)}.btn.sm{padding:4px 10px;font-size:.85rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.pill{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.stop{color:var(--bad);font-weight:700}
+.lv{padding:6px 0;border-bottom:1px solid var(--line)}
+a{color:var(--accent)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:.9rem/1.45 ui-monospace,Consolas,monospace}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;font-size:.92rem}
+.warnbox{border-left:4px solid var(--warn);padding:6px 10px;margin:10px 0;background:var(--card)}
+.sample{border-left:4px solid var(--accent);padding:6px 10px;margin:10px 0;background:var(--card)}
+.hidden{display:none}
+@media print{nav.tabs,.row,.btn,.noprint{display:none!important}body{background:#fff;color:#000}}
+</style></head><body><main>
+<h1>Certification Hub</h1>
+<p class="sub">Enter your information once. The Hub builds your checklist, drafts, timeline and who-to-contact list for each certification. Phase 1 package: City of Chicago M/WBE.</p>
+<div id="sampleBar" class="sample"></div>
+<div class="warnbox noprint"><b>Private and local.</b> In this phase everything you type stays in this browser only (nothing is uploaded or emailed). Do not enter Social Security numbers. Links and phone numbers marked "verify" must be confirmed on the official site before you rely on them.</div>
+<nav class="tabs" id="tabs"></nav>
+<div id="view"></div>
+</main>
+<script src="engine.js"></script>
+<script>
+(function(){
+var E=window.CertEngine,esc=E.esc,KEY='certhub-v1';
+function blank(){return {startDate:'',biz:{},owners:[{}],fin:{},contracts:[{}],docs:{},isSample:false};}
+var P;
+try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}
+if(!P)P=blank();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
+var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var cur='biz';
+function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
+function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
+function copyBtn(id){return '<button class="btn alt sm" data-copy="'+id+'">Copy</button>';}
+
+function drawTabs(){var m=E.missing(P).length;document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'">'+t[1]+(t[0]==='check'&&m?' ('+m+' gaps)':'')+'</button>';}).join('');}
+function drawSample(){document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
+
+function field(f,d,path){
+  var v=d[f.k]==null?'':d[f.k],id=path+'|'+f.k,cls=(f.type==='textarea'?' full':''),h='<div class="'+cls.trim()+'"><label>'+esc(f.label)+(f.req?' <span class="pill">needed</span>':'')+'</label>';
+  if(f.type==='select')h+='<select data-f="'+id+'"><option value=""></option>'+f.opts.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';
+  else if(f.type==='textarea')h+='<textarea data-f="'+id+'">'+esc(v)+'</textarea>';
+  else h+='<input data-f="'+id+'" type="'+(f.type==='date'?'date':f.type==='number'?'number':'text')+'" value="'+esc(v)+'">';
+  if(f.help)h+='<div class="note">'+esc(f.help)+'</div>';
+  if(f.where&&!String(v).trim())h+='<div class="note">Don\'t have it? <a href="'+esc(f.where.u)+'" target="_blank" rel="noopener">'+esc(f.where.t)+'</a>: '+esc(f.where.how)+'</div>';
+  return h+'</div>';
+}
+function drawSection(id){
+  var s=sec(id),h='<h2>'+esc(s.title)+'</h2><p class="sub">'+esc(s.blurb||'')+'</p>';
+  if(s.scope==='array'){
+    var arr=P[s.arr]=P[s.arr]||[];if(!arr.length)arr.push({});
+    arr.forEach(function(row,i){h+='<div class="card"><div class="row"><h3>#'+(i+1)+(row.name?' '+esc(row.name):'')+'</h3>'+(arr.length>1?'<button class="btn alt sm" data-rm="'+s.arr+'|'+i+'">Remove</button>':'')+'</div><div class="grid">'+s.fields.map(function(f){return field(f,row,s.arr+'.'+i);}).join('')+'</div></div>';});
+    if(arr.length<s.max)h+='<button class="btn alt" data-add="'+s.arr+'">'+esc(s.addLabel)+'</button>';
+  }else{
+    P[s.scope]=P[s.scope]||{};
+    if(id==='biz')h+='<div class="card"><label>Target date to submit the application (drives the timeline)</label><input type="date" data-f="root|startDate" value="'+esc(P.startDate||'')+'"></div>';
+    h+='<div class="card"><div class="grid">'+s.fields.map(function(f){return field(f,P[s.scope],s.scope);}).join('')+'</div></div>';
+  }
+  return h;
+}
+function drawCheck(){
+  var el=E.eligibility(P),ms=E.missing(P),L=E.checklist(P),h='<h2>Eligibility screen</h2><div class="card">';
+  h+=el.items.map(function(i){return '<div class="lv '+(i.lvl==='ok'?'ok':i.lvl==='stop'?'stop':i.lvl==='warn'?'warn':'')+'">'+(i.lvl==='ok'?'OK: ':i.lvl==='stop'?'STOP: ':i.lvl==='warn'?'Check: ':'Note: ')+esc(i.t)+'</div>';}).join('')+'</div>';
+  h+='<h2>Missing information ('+ms.length+')</h2><div class="card">';
+  h+=ms.length?ms.map(function(m){return '<div class="lv"><b>'+esc(m.sec)+':</b> '+esc(m.label)+(m.where?'<div class="note">Where to get it: <a href="'+esc(m.where.u)+'" target="_blank" rel="noopener">'+esc(m.where.t)+'</a>. '+esc(m.where.how)+'</div>':'')+'</div>';}).join(''):'<span class="ok">Nothing missing. You can build the package.</span>';
+  h+='</div><h2>Document checklist</h2><p class="note">Mark each line Have, Need, or N/A. Your choices are saved. Lines marked "commonly requested" are not on the City\'s published list; confirm them with DPS.</p>';
+  var g='';
+  L.forEach(function(it){
+    if(it.group!==g){g=it.group;h+='<h3 style="margin-top:14px">'+esc(g)+'</h3>';}
+    var st=P.docs[it.id]||'need';
+    h+='<div class="card"><div><b>'+esc(it.title)+'</b> '+(it.src==='common'?'<span class="pill">commonly requested, confirm</span>':'')+'</div><div class="note">'+esc(it.why)+'</div>'+
+      '<div class="row"><select data-doc="'+it.id+'" style="width:auto"><option value="need"'+(st==='need'?' selected':'')+'>Need</option><option value="have"'+(st==='have'?' selected':'')+'>Have it</option><option value="na"'+(st==='na'?' selected':'')+'>N/A</option></select>'+it.where.map(link).join(' · ')+'</div>'+
+      (st==='need'&&it.ifMissing?'<div class="note"><b>How to get it:</b> '+esc(it.ifMissing)+'</div>':'')+'</div>';
+  });
+  var done=L.filter(function(i){return P.docs[i.id]==='have'||P.docs[i.id]==='na';}).length;
+  return h+'<p><b>'+done+' of '+L.length+' ready.</b></p>';
+}
+function drawTime(){
+  var T=E.timeline(P),h='<h2>Timeline to the quickest approval</h2><p class="sub">Counted from your target submit date (set on the Business tab; today is used if blank). Weekend and common 2026-27 federal holiday dates move to the next business day.</p><div class="warnbox">The 90-day review time is an unofficial estimate from a vendor guide. DPS has not published it that I could confirm; ask them on your kick-off call.</div>';
+  h+='<table><tr><th>Date</th><th>Step</th><th>Who</th></tr>'+T.map(function(t){return '<tr><td><b>'+esc(t.date)+'</b><br><span class="pill">'+esc(t.phase)+'</span></td><td>'+esc(t.t)+'</td><td>'+esc(t.who)+'</td></tr>';}).join('')+'</table>';
+  h+='<h2>How to be quickest</h2><div class="card">'+E.QUICK.map(function(q){return '<div class="lv">'+esc(q)+'</div>';}).join('')+'</div>';
+  return h;
+}
+function drawWho(){
+  var h='<h2>Who to contact and what to ask</h2><div class="warnbox">Every row marked <b>verify</b> comes from public search results and may be out of date. Confirm the number or address on the official site before you rely on it. The Hub never invents contact details; blank means unknown.</div>';
+  E.CONTACTS.forEach(function(c){
+    var n=E.nudge(P,c.id,{}),id='n-'+c.id;
+    h+='<div class="card"><h3>'+esc(c.org)+(c.verify?' <span class="pill">verify</span>':'')+'</h3><div class="note">'+esc(c.role)+'</div>'+
+      '<div>'+[c.phone&&'Phone: '+esc(c.phone),c.email&&'Email: '+esc(c.email),c.addr&&'Address: '+esc(c.addr),c.link&&link(c.link)].filter(Boolean).join(' · ')+'</div>'+
+      '<details><summary>What to ask, and a ready email draft</summary><ul>'+c.ask.map(function(q){return '<li>'+esc(q)+'</li>';}).join('')+'</ul><pre id="'+id+'">Subject: '+esc(n.subject)+'\n\n'+esc(n.body)+'</pre>'+copyBtn(id)+'</details></div>';
+  });
+  return h+'<h2>Keep a contact log</h2><div class="card"><textarea data-f="root|log" placeholder="Date, who, what was said, what they promised, next step.">'+esc(P.log||'')+'</textarea></div>';
+}
+function drawAns(){
+  var S=E.answers(P),h='<h2>Portal answer sheet</h2><p class="sub">The City portal can\'t be pre-filled by us. Copy these answers into the online application section by section. Anything shown as [ NEEDED ] is still missing.</p>';
+  S.forEach(function(s,i){var id='a'+i;h+='<div class="card"><h3>'+esc(s.title)+'</h3><table>'+s.rows.map(function(r){return '<tr><th style="width:34%">'+esc(r[0])+'</th><td>'+esc(r[1]).replace(/\n/g,'<br>')+'</td></tr>';}).join('')+'</table><pre class="hidden" id="'+id+'">'+esc(s.title+'\n'+s.rows.map(function(r){return r[0]+': '+r[1];}).join('\n'))+'</pre>'+copyBtn(id)+'</div>';});
+  return h;
+}
+function drawDraft(){
+  var D=E.drafts(P),h='<h2>Draft documents</h2><div class="warnbox">'+esc(E.TRUTH)+'</div>';
+  D.forEach(function(d){h+='<div class="card"><h3>'+esc(d.title)+'</h3><pre id="d-'+d.id+'">'+esc(d.body)+'</pre>'+copyBtn('d-'+d.id)+'</div>';});
+  return h;
+}
+function binderHTML(){
+  var b=P.biz||{},L=E.checklist(P),T=E.timeline(P),S=E.answers(P),D=E.drafts(P),ms=E.missing(P);
+  var css='body{font:12pt/1.4 Georgia,serif;margin:0.7in;color:#000}h1{font-size:20pt}h2{font-size:15pt;border-bottom:2px solid #000;margin-top:0}h3{font-size:12pt}pre{white-space:pre-wrap;font:10.5pt/1.4 Georgia,serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4px 6px;font-size:10.5pt;text-align:left;vertical-align:top}.pb{page-break-before:always}.sm{font-size:9.5pt}';
+  var h='<!doctype html><meta charset="utf-8"><title>Certification binder: '+esc(b.legalName||'')+'</title><style>'+css+'</style>';
+  h+='<h1>M/WBE Certification Binder</h1><p><b>'+esc(b.legalName||'(business name)')+'</b><br>Prepared '+new Date().toLocaleDateString('en-US')+(P.isSample?'<br><b>FICTIONAL TEST CASE. NOT A REAL BUSINESS.</b>':'')+'</p>';
+  h+='<p class="sm">DRAFT working binder. Every drafted statement must be reviewed and corrected by the owner before use. Contacts and links marked verify must be confirmed on the official site.</p>';
+  h+='<h2>Open items ('+ms.length+')</h2>'+(ms.length?'<ul>'+ms.map(function(m){return '<li>'+esc(m.sec)+': '+esc(m.label)+'</li>';}).join('')+'</ul>':'<p>None.</p>');
+  h+='<h2 class="pb">Document checklist</h2><table><tr><th>Status</th><th>Document</th><th>Where / how</th></tr>'+L.map(function(i){var st=P.docs[i.id]||'need';return '<tr><td>'+(st==='have'?'HAVE':st==='na'?'N/A':'NEED')+'</td><td>'+esc(i.title)+'</td><td class="sm">'+esc(i.ifMissing)+(i.where.length?'<br>'+i.where.map(function(w){return esc(w.t)+': '+esc(w.u);}).join('<br>'):'')+'</td></tr>';}).join('')+'</table>';
+  h+='<h2 class="pb">Timeline</h2><table><tr><th>Date</th><th>Step</th><th>Who</th></tr>'+T.map(function(t){return '<tr><td>'+esc(t.date)+'</td><td>'+esc(t.t)+'</td><td>'+esc(t.who)+'</td></tr>';}).join('')+'</table>';
+  h+='<h2 class="pb">Contacts (verify before use)</h2><table><tr><th>Who</th><th>Details</th></tr>'+E.CONTACTS.map(function(c){return '<tr><td>'+esc(c.org)+'</td><td class="sm">'+[c.phone,c.email,c.addr,c.link&&c.link.u].filter(Boolean).map(esc).join('<br>')+'</td></tr>';}).join('')+'</table>';
+  h+='<h2 class="pb">Portal answer sheet</h2>'+S.map(function(s){return '<h3>'+esc(s.title)+'</h3><table>'+s.rows.map(function(r){return '<tr><th style="width:32%">'+esc(r[0])+'</th><td>'+esc(r[1]).replace(/\n/g,'<br>')+'</td></tr>';}).join('')+'</table>';}).join('');
+  D.forEach(function(d){h+='<h2 class="pb">'+esc(d.title)+'</h2><pre>'+esc(d.body)+'</pre>';});
+  return h;
+}
+function drawBind(){
+  var ms=E.missing(P);
+  return '<h2>Completed package</h2><p class="sub">One printable binder: open items, checklist, timeline, contacts, portal answers, and every drafted document. Use Print, then Save as PDF.</p>'+
+    (ms.length?'<div class="warnbox">'+ms.length+' items are still missing. The binder will show them as [ NEEDED ]. You can still build it to see what is left.</div>':'<div class="sample">Nothing missing.</div>')+
+    '<div class="row"><button class="btn" id="mkb">Open binder to print / save as PDF</button><button class="btn alt" id="exp">Download my data (JSON backup)</button><label class="btn alt" style="margin:0">Restore from backup<input type="file" id="imp" accept=".json" style="display:none"></label></div>'+
+    '<p class="note">Phase 1 does not file anything for you. The official forms and the $250 fee are completed in the City portal; this binder is your complete, organized source for every field and document.</p>';
+}
+function render(){
+  drawTabs();drawSample();var v=document.getElementById('view'),h='';
+  if(['biz','owners','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
+  else h={check:drawCheck,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
+  v.innerHTML=h;
+}
+function setPath(path,key,value){
+  if(path==='root'){P[key]=value;return;}
+  var m=path.match(/^(\w+)\.(\d+)$/);
+  if(m){P[m[1]][+m[2]][key]=value;}else{P[path][key]=value;}
+}
+document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var p=f.split('|');setPath(p[0],p[1],t.value);P.isSample=false;save();});
+document.addEventListener('change',function(e){var t=e.target;if(t.getAttribute('data-doc')){P.docs[t.getAttribute('data-doc')]=t.value;save();render();window.scrollTo(window.scrollX,window.scrollY);}
+  else if(t.getAttribute('data-f')&&t.tagName==='SELECT'){drawTabs();}
+  if(t.id==='imp'&&t.files[0]){var r=new FileReader();r.onload=function(){try{P=JSON.parse(r.result);save();render();}catch(x){alert('That file could not be read.');}};r.readAsText(t.files[0]);}});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('button,label');if(!t)return;
+  if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
+  else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
+  else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
+  else if(t.getAttribute('data-copy')){var el=document.getElementById(t.getAttribute('data-copy'));var txt=el.textContent;try{navigator.clipboard.writeText(txt);}catch(x){}t.textContent='Copied';setTimeout(function(){t.textContent='Copy';},1200);}
+  else if(t.id==='ld'){P=JSON.parse(JSON.stringify(E.SAMPLE));P.isSample=true;save();render();}
+  else if(t.id==='clr'){P=blank();save();cur='biz';render();}
+  else if(t.id==='mkb'){var w=window.open('','_blank');if(w){w.document.write(binderHTML()+'<p class="noprint"><button onclick="print()">Print / Save as PDF</button></p>');w.document.close();}}
+  else if(t.id==='exp'){var bl=new Blob([JSON.stringify(P,null,2)],{type:'application/json'}),a2=document.createElement('a');a2.href=URL.createObjectURL(bl);a2.download='certification-hub-backup.json';a2.click();}
+});
+render();
+})();
+</script></body></html>
