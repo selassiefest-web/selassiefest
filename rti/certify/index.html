@@ -45,6 +45,7 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 </main>
 <script src="engine.js"></script>
 <script src="packages.js"></script>
+<script src="launch.js"></script>
 <script src="forms.js"></script>
 <script>
 (function(){
@@ -82,14 +83,15 @@ function save(){
 function srvBar(){
   return '<b>Private workspace'+(CLIENT&&CLIENT.name?': '+esc(CLIENT.name):'')+(MODE==='admin'?' (staff view)':'')+'.</b> Everything you enter is saved automatically to an encrypted private file. <span id="srvStatus" class="'+(statusBad?'stop':'ok')+'">'+esc(statusText)+'</span>'+(conflict?' <button class="btn sm" onclick="location.reload()">Reload latest</button>':'');
 }
-var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['public','Public records'],['color','Color map'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var TABS=[['start','Start here'],['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['public','Public records'],['color','Color map'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
 function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
 function copyBtn(id){return '<button class="btn alt sm" data-copy="'+id+'">Copy</button>';}
 
+function pkgTitle(){var p=E.PACKAGES.filter(function(p){return p.id===P.pkg})[0];return p?p.title:'';}
 function pkgBar(){
-  return '<div class="row noprint" style="margin:0 0 6px">'+E.PACKAGES.map(function(p){return '<button class="btn sm '+(P.pkg===p.id?'':'alt')+'" data-pkg="'+p.id+'">'+esc(p.title)+'</button>';}).join('')+'</div><p class="note noprint">Showing: <b>'+esc(E.PACKAGES.filter(function(p){return p.id===P.pkg})[0].title)+'</b>. Your intake answers are shared by all three programs.</p>';
+  return '<div class="row noprint" style="margin:0 0 6px">'+E.packagesFor(P).map(function(p){return '<button class="btn sm '+(P.pkg===p.id?'':'alt')+'" data-pkg="'+p.id+'">'+esc(p.title)+'</button>';}).join('')+'</div><p class="note noprint">Showing: <b>'+esc(pkgTitle())+'</b>. Your intake answers are shared by every track.</p>';
 }
 var lastImp=null;
 function bm(){
@@ -171,17 +173,25 @@ function drawColor(){
   });
   return h;
 }
+function drawStart(){
+  var st=(P.biz&&P.biz.stage)||'',pre=E.isPre(P);
+  var h='<h2>Welcome. Where are you starting?</h2><p class="sub">Answer once and the Hub shows only what applies to you.</p>';
+  h+='<div class="card"><h3>I am opening a business</h3><p class="note">No company yet. The Hub walks you through forming it, in order, and fills each online form with the answers you give once: Illinois LLC, EIN, bank, taxes, City license, insurance.</p><button class="btn" data-stage="pre">Start a new business</button></div>';
+  h+='<div class="card"><h3>I already have a business</h3><p class="note">The company exists. The Hub moves to the certifications: City of Chicago, Cook County and Illinois BEP. Upload your ilsos.gov page and the Hub fills what the public record knows.</p><button class="btn alt" data-stage="formed">I already have a business</button></div>';
+  if(st)h+='<p class="note">Currently set to: <b>'+esc(pre?'Opening a new business':'Already formed')+'</b>. You can change it any time.</p>';
+  return h;
+}
 function drawPlan(){
-  var h='<h2>Your fastest path to all three certifications</h2><p class="sub">Based on the certification you already hold (Business tab). Official processing facts are quoted only where the program published them.</p>';
+  var h=E.isPre(P)?pkgBar()+'<h2>Your path to opening, in order</h2><p class="sub">You can start the paperwork today. The State\'s approval is what creates the company; each later step needs the one before it.</p>':'<h2>Your fastest path to all three certifications</h2><p class="sub">Based on the certification you already hold (Business tab). Official processing facts are quoted only where the program published them.</p>';
   var pl=E.plan(P),h2='';
   pl.forEach(function(p){h+='<div class="card"><b>'+(p.n?'Step '+p.n+': ':'Alternative: ')+esc(p.t)+'</b><div class="note">'+esc(p.why)+'</div></div>';});
-  h+='<h2>Program facts</h2><table><tr><th></th><th>City of Chicago M/WBE</th><th>Cook County MWBE</th><th>Illinois BEP</th></tr>'+
+  if(!E.isPre(P))h+='<h2>Program facts</h2><table><tr><th></th><th>City of Chicago M/WBE</th><th>Cook County MWBE</th><th>Illinois BEP</th></tr>'+
    '<tr><th>Fee</th><td>$250, non-refundable</td><td>$250 (ACH accepted)</td><td>Free</td></tr>'+
    '<tr><th>Valid</th><td>5 years</td><td>Not stated on the pages I read</td><td>Full BEP 7 years (annual No Change Affidavit). BE BEP and FastTrack follow the host or partner.</td></tr>'+
    '<tr><th>Review time</th><td>About 90 days (unofficial; DPS has not published it)</td><td>Not published</td><td>Full BEP about 60 days; BE BEP and FastTrack about 7 business days (CEI)</td></tr>'+
    '<tr><th>Net worth limit</th><td>$2,955,193.19 (2026, construction)</td><td>$2,955,193.19</td><td>Not stated on the pages I read</td></tr>'+
    '<tr><th>Recognizes</th><td>Cook County; WBDC / CMBDC expedited</td><td>City of Chicago</td><td>BE BEP: City, Cook. FastTrack: WBDC, Chicago MSDC, Mid-States MSDC</td></tr></table>';
-  return h+'<p class="note">Nothing here is filed for you. Pick a program above, then use its Checklist, Timeline, Who to contact and Official forms tabs.</p>';
+  return h+'<p class="note">Nothing here is filed for you. '+(E.isPre(P)?'Use the Checklist, Timeline, Who to contact, Portal answers and Draft documents tabs for each step.':'Pick a program above, then use its Checklist, Timeline, Who to contact and Official forms tabs.')+'</p>';
 }
 function drawTabs(){var m=E.missing(P).length;document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'">'+t[1]+(t[0]==='check'&&m?' ('+m+' gaps)':'')+'</button>';}).join('');}
 function drawSample(){if(MODE!=='local'){document.getElementById('sampleBar').innerHTML=srvBar();return;}document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
@@ -262,6 +272,7 @@ function drawFormsChicago(){
   h+='<div id="pvbox"></div>';return h;
 }
 function drawForms(){
+  if(P.pkg==='launch')return pkgBar()+'<h2>Official forms</h2><div class="warnbox">Opening a business has no official PDF to pre-fill: the filings happen online (Illinois Secretary of State, IRS, MyTax Illinois, Chicago Business Direct). The <b>Portal answers</b> tab has every answer ready to copy into each online form, and <b>Draft documents</b> has the Operating Agreement starter and bank checklist.</div><div class="card"><h3>Where each filing happens</h3><ul class="note"><li><a href="https://apps.ilsos.gov/llcarticles/" target="_blank" rel="noopener">Illinois LLC Articles of Organization (online)</a></li><li><a href="https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online" target="_blank" rel="noopener">IRS EIN (online, free)</a></li><li><a href="https://mytax.illinois.gov/" target="_blank" rel="noopener">MyTax Illinois (REG-1)</a></li><li><a href="https://www.chicago.gov/BusinessDirect" target="_blank" rel="noopener">Chicago Business Direct</a></li><li><a href="https://www.cookcountyclerkil.gov/" target="_blank" rel="noopener">Cook County Clerk (assumed name)</a></li></ul></div>';
   if(P.pkg==='chicago')return pkgBar()+drawFormsChicago();
   var O=P.owners||[],h=pkgBar();
   if(P.pkg==='cook'){
@@ -292,20 +303,20 @@ async function runForm(spec){
   }catch(e){box.innerHTML='<p class="stop">Could not build the form: '+esc(e.message)+'</p>';}
 }
 function drawAns(){
-  var S=E.answers(P),h='<h2>Portal answer sheet</h2><p class="sub">The City portal can\'t be pre-filled by us. Copy these answers into the online application section by section. Anything shown as [ NEEDED ] is still missing.</p>';
+  var S=E.answersFor(P,P.pkg),h=pkgBar()+'<h2>Portal answer sheet</h2><p class="sub">The City portal can\'t be pre-filled by us. Copy these answers into the online application section by section. Anything shown as [ NEEDED ] is still missing.</p>';
   S.forEach(function(s,i){var id='a'+i;h+='<div class="card"><h3>'+esc(s.title)+'</h3><table>'+s.rows.map(function(r){return '<tr><th style="width:34%">'+esc(r[0])+'</th><td>'+esc(r[1]).replace(/\n/g,'<br>')+'</td></tr>';}).join('')+'</table><pre class="hidden" id="'+id+'">'+esc(s.title+'\n'+s.rows.map(function(r){return r[0]+': '+r[1];}).join('\n'))+'</pre>'+copyBtn(id)+'</div>';});
   return h;
 }
 function drawDraft(){
-  var D=E.drafts(P),h='<h2>Draft documents</h2><div class="warnbox">'+esc(E.TRUTH)+'</div>';
+  var D=E.draftsFor(P,P.pkg),h=pkgBar()+'<h2>Draft documents</h2><div class="warnbox">'+esc(E.TRUTH)+'</div>';
   D.forEach(function(d){h+='<div class="card"><h3>'+esc(d.title)+'</h3><pre id="d-'+d.id+'">'+esc(d.body)+'</pre>'+copyBtn('d-'+d.id)+'</div>';});
   return h;
 }
 function binderHTML(){
-  var b=P.biz||{},L=E.checklistFor(P,P.pkg),T=E.timelineFor(P,P.pkg),S=E.answers(P),D=E.drafts(P),ms=E.missing(P);
+  var b=P.biz||{},L=E.checklistFor(P,P.pkg),T=E.timelineFor(P,P.pkg),S=E.answersFor(P,P.pkg),D=E.draftsFor(P,P.pkg),ms=E.missing(P);
   var css='body{font:12pt/1.4 Georgia,serif;margin:0.7in;color:#000}h1{font-size:20pt}h2{font-size:15pt;border-bottom:2px solid #000;margin-top:0}h3{font-size:12pt}pre{white-space:pre-wrap;font:10.5pt/1.4 Georgia,serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4px 6px;font-size:10.5pt;text-align:left;vertical-align:top}.pb{page-break-before:always}.sm{font-size:9.5pt}';
   var h='<!doctype html><meta charset="utf-8"><title>Certification binder: '+esc(b.legalName||'')+'</title><style>'+css+'</style>';
-  h+='<h1>'+esc(E.PACKAGES.filter(function(p){return p.id===P.pkg})[0].title)+' Certification Binder</h1><p><b>'+esc(b.legalName||'(business name)')+'</b><br>Prepared '+new Date().toLocaleDateString('en-US')+(P.isSample?'<br><b>FICTIONAL TEST CASE. NOT A REAL BUSINESS.</b>':'')+'</p>';
+  h+='<h1>'+esc(pkgTitle())+(P.pkg==='launch'?' Binder':' Certification Binder')+'</h1><p><b>'+esc(b.legalName||'(business name)')+'</b><br>Prepared '+new Date().toLocaleDateString('en-US')+(P.isSample?'<br><b>FICTIONAL TEST CASE. NOT A REAL BUSINESS.</b>':'')+'</p>';
   h+='<p class="sm">DRAFT working binder. Every drafted statement must be reviewed and corrected by the owner before use. Contacts and links marked verify must be confirmed on the official site.</p>';
   h+='<h2>Open items ('+ms.length+')</h2>'+(ms.length?'<ul>'+ms.map(function(m){return '<li>'+esc(m.sec)+': '+esc(m.label)+'</li>';}).join('')+'</ul>':'<p>None.</p>');
   h+='<h2 class="pb">Document checklist</h2><table><tr><th>Status</th><th>Document</th><th>Where / how</th></tr>'+L.map(function(i){var st=P.docs[i.id]||'need';return '<tr><td>'+(st==='have'?'HAVE':st==='na'?'N/A':'NEED')+'</td><td>'+esc(i.title)+'</td><td class="sm">'+esc(i.ifMissing)+(i.where.length?'<br>'+i.where.map(function(w){return esc(w.t)+': '+esc(w.u);}).join('<br>'):'')+'</td></tr>';}).join('')+'</table>';
@@ -323,10 +334,10 @@ function drawBind(){
     '<p class="note">Phase 1 does not file anything for you. The official forms and the $250 fee are completed in the City portal; this binder is your complete, organized source for every field and document.</p>';
 }
 function render(){
-  if(!P.pkg)P.pkg='chicago';
+  if(!P.pkg||(P.pkg==='launch'&&!E.isPre(P))||(E.isPre(P)&&P.pkg!=='launch'&&!P.pkgPicked))P.pkg=E.isPre(P)?'launch':'chicago';
   drawTabs();drawSample();var v=document.getElementById('view'),h='';
   if(['biz','owners','pnw','sd','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
-  else h={color:drawColor,public:drawPublic,plan:drawPlan,check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
+  else h={start:drawStart,color:drawColor,public:drawPublic,plan:drawPlan,check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
   v.innerHTML=h;
 }
 function setPath(path,key,value){
@@ -342,11 +353,12 @@ document.addEventListener('change',function(e){var t=e.target;
     else{var fr=new FileReader();fr.onload=function(){done(/\.html?$/i.test(fl.name)?htmlToText(String(fr.result)):String(fr.result));};fr.readAsText(fl);}
     return;}
   if(t.getAttribute('data-doc')){P.docs[t.getAttribute('data-doc')]=t.value;save();render();window.scrollTo(window.scrollX,window.scrollY);}
-  else if(t.getAttribute('data-f')&&t.tagName==='SELECT'){drawTabs();}
+  else if(t.getAttribute('data-f')&&t.tagName==='SELECT'){if(t.getAttribute('data-f')==='biz|stage'){P.pkgPicked=false;P.pkg=E.isPre(P)?'launch':'chicago';save();render();}else drawTabs();}
   if(t.id==='imp'&&t.files[0]){var r=new FileReader();r.onload=function(){try{P=JSON.parse(r.result);save();render();}catch(x){alert('That file could not be read.');}};r.readAsText(t.files[0]);}});
 document.addEventListener('click',function(e){
   var t=e.target.closest('button,label');if(!t)return;
-  if(t.getAttribute('data-pkg')){P.pkg=t.getAttribute('data-pkg');save();render();}
+  if(t.getAttribute('data-stage')){P.biz=P.biz||{};P.biz.stage=t.getAttribute('data-stage')==='pre'?'Not formed yet (opening a new business)':'Already formed (the business exists)';P.pkg=E.isPre(P)?'launch':'chicago';P.isSample=false;save();cur='biz';render();window.scrollTo(0,0);}
+  else if(t.getAttribute('data-pkg')){P.pkg=t.getAttribute('data-pkg');P.pkgPicked=true;save();render();}
   else if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
   else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
   else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
@@ -360,14 +372,14 @@ document.addEventListener('click',function(e){
   else if(t.id==='exp'){var bl=new Blob([JSON.stringify(P,null,2)],{type:'application/json'}),a2=document.createElement('a');a2.href=URL.createObjectURL(bl);a2.download='certification-hub-backup.json';a2.click();}
 });
 function boot(){
-  if(MODE==='local'){render();return;}
+  if(MODE==='local'){if(!(P.biz&&P.biz.stage))cur='start';render();return;}
   var pb=document.getElementById('privBox');
   if(pb)pb.innerHTML='<b>Private and encrypted.</b> Your answers are stored in an encrypted file only you (and the Ras Tafari Inc. staff helping you) can open with your personal link. Do not enter Social Security numbers, driver\'s license numbers or dates of birth: the Hub refuses SSNs, and you write the rest by hand on the printed forms. Links and phone numbers marked "verify" must be confirmed on the official site.';
   document.getElementById('view').innerHTML='<p class="note">Opening your private file...</p>';
   api(MODE==='client'?{action:'load',key:KEYP}:{action:'admin_get',secret:ADM,id:AID}).then(function(j){
     if(!j.ok){document.getElementById('view').innerHTML='<p class="stop">'+esc(j.error||'Could not open this workspace.')+'</p><p class="note">Ask Ras Tafari Inc. for a new link: stephen@selassiefest.com or (872) 255-9333.</p>';return;}
     CLIENT=j.client;VER=j.version||0;P=j.profile||blank();if(!P.pkg)P.pkg='chicago';P.isSample=false;
-    setStatus(j.profile?'Opened your saved file.':'New workspace. Start with the Business tab.');render();
+    setStatus(j.profile?'Opened your saved file.':'New workspace. Start with the Start here tab.');if(!(P.biz&&P.biz.stage))cur='start';render();
   }).catch(function(){document.getElementById('view').innerHTML='<p class="stop">Could not reach the server. Check your connection and reload.</p>';});
 }
 boot();

@@ -71,16 +71,22 @@
   var ETH = ['Black or African American', 'Hispanic / Latino', 'Asian American', 'Native American / Alaska Native', 'White (non-Hispanic)', 'Prefer not to say'];
   var SECTIONS = [
     { id: 'biz', title: 'The business', scope: 'biz', blurb: 'Asked once. Feeds every form.', fields: [
+      { k: 'stage', label: 'Where are you starting?', type: 'select', opts: ['Already formed (the business exists)', 'Not formed yet (opening a new business)'], req: 1, help: 'Choose the second if you are opening a business now. The Hub then walks you through forming it, in order, before any certification.' },
+      { k: 'industry', label: 'What kind of business?', type: 'select', opts: ['General contractor / construction', 'Sound, DJ or events', 'Retail or food', 'Professional services', 'Other'], help: 'Adds the licenses that kind of business usually needs.' },
+      { k: 'hasEmployees', label: 'Will you have employees (not counting owners)?', type: 'select', opts: ['No, just the owner(s)', 'Yes, soon', 'Yes, from day one'] },
+      { k: 'sellsGoods', label: 'Will you sell products or taxable items?', type: 'select', opts: ['No', 'Yes'] },
+      { k: 'nameAlt', label: 'Business name choices, best first (we check each one is free)', type: 'textarea', help: 'An LLC name must include LLC, L.L.C. or Limited Liability Company. Give at least three in case your first is taken.' },
+      { k: 'regAgent', label: 'Registered agent: name and an Illinois street address (not a P.O. box) where someone is available during business hours', help: 'Often the owner. Needed to form an LLC.' },
       { k: 'legalName', label: 'Legal business name (exactly as on your Articles / IRS letter)', req: 1, where: { t: 'Illinois SOS entity search', u: LINK.ilsosLLC.u, how: 'Search your name; the record shows the exact legal name.' } },
       { k: 'dba', label: 'Assumed name / DBA (if any)', help: 'Leave blank if none.' },
       { k: 'entityType', label: 'Business structure', type: 'select', opts: ENT, req: 1 },
-      { k: 'ein', label: 'EIN (federal tax ID)', req: 1, where: { t: 'IRS lost-EIN help', u: LINK.irsEinLetter.u, how: 'Find your CP-575 letter, an old tax return, or call the IRS Business line for a 147C letter.' } },
+      { k: 'ein', post: 1, label: 'EIN (federal tax ID)', req: 1, where: { t: 'IRS lost-EIN help', u: LINK.irsEinLetter.u, how: 'Find your CP-575 letter, an old tax return, or call the IRS Business line for a 147C letter.' } },
       { k: 'stateInc', label: 'State of formation', help: 'e.g. Illinois' },
-      { k: 'incDate', label: 'Date formed', type: 'date', req: 1 },
+      { k: 'incDate', post: 1, label: 'Date formed', type: 'date', req: 1 },
       { k: 'reinstated', label: 'If the State ever dissolved or revoked the company and you reinstated it: date reinstated (leave blank if never)', type: 'date', help: 'Reviewers will ask about any gap in good standing. Keep the reinstatement filing and a current certificate of good standing.' },
       { k: 'startDate', label: 'Date you began operating', type: 'date' },
       { k: 'address', label: 'Business street address', req: 1 }, { k: 'city', label: 'City', req: 1 }, { k: 'state', label: 'State', req: 1 }, { k: 'zip', label: 'ZIP', req: 1 }, { k: 'county', label: 'County of the business location', req: 1, help: 'Cook County certification requires a principal office in Cook, DuPage, Kane, Will, Lake or McHenry County.' },
-      { k: 'certCategory', label: 'Category you hold or are applying for with the City', type: 'select', opts: ['MBE (minority-owned)', 'WBE (women-owned)'], req: 1, help: 'A firm that qualifies as both usually picks one. Ask DPS before choosing.' },
+      { k: 'certCategory', post: 1, label: 'Category you hold or are applying for with the City', type: 'select', opts: ['MBE (minority-owned)', 'WBE (women-owned)'], req: 1, help: 'A firm that qualifies as both usually picks one. Ask DPS before choosing.' },
       { k: 'phone', label: 'Business phone', req: 1 }, { k: 'fax', label: 'Business fax (optional)' }, { k: 'email', label: 'Business email', req: 1 }, { k: 'website', label: 'Website (optional)' },
       { k: 'naics', label: 'NAICS codes and what you do under each (one per line: code - description)', type: 'textarea', req: 1, where: { t: 'Census NAICS search', u: LINK.naics.u, how: 'Search your trade (e.g. "general contractor"). Only list work you actually perform; the City certifies only those codes.' } },
       { k: 'scope', label: 'In plain words, what work does the business perform?', type: 'textarea', req: 1 },
@@ -134,16 +140,16 @@
       { k: 'sd_statement', label: 'Your written account of the discrimination you personally experienced and its effect on your business', type: 'textarea', tall: 1, help: 'The City requires: (1) you personally suffered it, not merely group membership; (2) specific instances, told in detail; (3) rooted in treatment in American society; (4) chronic and long-standing, not fleeting; (5) it hurt your entry into or advancement in business. Evidence areas: education, employment, business history (credit/capital, contract access, customers, associations). Write it yourself; only true events. The Hub counts your words.' }
     ] },
     { id: 'fin', title: 'Tax and money records', scope: 'fin', blurb: 'Where your financial paperwork lives.', fields: [
-      { k: 'taxYears', label: 'Tax years you have filed (e.g. 2021, 2022, 2023, 2024, 2025)', req: 1 },
-      { k: 'taxForm', label: 'Federal return the business files', type: 'select', opts: ['1040 (Schedule C)', '1065', '1120', '1120-S'], req: 1, help: 'Used on the IRS 4506-T. Your CPA or last return will say.' },
+      { k: 'taxYears', post: 1, label: 'Tax years you have filed (e.g. 2021, 2022, 2023, 2024, 2025)', req: 1 },
+      { k: 'taxForm', post: 1, label: 'Federal return the business files', type: 'select', opts: ['1040 (Schedule C)', '1065', '1120', '1120-S'], req: 1, help: 'Used on the IRS 4506-T. Your CPA or last return will say.' },
       { k: 'cpa', label: 'CPA / preparer name and phone' },
-      { k: 'bank', label: 'Business bank and branch', req: 1 },
-      { k: 'signers', label: 'Who is authorized on the business bank account?', type: 'textarea', req: 1 },
+      { k: 'bank', post: 1, label: 'Business bank and branch', req: 1 },
+      { k: 'signers', post: 1, label: 'Who is authorized on the business bank account?', type: 'textarea', req: 1 },
       { k: 'stateTax', label: 'Illinois tax ID (IDOR) and any City tax / license numbers' },
       { k: 'bonding', label: 'Surety / bonding company and limit (if any)' }
     ] },
     { id: 'contracts', title: 'Work you have done', scope: 'array', arr: 'contracts', max: 6, addLabel: 'Add another contract', blurb: 'Representative contracts that show you do the work in your NAICS codes. Three to five is typical.', fields: [
-      { k: 'client', label: 'Client / owner of the project', req: 1 }, { k: 'project', label: 'Project and what you did', req: 1 },
+      { k: 'client', post: 1, label: 'Client / owner of the project', req: 1 }, { k: 'project', post: 1, label: 'Project and what you did', req: 1 },
       { k: 'amount', label: 'Contract amount ($)' }, { k: 'year', label: 'Year completed' },
       { k: 'paid', label: 'Do you have proof of payment (deposit record / paid invoice)?', type: 'select', opts: ['Yes', 'No'] }
     ] }
@@ -152,7 +158,7 @@
   /* ---------- sample client: fictional ---------- */
   var SAMPLE = {
     startDate: '2026-11-09',
-    biz: { legalName: 'ABC General Contractors LLC', dba: '', entityType: 'LLC', ein: '00-0000000', stateInc: 'Illinois', incDate: '2019-03-04', startDate: '2019-04-01',
+    biz: { stage: 'Already formed (the business exists)', legalName: 'ABC General Contractors LLC', dba: '', entityType: 'LLC', ein: '00-0000000', stateInc: 'Illinois', incDate: '2019-03-04', startDate: '2019-04-01',
       address: '100 Example Ave', city: 'Chicago', state: 'IL', zip: '60601', county: 'Cook', certCategory: 'WBE (women-owned)', heldCert: 'None', phone: '(312) 555-0100', email: 'office@abcgc.example', website: 'abcgc.example',
       naics: '236220 - Commercial and institutional building construction\n236118 - Residential remodelers\n238990 - All other specialty trade contractors',
       scope: 'General contractor for small commercial build-outs, tenant improvements and residential remodels. We bid, self-perform framing, drywall and finish work, and manage licensed subcontractors for electrical and plumbing.',
@@ -225,16 +231,17 @@
   }
 
   /* ---------- missing-info report ---------- */
+  function isPre(P) { return String((P.biz || {}).stage || '').indexOf('Not') === 0; }
   function missing(P) {
-    var out = [];
+    var out = [], pre = isPre(P);
     SECTIONS.forEach(function (s) {
       if (s.scope === 'array') {
         var arr = P[s.arr] || [];
         if (!arr.length) { out.push({ sec: s.title, label: 'At least one entry', where: null }); return; }
-        arr.forEach(function (row, i) { s.fields.forEach(function (f) { if (f.req && !has(row[f.k])) out.push({ sec: s.title + ' #' + (i + 1) + (row.name ? ' (' + row.name + ')' : ''), label: f.label, where: f.where || null }); }); });
+        arr.forEach(function (row, i) { s.fields.forEach(function (f) { if (f.req && !(pre && f.post) && !has(row[f.k])) out.push({ sec: s.title + ' #' + (i + 1) + (row.name ? ' (' + row.name + ')' : ''), label: f.label, where: f.where || null }); }); });
       } else {
         var d = P[s.scope] || {};
-        s.fields.forEach(function (f) { if (f.req && !has(d[f.k])) out.push({ sec: s.title, label: f.label, where: f.where || null }); });
+        s.fields.forEach(function (f) { if (f.req && !(pre && f.post) && !has(d[f.k])) out.push({ sec: s.title, label: f.label, where: f.where || null }); });
       }
     });
     (P.owners || []).forEach(function (o, i) {
@@ -402,6 +409,6 @@
       'Could you please confirm:\n' + c.ask.map(function (q) { return '- ' + q; }).join('\n') + '\n\nIf anything is missing, tell me exactly what and I will send it the same day.\n\nThank you,\n' + val(o.name, 'name') + '\n' + val(b.phone, 'phone') + '\n' + val(b.email, 'email') };
   }
 
-  var api = { needsSD: needsSD, wordCount: wordCount, PNW_LIMIT: PNW_LIMIT, netWorth: netWorth, esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
+  var api = { isPre: isPre, needsSD: needsSD, wordCount: wordCount, PNW_LIMIT: PNW_LIMIT, netWorth: netWorth, esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CertEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
