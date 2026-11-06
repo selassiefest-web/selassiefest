@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Follow-up Walk, Nov 6 to 8</title>
+<title>Follow-up Walk, Nov 13 to 15</title>
 <style>
 body{font:16px/1.4 system-ui,sans-serif;max-width:760px;margin:0 auto;padding:12px;color:#1a1a1a}
 h1{font-size:1.4rem}
@@ -28,7 +28,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
 <h1>Follow-up walk: what happened at each stop</h1>
 <div id="msg">Loading…</div>
 <div id="app" hidden>
-<p>Fri Nov 6 to Sun Nov 8. Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it, and shows on any device you sign in on. <span id="cnt"></span></p>
+<p>Fri Nov 13 to Sun Nov 15 (postponed one week from Nov 6). Tap what happened at each stop and add a note. Every answer saves to the tracker as you tap it, and shows on any device you sign in on. <span id="cnt"></span></p>
 <p><button id="clrBtn">Forget unsent</button><button id="refBtn">Refresh scans</button></p>
 <p id="saveMsg" class="scan"></p>
 <div id="feed" hidden></div>
@@ -46,9 +46,9 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   if (!sess){ $('msg').innerHTML = 'Sign in first at <a href="/full-spectrum/partners.html">/full-spectrum/partners.html</a>, then reopen this page.'; return; }
 
     var DAYS = [
-    ['2026-11-06', 'Friday Nov 6: weekday-only stops', 'Schools, child care centers, hospitals, fire houses and the phone list only work on a weekday. Start with the calls at 9 am, then the child care stops, then the side trips.'],
-    ['2026-11-07', 'Saturday Nov 7: the shops (79th St, then 71st St)', 'Barbershops, salons, markets and restaurants are busiest and open on Saturday. Walk 79th east to west, then 71st east to west.'],
-    ['2026-11-08', 'Sunday Nov 8: churches after service, then 75th St', 'Churches 12:30 to 3 pm (79th east to west, then 75th). Then walk 75th west to east. Many shops are closed Sunday: mark them Not visited and they roll to Monday Nov 9.']
+    ['2026-11-13', 'Friday Nov 13: weekday-only stops', 'Schools, child care centers, hospitals, fire houses and the phone list only work on a weekday. Start with the calls at 9 am, then the child care stops, then the side trips.'],
+    ['2026-11-14', 'Saturday Nov 14: the shops (79th St, then 71st St)', 'Barbershops, salons, markets and restaurants are busiest and open on Saturday. Walk 79th east to west, then 71st east to west.'],
+    ['2026-11-15', 'Sunday Nov 15: churches after service, then 75th St', 'Churches 12:30 to 3 pm (79th east to west, then 75th). Then walk 75th west to east. Many shops are closed Sunday: mark them Not visited and they roll to Monday Nov 16.']
   ];
   var isChild = function(r){ return /child/i.test(r.category || ''); }, isFaith = function(r){ return r.category === 'Faith'; };
 
@@ -144,7 +144,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
   }
 
   var stage = {talked:'in_conversation', staff:'reached_out', contact:'in_conversation', closed:'declined'};
-  var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 9'};
+  var label = {talked:'spoke to owner/manager', staff:'left with staff', contact:'got contact', closed:'closed/gone', skip:'not visited, rolled to Mon Nov 16'};
   function setMsg(t){ $('saveMsg').textContent = t; }
   function iso(n){ var x = new Date(); x.setDate(x.getDate() + n); return x.getFullYear() + '-' + ('0' + (x.getMonth() + 1)).slice(-2) + '-' + ('0' + x.getDate()).slice(-2); }
   function lsText(p){ var sv = parseWalk(p.walk_last); if (!p.walk_at || !sv) return ''; return 'Last saved: ' + (sv.o === 'skip' ? 'not visited' : label[sv.o]) + ' by ' + (p.walk_by || '?') + ', ' + new Date(p.walk_at).toLocaleString(); }
@@ -188,7 +188,7 @@ button{font-size:1rem;padding:8px 14px;margin:6px 6px 6px 0}pre{white-space:pre-
       for (var i = 0; i < ids.length; i++){
         var id = ids[i], it = q[id], r0 = byId[id] || {}, o = it.o, t = it.t;
         var args = { p_session: sess.sessionToken, p_partner: id, p_kind: 'visit', p_summary: 'Walk ' + iso(0) + ': ' + label[o] + (t ? '. ' + t : '') };
-        if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-09'; }
+        if (o === 'skip'){ args.p_next_step = r0.next_step || 'Walk follow-up'; args.p_next_due = '2026-11-16'; }
         else { args.p_stage = stage[o]; args.p_next_step = o === 'closed' ? 'Closed / gone, no further action' : 'Follow up on the walk: ' + (t || 'check in by phone'); args.p_next_due = o === 'closed' ? null : iso(7); }
         try { var c = await window.sfSupabaseReady; var r = await c.rpc('fs_partner_log', args); if (r.error) throw r.error;
           if (q[id] && q[id].o === o && q[id].t === t) delete q[id]; else again = true; saveQ();
