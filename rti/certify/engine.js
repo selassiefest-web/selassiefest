@@ -77,6 +77,7 @@
       { k: 'ein', label: 'EIN (federal tax ID)', req: 1, where: { t: 'IRS lost-EIN help', u: LINK.irsEinLetter.u, how: 'Find your CP-575 letter, an old tax return, or call the IRS Business line for a 147C letter.' } },
       { k: 'stateInc', label: 'State of formation', help: 'e.g. Illinois' },
       { k: 'incDate', label: 'Date formed', type: 'date', req: 1 },
+      { k: 'reinstated', label: 'If the State ever dissolved or revoked the company and you reinstated it: date reinstated (leave blank if never)', type: 'date', help: 'Reviewers will ask about any gap in good standing. Keep the reinstatement filing and a current certificate of good standing.' },
       { k: 'startDate', label: 'Date you began operating', type: 'date' },
       { k: 'address', label: 'Business street address', req: 1 }, { k: 'city', label: 'City', req: 1 }, { k: 'state', label: 'State', req: 1 }, { k: 'zip', label: 'ZIP', req: 1 }, { k: 'county', label: 'County of the business location', req: 1, help: 'Cook County certification requires a principal office in Cook, DuPage, Kane, Will, Lake or McHenry County.' },
       { k: 'certCategory', label: 'Category you hold or are applying for with the City', type: 'select', opts: ['MBE (minority-owned)', 'WBE (women-owned)'], req: 1, help: 'A firm that qualifies as both usually picks one. Ask DPS before choosing.' },

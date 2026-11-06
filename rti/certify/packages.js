@@ -208,7 +208,13 @@
   }
 
   /* ---------- public API ---------- */
-  E.checklistFor = function (P, pkg) { return pkg === 'cook' ? cookChecklist(P) : pkg === 'bep' ? bepChecklist(P) : E.checklist(P); };
+  E.checklistFor = function (P, pkg) {
+    var L0 = pkg === 'cook' ? cookChecklist(P) : pkg === 'bep' ? bepChecklist(P) : E.checklist(P);
+    if (has((P.biz || {}).reinstated)) {
+      L0.push({ id: 'reinst', group: 'Legal and identity', title: 'Reinstatement filing (Illinois Secretary of State) and a current certificate of good standing, plus a short written explanation of the gap', why: 'The company was administratively dissolved or revoked and reinstated on ' + P.biz.reinstated + '. Reviewers check continuity of the business, its tax filings and any contracts signed during the gap.', where: [L.ilsosLLC], ifMissing: 'Download the reinstatement record and order the certificate of good standing from the Secretary of State. List every contract, bank account and filing dated inside the gap so you can explain each one.', src: 'common' });
+    }
+    return L0;
+  };
   E.timelineFor = function (P, pkg) { return pkg === 'cook' ? cookTimeline(P) : pkg === 'bep' ? bepTimeline(P) : E.timeline(P); };
   E.contactsFor = function (pkg) { var ids = (E.PACKAGES.filter(function (p) { return p.id === pkg; })[0] || E.PACKAGES[0]).contacts; return ids.map(function (id) { return E.CONTACTS.filter(function (c) { return c.id === id; })[0]; }).filter(Boolean); };
   E.eligibilityFor = function (P, pkg) { return pkg === 'cook' ? cookEligibility(P) : pkg === 'bep' ? bepEligibility(P) : []; };
