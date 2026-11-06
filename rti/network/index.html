@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Collaborative Network | Ras Tafari Inc.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f0d; --panel: #131a16; --panel2: #1a231e; --line: #2b3a31;
+    --text: #eef2ee; --muted: #a9b8ae;
+    --green: #0E5E36; --green-hi: #2fa86a; --gold: #E5A93C; --red: #C83737;
+    --c-sip: #7fb7e6; --c-np2: #e59a4f; --c-2c: #6fd09a; --c-ps: #d58be0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Jost', system-ui, sans-serif; line-height: 1.5; }
+  body { padding: 0 16px 60px; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  header { padding: 28px 0 10px; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; color: var(--gold); }
+  .sub { color: var(--muted); margin: 0; }
+  .banner { margin: 16px 0; padding: 12px 16px; border: 1px solid var(--gold); background: rgba(229,169,60,.08); border-radius: 8px; font-size: .95rem; }
+  nav.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+  nav.tabs button { font: inherit; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+  nav.tabs button[aria-selected="true"] { color: #fff; background: var(--green); border-color: var(--green-hi); }
+  section.tab { display: none; }
+  section.tab.on { display: block; }
+  h2 { font-size: 1.35rem; margin: 6px 0 10px; }
+  h3 { font-size: 1.05rem; margin: 0 0 6px; }
+  p { margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .grid2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+  svg { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .node { cursor: pointer; }
+  .node rect { stroke-width: 2; fill: var(--panel2); }
+  .node:focus rect, .node:hover rect { fill: #22302a; }
+  .node.sel rect { stroke-width: 4; }
+  .node text { fill: var(--text); font-family: 'Jost', sans-serif; pointer-events: none; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; margin-right: 6px; border: 1px solid; }
+  .t-ver { color: #7fe0a8; border-color: #2e7d54; background: rgba(47,168,106,.12); }
+  .t-prop { color: var(--gold); border-color: #8a6a24; background: rgba(229,169,60,.1); }
+  .t-flag { color: #ff9b9b; border-color: #8a3030; background: rgba(200,55,55,.12); }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--gold); font-weight: 600; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  ul { margin: 6px 0 10px 20px; padding: 0; }
+  li { margin-bottom: 4px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .filters button { font: inherit; font-size: .9rem; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .filters button.on { background: var(--green); border-color: var(--green-hi); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+  .step { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--line); border-radius: 10px; padding: 14px; position: relative; }
+  .step .n { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+  input[type=text], select, textarea { font: inherit; color: var(--text); background: #0d1310; border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100%; }
+  textarea { min-height: 70px; }
+  .warn { color: #ff9b9b; font-size: .85rem; margin-top: 4px; min-height: 1em; }
+  .btn { font: inherit; color: #fff; background: var(--green); border: 1px solid var(--green-hi); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+  .btn.alt { background: var(--panel2); border-color: var(--line); }
+  .rules { counter-reset: r; list-style: none; margin: 0; padding: 0; }
+  .rules li { counter-increment: r; padding: 12px 14px 12px 50px; position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; }
+  .rules li::before { content: counter(r); position: absolute; left: 14px; top: 10px; font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+  .opt { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
+  .opt input { margin-top: 5px; }
+  @media print {
+    body { background: #fff; color: #000; }
+    nav.tabs, .btn, .filters, .banner { display: none; }
+    section.tab { display: block !important; page-break-inside: avoid; margin-bottom: 20px; }
+    .card, .step, .rules li, svg { background: #fff; border-color: #999; }
+    h1, h2, th { color: #000; }
+    .node text { fill: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Ras Tafari Inc. Collaborative Network</h1>
+  <p class="sub">Who does what, who connects to whom, and who is accountable. Internal working chart.</p>
+</header>
+
+<div class="banner"><strong>Working draft.</strong> Every line on this page is a <em>proposed working relationship</em>, not an existing legal or contractual arrangement. The four collaborators are independent organizations, not departments or subsidiaries of Ras Tafari Inc. Items marked <span class="tag t-flag">Verify</span> need confirming before anyone relies on them.</div>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" aria-selected="true" data-tab="network">Network chart</button>
+  <button role="tab" aria-selected="false" data-tab="matrix">Responsibilities</button>
+  <button role="tab" aria-selected="false" data-tab="pipeline">Property-to-housing pipeline</button>
+  <button role="tab" aria-selected="false" data-tab="people">People and liaisons</button>
+  <button role="tab" aria-selected="false" data-tab="gov">Governance and agreements</button>
+  <button role="tab" aria-selected="false" data-tab="verify">To verify</button>
+</nav>
+
+<!-- ============ NETWORK ============ -->
+<section class="tab on" id="tab-network">
+  <div class="grid2">
+    <div>
+      <svg id="chart" viewBox="0 0 900 600" role="img" aria-label="Network chart: Ras Tafari Inc. at the center with four independent collaborators">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E5A93C"/></marker>
+          <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7fb7e6"/></marker>
+        </defs>
+        <!-- spokes -->
+        <g stroke="#3a4a40" stroke-width="2" stroke-dasharray="6 6" fill="none">
+          <line x1="400" y1="210" x2="260" y2="170"/>
+          <line x1="500" y1="210" x2="640" y2="170"/>
+          <line x1="500" y1="330" x2="640" y2="370"/>
+          <line x1="400" y1="330" x2="260" y2="370"/>
+        </g>
+        <!-- pipeline: NP2 -> 2nd Chance (acquire + renovate), SIP -> 2nd Chance (sources participants) -->
+        <line x1="340" y1="120" x2="552" y2="120" stroke="#E5A93C" stroke-width="3" marker-end="url(#arr)"/>
+        <text x="446" y="106" text-anchor="middle" fill="#E5A93C" font-size="14" font-family="Jost,sans-serif">acquire + renovate</text>
+        <text x="446" y="142" text-anchor="middle" fill="#E5A93C" font-size="14" font-family="Jost,sans-serif">then manage</text>
+        <line x1="720" y1="366" x2="720" y2="178" stroke="#7fb7e6" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round" marker-end="url(#arr2)"/>
+        <text x="732" y="262" fill="#7fb7e6" font-size="14" font-family="Jost,sans-serif">sources returning-</text>
+        <text x="732" y="280" fill="#7fb7e6" font-size="14" font-family="Jost,sans-serif">citizen participants</text>
+
+        <!-- center -->
+        <g class="node" id="n-rti" tabindex="0" data-org="rti">
+          <rect x="300" y="210" width="300" height="120" rx="14" stroke="#E5A93C"/>
+          <text x="450" y="248" text-anchor="middle" font-size="22" font-weight="700">RAS TAFARI INC.</text>
+          <text x="450" y="272" text-anchor="middle" font-size="15" fill="#a9b8ae">501(c)(3) nonprofit</text>
+          <text x="450" y="296" text-anchor="middle" font-size="14">Governance · Programs · Education · Culture</text>
+          <text x="450" y="316" text-anchor="middle" font-size="13" fill="#a9b8ae">One central board</text>
+        </g>
+        <g class="node" id="n-np2" tabindex="0" data-org="np2">
+          <rect x="20" y="70" width="320" height="100" rx="12" stroke="#e59a4f"/>
+          <text x="180" y="100" text-anchor="middle" font-size="18" font-weight="700">NP2 ENTERPRISE</text>
+          <text x="180" y="124" text-anchor="middle" font-size="14" fill="#a9b8ae">Property development · general contractor</text>
+          <text x="180" y="146" text-anchor="middle" font-size="14">Acquisition · renovation · construction</text>
+        </g>
+        <g class="node" id="n-2c" tabindex="0" data-org="c2">
+          <rect x="560" y="70" width="320" height="100" rx="12" stroke="#6fd09a"/>
+          <text x="720" y="100" text-anchor="middle" font-size="18" font-weight="700">2ND CHANCE HOUSING INC.</text>
+          <text x="720" y="124" text-anchor="middle" font-size="14" fill="#a9b8ae">Property management</text>
+          <text x="720" y="146" text-anchor="middle" font-size="14">Housing operations · tenant coordination</text>
+        </g>
+        <g class="node" id="n-sip" tabindex="0" data-org="sip">
+          <rect x="560" y="370" width="320" height="100" rx="12" stroke="#7fb7e6"/>
+          <text x="720" y="398" text-anchor="middle" font-size="16" font-weight="700">SELF IMPROVEMENT PHILOSOPHY LIFE</text>
+          <text x="720" y="422" text-anchor="middle" font-size="14" fill="#a9b8ae">Youth and community engagement</text>
+          <text x="720" y="444" text-anchor="middle" font-size="14">DJ Lab participation · participant sourcing</text>
+        </g>
+        <g class="node" id="n-ps" tabindex="0" data-org="ps">
+          <rect x="20" y="370" width="320" height="100" rx="12" stroke="#d58be0"/>
+          <text x="180" y="398" text-anchor="middle" font-size="17" font-weight="700">PRESTIGE SOUND INTERNATIONAL</text>
+          <text x="180" y="422" text-anchor="middle" font-size="14" fill="#a9b8ae">In formation</text>
+          <text x="180" y="444" text-anchor="middle" font-size="14">Sound · staging · lighting · DJs · production</text>
+        </g>
+        <!-- outcomes band -->
+        <rect x="20" y="510" width="860" height="70" rx="10" fill="#10241a" stroke="#2fa86a"/>
+        <text x="450" y="538" text-anchor="middle" fill="#7fe0a8" font-size="16" font-weight="700" font-family="Jost,sans-serif">SHARED COMMUNITY OUTCOMES</text>
+        <text x="450" y="562" text-anchor="middle" fill="#eef2ee" font-size="14" font-family="Jost,sans-serif">Youth development · Returning-citizen housing access · Property improvement · Cultural events · Education</text>
+      </svg>
+      <p class="muted" style="margin-top:8px;font-size:.9rem">Select any box for details. Dashed grey lines are working relationships. The gold arrow and the blue dotted arrow show the housing pipeline.</p>
+    </div>
+    <aside class="card" id="detail" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- ============ MATRIX ============ -->
+<section class="tab" id="tab-matrix">
+  <h2>Who is responsible for what</h2>
+  <div class="filters" id="mfilters"></div>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Activity</th><th>Primary collaborator</th><th>Responsibility</th><th>Status</th></tr></thead>
+      <tbody id="mbody"></tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:10px"><strong>Keep these separate:</strong> Self Improvement Philosophy Life helps source returning-citizen participants. 2nd Chance Housing manages the properties. NP2 acquires and builds; NP2 does not manage property.</p>
+</section>
+
+<!-- ============ PIPELINE ============ -->
+<section class="tab" id="tab-pipeline">
+  <h2>Property-to-housing pipeline</h2>
+  <p class="muted">Ownership, acquisition financing and contract responsibilities are set separately for each project.</p>
+  <div class="steps">
+    <div class="step" style="border-top-color:var(--c-sip)"><div class="n">1</div><h3>Participants sourced</h3><p><span class="dot" style="background:var(--c-sip)"></span>Self Improvement Philosophy Life</p><p class="muted">Engages the community, identifies prospective returning-citizen participants and connects them to appropriate programs.</p></div>
+    <div class="step" style="border-top-color:var(--c-np2)"><div class="n">2</div><h3>Acquire and renovate</h3><p><span class="dot" style="background:var(--c-np2)"></span>NP2 Enterprise</p><p class="muted">Identifies and supports acquisition of suitable properties, then general contracting, rehabilitation and preparation.</p></div>
+    <div class="step" style="border-top-color:var(--c-2c)"><div class="n">3</div><h3>Manage the housing</h3><p><span class="dot" style="background:var(--c-2c)"></span>2nd Chance Housing Inc.</p><p class="muted">Residential property management, housing operations, tenant coordination and stability.</p></div>
+    <div class="step" style="border-top-color:var(--gold)"><div class="n">4</div><h3>Community impact</h3><p><span class="dot" style="background:var(--gold)"></span>Ras Tafari Inc.</p><p class="muted">Where appropriate, connects charitable programming, education and community resources to the housing initiative.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>Events and Rainbow DJ Lab</h3>
+    <p class="muted">Prestige Sound International (in formation) is the proposed sound, staging, lighting and DJ provider for SelassieFest and other events, and a technical resource for the Rainbow DJ Lab. Self Improvement Philosophy Life supports youth engagement and participation in the Lab.</p>
+  </div>
+</section>
+
+<!-- ============ PEOPLE ============ -->
+<section class="tab" id="tab-people">
+  <h2>People and liaisons</h2>
+  <p class="muted">Fill in who connects to whom. Entries save in this browser only. Use "Copy summary" to paste them into an email or the tracker.</p>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Collaborator</th><th>Ras Tafari liaison</th><th>Collaborator representative</th><th>Related party?</th><th>Confirmed?</th></tr></thead>
+      <tbody id="pbody"></tbody>
+    </table>
+  </div>
+  <div style="margin:12px 0"><button class="btn" id="copySum">Copy summary</button> <button class="btn alt" id="clearP">Clear entries</button> <span id="copied" class="muted"></span></div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Ras Tafari Inc. board of record</h3>
+    <p class="muted">From our own organizational records (board packets and bylaws files).</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Name</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td>Stephen Henry</td><td>President</td></tr>
+        <tr><td>Paul Kelly, MA, MHS, LPC</td><td>Vice President and Treasurer</td></tr>
+        <tr><td>Albert Harris</td><td>Secretary</td></tr>
+        <tr><td>Marlon Reid</td><td>Director</td></tr>
+        <tr><td>Craig Rainford</td><td>Director</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:10px"><span class="tag t-flag">Verify</span> The public team page at /about/team.html lists a different set of titles (for example "Bobby Brown, Vice President" and "Nataki, Executive Director"). The officers on the corporate records control. Decide whether the public page or the records need updating before any partner sees either one.</p>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Known connections between members and collaborators</h3>
+    <ul>
+      <li><strong>Paul Kelly</strong> is Ras Tafari's Vice President and Treasurer and, per our files, the founder and CEO of Self-Improvement Philosophy (S.I.P.) LLC. That makes Self Improvement Philosophy Life a related party. Any paid arrangement needs approval by directors with no stake in it.</li>
+      <li><strong>Nadia Peck</strong> is named on the NP2 website as CEO and founder. We have no record that she is a Ras Tafari member or officer.</li>
+      <li>Other member-to-collaborator links (Prestige Sound, 2nd Chance Housing) are <em>not yet confirmed</em>. Enter them above, and mark "Related party" for each.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ GOVERNANCE ============ -->
+<section class="tab" id="tab-gov">
+  <h2>Governance and agreements</h2>
+  <ol class="rules">
+    <li><strong>Separate finances.</strong> Each entity keeps its own bank accounts, accounting and records.</li>
+    <li><strong>Conflict-of-interest management.</strong> A Ras Tafari director or officer with an interest in an outside organization discloses it and does not take part in the approval.</li>
+    <li><strong>Fair-market transactions.</strong> Ras Tafari pays outside businesses only for legitimate services that further its charitable mission, at reasonable, documented prices. Private inurement and excess-benefit rules apply to anything involving insiders.</li>
+  </ol>
+
+  <h3 style="margin-top:18px">Which kind of agreement fits each collaborator</h3>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Collaborator</th><th>Type</th><th>Appropriate arrangement</th></tr></thead>
+      <tbody>
+        <tr><td>Self Improvement Philosophy Life</td><td>Related-party educational collaborator</td><td>Educational collaboration or documented service agreement; board approval by directors with no stake</td></tr>
+        <tr><td>NP2 Enterprise</td><td>Commercial (LLC)</td><td>Independent contractor agreement for approved work</td></tr>
+        <tr><td>2nd Chance Housing Inc.</td><td>Nonprofit partner</td><td>Nonprofit-to-nonprofit program partnership or referral agreement</td></tr>
+        <tr><td>Prestige Sound International</td><td>Commercial, in formation</td><td>Independent production or vendor agreement, or collaborative program agreement</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Collaborative Advisory Council (proposed)</h3>
+    <p>One central Ras Tafari board governs. Each collaborator names a point of contact and may sit on a voluntary Collaborative Advisory Council that coordinates projects. Council members are not directors and hold no nonprofit governance authority. This protects Ras Tafari's 501(c)(3) independence when it contracts with NP2 or Prestige Sound.</p>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Decisions to confirm</h3>
+    <p class="muted">Recommended choices are marked. Your picks save in this browser.</p>
+    <p><strong>1. Organizational independence</strong></p>
+    <label class="opt"><input type="radio" name="d1" value="indep"><span>All four remain independent collaborators <span class="tag t-ver">Recommended</span></span></label>
+    <label class="opt"><input type="radio" name="d1" value="affil"><span>All independent now; some may become formal affiliates later</span></label>
+    <p style="margin-top:10px"><strong>2. Advisory Council</strong></p>
+    <label class="opt"><input type="radio" name="d2" value="yes"><span>Establish a voluntary Collaborative Advisory Council <span class="tag t-ver">Recommended</span></span></label>
+    <label class="opt"><input type="radio" name="d2" value="no"><span>Direct partnerships only, no council</span></label>
+  </div>
+</section>
+
+<!-- ============ VERIFY ============ -->
+<section class="tab" id="tab-verify">
+  <h2>To verify before this goes to anyone outside</h2>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Item</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Self Improvement Philosophy Life website</td><td>Shows a generic contact email and apparent template content. Confirm who owns the site, the exact legal entity (our files say Self-Improvement Philosophy (S.I.P.) LLC), and the real services. Mentoring, not therapy, inside Ras Tafari programs.</td></tr>
+        <tr><td>Youth contact and background checks</td><td>Anyone from a collaborator working with youth in the Rainbow DJ Lab follows Chicago Park District background-check rules before contact.</td></tr>
+        <tr><td>Prestige Sound International</td><td>Public pages give too little to verify activities or leadership. Treat as proposed. Q-Ality is the confirmed sound provider for the DJ Lab.</td></tr>
+        <tr><td>NP2 licensing claims</td><td>The website says licensed, bonded, woman- and minority-owned. Confirm licenses and certifications from the documents, not the website.</td></tr>
+        <tr><td>2nd Chance Housing name in Illinois</td><td>Its Illinois authorization is under the assumed name <strong>2ND CH INC.</strong> It agreed not to use "2nd Chance Housing Inc." to do business in Illinois. Use the right name on every Illinois document.</td></tr>
+        <tr><td>Officer titles</td><td>Team page titles differ from the corporate records. Records control.</td></tr>
+        <tr><td>Related-party approvals</td><td>Record each disclosure and the directors who approved without a stake, before any payment.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+(function () {
+  var ORGS = {
+    rti: { name: 'Ras Tafari Inc.', color: '#E5A93C', status: 'ver', statusText: 'Central 501(c)(3)', role: 'Central nonprofit: governance, charitable mission, community programs, education and cultural initiatives.',
+      does: ['Charitable and educational programming', 'SelassieFest and cultural events', 'Youth development and the Rainbow DJ Lab', 'Community partnerships and outreach', 'Program administration and fundraising'],
+      arrangement: 'Governs through one central board. Collaborators are not departments or subsidiaries.', rel: '' },
+    sip: { name: 'Self Improvement Philosophy Life', color: '#7fb7e6', status: 'prop', statusText: 'Proposed collaborator', role: 'Youth and community engagement.',
+      does: ['Engages youth in the Rainbow DJ Lab', 'Helps identify and source returning citizens', 'Connects people to appropriate opportunities and programs', 'Supports personal development and self-improvement'],
+      arrangement: 'Related-party educational collaborator. Educational collaboration or documented service agreement; approval by directors with no stake.',
+      rel: 'Paul Kelly (Ras Tafari VP and Treasurer) is the founder of S.I.P. LLC per our files. Confirm.', flag: 'Website shows generic contact details and template content. Verify ownership and services.' },
+    np2: { name: 'NP2 Enterprise', color: '#e59a4f', status: 'prop', statusText: 'Proposed vendor / contractor', role: 'Property development and general contracting.',
+      does: ['Property acquisition support', 'Renovations and rehabilitation', 'General contracting and construction', 'Facility and event-site improvements'],
+      arrangement: 'Commercial LLC. Independent contractor agreement for approved work. Does not manage property.',
+      rel: 'Website names Nadia Peck as CEO and founder.', flag: 'Licensing and certification claims come from the website. Verify from documents.' },
+    c2: { name: '2nd Chance Housing Inc.', color: '#6fd09a', status: 'prop', statusText: 'Proposed nonprofit partner', role: 'Property management and housing operations.',
+      does: ['Manages housing properties', 'Serves returning citizens and other housing populations', 'Housing operations and tenant coordination', 'Housing stability and independence'],
+      arrangement: 'Nonprofit-to-nonprofit program partnership or referral agreement.',
+      rel: 'Named in the Affiliates section of the public team page. That shows an affiliation, not the terms of a partnership.', flag: 'In Illinois it operates under the assumed name 2ND CH INC.' },
+    ps: { name: 'Prestige Sound International', color: '#d58be0', status: 'prop', statusText: 'In formation', role: 'Sound, staging, lighting, DJs and event production.',
+      does: ['Sound systems, staging and lighting', 'DJs and live entertainment', 'Music and event production', 'Technical resource for the Rainbow DJ Lab'],
+      arrangement: 'Commercial, in formation. Independent production or vendor agreement, or collaborative program agreement.',
+      rel: '', flag: 'Public pages are too thin to verify activities or leadership. Proposed functions only.' }
+  };
+  var ORDER = ['sip', 'np2', 'c2', 'ps'];
+  var MATRIX = [
+    ['Rainbow DJ Lab', 'sip', 'Youth engagement and participation'],
+    ['Returning-citizen outreach', 'sip', 'Identifying and sourcing prospective participants'],
+    ['Housing property acquisition', 'np2', 'Acquisition support'],
+    ['Housing renovations', 'np2', 'General contracting and renovation'],
+    ['Housing property operations', 'c2', 'Property management'],
+    ['SelassieFest and other events', 'ps', 'Sound, stage, lights and DJs'],
+    ['Full Spectrum / DJ Lab technical side', 'ps', 'DJ instruction support and technical expertise'],
+    ['Community property initiatives', 'np2', 'Acquisition support and renovations'],
+    ['Community education', 'sip', 'Specialized participation with other appropriate collaborators']
+  ];
+
+  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem('rtinet_' + k) || 'null'); localStorage.setItem('rtinet_' + k, JSON.stringify(v)); } catch (e) { return null; } }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // tabs
+  var tabs = document.querySelectorAll('nav.tabs button');
+  function showTab(id) {
+    tabs.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.tab === id ? 'true' : 'false'); });
+    document.querySelectorAll('section.tab').forEach(function (s) { s.classList.toggle('on', s.id === 'tab-' + id); });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  }
+  tabs.forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
+  var hash = (location.hash || '').slice(1);
+  if (hash && document.getElementById('tab-' + hash)) showTab(hash);
+
+  // detail panel
+  var detail = document.getElementById('detail');
+  function showOrg(key) {
+    var o = ORGS[key]; if (!o) return;
+    document.querySelectorAll('.node').forEach(function (n) { n.classList.toggle('sel', n.dataset.org === key); });
+    var h = '<h3 style="color:' + o.color + '">' + esc(o.name) + '</h3>';
+    h += '<p><span class="tag ' + (o.status === 'ver' ? 't-ver' : 't-prop') + '">' + esc(o.statusText) + '</span></p>';
+    h += '<p>' + esc(o.role) + '</p><ul>' + o.does.map(function (d) { return '<li>' + esc(d) + '</li>'; }).join('') + '</ul>';
+    h += '<p><strong>Arrangement:</strong> ' + esc(o.arrangement) + '</p>';
+    if (o.rel) h += '<p><strong>People:</strong> ' + esc(o.rel) + '</p>';
+    if (o.flag) h += '<p><span class="tag t-flag">Verify</span> ' + esc(o.flag) + '</p>';
+    detail.innerHTML = h;
+  }
+  document.querySelectorAll('.node').forEach(function (n) {
+    n.addEventListener('click', function () { showOrg(n.dataset.org); });
+    n.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showOrg(n.dataset.org); } });
+  });
+  detail.innerHTML = '<h3>Select an organization</h3><p class="muted">Click any box on the chart to see what it contributes, how it works with Ras Tafari Inc., and what still needs verifying.</p>' +
+    ORDER.map(function (k) { return '<p><button class="filters btn alt" style="border-radius:8px" data-org="' + k + '"><span class="dot" style="background:' + ORGS[k].color + '"></span>' + esc(ORGS[k].name) + '</button></p>'; }).join('');
+  detail.addEventListener('click', function (e) { var b = e.target.closest('button[data-org]'); if (b) showOrg(b.dataset.org); });
+
+  // matrix
+  var mf = document.getElementById('mfilters'), mb = document.getElementById('mbody'), cur = 'all';
+  function drawMatrix() {
+    mf.innerHTML = '<button data-f="all" class="' + (cur === 'all' ? 'on' : '') + '">All</button>' +
+      ORDER.map(function (k) { return '<button data-f="' + k + '" class="' + (cur === k ? 'on' : '') + '"><span class="dot" style="background:' + ORGS[k].color + '"></span>' + esc(ORGS[k].name) + '</button>'; }).join('');
+    mb.innerHTML = MATRIX.filter(function (r) { return cur === 'all' || r[1] === cur; }).map(function (r) {
+      var o = ORGS[r[1]];
+      return '<tr><td>' + esc(r[0]) + '</td><td><span class="dot" style="background:' + o.color + '"></span>' + esc(o.name) + '</td><td>' + esc(r[2]) + '</td><td><span class="tag t-prop">Proposed</span></td></tr>';
+    }).join('');
+  }
+  mf.addEventListener('click', function (e) { var b = e.target.closest('button[data-f]'); if (b) { cur = b.dataset.f; drawMatrix(); } });
+  drawMatrix();
+
+  // people
+  var pb = document.getElementById('pbody');
+  var saved = store('people') || {};
+  var defaults = { sip: { rep: 'Paul Kelly (confirm)', rel: 'Yes' } };
+  function row(k) {
+    var s = saved[k] || defaults[k] || {};
+    return '<tr data-k="' + k + '"><td><span class="dot" style="background:' + ORGS[k].color + '"></span>' + esc(ORGS[k].name) + '</td>' +
+      '<td><input type="text" data-f="lia" value="' + esc(s.lia) + '" placeholder="Ras Tafari member"><div class="warn"></div></td>' +
+      '<td><input type="text" data-f="rep" value="' + esc(s.rep) + '" placeholder="Their representative"></td>' +
+      '<td><select data-f="rel"><option>Unknown</option><option' + (s.rel === 'Yes' ? ' selected' : '') + '>Yes</option><option' + (s.rel === 'No' ? ' selected' : '') + '>No</option></select></td>' +
+      '<td><select data-f="conf"><option>Proposed</option><option' + (s.conf === 'Confirmed' ? ' selected' : '') + '>Confirmed</option></select></td></tr>';
+  }
+  pb.innerHTML = ORDER.map(row).join('');
+  function check(tr) {
+    var lia = tr.querySelector('[data-f=lia]').value.trim().toLowerCase(), rep = tr.querySelector('[data-f=rep]').value.trim().toLowerCase();
+    var w = tr.querySelector('.warn');
+    w.textContent = (lia && rep && (rep.indexOf(lia) > -1 || lia.indexOf(rep) > -1)) ? 'Same person on both sides: a director with no stake must approve any agreement.' : '';
+  }
+  function collect() {
+    var out = {};
+    pb.querySelectorAll('tr').forEach(function (tr) {
+      out[tr.dataset.k] = { lia: tr.querySelector('[data-f=lia]').value, rep: tr.querySelector('[data-f=rep]').value, rel: tr.querySelector('[data-f=rel]').value, conf: tr.querySelector('[data-f=conf]').value };
+    });
+    return out;
+  }
+  pb.addEventListener('input', function (e) { var tr = e.target.closest('tr'); check(tr); store('people', collect()); });
+  pb.addEventListener('change', function () { store('people', collect()); });
+  pb.querySelectorAll('tr').forEach(check);
+  document.getElementById('copySum').addEventListener('click', function () {
+    var d = collect(), lines = ['Ras Tafari Inc. collaborative network: liaisons (draft)'];
+    ORDER.forEach(function (k) { var s = d[k]; lines.push('- ' + ORGS[k].name + ': Ras Tafari liaison = ' + (s.lia || 'TBD') + '; their rep = ' + (s.rep || 'TBD') + '; related party = ' + s.rel + '; ' + s.conf); });
+    var t = lines.join('\n'), done = function () { document.getElementById('copied').textContent = 'Copied.'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function () { document.getElementById('copied').textContent = 'Copy blocked; select and copy manually.'; });
+    else document.getElementById('copied').textContent = 'Copy not available in this browser.';
+  });
+  document.getElementById('clearP').addEventListener('click', function () { store('people', {}); saved = {}; pb.innerHTML = ORDER.map(row).join(''); pb.querySelectorAll('tr').forEach(check); });
+
+  // decisions
+  ['d1', 'd2'].forEach(function (n) {
+    var v = store(n);
+    document.querySelectorAll('input[name=' + n + ']').forEach(function (r) {
+      if (r.value === v) r.checked = true;
+      r.addEventListener('change', function () { store(n, r.value); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
