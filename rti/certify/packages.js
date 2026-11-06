@@ -268,9 +268,16 @@
     return out;
   };
   /* Fills blanks only. Never overwrites anything already entered. Returns what it did, with the reason for each. */
-  E.applySOS = function (P, s) {
+  E.applySOS = function (P, s, src) {
     var filled = [], kept = [], b = P.biz = P.biz || {};
-    function put(k, v, why) { if (!v) return; if (has(b[k])) { if (String(b[k]) !== String(v)) kept.push({ k: k, have: b[k], found: v }); return; } b[k] = v; filled.push({ k: k, v: v, why: why }); }
+    P.prov = P.prov || {};
+    var YELLOW = { county: 1 };
+    function put(k, v, why) {
+      if (!v) return;
+      if (has(b[k])) { if (String(b[k]) !== String(v)) { kept.push({ k: k, have: b[k], found: v }); if (P.prov['biz.' + k]) P.prov['biz.' + k].st = 'yellow'; } return; }
+      b[k] = v; filled.push({ k: k, v: v, why: why });
+      P.prov['biz.' + k] = { src: src || 'ilsos.gov', st: YELLOW[k] || (k === 'entityType' && /\(S or C/.test(why)) ? 'yellow' : 'green', why: why };
+    }
     put('legalName', s.name, 'Entity name on the Secretary of State record');
     put('entityType', /LLC/i.test(s.entityType) ? 'LLC' : /CORP/i.test(s.entityType) ? 'C-Corporation' : '', 'Entity type: ' + s.entityType + (/CORP/i.test(s.entityType) ? ' (S or C is a tax choice; confirm)' : ''));
     put('stateInc', s.jurisdiction === 'IL' ? 'Illinois' : s.jurisdiction, 'Jurisdiction');
@@ -283,9 +290,77 @@
     P.sos = { fileNumber: s.fileNumber, status: s.status, statusDate: s.statusDate, entityType: s.entityType, llcType: s.llcType, annualReportDate: s.annualReportDate, annualReportYear: s.annualReportYear, agent: s.agent || null, managers: s.managers || [], readOn: new Date().toISOString().slice(0, 10) };
     var O = P.owners = P.owners && P.owners.length ? P.owners : [{}];
     if ((s.managers || []).length && !O.some(function (o) { return has(o.name); })) {
-      s.managers.forEach(function (n, i) { var o = O[i] || (O[i] = {}); o.name = n; o.title = 'Manager (from the Secretary of State; confirm who owns the company)'; filled.push({ k: 'owner ' + (i + 1) + ' name', v: n, why: 'Manager listed on the Secretary of State record. Ownership percentages are NOT public, so they stay blank.' }); });
+      s.managers.forEach(function (n, i) { var o = O[i] || (O[i] = {}); o.name = n; o.title = 'Manager (from the Secretary of State; confirm who owns the company)'; P.prov['owners.' + i + '.name'] = { src: src || 'ilsos.gov', st: 'yellow', why: 'Listed as a manager. Confirm this person owns the company.' }; P.prov['owners.' + i + '.title'] = { src: src || 'ilsos.gov', st: 'yellow', why: 'Manager title from the record; confirm.' }; filled.push({ k: 'owner ' + (i + 1) + ' name', v: n, why: 'Manager listed on the Secretary of State record. Ownership percentages are NOT public, so they stay blank.' }); });
     }
     return { filled: filled, kept: kept };
+  };
+  /* ---------- Claude-read documents (JSON from the reader) -> profile, fill blanks only ---------- */
+  function money0(v) { var n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isNaN(n) ? '' : String(Math.round(n)); }
+  E.applyExtract = function (P, d) {
+    var res = { filled: [], kept: [], docs: (d && d.documents) || [], notes: [] };
+    if (!d) return res;
+    var sos = d.sos || {};
+    if (sos.entityName || sos.fileNumber || (sos.filings && sos.filings.length)) {
+      var pa = sos.principalAddress || {}, ag = sos.agent || {};
+      var parsed = {
+        ok: true, name: sos.entityName || '', fileNumber: sos.fileNumber || '', entityType: sos.entityType || '', llcType: sos.llcType || '',
+        jurisdiction: sos.jurisdiction || '', orgDate: sos.orgDate || '', status: sos.status || '', statusDate: sos.statusDate || '', duration: sos.duration || '',
+        annualReportDate: sos.annualReportDate || '', annualReportYear: sos.annualReportYear || '',
+        address: pa.street ? { street: title(pa.street), city: title(pa.city), state: pa.state || '', zip: String(pa.zip || '').slice(0, 5) } : null,
+        agent: ag.name ? { name: title(ag.name), address: [title(ag.street), title(ag.city), ag.state, ag.zip].filter(Boolean).join(', '), changed: ag.changedDate || '' } : null,
+        managers: (sos.managers || []).map(function (m) { return personName(m.name); }).filter(Boolean),
+        filings: (sos.filings || []).filter(function (f) { return f.form && f.date; }).map(function (f) { return { code: f.form, date: f.date, what: SOS_FORMS[f.form] || 'Other filing' }; }).sort(function (a, b) { return a.date < b.date ? -1 : 1; })
+      };
+      var r = E.applySOS(P, parsed, 'ilsos.gov (read by Claude)');
+      res.filled = res.filled.concat(r.filled); res.kept = res.kept.concat(r.kept);
+    }
+    var irs = d.irs || {};
+    P.prov = P.prov || {}; var b = P.biz = P.biz || {}, f = P.fin = P.fin || {};
+    function put(scope, k, v, why, st, src) {
+      if (!has(v)) return; var o = scope === 'biz' ? b : f, key = scope + '.' + k;
+      if (has(o[k])) { if (String(o[k]).replace(/\D/g, '') !== String(v).replace(/\D/g, '') && String(o[k]) !== String(v)) { res.kept.push({ k: key, have: o[k], found: v }); if (P.prov[key]) P.prov[key].st = 'yellow'; } return; }
+      o[k] = v; res.filled.push({ k: key, v: v, why: why }); P.prov[key] = { src: src, st: st || 'green', why: why };
+    }
+    var isrc = 'IRS document (read by Claude)';
+    if (/^\d{2}-?\d{7}$/.test(String(irs.ein || ''))) put('biz', 'ein', String(irs.ein).replace(/^(\d{2})-?(\d{7})$/, '$1-$2'), 'EIN printed on the IRS document', 'green', isrc);
+    if (irs.legalName && has(b.legalName) && irs.legalName.replace(/[^A-Za-z0-9]/g, '').toUpperCase() !== b.legalName.replace(/[^A-Za-z0-9]/g, '').toUpperCase()) res.notes.push('The name on the IRS document ("' + irs.legalName + '") differs from the name on file ("' + b.legalName + '"). Certifiers need these to match; ask the owner which is right.');
+    var periods = (irs.taxPeriods || []).filter(function (p) { return /^\d{4}$/.test(String(p.year || '')); }).sort(function (a, c) { return +c.year - +a.year; });
+    if (periods.length) {
+      var yrs = periods.map(function (p) { return String(p.year); });
+      var have = (f.taxYears || '').split(/[,;\s]+/).filter(function (x) { return /^\d{4}$/.test(x); });
+      var all = have.concat(yrs.filter(function (y) { return have.indexOf(y) < 0; })).sort();
+      if (all.join(', ') !== have.join(', ')) { f.taxYears = all.join(', '); res.filled.push({ k: 'fin.taxYears', v: f.taxYears, why: 'Tax years shown on the IRS transcript' }); P.prov['fin.taxYears'] = { src: isrc, st: 'green', why: 'Tax years on the IRS document' }; }
+      var form = String((periods[0].form || '')).toUpperCase().replace(/\s/g, '');
+      var map = { '1065': '1065', '1120S': '1120-S', '1120-S': '1120-S', '1120': '1120', '1040': '1040 (Schedule C)' };
+      if (map[form]) put('fin', 'taxForm', map[form], 'Return type on the IRS transcript' + (form === '1040' ? ' (a 1040 may include Schedule C; confirm)' : ''), form === '1040' ? 'yellow' : 'green', isrc);
+      var latest3 = periods.slice(0, 3);
+      latest3.forEach(function (p, i) { if (has(p.grossReceipts)) put('biz', 'receipts' + (i + 1), money0(p.grossReceipts), 'Gross receipts for ' + p.year + ' on the IRS transcript', 'green', isrc); });
+    }
+    if (irs.address && irs.address.street && !has(b.address)) { put('biz', 'address', title(irs.address.street), 'Address printed on the IRS document', 'yellow', isrc); put('biz', 'city', title(irs.address.city), 'Address printed on the IRS document', 'yellow', isrc); put('biz', 'state', irs.address.state, 'Address printed on the IRS document', 'yellow', isrc); put('biz', 'zip', String(irs.address.zip || '').slice(0, 5), 'Address printed on the IRS document', 'yellow', isrc); }
+    return res;
+  };
+
+  /* ---------- color code: where is each field, and who owes it? ----------
+     green  = filled from a document     yellow = filled from a document, a person should confirm
+     blue   = typed in by hand           orange = a document upload (ilsos.gov / IRS) can fill this
+     red    = only the client can supply it (required)     gray = optional and empty */
+  var PUB = { 'biz.legalName': 'ilsos.gov', 'biz.entityType': 'ilsos.gov', 'biz.stateInc': 'ilsos.gov', 'biz.incDate': 'ilsos.gov', 'biz.address': 'ilsos.gov', 'biz.city': 'ilsos.gov', 'biz.state': 'ilsos.gov', 'biz.zip': 'ilsos.gov', 'biz.county': 'ilsos.gov', 'biz.reinstated': 'ilsos.gov',
+    'biz.ein': 'an IRS letter (CP 575 or 147C)', 'fin.taxForm': 'an IRS return transcript', 'fin.taxYears': 'an IRS return transcript', 'biz.receipts1': 'an IRS return transcript', 'biz.receipts2': 'an IRS return transcript', 'biz.receipts3': 'an IRS return transcript' };
+  E.COLORS = { green: { label: 'From a document', css: '#1f8f4e' }, yellow: { label: 'Confirm', css: '#d9a400' }, blue: { label: 'Typed by hand', css: '#2f6fdb' }, orange: { label: 'A document can fill it', css: '#e8741c' }, red: { label: 'Client must supply', css: '#c62f2f' }, gray: { label: 'Optional', css: '#9aa0ae' } };
+  E.fieldStatus = function (P, key, field, value) {
+    var pv = P.prov && P.prov[key];
+    if (has(value)) return pv ? { st: pv.st, why: (pv.st === 'yellow' ? 'Confirm: ' : 'Filled from ') + pv.src + (pv.why ? '. ' + pv.why : '') } : { st: 'blue', why: 'Typed in by hand' };
+    if (PUB[key]) return { st: 'orange', why: 'Not filled yet. Upload ' + PUB[key] + ' and it fills itself.' };
+    if (field && field.req) return { st: 'red', why: 'Only the client can answer this' };
+    return { st: 'gray', why: 'Optional' };
+  };
+  E.statusCounts = function (P) {
+    var out = { green: 0, yellow: 0, blue: 0, orange: 0, red: 0, gray: 0 };
+    E.SECTIONS.forEach(function (s) {
+      if (s.scope === 'array') { (P[s.arr] || []).forEach(function (row, i) { if (s.onlyIf && !E[s.onlyIf](row)) return; s.fields.forEach(function (fl) { out[E.fieldStatus(P, s.arr + '.' + i + '.' + fl.k, fl, row[fl.k]).st]++; }); }); }
+      else { var d = P[s.scope] || {}; s.fields.forEach(function (fl) { out[E.fieldStatus(P, s.scope + '.' + fl.k, fl, d[fl.k]).st]++; }); }
+    });
+    return out;
   };
   E.sosAnalysis = function (raw, today) {
     var rows = E.parseSOS(raw), out = { rows: rows, notes: [] };

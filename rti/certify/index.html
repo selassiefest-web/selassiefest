@@ -31,6 +31,9 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 .warnbox{border-left:4px solid var(--warn);padding:6px 10px;margin:10px 0;background:var(--card)}
 .sample{border-left:4px solid var(--accent);padding:6px 10px;margin:10px 0;background:var(--card)}
 .hidden{display:none}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem;margin:8px 0 12px}.legend span{display:inline-flex;align-items:center}
+.fld{border-left:4px solid transparent;padding-left:8px;border-radius:2px}
 @media print{nav.tabs,.row,.btn,.noprint{display:none!important}body{background:#fff;color:#000}}
 </style></head><body><main>
 <h1>Certification Hub</h1>
@@ -79,7 +82,7 @@ function save(){
 function srvBar(){
   return '<b>Private workspace'+(CLIENT&&CLIENT.name?': '+esc(CLIENT.name):'')+(MODE==='admin'?' (staff view)':'')+'.</b> Everything you enter is saved automatically to an encrypted private file. <span id="srvStatus" class="'+(statusBad?'stop':'ok')+'">'+esc(statusText)+'</span>'+(conflict?' <button class="btn sm" onclick="location.reload()">Reload latest</button>':'');
 }
-var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['public','Public records'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['public','Public records'],['color','Color map'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
 function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
@@ -101,6 +104,27 @@ function bm(){
 }
 function htmlToText(h){return h.replace(/<(script|style)[\s\S]*?<\/\1>/gi,'').replace(/<\/(tr|p|div|li|h[1-6]|table)>|<br\s*\/?>/gi,'\n').replace(/<\/t[dh]>/gi,'\t').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/\n[ \t]*\n+/g,'\n');}
 async function pdfToText(buf){await ensureLibs();var d=await pdfjsLib.getDocument({data:buf}).promise,out='';for(var n=1;n<=d.numPages;n++){var c=await (await d.getPage(n)).getTextContent();c.items.forEach(function(it){out+=it.str+(it.hasEOL?'\n':' ');});out+='\n';}return out;}
+function shrink(file){
+  return new Promise(function(res,rej){
+    if(file.type==='application/pdf'){var fr=new FileReader();fr.onload=function(){res({media_type:'application/pdf',data:String(fr.result).split(',')[1]});};fr.onerror=rej;fr.readAsDataURL(file);return;}
+    var img=new Image(),u=URL.createObjectURL(file);
+    img.onload=function(){var m=1600,sc=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);res({media_type:'image/jpeg',data:c.toDataURL('image/jpeg',0.85).split(',')[1]});};
+    img.onerror=function(){rej(new Error('Could not open '+file.name));};img.src=u;
+  });
+}
+async function runClaude(){
+  var inp=document.getElementById('clfiles'),msg=document.getElementById('clmsg');if(!inp||!inp.files.length){if(msg)msg.textContent='Choose one or more files first.';return;}
+  if(inp.files.length>6){msg.textContent='Choose 6 files or fewer at a time.';return;}
+  msg.textContent='Preparing files...';
+  try{
+    var files=[];for(var i=0;i<inp.files.length;i++)files.push(await shrink(inp.files[i]));
+    msg.textContent='Claude is reading '+files.length+' file(s)... this takes about 20 to 40 seconds.';
+    var body=MODE==='client'?{action:'extract',key:KEYP,files:files}:{action:'admin_extract',secret:ADM,id:AID,files:files};
+    var j=await api(body);
+    if(!j.ok){msg.textContent='';lastImp={err:(j.error||'Could not read the files.')+' You can still use the copy-and-paste option below.'};render();return;}
+    var r=E.applyExtract(P,j.data);P.isSample=false;save();lastImp={ok:true,name:(j.data.sos&&j.data.sos.entityName)||'the uploaded documents',r:r,docs:r.docs,notes:r.notes};render();
+  }catch(e){msg.textContent='';lastImp={err:e.message||'Could not read the files.'};render();}
+}
 function importSOS(text){
   var s=E.parseSOSPage(text);
   if(!s.ok){lastImp={err:'That does not look like an ilsos.gov business entity page. The Hub looks for the words "Entity Name" and the entity details. Copy the whole page (Ctrl+A, Ctrl+C) and try again.'};render();return;}
@@ -110,7 +134,8 @@ function drawPublic(){
   var h='<h2>Public records: read the Illinois Secretary of State page</h2><p class="sub">Open the company on ilsos.gov, give the page to the Hub, and it fills every blank that public records can answer. What is left is only what the owner has to tell us. (The State blocks programs from reading its site, so the page has to come from your browser. Its database is for individual searches only: look up one company at a time, by a person, and never bulk-copy.)</p>';
   var code='javascript:'+encodeURIComponent('('+bm.toString()+')()');
   h+='<div class="card"><h3>1. Open the company</h3><div class="row noprint"><a class="btn sm" href="https://apps.ilsos.gov/businessentitysearch/" target="_blank" rel="noopener">Open ilsos.gov business search</a>'+(P.biz&&P.biz.legalName?'<span class="note">Search: '+esc(P.biz.legalName)+'</span>':'')+'</div></div>';
-  h+='<div class="card"><h3>2. Give the page to the Hub (pick one)</h3>'+
+  h+='<div class="card"><h3>Upload IRS and ilsos.gov images or PDFs: Claude reads them and fills the blanks</h3><p class="note">Add screenshots or PDFs of the ilsos.gov company page and file history, and any IRS letter (CP 575 or 147C) or tax transcript. The files are read by Claude on our server and are <b>not stored</b>. Social Security numbers are never kept. Fields fill only where blank, then turn green (or yellow if a person should confirm).</p>'+(MODE==='local'?'<p class="note"><b>Open this from a client\'s workspace or the staff page to use this.</b></p>':'<input type="file" id="clfiles" multiple accept="image/*,.pdf" style="width:auto"> <button class="btn" data-claude="1">Read with Claude</button> <span id="clmsg" class="note"></span>')+'</div>';
+  h+='<div class="card"><h3>2. Or give the ilsos.gov page to the Hub by hand (pick one)</h3>'+
    '<p class="note"><b>A. One click (best).</b> Drag this to your bookmarks bar once: <a class="btn alt sm" href="'+code+'" onclick="return false" title="Drag me to your bookmarks bar">Copy ilsos page</a>. On the company page, click that bookmark. It opens each tab (Managers, File History and the rest), copies everything, and tells you. Then paste below.</p>'+
    '<p class="note"><b>B. Paste.</b> On the company page press Ctrl+A, then Ctrl+C, and paste below. This copies only the tab you can see, so repeat for Managers and File History and paste them all in.</p>'+
    '<p class="note"><b>C. Upload.</b> Save the page as PDF or HTML and choose the file: <input type="file" id="sosfile" accept=".pdf,.html,.htm,.txt" style="width:auto;display:inline-block"></p>'+
@@ -118,7 +143,7 @@ function drawPublic(){
   if(lastImp){
     if(lastImp.err)h+='<div class="warnbox"><b>Could not read it.</b> '+esc(lastImp.err)+'</div>';
     else{var r=lastImp.r;
-      h+='<div class="card"><h3>Filled in '+r.filled.length+' blanks from the record for '+esc(lastImp.name)+'</h3><table><tr><th>Field</th><th>Value</th><th>Why</th></tr>'+r.filled.map(function(x){return '<tr><td>'+esc(x.k)+'</td><td>'+esc(x.v)+'</td><td class="note">'+esc(x.why)+'</td></tr>';}).join('')+'</table>'+
+      h+=(lastImp.docs&&lastImp.docs.length?'<div class="card"><b>Claude recognized:</b> '+lastImp.docs.map(function(d){return esc((d.kind||'document').replace(/_/g,' '))+(d.confidence&&d.confidence!=='high'?' ('+esc(d.confidence)+' confidence)':'');}).join(', ')+'</div>':'')+(lastImp.notes&&lastImp.notes.length?'<div class="warnbox">'+lastImp.notes.map(esc).join('<br>')+'</div>':'')+'<div class="card"><h3>Filled in '+r.filled.length+' blanks from the record for '+esc(lastImp.name)+'</h3><table><tr><th>Field</th><th>Value</th><th>Why</th></tr>'+r.filled.map(function(x){return '<tr><td>'+esc(x.k)+'</td><td>'+esc(x.v)+'</td><td class="note">'+esc(x.why)+'</td></tr>';}).join('')+'</table>'+
         (r.kept.length?'<p class="note"><b>Left alone (already entered, and different from the record):</b> '+r.kept.map(function(k){return esc(k.k)+': you have "'+esc(k.have)+'", the record says "'+esc(k.found)+'"';}).join('; ')+'</p>':'')+'</div>';}
   }
   if(P.sos){var q=P.sos;
@@ -131,6 +156,19 @@ function drawPublic(){
   }
   var ms=E.missing(P);
   h+='<h3>Still needed from the owner ('+ms.length+')</h3><div class="card">'+(ms.length?'<p class="note">Public records cannot answer these. Each one is something only the owner or their records can supply.</p>'+ms.map(function(m){return '<div class="lv"><b>'+esc(m.sec)+':</b> '+esc(m.label)+'</div>';}).join(''):'<span class="ok">Nothing left. The file is complete.</span>')+'</div>';
+  return h;
+}
+function drawColor(){
+  var h='<h2>Color map: who still owes what</h2><p class="sub">Every question in the intake, grouped by what it needs next. Red is the part only the client can answer.</p>'+colorBar();
+  var groups={red:[],orange:[],yellow:[]};
+  E.SECTIONS.forEach(function(s){
+    function add(label,key,fl,val){var r=E.fieldStatus(P,key,fl,val);if(groups[r.st])groups[r.st].push({sec:label,label:fl.label,why:r.why});}
+    if(s.scope==='array'){(P[s.arr]||[]).forEach(function(row,i){if(s.onlyIf&&!E[s.onlyIf](row))return;s.fields.forEach(function(fl){add(s.title+' #'+(i+1)+(row.name?' ('+row.name+')':''),s.arr+'.'+i+'.'+fl.k,fl,row[fl.k]);});});}
+    else{var d=P[s.scope]||{};s.fields.forEach(function(fl){add(s.title,s.scope+'.'+fl.k,fl,d[fl.k]);});}
+  });
+  [['red','Client must supply ('+groups.red.length+')','Only the owner or their records can answer these.'],['orange','A document upload fills these ('+groups.orange.length+')','Upload the ilsos.gov page and an IRS letter or transcript on the Public records tab.'],['yellow','Confirm these ('+groups.yellow.length+')','Filled from a document, but a person must check them.']].forEach(function(g){
+    var L=groups[g[0]];h+='<h3>'+cdot(g[0])+g[1]+'</h3><p class="note">'+g[2]+'</p><div class="card">'+(L.length?L.map(function(x){return '<div class="lv"><b>'+esc(x.sec)+':</b> '+esc(x.label)+(g[0]==='yellow'?'<div class="note">'+esc(x.why)+'</div>':'')+'</div>';}).join(''):'<span class="ok">Nothing here.</span>')+'</div>';
+  });
   return h;
 }
 function drawPlan(){
@@ -149,16 +187,23 @@ function drawTabs(){var m=E.missing(P).length;document.getElementById('tabs').in
 function drawSample(){if(MODE!=='local'){document.getElementById('sampleBar').innerHTML=srvBar();return;}document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
 
 function field(f,d,path){
-  var v=d[f.k]==null?'':d[f.k],id=path+'|'+f.k,cls=(f.type==='textarea'?' full':''),h='<div class="'+cls.trim()+'"><label>'+esc(f.label)+(f.req?' <span class="pill">needed</span>':'')+'</label>';
+  var v=d[f.k]==null?'':d[f.k],id=path+'|'+f.k,cls=(f.type==='textarea'?' full':''),fs0=E.fieldStatus(P,path+'.'+f.k,f,v),h='<div class="fld '+cls.trim()+'" style="border-left-color:'+E.COLORS[fs0.st].css+'"><label>'+cdot(fs0.st)+esc(f.label)+(f.req?' <span class="pill">needed</span>':'')+'</label>';
   if(f.type==='select')h+='<select data-f="'+id+'"><option value=""></option>'+f.opts.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';
   else if(f.type==='textarea')h+='<textarea data-f="'+id+'"'+(f.tall?' style="min-height:320px"':'')+'>'+esc(v)+'</textarea>'+(f.k==='sd_statement'?'<div class="note" data-wc="'+id+'">'+E.wordCount(v)+' words (City requires 500 to 1,000)</div>':'');
   else h+='<input data-f="'+id+'" type="'+(f.type==='date'?'date':f.type==='number'?'number':'text')+'" value="'+esc(v)+'">';
+  if(fs0.st==='yellow'||fs0.st==='orange'||fs0.st==='green')h+='<div class="note">'+esc(fs0.why)+'</div>';
   if(f.help)h+='<div class="note">'+esc(f.help)+'</div>';
   if(f.where&&!String(v).trim())h+='<div class="note">Don\'t have it? <a href="'+esc(f.where.u)+'" target="_blank" rel="noopener">'+esc(f.where.t)+'</a>: '+esc(f.where.how)+'</div>';
   return h+'</div>';
 }
+function cdot(st){var c=E.COLORS[st];return '<span class="dot" style="background:'+c.css+'" title="'+esc(c.label)+'"></span>';}
+function colorBar(){
+  var c=E.statusCounts(P),h='<div class="legend noprint">';
+  ['green','yellow','blue','orange','red'].forEach(function(k){h+='<span>'+cdot(k)+'<b>'+c[k]+'</b>&nbsp;'+esc(E.COLORS[k].label)+'</span>';});
+  return h+'</div>';
+}
 function drawSection(id){
-  var s=sec(id),h='<h2>'+esc(s.title)+'</h2><p class="sub">'+esc(s.blurb||'')+'</p>';
+  var s=sec(id),h='<h2>'+esc(s.title)+'</h2><p class="sub">'+esc(s.blurb||'')+'</p>'+colorBar();
   if(s.scope==='array'){
     var arr=P[s.arr]=P[s.arr]||[];if(!arr.length)arr.push({});
     if(s.onlyIf&&!arr.some(function(r){return E[s.onlyIf](r)}))h+='<div class="sample">None of your owners need this. The City presumes women, African-Americans, Hispanics, Asian-Americans and American Indians to be socially disadvantaged, so they do not submit Attachment 4.</div>';
@@ -281,7 +326,7 @@ function render(){
   if(!P.pkg)P.pkg='chicago';
   drawTabs();drawSample();var v=document.getElementById('view'),h='';
   if(['biz','owners','pnw','sd','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
-  else h={public:drawPublic,plan:drawPlan,check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
+  else h={color:drawColor,public:drawPublic,plan:drawPlan,check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
   v.innerHTML=h;
 }
 function setPath(path,key,value){
@@ -289,7 +334,7 @@ function setPath(path,key,value){
   var m=path.match(/^(\w+)\.(\d+)$/);
   if(m){P[m[1]][+m[2]][key]=value;}else{P[path][key]=value;}
 }
-document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var wc=document.querySelector('[data-wc="'+f+'"]');if(wc){var n=E.wordCount(t.value);wc.textContent=n+' words (City requires 500 to 1,000)'+(n<500||n>1000?' - not yet in range':' - OK');}var p=f.split('|');setPath(p[0],p[1],t.value);P.isSample=false;save();});
+document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var wc=document.querySelector('[data-wc="'+f+'"]');if(wc){var n=E.wordCount(t.value);wc.textContent=n+' words (City requires 500 to 1,000)'+(n<500||n>1000?' - not yet in range':' - OK');}var p=f.split('|');setPath(p[0],p[1],t.value);if(P.prov&&p[0]!=='root'){delete P.prov[p[0]+'.'+p[1]];}P.isSample=false;save();});
 document.addEventListener('change',function(e){var t=e.target;
   if(t.id==='sosfile'&&t.files[0]){var fl=t.files[0],ta=document.getElementById('sospage');
     var done=function(txt){if(ta)ta.value=txt;importSOS(txt);};
@@ -305,6 +350,7 @@ document.addEventListener('click',function(e){
   else if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
   else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
   else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
+  else if(t.getAttribute('data-claude')){runClaude();}
   else if(t.getAttribute('data-sosimport')){var ta=document.getElementById('sospage');importSOS(ta?ta.value:'');}
   else if(t.getAttribute('data-form')){runForm(t.getAttribute('data-form'));}
   else if(t.getAttribute('data-copy')){var el=document.getElementById(t.getAttribute('data-copy'));var txt=el.textContent;try{navigator.clipboard.writeText(txt);}catch(x){}t.textContent='Copied';setTimeout(function(){t.textContent='Copy';},1200);}
