@@ -40,6 +40,7 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 <div id="view"></div>
 </main>
 <script src="engine.js"></script>
+<script src="packages.js"></script>
 <script src="forms.js"></script>
 <script>
 (function(){
@@ -48,13 +49,29 @@ function blank(){return {startDate:'',biz:{},owners:[{}],fin:{},contracts:[{}],d
 var P;
 try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}
 if(!P)P=blank();
+if(!P.pkg)P.pkg='chicago';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
-var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
 function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
 function copyBtn(id){return '<button class="btn alt sm" data-copy="'+id+'">Copy</button>';}
 
+function pkgBar(){
+  return '<div class="row noprint" style="margin:0 0 6px">'+E.PACKAGES.map(function(p){return '<button class="btn sm '+(P.pkg===p.id?'':'alt')+'" data-pkg="'+p.id+'">'+esc(p.title)+'</button>';}).join('')+'</div><p class="note noprint">Showing: <b>'+esc(E.PACKAGES.filter(function(p){return p.id===P.pkg})[0].title)+'</b>. Your intake answers are shared by all three programs.</p>';
+}
+function drawPlan(){
+  var h='<h2>Your fastest path to all three certifications</h2><p class="sub">Based on the certification you already hold (Business tab). Official processing facts are quoted only where the program published them.</p>';
+  var pl=E.plan(P),h2='';
+  pl.forEach(function(p){h+='<div class="card"><b>'+(p.n?'Step '+p.n+': ':'Alternative: ')+esc(p.t)+'</b><div class="note">'+esc(p.why)+'</div></div>';});
+  h+='<h2>Program facts</h2><table><tr><th></th><th>City of Chicago M/WBE</th><th>Cook County MWBE</th><th>Illinois BEP</th></tr>'+
+   '<tr><th>Fee</th><td>$250, non-refundable</td><td>$250 (ACH accepted)</td><td>Free</td></tr>'+
+   '<tr><th>Valid</th><td>5 years</td><td>Not stated on the pages I read</td><td>Full BEP 7 years (annual No Change Affidavit). BE BEP and FastTrack follow the host or partner.</td></tr>'+
+   '<tr><th>Review time</th><td>About 90 days (unofficial; DPS has not published it)</td><td>Not published</td><td>Full BEP about 60 days; BE BEP and FastTrack about 7 business days (CEI)</td></tr>'+
+   '<tr><th>Net worth limit</th><td>$2,955,193.19 (2026, construction)</td><td>$2,955,193.19</td><td>Not stated on the pages I read</td></tr>'+
+   '<tr><th>Recognizes</th><td>Cook County; WBDC / CMBDC expedited</td><td>City of Chicago</td><td>BE BEP: City, Cook. FastTrack: WBDC, Chicago MSDC, Mid-States MSDC</td></tr></table>';
+  return h+'<p class="note">Nothing here is filed for you. Pick a program above, then use its Checklist, Timeline, Who to contact and Official forms tabs.</p>';
+}
 function drawTabs(){var m=E.missing(P).length;document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'">'+t[1]+(t[0]==='check'&&m?' ('+m+' gaps)':'')+'</button>';}).join('');}
 function drawSample(){document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
 
@@ -82,8 +99,8 @@ function drawSection(id){
   return h;
 }
 function drawCheck(){
-  var el=E.eligibility(P),ms=E.missing(P),L=E.checklist(P),h='<h2>Eligibility screen</h2><div class="card">';
-  h+=el.items.map(function(i){return '<div class="lv '+(i.lvl==='ok'?'ok':i.lvl==='stop'?'stop':i.lvl==='warn'?'warn':'')+'">'+(i.lvl==='ok'?'OK: ':i.lvl==='stop'?'STOP: ':i.lvl==='warn'?'Check: ':'Note: ')+esc(i.t)+'</div>';}).join('')+'</div>';
+  var el=E.eligibility(P),ms=E.missing(P),L=E.checklistFor(P,P.pkg),h=pkgBar()+'<h2>Eligibility screen</h2><div class="card">';
+  h+=el.items.concat(E.eligibilityFor(P,P.pkg)).map(function(i){return '<div class="lv '+(i.lvl==='ok'?'ok':i.lvl==='stop'?'stop':i.lvl==='warn'?'warn':'')+'">'+(i.lvl==='ok'?'OK: ':i.lvl==='stop'?'STOP: ':i.lvl==='warn'?'Check: ':'Note: ')+esc(i.t)+'</div>';}).join('')+'</div>';
   h+='<h2>Missing information ('+ms.length+')</h2><div class="card">';
   h+=ms.length?ms.map(function(m){return '<div class="lv"><b>'+esc(m.sec)+':</b> '+esc(m.label)+(m.where?'<div class="note">Where to get it: <a href="'+esc(m.where.u)+'" target="_blank" rel="noopener">'+esc(m.where.t)+'</a>. '+esc(m.where.how)+'</div>':'')+'</div>';}).join(''):'<span class="ok">Nothing missing. You can build the package.</span>';
   h+='</div><h2>Document checklist</h2><p class="note">Mark each line Have, Need, or N/A. Your choices are saved. Lines marked "commonly requested" are not on the City\'s published list; confirm them with DPS.</p>';
@@ -99,14 +116,14 @@ function drawCheck(){
   return h+'<p><b>'+done+' of '+L.length+' ready.</b></p>';
 }
 function drawTime(){
-  var T=E.timeline(P),h='<h2>Timeline to the quickest approval</h2><p class="sub">Counted from your target submit date (set on the Business tab; today is used if blank). Weekend and common 2026-27 federal holiday dates move to the next business day.</p><div class="warnbox">The 90-day review time is an unofficial estimate from a vendor guide. DPS has not published it that I could confirm; ask them on your kick-off call.</div>';
+  var T=E.timelineFor(P,P.pkg),h=pkgBar()+'<h2>Timeline to the quickest approval</h2><p class="sub">Counted from your target submit date (set on the Business tab; today is used if blank). Weekend and common 2026-27 federal holiday dates move to the next business day.</p>'+(P.pkg==='chicago'?'<div class="warnbox">The 90-day review time is an unofficial estimate from a vendor guide. DPS has not published it that I could confirm; ask them on your kick-off call.</div>':'<div class="warnbox">Review times appear only where the program itself published one. Otherwise the steps tell you to ask the office on day one.</div>');
   h+='<table><tr><th>Date</th><th>Step</th><th>Who</th></tr>'+T.map(function(t){return '<tr><td><b>'+esc(t.date)+'</b><br><span class="pill">'+esc(t.phase)+'</span></td><td>'+esc(t.t)+'</td><td>'+esc(t.who)+'</td></tr>';}).join('')+'</table>';
-  h+='<h2>How to be quickest</h2><div class="card">'+E.QUICK.map(function(q){return '<div class="lv">'+esc(q)+'</div>';}).join('')+'</div>';
+  if(P.pkg==='chicago')h+='<h2>How to be quickest</h2><div class="card">'+E.QUICK.map(function(q){return '<div class="lv">'+esc(q)+'</div>';}).join('')+'</div>';
   return h;
 }
 function drawWho(){
-  var h='<h2>Who to contact and what to ask</h2><div class="warnbox">Every row marked <b>verify</b> comes from public search results and may be out of date. Confirm the number or address on the official site before you rely on it. The Hub never invents contact details; blank means unknown.</div>';
-  E.CONTACTS.forEach(function(c){
+  var h=pkgBar()+'<h2>Who to contact and what to ask</h2><div class="warnbox">Every row marked <b>verify</b> comes from public search results and may be out of date. Confirm the number or address on the official site before you rely on it. The Hub never invents contact details; blank means unknown.</div>';
+  E.contactsFor(P.pkg).forEach(function(c){
     var n=E.nudge(P,c.id,{}),id='n-'+c.id;
     h+='<div class="card"><h3>'+esc(c.org)+(c.verify?' <span class="pill">verify</span>':'')+'</h3><div class="note">'+esc(c.role)+'</div>'+(c.src?'<div class="note ok">Source: '+esc(c.src)+'</div>':'')+
       '<div>'+[c.phone&&'Phone: '+esc(c.phone),c.email&&'Email: '+esc(c.email),c.addr&&'Address: '+esc(c.addr),c.link&&link(c.link)].filter(Boolean).join(' · ')+'</div>'+
@@ -117,7 +134,7 @@ function drawWho(){
 function lib(u){return new Promise(function(res,rej){var s=document.createElement('script');s.src=u;s.onload=res;s.onerror=function(){rej(new Error('Could not load '+u))};document.head.appendChild(s);});}
 var libs=null;
 function ensureLibs(){if(libs)return libs;libs=lib('https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js').then(function(){return lib('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js')}).then(function(){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});return libs;}
-function drawForms(){
+function drawFormsChicago(){
   var O=P.owners||[],ms=E.missing(P).length;
   var h='<h2>Official City forms, pre-filled</h2><p class="sub">These are the City of Chicago\'s own unaltered PDFs, filled from your answers. Preview, then download and print. Nothing is uploaded.</p>';
   h+='<div class="warnbox"><b>Left blank on purpose:</b> Social Security number, driver\'s license number, date of birth, signatures, the True/False attestations on Attachment 1, and every notary block. You write those in by hand. The Hub never stores them.'+(ms?' <b>'+ms+' answers are still missing</b>, so some boxes will be empty.':'')+'</div>';
@@ -126,11 +143,31 @@ function drawForms(){
   h+='<div class="card"><h3>Other official forms (not pre-filled)</h3><ul class="note"><li><a href="forms/chi-checklist-new-schedule-a.pdf" target="_blank">Official Schedule A checklist</a>, <a href="forms/chi-expedited-process.pdf" target="_blank">Expedited process</a>, <a href="forms/chi-construction-regulations.pdf" target="_blank">Construction regulations</a>, <a href="forms/chi-definition-of-key-terms.pdf" target="_blank">Key terms</a>.</li><li>The Schedule A application itself is completed online at <a href="https://www.chicago.mwdbe.com" target="_blank" rel="noopener">chicago.mwdbe.com</a> (see Portal answers).</li></ul></div>';
   h+='<div id="pvbox"></div>';return h;
 }
+function drawForms(){
+  if(P.pkg==='chicago')return pkgBar()+drawFormsChicago();
+  var O=P.owners||[],h=pkgBar();
+  if(P.pkg==='cook'){
+    var route=E.routeFor(P,'cook');
+    h+='<h2>Cook County forms</h2>';
+    if(route==='reciprocal'){
+      h+='<div class="warnbox">Reciprocal route: the one-page Cook County affidavit, Rev. 01/2025, is pre-filled below. Signature, date and the notary block stay blank. The affidavit is good for one year from the sworn signature.</div>';
+      O.forEach(function(o,i){h+='<div class="card"><h3>'+esc(o.name||('Owner '+(i+1)))+'</h3><div class="row"><button class="btn sm" data-form="c|'+i+'|pv">Preview reciprocal affidavit</button><button class="btn alt sm" data-form="c|'+i+'|dl">Download</button></div><div class="note">The box for your category is ticked from the Business tab (MBE ticks the owner\'s group; WBE ticks Woman). Check it.</div></div>';});
+    }else{
+      h+='<div class="warnbox">Full Schedule A route: the County\'s affidavit and Personal Net Worth are completed inside its portal (cookcounty.diversitycompliance.com), which cannot be pre-filled from here. Use the Portal answers tab for the data. The City\'s Attachment 2 (net worth) is the same information; ask the County whether you can upload it, or copy from it.</div>';
+      h+='<div class="card"><div class="row"><button class="btn sm" data-form="a2|0|pv">Preview Attachment 2 (City net worth form) for owner 1</button></div></div>';
+    }
+    h+='<div class="card"><h3>Official County documents</h3><ul class="note"><li><a href="forms/cook-schedule-a-checklist-rev-2024.pdf" target="_blank">Schedule A document checklist</a></li><li><a href="forms/cook-reciprocal-affidavit-rev-2025-01.pdf" target="_blank">Reciprocal affidavit (blank)</a></li><li><a href="forms/chicago-cook-reciprocal-regulations-2025-01.pdf" target="_blank">Reciprocal certification regulations</a></li><li><a href="https://cookcounty.diversitycompliance.com/" target="_blank" rel="noopener">County certification portal</a></li></ul></div>';
+  }else{
+    h+='<h2>Illinois BEP forms</h2><div class="warnbox">The State\'s application and its notarized affidavit are generated inside the Supplier Diversity Management Portal once you start the application, so there is no official PDF to pre-fill. Use the Checklist and the Portal answers tab. The official documents are below.</div>';
+    h+='<div class="card"><h3>Official CEI documents</h3><ul class="note"><li><a href="forms/bep-full-certification-checklist-2025-05.pdf" target="_blank">Full certification checklist (May 2025)</a></li><li><a href="forms/bep-recognition-registration-renewal.pdf" target="_blank">BE BEP / FastTrack registration instructions</a></li><li><a href="forms/bep-no-change-affidavit-checklist.pdf" target="_blank">Annual No Change Affidavit checklist</a></li><li><a href="https://supplierdiversitymanagementportal.illinois.gov/" target="_blank" rel="noopener">Supplier Diversity Management Portal</a></li></ul></div>';
+  }
+  return h+'<div id="pvbox"></div>';
+}
 async function runForm(spec){
   var p=spec.split('|'),kind=p[0],idx=+p[1],mode=p[2],box=document.getElementById('pvbox');
   box.innerHTML='<p class="note">Working...</p>';
-  try{await ensureLibs();var bytes=await {a1:CertForms.attachment1,a2:CertForms.attachment2,a4:CertForms.attachment4,t:CertForms.form4506T}[kind](P,idx);
-    var nm={a1:'Attachment1-Individual-Statement-of-Ownership',a2:'Attachment2-Personal-Net-Worth',a4:'Attachment4-Social-Disadvantage',t:'IRS-4506-T'}[kind]+((P.owners&&P.owners[idx]&&kind!=='t')?'-'+(P.owners[idx].name||'').replace(/[^A-Za-z0-9]+/g,'-'):'')+'.pdf';
+  try{await ensureLibs();var bytes=await {a1:CertForms.attachment1,a2:CertForms.attachment2,a4:CertForms.attachment4,c:CertForms.cookReciprocal,t:CertForms.form4506T}[kind](P,idx);
+    var nm={a1:'Attachment1-Individual-Statement-of-Ownership',a2:'Attachment2-Personal-Net-Worth',a4:'Attachment4-Social-Disadvantage',c:'Cook-County-Reciprocal-Affidavit',t:'IRS-4506-T'}[kind]+((P.owners&&P.owners[idx]&&kind!=='t')?'-'+(P.owners[idx].name||'').replace(/[^A-Za-z0-9]+/g,'-'):'')+'.pdf';
     if(mode==='dl'){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));a.download=nm;document.body.appendChild(a);a.click();a.remove();box.innerHTML='<p class="note ok">Downloaded '+esc(nm)+'. Check your Downloads folder.</p>';return;}
     var d=await pdfjsLib.getDocument({data:bytes}).promise;box.innerHTML='<h3>Preview: '+esc(nm)+'</h3><p class="note">'+d.numPages+' page(s). <button class="btn alt sm" data-form="'+spec.replace('|pv','|dl')+'">Download this</button></p>';
     for(var n=1;n<=d.numPages;n++){var pg=await d.getPage(n),v=pg.getViewport({scale:1.4}),c=document.createElement('canvas');c.width=v.width;c.height=v.height;c.style.cssText='max-width:100%;height:auto;border:1px solid var(--line);margin:8px 0;background:#fff';box.appendChild(c);await pg.render({canvasContext:c.getContext('2d'),viewport:v,annotationMode:1}).promise;}
@@ -147,30 +184,31 @@ function drawDraft(){
   return h;
 }
 function binderHTML(){
-  var b=P.biz||{},L=E.checklist(P),T=E.timeline(P),S=E.answers(P),D=E.drafts(P),ms=E.missing(P);
+  var b=P.biz||{},L=E.checklistFor(P,P.pkg),T=E.timelineFor(P,P.pkg),S=E.answers(P),D=E.drafts(P),ms=E.missing(P);
   var css='body{font:12pt/1.4 Georgia,serif;margin:0.7in;color:#000}h1{font-size:20pt}h2{font-size:15pt;border-bottom:2px solid #000;margin-top:0}h3{font-size:12pt}pre{white-space:pre-wrap;font:10.5pt/1.4 Georgia,serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:4px 6px;font-size:10.5pt;text-align:left;vertical-align:top}.pb{page-break-before:always}.sm{font-size:9.5pt}';
   var h='<!doctype html><meta charset="utf-8"><title>Certification binder: '+esc(b.legalName||'')+'</title><style>'+css+'</style>';
-  h+='<h1>M/WBE Certification Binder</h1><p><b>'+esc(b.legalName||'(business name)')+'</b><br>Prepared '+new Date().toLocaleDateString('en-US')+(P.isSample?'<br><b>FICTIONAL TEST CASE. NOT A REAL BUSINESS.</b>':'')+'</p>';
+  h+='<h1>'+esc(E.PACKAGES.filter(function(p){return p.id===P.pkg})[0].title)+' Certification Binder</h1><p><b>'+esc(b.legalName||'(business name)')+'</b><br>Prepared '+new Date().toLocaleDateString('en-US')+(P.isSample?'<br><b>FICTIONAL TEST CASE. NOT A REAL BUSINESS.</b>':'')+'</p>';
   h+='<p class="sm">DRAFT working binder. Every drafted statement must be reviewed and corrected by the owner before use. Contacts and links marked verify must be confirmed on the official site.</p>';
   h+='<h2>Open items ('+ms.length+')</h2>'+(ms.length?'<ul>'+ms.map(function(m){return '<li>'+esc(m.sec)+': '+esc(m.label)+'</li>';}).join('')+'</ul>':'<p>None.</p>');
   h+='<h2 class="pb">Document checklist</h2><table><tr><th>Status</th><th>Document</th><th>Where / how</th></tr>'+L.map(function(i){var st=P.docs[i.id]||'need';return '<tr><td>'+(st==='have'?'HAVE':st==='na'?'N/A':'NEED')+'</td><td>'+esc(i.title)+'</td><td class="sm">'+esc(i.ifMissing)+(i.where.length?'<br>'+i.where.map(function(w){return esc(w.t)+': '+esc(w.u);}).join('<br>'):'')+'</td></tr>';}).join('')+'</table>';
   h+='<h2 class="pb">Timeline</h2><table><tr><th>Date</th><th>Step</th><th>Who</th></tr>'+T.map(function(t){return '<tr><td>'+esc(t.date)+'</td><td>'+esc(t.t)+'</td><td>'+esc(t.who)+'</td></tr>';}).join('')+'</table>';
-  h+='<h2 class="pb">Contacts (verify before use)</h2><table><tr><th>Who</th><th>Details</th></tr>'+E.CONTACTS.map(function(c){return '<tr><td>'+esc(c.org)+'</td><td class="sm">'+[c.phone,c.email,c.addr,c.link&&c.link.u].filter(Boolean).map(esc).join('<br>')+'</td></tr>';}).join('')+'</table>';
+  h+='<h2 class="pb">Contacts (verify before use)</h2><table><tr><th>Who</th><th>Details</th></tr>'+E.contactsFor(P.pkg).map(function(c){return '<tr><td>'+esc(c.org)+'</td><td class="sm">'+[c.phone,c.email,c.addr,c.link&&c.link.u].filter(Boolean).map(esc).join('<br>')+'</td></tr>';}).join('')+'</table>';
   h+='<h2 class="pb">Portal answer sheet</h2>'+S.map(function(s){return '<h3>'+esc(s.title)+'</h3><table>'+s.rows.map(function(r){return '<tr><th style="width:32%">'+esc(r[0])+'</th><td>'+esc(r[1]).replace(/\n/g,'<br>')+'</td></tr>';}).join('')+'</table>';}).join('');
   D.forEach(function(d){h+='<h2 class="pb">'+esc(d.title)+'</h2><pre>'+esc(d.body)+'</pre>';});
   return h;
 }
 function drawBind(){
   var ms=E.missing(P);
-  return '<h2>Completed package</h2><p class="sub">One printable binder: open items, checklist, timeline, contacts, portal answers, and every drafted document. Use Print, then Save as PDF.</p>'+
+  return pkgBar()+'<h2>Completed package</h2><p class="sub">One printable binder: open items, checklist, timeline, contacts, portal answers, and every drafted document. Use Print, then Save as PDF.</p>'+
     (ms.length?'<div class="warnbox">'+ms.length+' items are still missing. The binder will show them as [ NEEDED ]. You can still build it to see what is left.</div>':'<div class="sample">Nothing missing.</div>')+
     '<div class="row"><button class="btn" id="mkb">Open binder to print / save as PDF</button><button class="btn alt" id="exp">Download my data (JSON backup)</button><label class="btn alt" style="margin:0">Restore from backup<input type="file" id="imp" accept=".json" style="display:none"></label></div>'+
     '<p class="note">Phase 1 does not file anything for you. The official forms and the $250 fee are completed in the City portal; this binder is your complete, organized source for every field and document.</p>';
 }
 function render(){
+  if(!P.pkg)P.pkg='chicago';
   drawTabs();drawSample();var v=document.getElementById('view'),h='';
   if(['biz','owners','pnw','sd','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
-  else h={check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
+  else h={plan:drawPlan,check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
   v.innerHTML=h;
 }
 function setPath(path,key,value){
@@ -184,7 +222,8 @@ document.addEventListener('change',function(e){var t=e.target;if(t.getAttribute(
   if(t.id==='imp'&&t.files[0]){var r=new FileReader();r.onload=function(){try{P=JSON.parse(r.result);save();render();}catch(x){alert('That file could not be read.');}};r.readAsText(t.files[0]);}});
 document.addEventListener('click',function(e){
   var t=e.target.closest('button,label');if(!t)return;
-  if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
+  if(t.getAttribute('data-pkg')){P.pkg=t.getAttribute('data-pkg');save();render();}
+  else if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
   else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
   else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
   else if(t.getAttribute('data-form')){runForm(t.getAttribute('data-form'));}

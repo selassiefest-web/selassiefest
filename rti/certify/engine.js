@@ -78,7 +78,8 @@
       { k: 'stateInc', label: 'State of formation', help: 'e.g. Illinois' },
       { k: 'incDate', label: 'Date formed', type: 'date', req: 1 },
       { k: 'startDate', label: 'Date you began operating', type: 'date' },
-      { k: 'address', label: 'Business street address', req: 1 }, { k: 'city', label: 'City', req: 1 }, { k: 'state', label: 'State', req: 1 }, { k: 'zip', label: 'ZIP', req: 1 },
+      { k: 'address', label: 'Business street address', req: 1 }, { k: 'city', label: 'City', req: 1 }, { k: 'state', label: 'State', req: 1 }, { k: 'zip', label: 'ZIP', req: 1 }, { k: 'county', label: 'County of the business location', req: 1, help: 'Cook County certification requires a principal office in Cook, DuPage, Kane, Will, Lake or McHenry County.' },
+      { k: 'certCategory', label: 'Category you hold or are applying for with the City', type: 'select', opts: ['MBE (minority-owned)', 'WBE (women-owned)'], req: 1, help: 'A firm that qualifies as both usually picks one. Ask DPS before choosing.' },
       { k: 'phone', label: 'Business phone', req: 1 }, { k: 'fax', label: 'Business fax (optional)' }, { k: 'email', label: 'Business email', req: 1 }, { k: 'website', label: 'Website (optional)' },
       { k: 'naics', label: 'NAICS codes and what you do under each (one per line: code - description)', type: 'textarea', req: 1, where: { t: 'Census NAICS search', u: LINK.naics.u, how: 'Search your trade (e.g. "general contractor"). Only list work you actually perform; the City certifies only those codes.' } },
       { k: 'scope', label: 'In plain words, what work does the business perform?', type: 'textarea', req: 1 },
@@ -88,7 +89,8 @@
       { k: 'locType', label: 'Business location', type: 'select', opts: ['Lease', 'Own', 'Home office / no separate site'] },
       { k: 'landlord', label: 'Landlord (if leased)' }, { k: 'leaseStart', label: 'Lease start', type: 'date' }, { k: 'leaseEnd', label: 'Lease end', type: 'date' }, { k: 'sqft', label: 'Space (sq ft) and use' },
       { k: 'affiliates', label: 'Other businesses any owner owns or works for', type: 'textarea', help: 'Affiliations are reviewed. List honestly or write "none".' },
-      { k: 'priorCerts', label: 'Existing certifications (Cook County, State BEP, DBE, WBENC, etc.)', type: 'textarea', help: 'An existing Cook County or partner certification can be the fastest route.' }
+      { k: 'heldCert', label: 'Which of these certifications do you already hold (it changes the fastest route)?', type: 'select', opts: ['None', 'City of Chicago M/WBE', 'Cook County MWBE', "Women's Business Development Center (WBDC)", 'Chicago MSDC or Mid-States MSDC'], help: 'Pick the one that applies. Choose None if you hold no current certification.' },
+      { k: 'priorCerts', label: 'Other existing certifications (State BEP, DBE, WBENC, etc.)', type: 'textarea', help: 'An existing Cook County or partner certification can be the fastest route.' }
     ] },
     { id: 'owners', title: 'Owners and managers', scope: 'array', arr: 'owners', max: 4, addLabel: 'Add another owner', blurb: 'One card per owner, officer or key manager. Percentages must total 100.', fields: [
       { k: 'name', label: 'Full legal name', req: 1 }, { k: 'title', label: 'Title / role in company', req: 1 },
@@ -150,7 +152,7 @@
   var SAMPLE = {
     startDate: '2026-11-09',
     biz: { legalName: 'ABC General Contractors LLC', dba: '', entityType: 'LLC', ein: '00-0000000', stateInc: 'Illinois', incDate: '2019-03-04', startDate: '2019-04-01',
-      address: '100 Example Ave', city: 'Chicago', state: 'IL', zip: '60601', phone: '(312) 555-0100', email: 'office@abcgc.example', website: 'abcgc.example',
+      address: '100 Example Ave', city: 'Chicago', state: 'IL', zip: '60601', county: 'Cook', certCategory: 'WBE (women-owned)', heldCert: 'None', phone: '(312) 555-0100', email: 'office@abcgc.example', website: 'abcgc.example',
       naics: '236220 - Commercial and institutional building construction\n236118 - Residential remodelers\n238990 - All other specialty trade contractors',
       scope: 'General contractor for small commercial build-outs, tenant improvements and residential remodels. We bid, self-perform framing, drywall and finish work, and manage licensed subcontractors for electrical and plumbing.',
       employeesFT: '6', employeesPT: '4', receipts1: '1850000', receipts2: '1420000', receipts3: '960000',

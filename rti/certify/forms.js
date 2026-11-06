@@ -209,6 +209,37 @@
     return pdf.save();
   }
 
-  var api = { attachment1: attachment1, attachment2: attachment2, attachment4: attachment4, form4506T: form4506T };
+  /* ---------- Cook County MBE/WBE Reciprocal Certification Affidavit, Rev. 01/2025 (flat PDF, overlay) ---------- */
+  async function cookReciprocal(P, idx) {
+    var o = (P.owners || [])[idx || 0] || {}, b = P.biz || {};
+    var pdf = await load('forms/cook-reciprocal-affidavit-rev-2025-01.pdf');
+    var font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica), bold = await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    INK = PDFLib.rgb(0.05, 0.1, 0.5);
+    var p = pdf.getPages()[0], name = b.legalName;
+    fit(p, name, font, 140, 677, 370, 10);
+    fit(p, b.address, font, 127, 652, 183, 10);
+    fit(p, b.city, font, 333, 652, 178, 10);
+    fit(p, b.county, font, 122, 627, 134, 10);
+    fit(p, b.state, font, 281, 627, 120, 10);
+    fit(p, b.zip, font, 419, 627, 92, 10);
+    var d = String(b.phone || '').replace(/\D/g, '').replace(/^1(\d{10})$/, '$1');
+    if (d.length === 10) { fit(p, d.slice(0, 3), font, 124, 602, 19, 8); fit(p, d.slice(3, 6) + '-' + d.slice(6), font, 148, 602, 130, 10); } else fit(p, b.phone, font, 148, 602, 130, 10);
+    fit(p, b.email, font, 310, 602, 202, 10);
+    fit(p, o.name, font, 102, 564, 200, 10);
+    fit(p, o.title, font, 315, 564, 195, 10);
+    fit(p, name, font, 102, 527, 203, 10);
+    fit(p, name, font, 108, 489, 198, 10);
+    /* category held with the City: tick the owner's group for MBE, or Woman for WBE */
+    var cat = String(b.certCategory || ''), x = null;
+    if (cat.indexOf('WBE') === 0) x = 392;
+    else if (cat.indexOf('MBE') === 0) { x = { 'Black or African American': 250.5, 'Hispanic / Latino': 295, 'Asian American': 351 }[o.ethnicity] || null; }
+    if (x) p.drawText('X', { x: x, y: 460, size: 10, font: bold, color: INK });
+    fit(p, name, font, 171, 437, 165, 10);
+    fit(p, name, font, 256, 330, 205, 10);
+    fit(p, o.name, font, 194, 245, 170, 10);
+    return pdf.save();
+  }
+
+  var api = { attachment1: attachment1, attachment2: attachment2, attachment4: attachment4, form4506T: form4506T, cookReciprocal: cookReciprocal };
   root.CertForms = api;
 })(window);
