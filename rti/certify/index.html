@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
 <title>Certification Hub</title>
 <style>
 :root{--bg:#fff;--ink:#16182B;--mute:#5b6070;--line:#d6d9e2;--accent:#0b6b3a;--card:#f6f7fa;--bad:#a1281f;--warn:#8a5a00;--ok:#0b6b3a}
@@ -35,7 +36,7 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 <h1>Certification Hub</h1>
 <p class="sub">Enter your information once. The Hub builds your checklist, drafts, timeline and who-to-contact list for each certification. Phase 1 package: City of Chicago M/WBE.</p>
 <div id="sampleBar" class="sample"></div>
-<div class="warnbox noprint"><b>Private and local.</b> In this phase everything you type stays in this browser only (nothing is uploaded or emailed). Do not enter Social Security numbers. Links and phone numbers marked "verify" must be confirmed on the official site before you rely on them.</div>
+<div class="warnbox noprint" id="privBox"><b>Private and local.</b> In this phase everything you type stays in this browser only (nothing is uploaded or emailed). Do not enter Social Security numbers. Links and phone numbers marked "verify" must be confirmed on the official site before you rely on them.</div>
 <nav class="tabs" id="tabs"></nav>
 <div id="view"></div>
 </main>
@@ -46,11 +47,38 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 (function(){
 var E=window.CertEngine,esc=E.esc,KEY='certhub-v1';
 function blank(){return {startDate:'',biz:{},owners:[{}],fin:{},contracts:[{}],docs:{},isSample:false};}
+var FN='https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/cert-hub';
+var QS=new URLSearchParams(location.search),KEYP=QS.get('k'),AID=QS.get('a'),ADM='';
+try{ADM=sessionStorage.getItem('certhub-admin')||'';}catch(e){}
+var MODE=KEYP?'client':(AID&&ADM?'admin':'local'),CLIENT=null,VER=0,dirty=false,saving=false,conflict=false,statusText='',statusBad=false,saveT=null;
+function api(b){return fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){j.status=r.status;return j;});});}
 var P;
-try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}
+if(MODE==='local'){try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}}
 if(!P)P=blank();
 if(!P.pkg)P.pkg='chicago';
-function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
+function setStatus(t,bad){statusText=t;statusBad=!!bad;var el=document.getElementById('srvStatus');if(el){el.textContent=t;el.className=bad?'stop':'ok';}}
+function summaryOf(){var L=E.checklistFor(P,P.pkg),ready=L.filter(function(i){return P.docs[i.id]==='have'||P.docs[i.id]==='na'}).length;return {missing:E.missing(P).length,ready:ready,total:L.length,pkg:P.pkg};}
+function flush(){
+  if(!dirty||saving||conflict)return;saving=true;dirty=false;setStatus('Saving...');
+  var body=MODE==='client'?{action:'save',key:KEYP}:{action:'admin_save',secret:ADM,id:AID};
+  body.profile=P;body.summary=summaryOf();body.version=VER;
+  return api(body).then(function(j){saving=false;
+    if(j.ok){VER=j.version;setStatus('Saved to your private file at '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}));}
+    else if(j.conflict){conflict=true;setStatus(j.error,true);}
+    else if(j.status===422){setStatus(j.error,true);}
+    else{dirty=true;setStatus((j.error||'Could not save')+' Retrying...',true);schedule();}
+    if(dirty&&!conflict)schedule();
+  }).catch(function(){saving=false;dirty=true;setStatus('Offline. Will retry.',true);schedule();});
+}
+function schedule(){clearTimeout(saveT);saveT=setTimeout(flush,1500);}
+window.addEventListener('beforeunload',function(e){if(MODE!=='local'&&(dirty||saving)){e.preventDefault();e.returnValue='';}});
+function save(){
+  if(MODE==='local'){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}return;}
+  if(conflict)return;dirty=true;setStatus('Unsaved changes...');schedule();
+}
+function srvBar(){
+  return '<b>Private workspace'+(CLIENT&&CLIENT.name?': '+esc(CLIENT.name):'')+(MODE==='admin'?' (staff view)':'')+'.</b> Everything you enter is saved automatically to an encrypted private file. <span id="srvStatus" class="'+(statusBad?'stop':'ok')+'">'+esc(statusText)+'</span>'+(conflict?' <button class="btn sm" onclick="location.reload()">Reload latest</button>':'');
+}
 var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['plan','Fastest path'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
@@ -73,7 +101,7 @@ function drawPlan(){
   return h+'<p class="note">Nothing here is filed for you. Pick a program above, then use its Checklist, Timeline, Who to contact and Official forms tabs.</p>';
 }
 function drawTabs(){var m=E.missing(P).length;document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'">'+t[1]+(t[0]==='check'&&m?' ('+m+' gaps)':'')+'</button>';}).join('');}
-function drawSample(){document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
+function drawSample(){if(MODE!=='local'){document.getElementById('sampleBar').innerHTML=srvBar();return;}document.getElementById('sampleBar').innerHTML=P.isSample?'<b>Test case loaded: ABC General Contractors LLC (fictional).</b> Every name, number and date is made up for testing. <button class="btn alt sm" id="clr">Clear and start a real client</button>':'<b>Try it:</b> load a fictional general-contractor test case to see every tab filled. <button class="btn sm" id="ld">Load ABC General Contractors test case</button>';}
 
 function field(f,d,path){
   var v=d[f.k]==null?'':d[f.k],id=path+'|'+f.k,cls=(f.type==='textarea'?' full':''),h='<div class="'+cls.trim()+'"><label>'+esc(f.label)+(f.req?' <span class="pill">needed</span>':'')+'</label>';
@@ -233,6 +261,17 @@ document.addEventListener('click',function(e){
   else if(t.id==='mkb'){var w=window.open('','_blank');if(w){w.document.write(binderHTML()+'<p class="noprint"><button onclick="print()">Print / Save as PDF</button></p>');w.document.close();}}
   else if(t.id==='exp'){var bl=new Blob([JSON.stringify(P,null,2)],{type:'application/json'}),a2=document.createElement('a');a2.href=URL.createObjectURL(bl);a2.download='certification-hub-backup.json';a2.click();}
 });
-render();
+function boot(){
+  if(MODE==='local'){render();return;}
+  var pb=document.getElementById('privBox');
+  if(pb)pb.innerHTML='<b>Private and encrypted.</b> Your answers are stored in an encrypted file only you (and the Ras Tafari Inc. staff helping you) can open with your personal link. Do not enter Social Security numbers, driver\'s license numbers or dates of birth: the Hub refuses SSNs, and you write the rest by hand on the printed forms. Links and phone numbers marked "verify" must be confirmed on the official site.';
+  document.getElementById('view').innerHTML='<p class="note">Opening your private file...</p>';
+  api(MODE==='client'?{action:'load',key:KEYP}:{action:'admin_get',secret:ADM,id:AID}).then(function(j){
+    if(!j.ok){document.getElementById('view').innerHTML='<p class="stop">'+esc(j.error||'Could not open this workspace.')+'</p><p class="note">Ask Ras Tafari Inc. for a new link: stephen@selassiefest.com or (872) 255-9333.</p>';return;}
+    CLIENT=j.client;VER=j.version||0;P=j.profile||blank();if(!P.pkg)P.pkg='chicago';P.isSample=false;
+    setStatus(j.profile?'Opened your saved file.':'New workspace. Start with the Business tab.');render();
+  }).catch(function(){document.getElementById('view').innerHTML='<p class="stop">Could not reach the server. Check your connection and reload.</p>';});
+}
+boot();
 })();
 </script></body></html>
