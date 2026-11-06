@@ -49,7 +49,7 @@ var P;
 try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}
 if(!P)P=blank();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
-var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['sd','3c. Social disadvantage'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
 function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
@@ -61,7 +61,7 @@ function drawSample(){document.getElementById('sampleBar').innerHTML=P.isSample?
 function field(f,d,path){
   var v=d[f.k]==null?'':d[f.k],id=path+'|'+f.k,cls=(f.type==='textarea'?' full':''),h='<div class="'+cls.trim()+'"><label>'+esc(f.label)+(f.req?' <span class="pill">needed</span>':'')+'</label>';
   if(f.type==='select')h+='<select data-f="'+id+'"><option value=""></option>'+f.opts.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';
-  else if(f.type==='textarea')h+='<textarea data-f="'+id+'">'+esc(v)+'</textarea>';
+  else if(f.type==='textarea')h+='<textarea data-f="'+id+'"'+(f.tall?' style="min-height:320px"':'')+'>'+esc(v)+'</textarea>'+(f.k==='sd_statement'?'<div class="note" data-wc="'+id+'">'+E.wordCount(v)+' words (City requires 500 to 1,000)</div>':'');
   else h+='<input data-f="'+id+'" type="'+(f.type==='date'?'date':f.type==='number'?'number':'text')+'" value="'+esc(v)+'">';
   if(f.help)h+='<div class="note">'+esc(f.help)+'</div>';
   if(f.where&&!String(v).trim())h+='<div class="note">Don\'t have it? <a href="'+esc(f.where.u)+'" target="_blank" rel="noopener">'+esc(f.where.t)+'</a>: '+esc(f.where.how)+'</div>';
@@ -71,7 +71,8 @@ function drawSection(id){
   var s=sec(id),h='<h2>'+esc(s.title)+'</h2><p class="sub">'+esc(s.blurb||'')+'</p>';
   if(s.scope==='array'){
     var arr=P[s.arr]=P[s.arr]||[];if(!arr.length)arr.push({});
-    arr.forEach(function(row,i){h+='<div class="card"><div class="row"><h3>#'+(i+1)+(row.name?' '+esc(row.name):'')+'</h3>'+(arr.length>1&&!s.noAdd?'<button class="btn alt sm" data-rm="'+s.arr+'|'+i+'">Remove</button>':'')+'</div><div class="grid">'+s.fields.map(function(f){return field(f,row,s.arr+'.'+i);}).join('')+'</div></div>';});
+    if(s.onlyIf&&!arr.some(function(r){return E[s.onlyIf](r)}))h+='<div class="sample">None of your owners need this. The City presumes women, African-Americans, Hispanics, Asian-Americans and American Indians to be socially disadvantaged, so they do not submit Attachment 4.</div>';
+    arr.forEach(function(row,i){if(s.onlyIf&&!E[s.onlyIf](row))return;h+='<div class="card"><div class="row"><h3>#'+(i+1)+(row.name?' '+esc(row.name):'')+'</h3>'+(arr.length>1&&!s.noAdd?'<button class="btn alt sm" data-rm="'+s.arr+'|'+i+'">Remove</button>':'')+'</div><div class="grid">'+s.fields.map(function(f){return field(f,row,s.arr+'.'+i);}).join('')+'</div></div>';});
     if(!s.noAdd&&arr.length<s.max)h+='<button class="btn alt" data-add="'+s.arr+'">'+esc(s.addLabel)+'</button>';
   }else{
     P[s.scope]=P[s.scope]||{};
@@ -120,16 +121,16 @@ function drawForms(){
   var O=P.owners||[],ms=E.missing(P).length;
   var h='<h2>Official City forms, pre-filled</h2><p class="sub">These are the City of Chicago\'s own unaltered PDFs, filled from your answers. Preview, then download and print. Nothing is uploaded.</p>';
   h+='<div class="warnbox"><b>Left blank on purpose:</b> Social Security number, driver\'s license number, date of birth, signatures, the True/False attestations on Attachment 1, and every notary block. You write those in by hand. The Hub never stores them.'+(ms?' <b>'+ms+' answers are still missing</b>, so some boxes will be empty.':'')+'</div>';
-  O.forEach(function(o,i){h+='<div class="card"><h3>'+esc(o.name||('Owner '+(i+1)))+'</h3><div class="row"><button class="btn sm" data-form="a1|'+i+'|pv">Preview Attachment 1</button><button class="btn alt sm" data-form="a1|'+i+'|dl">Download</button><span class="note">Individual Statement of Ownership</span></div><div class="row"><button class="btn sm" data-form="a2|'+i+'|pv">Preview Attachment 2</button><button class="btn alt sm" data-form="a2|'+i+'|dl">Download</button><span class="note">Personal Net Worth Statement</span></div></div>';});
-  h+='<div class="card"><h3>IRS Form 4506-T (business)</h3><div class="row"><button class="btn sm" data-form="t|0|pv">Preview</button><button class="btn alt sm" data-form="t|0|dl">Download</button></div><div class="note">Pre-filled from the City\'s copy (Rev. January 2010). Ask DPS whether they accept that revision or want the current IRS version, and whether line 5 (third party) should name the City. The signature stays blank.</div></div>';
-  h+='<div class="card"><h3>Other official forms (not pre-filled)</h3><ul class="note"><li><a href="forms/chi-attach4-affidavit-social-disadvantage.pdf" target="_blank">Attachment 4: Affidavit of Social Disadvantage</a>: only if applying as an "Other Socially Disadvantaged Group". It is your own sworn account and must be written by you.</li><li><a href="forms/chi-checklist-new-schedule-a.pdf" target="_blank">Official Schedule A checklist</a>, <a href="forms/chi-expedited-process.pdf" target="_blank">Expedited process</a>, <a href="forms/chi-construction-regulations.pdf" target="_blank">Construction regulations</a>, <a href="forms/chi-definition-of-key-terms.pdf" target="_blank">Key terms</a>.</li><li>The Schedule A application itself is completed online at <a href="https://www.chicago.mwdbe.com" target="_blank" rel="noopener">chicago.mwdbe.com</a> (see Portal answers).</li></ul></div>';
+  O.forEach(function(o,i){h+='<div class="card"><h3>'+esc(o.name||('Owner '+(i+1)))+'</h3>'+(E.needsSD(o)?'<div class="row"><button class="btn sm" data-form="a4|'+i+'|pv">Preview Attachment 4</button><button class="btn alt sm" data-form="a4|'+i+'|dl">Download</button><span class="note">Affidavit of Individual Social Disadvantage (your written account is added as pages)</span></div>':'<div class="note">Attachment 4 not needed: the City presumes this owner socially disadvantaged.</div>')+'<div class="row"><button class="btn sm" data-form="a1|'+i+'|pv">Preview Attachment 1</button><button class="btn alt sm" data-form="a1|'+i+'|dl">Download</button><span class="note">Individual Statement of Ownership</span></div><div class="row"><button class="btn sm" data-form="a2|'+i+'|pv">Preview Attachment 2</button><button class="btn alt sm" data-form="a2|'+i+'|dl">Download</button><span class="note">Personal Net Worth Statement</span></div></div>';});
+  h+='<div class="card"><h3>IRS Form 4506-T (business)</h3><div class="row"><button class="btn sm" data-form="t|0|pv">Preview</button><button class="btn alt sm" data-form="t|0|dl">Download</button></div><div class="note">Pre-filled on the current IRS version (Rev. April 2025). The signature, date and attestation box stay blank for the signer. Line 5 on this version is a customer file number, not a third-party address, and the IRS no longer mails transcripts to third parties, so the Hub leaves line 5 blank. Ask DPS if they want a reference number there.</div></div>';
+  h+='<div class="card"><h3>Other official forms (not pre-filled)</h3><ul class="note"><li><a href="forms/chi-checklist-new-schedule-a.pdf" target="_blank">Official Schedule A checklist</a>, <a href="forms/chi-expedited-process.pdf" target="_blank">Expedited process</a>, <a href="forms/chi-construction-regulations.pdf" target="_blank">Construction regulations</a>, <a href="forms/chi-definition-of-key-terms.pdf" target="_blank">Key terms</a>.</li><li>The Schedule A application itself is completed online at <a href="https://www.chicago.mwdbe.com" target="_blank" rel="noopener">chicago.mwdbe.com</a> (see Portal answers).</li></ul></div>';
   h+='<div id="pvbox"></div>';return h;
 }
 async function runForm(spec){
   var p=spec.split('|'),kind=p[0],idx=+p[1],mode=p[2],box=document.getElementById('pvbox');
   box.innerHTML='<p class="note">Working...</p>';
-  try{await ensureLibs();var bytes=await {a1:CertForms.attachment1,a2:CertForms.attachment2,t:CertForms.form4506T}[kind](P,idx);
-    var nm={a1:'Attachment1-Individual-Statement-of-Ownership',a2:'Attachment2-Personal-Net-Worth',t:'IRS-4506-T'}[kind]+((P.owners&&P.owners[idx]&&kind!=='t')?'-'+(P.owners[idx].name||'').replace(/[^A-Za-z0-9]+/g,'-'):'')+'.pdf';
+  try{await ensureLibs();var bytes=await {a1:CertForms.attachment1,a2:CertForms.attachment2,a4:CertForms.attachment4,t:CertForms.form4506T}[kind](P,idx);
+    var nm={a1:'Attachment1-Individual-Statement-of-Ownership',a2:'Attachment2-Personal-Net-Worth',a4:'Attachment4-Social-Disadvantage',t:'IRS-4506-T'}[kind]+((P.owners&&P.owners[idx]&&kind!=='t')?'-'+(P.owners[idx].name||'').replace(/[^A-Za-z0-9]+/g,'-'):'')+'.pdf';
     if(mode==='dl'){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));a.download=nm;document.body.appendChild(a);a.click();a.remove();box.innerHTML='<p class="note ok">Downloaded '+esc(nm)+'. Check your Downloads folder.</p>';return;}
     var d=await pdfjsLib.getDocument({data:bytes}).promise;box.innerHTML='<h3>Preview: '+esc(nm)+'</h3><p class="note">'+d.numPages+' page(s). <button class="btn alt sm" data-form="'+spec.replace('|pv','|dl')+'">Download this</button></p>';
     for(var n=1;n<=d.numPages;n++){var pg=await d.getPage(n),v=pg.getViewport({scale:1.4}),c=document.createElement('canvas');c.width=v.width;c.height=v.height;c.style.cssText='max-width:100%;height:auto;border:1px solid var(--line);margin:8px 0;background:#fff';box.appendChild(c);await pg.render({canvasContext:c.getContext('2d'),viewport:v,annotationMode:1}).promise;}
@@ -168,7 +169,7 @@ function drawBind(){
 }
 function render(){
   drawTabs();drawSample();var v=document.getElementById('view'),h='';
-  if(['biz','owners','pnw','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
+  if(['biz','owners','pnw','sd','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
   else h={check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
   v.innerHTML=h;
 }
@@ -177,7 +178,7 @@ function setPath(path,key,value){
   var m=path.match(/^(\w+)\.(\d+)$/);
   if(m){P[m[1]][+m[2]][key]=value;}else{P[path][key]=value;}
 }
-document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var p=f.split('|');setPath(p[0],p[1],t.value);P.isSample=false;save();});
+document.addEventListener('input',function(e){var t=e.target,f=t.getAttribute&&t.getAttribute('data-f');if(!f)return;var wc=document.querySelector('[data-wc="'+f+'"]');if(wc){var n=E.wordCount(t.value);wc.textContent=n+' words (City requires 500 to 1,000)'+(n<500||n>1000?' - not yet in range':' - OK');}var p=f.split('|');setPath(p[0],p[1],t.value);P.isSample=false;save();});
 document.addEventListener('change',function(e){var t=e.target;if(t.getAttribute('data-doc')){P.docs[t.getAttribute('data-doc')]=t.value;save();render();window.scrollTo(window.scrollX,window.scrollY);}
   else if(t.getAttribute('data-f')&&t.tagName==='SELECT'){drawTabs();}
   if(t.id==='imp'&&t.files[0]){var r=new FileReader();r.onload=function(){try{P=JSON.parse(r.result);save();render();}catch(x){alert('That file could not be read.');}};r.readAsText(t.files[0]);}});

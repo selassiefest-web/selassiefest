@@ -129,26 +129,86 @@
     fit(p, Math.round(nw.assets).toLocaleString('en-US'), font, 216, 358, 85, 8);
     fit(p, Math.round(nw.liabilities).toLocaleString('en-US'), font, 486, 358, 85, 8);
     fit(p, Math.round(nw.net).toLocaleString('en-US'), font, 486, 339, 85, 8);
+    if (has(o.l_instAutoMo)) fit(p, amt(o.l_instAutoMo), font, 486, 497, 85, 8);
+    if (has(o.l_instOtherMo)) fit(p, amt(o.l_instOtherMo), font, 486, 448.5, 85, 8);
+    var rows = function (txt) { return String(txt || '').split('\n').map(function (l) { return l.split('|').map(function (c) { return c.trim(); }); }).filter(function (r) { return r.join('').length; }); };
+    var spill = [];
+    /* Section 1 notes payable: 4 rows; columns holder | original | current | payment | frequency | collateral */
+    var nx = [[33, 160], [196, 59], [259, 58], [321, 64], [389, 64], [457, 118]], ny = [258, 245.6, 233, 220.6];
+    rows(o.n_notes).forEach(function (r, i) {
+      if (i >= 4) { spill.push({ label: 'Section 1 note ' + (i + 1), text: r.join(' | ') }); return; }
+      r.slice(0, 6).forEach(function (c, k) { fit(p, k >= 1 && k <= 3 && !isNaN(num(c)) && /\d/.test(c) ? Math.round(num(c)).toLocaleString('en-US') : c, font, nx[k][0], ny[i], nx[k][1], 7.5); });
+    });
+    /* Section 2 stocks and bonds: 4 rows; shares | name | cost | market | quotation/date | total */
+    var sx = [[33, 50], [87, 127], [218, 68], [290, 90], [384, 100], [488, 87]], sy = [163, 150.5, 138, 126];
+    rows(o.n_stocks).forEach(function (r, i) {
+      if (i >= 4) { spill.push({ label: 'Section 2 holding ' + (i + 1), text: r.join(' | ') }); return; }
+      r.slice(0, 6).forEach(function (c, k) { fit(p, k >= 2 && k !== 4 && /^[\d,.\s$]+$/.test(c) ? Math.round(num(c)).toLocaleString('en-US') : c, font, sx[k][0], sy[i], sx[k][1], 7.5); });
+    });
+    /* rental property income: 4 rows; location | monthly payment */
+    var ry = [92.8, 80.5, 68, 55.8];
+    rows(o.n_rentals).forEach(function (r, i) {
+      if (i >= 4) { spill.push({ label: 'Rental ' + (i + 1), text: r.join(' | ') }); return; }
+      fit(p, r[0], font, 40, ry[i], 258, 8); if (has(r[1])) fit(p, /^[\d,.\s$]+$/.test(r[1]) ? '$' + Math.round(num(r[1])).toLocaleString('en-US') + ' / month' : r[1], font, 306, ry[i], 258, 8);
+    });
+    /* page 2: sections 4, 5, 6 free text, up to 6 lines each */
+    var p2 = pdf.getPages()[1], sec = [[o.n_taxes, 715], [o.n_other, 631], [o.n_life, 547]], more = [];
+    sec.forEach(function (sc, si) {
+      if (!has(sc[0])) return;
+      var slots = []; for (var k = 0; k < 6; k++) slots.push({ x: 40, y: sc[1] - k * 11, w: 525 });
+      var left = flow(p2, sc[0], font, 8.5, slots);
+      if (left) more.push({ label: 'Section ' + [4, 5, 6][si] + ' (full text)', text: sc[0] });
+    });
+    var bold = await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    addContinuation(pdf, font, bold, 'Attachment 2 continuation: ' + (o.name || ''), spill.concat(more));
     return pdf.save();
   }
 
-  /* ---------- IRS Form 4506-T (City copy; real form fields) ---------- */
+  /* ---------- Attachment 4: Affidavit of Individual Social Disadvantage (only owners the City does not presume disadvantaged) ---------- */
+  async function attachment4(P, idx) {
+    var o = (P.owners || [])[idx || 0] || {}, b = P.biz || {}, E = root.CertEngine;
+    var pdf = await load('forms/chi-attach4-affidavit-social-disadvantage.pdf');
+    var font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica), bold = await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    INK = PDFLib.rgb(0.05, 0.1, 0.5);
+    var pg = pdf.getPages(), p1 = pg[0], p4 = pg[3];
+    var addr = [b.address, [b.city, b.state, b.zip].filter(has).join(' ')].filter(has).join(', ');
+    fit(p1, o.name, font, 256, 375, 300, 10);
+    fit(p1, b.legalName, font, 256, 335, 300, 10);
+    fit(p1, addr, font, 256, 295, 300, 10);
+    fit(p1, [o.homeStreet, o.homeCSZ].filter(has).join(', '), font, 256, 236, 300, 10);
+    fit(p1, o.homePhone || b.phone, font, 218, 177, 200, 10);
+    fit(p1, b.fax, font, 218, 157, 200, 10);
+    fit(p1, o.ownerEmail || b.email, font, 218, 137, 200, 10);
+    fit(p4, o.name, font, 228, 407, 300, 10);
+    /* the written account, in the owner's own words, on added pages */
+    var words = E.wordCount(o.sd_statement), page = pdf.addPage([612, 792]), y = 738;
+    page.drawText('Affidavit of Individual Social Disadvantage: written account', { x: 72, y: y, size: 13, font: bold, color: PDFLib.rgb(0, 0, 0) }); y -= 16;
+    page.drawText(clean((o.name || '') + ', ' + (b.legalName || '') + '  |  ' + words + ' words'), { x: 72, y: y, size: 9, font: font, color: PDFLib.rgb(0.3, 0.3, 0.3) }); y -= 24;
+    String(o.sd_statement || '').split(/\n+/).forEach(function (par) {
+      wrapWords(par, font, 11, 468).forEach(function (l) { if (y < 70) { page = pdf.addPage([612, 792]); y = 738; } page.drawText(l, { x: 72, y: y, size: 11, font: font, color: INK }); y -= 14.5; });
+      y -= 8;
+    });
+    return pdf.save();
+  }
+
+  /* ---------- IRS Form 4506-T, current IRS version (Rev. 4-2025), real form fields ---------- */
   async function form4506T(P) {
-    var b = P.biz || {}, f = P.fin || {}, pdf = await load('forms/chi-attach5-irs-4506t.pdf'), form = pdf.getForm();
-    var pre = 'topmostSubform[0].Page1[0].';
-    function t(n, v) { if (has(v)) form.getTextField(pre + n + '[0]').setText(clean(v)); }
-    t('p1-t1', b.legalName);
-    t('p1-t2', b.ein);
-    t('p1-t7', [b.legalName, [b.address, b.city, b.state, b.zip].filter(has).join(', ')].filter(has).join(', '));
-    t('p1-t10', (f.taxForm || '').replace(/\s*\(.*\)/, ''));
-    form.getCheckBox(pre + 'p1-cb1[0]').check();
+    var b = P.biz || {}, f = P.fin || {}, pdf = await load('forms/irs-4506t-rev-2025-04.pdf'), form = pdf.getForm();
+    function fld(n) { var m = form.getFields().filter(function (x) { return x.getName().indexOf('.' + n + '[') >= 0 || x.getName() === n; }); if (!m.length) throw new Error('4506-T field not found: ' + n); return m[0]; }
+    function t(n, v) { if (has(v)) fld(n).setText(clean(v)); }
+    t('f1_1', b.legalName);
+    t('f1_2', b.ein);
+    t('f1_5', [b.legalName, [b.address, b.city, b.state, b.zip].filter(has).join(', ')].filter(has).join(', '));
+    t('f1_8', String(f.taxForm || '').split(' ')[0]);
+    fld('c1_1').check(); /* first c1_1 box = 6a Return Transcript */
     var yrs = (f.taxYears || '').split(/[,;\s]+/).filter(function (x) { return /^\d{4}$/.test(x); }).sort().reverse().slice(0, 4).reverse();
-    ['p1-t11', 'p1-t14', 'p1-t17', 'p1-t20'].forEach(function (n, i) { if (yrs[i]) t(n, '12/31/' + yrs[i]); });
-    t('p1-t38', String(b.phone || '').replace(/\D/g, '').replace(/^1?(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3'));
+    var cells = [['f1_15', 'f1_16', 'f1_17'], ['f1_18', 'f1_19', 'f1_20'], ['f1_21', 'f1_22', 'f1_23'], ['f1_24', 'f1_25', 'f1_26']];
+    yrs.forEach(function (y, i) { t(cells[i][0], '12'); t(cells[i][1], '31'); t(cells[i][2], y); });
+    t('f1_13', String(b.phone || '').replace(/\D/g, '').replace(/^1?(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3'));
     form.updateFieldAppearances(await pdf.embedFont(PDFLib.StandardFonts.Helvetica));
     return pdf.save();
   }
 
-  var api = { attachment1: attachment1, attachment2: attachment2, form4506T: form4506T };
+  var api = { attachment1: attachment1, attachment2: attachment2, attachment4: attachment4, form4506T: form4506T };
   root.CertForms = api;
 })(window);

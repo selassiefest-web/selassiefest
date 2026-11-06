@@ -79,7 +79,7 @@
       { k: 'incDate', label: 'Date formed', type: 'date', req: 1 },
       { k: 'startDate', label: 'Date you began operating', type: 'date' },
       { k: 'address', label: 'Business street address', req: 1 }, { k: 'city', label: 'City', req: 1 }, { k: 'state', label: 'State', req: 1 }, { k: 'zip', label: 'ZIP', req: 1 },
-      { k: 'phone', label: 'Business phone', req: 1 }, { k: 'email', label: 'Business email', req: 1 }, { k: 'website', label: 'Website (optional)' },
+      { k: 'phone', label: 'Business phone', req: 1 }, { k: 'fax', label: 'Business fax (optional)' }, { k: 'email', label: 'Business email', req: 1 }, { k: 'website', label: 'Website (optional)' },
       { k: 'naics', label: 'NAICS codes and what you do under each (one per line: code - description)', type: 'textarea', req: 1, where: { t: 'Census NAICS search', u: LINK.naics.u, how: 'Search your trade (e.g. "general contractor"). Only list work you actually perform; the City certifies only those codes.' } },
       { k: 'scope', label: 'In plain words, what work does the business perform?', type: 'textarea', req: 1 },
       { k: 'employeesFT', label: 'Full-time employees' }, { k: 'employeesPT', label: 'Part-time / seasonal employees' },
@@ -118,8 +118,17 @@
     { id: 'pnw', title: 'Personal net worth (per owner)', scope: 'array', arr: 'owners', max: 4, noAdd: true, blurb: 'Fills Attachment 2. Round numbers are fine if you do not have exact figures, but they must be honest. Do not include the value of this business or your primary home. Leave blank if zero.', fields: [
       { k: 'a_cash', label: 'Cash on hand and in banks ($)' }, { k: 'a_savings', label: 'Savings accounts ($)' }, { k: 'a_recv', label: 'Accounts and notes receivable ($)' },
       { k: 'a_life', label: 'Life insurance cash surrender value ($)' }, { k: 'a_stocks', label: 'Stocks and bonds ($)' }, { k: 'a_auto', label: 'Automobile present value ($)' },
-      { k: 'l_payable', label: 'Accounts payable ($)' }, { k: 'l_notes', label: 'Notes payable to banks and others ($)' }, { k: 'l_instAuto', label: 'Installment account, auto ($)' },
-      { k: 'l_instOther', label: 'Installment account, other ($)' }, { k: 'l_loanLife', label: 'Loan on life insurance ($)' }, { k: 'l_taxes', label: 'Unpaid taxes ($)' }, { k: 'l_other', label: 'Other liabilities ($)' }
+      { k: 'l_payable', label: 'Accounts payable ($)' }, { k: 'l_notes', label: 'Notes payable to banks and others ($)' }, { k: 'l_instAuto', label: 'Installment account, auto ($)' }, { k: 'l_instAutoMo', label: 'Auto installment: monthly payment ($)' },
+      { k: 'l_instOther', label: 'Installment account, other ($)' }, { k: 'l_instOtherMo', label: 'Other installment: monthly payment ($)' }, { k: 'l_loanLife', label: 'Loan on life insurance ($)' }, { k: 'l_taxes', label: 'Unpaid taxes ($)' }, { k: 'l_other', label: 'Other liabilities ($)' },
+      { k: 'n_notes', label: 'Section 1, notes payable: one note per line as  holder name and address | original balance | current balance | payment amount | frequency | how secured / collateral', type: 'textarea', help: 'Example: Example Bank, 1 Main St, Chicago | 20000 | 12500 | 450 | monthly | Unsecured. Leave blank if none.' },
+      { k: 'n_stocks', label: 'Section 2, stocks and bonds: one per line as  shares | security name | cost | market value | quotation / exchange and date | total value', type: 'textarea', help: 'Example: 100 | Example Corp common | 4000 | 5200 | NYSE 11/1/2026 | 5200. Leave blank if none.' },
+      { k: 'n_rentals', label: 'Rental property income: one per line as  property location | monthly payment received', type: 'textarea', help: 'Example: 12 Sample Rd, Chicago | 1800. Leave blank if none.' },
+      { k: 'n_taxes', label: 'Section 4, unpaid taxes: type, to whom payable, when due, amount, any lien', type: 'textarea', help: 'Leave blank if none.' },
+      { k: 'n_other', label: 'Section 5, other liabilities: describe in detail', type: 'textarea', help: 'Leave blank if none.' },
+      { k: 'n_life', label: 'Section 6, life insurance held: face amount, cash surrender value, company, beneficiaries', type: 'textarea', help: 'Leave blank if none.' }
+    ] },
+    { id: 'sd', title: 'Social disadvantage statement (Attachment 4)', scope: 'array', arr: 'owners', max: 4, noAdd: true, onlyIf: 'needsSD', blurb: 'The City presumes women, African-Americans, Hispanics, Asian-Americans and American Indians to be socially disadvantaged. Owners in those groups skip this. Anyone else must write a personal account, 500 to 1,000 words, in their own words.', fields: [
+      { k: 'sd_statement', label: 'Your written account of the discrimination you personally experienced and its effect on your business', type: 'textarea', tall: 1, help: 'The City requires: (1) you personally suffered it, not merely group membership; (2) specific instances, told in detail; (3) rooted in treatment in American society; (4) chronic and long-standing, not fleeting; (5) it hurt your entry into or advancement in business. Evidence areas: education, employment, business history (credit/capital, contract access, customers, associations). Write it yourself; only true events. The Hub counts your words.' }
     ] },
     { id: 'fin', title: 'Tax and money records', scope: 'fin', blurb: 'Where your financial paperwork lives.', fields: [
       { k: 'taxYears', label: 'Tax years you have filed (e.g. 2021, 2022, 2023, 2024, 2025)', req: 1 },
@@ -152,7 +161,10 @@
       capNote: 'Transferred from personal savings account to the business checking account in March 2019; bank statement for that month on file.',
       duties: 'Sets bid prices and signs every proposal and contract; hires and supervises the project managers; approves all payables and signs checks; negotiates with clients and subcontractors; meets weekly with every job superintendent.',
       signs: 'Yes', otherJob: 'None', formerName: 'None', homeStreet: '200 Sample St', homeCSZ: 'Chicago, IL 60608', homePhone: '(312) 555-0199', ownerEmail: 'alexis@abcgc.example', nationalOrigin: 'United States', salary: '95000', family: 'None',
-      a_cash: '45000', a_savings: '80000', a_recv: '12000', a_life: '15000', a_stocks: '90000', a_auto: '38000', l_payable: '4000', l_notes: '0', l_instAuto: '18000', l_instOther: '0', l_loanLife: '0', l_taxes: '0', l_other: '8000' }],
+      a_cash: '45000', a_savings: '80000', a_recv: '12000', a_life: '15000', a_stocks: '90000', a_auto: '38000', l_payable: '4000', l_notes: '0', l_instAuto: '18000', l_instOther: '0', l_loanLife: '0', l_taxes: '0', l_other: '8000', l_instAutoMo: '420',
+      n_notes: 'Example Bank, 1 Main St, Chicago | 30000 | 18000 | 650 | monthly | Vehicle loan, secured by truck',
+      n_stocks: '100 | Example Corp common | 4000 | 5200 | NYSE 11/1/2026 | 5200',
+      n_rentals: '', n_taxes: '', n_other: 'Credit card balances carried by the owner personally.', n_life: 'Term policy, face $250,000, Example Life Co., beneficiary spouse; no cash surrender value.' }],
     fin: { taxForm: '1040 (Schedule C)', taxYears: '2021, 2022, 2023, 2024, 2025', cpa: 'Example CPA, (312) 555-0111', bank: 'Example Bank, Loop branch', signers: 'Alexis B. Carter, sole signer', stateTax: 'IDOR 0000-0000', bonding: 'None' },
     contracts: [
       { client: 'Example Retail Co.', project: 'Tenant build-out, 4,000 sq ft, general contractor', amount: '310000', year: '2025', paid: 'Yes' },
@@ -169,6 +181,9 @@
     var L = n(o.l_payable) + n(o.l_notes) + n(o.l_instAuto) + n(o.l_instOther) + n(o.l_loanLife) + n(o.l_taxes) + n(o.l_other);
     return { assets: A, liabilities: L, net: A - L };
   }
+  function wordCount(t) { var m = String(t == null ? '' : t).trim().match(/\S+/g); return m ? m.length : 0; }
+  /* City Attachment 4 text: women, African-Americans, Hispanics, Asian-Americans and American Indians are presumed socially disadvantaged */
+  function needsSD(o) { return !!(o && has(o.ethnicity) && !isMinority(o) && o.gender !== 'Female'); }
   /* ---------- eligibility screen ---------- */
   function pct(o) { var n = parseFloat(o.pct); return isNaN(n) ? 0 : n; }
   function isMinority(o) { return ['Black or African American', 'Hispanic / Latino', 'Asian American', 'Native American / Alaska Native'].indexOf(o.ethnicity) >= 0; }
@@ -185,6 +200,7 @@
     out.push({ lvl: wbe >= 51 ? 'ok' : 'warn', t: 'Women-owned (WBE) share held by qualifying citizens / permanent residents: ' + wbe + '% (need at least 51%).' });
     if (mbe >= 51 && wbe >= 51) out.push({ lvl: 'info', t: 'This firm can qualify as either MBE or WBE. Ask DPS which category to apply under (one is typically chosen). Do not guess.' });
     O.forEach(function (o) {
+      if (needsSD(o)) out.push({ lvl: 'info', t: (o.name || 'Owner') + ' is not in a group the City presumes socially disadvantaged. To count toward MBE/WBE ownership, the City decides case by case from a written account (Attachment 4, 500 to 1,000 words). Ask DPS if that is realistic before investing.' });
       if ((isMinority(o) || o.gender === 'Female') && pct(o) >= 20) {
         var nw = netWorth(o);
         if (nw.net > PNW_LIMIT) out.push({ lvl: 'warn', t: (o.name || 'Owner') + ' reports net worth of $' + Math.round(nw.net).toLocaleString('en-US') + ', above the City 2026 limit of $2,955,193.19 (construction). Over the limit means economically not disadvantaged. Confirm what counts with DPS before applying.' });
@@ -218,6 +234,9 @@
         s.fields.forEach(function (f) { if (f.req && !has(d[f.k])) out.push({ sec: s.title, label: f.label, where: f.where || null }); });
       }
     });
+    (P.owners || []).forEach(function (o, i) {
+      if (needsSD(o)) { var w = wordCount(o.sd_statement); if (w < 500 || w > 1000) out.push({ sec: 'Social disadvantage statement #' + (i + 1) + ' (' + (o.name || '') + ')', label: 'Written account is ' + w + ' words; the City requires 500 to 1,000', where: null }); }
+    });
     return out;
   }
 
@@ -233,7 +252,7 @@
     add('statetax', 'Tax and financial', 'State and local business tax filings', 'Shows you are current with Illinois and City taxes.', [], 'Pull your IDOR and City filings; your CPA usually has them.');
     add('fin', 'Tax and financial', 'Year-to-date profit and loss and balance sheet', 'Shows current financial health.', [], 'Ask your bookkeeper/CPA to run them from your accounting software, signed and dated this month.');
     add('ownstmt', 'Tax and financial', "Attachment 1: Individual Statement of Ownership, one per owner (with copy of driver's license/State ID, proof of race/ethnicity, 3 years of W-2/1099s, last 3 individual federal and state returns)", 'Official City form. Asks SSN, license number and date of birth, which you write in by hand; the Hub never stores them.', [LINK.attach1], 'Use the Official Forms tab to pre-fill everything except SSN, license number and date of birth.');
-    add('social', 'Control and expertise', 'Attachment 4: Affidavit of Social Disadvantage (if the City asks for it for your category)', 'Official City form. Confirm with DPS whether your category requires it.', [LINK.attach4], 'Download, complete and sign.', 'common');
+    O.forEach(function (o, i) { if (needsSD(o)) add('social' + i, 'Legal and identity', 'Attachment 4: Affidavit of Individual Social Disadvantage with 500 to 1,000 word written account: ' + (o.name || 'owner'), 'Required because this owner is not in a group the City presumes socially disadvantaged.', [LINK.attach4], 'Write the account in your own words in the Hub (Social disadvantage tab), then sign before a notary.'); });
     add('capital', 'Tax and financial', 'Proof of capital: bank statements / canceled checks showing how each owner funded the business', 'The City checks that the qualifying owner, not someone else, put in the money.', [], 'Pull the bank statements for the months money went in. A drafted Capital Contribution Statement is in the Draft Documents tab, but it only describes what the bank records already prove.');
     add('bankcards', 'Tax and financial', 'Bank signature cards and banking resolution (authorized signers)', 'Shows who controls the money.', [], 'Ask your branch manager for signature cards and the resolution naming the authorized signers.');
     add('pnw', 'Tax and financial', 'Personal Net Worth Statement for each qualifying owner', 'Completed inside the portal. We collect the figures once so you can copy them in.', [LINK.attach2, LINK.pnwLimit, LINK.portal], 'The Portal Answers tab lists your numbers. List assets and debts honestly; do not guess.');
@@ -380,6 +399,6 @@
       'Could you please confirm:\n' + c.ask.map(function (q) { return '- ' + q; }).join('\n') + '\n\nIf anything is missing, tell me exactly what and I will send it the same day.\n\nThank you,\n' + val(o.name, 'name') + '\n' + val(b.phone, 'phone') + '\n' + val(b.email, 'email') };
   }
 
-  var api = { PNW_LIMIT: PNW_LIMIT, netWorth: netWorth, esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
+  var api = { needsSD: needsSD, wordCount: wordCount, PNW_LIMIT: PNW_LIMIT, netWorth: netWorth, esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CertEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
