@@ -179,6 +179,7 @@ Deno.serve(async (req) => {
     if ((count ?? 0) >= MAX_EXTRACTS_PER_DAY) return reply({ ok: false, error: "The daily limit for reading documents was reached. Try again tomorrow, or enter the answers by hand." }, 429);
     await audit(clientId, "extract", actor);
     const r = await claudeRead(files as any);
+    if (/credit balance|billing/i.test(String((r as any).error))) return reply({ ok: false, error: "Automatic reading is switched off right now. Send the files to Ras Tafari Inc. staff and they will read them and fill in the blanks for you." }, 503);
     if ((r as any).error) return reply({ ok: false, detail: String((r as any).error), error: "The documents could not be read. Try a clearer, larger screenshot." }, 502);
     return reply({ ok: true, data: (r as any).data });
   }
