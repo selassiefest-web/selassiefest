@@ -46,7 +46,7 @@ begin
         'scan_last', (select max(s.created_at) from fs_partner_scans s where s.pitch_key = p.pitch_key)
       ) order by p.name)
       from fs_partners p
-      where (p.stage = 'not_contacted' and p.next_step_due between date '2026-11-06' and date '2026-11-08')
+      where (p.stage = 'not_contacted' and p.next_step_due between date '2026-11-13' and date '2026-11-15')
          or exists (select 1 from fs_partner_activity a where a.partner_id = p.id and a.summary like 'Walk %')
     ), '[]'::jsonb)
   );
