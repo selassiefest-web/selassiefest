@@ -40,6 +40,7 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--li
 <div id="view"></div>
 </main>
 <script src="engine.js"></script>
+<script src="forms.js"></script>
 <script>
 (function(){
 var E=window.CertEngine,esc=E.esc,KEY='certhub-v1';
@@ -48,7 +49,7 @@ var P;
 try{P=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){P=null}
 if(!P)P=blank();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
-var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
+var TABS=[['biz','1. Business'],['owners','2. Owners'],['fin','3. Tax and money'],['pnw','3b. Net worth'],['contracts','4. Work done'],['check','Checklist'],['time','Timeline'],['who','Who to contact'],['forms','Official forms'],['ans','Portal answers'],['draft','Draft documents'],['bind','Binder']];
 var cur='biz';
 function sec(id){return E.SECTIONS.filter(function(s){return s.id===id})[0];}
 function link(l){return l?'<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>':'';}
@@ -70,8 +71,8 @@ function drawSection(id){
   var s=sec(id),h='<h2>'+esc(s.title)+'</h2><p class="sub">'+esc(s.blurb||'')+'</p>';
   if(s.scope==='array'){
     var arr=P[s.arr]=P[s.arr]||[];if(!arr.length)arr.push({});
-    arr.forEach(function(row,i){h+='<div class="card"><div class="row"><h3>#'+(i+1)+(row.name?' '+esc(row.name):'')+'</h3>'+(arr.length>1?'<button class="btn alt sm" data-rm="'+s.arr+'|'+i+'">Remove</button>':'')+'</div><div class="grid">'+s.fields.map(function(f){return field(f,row,s.arr+'.'+i);}).join('')+'</div></div>';});
-    if(arr.length<s.max)h+='<button class="btn alt" data-add="'+s.arr+'">'+esc(s.addLabel)+'</button>';
+    arr.forEach(function(row,i){h+='<div class="card"><div class="row"><h3>#'+(i+1)+(row.name?' '+esc(row.name):'')+'</h3>'+(arr.length>1&&!s.noAdd?'<button class="btn alt sm" data-rm="'+s.arr+'|'+i+'">Remove</button>':'')+'</div><div class="grid">'+s.fields.map(function(f){return field(f,row,s.arr+'.'+i);}).join('')+'</div></div>';});
+    if(!s.noAdd&&arr.length<s.max)h+='<button class="btn alt" data-add="'+s.arr+'">'+esc(s.addLabel)+'</button>';
   }else{
     P[s.scope]=P[s.scope]||{};
     if(id==='biz')h+='<div class="card"><label>Target date to submit the application (drives the timeline)</label><input type="date" data-f="root|startDate" value="'+esc(P.startDate||'')+'"></div>';
@@ -112,6 +113,28 @@ function drawWho(){
   });
   return h+'<h2>Keep a contact log</h2><div class="card"><textarea data-f="root|log" placeholder="Date, who, what was said, what they promised, next step.">'+esc(P.log||'')+'</textarea></div>';
 }
+function lib(u){return new Promise(function(res,rej){var s=document.createElement('script');s.src=u;s.onload=res;s.onerror=function(){rej(new Error('Could not load '+u))};document.head.appendChild(s);});}
+var libs=null;
+function ensureLibs(){if(libs)return libs;libs=lib('https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js').then(function(){return lib('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js')}).then(function(){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});return libs;}
+function drawForms(){
+  var O=P.owners||[],ms=E.missing(P).length;
+  var h='<h2>Official City forms, pre-filled</h2><p class="sub">These are the City of Chicago\'s own unaltered PDFs, filled from your answers. Preview, then download and print. Nothing is uploaded.</p>';
+  h+='<div class="warnbox"><b>Left blank on purpose:</b> Social Security number, driver\'s license number, date of birth, signatures, the True/False attestations on Attachment 1, and every notary block. You write those in by hand. The Hub never stores them.'+(ms?' <b>'+ms+' answers are still missing</b>, so some boxes will be empty.':'')+'</div>';
+  O.forEach(function(o,i){h+='<div class="card"><h3>'+esc(o.name||('Owner '+(i+1)))+'</h3><div class="row"><button class="btn sm" data-form="a1|'+i+'|pv">Preview Attachment 1</button><button class="btn alt sm" data-form="a1|'+i+'|dl">Download</button><span class="note">Individual Statement of Ownership</span></div><div class="row"><button class="btn sm" data-form="a2|'+i+'|pv">Preview Attachment 2</button><button class="btn alt sm" data-form="a2|'+i+'|dl">Download</button><span class="note">Personal Net Worth Statement</span></div></div>';});
+  h+='<div class="card"><h3>IRS Form 4506-T (business)</h3><div class="row"><button class="btn sm" data-form="t|0|pv">Preview</button><button class="btn alt sm" data-form="t|0|dl">Download</button></div><div class="note">Pre-filled from the City\'s copy (Rev. January 2010). Ask DPS whether they accept that revision or want the current IRS version, and whether line 5 (third party) should name the City. The signature stays blank.</div></div>';
+  h+='<div class="card"><h3>Other official forms (not pre-filled)</h3><ul class="note"><li><a href="forms/chi-attach4-affidavit-social-disadvantage.pdf" target="_blank">Attachment 4: Affidavit of Social Disadvantage</a>: only if applying as an "Other Socially Disadvantaged Group". It is your own sworn account and must be written by you.</li><li><a href="forms/chi-checklist-new-schedule-a.pdf" target="_blank">Official Schedule A checklist</a>, <a href="forms/chi-expedited-process.pdf" target="_blank">Expedited process</a>, <a href="forms/chi-construction-regulations.pdf" target="_blank">Construction regulations</a>, <a href="forms/chi-definition-of-key-terms.pdf" target="_blank">Key terms</a>.</li><li>The Schedule A application itself is completed online at <a href="https://www.chicago.mwdbe.com" target="_blank" rel="noopener">chicago.mwdbe.com</a> (see Portal answers).</li></ul></div>';
+  h+='<div id="pvbox"></div>';return h;
+}
+async function runForm(spec){
+  var p=spec.split('|'),kind=p[0],idx=+p[1],mode=p[2],box=document.getElementById('pvbox');
+  box.innerHTML='<p class="note">Working...</p>';
+  try{await ensureLibs();var bytes=await {a1:CertForms.attachment1,a2:CertForms.attachment2,t:CertForms.form4506T}[kind](P,idx);
+    var nm={a1:'Attachment1-Individual-Statement-of-Ownership',a2:'Attachment2-Personal-Net-Worth',t:'IRS-4506-T'}[kind]+((P.owners&&P.owners[idx]&&kind!=='t')?'-'+(P.owners[idx].name||'').replace(/[^A-Za-z0-9]+/g,'-'):'')+'.pdf';
+    if(mode==='dl'){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));a.download=nm;document.body.appendChild(a);a.click();a.remove();box.innerHTML='<p class="note ok">Downloaded '+esc(nm)+'. Check your Downloads folder.</p>';return;}
+    var d=await pdfjsLib.getDocument({data:bytes}).promise;box.innerHTML='<h3>Preview: '+esc(nm)+'</h3><p class="note">'+d.numPages+' page(s). <button class="btn alt sm" data-form="'+spec.replace('|pv','|dl')+'">Download this</button></p>';
+    for(var n=1;n<=d.numPages;n++){var pg=await d.getPage(n),v=pg.getViewport({scale:1.4}),c=document.createElement('canvas');c.width=v.width;c.height=v.height;c.style.cssText='max-width:100%;height:auto;border:1px solid var(--line);margin:8px 0;background:#fff';box.appendChild(c);await pg.render({canvasContext:c.getContext('2d'),viewport:v,annotationMode:1}).promise;}
+  }catch(e){box.innerHTML='<p class="stop">Could not build the form: '+esc(e.message)+'</p>';}
+}
 function drawAns(){
   var S=E.answers(P),h='<h2>Portal answer sheet</h2><p class="sub">The City portal can\'t be pre-filled by us. Copy these answers into the online application section by section. Anything shown as [ NEEDED ] is still missing.</p>';
   S.forEach(function(s,i){var id='a'+i;h+='<div class="card"><h3>'+esc(s.title)+'</h3><table>'+s.rows.map(function(r){return '<tr><th style="width:34%">'+esc(r[0])+'</th><td>'+esc(r[1]).replace(/\n/g,'<br>')+'</td></tr>';}).join('')+'</table><pre class="hidden" id="'+id+'">'+esc(s.title+'\n'+s.rows.map(function(r){return r[0]+': '+r[1];}).join('\n'))+'</pre>'+copyBtn(id)+'</div>';});
@@ -145,8 +168,8 @@ function drawBind(){
 }
 function render(){
   drawTabs();drawSample();var v=document.getElementById('view'),h='';
-  if(['biz','owners','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
-  else h={check:drawCheck,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
+  if(['biz','owners','pnw','fin','contracts'].indexOf(cur)>=0)h=drawSection(cur);
+  else h={check:drawCheck,forms:drawForms,time:drawTime,who:drawWho,ans:drawAns,draft:drawDraft,bind:drawBind}[cur]();
   v.innerHTML=h;
 }
 function setPath(path,key,value){
@@ -163,6 +186,7 @@ document.addEventListener('click',function(e){
   if(t.getAttribute('data-tab')){cur=t.getAttribute('data-tab');render();window.scrollTo(0,0);}
   else if(t.getAttribute('data-add')){var a=t.getAttribute('data-add');P[a].push({});save();render();}
   else if(t.getAttribute('data-rm')){var r=t.getAttribute('data-rm').split('|');P[r[0]].splice(+r[1],1);save();render();}
+  else if(t.getAttribute('data-form')){runForm(t.getAttribute('data-form'));}
   else if(t.getAttribute('data-copy')){var el=document.getElementById(t.getAttribute('data-copy'));var txt=el.textContent;try{navigator.clipboard.writeText(txt);}catch(x){}t.textContent='Copied';setTimeout(function(){t.textContent='Copy';},1200);}
   else if(t.id==='ld'){P=JSON.parse(JSON.stringify(E.SAMPLE));P.isSample=true;save();render();}
   else if(t.id==='clr'){P=blank();save();cur='biz';render();}

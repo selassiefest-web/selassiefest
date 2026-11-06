@@ -108,10 +108,22 @@
       { k: 'duties', label: 'What this owner personally decides and does each week (bids, hiring, signing contracts, supervising jobs, banking)', type: 'textarea', req: 1 },
       { k: 'signs', label: 'Can this owner sign checks and contracts alone?', type: 'select', opts: ['Yes', 'No'] },
       { k: 'otherJob', label: 'Other employment or businesses', help: 'Write "none" if none.' },
-      { k: 'pnw', label: 'Personal net worth, approximate ($)', help: 'Needed for the Personal Net Worth Statement. Assets minus debts, excluding the business and primary home.' }
+      { k: 'formerName', label: 'Former or maiden name (write none if none)' },
+      { k: 'homeStreet', label: 'Home street address', req: 1 }, { k: 'homeCSZ', label: 'Home city, state, ZIP', req: 1 },
+      { k: 'homePhone', label: 'Home / cell phone' }, { k: 'ownerEmail', label: 'Owner email' },
+      { k: 'nationalOrigin', label: 'National origin (country)', help: 'Asked on Attachment 1.' },
+      { k: 'salary', label: 'Current yearly salary from this business ($)' },
+      { k: 'family', label: 'Family relationships among owners, officers, directors or managers (names and relationship; write none if none)', type: 'textarea' }
+    ] },
+    { id: 'pnw', title: 'Personal net worth (per owner)', scope: 'array', arr: 'owners', max: 4, noAdd: true, blurb: 'Fills Attachment 2. Round numbers are fine if you do not have exact figures, but they must be honest. Do not include the value of this business or your primary home. Leave blank if zero.', fields: [
+      { k: 'a_cash', label: 'Cash on hand and in banks ($)' }, { k: 'a_savings', label: 'Savings accounts ($)' }, { k: 'a_recv', label: 'Accounts and notes receivable ($)' },
+      { k: 'a_life', label: 'Life insurance cash surrender value ($)' }, { k: 'a_stocks', label: 'Stocks and bonds ($)' }, { k: 'a_auto', label: 'Automobile present value ($)' },
+      { k: 'l_payable', label: 'Accounts payable ($)' }, { k: 'l_notes', label: 'Notes payable to banks and others ($)' }, { k: 'l_instAuto', label: 'Installment account, auto ($)' },
+      { k: 'l_instOther', label: 'Installment account, other ($)' }, { k: 'l_loanLife', label: 'Loan on life insurance ($)' }, { k: 'l_taxes', label: 'Unpaid taxes ($)' }, { k: 'l_other', label: 'Other liabilities ($)' }
     ] },
     { id: 'fin', title: 'Tax and money records', scope: 'fin', blurb: 'Where your financial paperwork lives.', fields: [
       { k: 'taxYears', label: 'Tax years you have filed (e.g. 2021, 2022, 2023, 2024, 2025)', req: 1 },
+      { k: 'taxForm', label: 'Federal return the business files', type: 'select', opts: ['1040 (Schedule C)', '1065', '1120', '1120-S'], req: 1, help: 'Used on the IRS 4506-T. Your CPA or last return will say.' },
       { k: 'cpa', label: 'CPA / preparer name and phone' },
       { k: 'bank', label: 'Business bank and branch', req: 1 },
       { k: 'signers', label: 'Who is authorized on the business bank account?', type: 'textarea', req: 1 },
@@ -139,8 +151,9 @@
       hours: '55', years: '14', education: 'B.S. Construction Management; OSHA 30; LEED Green Associate', trades: 'None personally', capAmt: '60000', capDate: '2019-03-15', capSource: 'Personal savings',
       capNote: 'Transferred from personal savings account to the business checking account in March 2019; bank statement for that month on file.',
       duties: 'Sets bid prices and signs every proposal and contract; hires and supervises the project managers; approves all payables and signs checks; negotiates with clients and subcontractors; meets weekly with every job superintendent.',
-      signs: 'Yes', otherJob: 'None', pnw: '420000' }],
-    fin: { taxYears: '2021, 2022, 2023, 2024, 2025', cpa: 'Example CPA, (312) 555-0111', bank: 'Example Bank, Loop branch', signers: 'Alexis B. Carter, sole signer', stateTax: 'IDOR 0000-0000', bonding: 'None' },
+      signs: 'Yes', otherJob: 'None', formerName: 'None', homeStreet: '200 Sample St', homeCSZ: 'Chicago, IL 60608', homePhone: '(312) 555-0199', ownerEmail: 'alexis@abcgc.example', nationalOrigin: 'United States', salary: '95000', family: 'None',
+      a_cash: '45000', a_savings: '80000', a_recv: '12000', a_life: '15000', a_stocks: '90000', a_auto: '38000', l_payable: '4000', l_notes: '0', l_instAuto: '18000', l_instOther: '0', l_loanLife: '0', l_taxes: '0', l_other: '8000' }],
+    fin: { taxForm: '1040 (Schedule C)', taxYears: '2021, 2022, 2023, 2024, 2025', cpa: 'Example CPA, (312) 555-0111', bank: 'Example Bank, Loop branch', signers: 'Alexis B. Carter, sole signer', stateTax: 'IDOR 0000-0000', bonding: 'None' },
     contracts: [
       { client: 'Example Retail Co.', project: 'Tenant build-out, 4,000 sq ft, general contractor', amount: '310000', year: '2025', paid: 'Yes' },
       { client: 'Sample Dental Group', project: 'Office renovation, prime contractor', amount: '185000', year: '2025', paid: 'Yes' },
@@ -149,6 +162,13 @@
     docs: {}
   };
 
+  var PNW_LIMIT = 2955193.19; // City of Chicago 2026 Personal Net Worth limit (construction), official PDF
+  function n(x) { var v = parseFloat(String(x == null ? '' : x).replace(/[^0-9.\-]/g, '')); return isNaN(v) ? 0 : v; }
+  function netWorth(o) {
+    var A = n(o.a_cash) + n(o.a_savings) + n(o.a_recv) + n(o.a_life) + n(o.a_stocks) + n(o.a_auto);
+    var L = n(o.l_payable) + n(o.l_notes) + n(o.l_instAuto) + n(o.l_instOther) + n(o.l_loanLife) + n(o.l_taxes) + n(o.l_other);
+    return { assets: A, liabilities: L, net: A - L };
+  }
   /* ---------- eligibility screen ---------- */
   function pct(o) { var n = parseFloat(o.pct); return isNaN(n) ? 0 : n; }
   function isMinority(o) { return ['Black or African American', 'Hispanic / Latino', 'Asian American', 'Native American / Alaska Native'].indexOf(o.ethnicity) >= 0; }
@@ -158,13 +178,18 @@
     var tot = O.reduce(function (a, o) { return a + pct(o); }, 0);
     var mbe = O.filter(function (o) { return isMinority(o) && citizenOK(o); }).reduce(function (a, o) { return a + pct(o); }, 0);
     var wbe = O.filter(function (o) { return o.gender === 'Female' && citizenOK(o); }).reduce(function (a, o) { return a + pct(o); }, 0);
-    if (b.entityType === 'Nonprofit corporation') out.push({ lvl: 'stop', t: 'M/WBE certification is built for for-profit businesses. A nonprofit is very likely not eligible. Confirm with DPS before spending any effort.' });
+    if (b.entityType === 'Nonprofit corporation') out.push({ lvl: 'stop', t: "The City's official checklist states proof of non-profit status is \"not an option for M/WBE Applicant firms.\" A nonprofit is not eligible for M/WBE certification." });
     if (!O.length) out.push({ lvl: 'stop', t: 'Add at least one owner.' });
     else if (Math.abs(tot - 100) > 0.01) out.push({ lvl: 'warn', t: 'Ownership adds up to ' + tot + '%, not 100%.' });
     out.push({ lvl: mbe >= 51 ? 'ok' : 'warn', t: 'Minority-owned (MBE) share held by qualifying citizens / permanent residents: ' + mbe + '% (need at least 51%).' });
     out.push({ lvl: wbe >= 51 ? 'ok' : 'warn', t: 'Women-owned (WBE) share held by qualifying citizens / permanent residents: ' + wbe + '% (need at least 51%).' });
     if (mbe >= 51 && wbe >= 51) out.push({ lvl: 'info', t: 'This firm can qualify as either MBE or WBE. Ask DPS which category to apply under (one is typically chosen). Do not guess.' });
     O.forEach(function (o) {
+      if ((isMinority(o) || o.gender === 'Female') && pct(o) >= 20) {
+        var nw = netWorth(o);
+        if (nw.net > PNW_LIMIT) out.push({ lvl: 'warn', t: (o.name || 'Owner') + ' reports net worth of $' + Math.round(nw.net).toLocaleString('en-US') + ', above the City 2026 limit of $2,955,193.19 (construction). Over the limit means economically not disadvantaged. Confirm what counts with DPS before applying.' });
+        else out.push({ lvl: 'ok', t: (o.name || 'Owner') + ': net worth $' + Math.round(nw.net).toLocaleString('en-US') + ' is under the City 2026 limit of $2,955,193.19 (official figure; excludes the business and primary home per the form).' });
+      }
       if (isMinority(o) || o.gender === 'Female') {
         var h = parseFloat(o.hours);
         if (!isNaN(h) && h < 35) out.push({ lvl: 'warn', t: o.name + ' works ' + h + ' hrs/week. Reviewers look hard at whether the qualifying owner truly runs the business day to day.' });
@@ -237,7 +262,14 @@
       add('expert' + i, 'Control and expertise', 'Proof of expertise / credentials: ' + (o.name || 'owner ' + (i + 1)), 'Degrees, certifications and trade licenses.', [], 'Request transcripts or certificate copies from the issuing school or body.');
     });
     add('contracts', 'Control and expertise', 'Representative contracts, invoices and proof of payment in each NAICS code', 'Shows real operations in the work you ask to be certified for.', [], 'Pull signed contracts, invoices and the matching deposits. ' + (P.contracts && P.contracts.length ? 'You listed ' + P.contracts.length + ' in the Work tab.' : 'None listed yet.'));
-    add('org', 'Control and expertise', 'Organization chart, employee list, major equipment list', 'Commonly requested to show how the business is run and equipped. Confirm with DPS.', [], 'A one-page chart and a list are enough.', 'common');
+    add('org', 'Control and expertise', 'Current organization chart', 'Official checklist, section I.', [LINK.schedAChecklist], 'A one-page chart is enough.');
+    add('notary', 'Submit', 'Schedule A application signed by an Authorized Officer of the firm and NOTARIZED', 'Required by the official Schedule A checklist.', [LINK.schedAChecklist], 'Find a notary (many banks offer free notary service to customers) and bring photo ID. Do not sign before the notary watches you sign.');
+    add('minutes', 'Legal and identity', 'Board or member meeting minutes: the first and the two most recent, including the one electing current officers', 'Official checklist, section III.', [LINK.schedAChecklist], 'If you have never held a meeting, hold one now and write minutes that record real decisions.', 'list');
+    add('payroll', 'Control and expertise', 'Most recent 4 weeks of payroll for all employees and management, plus lists of trade employees and seasonal/contract employees by trade', 'Official checklist, section IV.', [LINK.schedAChecklist], 'Export payroll registers from your payroll service; build the two lists from them.');
+    add('invoices', 'Control and expertise', 'For every listed contract: the agreement (scope, term, compensation) and the first and last invoice or purchase order', 'Official checklist, section I.', [LINK.schedAChecklist], 'Pull each from your files and accounting software.');
+    add('loans', 'Tax and financial', 'Loan agreements from the last 3 years of $10,000 or more, lines/letters of credit, bond limits, certificate of insurance', 'Official checklist, section VI.', [LINK.schedAChecklist], 'Ask your lender, surety and insurance agent for copies and a current certificate of insurance.');
+    add('equip', 'Control and expertise', 'Equipment: titles and purchase papers if owned, or leases with the most recent payment if leased', 'Official checklist, section VIII.', [LINK.schedAChecklist], 'List each major piece and attach the paper that proves who owns or leases it.');
+    add('fin3', 'Tax and financial', 'Three years of the highest-level financial statements available (audited, reviewed or compiled) with balance sheet and income statement, plus current balance sheet', 'Official checklist, section VI. If none exist, the firm must certify that and explain in writing.', [LINK.schedAChecklist], 'Ask your CPA to compile them.');
     add('fee', 'Submit', '$250 non-refundable application fee, paid in the portal', 'Required to submit.', [LINK.portal], 'Have a card ready on submit day.');
     return L;
   }
@@ -270,7 +302,7 @@
     'Submit a complete, clean package the first time. An incomplete file delays the start of the review clock.',
     'Do the long-lead items on day one: certified Articles, IRS transcripts, citizenship documents and landlord signatures take the longest.',
     'Answer any request for information the same day, not the last day.',
-    'If you already hold Cook County MWBE or another partner certification, ask DPS and the State BEP about reciprocity and fast-track routes first (the State BEP advertises about 7 business days for partner-certified firms).',
+    'If you are already certified by the Women\'s Business Development Center (WBDC) or the Chicago Minority Business Development Council (CMBDC), the City offers an expedited "Outside Recognition" application instead of the full Schedule A (official process PDF). Cook County and the City also accept each other\'s M/WBE certification. The State BEP advertises about 7 business days for partner-certified firms.',
     'Get your analyst\'s name at submission and keep a dated log of every call and email (the Hub\'s nudge drafts do this).',
     'Make the qualifying owner available for a site visit or interview. The owner must be able to explain every bid, hire and bank decision.',
     'Never fill a gap with a guess. A wrong statement can delay or end the application; the Hub marks gaps as NEEDED so they cannot slip through.'
@@ -296,10 +328,10 @@
         ['Education / certifications', val(o.education, 'education')], ['Trade licenses', has(o.trades) ? o.trades : 'None'],
         ['Capital contributed', money(o.capAmt) + ' on ' + val(o.capDate, 'date') + ' from ' + val(o.capSource, 'source')], ['Source detail', val(o.capNote, 'description of source')],
         ['Day-to-day control', val(o.duties, 'duties')], ['Signs checks and contracts alone', val(o.signs, 'yes/no')], ['Other employment', val(o.otherJob, 'other employment (none if none)')],
-        ['Personal net worth (for the statement)', money(o.pnw)]
+        ['Personal net worth (from your line items)', '$' + Math.round(netWorth(o).net).toLocaleString('en-US') + ' (assets $' + Math.round(netWorth(o).assets).toLocaleString('en-US') + ', liabilities $' + Math.round(netWorth(o).liabilities).toLocaleString('en-US') + ')']
       ] });
     });
-    S.push({ title: 'Tax and banking', rows: [['Tax years filed', val(f.taxYears, 'tax years')], ['CPA', val(f.cpa, 'CPA')], ['Bank', val(f.bank, 'bank')], ['Authorized signers', val(f.signers, 'signers')], ['State / City tax IDs', val(f.stateTax, 'tax IDs')], ['Bonding', has(f.bonding) ? f.bonding : 'None']] });
+    S.push({ title: 'Tax and banking', rows: [['Federal return filed', val(f.taxForm, 'return type')], ['Tax years filed', val(f.taxYears, 'tax years')], ['CPA', val(f.cpa, 'CPA')], ['Bank', val(f.bank, 'bank')], ['Authorized signers', val(f.signers, 'signers')], ['State / City tax IDs', val(f.stateTax, 'tax IDs')], ['Bonding', has(f.bonding) ? f.bonding : 'None']] });
     S.push({ title: 'Location', rows: [['Type', val(b.locType, 'type')], ['Landlord', has(b.landlord) ? b.landlord : 'n/a'], ['Lease term', has(b.leaseStart) || has(b.leaseEnd) ? (b.leaseStart || '?') + ' to ' + (b.leaseEnd || '?') : 'n/a'], ['Space', val(b.sqft, 'space')]] });
     S.push({ title: 'Representative contracts', rows: (P.contracts || []).map(function (c, i) { return ['Contract ' + (i + 1), val(c.client, 'client') + ' | ' + val(c.project, 'project') + ' | ' + money(c.amount) + ' | ' + (c.year || '') + ' | proof of payment: ' + (c.paid || '?')]; }) });
     return S;
@@ -348,6 +380,6 @@
       'Could you please confirm:\n' + c.ask.map(function (q) { return '- ' + q; }).join('\n') + '\n\nIf anything is missing, tell me exactly what and I will send it the same day.\n\nThank you,\n' + val(o.name, 'name') + '\n' + val(b.phone, 'phone') + '\n' + val(b.email, 'email') };
   }
 
-  var api = { esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
+  var api = { PNW_LIMIT: PNW_LIMIT, netWorth: netWorth, esc: esc, has: has, SECTIONS: SECTIONS, LINK: LINK, CONTACTS: CONTACTS, SAMPLE: SAMPLE, QUICK: QUICK, TRUTH: TRUTH, eligibility: eligibility, missing: missing, checklist: checklist, timeline: timeline, answers: answers, drafts: drafts, nudge: nudge };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CertEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
