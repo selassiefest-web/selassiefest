@@ -63,3 +63,7 @@ The DJ Lab is a **year-round program, every Tuesday 4 to 6 pm, opening Jan 12, 2
 - **Full Spectrum partner system** (`full-spectrum/partners.html`, `partner/index.html`) — private magic-link tracker with two tabs: Partners (pipeline, activity log, per-partner pick-list of asks) and Grants (`fs_grant_deadlines` with status/owner/next step; feeds the Sunday `send-fs-grant-deadlines` email). Each partner's `pitch_key` opens a public personal page at `/partner/?k=<key>` where they tick items and answer yes / call me / not now. Schema deltas live in `supabase/fs-grants-pipeline.sql` and `supabase/fs-partner-asks.sql`; partner rows are seeded out of band, never committed.
 
 For the sitewide bulk-repair workflow (dead links, missing images, divergent nav copies), see the `sitewide-html-repair` skill.
+
+## Printing: HP Smart Tank 6000, envelopes are center-loaded
+
+Stephen prints on an **HP Smart Tank 6000**. Envelopes are **center-loaded** in the tray. When you build an envelope file, make the PDF page the actual envelope size (a #10 envelope is 9.5 in x 4.125 in, landscape, `@page { size: 9.5in 4.125in; margin: 0 }`), never a letter-size page with the address placed on it. Keep the return address top-left and the recipient block left-of-center with generous margins, and tell Stephen to run one plain-paper test print before using real envelopes. Reference build: `C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\7704-stony-island-resend\envelopes.html` (Chrome headless `--print-to-pdf`).
