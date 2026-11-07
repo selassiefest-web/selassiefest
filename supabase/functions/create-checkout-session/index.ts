@@ -272,7 +272,7 @@ Deno.serve(async (req: Request) => {
           ? { subscription_data: { metadata, ...(isFullSpectrum ? { description: 'Full Spectrum Founding Circle gift to Ras Tafari Inc.' } : {}) } }
           : { payment_intent_data: { metadata, ...(isFullSpectrum ? { description: 'Full Spectrum Founding Circle gift to Ras Tafari Inc.', statement_descriptor_suffix: 'FULL SPECTRUM' } : {}) } }),
         success_url: `${SITE_URL}/donate/success.html?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${SITE_URL}/donate/`,
+        cancel_url: `${SITE_URL}/donate/cash/`,
       });
 
       return json({ url: session.url });
