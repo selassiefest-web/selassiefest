@@ -147,7 +147,8 @@
 (function(){
   // Flip to true only when every launch-checklist item is complete
   // (/dj-lab/governance/). Until then: interest list, minimum data.
-  var LAUNCHED = false;
+  var QS = new URLSearchParams(location.search);
+  var LAUNCHED = false || QS.get("stage") === "2"; // Stage 2 (full registration) opens from an invite link: register.html?stage=2&...
   var $=function(id){ return document.getElementById(id); };
   if(!LAUNCHED){ document.querySelectorAll(".full-only").forEach(function(el){ el.remove(); }); }
   else { document.querySelectorAll(".interest-only").forEach(function(el){ el.remove(); }); $("pageTitle").textContent="Register for the Rainbow DJ Lab"; $("go").textContent="Register"; document.title="Register for the Rainbow DJ Lab"; }
@@ -217,6 +218,12 @@
   }
   function clearDraft(){ try { localStorage.removeItem(DKEY); } catch(e) {} }
   restoreDraft();
+  var INTEREST_ID = QS.get("ir") || null;
+  (function(){
+    var m = { kf: "n", kl: "l", ge: "e", gn: "gn" };
+    Object.keys(m).forEach(function(id){ var v = QS.get(m[id]); if(v && $(id)) $(id).value = v.slice(0, 120); });
+    var g = QS.get("g"); if(g && $("grp")){ $("grp").value = g; $("grp").dispatchEvent(new Event("change")); }
+  })();
   $("form").addEventListener("input", saveDraft);
   $("form").addEventListener("change", saveDraft);
   $("form").addEventListener("submit", async function(e){
@@ -246,7 +253,7 @@
       details:{ age_group:$("grp").value||null, allergies:$("all").value.trim(), epinephrine:$("epi").checked, medical:$("med").value.trim()||null,
         emergency:em, pickup:pu, self_signout:$("self").checked, custody_note:$("cust").value.trim()||null,
         media_consent:($("mPhoto").checked||$("mVideo").checked||$("mAudio").checked), media:{photos:$("mPhoto").checked, video:$("mVideo").checked, audio:$("mAudio").checked, first_name:$("mName").checked}, performance_consent:$("perf").checked, tracking_consent:$("tracking").checked, conduct_agreed:$("conduct").checked,
-        form_version:"2026-10-08" } };
+        form_version:"2026-10-08", interest_id: INTEREST_ID, invited: !!INTEREST_ID } };
     var err = !rec.kid_first_name ? "Please add your child's first name." : !$("grp").value ? "Please choose an age group." :
       !rec.details.allergies ? "Please list allergies, or write \"none\"." :
       !rec.guardian_name ? "Please add your name." : !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(rec.guardian_email) ? "Please add a valid email." :
