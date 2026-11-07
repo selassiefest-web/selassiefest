@@ -185,6 +185,40 @@
       var o={}; row.querySelectorAll("input").forEach(function(i){ o[i.dataset.k]=i.value.trim(); }); return o;
     }).filter(function(p){ return p.name || p.phone; });
   }
+
+  // Draft save: keeps typed text (never the permission checkboxes) in this browser only; cleared after a successful submit.
+  var DKEY = "djlab-register-draft-" + (LAUNCHED ? "full" : "interest");
+  function fieldKey(el, idx){ return el.id ? el.id : "p-" + (el.closest("[data-kind]") ? el.closest("[data-kind]").dataset.kind : "x") + "-" + idx + "-" + (el.dataset.k || ""); }
+  function draftFields(){
+    var out = [], n = {};
+    document.querySelectorAll("#form input, #form select, #form textarea").forEach(function(el){
+      if(el.type === "checkbox" || el.type === "submit" || el.type === "button") return;
+      var row = el.closest("[data-kind]"), idx = 0;
+      if(row){ idx = Array.prototype.indexOf.call(document.querySelectorAll('[data-kind="' + row.dataset.kind + '"]'), row); }
+      out.push([fieldKey(el, idx), el]);
+    });
+    return out;
+  }
+  function saveDraft(){
+    try {
+      var d = { v: 1, f: {}, pickups: document.querySelectorAll('[data-kind="pickup"]').length };
+      draftFields().forEach(function(p){ if(p[1].value) d.f[p[0]] = p[1].value; });
+      localStorage.setItem(DKEY, JSON.stringify(d));
+    } catch(e) {}
+  }
+  function restoreDraft(){
+    try {
+      var d = JSON.parse(localStorage.getItem(DKEY) || "null"); if(!d || !d.f) return;
+      if(LAUNCHED && $("addPickup")){ for(var i = document.querySelectorAll('[data-kind="pickup"]').length; i < (d.pickups || 1); i++){ $("addPickup").click(); } }
+      draftFields().forEach(function(p){
+        if(d.f[p[0]] !== undefined){ p[1].value = d.f[p[0]]; if(p[1].tagName === "SELECT") p[1].dispatchEvent(new Event("change")); }
+      });
+    } catch(e) {}
+  }
+  function clearDraft(){ try { localStorage.removeItem(DKEY); } catch(e) {} }
+  restoreDraft();
+  $("form").addEventListener("input", saveDraft);
+  $("form").addEventListener("change", saveDraft);
   $("form").addEventListener("submit", async function(e){
     e.preventDefault();
     if(!LAUNCHED){
@@ -198,6 +232,7 @@
       $("go").disabled=true; $("msg").className="msg"; $("msg").textContent="Sending…";
       var rr=await window.sfProtectedInsert("djlab_registrations", ir);
       if(rr.error){ $("go").disabled=false; $("msg").className="msg err"; $("msg").textContent=rr.error.message; return; }
+      clearDraft();
       var sf=function(x){ return String(x).replace(/[<>&"]/g,""); };
       $("form").innerHTML='<div class="card done"><h2>You\u2019re on the interest list!</h2><p>We emailed '+sf(ir.guardian_email)+'. When the park approves the Lab and dates are set, we\u2019ll invite you to complete full registration (health, pickup and permissions). Nothing else is needed now.</p><p><a href="/dj-lab/">Read the family guide</a> &middot; <a href="/dj-lab/safety/">Safety</a></p></div>';
       window.scrollTo(0,0); return;
@@ -224,6 +259,7 @@
     var r=await window.sfProtectedInsert("djlab_registrations", rec);
     if(r.error){ $("go").disabled=false; $("msg").className="msg err"; $("msg").textContent=r.error.message; return; }
     var safe=function(s){ return String(s).replace(/[<>&"]/g,""); };
+    clearDraft();
     $("form").innerHTML='<div class="card done"><h2>You’re registered!</h2><p>We emailed a confirmation to '+safe(rec.guardian_email)+'. A coach will confirm '+safe(rec.kid_first_name)+'’s spot when dates are set.</p><p><a href="/dj-lab/journey/before-day-one.html">What happens before day one</a> &middot; <a href="/dj-lab/families/handbook.html">Family handbook</a></p></div>';
     window.scrollTo(0,0);
   });
