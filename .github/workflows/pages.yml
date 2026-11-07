@@ -32,6 +32,10 @@ jobs:
           cp bbpac-gate/index.html bbpac/index.html
           cp bbpac-gate/index.html bbpac/beach-map.html
           rm -rf bbpac-gate
+      - name: Leave videos out of the deployed site (keeps the artifact small enough to deploy)
+        # The deploy step was timing out on a ~460 MB artifact (Nov 2026). Videos stay in the repo
+        # but are not published. Remove this step once the videos are compressed or hosted elsewhere.
+        run: find . -type f -name '*.mp4' -not -path './.git/*' -print -delete
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
