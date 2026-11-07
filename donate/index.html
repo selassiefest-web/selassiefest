@@ -279,6 +279,17 @@
     .fs-paybtns { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
     .fs-pay { flex: 1; min-width: 140px; text-align: center; border: 2px solid #C9A7FF; color: #fff; border-radius: 40px; padding: 12px; text-decoration: none; font-weight: 500; }
     .fs-pay:hover { background: #A35BC4; }
+    .items-panel { border: 2px solid #F2B544; border-radius: 16px; padding: 26px 24px; margin: 0 0 22px; background: linear-gradient(135deg, rgba(242,181,68,0.16), rgba(14,94,54,0.18)); }
+    .items-panel h2 { font-size: clamp(1.5rem,4vw,2.1rem); margin: 6px 0 8px; font-weight: 600; }
+    .items-panel .fs-eyebrow { font-size: .74rem; letter-spacing: .2em; text-transform: uppercase; color: #F2B544; font-weight: 600; }
+    .items-panel p { color: rgba(245,245,245,0.85); font-size: .95rem; margin-bottom: 12px; }
+    .items-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 16px; padding: 0; }
+    .items-list li { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 6px 14px; font-size: .88rem; }
+    .items-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .items-btns a { flex: 1; min-width: 220px; text-align: center; text-decoration: none; border-radius: 40px; padding: 15px; font: 600 1.05rem 'Jost',sans-serif; }
+    .items-go { background: #F2B544; color: #1a1230; }
+    .items-alt { border: 2px solid #F2B544; color: #fff; }
+    .items-alt:hover { background: rgba(242,181,68,0.2); }
     .fs-zelle { display: flex; gap: 14px; align-items: center; background: rgba(0,0,0,0.25); border-radius: 12px; padding: 12px; }
     .fs-qr { background: #fff; border-radius: 10px; padding: 8px; width: 110px; flex: none; }
     .fs-qr img { width: 100%; display: block; }
@@ -464,9 +475,26 @@
 </nav>
 
 <div class="container" style="padding-bottom:0;padding-top:32px;">
+  <section class="items-panel" id="donate-items" aria-labelledby="items-heading">
+    <div class="fs-eyebrow">The best way to give</div>
+    <h2 id="items-heading">Donate Items, Real Estate or a Vehicle</h2>
+    <p>Your gifts in kind are our first need. Ras Tafari Inc. is a 501(c)(3), and we send a written acknowledgment for your taxes.</p>
+    <ul class="items-list">
+      <li><i class="fas fa-box-open" aria-hidden="true"></i> Gear &amp; supplies</li>
+      <li><i class="fas fa-home" aria-hidden="true"></i> Real estate</li>
+      <li><i class="fas fa-car" aria-hidden="true"></i> Cars &amp; vehicles</li>
+    </ul>
+    <div class="items-btns">
+      <a class="items-go" href="/full-spectrum/founding-circle/#items"><i class="fas fa-gift" aria-hidden="true"></i> Donate an Item</a>
+      <a class="items-alt" href="mailto:selassiefest@gmail.com?subject=Real%20estate%20or%20vehicle%20donation"><i class="fas fa-key" aria-hidden="true"></i> Donate Real Estate or a Car</a>
+    </div>
+  </section>
+</div>
+
+<div class="container" style="padding-bottom:0;padding-top:0;">
   <section class="fs-panel" id="full-spectrum" aria-labelledby="fs-heading">
     <div class="fs-eyebrow">Full Spectrum Founding Circle</div>
-    <h2 id="fs-heading">Give to Full Spectrum</h2>
+    <h2 id="fs-heading">Give Cash to Full Spectrum</h2>
     <div class="fs-sure" role="note"><strong>You are giving to the Full Spectrum Founding Circle at Ras Tafari Inc.</strong> Your receipt says so, and we send a written acknowledgment for your taxes.</div>
     <div class="fs-grid" role="group" aria-label="Gift amount">
       <button type="button" class="fs-amt" data-a="100">$100</button>
@@ -487,7 +515,7 @@
     </div>
     <p id="fsErr" style="color:#ff8a80; font-size:.85rem; display:none; margin-top:8px;"></p>
     <div class="fs-alt">
-      <h3>Or pay another way, all right here</h3>
+      <h3>Or donate another way, all right here</h3>
       <p class="fs-note"><strong>Type "Full Spectrum" in the note or memo</strong> so your gift is credited to it.</p>
       <div class="fs-paybtns">
         <a class="fs-pay" href="https://www.paypal.com/ncp/payment/QQVTBY2HLGKZW" target="_blank" rel="noopener noreferrer"><i class="fab fa-paypal" aria-hidden="true"></i> PayPal</a>
@@ -540,7 +568,7 @@
           <span class="payment-badge badge-popular">Instant</span>
         </div>
       </div>
-      <p class="payment-desc">Donate through PayPal's giving program — pay with your PayPal balance, a bank transfer, or a card, and choose your own amount.</p>
+      <p class="payment-desc">Donate through PayPal's giving program — donate with your PayPal balance, a bank transfer, or a card, and choose your own amount.</p>
       <a href="https://www.paypal.com/ncp/payment/QQVTBY2HLGKZW" target="_blank" rel="noopener noreferrer" class="btn-donate btn-gold">
         <i class="fab fa-paypal" aria-hidden="true"></i> Donate via PayPal
       </a>
@@ -573,7 +601,7 @@
       <p class="payment-desc">Send directly from your bank via Zelle — instant transfer, no fees, no middleman.</p>
       <p class="payment-detail"><strong>Send to:</strong> selassiefest@gmail.com</p>
       <div style="background:#fff; border-radius:14px; padding:14px; text-align:center; max-width:180px; margin:2px auto;">
-        <img src="/assets/images/zelle-qr.png" alt="Zelle QR code — scan in your banking app to pay Ras Tafari Inc (selassieifest)" style="width:100%; height:auto; display:block;">
+        <img src="/assets/images/zelle-qr.png" alt="Zelle QR code — scan in your banking app to donate to Ras Tafari Inc (selassieifest)" style="width:100%; height:auto; display:block;">
       </div>
       <a href="https://www.zellepay.com/" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
         <i class="fas fa-university" aria-hidden="true"></i> Learn About Zelle
@@ -588,7 +616,7 @@
           <div class="payment-name">Venmo</div>
         </div>
       </div>
-      <p class="payment-desc">Donate via Venmo — the same secure checkout as our PayPal option lets you pay with Venmo directly.</p>
+      <p class="payment-desc">Donate via Venmo — the same secure checkout as our PayPal option lets you donate with Venmo directly.</p>
       <a href="https://www.paypal.com/ncp/payment/QQVTBY2HLGKZW" target="_blank" rel="noopener noreferrer" class="btn-donate btn-outline">
         <i class="fas fa-mobile-alt" aria-hidden="true"></i> Donate via Venmo
       </a>
@@ -639,7 +667,7 @@
           <div class="payment-name">Check by Mail</div>
         </div>
       </div>
-      <p class="payment-desc">Prefer to mail a check? Make it payable to Ras Tafari Inc and send to our registered address.</p>
+      <p class="payment-desc">Prefer to mail a check? Make your check out to Ras Tafari Inc and send to our registered address.</p>
       <p class="payment-detail"><strong>Mail to:</strong> 1401 E. 71st St., Chicago, IL 60619</p>
       <p class="payment-detail"><strong>Questions:</strong> selassiefest@gmail.com</p>
       <a href="mailto:selassiefest@gmail.com?subject=Check%20Donation%20Inquiry" class="btn-donate btn-outline">
