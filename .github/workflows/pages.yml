@@ -32,6 +32,11 @@ jobs:
           cp bbpac-gate/index.html bbpac/index.html
           cp bbpac-gate/index.html bbpac/beach-map.html
           rm -rf bbpac-gate
+      - name: Leave videos out of the deployed site (they are served from Supabase Storage)
+        # Videos are hosted in the public "site-videos" Supabase Storage bucket and the pages point at
+        # it, so they are not uploaded with the site. The files stay in the repo as the originals.
+        # This keeps the Pages artifact small enough to deploy reliably (it was timing out at ~460 MB).
+        run: find . -type f -name '*.mp4' -not -path './.git/*' -delete
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
