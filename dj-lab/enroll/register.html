@@ -71,10 +71,10 @@
     </div>
 
     <div class="card">
-      <h2>Your child</h2>
+      <h2 id="hKid">Your child</h2>
       <p class="why">On the class screen your child appears only as first name and last initial. Signing up yourself? Choose Grown-Up &amp; Elder DJs (18+).</p>
       <div class="row2">
-        <div class="f"><label for="kf">First name <span class="req">*</span></label><input id="kf" maxlength="24" autocomplete="off"></div>
+        <div class="f"><label for="kf" id="lKf">Child's first name <span class="req">*</span></label><input id="kf" maxlength="24" autocomplete="off"></div>
         <div class="f"><label for="kl">Last initial</label><input id="kl" maxlength="1" autocomplete="off"></div>
       </div>
       <div class="f"><label for="grp">Age group <span class="req">*</span></label><select id="grp">
@@ -93,8 +93,8 @@
     </div>
 
     <div class="card">
-      <h2>Parent or guardian</h2>
-      <div class="f"><label for="gn">Your full name <span class="req">*</span></label><input id="gn" maxlength="80" autocomplete="name"></div>
+      <h2 id="hGuard">Parent or guardian</h2>
+      <div class="f"><label for="gn" id="lGn">Your full name <span class="req">*</span></label><input id="gn" maxlength="80" autocomplete="name"></div>
       <div class="row2">
         <div class="f"><label for="ge">Email <span class="req">*</span></label><input id="ge" type="email" maxlength="120" autocomplete="email"></div>
         <div class="f"><label for="gp">Mobile phone (optional)</label><input id="gp" type="tel" maxlength="30" autocomplete="tel"></div>
@@ -171,6 +171,10 @@
   function isAdult(){ return $("grp").value==="adult"; }
   $("grp").addEventListener("change", function(){
     var ad=isAdult();
+    $("hKid").textContent = ad ? "About you" : "Your child";
+    $("hGuard").textContent = ad ? "Your contact information" : "Parent or guardian";
+    $("lKf").innerHTML = (ad ? "Your first name" : "Child's first name") + ' <span class="req">*</span>';
+    $("lGn").innerHTML = (ad ? "Your full name" : "Parent or guardian full name") + ' <span class="req">*</span>';
     if($("contactRow")) $("contactRow").hidden=ad;
     if($("adultNote")) $("adultNote").hidden=!ad;
     if($("consentRow")) $("consentRow").hidden=ad;
