@@ -10,13 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
 <style>
-  :root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#16182B; --ink-soft:#474B63; --ink-faint:#6E7287; --line:#E5E0D6; --line-strong:#D2CBBD;
+  :root{ --bg:#FAF8F4; --surface:#FFFFFF; --surface-2:#F2EEE6; --ink:#000000; --ink-soft:#000000; --ink-faint:#000000; --line:#E5E0D6; --line-strong:#D2CBBD;
     --accent:#2F3DB5; --accent-ink:#FFFFFF; --good:#1F7A3E; --good-soft:#E1F1E6; --bad:#C23B33; --bad-soft:#FBE4E2; --warn-soft:#FCEFD2;
     --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; }
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
-    --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --good:#5BD08A; --good-soft:rgba(91,208,138,.14); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.14); --warn-soft:rgba(245,181,58,.14); } }
-  :root[data-theme="dark"]{ --bg:#0D0F1C; --surface:#151829; --surface-2:#1C2036; --ink:#EEF0F8; --ink-soft:#B4B8CC; --ink-faint:#8F94AB;
-    --line:#272B44; --line-strong:#353A58; --accent:#9AA6FF; --accent-ink:#0D0F1C; --good:#5BD08A; --good-soft:rgba(91,208,138,.14); --bad:#FF7A70; --bad-soft:rgba(255,122,112,.14); --warn-soft:rgba(245,181,58,.14); }
   *{box-sizing:border-box}
   body{margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,sans-serif; font-size:16px; line-height:1.55}
   h1,h2{font-family:"Montserrat","Inter",sans-serif; font-weight:800; margin:0; letter-spacing:-.01em}
@@ -58,27 +54,31 @@
     <div class="eyebrow">Ras Tafari Inc. &middot; Full Spectrum at Rainbow Beach</div>
     <h1 id="pageTitle">Join the Rainbow DJ Lab interest list</h1>
     <p style="margin:0; color:var(--ink-soft)">Free DJ classes at Rainbow Beach Park, 3111 E. 77th St. We supply all the equipment. The interest list takes about 2 minutes. <a href="/dj-lab/enroll/register-help.html">Why we ask each question</a>.</p>
-    <div class="status" id="statusBox"><b>Pending park approval and funding.</b> The Lab is a proposal: Rainbow Beach Park and the Chicago Park District have not approved it, and no dates are set. This is an <b>interest list</b>, not an enrollment. We ask only what we need to contact you: no health, pickup or custody details until the program is approved. If the Lab has not started within 12 months, we delete the list. <a href="/dj-lab/governance/">Launch checklist</a></div>
+    <div class="status" id="statusBox"><b>Pending park approval and funding.</b> The Park application has been submitted: Rainbow Beach Park and the Chicago Park District are reviewing it. This is an <b>interest list</b>, and the enrollment list begins after Park approval.</div>
     <p class="small">Before you share anything: <a href="/dj-lab/privacy/data-privacy-statement.html">privacy statement</a> &middot; <a href="/dj-lab/privacy/retention-deletion.html">how long we keep data</a> &middot; <a href="/dj-lab/privacy/parent-data-rights.html">your rights</a> &middot; <a href="/dj-lab/safety/">how we keep children safe</a> &middot; <a href="/dj-lab/safety/report-a-concern.html">report a concern</a></p>
   </header>
 
   <form id="form" novalidate>
     <div class="card">
       <h2>Class</h2>
+      <div class="f interest-only"><label for="heard">How did you hear about us? (optional)</label><select id="heard">
+        <option value="">Choose one</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="TikTok">TikTok</option>
+        <option value="YouTube">YouTube</option><option value="X">X (Twitter)</option><option value="Word of mouth">Word of mouth</option><option value="Other">Other</option></select></div>
+      <div class="full-only">
       <p class="why">If your coach or flyer gave you a class code, enter it. Otherwise leave it blank.</p>
       <div class="f"><label for="code">Class code (optional)</label><input id="code" maxlength="8" style="text-transform:uppercase; letter-spacing:.12em; font-weight:700"></div>
+      </div>
     </div>
 
     <div class="card">
       <h2>Your child</h2>
-      <p class="why">On the class screen your child appears only as first name and last initial. Age decides the age group.</p>
-      <div class="row3">
+      <p class="why">On the class screen your child appears only as first name and last initial. Signing up yourself? Choose Grown-Up &amp; Elder DJs (18+).</p>
+      <div class="row2">
         <div class="f"><label for="kf">First name <span class="req">*</span></label><input id="kf" maxlength="24" autocomplete="off"></div>
         <div class="f"><label for="kl">Last initial</label><input id="kl" maxlength="1" autocomplete="off"></div>
-        <div class="f"><label for="age">Age <span class="req">*</span></label><input id="age" type="number" min="5" max="99" inputmode="numeric"></div>
       </div>
-      <div class="f"><label for="grp">Age group</label><select id="grp">
-        <option value="">Choose (filled in from age)</option><option value="little">Little DJs (5&ndash;7, a grown-up stays and learns too)</option>
+      <div class="f"><label for="grp">Age group <span class="req">*</span></label><select id="grp">
+        <option value="">Choose an age group</option><option value="little">Little DJs (5&ndash;7, a grown-up stays and learns too)</option>
         <option value="junior">Junior DJs (8&ndash;11)</option><option value="teen">Teen DJs (12&ndash;17)</option>
         <option value="empress">Empress Decks (girls, about 9&ndash;17)</option><option value="adult">Grown-Up &amp; Elder DJs (18+)</option></select></div>
       <div class="f full-only"><label for="acc">How does your child learn best? Anything the coach should know? (optional)</label><textarea id="acc" rows="2" maxlength="500" placeholder="Sensory needs, IEP or 504 supports you'd like us to know about, what helps when they're frustrated…"></textarea></div>
@@ -97,7 +97,7 @@
       <div class="f"><label for="gn">Your full name <span class="req">*</span></label><input id="gn" maxlength="80" autocomplete="name"></div>
       <div class="row2">
         <div class="f"><label for="ge">Email <span class="req">*</span></label><input id="ge" type="email" maxlength="120" autocomplete="email"></div>
-        <div class="f"><label for="gp">Mobile phone <span class="req">*</span></label><input id="gp" type="tel" maxlength="30" autocomplete="tel"></div>
+        <div class="f"><label for="gp">Mobile phone (optional)</label><input id="gp" type="tel" maxlength="30" autocomplete="tel"></div>
       </div>
     </div>
 
@@ -119,9 +119,10 @@
 
     <div class="card" id="consents">
       <h2>Permissions</h2>
-      <label class="chk interest-only"><input type="checkbox" id="contactOk"><span><span class="req">*</span> I am this child's parent or legal guardian, and Ras Tafari Inc. may contact me about the Rainbow DJ Lab. I understand this is an interest list, not enrollment.</span></label>
+      <label class="chk interest-only" id="contactRow"><input type="checkbox" id="contactOk"><span><span class="req">*</span> I am this child's parent or legal guardian, and Ras Tafari Inc. may contact me about the Rainbow DJ Lab. I understand this is an interest list, not enrollment.</span></label>
+      <p class="small interest-only" id="adultNote" hidden>You are signing up as an adult (18+), so no parent or guardian permission is needed. Ras Tafari Inc. may contact you about the Rainbow DJ Lab. This is an interest list, not enrollment.</p>
       <div class="full-only">
-      <label class="chk"><input type="checkbox" id="consent"><span><span class="req">*</span> <b>I am this child's parent or legal guardian and give permission</b> for them to take part in the Rainbow DJ Lab.</span></label>
+      <label class="chk" id="consentRow"><input type="checkbox" id="consent"><span><span class="req">*</span> <b>I am this child's parent or legal guardian and give permission</b> for them to take part in the Rainbow DJ Lab.</span></label>
       <label class="chk"><input type="checkbox" id="conduct"><span><span class="req">*</span> We have read and agree to the <a href="/dj-lab/enroll/forms/code-of-conduct.html" target="_blank" rel="noopener">family &amp; child code of conduct</a>.</span></label>
       <label class="chk"><input type="checkbox" id="tracking"><span><span class="req">*</span> I consent to the <a href="/dj-lab/enroll/forms/digital-tracking-consent.html" target="_blank" rel="noopener">in-class app</a> recording my child's class activity (first name and last initial, check-in, self-ratings, "Next time I'll…", Mix Log and Passport stamps). Families with the class code can see the class board. I can withdraw this any time.</span></label>
       <label class="chk full-only"><input type="checkbox" id="recap"><span>Email me a short recap after each class (optional).</span></label>
@@ -136,7 +137,7 @@
 
     <button class="submit" id="go" type="submit">Join the interest list</button>
     <p class="msg" id="msg"></p>
-    <p class="small" style="margin-top:12px">Only the coaches see contact, health and pickup details. Read our <a href="/dj-lab/privacy/data-privacy-statement.html">privacy statement</a>. Prefer paper? <a href="/dj-lab/enroll/forms/">Printable forms</a>.</p>
+    <p class="small" style="margin-top:12px">Questions? Email <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a> <a class="btn" href="mailto:stephen@selassiefest.com?subject=Rainbow%20DJ%20Lab" style="text-decoration:none; margin-left:6px">Email us</a><br>Read our <a href="/dj-lab/privacy/data-privacy-statement.html">privacy statement</a>. Prefer paper? <a href="/dj-lab/enroll/forms/">Printable forms</a>.</p>
   </form>
   <p class="small" style="text-align:center">Questions? Call Stephen Henry, President of Ras Tafari Inc., at <a href="tel:8722559333">872-255-9333</a>.</p>
 </div>
@@ -163,12 +164,17 @@
     $("pickup").insertAdjacentHTML("beforeend", personRow("pickup",0,false));
   });
   var c=new URLSearchParams(location.search).get("c"); if(c) $("code").value=c.toUpperCase();
-  $("age").addEventListener("input", function(){
-    var a=Number(this.value); if(!a) return; if($("grp").value==="empress") return;
-    $("grp").value = a<=7?"little":a<=11?"junior":a<=17?"teen":"adult"; if($("self")) $("selfWarn").hidden=!($("self").checked && a<=11);
-  });
-  $("self").addEventListener("change", function(){ var a=Number($("age").value)||0; $("selfWarn").hidden=!(this.checked && a<=11); });
+  function young(){ var g=$("grp").value; return g==="little"||g==="junior"; }
+  $("self").addEventListener("change", function(){ $("selfWarn").hidden=!(this.checked && young()); });
+  $("grp").addEventListener("change", function(){ $("selfWarn").hidden=!($("self").checked && young()); });
   }
+  function isAdult(){ return $("grp").value==="adult"; }
+  $("grp").addEventListener("change", function(){
+    var ad=isAdult();
+    if($("contactRow")) $("contactRow").hidden=ad;
+    if($("adultNote")) $("adultNote").hidden=!ad;
+    if($("consentRow")) $("consentRow").hidden=ad;
+  });
   function people(kind){
     return Array.prototype.map.call(document.querySelectorAll('[data-kind="'+kind+'"]'), function(row){
       var o={}; row.querySelectorAll("input").forEach(function(i){ o[i.dataset.k]=i.value.trim(); }); return o;
@@ -177,11 +183,11 @@
   $("form").addEventListener("submit", async function(e){
     e.preventDefault();
     if(!LAUNCHED){
-      var ir={ cohort_code:$("code").value.trim().toUpperCase()||null, kid_first_name:$("kf").value.trim(), kid_last_initial:$("kl").value.trim().toUpperCase()||null,
-        kid_age:$("age").value?Number($("age").value):null, guardian_name:$("gn").value.trim(), guardian_email:$("ge").value.trim(), guardian_phone:$("gp").value.trim()||null,
-        consent:false, photo_consent:false, recap_opt_in:false, details:{ interest_only:true, age_group:$("grp").value||null, contact_ok:$("contactOk").checked, form_version:"2026-10-08-interest" } };
-      var ie = !ir.kid_first_name ? "Please add your child's first name." : !ir.kid_age ? "Please add your child's age." : !ir.guardian_name ? "Please add your name." :
-        !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ir.guardian_email) ? "Please add a valid email." : !ir.guardian_phone ? "Please add your mobile phone." :
+      var ir={ cohort_code:null, kid_first_name:$("kf").value.trim(), kid_last_initial:$("kl").value.trim().toUpperCase()||null,
+        kid_age:null, guardian_name:$("gn").value.trim(), guardian_email:$("ge").value.trim(), guardian_phone:$("gp").value.trim()||null,
+        consent:false, photo_consent:false, recap_opt_in:false, details:{ interest_only:true, age_group:$("grp").value||null, heard_from:$("heard").value||null, contact_ok:isAdult()?true:$("contactOk").checked, adult_self:isAdult(), form_version:"2026-10-08-interest" } };
+      var ie = !ir.kid_first_name ? "Please add your child's first name." : !$("grp").value ? "Please choose an age group." : !ir.guardian_name ? "Please add your name." :
+        !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ir.guardian_email) ? "Please add a valid email." :
         !ir.details.contact_ok ? "Please check the box so we can contact you." : "";
       if(ie){ $("msg").className="msg err"; $("msg").textContent=ie; return; }
       $("go").disabled=true; $("msg").className="msg"; $("msg").textContent="Sending…";
@@ -193,18 +199,17 @@
     }
     var em=people("emergency"), pu=people("pickup");
     var rec={ cohort_code:$("code").value.trim().toUpperCase()||null, kid_first_name:$("kf").value.trim(), kid_last_initial:$("kl").value.trim().toUpperCase()||null,
-      kid_age:$("age").value?Number($("age").value):null, accommodations:$("acc").value.trim()||null, guardian_name:$("gn").value.trim(),
+      kid_age:null, accommodations:$("acc").value.trim()||null, guardian_name:$("gn").value.trim(),
       guardian_email:$("ge").value.trim(), guardian_phone:$("gp").value.trim()||null,
       emergency_contact: em.map(function(p){ return p.name+" ("+p.relationship+") "+p.phone; }).join("; ")||null,
-      consent:$("consent").checked, photo_consent:($("mPhoto").checked||$("mVideo").checked), recap_opt_in:$("recap").checked,
+      consent:isAdult()?true:$("consent").checked, photo_consent:($("mPhoto").checked||$("mVideo").checked), recap_opt_in:$("recap").checked,
       details:{ age_group:$("grp").value||null, allergies:$("all").value.trim(), epinephrine:$("epi").checked, medical:$("med").value.trim()||null,
         emergency:em, pickup:pu, self_signout:$("self").checked, custody_note:$("cust").value.trim()||null,
         media_consent:($("mPhoto").checked||$("mVideo").checked||$("mAudio").checked), media:{photos:$("mPhoto").checked, video:$("mVideo").checked, audio:$("mAudio").checked, first_name:$("mName").checked}, performance_consent:$("perf").checked, tracking_consent:$("tracking").checked, conduct_agreed:$("conduct").checked,
         form_version:"2026-10-08" } };
-    var err = !rec.kid_first_name ? "Please add your child's first name." : !rec.kid_age ? "Please add your child's age." :
+    var err = !rec.kid_first_name ? "Please add your child's first name." : !$("grp").value ? "Please choose an age group." :
       !rec.details.allergies ? "Please list allergies, or write \"none\"." :
       !rec.guardian_name ? "Please add your name." : !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(rec.guardian_email) ? "Please add a valid email." :
-      !rec.guardian_phone ? "Please add your mobile phone." :
       !em.length || !em[0].name || !em[0].phone || !em[0].relationship ? "Please add at least one emergency contact with name, relationship and phone." :
       pu.some(function(p){ return !p.name || !p.phone; }) ? "Each pickup adult needs a name and phone (or remove the blank row)." :
       !rec.consent ? "Please check the permission box." : !rec.details.conduct_agreed ? "Please agree to the code of conduct." :
