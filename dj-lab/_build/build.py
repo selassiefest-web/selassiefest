@@ -28,7 +28,7 @@ SECTIONS = [
     ("governance", "Governance", ["index", "board", "conflict-of-interest", "whistleblower", "financial-transparency", "mou-park-district", "park-district-permits", "data-sharing-agreement-selassiefest", "qality-vendor-agreement", "sole-source-justification-qality", "equipment-use-agreement-qality", "insurance-certificate", "501c3-letter", "enforcement-self-accountability", "annual-safety-review", "community-accountability-report"]),
 ]
 FORMS_ORDER = ["index", "registration", "emergency-contacts", "medical-allergy", "authorized-pickup", "media-consent", "performance-consent", "digital-tracking-consent", "code-of-conduct"]
-SECTION_COLOR = {"about": "--r5", "enroll": "--r4", "safety": "--r1", "families": "--r2", "privacy": "--r6", "performing": "--r7", "kids": "--r3", "journey": "--r4", "governance": "--r6"}
+SECTION_COLOR = {"about": "--rd-gold", "enroll": "--rd-red", "safety": "--rd-red", "families": "--rd-gold", "privacy": "--rd-blue", "performing": "--rd-red", "kids": "--rd-blue", "journey": "--rd-red", "governance": "--rd-blue"}
 
 
 def read_md(path):
@@ -130,7 +130,7 @@ def render(pages, rel, page, tpl):
     if not re.match(r"\s*<h1", body):
         lede = ('<p class="lede">%s</p>\n' % html.escape(desc)) if desc else ""
         body = "<h1>%s</h1>\n%s%s" % (html.escape(title), lede, body)
-    color = SECTION_COLOR.get(section, "--r5")
+    color = SECTION_COLOR.get(section, "--rd-gold")
     return (tpl.replace("{{TITLE}}", html.escape(title))
                .replace("{{DESC}}", html.escape(desc))
                .replace("{{NAV}}", nav_html(pages, section))
@@ -167,7 +167,7 @@ def main():
         blocks.append("<h2>%s</h2>\n<ul>%s</ul>" % (label, "".join(items)))
     page = (tpl.replace("{{TITLE}}", "Site map").replace("{{DESC}}", "Every page of the Rainbow DJ Lab family site.")
                .replace("{{NAV}}", nav_html(pages, "")).replace("{{SIDE}}", "").replace("{{CRUMBS}}", '<a href="/dj-lab/">Rainbow DJ Lab</a> &rsaquo; Site map')
-               .replace("{{BODY}}", "\n".join(blocks)).replace("{{SECCOLOR}}", "--r5").replace("{{KIDS}}", "").replace("{{LAYOUT}}", "no-side"))
+               .replace("{{BODY}}", "\n".join(blocks)).replace("{{SECCOLOR}}", "--rd-gold").replace("{{KIDS}}", "").replace("{{LAYOUT}}", "no-side"))
     io.open(os.path.join(ROOT, "sitemap.html"), "w", encoding="utf-8", newline="\n").write(page)
     print("built", n, "pages + sitemap.html")
 

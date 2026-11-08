@@ -12,7 +12,7 @@
 <style>
   :root{
     --bg:#FFF8EC; --paper:#FFFFFF; --ink:#1B1D33; --ink-soft:#4A4E6A; --line:#EADFC8;
-    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD;
+    --r1:#E0453A; --r2:#F08A24; --r3:#F2C230; --r4:#2E9E58; --r5:#1E8FBF; --r6:#3F48B8; --r7:#8E44AD; --rd-red:#D2292D; --rd-gold:#EDBB2E; --rd-blue:#2F6AC0; --rd-green:#4B5320;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){ --bg:#12142A; --paper:#1B1E38; --ink:#F2F3FA; --ink-soft:#B9BDD6; --line:#2C3054; }
@@ -23,7 +23,7 @@
   body{background:var(--bg); color:var(--ink); font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden;}
   button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
   a{color:inherit;}
-  .stripe{height:8px; background:linear-gradient(90deg,var(--r1) 0 14.28%,var(--r2) 14.28% 28.57%,var(--r3) 28.57% 42.85%,var(--r4) 42.85% 57.14%,var(--r5) 57.14% 71.42%,var(--r6) 71.42% 85.71%,var(--r7) 85.71%);}
+  .stripe{height:8px; background:linear-gradient(90deg,var(--rd-red) 0 33.34%,var(--rd-gold) 33.34% 66.67%,var(--rd-blue) 66.67% 100%);}
   .kid{font-family:"Patrick Hand","Comic Sans MS",cursive;}
 
   #deck{position:fixed; inset:8px 0 76px 0; overflow:hidden;}
@@ -33,11 +33,11 @@
   .slide.off-left{transform:translateX(-40px);}
   .card{width:100%; max-width:860px;}
 
-  .kicker{font-size:.78rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--r2); margin-bottom:12px;}
+  .kicker{font-size:.78rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--rd-gold); margin-bottom:12px;}
   h1,h2{font-family:"Montserrat",sans-serif; font-weight:900; letter-spacing:-0.02em; line-height:1.05;}
   h1{font-size:clamp(2.1rem,7vw,4rem); margin-bottom:16px;}
   h2{font-size:clamp(1.6rem,5vw,2.8rem); margin-bottom:18px;}
-  .rb{background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6),var(--r7)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .rb{background:linear-gradient(90deg,var(--rd-red) 0 33.34%,var(--rd-gold) 33.34% 66.67%,var(--rd-blue) 66.67% 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
   p.lead{font-size:clamp(1.05rem,2.6vw,1.3rem); line-height:1.55; color:var(--ink-soft); margin-bottom:14px;}
 
   .bubble{position:relative; background:var(--paper); border:3px solid var(--ink); border-radius:22px; padding:16px 20px; margin:0 0 18px;
@@ -57,24 +57,24 @@
   .logo.has-img img{width:auto; height:auto; max-width:100%; max-height:84px; display:block;}
   .logo.has-img.wide img{max-height:64px;}
   .center{text-align:center;}
-  .crayon{display:inline-block; padding:4px 12px; border-radius:999px; background:var(--r3); color:#1B1D33; font-weight:800; font-size:.85rem; transform:rotate(-2deg);}
+  .crayon{display:inline-block; padding:4px 12px; border-radius:999px; background:var(--rd-blue); color:#1B1D33; font-weight:800; font-size:.85rem; transform:rotate(-2deg);}
 
   .facts{background:var(--paper); border:2px solid var(--line); border-radius:18px; padding:18px 20px;}
   .facts h3{font-family:"Montserrat",sans-serif; font-size:1rem; margin-bottom:10px;}
   .facts ul{list-style:none; display:grid; gap:10px;}
   .facts li{display:flex; gap:12px; align-items:flex-start; line-height:1.45;}
   .dot{flex:0 0 14px; height:14px; border-radius:50%; margin-top:5px;}
-  .stamp{display:inline-block; border:3px solid var(--r1); color:var(--r1); font-weight:900; font-family:"Montserrat",sans-serif; padding:4px 10px; border-radius:8px; transform:rotate(-4deg); letter-spacing:.06em; font-size:.85rem; margin-bottom:12px;}
+  .stamp{display:inline-block; border:3px solid var(--rd-red); color:var(--rd-red); font-weight:900; font-family:"Montserrat",sans-serif; padding:4px 10px; border-radius:8px; transform:rotate(-4deg); letter-spacing:.06em; font-size:.85rem; margin-bottom:12px;}
 
   ol.demands{list-style:none; counter-reset:d; display:grid; gap:12px;}
   ol.demands li{counter-increment:d; background:var(--paper); border:3px solid var(--ink); border-radius:16px; padding:12px 16px 12px 58px; position:relative; box-shadow:4px 4px 0 var(--ink); line-height:1.4;}
-  ol.demands li::before{content:counter(d); position:absolute; left:14px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--r4); color:#fff; font-weight:900; display:flex; align-items:center; justify-content:center; font-family:"Montserrat",sans-serif;}
-  ol.demands li:nth-child(2)::before{background:var(--r5);} ol.demands li:nth-child(3)::before{background:var(--r6);} ol.demands li:nth-child(4)::before{background:var(--r7);}
+  ol.demands li::before{content:counter(d); position:absolute; left:14px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--rd-red); color:#fff; font-weight:900; display:flex; align-items:center; justify-content:center; font-family:"Montserrat",sans-serif;}
+  ol.demands li:nth-child(2)::before{background:var(--rd-gold);} ol.demands li:nth-child(3)::before{background:var(--rd-blue);} ol.demands li:nth-child(4)::before{background:var(--rd-red);}
   ol.demands b{display:block; font-size:1.05rem;}
   ol.demands .kid{display:block; font-size:1.15rem; color:var(--ink-soft);}
 
   .cta{display:inline-flex; align-items:center; gap:10px; padding:16px 30px; border-radius:999px; color:#fff; font-weight:900; font-size:1.1rem; text-decoration:none;
-    background:linear-gradient(90deg,var(--r1),var(--r2),var(--r4),var(--r5),var(--r7)); box-shadow:4px 4px 0 var(--ink); margin:8px 0 14px;}
+    background:linear-gradient(90deg,var(--rd-red) 0 33.34%,var(--rd-gold) 33.34% 66.67%,var(--rd-blue) 66.67% 100%); box-shadow:4px 4px 0 var(--ink); margin:8px 0 14px;}
   .small{font-size:.82rem; color:var(--ink-soft); line-height:1.55;}
 
   nav.ctl{position:fixed; left:0; right:0; bottom:0; height:76px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-top:1px solid var(--line); background:var(--bg);}
@@ -82,7 +82,7 @@
   .navbtn:disabled{opacity:.3; cursor:default;}
   .dots{display:flex; gap:6px; flex-wrap:wrap; justify-content:center;}
   .dots button{width:10px; height:10px; border-radius:50%; background:var(--line);}
-  .dots button.on{background:var(--r2); width:24px; border-radius:6px;}
+  .dots button.on{background:var(--rd-gold); width:24px; border-radius:6px;}
   .hero{width:100%; max-width:min(640px, calc(36vh * 1.5)); margin:0 auto 16px; border-radius:20px; overflow:hidden; border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); background:var(--paper);}
   .hero img{display:block; width:100%; height:auto; aspect-ratio:3/2; object-fit:cover;}
   .hero figcaption{font-size:.72rem; color:var(--ink-soft); padding:6px 10px; text-align:left;}
@@ -101,7 +101,7 @@
   .play{padding:7px 16px; border-radius:999px; background:var(--ink); color:var(--bg); font-weight:800; font-size:.9rem; white-space:nowrap;}
   .auto{padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:700; font-size:.78rem; white-space:nowrap;}
   .auto[aria-pressed="false"]{opacity:.55; text-decoration:line-through;}
-  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:linear-gradient(90deg,var(--r1),var(--r3),var(--r5),var(--r7)); transition:width .2s linear;}
+  .prog{position:absolute; left:0; top:-1px; height:4px; width:0; background:linear-gradient(90deg,var(--rd-red) 0 33.34%,var(--rd-gold) 33.34% 66.67%,var(--rd-blue) 66.67% 100%); transition:width .2s linear;}
   .theme{position:fixed; top:16px; right:16px; z-index:5; font-size:.75rem; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:var(--paper);}
 </style>
 </head>
@@ -226,10 +226,10 @@ const SLIDES = [
   `<div class="card"><span class="stamp">GROWN-UP FACTS</span>
     <h2>What's actually happening</h2>
     <div class="facts"><ul>
-      <li><span class="dot" style="background:var(--r1)"></span><span><b>Rainbow DJ Lab:</b> a free DJ class every Tuesday, 4 to 6 pm, starting January 12, 2027. Built for grades 6 to 12, open to all ages. Students work through 14 Missions at their own pace, on program equipment.</span></li>
-      <li><span class="dot" style="background:var(--r3)"></span><span><b>Rainbow Wednesdays:</b> free, alcohol-free family music nights on the beach from June 2, 2027, 6:00 to 8:30 pm, with Open Decks for young DJs and a Youth Showcase.</span></li>
-      <li><span class="dot" style="background:var(--r5)"></span><span><b>Family parties:</b> the Kids Kostume Party in late October, and Noon Year's Eve on December 31, a family countdown to noon with kid DJs.</span></li>
-      <li><span class="dot" style="background:var(--r7)"></span><span><b>Who runs it:</b> Ras Tafari Inc., a South Side 501(c)(3). Every part is free to families.</span></li>
+      <li><span class="dot" style="background:var(--rd-red)"></span><span><b>Rainbow DJ Lab:</b> a free DJ class every Tuesday, 4 to 6 pm, starting January 12, 2027. Built for grades 6 to 12, open to all ages. Students work through 14 Missions at their own pace, on program equipment.</span></li>
+      <li><span class="dot" style="background:var(--rd-blue)"></span><span><b>Rainbow Wednesdays:</b> free, alcohol-free family music nights on the beach from June 2, 2027, 6:00 to 8:30 pm, with Open Decks for young DJs and a Youth Showcase.</span></li>
+      <li><span class="dot" style="background:var(--rd-gold)"></span><span><b>Family parties:</b> the Kids Kostume Party in late October, and Noon Year's Eve on December 31, a family countdown to noon with kid DJs.</span></li>
+      <li><span class="dot" style="background:var(--rd-red)"></span><span><b>Who runs it:</b> Ras Tafari Inc., a South Side 501(c)(3). Every part is free to families.</span></li>
     </ul></div></div>`,
 
   // 6. The demands
