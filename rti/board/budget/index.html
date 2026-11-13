@@ -292,7 +292,7 @@
   ['Document post-event review measures before first show.','Track attendance, incidents, 311 complaints, sound observations, guest feedback and financial results.',0]]]];
   var ITEMS = [], ITEM = {};
   DEFS.forEach(function(sec){ sec[2].forEach(function(r, i){ var it = {id:sec[0] + (i + 1), sec:sec[0], title:r[0], detail:r[1], gate:!!r[2]}; ITEMS.push(it); ITEM[it.id] = it; }); });
-  var META = [["venue","Venue / trade name",""],["address","Full street address",""],["municipality","Municipality (Chicago or suburb)",""],["contact","Owner / licensing entity / contact","two"],["event","Event / series",""],["date","Site visit / evaluation date",""],["capacity","Proposed attendance",""],["doors","Doors / music / closing hours","two"],["rent","Proposed venue hire ($)",""],["reviewer","RTI reviewer / decision owner",""],["overview","Scope, event format & special conditions","full"]];
+  var META = [["venue","Venue / trade name",""],["address","Full street address",""],["municipality","Municipality (Chicago or suburb)",""],["contact","Owner / licensing entity / contact","two"],["event","Event / series",""],["date","Site visit / evaluation date",""],["capacity","Proposed attendance (guests)",""],["occupancy","Posted occupancy (placard maximum)",""],["staff","Staff, artists & security on site",""],["doors","Doors / music / closing hours","two"],["rent","Proposed venue hire ($)",""],["reviewer","RTI reviewer / decision owner",""],["overview","Scope, event format & special conditions","full"]];
   var DEC = [["rec","RTI recommendation"],["approver","Contract approver"],["deadline","Conditions deadline"],["terms","Non-negotiable contract conditions / exceptions / mitigation owners"],["resolution","Board resolution / counsel review / decision log reference"]];
   var RECS = ["Pending","Reject / no-go","Hold — corrections required","Conditional approval — written conditions","Approve for signature (after review)"];
   var SOURCES = [
@@ -308,7 +308,7 @@
     ["https://ipi.cityofchicago.org/Resources/Information/DCASE/Special_Events_Resource_Guide.pdf","Chicago DCASE special events guide — outdoor/public way implications (2025; recheck current rules)"],
     ["https://codelibrary.amlegal.com/codes/chicago/latest/chicago_il/0-0-0-2638731","MCC §4-388-030 — “Special Club” is a Wrigley rooftop classification, not a general nightclub shortcut"]];
 
-  var D = null, cur = null, view = "overview", editing = false, draft = null, filter = "all";
+  var D = null, cur = null, view = "overview", editing = false, draft = null, filter = "all", comparing = false;
   var dirty = {}, timers = {}, inflight = 0;
   try { filter = localStorage.getItem("rtiBbFilter") || "all"; } catch (e) {}
 
@@ -326,7 +326,7 @@
   function readHash(){
     var p = location.hash.slice(1).split("/");
     if (p[0] && D && D.series.some(function(s){ return s.id === p[0]; })) cur = p[0];
-    if (p[1] && ["overview","area","checklist","budget","sheet","changes"].indexOf(p[1]) >= 0) view = p[1];
+    if (p[1] && ["overview","area","checklist","budget","sheet","packet","changes"].indexOf(p[1]) >= 0) view = p[1];
   }
   function writeHash(){ try { history.replaceState(null, "", "#" + cur + "/" + view); } catch (e) {} }
 
@@ -367,22 +367,24 @@
   function render(){
     document.getElementById("gate").hidden = true;
     document.getElementById("who").innerHTML = "Signed in as " + esc(D.me.full_name) + ", " + esc(D.me.title) + ' · <span class="live"><i></i>Live</span><span id="saveState"></span>';
-    var tabs = D.series.map(function(s){ return '<button data-s="' + esc(s.id) + '"' + (s.id === cur && !editing ? ' class="on"' : '') + '>' + esc(s.title) + '</button>'; });
+    var tabs = D.series.map(function(s){ return '<button data-s="' + esc(s.id) + '"' + (s.id === cur && !editing && !comparing ? ' class="on"' : '') + '>' + esc(s.title) + '</button>'; });
+    if (D.series.length > 1) tabs.unshift('<button data-cmp="1"' + (comparing && !editing ? ' class="on"' : '') + '>Compare venues</button>');
     tabs.push('<button data-new="1"' + (editing && draft && draft._new ? ' class="on"' : '') + '>+ New venue</button>');
     document.getElementById("tabbar").innerHTML = tabs.join("");
     var main = document.getElementById("main");
     if (editing) main.innerHTML = draft._new ? newVenueView() : editView();
+    else if (comparing) main.innerHTML = compareView();
     else if (!cur) main.innerHTML = '<div class="card"><h3>No venues yet</h3><p class="note" style="margin:0">Use “+ New venue / series” to start an evaluation.</p></div>';
     else {
       var s = D.series.filter(function(x){ return x.id === cur; })[0];
       var sc = score(s.id), openN = ITEMS.filter(function(x){ var v = val(s.id, x.id).status; return !v || v === "issue" || v === "fail"; }).length;
       var hn = (D.history || []).filter(function(h){ return h.series_id === s.id; }).length;
       var ex = s.area ? exposure(s.area) : null;
-      var sub = [["overview","Overview",""],["area","Area",ex ? ex[0] : "not run"],["checklist","Checklist",sc.ev + "/" + ITEMS.length],["budget","Budget",""],["sheet","Owner meeting sheet",openN + " open"],["changes","Changes",hn || ""]];
+      var sub = [["overview","Overview",""],["area","Area",ex ? ex[0] : "not run"],["checklist","Checklist",sc.ev + "/" + ITEMS.length],["budget","Budget",""],["sheet","Owner meeting sheet",openN + " open"],["packet","Board packet",""],["changes","Changes",hn || ""]];
       main.innerHTML = '<h2>' + esc(s.title) + ' <span class="pill st-' + esc(s.status) + '">' + esc(STATUS[s.status] || s.status) + '</span></h2>' +
         '<p class="note" style="margin:2px 0 0">' + esc(val(s.id, "meta.address").note || s.venue) + '</p>' +
         '<div class="subnav noprint">' + sub.map(function(t){ return '<button data-v="' + t[0] + '"' + (view === t[0] ? ' class="on"' : '') + '>' + t[1] + (t[2] !== "" ? '<span class="c">' + t[2] + '</span>' : '') + '</button>'; }).join("") + '</div>' +
-        (view === "checklist" ? checklistView(s) : view === "area" ? areaView(s) : view === "budget" ? budgetView(s) : view === "sheet" ? sheetView(s) : view === "changes" ? changesView(s) : overviewView(s, sc));
+        (view === "checklist" ? checklistView(s) : view === "area" ? areaView(s) : view === "budget" ? budgetView(s) : view === "sheet" ? sheetView(s) : view === "packet" ? packetView(s) : view === "changes" ? changesView(s) : overviewView(s, sc));
       Object.keys(dirty).forEach(function(k){
         var p = k.split("|"); if (p[0] !== cur) return;
         var el = main.querySelector('[data-key="' + p[1] + '"]'); if (el) el.value = dirty[k].note;
@@ -549,13 +551,13 @@
     var inc = sumLines(b.income), exp = sumLines(b.expense), net = inc - exp;
     var notChicago = !!muni && !/^\s*(the )?(city of )?chicago\b/i.test(muni);
     return '<div class="grid2"><div>' +
-      '<div class="verdict ' + v[0] + '"><b>' + v[1] + '</b>' + esc(v[2]) + '</div>' +
+      '<div class="verdict ' + v[0] + '"><b>' + v[1] + '</b>' + esc(v[2]) + '</div>' + guardsHtml(s, sc) +
       '<div class="kpis">' +
         '<div class="kpi"><div class="l">Evaluated</div><div class="v">' + sc.ev + ' / ' + ITEMS.length + '</div></div>' +
         '<div class="kpi"><div class="l">Verified pass</div><div class="v pos">' + sc.pass + '</div></div>' +
         '<div class="kpi"><div class="l">Critical fail / issue</div><div class="v ' + (sc.issues ? 'neg' : '') + '">' + sc.issues + '</div></div>' +
         '<div class="kpi"><div class="l">Gates unassessed</div><div class="v">' + sc.open + '</div></div>' +
-      '</div><div class="meter"><span style="width:' + (sc.ev / ITEMS.length * 100).toFixed(1) + '%"></span></div>' +
+      '</div><div class="meter"><span style="width:' + (sc.ev / ITEMS.length * 100).toFixed(1) + '%"></span></div>' + matrixHtml(s.id) +
       (notChicago ? '<div class="card warn"><h3>Not in the City of Chicago</h3><p class="note" style="margin:0">This checklist cites Chicago rules (BACP, PPA license, §17-3-0301, MCC sound and amusement tax). For ' + esc(muni) + ', get the matching local rules from the municipality and Cook County and record them against each item. Do not treat a Chicago citation as passed or not applicable without the local equivalent.</p></div>' : '') +
       '<div class="card gold"><h3>Operating principle</h3><p class="note" style="margin:0">Do not sign, pay a nonrefundable deposit, announce ticket sales, or treat a venue as approved until all critical gates have written verification. A landlord&rsquo;s promise, a liquor license, or the phrase “private event” is not proof that DJs, dancing, public ticket sales, late hours, or the proposed occupancy are permitted.</p></div>' +
       '<div class="card"><h3>Venue evaluation record</h3><div class="fields">' + META.map(function(m){
@@ -564,7 +566,7 @@
         return '<div class="' + m[2] + '"><label class="fl">' + m[1] + '</label>' + input + '<span class="by">' + byLine(s.id, k) + '</span></div>';
       }).join("") + '</div></div>' +
       '<div class="card' + (s.area && exposure(s.area)[0] === "High" ? ' warn' : '') + '"><h3>Area: who could complain' + (s.area ? ' · exposure ' + exposure(s.area)[0] : '') + '</h3>' + (s.area ? '<p style="margin:0 0 8px">' + areaSummary(s.area) + '</p>' : '<p class="note">Not run yet. It needs the full street address above.</p>') + '<button class="btn ghost sm noprint" id="areaGo">' + (s.area ? 'Open the area analysis and map' : 'Run the area analysis') + '</button></div>' +
-      '<div class="card"><h3>Economics (from the Budget tab)</h3><p style="margin:0">' + fmt(inc) + ' income − ' + fmt(exp) + ' costs = <b class="' + (net < 0 ? 'neg' : 'pos') + '">' + fmt(net) + ' per Friday</b>, about <b>' + fmt(net * s.fridays_per_year) + '</b> a year over ' + s.fridays_per_year + ' Fridays.' + (unpriced(b.expense) + unpriced(b.one_time) ? ' <span class="flag">' + (unpriced(b.expense) + unpriced(b.one_time)) + ' costs not priced</span>' : '') + '</p></div>' +
+      capacityHtml(s) + '<div class="card"><h3>Economics (from the Budget tab)</h3><p style="margin:0">' + fmt(inc) + ' income − ' + fmt(exp) + ' costs = <b class="' + (net < 0 ? 'neg' : 'pos') + '">' + fmt(net) + ' per Friday</b>, about <b>' + fmt(net * s.fridays_per_year) + '</b> a year over ' + s.fridays_per_year + ' Fridays.' + (unpriced(b.expense) + unpriced(b.one_time) ? ' <span class="flag">' + (unpriced(b.expense) + unpriced(b.one_time)) + ' costs not priced</span>' : '') + '</p></div>' +
       '<div class="card"><h3>Contract negotiation &amp; final board sign-off</h3><p class="note">The signature decision is separate from the checklist score.</p><div class="fields">' + DEC.map(function(d){
         var k = "decision." + d[0], x = val(s.id, k).note, input;
         if (d[0] === "rec") input = '<select class="f" data-key="' + k + '">' + RECS.map(function(r){ return '<option' + ((x || "Pending") === r ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join("") + '</select>';
@@ -619,7 +621,7 @@
     }).join("");
     return '<div class="verdict ' + v[0] + '"><b>' + v[1] + '</b>' + esc(v[2]) + '</div>' +
       '<p class="note">Verified pass = documentary or tested evidence reviewed. Issue / mitigate = a problem that needs an approved remedy. Fail / no-go = requirement not met. Not applicable = documented reason it does not apply. Every critical gate must be a verified pass or a supported not-applicable before the venue can be recommended. Changes save as you go and every director sees them.</p>' +
-      '<div class="filters noprint"><label class="fl" style="margin:0">Show</label><select class="f" id="filter">' + opts.map(function(o){ return '<option value="' + o[0] + '"' + (filter === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join("") + '</select><button class="btn ghost sm" id="csv">Export CSV</button><button class="btn ghost sm" onclick="window.print()">Print / PDF</button></div>' +
+      '<div class="filters noprint"><label class="fl" style="margin:0">Show</label><select class="f" id="filter">' + opts.map(function(o){ return '<option value="' + o[0] + '"' + (filter === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join("") + '</select><button class="btn ghost sm" id="csv">Export CSV</button><button class="btn ghost sm" id="json">Export JSON</button><label class="btn ghost sm" style="margin:0">Import standalone JSON<input type="file" id="impFile" accept="application/json,.json" hidden></label><button class="btn ghost sm" onclick="window.print()">Print / PDF</button></div><div class="msg noprint" id="impMsg" style="margin:0 0 10px"></div>' +
       (body || '<div class="card"><p class="note" style="margin:0">Nothing matches this filter.</p></div>');
   }
 
@@ -657,7 +659,7 @@
           '<tr class="h"><td colspan="2">Costs per Friday</td></tr>' + lineRows(b.expense) + '<tr class="sub"><td>Total costs</td><td class="n">' + fmt(exp) + '</td></tr>' +
           '<tr class="tot"><td>Net per Friday</td><td class="n ' + (net < 0 ? 'neg' : 'pos') + '">' + fmt(net) + '</td></tr>' +
         '</tbody></table></div>' +
-        ((b.one_time || []).length ? '<div class="tw"><table><tbody><tr class="h"><td colspan="2">Up-front and one-time</td></tr>' + lineRows(b.one_time) + '<tr class="sub"><td>Total up front</td><td class="n">' + fmt(once) + '</td></tr></tbody></table></div>' : '') +
+        scenarioHtml(s) + ((b.one_time || []).length ? '<div class="tw"><table><tbody><tr class="h"><td colspan="2">Up-front and one-time</td></tr>' + lineRows(b.one_time) + '<tr class="sub"><td>Total up front</td><td class="n">' + fmt(once) + '</td></tr></tbody></table></div>' : '') +
         (s.notes ? '<div class="card"><h3>Notes and open questions</h3><div style="white-space:pre-wrap;font-size:.9rem">' + esc(s.notes) + '</div></div>' : '') +
         '<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="btn" data-edit="1">Edit the numbers</button><button class="btn ghost" onclick="window.print()">Print / save as PDF</button></div>' +
       '</div><div>' + sidebar(s) + '</div></div>';
@@ -801,6 +803,151 @@
   }, 20000);
   function toast(t){ var el = document.getElementById("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ el.hidden = true; }, 8000); }
 
+  // ---- Reconciliation helpers: numbers, section matrix, guards, break-even ----
+  function numOf(x){ var s = String(x == null ? "" : x).replace(/^SAMPLE[^:]*:\s*/i, ""); var m = s.match(/\d[\d,]*(\.\d+)?/); return m ? parseFloat(m[0].replace(/,/g, "")) : null; }
+  var meta = function(sid, k){ return val(sid, "meta." + k).note; };
+  function secStats(sid){
+    return DEFS.map(function(sec){
+      var rows = ITEMS.filter(function(x){ return x.sec === sec[0]; }), o = {sec:sec[0], title:sec[1], total:rows.length, ev:0, pass:0, gates:0, gatesOk:0, gatesOpen:0, gatesBad:0, fails:0};
+      rows.forEach(function(x){ var st = val(sid, x.id).status; if (st) o.ev++; if (st === "pass") o.pass++; if (st === "fail") o.fails++; if (x.gate) { o.gates++; if (st === "pass" || st === "na") o.gatesOk++; else if (st === "issue" || st === "fail") o.gatesBad++; else o.gatesOpen++; } });
+      return o;
+    });
+  }
+  function matrixHtml(sid){
+    return '<div class="tw"><table><thead><tr><th>Section</th><th class="n">Assessed</th><th class="n">Critical gates verified</th><th class="n">Issues / fails</th><th class="n">Gates open</th></tr></thead><tbody>' +
+      secStats(sid).map(function(o){ return '<tr><td>' + o.sec + '. ' + esc(o.title) + '</td><td class="n">' + o.ev + '/' + o.total + '</td><td class="n">' + o.gatesOk + '/' + o.gates + '</td><td class="n ' + (o.gatesBad ? 'neg' : '') + '">' + o.gatesBad + '</td><td class="n">' + o.gatesOpen + '</td></tr>'; }).join("") + '</tbody></table></div>';
+  }
+  function econ(s){
+    var b = s.budget || {}, inc = sumLines(b.income), exp = sumLines(b.expense), once = sumLines(b.one_time), n = +s.fridays_per_year || 0;
+    var att = numOf(meta(s.id, "capacity")), be = inc > 0 ? exp / inc : null;
+    return {inc:inc, exp:exp, once:once, n:n, net:inc - exp, att:att, be:be, beAtt:(be != null && att) ? Math.ceil(att * be) : null, gaps:unpriced(b.income) + unpriced(b.expense) + unpriced(b.one_time)};
+  }
+  function scenarioHtml(s){
+    var e = econ(s); if (!e.inc && !e.exp) return "";
+    var rows = [[0.5,"Conservative"],[0.75,"Soft"],[1,"Projection"]].map(function(sc){
+      var net = e.inc * sc[0] - e.exp, back = net > 0 && e.once ? Math.ceil(e.once / net) : null;
+      return '<tr><td>' + sc[1] + ' (' + Math.round(sc[0] * 100) + '% of projected income' + (e.att ? ', about ' + Math.round(e.att * sc[0]) + ' guests' : '') + ')</td><td class="n ' + (net < 0 ? 'neg' : 'pos') + '">' + fmt(net) + '</td><td class="n">' + fmt(net * e.n) + '</td><td class="n">' + (e.once ? (back ? back + ' Fridays' : 'never') : '—') + '</td></tr>';
+    }).join("");
+    var trial = e.once + 4 * Math.max(0, -(e.inc * 0.5 - e.exp));
+    return '<div class="card' + (e.be != null && e.be > 0.85 ? ' warn' : '') + '"><h3>Break-even and cash exposure (checklist F3, F4)</h3>' +
+      '<p style="margin:0 0 8px;font-size:.9rem">' + (e.be == null ? 'No income is projected, so break-even cannot be computed.' : 'Costs of ' + fmt(e.exp) + ' a Friday are covered once income reaches <b>' + Math.round(e.be * 100) + '%</b> of the projection' + (e.beAtt ? ', about <b>' + e.beAtt + '</b> of the ' + e.att + ' guests planned' : '') + '. ' + (e.be > 0.85 ? '<span class="flag gate">Thin margin</span>' : '')) + '</p>' +
+      '<div class="tw" style="margin:0 0 8px"><table><thead><tr><th>Scenario (all income scaled together, costs fixed)</th><th class="n">Net / Friday</th><th class="n">Net / year</th><th class="n">Up-front paid back in</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<p class="note" style="margin:0">Cash at risk in a four-Friday trial at the conservative case, with the up-front costs: <b>' + fmt(trial) + '</b>. Use it to size the deposit and the no-penalty exit in the contract (H3, H5, H8).' + (e.gaps ? ' <span class="flag">' + e.gaps + ' lines not priced, so break-even is understated</span>' : '') + '</p></div>';
+  }
+  function capacityHtml(s){
+    var att = numOf(meta(s.id, "capacity")), occ = numOf(meta(s.id, "occupancy")), staff = numOf(meta(s.id, "staff")) || 0;
+    if (!att && !occ) return "";
+    var line, warn = false;
+    if (att && occ) { var tot = att + staff; warn = tot > occ; line = 'Planned ' + num(att) + ' guests + ' + num(staff) + ' staff, artists and security = <b>' + num(tot) + '</b> against a posted maximum of <b>' + num(occ) + '</b> (' + Math.round(tot / occ * 100) + '%). ' + (warn ? 'Over the posted maximum: cut attendance or get a higher approved occupancy in writing (B1, B9).' : tot > occ * 0.9 ? 'Within 10% of the maximum; set a hard cutoff and a door counter (B9).' : 'Within the posted maximum.'); }
+    else if (att) line = 'Planned attendance is ' + num(att) + '. Record the posted occupancy from the placard (B1); staff, artists and vendors count toward it.';
+    else line = 'Posted maximum is ' + num(occ) + '. Enter the planned attendance.';
+    return '<div class="card' + (warn ? ' warn' : '') + '"><h3>Capacity check</h3><p style="margin:0;font-size:.9rem">' + line + '</p></div>';
+  }
+  function guards(s, sc){
+    var out = [], rec = val(s.id, "decision.rec").note || "Pending", e = econ(s), dl = val(s.id, "decision.deadline").note;
+    if ((/^Approve/.test(rec) || s.status === "approved") && (sc.issues || sc.open)) out.push((/^Approve/.test(rec) ? 'The recommendation is “' + esc(rec) + '”' : 'The series is marked Approved') + ', but ' + (sc.issues ? sc.issues + ' critical gate(s) have an open issue or failure' : '') + (sc.issues && sc.open ? ' and ' : '') + (sc.open ? sc.open + ' have not been assessed' : '') + '. Per the decision rule, nothing is signed until every critical gate is verified.');
+    if (/^Conditional/.test(rec) && !val(s.id, "decision.terms").note.trim()) out.push('Conditional approval needs the written conditions listed under “Non-negotiable contract conditions”.');
+    if (dl && !/^(approved|rejected)$/.test(s.status) && new Date(dl + "T23:59:59") < new Date()) out.push('The conditions deadline (' + esc(dl) + ') has passed.');
+    var att = numOf(meta(s.id, "capacity")), occ = numOf(meta(s.id, "occupancy")), staff = numOf(meta(s.id, "staff")) || 0;
+    if (att && occ && att + staff > occ) out.push('Planned attendance plus staff (' + num(att + staff) + ') exceeds the posted occupancy (' + num(occ) + ').');
+    if (e.net < 0) out.push('The projected budget loses ' + fmt(-e.net) + ' a Friday (' + fmt(-e.net * e.n) + ' a year).');
+    if (e.gaps && /^(Conditional|Approve)/.test(rec)) out.push(e.gaps + ' budget line(s) are not priced yet.');
+    if (s.area && exposure(s.area)[0] === "High" && val(s.id, "C3").status !== "pass") out.push('Neighbor exposure is High and the bass-heavy sound test (C3) is not a verified pass.');
+    var muni = meta(s.id, "municipality"); if (muni && !/^\s*(the )?(city of )?chicago\b/i.test(muni)) out.push('Not in the City of Chicago: the Chicago citations in the checklist need local equivalents recorded.');
+    return out;
+  }
+  function guardsHtml(s, sc){
+    var g = guards(s, sc); if (!g.length) return "";
+    return '<div class="card warn"><h3>Needs attention before the board decides</h3><ul style="margin:0;padding-left:18px;font-size:.88rem">' + g.map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ul></div>';
+  }
+
+  // ---- Compare venues ----
+  function compareView(){
+    var rows = D.series.map(function(s){
+      var sc = score(s.id), e = econ(s), v = verdict(sc), votes = D.votes.filter(function(x){ return x.series_id === s.id; });
+      var gatesOk = ITEMS.filter(function(x){ var st = val(s.id, x.id).status; return x.gate && (st === "pass" || st === "na"); }).length;
+      return {s:s, sc:sc, e:e, v:v, gatesOk:gatesOk, ex:s.area ? exposure(s.area)[0] : "not run", rec:val(s.id, "decision.rec").note || "Pending", muni:meta(s.id, "municipality"),
+        a:votes.filter(function(x){ return x.vote === "approve"; }).length, r:votes.filter(function(x){ return x.vote === "reject"; }).length, b:votes.filter(function(x){ return x.vote === "abstain"; }).length};
+    }).sort(function(x, y){ return (x.sc.issues - y.sc.issues) || (x.sc.open - y.sc.open) || (y.e.net - x.e.net); });
+    var gtot = ITEMS.filter(function(x){ return x.gate; }).length;
+    return '<h2>Compare venues</h2><p class="note">Ranked by fewest critical problems, then fewest unassessed gates, then best net. A venue only becomes signable when its critical gates are all verified.</p>' +
+      '<div class="tw"><table><thead><tr><th>Venue</th><th>Status</th><th>Readiness</th><th class="n">Gates verified</th><th class="n">Issues</th><th class="n">Gates open</th><th>Neighbor exposure</th><th class="n">Net / Friday</th><th class="n">Net / year</th><th class="n">Up front</th><th class="n">Break-even</th><th>Recommendation</th><th>Board vote</th></tr></thead><tbody>' +
+      rows.map(function(r){ return '<tr><td><button class="btn ghost sm" data-open="' + esc(r.s.id) + '">' + esc(r.s.title) + '</button><span class="nt">' + esc(meta(r.s.id, "address") || r.s.venue) + (r.muni ? ' · ' + esc(r.muni) : '') + '</span></td>' +
+        '<td><span class="pill st-' + esc(r.s.status) + '">' + esc(STATUS[r.s.status] || r.s.status) + '</span></td><td>' + esc(r.v[1]) + '</td><td class="n">' + r.gatesOk + '/' + gtot + '</td><td class="n ' + (r.sc.issues ? 'neg' : '') + '">' + r.sc.issues + '</td><td class="n">' + r.sc.open + '</td><td>' + esc(r.ex) + '</td>' +
+        '<td class="n ' + (r.e.net < 0 ? 'neg' : 'pos') + '">' + fmt(r.e.net) + '</td><td class="n">' + fmt(r.e.net * r.e.n) + '</td><td class="n">' + fmt(r.e.once) + '</td><td class="n">' + (r.e.be != null ? Math.round(r.e.be * 100) + '%' : '—') + '</td><td>' + esc(r.rec) + '</td><td>' + r.a + ' / ' + r.r + ' / ' + r.b + '</td></tr>'; }).join("") + '</tbody></table></div>' +
+      '<p class="note">Board vote = approve / reject / abstain. Break-even = share of projected income needed to cover the costs of one Friday.</p>' +
+      rows.map(function(r){
+        var bad = ITEMS.filter(function(x){ var st = val(r.s.id, x.id).status; return st === "fail" || (x.gate && st === "issue"); });
+        return bad.length ? '<div class="card warn"><h3>' + esc(r.s.title) + ': failures and critical issues</h3><ul style="margin:0;padding-left:18px;font-size:.86rem">' + bad.map(function(x){ var c = val(r.s.id, x.id); return '<li><b>' + x.id + '</b> ' + esc(x.title) + ' <span class="flag' + (c.status === "fail" ? ' gate' : '') + '">' + esc(FINDL[c.status]) + '</span>' + (c.note ? '<span class="nt">' + esc(c.note) + '</span>' : '') + '</li>'; }).join("") + '</ul></div>' : '';
+      }).join("") +
+      '<div class="noprint"><button class="btn ghost" onclick="window.print()">Print / save as PDF</button></div>';
+  }
+
+  // ---- Board packet (one printable record per venue) ----
+  function packetView(s){
+    var sc = score(s.id), v = verdict(sc), e = econ(s), m = function(k){ return meta(s.id, k); }, d = function(k){ return val(s.id, "decision." + k).note; };
+    var votes = D.votes.filter(function(x){ return x.series_id === s.id; });
+    var gateRows = ITEMS.filter(function(x){ var st = val(s.id, x.id).status; return x.gate && st !== "pass" && st !== "na"; });
+    var otherBad = ITEMS.filter(function(x){ var st = val(s.id, x.id).status; return !x.gate && (st === "issue" || st === "fail"); });
+    var line = function(x){ var c = val(s.id, x.id); return '<tr><td style="white-space:nowrap">' + x.id + '</td><td>' + esc(x.title) + '</td><td>' + esc(FINDL[c.status || ""]) + '</td><td>' + esc(c.note) + '</td></tr>'; };
+    var tbl = function(rows){ return '<div class="tw"><table><thead><tr><th>ID</th><th>Requirement</th><th>Finding</th><th>Evidence / action</th></tr></thead><tbody>' + rows.map(line).join("") + '</tbody></table></div>'; };
+    return '<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="btn" onclick="window.print()">Print / save as PDF</button><button class="btn ghost" id="json">Export JSON</button><button class="btn ghost" id="csv">Export CSV</button></div>' +
+      '<div class="card"><h3>RTI board packet: ' + esc(m("venue") || s.title) + '</h3><p style="margin:0;font-size:.9rem">' + esc(m("address")) + (m("municipality") ? ' · ' + esc(m("municipality")) : '') + '<br>' + (m("event") ? 'Event: ' + esc(m("event")) + '<br>' : '') + (m("doors") ? 'Hours: ' + esc(m("doors")) + '<br>' : '') + (m("contact") ? 'Owner / contact: ' + esc(m("contact")) + '<br>' : '') + 'Prepared ' + new Date().toLocaleDateString("en-US", {year:"numeric", month:"long", day:"numeric"}) + ' from the live record · Status: ' + esc(STATUS[s.status] || s.status) + '</p></div>' +
+      '<div class="verdict ' + v[0] + '"><b>' + v[1] + '</b>' + esc(v[2]) + '</div>' + guardsHtml(s, sc) +
+      '<div class="card"><h3>Recommendation and conditions</h3><p style="margin:0;font-size:.9rem">Recommendation: <b>' + esc(d("rec") || "Pending") + '</b>' + (d("approver") ? ' · Contract approver: ' + esc(d("approver")) : '') + (d("deadline") ? ' · Conditions deadline: ' + esc(d("deadline")) : '') + '</p>' +
+        (d("terms") ? '<div style="white-space:pre-wrap;font-size:.88rem;margin-top:8px"><b>Conditions:</b> ' + esc(d("terms")) + '</div>' : '') + (d("resolution") ? '<div style="white-space:pre-wrap;font-size:.88rem;margin-top:6px"><b>Resolution / counsel reference:</b> ' + esc(d("resolution")) + '</div>' : '') + '</div>' +
+      matrixHtml(s.id) +
+      '<h3 style="margin:14px 0 6px">Critical gates not yet verified (' + gateRows.length + ')</h3>' + (gateRows.length ? tbl(gateRows) : '<p class="note">Every critical gate is a verified pass or not applicable.</p>') +
+      (otherBad.length ? '<h3 style="margin:14px 0 6px">Other issues and failures (' + otherBad.length + ')</h3>' + tbl(otherBad) : '') +
+      '<div class="card"><h3>Economics</h3><p style="margin:0;font-size:.9rem">' + fmt(e.inc) + ' income − ' + fmt(e.exp) + ' costs = <b class="' + (e.net < 0 ? 'neg' : 'pos') + '">' + fmt(e.net) + ' per Friday</b>, ' + fmt(e.net * e.n) + ' over ' + e.n + ' Fridays; ' + fmt(e.once) + ' up front. ' + (e.be != null ? 'Break-even at ' + Math.round(e.be * 100) + '% of projected income.' : '') + (m("rent") ? ' Proposed hire: ' + esc(m("rent")) + '.' : '') + '</p></div>' +
+      capacityHtml(s) +
+      (s.area ? '<div class="card"><h3>Area: who could complain (exposure ' + exposure(s.area)[0] + ')</h3><p style="margin:0;font-size:.88rem">' + areaSummary(s.area) + '</p></div>' : '') +
+      '<div class="card votes"><h3>Board vote</h3>' + D.members.map(function(mb){ var x = votes.filter(function(y){ return y.member_id === mb.id; })[0]; return '<div class="row"><div>' + esc(mb.full_name) + '<div class="who">' + esc(mb.title) + (x && x.note ? ' · “' + esc(x.note) + '”' : '') + '</div></div><div class="v-' + (x ? x.vote : 'none') + '" style="font-weight:700">' + (x ? VOTE[x.vote] : '—') + '</div></div>'; }).join("") + '</div>' +
+      '<div class="card"><h3>Signatures</h3><p style="margin:0;font-size:.9rem">Authorized RTI signer: ______________________ &nbsp; Date: __________ &nbsp; Counsel reviewed: ______________________</p></div>' +
+      '<p class="note">A planning and contract due-diligence record, not a city approval or legal opinion. Formal approval is by board resolution or written consent.</p>';
+  }
+
+  // ---- JSON export / import (same shape as the standalone checklist tool) ----
+  function exportJson(s){
+    var meta2 = {}, checks = {};
+    META.forEach(function(m){ meta2[m[0]] = val(s.id, "meta." + m[0]).note; });
+    DEC.forEach(function(d){ meta2[d[0] === "approver" ? "owner" : d[0]] = val(s.id, "decision." + d[0]).note; });
+    ITEMS.forEach(function(x){ var c = val(s.id, x.id); if (c.status || c.note) checks[x.id] = {status:c.status, note:c.note}; });
+    var blob = new Blob([JSON.stringify({tool:"RTI Chicago venue viability", created:new Date().toISOString(), series_id:s.id, title:s.title, meta:meta2, checks:checks, budget:s.budget, definitions:ITEMS}, null, 2)], {type:"application/json"});
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "RTI_venue_review_" + s.id + ".json"; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 500);
+  }
+  function importJson(file){
+    var msg = document.getElementById("impMsg"), sid = cur;
+    var rd = new FileReader();
+    rd.onload = function(){
+      var j; try { j = JSON.parse(rd.result); } catch (e) { msg.textContent = "That file is not valid JSON."; return; }
+      if (!j || typeof j !== "object" || (!j.checks && !j.meta)) { msg.textContent = "That file isn't an RTI venue checklist export."; return; }
+      var jobs = [], skipped = 0, recMap = {Reject:RECS[1], Hold:RECS[2], Conditional:RECS[3], Approve:RECS[4], Pending:RECS[0]};
+      Object.keys(j.checks || {}).forEach(function(k){
+        if (!ITEM[k]) return; var c = j.checks[k] || {}, st = String(c.status || ""), nt = String(c.note || "").slice(0, 4000);
+        if (["", "pass", "issue", "fail", "na"].indexOf(st) < 0 || (!st && !nt)) return;
+        var now = val(sid, k); if (now.status || now.note) { skipped++; return; }
+        jobs.push([k, st, nt]);
+      });
+      var metaKeys = {venue:"meta.venue", address:"meta.address", contact:"meta.contact", event:"meta.event", date:"meta.date", capacity:"meta.capacity", doors:"meta.doors", rent:"meta.rent", reviewer:"meta.reviewer", overview:"meta.overview", owner:"decision.approver", deadline:"decision.deadline", terms:"decision.terms", resolution:"decision.resolution", rec:"decision.rec"};
+      Object.keys(j.meta || {}).forEach(function(k){
+        var key = metaKeys[k], v = String(j.meta[k] == null ? "" : j.meta[k]).slice(0, 4000); if (!key || !v) return;
+        if (k === "rec") { v = recMap[v] || v; if (v === RECS[0]) return; }
+        var now = val(sid, key).note; if (now && !(k === "rec" && now === RECS[0])) { skipped++; return; }
+        jobs.push([key, "", v]);
+      });
+      if (!jobs.length) { msg.textContent = "Nothing to import" + (skipped ? ": the " + skipped + " matching fields already have entries, and import never overwrites." : "."); return; }
+      jobs.forEach(function(x, i){
+        var dk = sid + "|" + x[0]; dirty[dk] = {status:x[1], note:x[2]}; clearTimeout(timers[dk]);
+        timers[dk] = setTimeout(function(){ flush(dk); }, 150 + i * 120);
+      });
+      saveState(); render();
+      toast("Importing " + jobs.length + " entries" + (skipped ? " (" + skipped + " already filled, left alone)" : "") + ". They save one by one and every director sees them.");
+    };
+    rd.readAsText(file);
+  }
+
   // ---- CSV export ----
   function csv(s){
     var q = function(v){ return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; };
@@ -814,8 +961,9 @@
   // ---- Events ----
   document.getElementById("tabbar").addEventListener("click", function(e){
     var b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.new) { nv = {}; startEdit(null); setTimeout(function(){ var a = document.getElementById("nvAddr"); if (a) a.focus(); }, 0); return; }
-    editing = false; draft = null; cur = b.dataset.s; view = "overview"; writeHash();
+    if (b.dataset.cmp) { comparing = true; editing = false; draft = null; render(); window.scrollTo(0, 0); return; }
+    if (b.dataset.new) { comparing = false; nv = {}; startEdit(null); setTimeout(function(){ var a = document.getElementById("nvAddr"); if (a) a.focus(); }, 0); return; }
+    editing = false; comparing = false; draft = null; cur = b.dataset.s; view = "overview"; writeHash();
     render(); window.scrollTo(0, 0);
   });
 
@@ -834,13 +982,16 @@
   main.addEventListener("change", function(e){
     var t = e.target;
     if (t.id === "nvTpl") { nv.tpl = t.value; nv.title = document.getElementById("nvTitle").value; nv.id = document.getElementById("nvId").value; render(); return; }
+    if (t.id === "impFile") { if (t.files && t.files[0]) importJson(t.files[0]); t.value = ""; return; }
     if (t.id === "filter") { filter = t.value; try { localStorage.setItem("rtiBbFilter", filter); } catch (x) {} render(); return; }
     if (t.dataset.status) { var k = t.dataset.status; queue(k, t.value, val(cur, k).note, true); var row = t.closest(".ck"); if (row) row.className = "ck s-" + (t.value || "none"); return; }
     if (t.dataset.key) { queue(t.dataset.key, /^[A-I]\d/.test(t.dataset.key) ? val(cur, t.dataset.key).status : "", t.value, true); }
   });
   main.addEventListener("click", function(e){
     var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.open) { comparing = false; cur = b.dataset.open; view = "overview"; writeHash(); render(); window.scrollTo(0, 0); return; }
     var s = D.series.filter(function(x){ return x.id === cur; })[0];
+    if (b.id === "json") { exportJson(s); return; }
     if (b.dataset.v) { view = b.dataset.v; writeHash(); render(); window.scrollTo(0, 0); return; }
     if (b.id === "csv") { csv(s); return; }
     if (b.id === "areaRun") { runArea(cur, true); return; }
