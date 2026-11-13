@@ -126,6 +126,7 @@
   .sheet .q .known{font-size:.82rem; margin-top:4px; padding:6px 9px; background:var(--surface-2); border-radius:7px; white-space:pre-wrap;}
   .sheet .ans{height:44px; border-bottom:1px dashed var(--line);}
   .sources li{margin-bottom:6px; font-size:.86rem; overflow-wrap:anywhere;}
+  .tiles-dark{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);}
   .gate-box{max-width:440px; margin:40px auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px;}
   .gate-box input{width:100%; font:500 1rem "Inter",sans-serif; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); margin:10px 0;}
   .msg{font-size:.86rem; color:var(--ink-soft); margin-top:8px; min-height:1.2em;}
@@ -325,7 +326,7 @@
   function readHash(){
     var p = location.hash.slice(1).split("/");
     if (p[0] && D && D.series.some(function(s){ return s.id === p[0]; })) cur = p[0];
-    if (p[1] && ["overview","checklist","budget","sheet","changes"].indexOf(p[1]) >= 0) view = p[1];
+    if (p[1] && ["overview","area","checklist","budget","sheet","changes"].indexOf(p[1]) >= 0) view = p[1];
   }
   function writeHash(){ try { history.replaceState(null, "", "#" + cur + "/" + view); } catch (e) {} }
 
@@ -367,20 +368,21 @@
     document.getElementById("gate").hidden = true;
     document.getElementById("who").innerHTML = "Signed in as " + esc(D.me.full_name) + ", " + esc(D.me.title) + ' · <span class="live"><i></i>Live</span><span id="saveState"></span>';
     var tabs = D.series.map(function(s){ return '<button data-s="' + esc(s.id) + '"' + (s.id === cur && !editing ? ' class="on"' : '') + '>' + esc(s.title) + '</button>'; });
-    tabs.push('<button data-new="1"' + (editing && draft && draft._new ? ' class="on"' : '') + '>+ New venue / series</button>');
+    tabs.push('<button data-new="1"' + (editing && draft && draft._new ? ' class="on"' : '') + '>+ New venue</button>');
     document.getElementById("tabbar").innerHTML = tabs.join("");
     var main = document.getElementById("main");
-    if (editing) main.innerHTML = editView();
+    if (editing) main.innerHTML = draft._new ? newVenueView() : editView();
     else if (!cur) main.innerHTML = '<div class="card"><h3>No venues yet</h3><p class="note" style="margin:0">Use “+ New venue / series” to start an evaluation.</p></div>';
     else {
       var s = D.series.filter(function(x){ return x.id === cur; })[0];
       var sc = score(s.id), openN = ITEMS.filter(function(x){ var v = val(s.id, x.id).status; return !v || v === "issue" || v === "fail"; }).length;
       var hn = (D.history || []).filter(function(h){ return h.series_id === s.id; }).length;
-      var sub = [["overview","Overview",""],["checklist","Checklist",sc.ev + "/" + ITEMS.length],["budget","Budget",""],["sheet","Owner meeting sheet",openN + " open"],["changes","Changes",hn || ""]];
+      var ex = s.area ? exposure(s.area) : null;
+      var sub = [["overview","Overview",""],["area","Area",ex ? ex[0] : "not run"],["checklist","Checklist",sc.ev + "/" + ITEMS.length],["budget","Budget",""],["sheet","Owner meeting sheet",openN + " open"],["changes","Changes",hn || ""]];
       main.innerHTML = '<h2>' + esc(s.title) + ' <span class="pill st-' + esc(s.status) + '">' + esc(STATUS[s.status] || s.status) + '</span></h2>' +
         '<p class="note" style="margin:2px 0 0">' + esc(val(s.id, "meta.address").note || s.venue) + '</p>' +
         '<div class="subnav noprint">' + sub.map(function(t){ return '<button data-v="' + t[0] + '"' + (view === t[0] ? ' class="on"' : '') + '>' + t[1] + (t[2] !== "" ? '<span class="c">' + t[2] + '</span>' : '') + '</button>'; }).join("") + '</div>' +
-        (view === "checklist" ? checklistView(s) : view === "budget" ? budgetView(s) : view === "sheet" ? sheetView(s) : view === "changes" ? changesView(s) : overviewView(s, sc));
+        (view === "checklist" ? checklistView(s) : view === "area" ? areaView(s) : view === "budget" ? budgetView(s) : view === "sheet" ? sheetView(s) : view === "changes" ? changesView(s) : overviewView(s, sc));
       Object.keys(dirty).forEach(function(k){
         var p = k.split("|"); if (p[0] !== cur) return;
         var el = main.querySelector('[data-key="' + p[1] + '"]'); if (el) el.value = dirty[k].note;
@@ -388,6 +390,158 @@
     }
     document.getElementById("app").hidden = false;
     saveState();
+    if (!editing && cur && view === "area") { var sa = D.series.filter(function(x){ return x.id === cur; })[0]; if (sa && sa.area) drawMap(sa.area); }
+  }
+
+  // ---- Area analysis: who could complain ----
+  var ft = function(m){ return m == null ? "—" : Math.round(m * 3.28084).toLocaleString("en-US") + " ft"; };
+  var num = function(n){ return n == null ? "—" : Number(n).toLocaleString("en-US"); };
+  function exposure(a){
+    var h = a.homes || {}, st = a.nearest_residential_street;
+    if ((h.nearest_m != null && h.nearest_m <= 100) || h.within_100 > 0 || (st && st.m <= 60)) return ["High","Homes or a residential street sit within about 330 ft. Bass, queues and late exits will be heard. Expect complaints unless sound and exit control are strong."];
+    if (h.within_250 >= 15 || (st && st.m <= 150)) return ["Medium","Homes within about 820 ft. Bass and parking spillover may reach them, especially after midnight."];
+    return ["Low","Few mapped homes within about 820 ft. Confirm on a late-night site visit."];
+  }
+  var runningArea = {};
+  function runArea(sid, quiet){
+    if (runningArea[sid]) return; runningArea[sid] = true;
+    if (!quiet) toast("Running the area analysis… this can take up to a minute.");
+    if (cur === sid && view === "area") { var m = document.getElementById("areaMsg"); if (m) m.textContent = "Running… this can take up to a minute."; }
+    call({action:"area", token:token, series_id:sid}).then(function(r){
+      runningArea[sid] = false;
+      if (!r.ok) { toast(r.error || "The area analysis didn't finish. Try again."); var m2 = document.getElementById("areaMsg"); if (m2) m2.textContent = r.error || ""; return; }
+      toast("Area analysis updated."); load();
+    }).catch(function(){ runningArea[sid] = false; toast("Couldn't reach the server. Try the area analysis again."); });
+  }
+  function areaSummary(a){
+    var h = a.homes || {}, st = a.nearest_residential_street, ex = exposure(a);
+    return 'Nearest home about <b>' + ft(h.nearest_m) + '</b> away; <b>' + num(h.within_100) + '</b> homes within 330 ft, <b>' + num(h.within_250) + '</b> within 820 ft, <b>' + num(h.within_500) + '</b> within 1,640 ft.' +
+      (st ? ' Nearest residential street: ' + esc(st.name) + ', ' + ft(st.m) + '.' : '') +
+      (a.block_group ? ' Census block group: ' + num(a.block_group.pop) + ' residents in ' + num(a.block_group.housing) + ' homes (' + num(a.block_group.pop_per_sqmi) + ' people per sq mi).' : '') +
+      ' Mapped parking lots within half a mile: ' + (a.parking || []).length + '.' +
+      ' Neighbor exposure: <b>' + ex[0] + '</b>.';
+  }
+  function areaView(s){
+    var a = s.area, addr = val(s.id, "meta.address").note;
+    var head = '<div class="filters noprint"><button class="btn sm" id="areaRun">' + (a ? 'Re-run area analysis' : 'Run area analysis') + '</button><span class="msg" id="areaMsg" style="margin:0">' + (addr ? 'Address: ' + esc(addr) : 'Enter the venue&rsquo;s full street address on the Overview tab first.') + '</span></div>';
+    if (!a) return head + '<div class="card"><h3>No area analysis yet</h3><p class="note" style="margin:0">It finds the nearest homes and residential streets, counts homes within 330 / 820 / 1,640 ft, pulls Census population and housing density, and maps parking lots, schools, places of worship, other nightlife and bus stops: who could complain about our activities, and where guests will park.</p></div>';
+    var h = a.homes || {}, ex = exposure(a);
+    var rows = function(list, cols){ return list && list.length ? '<div class="tw"><table><thead><tr>' + cols.map(function(c){ return '<th' + (c[2] ? ' class="n"' : '') + '>' + c[0] + '</th>'; }).join("") + '</tr></thead><tbody>' + list.map(function(x){ return '<tr>' + cols.map(function(c){ return '<td' + (c[2] ? ' class="n"' : '') + '>' + c[1](x) + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table></div>' : '<p class="note">None mapped within range.</p>'; };
+    var g = function(x, label){ return x ? '<tr><td>' + label + ' <span class="nt">' + esc(x.name) + '</span></td><td class="n">' + num(x.pop) + '</td><td class="n">' + num(x.housing) + '</td><td class="n">' + num(x.pop_per_sqmi) + '</td><td class="n">' + num(x.housing_per_sqmi) + '</td></tr>' : ''; };
+    return head +
+      '<p class="note">' + esc(a.matched) + ' · <b>' + esc(a.municipality || "municipality unknown") + '</b>, ' + esc(a.county) + (a.is_chicago ? '' : ' · <span class="flag gate">Not City of Chicago</span>') + ' · analysed ' + when(s.area_at) + '</p>' +
+      '<div class="verdict ' + (ex[0] === "High" ? 'nogo' : ex[0] === "Medium" ? 'inc' : 'ok') + '"><b>Neighbor exposure: ' + ex[0] + '</b>' + esc(ex[1]) + '</div>' +
+      '<div class="kpis">' +
+        '<div class="kpi"><div class="l">Nearest home</div><div class="v">' + ft(h.nearest_m) + '</div><div class="s">' + (h.nearest_m != null ? h.nearest_m + ' m' : 'none mapped') + '</div></div>' +
+        '<div class="kpi"><div class="l">Homes within 820 ft</div><div class="v">' + num(h.within_250) + '</div><div class="s">' + num(h.within_100) + ' within 330 ft · ' + num(h.within_500) + ' within 1,640 ft</div></div>' +
+        '<div class="kpi"><div class="l">Residents / sq mi</div><div class="v">' + (a.block_group ? num(a.block_group.pop_per_sqmi) : '—') + '</div><div class="s">surrounding Census block group</div></div>' +
+        '<div class="kpi"><div class="l">Parking lots mapped</div><div class="v">' + (a.parking || []).length + '</div><div class="s">within half a mile' + (a.parking && a.parking[0] ? ' · nearest ' + ft(a.parking[0].d) : '') + '</div></div>' +
+      '</div>' +
+      '<div id="areaMap" style="height:420px;border-radius:12px;border:1px solid var(--line);margin:0 0 6px;background:var(--surface-2)"></div>' +
+      '<p class="note">Rings at 330 ft, 820 ft and 1,640 ft. <span style="color:#B9382F">●</span> homes · <span style="color:#2F6AC0">●</span> parking · <span style="color:#A86A06">●</span> schools / worship / care · <span style="color:#7B3FA0">●</span> bars / clubs · <span style="color:#777">●</span> bus stops.</p>' +
+      '<div class="card"><h3>Who could complain</h3><p style="margin:0 0 8px">' + areaSummary(a) + '</p>' +
+        (a.nearest_residential_street ? '<p class="note" style="margin:0 0 8px">Residential street ' + esc(a.nearest_residential_street.name) + ' is ' + ft(a.nearest_residential_street.m) + ' away: guests leaving at 4–5 am, car doors and rideshares will be heard there.</p>' : '') +
+        '<div class="noprint"><button class="btn ghost sm" id="areaToChecklist">Add these findings to checklist evidence (C1, C8, D1, D4)</button></div></div>' +
+      '<h3 style="margin:16px 0 8px">Parking</h3><p class="note">Only lots mapped in OpenStreetMap; on-street spaces and many private lots are not mapped, and capacity is rarely recorded. Walk the blocks at 10 pm–2 am (checklist D1–D3).</p>' +
+        rows(a.parking, [["Distance", function(x){ return ft(x.d); }, 1],["Name", function(x){ return esc(x.name || "Unnamed lot"); }],["Spaces", function(x){ return x.capacity != null ? esc(x.capacity) : "—"; }, 1],["Access / fee", function(x){ return esc([x.access, x.fee ? "fee: " + x.fee : ""].filter(Boolean).join(" · ") || "—"); }]]) +
+      '<h3 style="margin:16px 0 8px">Schools, places of worship and care facilities</h3>' +
+        rows(a.sensitive, [["Distance", function(x){ return ft(x.d); }, 1],["Type", function(x){ return esc(x.kind); }],["Name", function(x){ return esc(x.name || "—"); }]]) +
+      '<h3 style="margin:16px 0 8px">Other bars, clubs and venues within ¾ mile</h3>' +
+        rows(a.nightlife, [["Distance", function(x){ return ft(x.d); }, 1],["Type", function(x){ return esc(x.kind); }],["Name", function(x){ return esc(x.name || "—"); }]]) +
+      '<h3 style="margin:16px 0 8px">Bus stops</h3>' +
+        rows((a.bus_stops || []).slice(0, 6), [["Distance", function(x){ return ft(x.d); }, 1],["Stop", function(x){ return esc(x.name || "—"); }]]) +
+      '<h3 style="margin:16px 0 8px">Census population and housing (2020)</h3><div class="tw"><table><thead><tr><th>Area</th><th class="n">Residents</th><th class="n">Homes</th><th class="n">People / sq mi</th><th class="n">Homes / sq mi</th></tr></thead><tbody>' + g(a.block, "Block") + g(a.block_group, "Block group") + g(a.tract, "Tract") + '</tbody></table></div>' +
+      '<p class="note">How “home” is counted: a mapped building tagged as housing, or any non-commercial building inside a mapped residential zone (' + num(a.residential_zones_mapped) + ' zones nearby). Map data can be incomplete, so this is a starting point for the site visit, not a survey. Sources: ' + (a.sources || []).map(esc).join("; ") + '. Map © OpenStreetMap contributors.</p>';
+  }
+  var leafletP = null;
+  function leaflet(){
+    if (window.L) return Promise.resolve();
+    if (!leafletP) leafletP = new Promise(function(res, rej){
+      var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"; document.head.appendChild(l);
+      var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+    });
+    return leafletP;
+  }
+  function drawMap(a){
+    leaflet().then(function(){
+      var el = document.getElementById("areaMap"); if (!el || el._done) return; el._done = true;
+      var dark = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+      var map = L.map(el, {scrollWheelZoom:false}).setView([a.lat, a.lon], 16);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, referrerPolicy:"strict-origin", className:dark ? "tiles-dark" : "", attribution:"© OpenStreetMap contributors"}).addTo(map);
+      [100, 250, 500].forEach(function(r){ L.circle([a.lat, a.lon], {radius:r, color:"#888", weight:1, fill:false, dashArray:"4 4"}).addTo(map); });
+      var dot = function(lat, lon, color, r, tip){ var m = L.circleMarker([lat, lon], {radius:r, color:color, fillColor:color, fillOpacity:.75, weight:1}).addTo(map); if (tip) m.bindTooltip(tip); };
+      ((a.homes && a.homes.points) || []).forEach(function(p){ dot(p[0], p[1], "#B9382F", 3, "Home · " + ft(p[2])); });
+      (a.parking || []).forEach(function(x){ dot(x.lat, x.lon, "#2F6AC0", 7, (x.name || "Parking") + " · " + ft(x.d) + (x.capacity ? " · " + x.capacity + " spaces" : "")); });
+      (a.sensitive || []).forEach(function(x){ dot(x.lat, x.lon, "#A86A06", 7, x.kind + (x.name ? ": " + x.name : "") + " · " + ft(x.d)); });
+      (a.nightlife || []).forEach(function(x){ dot(x.lat, x.lon, "#7B3FA0", 7, x.kind + (x.name ? ": " + x.name : "") + " · " + ft(x.d)); });
+      (a.bus_stops || []).forEach(function(x){ if (x.lat) dot(x.lat, x.lon, "#777", 4, "Bus: " + (x.name || "stop") + " · " + ft(x.d)); });
+      L.marker([a.lat, a.lon]).addTo(map).bindTooltip("Venue", {permanent:true, direction:"top"});
+    }).catch(function(){ var el = document.getElementById("areaMap"); if (el) el.innerHTML = '<p class="note" style="padding:14px">The map couldn&rsquo;t load. The figures below are still correct.</p>'; });
+  }
+  function areaToChecklist(s){
+    var a = s.area, h = a.homes || {}, d = new Date(s.area_at).toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
+    var add = function(key, text){ var c = val(s.id, key); queue(key, c.status, (c.note ? c.note + "\n\n" : "") + "Area analysis " + d + ": " + text, true); };
+    add("C1", "nearest home ~" + ft(h.nearest_m) + "; " + h.within_100 + " homes within 330 ft, " + h.within_250 + " within 820 ft, " + h.within_500 + " within 1,640 ft" + (a.nearest_residential_street ? "; residential street " + a.nearest_residential_street.name + " at " + ft(a.nearest_residential_street.m) : "") + (a.sensitive && a.sensitive.length ? "; nearest sensitive use: " + a.sensitive[0].kind + (a.sensitive[0].name ? " (" + a.sensitive[0].name + ")" : "") + " at " + ft(a.sensitive[0].d) : "") + ". From map data; confirm on site.");
+    add("C8", "Census block group " + (a.block_group ? a.block_group.pop + " residents, " + a.block_group.housing + " homes, " + a.block_group.pop_per_sqmi + " people/sq mi" : "n/a") + ". Neighbor exposure rated " + exposure(a)[0] + ". 311/police records still to pull.");
+    add("D1", (a.parking || []).length + " parking lot(s) mapped within half a mile" + (a.parking && a.parking[0] ? ", nearest " + ft(a.parking[0].d) + (a.parking[0].capacity ? " (" + a.parking[0].capacity + " spaces)" : ", capacity unknown") : "") + ". On-street and unmapped lots not counted; count on site.");
+    add("D4", (a.bus_stops || []).length + " bus stop(s) within 1,640 ft" + (a.bus_stops && a.bus_stops[0] ? ", nearest " + (a.bus_stops[0].name || "stop") + " at " + ft(a.bus_stops[0].d) : "") + ". Check late-night service hours.");
+    toast("Added to checklist evidence for C1, C8, D1 and D4.");
+  }
+
+  // ---- New venue: address first, sample figures from an existing venue ----
+  var nv = {};
+  function newVenueView(){
+    var tpl = D.series.filter(function(x){ return x.id === nv.tpl; })[0] || D.series.filter(function(x){ return x.id === "friday-lime-ilu"; })[0] || D.series[0];
+    nv.tpl = tpl ? tpl.id : null;
+    return '<div class="edit"><h2>New venue</h2>' +
+      '<p class="note">Enter the street address. We look it up, fill in the rest with sample figures from an existing venue for you to finalize, and run the area analysis (nearest homes, residential density, parking).</p>' +
+      '<div class="card"><label class="fl">Venue street address</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="f" id="nvAddr" style="flex:1 1 280px" placeholder="e.g. 14421 Greenwood Rd, Dolton, IL 60419" value="' + esc(nv.addr || "") + '" autocomplete="street-address"><button class="btn" id="nvLook">Look up</button></div><div class="msg" id="nvMsg">' + (nv.match ? '' : '') + '</div>' +
+      (nv.match ? '<div class="cm" style="margin-top:8px"><div><b>' + esc(nv.match.matched) + '</b></div><div class="note" style="margin:2px 0 0">' + esc(nv.match.municipality) + ', ' + esc(nv.match.county) + (nv.match.is_chicago ? '' : ' · <span class="flag gate">Not City of Chicago</span>') + (nv.match.name ? ' · Map shows a business here: “' + esc(nv.match.name) + '” (check it&rsquo;s the venue)' : '') + '</div></div>' : '') +
+      '</div>' +
+      (nv.match ? '<div class="card"><div class="frow">' +
+        '<div style="grid-column:span 2"><label class="fl">Venue / series name</label><input class="f" id="nvTitle" maxlength="140" value="' + esc(nv.title) + '"></div>' +
+        '<div><label class="fl">Short id</label><input class="f" id="nvId" maxlength="60" value="' + esc(nv.id) + '"></div>' +
+        '<div><label class="fl">Sample figures from</label><select class="f" id="nvTpl">' + D.series.map(function(x){ return '<option value="' + esc(x.id) + '"' + (x.id === nv.tpl ? ' selected' : '') + '>' + esc(x.title) + '</option>'; }).join("") + '</select></div>' +
+        '</div><p class="note" style="margin:0">Copied as samples, each marked “Sample from ' + esc(tpl ? tpl.title : "") + '”: all budget lines, Fridays per year, event, hours, attendance and rent. Checklist findings start blank: every venue is assessed on its own evidence.</p></div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" id="nvCreate">Create venue and run area analysis</button><button class="btn ghost" id="eCancel">Cancel</button><span class="msg" id="eMsg" style="margin:0"></span></div>'
+      : '<div><button class="btn ghost" id="eCancel">Cancel</button></div>') + '</div>';
+  }
+  var slug = function(t){ return String(t).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50) || "venue"; };
+  var titleCase = function(t){ return String(t).toLowerCase().replace(/\b([a-z])/g, function(c){ return c.toUpperCase(); }); };
+  function nvLookup(){
+    var a = document.getElementById("nvAddr").value.trim(), m = document.getElementById("nvMsg");
+    nv.addr = a; if (!a) { m.textContent = "Enter the street address first."; return; }
+    m.textContent = "Looking it up…";
+    call({action:"lookup", token:token, address:a}).then(function(r){
+      if (!r.ok) { m.textContent = r.error; return; }
+      nv.match = r;
+      var street = titleCase(r.matched.split(",")[0]);
+      nv.title = "Friday series at " + street;
+      var id = slug(street), n = 2; while (D.series.some(function(x){ return x.id === id; })) id = slug(street) + "-" + (n++);
+      nv.id = id; render();
+      var t = document.getElementById("nvTitle"); if (t) { t.focus(); t.select(); }
+    }).catch(function(){ m.textContent = "Couldn't reach the server. Try again."; });
+  }
+  function nvCreate(btn){
+    nv.title = document.getElementById("nvTitle").value.trim(); nv.id = slug(document.getElementById("nvId").value); nv.tpl = document.getElementById("nvTpl").value;
+    var msg = document.getElementById("eMsg");
+    if (!nv.title) { msg.textContent = "Give the venue a name."; return; }
+    var tpl = D.series.filter(function(x){ return x.id === nv.tpl; })[0] || {budget:{income:[], expense:[], one_time:[]}, fridays_per_year:52, title:"template"};
+    var tag = "Sample from " + tpl.title;
+    var copy = function(lines){ return (lines || []).map(function(l){ return {label:l.label, amount:l.amount, note:tag + (l.note ? ": " + l.note : "")}; }); };
+    var series = {id:nv.id, title:nv.title, venue:nv.match.matched, status:"discussion", fridays_per_year:tpl.fridays_per_year,
+      budget:{income:copy(tpl.budget.income), expense:copy(tpl.budget.expense), one_time:copy(tpl.budget.one_time)},
+      notes:"Every figure here is a sample copied from " + tpl.title + ". Replace each line with this venue's real terms before the board decides."};
+    btn.disabled = true; msg.textContent = "Creating…";
+    call({action:"save", token:token, series:series, new_series:true}).then(function(r){
+      if (!r.ok) { msg.textContent = r.error; btn.disabled = false; return; }
+      var sets = [["meta.address", nv.match.matched], ["meta.municipality", nv.match.municipality + ", " + nv.match.county + (nv.match.is_chicago ? "" : " (not the City of Chicago)")], ["meta.venue", nv.title], ["decision.rec", "Pending"]];
+      ["event","doors","capacity","rent"].forEach(function(k){ var v = val(tpl.id, "meta." + k).note; if (v) sets.push(["meta." + k, "SAMPLE from " + tpl.title + ", confirm for this venue: " + v]); });
+      return sets.reduce(function(p, x){ return p.then(function(){ return call({action:"set", token:token, series_id:nv.id, key:x[0], status:"", note:x[1]}); }); }, Promise.resolve()).then(function(){
+        var id = nv.id; editing = false; draft = null; nv = {}; cur = id; view = "area"; writeHash();
+        return load().then(function(){ runArea(id, false); });
+      });
+    }).catch(function(){ msg.textContent = "Couldn't reach the server. Try again."; btn.disabled = false; });
   }
 
   function overviewView(s, sc){
@@ -409,6 +563,7 @@
         var input = m[2] === "full" ? '<textarea data-key="' + k + '" maxlength="4000">' + esc(x) + '</textarea>' : '<input class="f" data-key="' + k + '" maxlength="400" value="' + esc(x) + '">';
         return '<div class="' + m[2] + '"><label class="fl">' + m[1] + '</label>' + input + '<span class="by">' + byLine(s.id, k) + '</span></div>';
       }).join("") + '</div></div>' +
+      '<div class="card' + (s.area && exposure(s.area)[0] === "High" ? ' warn' : '') + '"><h3>Area: who could complain' + (s.area ? ' · exposure ' + exposure(s.area)[0] : '') + '</h3>' + (s.area ? '<p style="margin:0 0 8px">' + areaSummary(s.area) + '</p>' : '<p class="note">Not run yet. It needs the full street address above.</p>') + '<button class="btn ghost sm noprint" id="areaGo">' + (s.area ? 'Open the area analysis and map' : 'Run the area analysis') + '</button></div>' +
       '<div class="card"><h3>Economics (from the Budget tab)</h3><p style="margin:0">' + fmt(inc) + ' income − ' + fmt(exp) + ' costs = <b class="' + (net < 0 ? 'neg' : 'pos') + '">' + fmt(net) + ' per Friday</b>, about <b>' + fmt(net * s.fridays_per_year) + '</b> a year over ' + s.fridays_per_year + ' Fridays.' + (unpriced(b.expense) + unpriced(b.one_time) ? ' <span class="flag">' + (unpriced(b.expense) + unpriced(b.one_time)) + ' costs not priced</span>' : '') + '</p></div>' +
       '<div class="card"><h3>Contract negotiation &amp; final board sign-off</h3><p class="note">The signature decision is separate from the checklist score.</p><div class="fields">' + DEC.map(function(d){
         var k = "decision." + d[0], x = val(s.id, k).note, input;
@@ -613,6 +768,7 @@
       inflight--;
       if (!r.ok) { toast(r.error || "Couldn't save. Try again."); saveState(); return; }
       if (dirty[dk] === d) delete dirty[dk];
+      if (key === "meta.address" && d.note.trim()) setTimeout(function(){ runArea(sid, false); }, 300);
       var it = item(sid, key);
       if (it) { it.status = d.status; it.note = d.note; it.member_id = D.me.id; it.updated_at = new Date().toISOString(); }
       else D.items.push({series_id:sid, key:key, status:d.status, note:d.note, member_id:D.me.id, updated_at:new Date().toISOString()});
@@ -658,12 +814,13 @@
   // ---- Events ----
   document.getElementById("tabbar").addEventListener("click", function(e){
     var b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.new) { startEdit(null); return; }
+    if (b.dataset.new) { nv = {}; startEdit(null); setTimeout(function(){ var a = document.getElementById("nvAddr"); if (a) a.focus(); }, 0); return; }
     editing = false; draft = null; cur = b.dataset.s; view = "overview"; writeHash();
     render(); window.scrollTo(0, 0);
   });
 
   var main = document.getElementById("main");
+  main.addEventListener("keydown", function(e){ if (e.key === "Enter" && e.target.id === "nvAddr") { e.preventDefault(); nvLookup(); } });
   main.addEventListener("input", function(e){
     var t = e.target;
     if (editing && t.dataset.k) {
@@ -676,6 +833,7 @@
   });
   main.addEventListener("change", function(e){
     var t = e.target;
+    if (t.id === "nvTpl") { nv.tpl = t.value; nv.title = document.getElementById("nvTitle").value; nv.id = document.getElementById("nvId").value; render(); return; }
     if (t.id === "filter") { filter = t.value; try { localStorage.setItem("rtiBbFilter", filter); } catch (x) {} render(); return; }
     if (t.dataset.status) { var k = t.dataset.status; queue(k, t.value, val(cur, k).note, true); var row = t.closest(".ck"); if (row) row.className = "ck s-" + (t.value || "none"); return; }
     if (t.dataset.key) { queue(t.dataset.key, /^[A-I]\d/.test(t.dataset.key) ? val(cur, t.dataset.key).status : "", t.value, true); }
@@ -685,6 +843,11 @@
     var s = D.series.filter(function(x){ return x.id === cur; })[0];
     if (b.dataset.v) { view = b.dataset.v; writeHash(); render(); window.scrollTo(0, 0); return; }
     if (b.id === "csv") { csv(s); return; }
+    if (b.id === "areaRun") { runArea(cur, true); return; }
+    if (b.id === "areaGo") { view = "area"; writeHash(); render(); window.scrollTo(0, 0); if (!s.area) runArea(cur, true); return; }
+    if (b.id === "areaToChecklist") { areaToChecklist(s); return; }
+    if (b.id === "nvLook") { nvLookup(); return; }
+    if (b.id === "nvCreate") { nvCreate(b); return; }
     if (b.dataset.edit) { startEdit(s); return; }
     if (b.dataset.add) { readTop(); draft.budget[b.dataset.add].push({label:"", amount:null, note:""}); render(); return; }
     if (b.dataset.del) { readTop(); draft.budget[b.dataset.del].splice(+b.dataset.i, 1); render(); return; }

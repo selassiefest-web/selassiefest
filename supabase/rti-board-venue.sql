@@ -28,3 +28,11 @@ alter table public.rti_bb_history add column if not exists item_key text;
 comment on table public.rti_bb_items is 'Venue checklist findings, venue record and board decision fields per series. Edge function only.';
 
 alter table public.rti_bb_items enable row level security;
+
+-- Area analysis (added 2026-11-13): who could complain about a venue's
+-- activities. Computed by the rti-board-budget "area" action from the US Census
+-- geocoder (municipality, block-group/tract population and housing) and
+-- OpenStreetMap via Overpass (parking, nearest homes, residential streets,
+-- schools/churches, other nightlife). Stored so every director sees one result.
+alter table public.rti_bb_series add column if not exists area jsonb;
+alter table public.rti_bb_series add column if not exists area_at timestamptz;
