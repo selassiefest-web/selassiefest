@@ -14,6 +14,9 @@
 //       create or change a series (title, venue, status, fridays_per_year, budget
 //       lines, notes). Logged with before/after. Refused if someone else saved
 //       since base_updated_at, so two people editing at once never overwrite.
+//   { action: "set", token, series_id, key, status, note }   Any director: one venue
+//       checklist finding ('A1'..'I6'), venue-record field ('meta.x') or board
+//       decision field ('decision.x'). Logged to history with kind 'item'.
 //   { action: "invite", secret, emails? }   From the CLI (RTI_SIGN_ADMIN_SECRET):
 //       emails a link to each listed director (or all of them).
 //
@@ -129,19 +132,36 @@ Deno.serve(async (req) => {
 
   if (body.action === "load") {
     await supabase.from("rti_bb_members").update({ last_viewed_at: new Date().toISOString() }).eq("id", me.id);
-    const [members, series, comments, votes, history] = await Promise.all([
+    const [members, series, comments, votes, history, items] = await Promise.all([
       supabase.from("rti_bb_members").select("id, full_name, title, is_editor, last_viewed_at").order("id"),
       supabase.from("rti_bb_series").select("*").order("created_at"),
       supabase.from("rti_bb_comments").select("id, series_id, member_id, body, created_at").order("created_at"),
       supabase.from("rti_bb_votes").select("series_id, member_id, vote, note, updated_at"),
-      supabase.from("rti_bb_history").select("id, series_id, member_id, before, after, created_at").order("created_at", { ascending: false }).limit(200),
+      supabase.from("rti_bb_history").select("id, series_id, member_id, kind, item_key, before, after, created_at").order("created_at", { ascending: false }).limit(400),
+      supabase.from("rti_bb_items").select("series_id, key, status, note, member_id, updated_at"),
     ]);
-    if (members.error || series.error || comments.error || votes.error || history.error) return reply({ ok: false, error: "Couldn't load the budget room. Try again." }, 500);
+    if (members.error || series.error || comments.error || votes.error || history.error || items.error) return reply({ ok: false, error: "Couldn't load the board room. Try again." }, 500);
     return reply({
       ok: true,
       me: { id: me.id, full_name: me.full_name, title: me.title, is_editor: me.is_editor },
-      members: members.data, series: series.data, comments: comments.data, votes: votes.data, history: history.data,
+      members: members.data, series: series.data, comments: comments.data, votes: votes.data, history: history.data, items: items.data,
     });
+  }
+
+  // One checklist finding, venue-record field or decision field. Logged.
+  if (body.action === "set") {
+    const s = await seriesExists(String(body.series_id ?? ""));
+    const key = String(body.key ?? "");
+    if (!s || !/^([A-I][0-9]{1,2}|meta\.[a-z_]{1,30}|decision\.[a-z_]{1,30})$/.test(key)) return reply({ ok: false, error: "Unknown item." }, 400);
+    const status = key.includes(".") ? "" : String(body.status ?? "");
+    if (!["", "pass", "issue", "fail", "na"].includes(status)) return reply({ ok: false, error: "Unknown finding." }, 400);
+    const note = String(body.note ?? "").slice(0, 4000);
+    const { data: prev } = await supabase.from("rti_bb_items").select("status, note").eq("series_id", s.id).eq("key", key).maybeSingle();
+    if (prev && prev.status === status && prev.note === note) return reply({ ok: true, unchanged: true });
+    const { error } = await supabase.from("rti_bb_items").upsert({ series_id: s.id, key, status, note, member_id: me.id, updated_at: new Date().toISOString() });
+    if (error) return reply({ ok: false, error: "Couldn't save that. Try again." }, 500);
+    await supabase.from("rti_bb_history").insert({ series_id: s.id, member_id: me.id, kind: "item", item_key: key, before: prev ?? null, after: { status, note } });
+    return reply({ ok: true });
   }
 
   if (body.action === "comment") {
@@ -155,7 +175,7 @@ Deno.serve(async (req) => {
     const preview = text.length > 600 ? text.slice(0, 600) + "…" : text;
     await Promise.all((others ?? []).map((o: any) => sendEmail(
       o.email,
-      `Board budget: ${me.full_name} commented on ${s.title}`,
+      `Board room: ${me.full_name} commented on ${s.title}`,
       `Hello ${firstName(o.full_name)},\n\n${me.full_name} (${me.title}) wrote on ${s.title}:\n\n${preview}\n\nRead and reply: ${PAGE_URL}\n(If the page asks, enter your email and a fresh link arrives.)\n`,
       `<p>Hello ${esc(firstName(o.full_name))},</p><p><b>${esc(me.full_name)}</b> (${esc(me.title)}) wrote on <b>${esc(s.title)}</b>:</p><blockquote style="border-left:3px solid #1f5b3a;margin:0;padding:6px 12px;color:#333;white-space:pre-wrap">${esc(preview)}</blockquote><p><a href="${PAGE_URL}">Read and reply in the budget room</a>. If the page asks, enter your email and a fresh link arrives.</p>`,
     )));
