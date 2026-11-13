@@ -4,12 +4,16 @@
 //
 //   { action: "link", email }   Public: if the email belongs to a director on
 //       rti_bb_members, emails them a personal link. Same reply either way.
-//   { action: "load", token }   Every series with its budget, discussion and votes.
+//   { action: "load", token }   Every series with its budget, discussion, votes and
+//       recent edit history. The page polls this every 20s, which also marks the
+//       director as "on the page now".
 //   { action: "comment", token, series_id, body }   Adds to the discussion and
 //       emails the other directors that there is something new to read.
 //   { action: "vote", token, series_id, vote, note }   approve | reject | abstain.
-//   { action: "save", token, series }   Editors only: create or change a series
-//       (title, venue, status, fridays_per_year, budget lines, notes). Logged.
+//   { action: "save", token, series, base_updated_at, new_series }   Any director:
+//       create or change a series (title, venue, status, fridays_per_year, budget
+//       lines, notes). Logged with before/after. Refused if someone else saved
+//       since base_updated_at, so two people editing at once never overwrite.
 //   { action: "invite", secret, emails? }   From the CLI (RTI_SIGN_ADMIN_SECRET):
 //       emails a link to each listed director (or all of them).
 //
@@ -125,17 +129,18 @@ Deno.serve(async (req) => {
 
   if (body.action === "load") {
     await supabase.from("rti_bb_members").update({ last_viewed_at: new Date().toISOString() }).eq("id", me.id);
-    const [members, series, comments, votes] = await Promise.all([
+    const [members, series, comments, votes, history] = await Promise.all([
       supabase.from("rti_bb_members").select("id, full_name, title, is_editor, last_viewed_at").order("id"),
       supabase.from("rti_bb_series").select("*").order("created_at"),
       supabase.from("rti_bb_comments").select("id, series_id, member_id, body, created_at").order("created_at"),
       supabase.from("rti_bb_votes").select("series_id, member_id, vote, note, updated_at"),
+      supabase.from("rti_bb_history").select("id, series_id, member_id, before, after, created_at").order("created_at", { ascending: false }).limit(200),
     ]);
-    if (members.error || series.error || comments.error || votes.error) return reply({ ok: false, error: "Couldn't load the budget room. Try again." }, 500);
+    if (members.error || series.error || comments.error || votes.error || history.error) return reply({ ok: false, error: "Couldn't load the budget room. Try again." }, 500);
     return reply({
       ok: true,
       me: { id: me.id, full_name: me.full_name, title: me.title, is_editor: me.is_editor },
-      members: members.data, series: series.data, comments: comments.data, votes: votes.data,
+      members: members.data, series: series.data, comments: comments.data, votes: votes.data, history: history.data,
     });
   }
 
@@ -167,7 +172,6 @@ Deno.serve(async (req) => {
   }
 
   if (body.action === "save") {
-    if (!me.is_editor) return reply({ ok: false, error: "Only the President and Treasurer can change budget lines. Post your suggestion in the discussion instead." }, 403);
     const x = body.series ?? {};
     const id = String(x.id ?? "").trim().toLowerCase();
     if (!/^[a-z0-9][a-z0-9-]{1,59}$/.test(id)) return reply({ ok: false, error: "The series needs a short id (letters, numbers, dashes)." }, 400);
@@ -184,7 +188,13 @@ Deno.serve(async (req) => {
       updated_at: new Date().toISOString(),
       updated_by: me.id,
     };
-    const { data: before } = await supabase.from("rti_bb_series").select("title, venue, status, fridays_per_year, budget, notes").eq("id", id).maybeSingle();
+    const { data: cur } = await supabase.from("rti_bb_series").select("title, venue, status, fridays_per_year, budget, notes, updated_at, updated_by").eq("id", id).maybeSingle();
+    if (cur && body.new_series) return reply({ ok: false, error: "A series with that short id already exists. Pick another id." }, 409);
+    if (cur && body.base_updated_at && new Date(cur.updated_at).getTime() !== new Date(String(body.base_updated_at)).getTime()) {
+      const { data: who } = await supabase.from("rti_bb_members").select("full_name").eq("id", cur.updated_by).maybeSingle();
+      return reply({ ok: false, conflict: true, error: `${who?.full_name ?? "Another director"} saved changes to this budget while you were editing, so yours were not saved. Note your changes, press Cancel to see the new numbers, then edit again.` }, 409);
+    }
+    const before = cur ? { title: cur.title, venue: cur.venue, status: cur.status, fridays_per_year: cur.fridays_per_year, budget: cur.budget, notes: cur.notes } : null;
     const { error } = await supabase.from("rti_bb_series").upsert(row);
     if (error) return reply({ ok: false, error: "Couldn't save. Try again." }, 500);
     const { id: _i, updated_at: _u, updated_by: _b, ...after } = row;

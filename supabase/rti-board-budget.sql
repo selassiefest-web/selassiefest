@@ -13,7 +13,7 @@ create table if not exists public.rti_bb_members (
   full_name       text not null,
   title           text not null,
   email           text not null unique,              -- lower-case
-  is_editor       boolean not null default false,    -- may change budget lines and add series
+  is_editor       boolean not null default false,    -- unused since 2026-11-13: every director can edit
   token_hashes    text[] not null default '{}',      -- every link sent stays valid (last 20)
   last_sent_at    timestamptz,
   last_viewed_at  timestamptz

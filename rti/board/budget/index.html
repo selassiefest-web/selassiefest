@@ -83,6 +83,13 @@
   .edit .x{background:none; border:0; color:var(--red); font-size:1.1rem; cursor:pointer; padding:4px;}
   .frow{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:0 0 12px;}
   .frow label{font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint);}
+  .live{white-space:nowrap;} .live i,.here i{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--green); margin-right:5px; vertical-align:1px;}
+  .live i{animation:pulse 2s infinite;} @keyframes pulse{50%{opacity:.3}}
+  .here{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.86rem; color:var(--ink-faint);}
+  .here span.on{color:var(--ink); font-weight:600;} .here span:not(.on) i{background:var(--line);}
+  ul.chg{margin:2px 0 0; padding-left:18px; font-size:.86rem;} ul.chg li{margin:1px 0;}
+  #toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:50; background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:.88rem; max-width:calc(100% - 32px); box-shadow:0 6px 24px rgba(0,0,0,.25);}
+  @media (prefers-reduced-motion: reduce){ .live i{animation:none;} }
   .gate{max-width:440px; margin:40px auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px;}
   .gate input{width:100%; font:500 1rem "Inter",sans-serif; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); margin:10px 0;}
   .msg{font-size:.86rem; color:var(--ink-soft); margin-top:8px; min-height:1.2em;}
@@ -125,6 +132,7 @@
   <footer class="wrap">Votes here are the board&rsquo;s sense of each budget. A budget is formally adopted by resolution at a board meeting or by written consent on <a href="/rti/board/sign/">/rti/board/sign/</a>.<br>Private to RTI directors. Please don&rsquo;t forward your link.</footer>
 </div>
 
+<div id="toast" role="status" hidden></div>
 <script src="/assets/js/supabase-client.js"></script>
 <script>
 (function(){
@@ -177,15 +185,67 @@
 
   function render(){
     document.getElementById("gate").hidden = true;
-    document.getElementById("who").textContent = "Signed in as " + D.me.full_name + ", " + D.me.title + (D.me.is_editor ? " · can edit budget lines" : "");
+    document.getElementById("who").innerHTML = "Signed in as " + esc(D.me.full_name) + ", " + esc(D.me.title) + ' · <span class="live"><i></i>Live: updates every 20 seconds</span>';
     var tabs = D.series.map(function(s){ return '<button data-s="' + esc(s.id) + '"' + (s.id === cur && !editing ? ' class="on"' : '') + '>' + esc(s.title) + '</button>'; });
-    if (D.me.is_editor) tabs.push('<button data-new="1"' + (editing && draft && draft._new ? ' class="on"' : '') + '>+ New Friday series</button>');
+    tabs.push('<button data-new="1"' + (editing && draft && draft._new ? ' class="on"' : '') + '>+ New Friday series</button>');
     document.getElementById("tabbar").innerHTML = tabs.join("");
     var main = document.getElementById("main");
     if (editing) main.innerHTML = editView();
-    else if (!cur) main.innerHTML = '<div class="card"><h3>No Friday series yet</h3><p class="note" style="margin:0">' + (D.me.is_editor ? 'Use “+ New Friday series” to put a budget in front of the board.' : 'The President or Treasurer will add the first budget here.') + '</p></div>';
+    else if (!cur) main.innerHTML = '<div class="card"><h3>No Friday series yet</h3><p class="note" style="margin:0">Use “+ New Friday series” to put a budget in front of the board.</p></div>';
     else main.innerHTML = seriesView(D.series.filter(function(s){ return s.id === cur; })[0]);
     document.getElementById("app").hidden = false;
+  }
+
+  // ---- Live refresh: poll every 20s; keep whatever the director is typing ----
+  var sig = function(r){ return JSON.stringify([r.series, r.comments, r.votes, r.history && r.history.length, r.members.map(function(m){ return onNow(m); })]); };
+  var onNow = function(m){ return !!m.last_viewed_at && (Date.now() - new Date(m.last_viewed_at).getTime()) < 50000; };
+  setInterval(function(){
+    if (document.hidden || !D) return;
+    call({action:"load", token:token}).then(function(r){
+      if (!r.ok) return;
+      var changed = sig(r) !== sig(D), old = D; D = r;
+      if (editing) {
+        var s = !draft._new && D.series.filter(function(x){ return x.id === draft.id; })[0];
+        var w = document.getElementById("eWarn");
+        if (s && w && s.updated_at !== draft._base) w.innerHTML = '<b>' + esc(memberName(s.updated_by)) + '</b> just saved changes to this budget. Saving now would be refused: note your edits, press Cancel to see theirs, then edit again.';
+        return;
+      }
+      if (!changed) return;
+      var keep = {}, act = document.activeElement, actId = act && act.id, pos = act && act.selectionStart;
+      ["cmBody","voteNote"].forEach(function(id){ var el = document.getElementById(id); if (el) keep[id] = el.value; });
+      var y = window.scrollY; render(); window.scrollTo(0, y);
+      Object.keys(keep).forEach(function(id){ var el = document.getElementById(id); if (el) el.value = keep[id]; });
+      if (actId && document.getElementById(actId)) { var el = document.getElementById(actId); el.focus(); try { el.setSelectionRange(pos, pos); } catch (x) {} }
+      var news = (D.history || []).filter(function(h){ return !(old.history || []).some(function(o){ return o.id === h.id; }) && h.member_id !== D.me.id; });
+      if (news.length) toast(memberName(news[0].member_id) + " changed " + ((D.series.filter(function(s){ return s.id === news[0].series_id; })[0] || {}).title || "a budget") + ". See “Changes”.");
+    }).catch(function(){});
+  }, 20000);
+  function toast(t){ var el = document.getElementById("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ el.hidden = true; }, 8000); }
+
+  // ---- Change log: line-by-line differences between saves ----
+  var money = function(a){ return typeof a === "number" ? fmt(a) : "not priced"; };
+  var SEC = {income:"Income", expense:"Cost", one_time:"Up-front"};
+  function diff(b, a){
+    if (!b) return ["Put this budget in front of the board."];
+    var out = [];
+    if (b.title !== a.title) out.push("Title: “" + b.title + "” → “" + a.title + "”");
+    if (b.venue !== a.venue) out.push("Venue changed to “" + a.venue + "”");
+    if (b.status !== a.status) out.push("Status: " + (STATUS[b.status] || b.status) + " → " + (STATUS[a.status] || a.status));
+    if (b.fridays_per_year !== a.fridays_per_year) out.push("Fridays per year: " + b.fridays_per_year + " → " + a.fridays_per_year);
+    Object.keys(SEC).forEach(function(k){
+      var B = (b.budget && b.budget[k]) || [], A = (a.budget && a.budget[k]) || [];
+      A.forEach(function(l){
+        var o = B.filter(function(x){ return x.label === l.label; })[0];
+        if (!o) out.push(SEC[k] + " added: " + l.label + " " + money(l.amount));
+        else {
+          if (o.amount !== l.amount) out.push(SEC[k] + " “" + l.label + "”: " + money(o.amount) + " → " + money(l.amount));
+          if ((o.note || "") !== (l.note || "")) out.push(SEC[k] + " “" + l.label + "” note: “" + (l.note || "") + "”");
+        }
+      });
+      B.forEach(function(o){ if (!A.some(function(l){ return l.label === o.label; })) out.push(SEC[k] + " removed: " + o.label + " (was " + money(o.amount) + ")"); });
+    });
+    if ((b.notes || "") !== (a.notes || "")) out.push("Edited the notes and open questions");
+    return out.length ? out : ["Saved with no changes."];
   }
 
   function lineRows(lines, sign){
@@ -220,8 +280,10 @@
         '</tbody></table></div>' +
         ((b.one_time || []).length ? '<div class="tw"><table><tbody><tr class="h"><td colspan="2">Up-front and one-time</td></tr>' + lineRows(b.one_time, 1) + '<tr class="sub"><td>Total up front</td><td class="n">' + fmt(once) + '</td></tr></tbody></table></div>' : '') +
         (s.notes ? '<div class="card"><h3>Notes and open questions</h3><div style="white-space:pre-wrap;font-size:.9rem">' + esc(s.notes) + '</div></div>' : '') +
-        (D.me.is_editor ? '<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="btn ghost" data-edit="1">Edit this budget</button><button class="btn ghost" onclick="window.print()">Print / save as PDF</button></div>' : '<p class="note noprint">Want a line changed? Say so in the discussion; the President or Treasurer updates the numbers.</p>') +
+        '<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="btn" data-edit="1">Edit the numbers</button><button class="btn ghost" onclick="window.print()">Print / save as PDF</button></div>' +
+        changesCard(s) +
       '</div><div>' +
+        '<div class="card"><h3>On the page now</h3><div class="here">' + D.members.map(function(m){ var on = onNow(m) || m.id === D.me.id; return '<span class="' + (on ? 'on' : '') + '"><i></i>' + esc(m.full_name) + '</span>'; }).join("") + '</div></div>' +
         '<div class="card votes"><h3>Board vote</h3>' +
           '<div class="tally"><span class="v-approve">' + count("approve") + ' approve</span><span class="v-reject">' + count("reject") + ' reject</span><span class="v-abstain">' + count("abstain") + ' abstain</span><span class="v-none">' + (D.members.length - votes.length) + ' not yet</span></div>' +
           D.members.map(function(m){
@@ -239,11 +301,20 @@
     return h;
   }
 
-  // ---- Editing (President / Treasurer) ----
+  function changesCard(s){
+    var hs = (D.history || []).filter(function(h){ return h.series_id === s.id; });
+    if (!hs.length) return '<div class="card"><h3>Changes</h3><p class="note" style="margin:0">No edits yet. When any director changes a number, it shows here: who, when, and from what to what.</p></div>';
+    return '<div class="card"><h3>Changes (' + hs.length + ')</h3><div class="thread">' + hs.slice(0, 40).map(function(h){
+      return '<div class="cm"><div class="h"><b>' + esc(memberName(h.member_id)) + '</b> · ' + when(h.created_at) + '</div><ul class="chg">' + diff(h.before, h.after).map(function(d){ return '<li>' + esc(d) + '</li>'; }).join("") + '</ul></div>';
+    }).join("") + '</div></div>';
+  }
+
+  // ---- Editing (any director) ----
   function startEdit(s){
     editing = true;
     draft = s ? JSON.parse(JSON.stringify(s)) : {_new:true, id:"", title:"", venue:"", status:"discussion", fridays_per_year:52, notes:"", budget:{income:[], expense:[], one_time:[]}};
     ["income","expense","one_time"].forEach(function(k){ draft.budget[k] = draft.budget[k] || []; });
+    draft._base = s ? s.updated_at : null;
     render(); window.scrollTo(0, 0);
   }
   function editLines(k, title){
@@ -258,7 +329,8 @@
   }
   function editView(){
     return '<div class="edit"><h2>' + (draft._new ? 'New Friday series' : 'Edit: ' + esc(draft.title)) + '</h2>' +
-      '<p class="note">Amounts are per Friday, except up-front lines (paid once). Leave an amount blank to mark it “not priced yet.” Every save is logged with your name.</p>' +
+      '<p class="note">Amounts are per Friday, except up-front lines (paid once). Leave an amount blank to mark it “not priced yet.” Every save is shown to the whole board under “Changes” with your name. Say why in the discussion.</p>' +
+      '<div class="msg" id="eWarn" style="color:var(--red)"></div>' +
       '<div class="frow">' +
         '<div style="grid-column:span 2"><label>Title</label><input class="f" id="eTitle" maxlength="140" value="' + esc(draft.title) + '"></div>' +
         '<div><label>Short id</label><input class="f" id="eId" maxlength="60" placeholder="e.g. friday-lime-ilu" value="' + esc(draft.id) + '"' + (draft._new ? '' : ' disabled') + '></div>' +
@@ -302,8 +374,8 @@
     if (b.id === "eSave") {
       readTop();
       var msg = document.getElementById("eMsg"); msg.textContent = "Saving…"; b.disabled = true;
-      var out = JSON.parse(JSON.stringify(draft)); delete out._new; out.id = String(out.id).trim().toLowerCase();
-      call({action:"save", token:token, series:out}).then(function(r){
+      var out = JSON.parse(JSON.stringify(draft)), isNew = !!out._new, base = out._base; delete out._new; delete out._base; out.id = String(out.id).trim().toLowerCase();
+      call({action:"save", token:token, series:out, base_updated_at:base, new_series:isNew}).then(function(r){
         if (!r.ok) { msg.textContent = r.error; b.disabled = false; return; }
         editing = false; draft = null; cur = out.id; load();
       }).catch(function(){ msg.textContent = "Couldn't reach the server. Try again."; b.disabled = false; });
