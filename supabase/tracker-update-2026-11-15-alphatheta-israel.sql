@@ -17,6 +17,7 @@ select 'a2e09e2e-5916-4e5a-b232-2369cfc8b57a', 'email',
  'in_conversation', 'israel.rodriguez@alphatheta.com', 'Israel Rodriguez'
 where not exists (select 1 from fs_partner_activity where partner_id = 'a2e09e2e-5916-4e5a-b232-2369cfc8b57a' and summary like '%TY7P286MB6882A88CC725B9794BDCFE23EC712%');
 
+update fs_partners set ball_with='us' where id='a2e09e2e-5916-4e5a-b232-2369cfc8b57a';
 commit;
 
 select stage, ball_with, next_step_due, contacts->0->>'name' as contact from fs_partners where id = 'a2e09e2e-5916-4e5a-b232-2369cfc8b57a';
