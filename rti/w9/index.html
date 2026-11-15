@@ -20,6 +20,7 @@ button{font:inherit;padding:10px 16px;border-radius:8px;border:1px solid var(--l
 button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
 button:disabled{opacity:.5;cursor:not-allowed}
 .cert{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.cert input{margin-top:5px}
+.invalid{outline:3px solid var(--bad);outline-offset:2px;border-radius:8px;background:rgba(161,40,31,.08)}
 #status{min-height:1.4em;margin:8px 0;font-weight:600}
 iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;margin-top:10px;background:#fff}
 </style></head><body><main>
@@ -75,6 +76,7 @@ iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;ma
  document.querySelectorAll("input[name=mode]").forEach(function(r){r.onchange=function(){var m=document.querySelector("input[name=mode]:checked").value;$("drawBox").hidden=m!=="draw";$("typeBox").hidden=m!=="type"}});
  var KEY="rti_saved_signature_png";function getSaved(){try{return localStorage.getItem(KEY)}catch(e){return null}}if(getSaved()){$("useSaved").hidden=false}
  $("useSaved").onclick=function(){var sv=getSaved();if(!sv)return;var im=new Image();im.onload=function(){ctx.clearRect(0,0,cv.width,cv.height);var w=cv.clientWidth,h=150,sc=Math.min((w-20)/im.width,(h-20)/im.height);ctx.drawImage(im,10,(h-im.height*sc)/2,im.width*sc,im.height*sc);ink=true;$("ph").style.display="none";status("Saved signature loaded.")};im.src=sv};
+ function fail(m,el,focusEl){status(m,true);document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});if(!el)return;el.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"});var f=focusEl||el;if(f&&f.focus)try{f.focus({preventScroll:true})}catch(e){f.focus()}var clr=function(){el.classList.remove("invalid")};el.addEventListener("input",clr,{once:true});el.addEventListener("change",clr,{once:true});el.addEventListener("pointerdown",clr,{once:true})}
  var blobUrl=null;
  function status(m,bad){var s=$("status");s.textContent=m;s.className=bad?"warn":""}
  function trimmedPng(){ // crop the drawing to its ink so it fits the signature line
@@ -84,11 +86,11 @@ iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;ma
   var b=atob(o.toDataURL("image/png").split(",")[1]),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
  $("make").onclick=async function(){
   var mode=document.querySelector("input[name=mode]:checked").value;
-  if(!$("name").value.trim()||!$("addr").value.trim()||!$("csz").value.trim()||!$("ein").value.trim()){status("Fill in the name, address and EIN.",true);return}
-  if(!$("cert").checked){status("Tick the certification box before signing.",true);return}
+  document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});var miss=[["name","the entity name"],["addr","the address"],["csz","the city, state and ZIP"],["ein","the EIN"]].filter(function(x){return !$(x[0]).value.trim()})[0];if(miss){fail("Fill in "+miss[1]+".",$(miss[0]));return}
+  if(!$("cert").checked){fail("Tick the certification box before signing.",$("cert").parentNode,$("cert"));return}
   var png=null,txt=null;
-  if(mode==="draw"){png=trimmedPng();if(!png){status("Sign in the box first.",true);return}if($("remember").checked){try{localStorage.setItem(KEY,"data:image/png;base64,"+btoa(String.fromCharCode.apply(null,png)));$("useSaved").hidden=false}catch(e){}}}
-  else{txt=$("typed").value.trim();if(!txt){status("Type your name to sign.",true);return}}
+  if(mode==="draw"){png=trimmedPng();if(!png){fail("Sign in the box first.",cv.parentNode);return}if($("remember").checked){try{localStorage.setItem(KEY,"data:image/png;base64,"+btoa(String.fromCharCode.apply(null,png)));$("useSaved").hidden=false}catch(e){}}}
+  else{txt=$("typed").value.trim();if(!txt){fail("Type your name to sign.",$("typed"));return}}
   try{
    status("Building your W-9…");
    var r=await fetch("form.pdf");if(!r.ok)throw new Error("The blank form did not load.");

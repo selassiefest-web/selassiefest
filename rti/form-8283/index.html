@@ -20,6 +20,7 @@ button{font:inherit;padding:10px 16px;border-radius:8px;border:1px solid var(--l
 button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
 button:disabled{opacity:.5;cursor:not-allowed}
 .cert{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.cert input{margin-top:5px}
+.invalid{outline:3px solid var(--bad);outline-offset:2px;border-radius:8px;background:rgba(161,40,31,.08)}
 #status{min-height:1.4em;margin:8px 0;font-weight:600}
 iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;margin-top:10px;background:#fff}
 </style></head><body><main>
@@ -94,6 +95,7 @@ iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;ma
  document.querySelectorAll("input[name=mode]").forEach(function(r){r.onchange=function(){var m=document.querySelector("input[name=mode]:checked").value;$("drawBox").hidden=m!=="draw";$("typeBox").hidden=m!=="type"}});
  var blobUrl=null;
  function status(m,bad){var s=$("status");s.textContent=m;s.className=bad?"warn":""}
+ function fail(m,el,focusEl){status(m,true);document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});if(!el)return;el.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"});var f=focusEl||el;if(f&&f.focus)try{f.focus({preventScroll:true})}catch(e){f.focus()}var clr=function(){el.classList.remove("invalid")};el.addEventListener("input",clr,{once:true});el.addEventListener("change",clr,{once:true});el.addEventListener("pointerdown",clr,{once:true})}
  function trimmedCanvas(){
   var w=cv.width,h=cv.height,id=ctx.getImageData(0,0,w,h).data,minX=w,minY=h,maxX=0,maxY=0;
   for(var y=0;y<h;y++)for(var x=0;x<w;x++){if(id[(y*w+x)*4+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}}
@@ -101,11 +103,12 @@ iframe{width:100%;height:680px;border:1px solid var(--line);border-radius:8px;ma
  function toBytes(c){var b=atob(c.toDataURL("image/png").split(",")[1]),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
  $("make").onclick=async function(){
   var mode=document.querySelector("input[name=mode]:checked").value;
-  if(!$("recv").value.trim()){status("Enter the date we received the property.",true);return}
-  if(!$("cert").checked){status("Tick the box to confirm you are an authorized officer.",true);return}
+  document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});
+  if(!$("recv").value.trim()){fail("Enter the date we received the property.",$("recv"));return}
+  if(!$("cert").checked){fail("Tick the box to confirm you are an authorized officer.",$("cert").parentNode,$("cert"));return}
   var png=null,txt=null;
-  if(mode==="draw"){var c=trimmedCanvas();if(!c){status("Sign in the box first.",true);return}png=toBytes(c);if($("remember").checked){try{localStorage.setItem(KEY,c.toDataURL("image/png"));$("useSaved").hidden=false}catch(e){}}}
-  else{txt=$("typed").value.trim();if(!txt){status("Type your name to sign.",true);return}}
+  if(mode==="draw"){var c=trimmedCanvas();if(!c){fail("Sign in the box first.",cv.parentNode);return}png=toBytes(c);if($("remember").checked){try{localStorage.setItem(KEY,c.toDataURL("image/png"));$("useSaved").hidden=false}catch(e){}}}
+  else{txt=$("typed").value.trim();if(!txt){fail("Type your name to sign.",$("typed"));return}}
   try{
    status("Building your Form 8283…");
    var f=$("donor").files[0],bytes;
