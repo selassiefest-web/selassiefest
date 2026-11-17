@@ -34,7 +34,8 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <p><button type="button" id="shure">Fill in the Shure CQ-1076 example</button> <button type="button" id="serato">Fill in the Serato ticket 1231468 example</button></p></div>
 <div class="card" id="reqBox" hidden><h2>Request pages: files and promises</h2>
 <p class="note">Pick the PDFs from your computer. They go inside the page and are never uploaded anywhere else.</p>
-<label for="fPol">The donor's policy to sign (for Serato: pick Student_Data_Policy.pdf from C:/Users/mkepr/Downloads/BOB/)</label><input type="file" id="fPol" accept="application/pdf">
+<div id="libList" class="note"></div>
+<label for="fPol">The donor's policy to sign (loaded automatically for Serato; choose a file only for a different donor)</label><input type="file" id="fPol" accept="application/pdf">
 <label for="fIrs">IRS determination letter (preloaded from our document library; choose a file only to replace it)</label><input type="file" id="fIrs" accept="application/pdf">
 <label for="fArt">Certified Illinois articles (preloaded from our document library; choose a file only to replace it)</label><input type="file" id="fArt" accept="application/pdf">
 <label for="prom">How we comply (one per line, as: Heading | what we do)</label><textarea id="prom"></textarea>
@@ -121,11 +122,15 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   status("Shure example filled in. Choose the photos, sign, and build.")};
 
  // ---- request mode
+ var POL_LIB=null;
+ var LIB=[["IRS determination letter","library/irs-determination-letter.pdf"],["Certified Illinois articles","library/certified-articles.pdf"],["Serato Student Data Policy (blank, signed by the tool)","library/serato-student-data-policy.pdf"]];
+ function showLib(){var el=$("libList");el.innerHTML="Checking the document library...";Promise.all(LIB.map(function(x){return fetch(x[1],{method:"HEAD"}).then(function(r){return r.ok?"[ready] ":"[MISSING] "}).catch(function(){return "[MISSING] "}).then(function(m){return m+x[0]})})).then(function(a){el.innerHTML="<b>Document library</b> (loaded automatically; W-9 and Form 8283 are built in):<br>"+a.join("<br>")})}
+ showLib();
  function kind(){return document.querySelector("input[name=kind]:checked").value}
- function syncKind(){var r=kind()==="request";$("reqBox").hidden=!r;$("h2items").textContent=r?"2. What we are asking for (nothing has been received yet)":"2. What arrived";$("lblUse").textContent=r?"It would be used for (finishes the sentence \"... would be used for ...\")":"It will be used for (finishes the sentence \"The equipment will be used for ...\")";$("lblTrack").hidden=r;$("track").hidden=r;$("make").textContent=r?"Build the request page":"Build the donor package";if(r&&!$("rlede").value&&!$("prom").value){/* leave for the preset */}}
+ function syncKind(){var r=kind()==="request";if(!r)POL_LIB=null;$("reqBox").hidden=!r;$("h2items").textContent=r?"2. What we are asking for (nothing has been received yet)":"2. What arrived";$("lblUse").textContent=r?"It would be used for (finishes the sentence \"... would be used for ...\")":"It will be used for (finishes the sentence \"The equipment will be used for ...\")";$("lblTrack").hidden=r;$("track").hidden=r;$("make").textContent=r?"Build the request page":"Build the donor package";if(r&&!$("rlede").value&&!$("prom").value){/* leave for the preset */}}
  document.querySelectorAll("input[name=kind]").forEach(function(x){x.onchange=syncKind});
  $("serato").onclick=function(){
-  $("kReq").checked=true;syncKind();
+  $("kReq").checked=true;syncKind();POL_LIB="library/serato-student-data-policy.pdf";
   $("donor").value="Serato";$("req").value="Ticket 1231468";$("contact").value="Brad D";$("ctitle").value="Serato Sales";$("a1").value="8 Brown Street";$("a2").value="Auckland 1021, New Zealand";
   $("items").innerHTML="";
   addItem({name:"Serato DJ Pro education licence activations",qty:"13",unit:"activations",desc:"Twelve student stations and one spare for the free Rainbow DJ Lab, open to all ages, opening January 12, 2027 at Rainbow Beach Park in Chicago."});
@@ -179,7 +184,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   [["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].forEach(function(x){if(!$(x[0]).value.trim())bad.push([$(x[0]),x[1]])});
   if(!its.length)bad.push([$("items"),"at least one product with a quantity"]);
   var REQ=kind()==="request";
-  if(REQ){if($("polOn").checked&&!$("fPol").files.length)bad.push([$("fPol"),"the donor's policy PDF"]);if(!$("prom").value.trim())bad.push([$("prom"),"how we comply"]);else if(/MAILBOX/.test($("prom").value))bad.push([$("prom"),"the real staff mailbox in place of [DJ LAB MAILBOX]"]);if(!$("rlede").value.trim())bad.push([$("rlede"),"the opening paragraph"])}
+  if(REQ){if($("polOn").checked&&!$("fPol").files.length&&!POL_LIB)bad.push([$("fPol"),"the donor's policy PDF (or click the Serato example)"]);if(!$("prom").value.trim())bad.push([$("prom"),"how we comply"]);else if(/MAILBOX/.test($("prom").value))bad.push([$("prom"),"the real staff mailbox in place of [DJ LAB MAILBOX]"]);if(!$("rlede").value.trim())bad.push([$("rlede"),"the opening paragraph"])}
   if(!REQ&&$("f8283").checked&&!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("recv").value.trim()))bad.push([$("recv"),"the date received as MM/DD/YYYY"]);
   if(!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("date").value.trim()))bad.push([$("date"),"the signing date as MM/DD/YYYY"]);
   var mode0=document.querySelector("input[name=mode]:checked").value;
@@ -210,8 +215,8 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
     docs.push({title:"IRS determination letter",desc:"The IRS letter confirming Ras Tafari Inc. is exempt under section 501(c)(3), EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-IRS-Determination-Letter.pdf",dataUri:uri(irs)});
     docs.push({title:"Certified Illinois articles of incorporation",desc:"Certified by the Illinois Secretary of State: our legal existence as an Illinois not-for-profit corporation.",fileName:"Ras-Tafari-Inc-Certified-Articles.pdf",dataUri:uri(art)});
     docs.push({title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)});
-    if($("polOn").checked){step="signing the policy";var pol=await readFile($("fPol"));var sp=await signStudentPolicy(PDFLib,pol,{institution:ORG.name,name:ORG.signer+", "+ORG.title,date:$("date").value,sigPng:png,sigText:txt});
-     docs.push({title:"Signed policy: "+(($("fPol").files[0]&&$("fPol").files[0].name)||"policy").replace(/[.]pdf$/i,""),desc:"The policy you sent, read and signed for Ras Tafari Inc. by "+ORG.signer+", "+ORG.title+", dated "+$("date").value+".",fileName:"Ras-Tafari-Inc-Signed-"+(($("fPol").files[0]&&$("fPol").files[0].name)||"policy.pdf").replace(/[^\w.-]+/g,"-"),dataUri:uri(sp)})}}
+    if($("polOn").checked){step="signing the policy";var pol=await readFile($("fPol"))||new Uint8Array(await loadPdf(POL_LIB,SITE+"donation/"+POL_LIB,"the policy to sign"));var sp=await signStudentPolicy(PDFLib,pol,{institution:ORG.name,name:ORG.signer+", "+ORG.title,date:$("date").value,sigPng:png,sigText:txt});
+     docs.push({title:"Signed policy: "+(($("fPol").files[0]&&$("fPol").files[0].name)||(POL_LIB?"Student Data Policy.pdf":"policy")).replace(/[.]pdf$/i,""),desc:"The policy you sent, read and signed for Ras Tafari Inc. by "+ORG.signer+", "+ORG.title+", dated "+$("date").value+".",fileName:"Ras-Tafari-Inc-Signed-"+(($("fPol").files[0]&&$("fPol").files[0].name)||"Student-Data-Policy.pdf").replace(/[^\w.-]+/g,"-"),dataUri:uri(sp)})}}
    built={letter:letter,w9:w9,req:req,dn:dn,slug:slug,url:null,pageUrl:"https://selassiefest.com/donors/"+slug+"/"};
    if($("f8283").checked){var fb=await loadPdf("../form-8283/form.pdf",SITE+"form-8283/form.pdf","the blank Form 8283");step="filling Form 8283";
     var f8=await fillF8283(PDFLib,fb,{dateReceived:REQ?"":$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:REQ?"":$("date").value,sigPng:REQ?null:png,sigText:REQ?null:txt});
