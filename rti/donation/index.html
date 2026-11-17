@@ -24,7 +24,7 @@ button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-we
 #status{min-height:1.4em;margin:8px 0;font-weight:600}
 iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;margin-top:10px;background:#fff}
 .cap{display:grid;grid-template-columns:3rem 1fr;gap:10px;align-items:center;margin:6px 0}.cap img{width:3rem;height:3rem;object-fit:cover;border-radius:6px}
-.out{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.out{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}[hidden]{display:none!important}
 </style></head><body><main>
 <h1>Donation thank-you package</h1>
 <p class="sub">Fill this in once per donation. It writes the signed written acknowledgment, the W-9 (and, if you choose, Form 8283 Part V), and one thank-you web page with every record and photo inside it. Everything is built in your browser; nothing is sent or stored anywhere.</p>
@@ -137,31 +137,43 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
  function b64(u8){var s="",c=0x8000;for(var i=0;i<u8.length;i+=c)s+=String.fromCharCode.apply(null,u8.subarray(i,i+c));return btoa(s)}
  function uri(u8){return"data:application/pdf;base64,"+b64(u8)}
  var built={};
+ var SITE="https://selassiefest.com/rti/";
+ async function loadPdf(rel,abs,label){step="loading "+label;var e1;try{var r=await fetch(rel);if(r.ok)return await r.arrayBuffer();e1="HTTP "+r.status}catch(e){e1=e.message}
+  try{var r2=await fetch(abs);if(r2.ok)return await r2.arrayBuffer()}catch(e){}
+  throw new Error("could not load "+label+" ("+e1+"). If you opened this page from a file on your computer, open it at https://selassiefest.com/rti/donation/ instead.")}
  function save(name,u8,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([u8],{type:type||"application/pdf"}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
 
  $("make").onclick=async function(){
   document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});
-  var need=[["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].filter(function(x){return!$(x[0]).value.trim()})[0];
-  if(need){fail("Fill in "+need[1]+".",$(need[0]),$(need[0]));return}
-  var its=items();if(!its.length){fail("Add at least one product with a quantity.",$("items"));return}
-  if($("f8283").checked&&!/^\d\d\/\d\d\/\d{4}$/.test($("recv").value.trim())){fail("Enter the date received as MM/DD/YYYY for Form 8283.",$("recv"),$("recv"));return}
-  if(!$("cert").checked){fail("Tick the confirmation box before signing.",$("cert").parentNode,$("cert"));return}
-  var mode=document.querySelector("input[name=mode]:checked").value,png=null,txt=null;
-  if(mode==="draw"){png=trimmedPng();if(!png){fail("Sign in the box first.",cv.parentNode);return}if($("remember").checked){try{localStorage.setItem(KEY,"data:image/png;base64,"+b64(png));$("useSaved").hidden=false}catch(e){}}}
-  else{txt=$("typed").value.trim();if(!txt){fail("Type your name to sign.",$("typed"));return}}
+  var bad=[],its=items();
+  [["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].forEach(function(x){if(!$(x[0]).value.trim())bad.push([$(x[0]),x[1]])});
+  if(!its.length)bad.push([$("items"),"at least one product with a quantity"]);
+  if($("f8283").checked&&!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("recv").value.trim()))bad.push([$("recv"),"the date received as MM/DD/YYYY"]);
+  if(!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("date").value.trim()))bad.push([$("date"),"the signing date as MM/DD/YYYY"]);
+  var mode0=document.querySelector("input[name=mode]:checked").value;
+  if(mode0==="draw"&&!trimmedPng())bad.push([cv.parentNode,"your signature (draw it, or tap Use my saved signature)"]);
+  if(mode0==="type"&&!$("typed").value.trim())bad.push([$("typed"),"your typed signature"]);
+  if(!$("cert").checked)bad.push([$("cert").parentNode,"the confirmation box"]);
+  if(bad.length){bad.forEach(function(x){x[0].classList.add("invalid")});status("Please fix "+bad.length+" thing"+(bad.length>1?"s":"")+" (highlighted): "+bad.map(function(x){return x[1]}).join("; ")+".",true);bad[0][0].scrollIntoView({behavior:"smooth",block:"center"});var fe=bad[0][0].querySelector&&bad[0][0].querySelector("input,textarea")||bad[0][0];if(fe.focus&&fe.tagName!=="DIV")fe.focus();return}
+  var mode=mode0,png=null,txt=null;
+  if(mode==="draw"){png=trimmedPng();if($("remember").checked){try{localStorage.setItem(KEY,"data:image/png;base64,"+b64(png));$("useSaved").hidden=false}catch(e){}}}
+  else{txt=$("typed").value.trim()}
+  var step="starting";
   try{
+   if(typeof PDFLib==="undefined"){status("The PDF library did not load (check your internet connection), then try again.",true);return}
    status("Building the package…");
    var dp=$("date").value.split("/"),longDate=MONTHS[+dp[0]-1]+" "+(+dp[1])+", "+dp[2];
    var common={name:ORG.name,ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt};
    var letter=await buildLetter(PDFLib,{date:longDate,donor:$("donor").value.trim(),contact:$("contact").value.trim(),contactTitle:$("ctitle").value.trim(),donorAddr:[$("a1").value.trim(),$("a2").value.trim()],requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),org:ORG,sigPng:png,sigText:txt});
-   var w9b=await (await fetch("../w9/form.pdf")).arrayBuffer();
+   step="building the letter";
+   var w9b=await loadPdf("../w9/form.pdf",SITE+"w9/form.pdf","the blank W-9");step="filling the W-9";
    var w9=await fillW9(PDFLib,w9b,{name:ORG.name,cls:"other",otherText:"501(c)(3) nonprofit corporation",exempt:"1",addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt});
    var req=$("req").value.trim().replace(/[^\w-]+/g,"-"),dn=$("donor").value.trim().replace(/[^\w]+/g,"-");
    var docs=[{title:"Written acknowledgment of donation",desc:"On Ras Tafari Inc. letterhead: lists what we received"+(its.length?" ("+its.map(function(i){return i.qty+" "+i.name}).join("; ")+")":"")+" and states that no goods or services were received in exchange.",fileName:"Ras-Tafari-Inc-Donation-Acknowledgment-"+req+".pdf",dataUri:uri(letter)},
      {title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)}];
    built={letter:letter,w9:w9,req:req,dn:dn};
    $("dl8283").hidden=true;
-   if($("f8283").checked){var fb=await (await fetch("../form-8283/form.pdf")).arrayBuffer();
+   if($("f8283").checked){var fb=await loadPdf("../form-8283/form.pdf",SITE+"form-8283/form.pdf","the blank Form 8283");step="filling Form 8283";
     var f8=await fillF8283(PDFLib,fb,{dateReceived:$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:$("date").value,sigPng:png,sigText:txt});
     docs.push({title:"Form 8283, donee acknowledgment",desc:"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)});built.f8283=f8;$("dl8283").hidden=false}
    var nx=$("next").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(s){return s.h&&s.p});
@@ -170,7 +182,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
    if(built.url)URL.revokeObjectURL(built.url);built.url=URL.createObjectURL(new Blob([page],{type:"text/html"}));
    $("prev").src=built.url;$("prev").hidden=false;$("out").hidden=false;
    status("Done. Check the preview, then download the donor page.");
-  }catch(e){status("Something went wrong: "+(e&&e.message||e),true)}
+  }catch(e){$("out").hidden=true;$("prev").hidden=true;var el=$("status");el.classList.add("invalid");var m="Stopped while "+step+": "+(e&&e.message||e);status(m,true);var tgt=/8283/.test(step)?$("f8283").parentNode:/signature|sign/i.test(step)?cv.parentNode:null;if(tgt)tgt.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"})}
  };
  $("dlPage").onclick=function(){save("Thank-You-"+built.dn+"-"+built.req+".html",new TextEncoder().encode(built.page),"text/html")};
  $("dlLetter").onclick=function(){save("Ras Tafari Inc - Donation Acknowledgment "+built.req+".pdf",built.letter)};
