@@ -60,24 +60,17 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <div id="drawBox"><div class="pad"><canvas id="pad" aria-label="Signature pad"></canvas><div class="ph" id="ph">Sign here</div></div><button type="button" id="clear" style="margin-top:8px">Clear and sign again</button> <button type="button" id="useSaved" style="margin-top:8px" hidden>Use my saved signature</button>
 <div class="cert"><input type="checkbox" id="remember"><label for="remember">Save this signature on this device only, so next time it is one tap (shared with the W-9 page).</label></div></div>
 <div id="typeBox" hidden><input type="text" id="typed" placeholder="Type your full name" value="Stephen Henry"></div>
+<label for="sec">Staff secret (asked once, remembered on this device only)</label><input type="password" id="sec" autocomplete="off">
 <label for="date">Date</label><input type="text" id="date">
 </div>
 
 <div id="status" aria-live="polite"></div>
 <button type="button" class="go" id="make">Build the donor package</button>
-<div class="card" id="linkbox" hidden><h2>The link for the email</h2>
- <p class="note">This is where the page will live. Save it to the website, wait a few minutes, check that the link opens, then paste it into the email.</p>
+<div class="card" id="linkbox" hidden><h2>Published. Here is the link.</h2>
+ <p class="note">The page is live at this address right now. Your next step: press the button, switch to Outlook, click in the message and press Ctrl+V.</p>
  <input type="text" id="url" readonly>
- <div class="out"><button type="button" class="go" id="pub">1. Save it into the website folder</button><button type="button" id="copyUrl">Copy the link</button><button type="button" id="copyMail">2. Copy the email (with the live link)</button></div>
- <p class="note" id="pubnote"></p></div>
-<div class="out" id="out" hidden>
- <button type="button" class="go" id="dlPage">Download the donor page (.html)</button>
- <button type="button" id="dlLetter">Letter (.pdf)</button>
- <button type="button" id="dlW9">W-9 (.pdf)</button>
- <button type="button" id="dl8283" hidden>Form 8283 (.pdf)</button>
-</div>
-<iframe id="prev" title="Donor page preview" hidden></iframe>
-<p class="note" style="margin-top:18px">The page is one file with everything inside, so you can also email it as an attachment. The link is better: they can open it on any device, and the questions box on it sends straight to you.</p>
+ <div class="out"><button type="button" class="go" id="copyMail">Copy the email (with the live link)</button><button type="button" id="copyUrl">Copy just the link</button><a id="openUrl" href="#" target="_blank" rel="noopener"><button type="button">Open the page</button></a></div></div>
+<p class="note" style="margin-top:18px">Everything the donor needs (letter, W-9, photos, questions box) lives at that one link. Nothing to attach.</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="../w9/w9-fill.js"></script>
@@ -93,6 +86,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
  var DEFAULT_NEXT="Right away | This page, the written acknowledgment, our W-9 and the photos, all in one place.\nWhen we open | We will send you photos of your gift in use.\nAt our events | Your gift is recognized on our website and from the stage.\nAfter the first term | An impact report: who learned, what they made, and what your gift made possible.";
  $("next").value=DEFAULT_NEXT;
+ try{$("sec").value=localStorage.getItem("rtiDonSec")||""}catch(e){}
 
  // ---- product rows
  function addItem(v){v=v||{};var r=document.createElement("div");r.className="item";r.innerHTML='<div class="row r3"><div><label>Product</label><input type="text" class="n" value=""></div><div><label>Quantity</label><input type="text" class="q" value=""></div><div><label>Unit</label><input type="text" class="u" placeholder="pairs, units"></div><div><label>&nbsp;</label><button type="button" class="x">Remove</button></div></div><label>Why it matters (shown on the page, optional)</label><input type="text" class="ds">';
@@ -114,7 +108,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 
  // ---- photos
  var photos=[];
- function resize(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var m=1600,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.82))};im.onerror=rej;im.src=u})}
+ function resize(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var m=1400,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.78))};im.onerror=rej;im.src=u})}
  $("photos").onchange=async function(){photos=[];$("caps").innerHTML="";var fs=Array.prototype.slice.call(this.files);
   for(var i=0;i<fs.length;i++){var uri=await resize(fs[i]);photos.push({dataUri:uri,fileName:"photo-"+(i+1)+".jpg",caption:""});
    var r=document.createElement("div");r.className="cap";r.innerHTML='<img src="'+uri+'" alt=""><input type="text" placeholder="Caption (optional)">';(function(p,inp){inp.oninput=function(){p.caption=inp.value}})(photos[i],r.querySelector("input"));$("caps").appendChild(r)}};
@@ -157,6 +151,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   var mode0=document.querySelector("input[name=mode]:checked").value;
   if(mode0==="draw"&&!trimmedPng())bad.push([cv.parentNode,"your signature (draw it, or tap Use my saved signature)"]);
   if(mode0==="type"&&!$("typed").value.trim())bad.push([$("typed"),"your typed signature"]);
+  if(!$("sec").value.trim())bad.push([$("sec"),"the staff secret"]);
   if(!$("cert").checked)bad.push([$("cert").parentNode,"the confirmation box"]);
   if(bad.length){bad.forEach(function(x){x[0].classList.add("invalid")});status("Please fix "+bad.length+" thing"+(bad.length>1?"s":"")+" (highlighted): "+bad.map(function(x){return x[1]}).join("; ")+".",true);bad[0][0].scrollIntoView({behavior:"smooth",block:"center"});var fe=bad[0][0].querySelector&&bad[0][0].querySelector("input,textarea")||bad[0][0];if(fe.focus&&fe.tagName!=="DIV")fe.focus();return}
   var mode=mode0,png=null,txt=null;
@@ -178,32 +173,22 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
    var rnd="";for(var k=0;k<6;k++)rnd+="abcdefghjkmnpqrstuvwxyz23456789".charAt(Math.floor(Math.random()*31));
    var slug=(dn+"-"+req).toLowerCase().replace(/-+/g,"-")+"-"+rnd;
    built={letter:letter,w9:w9,req:req,dn:dn,slug:slug,url:null,pageUrl:"https://selassiefest.com/donors/"+slug+"/"};
-   $("dl8283").hidden=true;
    if($("f8283").checked){var fb=await loadPdf("../form-8283/form.pdf",SITE+"form-8283/form.pdf","the blank Form 8283");step="filling Form 8283";
     var f8=await fillF8283(PDFLib,fb,{dateReceived:$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:$("date").value,sigPng:png,sigText:txt});
-    docs.push({title:"Form 8283, donee acknowledgment",desc:"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)});built.f8283=f8;$("dl8283").hidden=false}
+    docs.push({title:"Form 8283, donee acknowledgment",desc:"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)})}
    var nx=$("next").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(s){return s.h&&s.p});
    var page=buildDonorPage({donor:$("donor").value.trim(),contact:$("contact").value.trim(),requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),next:nx,tracking:$("track").value,docs:docs,photos:photos.length?photos:[],org:ORG});
-   built.page=page;
-   if(built.blob)URL.revokeObjectURL(built.blob);
-   built.url=null;built.blob=URL.createObjectURL(new Blob([page],{type:"text/html"}));$("prev").src=built.blob;$("linkbox").hidden=false;$("url").value=built.pageUrl;$("pubnote").textContent="";$("prev").hidden=false;$("out").hidden=false;
-   status("Done. Check the preview, then download the donor page.");
-  }catch(e){$("out").hidden=true;$("prev").hidden=true;var el=$("status");el.classList.add("invalid");var m="Stopped while "+step+": "+(e&&e.message||e);status(m,true);var tgt=/8283/.test(step)?$("f8283").parentNode:/signature|sign/i.test(step)?cv.parentNode:null;if(tgt)tgt.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"})}
+   built.page=page;step="publishing the page";status("Publishing…");
+   try{localStorage.setItem("rtiDonSec",$("sec").value.trim())}catch(e){}
+   var pr=await fetch("https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/rti-donor-page",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"publish",secret:$("sec").value.trim(),donor:$("donor").value.trim(),request_no:$("req").value.trim(),html:page})});
+   var pj=await pr.json().catch(function(){return{}});
+   if(!pj.ok){if(pr.status===401){$("sec").classList.add("invalid");$("sec").scrollIntoView({behavior:"smooth",block:"center"})}throw new Error(pj.error||("the server answered "+pr.status))}
+   built.pageUrl="https://selassiefest.com/donors/?k="+pj.key;
+   $("url").value=built.pageUrl;$("openUrl").href=built.pageUrl;$("linkbox").hidden=false;$("linkbox").scrollIntoView({behavior:"smooth",block:"center"});
+   status("Published. Copy the email below and paste it into Outlook.");
+  }catch(e){$("linkbox").hidden=true;var el=$("status");el.classList.add("invalid");var m="Stopped while "+step+": "+(e&&e.message||e);status(m,true);var tgt=/8283/.test(step)?$("f8283").parentNode:/signature|sign/i.test(step)?cv.parentNode:null;if(tgt)tgt.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"})}
  };
- $("dlPage").onclick=function(){save("Thank-You-"+built.dn+"-"+built.req+".html",new TextEncoder().encode(built.page),"text/html")};
- $("dlLetter").onclick=function(){save("Ras Tafari Inc - Donation Acknowledgment "+built.req+".pdf",built.letter)};
- $("dlW9").onclick=function(){save("Ras Tafari Inc - Form W-9.pdf",built.w9)};
- $("dl8283").onclick=function(){save("Ras Tafari Inc - Form 8283 Part V.pdf",built.f8283)};
- $("copyUrl").onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(built.pageUrl).then(function(){status("Link copied.")})};
- $("pub").onclick=async function(){
-  if(!window.showDirectoryPicker){$("pubnote").textContent="This browser cannot save into a folder. Use Chrome or Edge, or download the page and put it at donors/"+built.slug+"/index.html in the site folder.";return}
-  try{var root=await window.showDirectoryPicker({mode:"readwrite"});
-   var okRoot=false;try{await root.getFileHandle("CNAME");okRoot=true}catch(e){}
-   if(!okRoot){$("pubnote").textContent="That is not the website folder (no CNAME file in it). Choose the selassiefest folder, the one that holds index.html and CNAME.";$("pubnote").className="note warn";return}
-   var d1=await root.getDirectoryHandle("donors",{create:true}),d2=await d1.getDirectoryHandle(built.slug,{create:true});
-   var fh=await d2.getFileHandle("index.html",{create:true}),w=await fh.createWritable();await w.write(built.page);await w.close();
-   $("pubnote").className="note";$("pubnote").textContent="Saved to donors/"+built.slug+"/index.html. The site publishes it automatically in a few minutes. Open the link above to confirm, then press the email button.";
-  }catch(e){if(e&&e.name==="AbortError")return;$("pubnote").className="note warn";$("pubnote").textContent="Could not save: "+(e&&e.message||e)}};
+$("copyUrl").onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(built.pageUrl).then(function(){status("Link copied.")})};
  $("copyMail").onclick=async function(){var f=$("contact").value.trim().split(/[ ]+/)[0],u=built.pageUrl;
   var html='<p>Hi '+f+',</p><p>Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:</p><p><a href="'+u+'">'+u+'</a></p><p>You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page.</p><p>Thank you again, from all of us.</p><p>With gratitude,<br>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333 &middot; stephen@selassiefest.com</p>';
   var NL=String.fromCharCode(10),plain="Hi "+f+","+NL+NL+"Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:"+NL+u+NL+NL+"You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page."+NL+NL+"Thank you again, from all of us."+NL+NL+"With gratitude,"+NL+"Stephen Henry"+NL+"President, Ras Tafari Inc."+NL+"(872) 255-9333 · stephen@selassiefest.com";
