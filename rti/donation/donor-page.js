@@ -126,11 +126,12 @@ dialog img{max-height:82vh;width:auto;margin-inline:auto;border-radius:.6rem}
 dialog form{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.8rem .2rem}
 dialog button{font:700 .9rem var(--sans);padding:.55rem 1rem;border-radius:.6rem;border:0;background:var(--lime);color:#11160a;cursor:pointer}
 .steps{list-style:none;padding:0;margin:1.8rem 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem;counter-reset:s}
-.steps li{counter-increment:s;background:#fff;border:1px solid var(--sheet-line);border-radius:1rem;padding:1.3rem}
+.steps li{counter-increment:s;color:var(--sheet-ink);background:#fff;border:1px solid var(--sheet-line);border-radius:1rem;padding:1.3rem}
 .steps li::before{content:counter(s);display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--green);color:#f1f6d8;font-weight:700;margin-bottom:.7rem}
 .steps p{font-size:.94rem;color:#3f4a2f}
 .close .body{max-width:62ch}.close .body p+p{margin-top:1rem}
 .close .lede{font:italic 500 clamp(1.25rem,2.5vw,1.7rem)/1.4 var(--serif)}
+.ask{margin-top:2.2rem;max-width:640px;padding:1.4rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel)}.ask h3{font:500 1.5rem var(--serif);margin-bottom:.3rem}.ask p{color:var(--muted);font-size:.95rem}.ask input,.ask textarea{width:100%;margin-top:.7rem;padding:.7rem .8rem;border-radius:.6rem;border:1px solid var(--line);background:var(--ink);color:var(--paper);font:inherit}.ask textarea{min-height:110px}.ask .btn{margin-top:.8rem}
 .sign{margin-top:1.8rem;font:italic 500 1.6rem var(--serif);color:var(--lime)}.contact{margin-top:1.6rem;display:flex;flex-wrap:wrap;gap:.7rem}
 footer{padding-block:1.4rem 2.2rem;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem}
 @media(max-width:560px){.wrap{width:calc(100% - 2rem)}.nav b{display:none}.facts{grid-template-columns:1fr}.facts dt{border-bottom:0;padding-bottom:0}.facts dd{border-top:0;padding-top:.1rem}.gallery .wide{grid-column:span 1}}
@@ -201,6 +202,13 @@ ${d.photos.length ? `
       <p class="lede">${esc(first ? first + ", t" : "T")}hank you. You made this possible with kindness and care, and we will look after this gift, and the people it serves, the way it deserves.</p>
       <p>If you need anything more from us, now or later, write or call and we will answer the same day.</p>
     </div>
+    <div class="ask" id="ask">
+      <h3>Questions or concerns?</h3>
+      <p>Write them here and your email app will open with the message ready to send to ${esc(o.signer)}. We will answer the same day.</p>
+      <input id="qn" type="text" placeholder="Your name" autocomplete="name">
+      <textarea id="qt" placeholder="Your question, concern, or anything you need us to correct or add"></textarea>
+      <button class="btn solid" id="qb" type="button">Send to ${esc(first ? o.signer : o.signer)}</button>
+    </div>
     <p class="sign">With gratitude, ${esc(o.signer)}</p>
     <p class="muted">${esc(o.title)}, ${esc(o.name)}</p>
     <div class="contact">
@@ -214,8 +222,10 @@ ${d.photos.length ? `
 
 <dialog id="lb" aria-label="Photo viewer"><img id="lbi" alt=""><form method="dialog"><span id="lbc"></span><button>Close</button></form></dialog>
 <script>
-(function(){var lb=document.getElementById('lb'),im=document.getElementById('lbi'),cp=document.getElementById('lbc');
+(function(){var NL=String.fromCharCode(10),MAILTO=${JSON.stringify(o.email)},REQ=${JSON.stringify(d.requestNo)},donor=${JSON.stringify(d.donor)};var lb=document.getElementById('lb'),im=document.getElementById('lbi'),cp=document.getElementById('lbc');
 document.querySelectorAll('button.open').forEach(function(b){b.addEventListener('click',function(){im.src=b.dataset.src;im.alt=b.querySelector('img').alt;cp.textContent=b.dataset.cap||'';if(lb.showModal)lb.showModal();});});
+var qb=document.getElementById('qb');qb.addEventListener('click',function(){var t=document.getElementById('qt').value.trim(),n=document.getElementById('qn').value.trim();
+if(!t){document.getElementById('qt').focus();return;}location.href='mailto:'+MAILTO+'?subject='+encodeURIComponent('Question about donation '+REQ)+'&body='+encodeURIComponent(t+NL+NL+(n?n+NL:'')+donor);});
 lb.addEventListener('click',function(e){if(e.target===lb)lb.close();});
 document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){var o=b.textContent;
 if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(b.dataset.copy).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent=o},1400);},function(){});}});});})();

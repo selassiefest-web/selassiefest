@@ -65,15 +65,19 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 
 <div id="status" aria-live="polite"></div>
 <button type="button" class="go" id="make">Build the donor package</button>
+<div class="card" id="linkbox" hidden><h2>The link for the email</h2>
+ <p class="note">This is where the page will live. Save it to the website, wait a few minutes, check that the link opens, then paste it into the email.</p>
+ <input type="text" id="url" readonly>
+ <div class="out"><button type="button" class="go" id="pub">1. Save it into the website folder</button><button type="button" id="copyUrl">Copy the link</button><button type="button" id="copyMail">2. Copy the email (with the live link)</button></div>
+ <p class="note" id="pubnote"></p></div>
 <div class="out" id="out" hidden>
  <button type="button" class="go" id="dlPage">Download the donor page (.html)</button>
  <button type="button" id="dlLetter">Letter (.pdf)</button>
  <button type="button" id="dlW9">W-9 (.pdf)</button>
  <button type="button" id="dl8283" hidden>Form 8283 (.pdf)</button>
- <button type="button" id="copyMail">Copy the email text</button>
 </div>
 <iframe id="prev" title="Donor page preview" hidden></iframe>
-<p class="note" style="margin-top:18px">To publish instead of emailing: save the page as <code>donors/&lt;name&gt;/index.html</code> in the site and push. Either way it is one file with everything inside.</p>
+<p class="note" style="margin-top:18px">The page is one file with everything inside, so you can also email it as an attachment. The link is better: they can open it on any device, and the questions box on it sends straight to you.</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="../w9/w9-fill.js"></script>
@@ -171,7 +175,9 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
    var req=$("req").value.trim().replace(/[^\w-]+/g,"-"),dn=$("donor").value.trim().replace(/[^\w]+/g,"-");
    var docs=[{title:"Written acknowledgment of donation",desc:"On Ras Tafari Inc. letterhead: lists what we received"+(its.length?" ("+its.map(function(i){return i.qty+" "+i.name}).join("; ")+")":"")+" and states that no goods or services were received in exchange.",fileName:"Ras-Tafari-Inc-Donation-Acknowledgment-"+req+".pdf",dataUri:uri(letter)},
      {title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)}];
-   built={letter:letter,w9:w9,req:req,dn:dn};
+   var rnd="";for(var k=0;k<6;k++)rnd+="abcdefghjkmnpqrstuvwxyz23456789".charAt(Math.floor(Math.random()*31));
+   var slug=(dn+"-"+req).toLowerCase().replace(/-+/g,"-")+"-"+rnd;
+   built={letter:letter,w9:w9,req:req,dn:dn,slug:slug,url:null,pageUrl:"https://selassiefest.com/donors/"+slug+"/"};
    $("dl8283").hidden=true;
    if($("f8283").checked){var fb=await loadPdf("../form-8283/form.pdf",SITE+"form-8283/form.pdf","the blank Form 8283");step="filling Form 8283";
     var f8=await fillF8283(PDFLib,fb,{dateReceived:$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:$("date").value,sigPng:png,sigText:txt});
@@ -179,8 +185,8 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
    var nx=$("next").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(s){return s.h&&s.p});
    var page=buildDonorPage({donor:$("donor").value.trim(),contact:$("contact").value.trim(),requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),next:nx,tracking:$("track").value,docs:docs,photos:photos.length?photos:[],org:ORG});
    built.page=page;
-   if(built.url)URL.revokeObjectURL(built.url);built.url=URL.createObjectURL(new Blob([page],{type:"text/html"}));
-   $("prev").src=built.url;$("prev").hidden=false;$("out").hidden=false;
+   if(built.blob)URL.revokeObjectURL(built.blob);
+   built.url=null;built.blob=URL.createObjectURL(new Blob([page],{type:"text/html"}));$("prev").src=built.blob;$("linkbox").hidden=false;$("url").value=built.pageUrl;$("pubnote").textContent="";$("prev").hidden=false;$("out").hidden=false;
    status("Done. Check the preview, then download the donor page.");
   }catch(e){$("out").hidden=true;$("prev").hidden=true;var el=$("status");el.classList.add("invalid");var m="Stopped while "+step+": "+(e&&e.message||e);status(m,true);var tgt=/8283/.test(step)?$("f8283").parentNode:/signature|sign/i.test(step)?cv.parentNode:null;if(tgt)tgt.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"})}
  };
@@ -188,8 +194,20 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
  $("dlLetter").onclick=function(){save("Ras Tafari Inc - Donation Acknowledgment "+built.req+".pdf",built.letter)};
  $("dlW9").onclick=function(){save("Ras Tafari Inc - Form W-9.pdf",built.w9)};
  $("dl8283").onclick=function(){save("Ras Tafari Inc - Form 8283 Part V.pdf",built.f8283)};
- $("copyMail").onclick=function(){var f=$("contact").value.trim().split(/\s+/)[0],t="Hi "+f+",\n\nEverything arrived, and we are so grateful. I put everything you asked for in one place: the signed acknowledgment letter, our W-9, and photos. Open the attached page in any browser (or save it to your computer); every document and photo has a download button.\n\nThank you again, from all of us.\n\nWith gratitude,\nStephen Henry\nPresident, Ras Tafari Inc.\n(872) 255-9333 · stephen@selassiefest.com";
-  if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){status("Email text copied. Attach the donor page and the letter PDF.")})};
+ $("copyUrl").onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(built.pageUrl).then(function(){status("Link copied.")})};
+ $("pub").onclick=async function(){
+  if(!window.showDirectoryPicker){$("pubnote").textContent="This browser cannot save into a folder. Use Chrome or Edge, or download the page and put it at donors/"+built.slug+"/index.html in the site folder.";return}
+  try{var root=await window.showDirectoryPicker({mode:"readwrite"});
+   var okRoot=false;try{await root.getFileHandle("CNAME");okRoot=true}catch(e){}
+   if(!okRoot){$("pubnote").textContent="That is not the website folder (no CNAME file in it). Choose the selassiefest folder, the one that holds index.html and CNAME.";$("pubnote").className="note warn";return}
+   var d1=await root.getDirectoryHandle("donors",{create:true}),d2=await d1.getDirectoryHandle(built.slug,{create:true});
+   var fh=await d2.getFileHandle("index.html",{create:true}),w=await fh.createWritable();await w.write(built.page);await w.close();
+   $("pubnote").className="note";$("pubnote").textContent="Saved to donors/"+built.slug+"/index.html. The site publishes it automatically in a few minutes. Open the link above to confirm, then press the email button.";
+  }catch(e){if(e&&e.name==="AbortError")return;$("pubnote").className="note warn";$("pubnote").textContent="Could not save: "+(e&&e.message||e)}};
+ $("copyMail").onclick=async function(){var f=$("contact").value.trim().split(/[ ]+/)[0],u=built.pageUrl;
+  var html='<p>Hi '+f+',</p><p>Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:</p><p><a href="'+u+'">'+u+'</a></p><p>You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page.</p><p>Thank you again, from all of us.</p><p>With gratitude,<br>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333 &middot; stephen@selassiefest.com</p>';
+  var NL=String.fromCharCode(10),plain="Hi "+f+","+NL+NL+"Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:"+NL+u+NL+NL+"You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page."+NL+NL+"Thank you again, from all of us."+NL+NL+"With gratitude,"+NL+"Stephen Henry"+NL+"President, Ras Tafari Inc."+NL+"(872) 255-9333 · stephen@selassiefest.com";
+  try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]);status("Email copied with the link live. In Outlook, click in the message and paste (Ctrl+V).")}catch(e){status("Could not copy the email: "+(e&&e.message||e),true)}};
 })();
 </script>
 </main></body></html>
