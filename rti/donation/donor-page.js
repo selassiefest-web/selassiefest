@@ -13,6 +13,8 @@
 // }
 function buildDonorPage(d) {
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const R = d.mode === "request";
+  const T = d.text || {};
   const o = d.org;
   const first = (d.contact || "").trim().split(/\s+/)[0] || "";
   const donorShort = (d.donor || "").replace(/\s+(incorporated|inc\.?|llc|corp\.?|corporation|company|co\.?)$/i, "");
@@ -24,7 +26,7 @@ function buildDonorPage(d) {
         <div class="qty">${esc(i.qty)}<small>${esc(i.unit || "")}</small></div>
         <h3>${esc(i.name)}</h3>
         ${i.desc ? `<p>${esc(i.desc)}</p>` : ""}
-        <span class="tick">Received in good working order</span>
+        <span class="tick">${esc(T.tick || "Received in good working order")}</span>
       </article>`).join("");
 
   const docsHtml = d.docs.map((x, n) => `
@@ -58,7 +60,7 @@ function buildDonorPage(d) {
   const nextHtml = d.next.map((s) => `<li><h3>${esc(s.h)}</h3><p>${esc(s.p)}</p></li>`).join("");
   const trackHtml = d.tracking && d.tracking.trim()
     ? `<p class="ship"><strong>Shipment record.</strong> ${esc(d.tracking.trim()).replace(/\n/g, "<br>")}</p>` : "";
-  const title = "Thank You, " + donorShort + " | " + o.name;
+  const title = (R ? "For " : "Thank You, ") + donorShort + " | " + o.name;
 
   return `<!doctype html>
 <html lang="en">
@@ -144,32 +146,40 @@ h1{font-size:3.2rem}h1 em,.eyebrow,.sign,.item .qty,.doc .num{color:#2f4a10!impo
 <body>
 <div class="tri" aria-hidden="true"></div>
 <nav class="nav" aria-label="Page sections"><div class="wrap"><b>${esc(o.name)}</b>
-<ul><li><a href="#arrived">What arrived</a></li><li><a href="#records">Your records</a></li>${d.photos.length ? '<li><a href="#photos">Photos</a></li>' : ""}<li><a href="#next">What's next</a></li><li><a href="#contact">Contact</a></li></ul></div></nav>
+<ul><li><a href="#arrived">${esc(T.navArrived || "What arrived")}</a></li>${d.promises ? '<li><a href="#promises">' + esc(d.promises.nav || "How we protect") + "</a></li>" : ""}<li><a href="#records">${esc(T.navRecords || "Your records")}</a></li>${d.photos.length ? '<li><a href="#photos">Photos</a></li>' : ""}<li><a href="#next">What's next</a></li><li><a href="#contact">Contact</a></li></ul></div></nav>
 
 <header class="hero">
   <div class="wrap">
-    <p class="eyebrow">With gratitude from ${esc(o.name)}</p>
-    <h1>Thank you,<br><em>${esc(donorShort)}.</em></h1>
-    <p class="to">To ${esc(d.contact)}, and to every person at ${esc(donorShort)} who had a hand in this.</p>
-    <p class="lede">Everything arrived, and our whole team is grateful. The ${esc(list)} will be put to work for ${esc(d.useLine)}. Every record you need, and a few photos, are on this page to read, copy and download at any time.</p>
+    <p class="eyebrow">${esc(T.eyebrow || ("With gratitude from " + o.name))}</p>
+    <h1>${R ? esc(T.h1a || "Prepared for") : "Thank you,"}<br><em>${esc(donorShort)}.</em></h1>
+    <p class="to">${R ? esc(T.to || "") : "To " + esc(d.contact) + ", and to every person at " + esc(donorShort) + " who had a hand in this."}</p>
+    <p class="lede">${R ? esc(T.lede || "") : "Everything arrived, and our whole team is grateful. The " + esc(list) + " will be put to work for " + esc(d.useLine) + ". Every record you need, and a few photos, are on this page to read, copy and download at any time."}</p>
     <div class="cta"><a class="btn solid" href="#records">Open your records</a>${d.photos.length ? '<a class="btn ghost" href="#photos">See the photos</a>' : ""}</div>
   </div>
 </header>
 
 <section class="section sheet" id="arrived">
   <div class="wrap">
-    <p class="eyebrow">Donation request ${esc(d.requestNo)}</p>
-    <h2>What arrived</h2>
+    <p class="eyebrow">${esc(T.arrivedEyebrow || ("Donation request " + d.requestNo))}</p>
+    <h2>${esc(T.arrivedTitle || "What arrived")}</h2>
     <div class="items">${itemsHtml}
     </div>
-    <p class="assure">No goods or services were received in exchange for this donation.</p>
+    <p class="assure">${esc(T.assure || "No goods or services were received in exchange for this donation.")}</p>
   </div>
 </section>
 
+${d.promises ? `<section class="section" id="promises">
+  <div class="wrap">
+    <p class="eyebrow">${esc(d.promises.eyebrow || "")}</p>
+    <h2>${esc(d.promises.title || "")}</h2>
+    <p class="lede muted">${esc(d.promises.lede || "")}</p>
+    <ol class="steps sheetlist">${d.promises.items.map((s) => `<li><h3>${esc(s.h)}</h3><p>${esc(s.p)}</p></li>`).join("")}</ol>
+  </div>
+</section>` : ""}
 <section class="section" id="records">
   <div class="wrap">
-    <p class="eyebrow">Your records</p>
-    <h2>Ready to download</h2>
+    <p class="eyebrow">${esc(T.recEyebrow || "Your records")}</p>
+    <h2>${esc(T.recTitle || "Ready to download")}</h2>
     <p class="lede muted">Each document is a PDF. No sign-in, nothing to request.</p>
     <div class="records">${docsHtml}
     </div>
@@ -191,7 +201,7 @@ ${d.photos.length ? `
 <section class="section${d.photos.length ? "" : " sheet"}" id="next">
   <div class="wrap">
     <p class="eyebrow">What's next</p>
-    <h2>What we promised</h2>
+    <h2>${esc(T.nextTitle || "What we promised")}</h2>
     <ol class="steps">${nextHtml}</ol>
   </div>
 </section>
@@ -199,7 +209,7 @@ ${d.photos.length ? `
 <section class="section close" id="contact" style="border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="body">
-      <p class="lede">${esc(first ? first + ", t" : "T")}hank you. You made this possible with kindness and care, and we will look after this gift, and the people it serves, the way it deserves.</p>
+      <p class="lede">${R ? esc(T.closeLede || "") : esc(first ? first + ", t" : "T") + "hank you. You made this possible with kindness and care, and we will look after this gift, and the people it serves, the way it deserves."}</p>
       <p>If you need anything more from us, now or later, write or call and we will answer the same day.</p>
     </div>
     <div class="ask" id="ask">
@@ -212,7 +222,7 @@ ${d.photos.length ? `
     <p class="sign">With gratitude, ${esc(o.signer)}</p>
     <p class="muted">${esc(o.title)}, ${esc(o.name)}</p>
     <div class="contact">
-      <a class="btn solid" href="mailto:${esc(o.email)}?subject=${encodeURIComponent("Donation " + d.requestNo)}">${esc(o.email)}</a>
+      <a class="btn solid" href="mailto:${esc(o.email)}?subject=${encodeURIComponent((R ? "Request " : "Donation ") + d.requestNo)}">${esc(o.email)}</a>
       <a class="btn ghost" href="tel:${esc(o.phone.replace(/[^\d+]/g, ""))}">${esc(o.phone)}</a>
     </div>
   </div>
@@ -222,10 +232,10 @@ ${d.photos.length ? `
 
 <dialog id="lb" aria-label="Photo viewer"><img id="lbi" alt=""><form method="dialog"><span id="lbc"></span><button>Close</button></form></dialog>
 <script>
-(function(){var NL=String.fromCharCode(10),MAILTO=${JSON.stringify(o.email)},REQ=${JSON.stringify(d.requestNo)},donor=${JSON.stringify(d.donor)};var lb=document.getElementById('lb'),im=document.getElementById('lbi'),cp=document.getElementById('lbc');
+(function(){var NL=String.fromCharCode(10),MAILTO=${JSON.stringify(o.email)},REQ=${JSON.stringify(d.requestNo)},LBL=${JSON.stringify(R ? 'request' : 'donation')},donor=${JSON.stringify(d.donor)};var lb=document.getElementById('lb'),im=document.getElementById('lbi'),cp=document.getElementById('lbc');
 document.querySelectorAll('button.open').forEach(function(b){b.addEventListener('click',function(){im.src=b.dataset.src;im.alt=b.querySelector('img').alt;cp.textContent=b.dataset.cap||'';if(lb.showModal)lb.showModal();});});
 var qb=document.getElementById('qb');qb.addEventListener('click',function(){var t=document.getElementById('qt').value.trim(),n=document.getElementById('qn').value.trim();
-if(!t){document.getElementById('qt').focus();return;}location.href='mailto:'+MAILTO+'?subject='+encodeURIComponent('Question about donation '+REQ)+'&body='+encodeURIComponent(t+NL+NL+(n?n+NL:'')+donor);});
+if(!t){document.getElementById('qt').focus();return;}location.href='mailto:'+MAILTO+'?subject='+encodeURIComponent('Question about '+LBL+' '+REQ)+'&body='+encodeURIComponent(t+NL+NL+(n?n+NL:'')+donor);});
 lb.addEventListener('click',function(e){if(e.target===lb)lb.close();});
 document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){var o=b.textContent;
 if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(b.dataset.copy).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent=o},1400);},function(){});}});});})();

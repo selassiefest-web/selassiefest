@@ -28,7 +28,19 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 </style></head><body><main>
 <h1>Donation thank-you package</h1>
 <p class="sub">Fill this in once per donation. It writes the signed written acknowledgment, the W-9 (and, if you choose, Form 8283 Part V), and one thank-you web page with every record and photo inside it. Everything is built in your browser; nothing is sent or stored anywhere.</p>
-<p><button type="button" id="shure">Fill in the Shure CQ-1076 example</button></p>
+<div class="card"><h2>What kind of page is this?</h2>
+<div class="cert"><input type="radio" name="kind" id="kGift" value="gift" checked><label for="kGift"><b>A gift we received</b> (thank-you page, signed acknowledgment, photos).</label></div>
+<div class="cert"><input type="radio" name="kind" id="kReq" value="request"><label for="kReq"><b>A request we are making</b> (proof of nonprofit status, our compliance promises, and any form the donor needs signed). No received-goods letter is written.</label></div>
+<p><button type="button" id="shure">Fill in the Shure CQ-1076 example</button> <button type="button" id="serato">Fill in the Serato ticket 1231468 example</button></p></div>
+<div class="card" id="reqBox" hidden><h2>Request pages: files and promises</h2>
+<p class="note">Pick the PDFs from your computer. They go inside the page and are never uploaded anywhere else.</p>
+<label for="fPol">The donor's policy to sign (for Serato: Student Data Policy.pdf)</label><input type="file" id="fPol" accept="application/pdf">
+<label for="fIrs">IRS determination letter (C:/Users/mkepr/Documents/GitHub/selassiefest/Claude outputs/ready-to-send/IRS Determination Letter.pdf)</label><input type="file" id="fIrs" accept="application/pdf">
+<label for="fArt">Certified Illinois articles (C:/Users/mkepr/Documents/Fest/Ras Tafari/02_RAS_TAFARI_INC._Certified Articles.pdf)</label><input type="file" id="fArt" accept="application/pdf">
+<label for="prom">How we comply (one per line, as: Heading | what we do)</label><textarea id="prom"></textarea>
+<label for="rlede">Opening paragraph on the page</label><textarea id="rlede"></textarea>
+<div class="cert"><input type="checkbox" id="polOn" checked><label for="polOn">Sign the donor's policy with my signature below (name, title, date and organization are filled in).</label></div>
+</div>
 
 <div class="card"><h2>1. The donor</h2>
 <div class="row"><div><label for="donor">Donor (company)</label><input type="text" id="donor"></div><div><label for="req">Request / reference number</label><input type="text" id="req"></div></div>
@@ -50,7 +62,8 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <div class="card"><h2>4. What's next (one step per line, as: Heading | what happens)</h2>
 <textarea id="next"></textarea>
 <div class="cert"><input type="checkbox" id="f8283"><label for="f8283">Also include Form 8283 Part V (donee acknowledgment). It states the date received and no value. Needed only if the donor claims over $500 in noncash gifts and asks for it.</label></div>
-<label for="recv">Date received (MM/DD/YYYY; used on Form 8283 only)</label><input type="text" id="recv">
+<p class="note">On a request page the Form 8283 is attached <b>unsigned with no date</b> ("ready on receipt"); you sign and date it the day the gift arrives.</p>
+<label for="recv">Date received (MM/DD/YYYY; used on Form 8283 only; not needed on a request page)</label><input type="text" id="recv">
 </div>
 
 <div class="card"><h2>5. Sign</h2>
@@ -76,6 +89,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <script src="../w9/w9-fill.js"></script>
 <script src="../form-8283/f8283-fill.js"></script>
 <script src="donation-letter.js"></script>
+<script src="policy-sign.js"></script>
 <script src="donor-page.js"></script>
 <script>
 (function(){
@@ -105,6 +119,24 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   $("track").value="Delivered by UPS Ground from Shure Incorporated, Wheeling, IL. Carton 2 of 2 (14 lbs, headphones): 1Z 610 065 03 9575 9694. Carton 1 of 1 (4 lbs, microphones): 1Z 610 065 03 9567 0743. Numbers copied from the labels on the cartons.";
   $("next").value="Right away | This page, the written acknowledgment, our W-9 and the photos, all in one place.\nJanuary 12, 2027 | The Rainbow DJ Lab opens, with Shure headphones on every one of the 12 stations from the first class. We will send you photos of them in use.\nAt our showcases | The SM58s carry our students' voices, and Shure is recognized on our website and from the stage.\nAfter the first term | An impact report: who learned, what they made, and what your gift made possible.";
   status("Shure example filled in. Choose the photos, sign, and build.")};
+
+ // ---- request mode
+ function kind(){return document.querySelector("input[name=kind]:checked").value}
+ function syncKind(){var r=kind()==="request";$("reqBox").hidden=!r;$("make").textContent=r?"Build the request page":"Build the donor package";if(r&&!$("rlede").value&&!$("prom").value){/* leave for the preset */}}
+ document.querySelectorAll("input[name=kind]").forEach(function(x){x.onchange=syncKind});
+ $("serato").onclick=function(){
+  $("kReq").checked=true;syncKind();
+  $("donor").value="Serato";$("req").value="Ticket 1231468";$("contact").value="Brad D";$("ctitle").value="Serato Sales";$("a1").value="8 Brown Street";$("a2").value="Auckland 1021, New Zealand";
+  $("items").innerHTML="";
+  addItem({name:"Serato DJ Pro education licence activations",qty:"13",unit:"activations",desc:"Twelve student stations and one spare for the free Rainbow DJ Lab, open to all ages, opening January 12, 2027 at Rainbow Beach Park in Chicago."});
+  $("use").value="the 12 student stations of our free Rainbow DJ Lab, every Tuesday from 4 to 6 pm starting January 12, 2027";
+  $("track").value="";
+  $("prom").value="One profile, no student accounts | Ras Tafari Inc. creates one Serato.com profile with a generic mailbox only our staff control ([DJ LAB MAILBOX]). No student ever has a Serato account, and no student name, email or birthday is entered on Serato.com.\nActivation by staff | Our staff download, install and activate Serato on the Lab's own laptops. We do not install it on students' personal devices.\nLogged out afterward | Once activation is finished we log out of Serato.com and never save the password on any computer, so no student can reach the licences or the profile.\nAll ages, one standard | The Lab welcomes children from about age 5, teens and adults, and most students are under 16. Under this set-up none of their personal information reaches Serato.\nOur own children's privacy rules | Separately, our class app collects only limited information, with verifiable parental consent for children under 13 (COPPA), and it stays with us. We run no advertising or tracking on the Lab's pages.";
+  $("rlede").value="Brad, thank you for your time and for the Student Data Policy. Here is everything in one place: proof that Ras Tafari Inc. is a 501(c)(3), exactly how we will follow each of Serato's four mandatory set-up steps with students of every age, and the policy itself, signed. We would rather show you our compliance than just promise it.";
+  $("next").value="Right away | You have our proof of nonprofit status, our W-9 and the signed Student Data Policy on this page.\nOn your word | We create the generic Serato profile and tell you how many activations we need: 13.\nThe day they are activated | We sign and return Form 8283 Part V if you want it for your records, and credit Serato on our class materials.\nJanuary 12, 2027 | The Rainbow DJ Lab opens. We will send you photos of students at their Serato stations.";
+  status("Serato example filled in. Pick the three PDFs, choose the mailbox, sign, and build.")};
+ $("shure").addEventListener("click",function(){$("kGift").checked=true;syncKind()});
+ function readFile(inp){return new Promise(function(res,rej){var f=inp.files&&inp.files[0];if(!f)return res(null);var r=new FileReader();r.onload=function(){res(new Uint8Array(r.result))};r.onerror=function(){rej(new Error("could not read "+f.name))};r.readAsArrayBuffer(f)})}
 
  // ---- photos
  var photos=[];
@@ -146,7 +178,9 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   var bad=[],its=items();
   [["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].forEach(function(x){if(!$(x[0]).value.trim())bad.push([$(x[0]),x[1]])});
   if(!its.length)bad.push([$("items"),"at least one product with a quantity"]);
-  if($("f8283").checked&&!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("recv").value.trim()))bad.push([$("recv"),"the date received as MM/DD/YYYY"]);
+  var REQ=kind()==="request";
+  if(REQ){if($("polOn").checked&&!$("fPol").files.length)bad.push([$("fPol"),"the donor's policy PDF"]);if(!$("fIrs").files.length)bad.push([$("fIrs"),"the IRS determination letter"]);if(!$("fArt").files.length)bad.push([$("fArt"),"the certified articles"]);if(!$("prom").value.trim())bad.push([$("prom"),"how we comply"]);else if(/MAILBOX/.test($("prom").value))bad.push([$("prom"),"the real staff mailbox in place of [DJ LAB MAILBOX]"]);if(!$("rlede").value.trim())bad.push([$("rlede"),"the opening paragraph"])}
+  if(!REQ&&$("f8283").checked&&!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("recv").value.trim()))bad.push([$("recv"),"the date received as MM/DD/YYYY"]);
   if(!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("date").value.trim()))bad.push([$("date"),"the signing date as MM/DD/YYYY"]);
   var mode0=document.querySelector("input[name=mode]:checked").value;
   if(mode0==="draw"&&!trimmedPng())bad.push([cv.parentNode,"your signature (draw it, or tap Use my saved signature)"]);
@@ -163,21 +197,29 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
    status("Building the package…");
    var dp=$("date").value.split("/"),longDate=MONTHS[+dp[0]-1]+" "+(+dp[1])+", "+dp[2];
    var common={name:ORG.name,ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt};
-   var letter=await buildLetter(PDFLib,{date:longDate,donor:$("donor").value.trim(),contact:$("contact").value.trim(),contactTitle:$("ctitle").value.trim(),donorAddr:[$("a1").value.trim(),$("a2").value.trim()],requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),org:ORG,sigPng:png,sigText:txt});
+   var letter=REQ?null:await buildLetter(PDFLib,{date:longDate,donor:$("donor").value.trim(),contact:$("contact").value.trim(),contactTitle:$("ctitle").value.trim(),donorAddr:[$("a1").value.trim(),$("a2").value.trim()],requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),org:ORG,sigPng:png,sigText:txt});
    step="building the letter";
    var w9b=await loadPdf("../w9/form.pdf",SITE+"w9/form.pdf","the blank W-9");step="filling the W-9";
    var w9=await fillW9(PDFLib,w9b,{name:ORG.name,cls:"other",otherText:"501(c)(3) nonprofit corporation",exempt:"1",addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt});
    var req=$("req").value.trim().replace(/[^\w-]+/g,"-"),dn=$("donor").value.trim().replace(/[^\w]+/g,"-");
-   var docs=[{title:"Written acknowledgment of donation",desc:"On Ras Tafari Inc. letterhead: lists what we received"+(its.length?" ("+its.map(function(i){return i.qty+" "+i.name}).join("; ")+")":"")+" and states that no goods or services were received in exchange.",fileName:"Ras-Tafari-Inc-Donation-Acknowledgment-"+req+".pdf",dataUri:uri(letter)},
+   var docs=REQ?[]:[{title:"Written acknowledgment of donation",desc:"On Ras Tafari Inc. letterhead: lists what we received"+(its.length?" ("+its.map(function(i){return i.qty+" "+i.name}).join("; ")+")":"")+" and states that no goods or services were received in exchange.",fileName:"Ras-Tafari-Inc-Donation-Acknowledgment-"+req+".pdf",dataUri:uri(letter)},
      {title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)}];
    var rnd="";for(var k=0;k<6;k++)rnd+="abcdefghjkmnpqrstuvwxyz23456789".charAt(Math.floor(Math.random()*31));
    var slug=(dn+"-"+req).toLowerCase().replace(/-+/g,"-")+"-"+rnd;
+   if(REQ){step="reading the files you chose";var irs=await readFile($("fIrs")),art=await readFile($("fArt"));
+    docs.push({title:"IRS determination letter",desc:"The IRS letter confirming Ras Tafari Inc. is exempt under section 501(c)(3), EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-IRS-Determination-Letter.pdf",dataUri:uri(irs)});
+    docs.push({title:"Certified Illinois articles of incorporation",desc:"Certified by the Illinois Secretary of State: our legal existence as an Illinois not-for-profit corporation.",fileName:"Ras-Tafari-Inc-Certified-Articles.pdf",dataUri:uri(art)});
+    docs.push({title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)});
+    if($("polOn").checked){step="signing the policy";var pol=await readFile($("fPol"));var sp=await signStudentPolicy(PDFLib,pol,{institution:ORG.name,name:ORG.signer+", "+ORG.title,date:$("date").value,sigPng:png,sigText:txt});
+     docs.push({title:"Signed policy: "+(($("fPol").files[0]&&$("fPol").files[0].name)||"policy").replace(/[.]pdf$/i,""),desc:"The policy you sent, read and signed for Ras Tafari Inc. by "+ORG.signer+", "+ORG.title+", dated "+$("date").value+".",fileName:"Ras-Tafari-Inc-Signed-"+(($("fPol").files[0]&&$("fPol").files[0].name)||"policy.pdf").replace(/[^\w.-]+/g,"-"),dataUri:uri(sp)})}}
    built={letter:letter,w9:w9,req:req,dn:dn,slug:slug,url:null,pageUrl:"https://selassiefest.com/donors/"+slug+"/"};
    if($("f8283").checked){var fb=await loadPdf("../form-8283/form.pdf",SITE+"form-8283/form.pdf","the blank Form 8283");step="filling Form 8283";
-    var f8=await fillF8283(PDFLib,fb,{dateReceived:$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:$("date").value,sigPng:png,sigText:txt});
-    docs.push({title:"Form 8283, donee acknowledgment",desc:"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)})}
+    var f8=await fillF8283(PDFLib,fb,{dateReceived:REQ?"":$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:REQ?"":$("date").value,sigPng:REQ?null:png,sigText:REQ?null:txt});
+    docs.push({title:REQ?"Form 8283 Part V, ready on receipt":"Form 8283, donee acknowledgment",desc:REQ?"Our Part V (donee acknowledgment) is prepared in advance with our details. We sign and date it the day the gift is received, and it states no value; any value is the donor's to determine.":"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)})}
    var nx=$("next").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(s){return s.h&&s.p});
-   var page=buildDonorPage({donor:$("donor").value.trim(),contact:$("contact").value.trim(),requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),next:nx,tracking:$("track").value,docs:docs,photos:photos.length?photos:[],org:ORG});
+   var RT=REQ?{h1a:"Prepared for",eyebrow:"From "+ORG.name+" to "+$("donor").value.trim(),to:"For "+$("contact").value.trim()+" and the whole "+$("donor").value.trim()+" team.",lede:$("rlede").value.trim(),tick:"Requested; nothing received yet",navArrived:"The request",navRecords:"Proof and forms",arrivedEyebrow:"Request "+$("req").value.trim(),arrivedTitle:"What we are asking for",assure:"We are not asking for cash, and nothing is promised in exchange beyond a credit on our class materials. The donor decides every term.",recEyebrow:"Proof and signed forms",recTitle:"Ready to read and download",nextTitle:"What happens next",closeLede:"Thank you for looking at this with care. We would rather be thorough with you now than leave anything to chance later."}:null;
+   var PR=REQ?{nav:"How we comply",eyebrow:"How we comply",title:"Our promises, step by step",lede:"Written as the policy asks, and we will follow them exactly.",items:$("prom").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(x){return x.h&&x.p})}:null;
+   var page=buildDonorPage({mode:REQ?"request":"gift",text:RT,promises:PR,donor:$("donor").value.trim(),contact:$("contact").value.trim(),requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),next:nx,tracking:$("track").value,docs:docs,photos:photos.length?photos:[],org:ORG});
    built.page=page;step="publishing the page";status("Publishing…");
    try{localStorage.setItem("rtiDonSec",$("sec").value.trim())}catch(e){}
    var pr=await fetch("https://xdjbgcqaynnzykrglgnf.supabase.co/functions/v1/rti-donor-page",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"publish",secret:$("sec").value.trim(),donor:$("donor").value.trim(),request_no:$("req").value.trim(),html:page})});
@@ -190,8 +232,8 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
  };
 $("copyUrl").onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(built.pageUrl).then(function(){status("Link copied.")})};
  $("copyMail").onclick=async function(){var f=$("contact").value.trim().split(/[ ]+/)[0],u=built.pageUrl;
-  var html='<p>Hi '+f+',</p><p>Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:</p><p><a href="'+u+'">'+u+'</a></p><p>You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page.</p><p>Thank you again, from all of us.</p><p>With gratitude,<br>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333 &middot; stephen@selassiefest.com</p>';
-  var NL=String.fromCharCode(10),plain="Hi "+f+","+NL+NL+"Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:"+NL+u+NL+NL+"You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page."+NL+NL+"Thank you again, from all of us."+NL+NL+"With gratitude,"+NL+"Stephen Henry"+NL+"President, Ras Tafari Inc."+NL+"(872) 255-9333 · stephen@selassiefest.com";
+  var REQ=kind()==="request";var html=REQ?'<p>Hi '+f+',</p><p>Thank you for the policy and for your time. I put everything in one place, on a page made for you: our IRS and state records, our W-9, exactly how we will follow each of your four set-up steps with students of every age, and your Student Data Policy, signed.</p><p><a href="'+u+'">'+u+'</a></p><p>Please tell me how many activations you will provide and whether you need anything else; we will set up the generic profile the same day.</p><p>With respect,<br>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333 &middot; stephen@selassiefest.com</p>':'<p>Hi '+f+',</p><p>Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:</p><p><a href="'+u+'">'+u+'</a></p><p>You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page.</p><p>Thank you again, from all of us.</p><p>With gratitude,<br>Stephen Henry<br>President, Ras Tafari Inc.<br>(872) 255-9333 &middot; stephen@selassiefest.com</p>';
+  var NL=String.fromCharCode(10),plain=REQ?"Hi "+f+","+NL+NL+"Thank you for the policy and for your time. I put everything in one place, on a page made for you: our IRS and state records, our W-9, exactly how we will follow each of your four set-up steps with students of every age, and your Student Data Policy, signed."+NL+NL+u+NL+NL+"Please tell me how many activations you will provide and whether you need anything else; we will set up the generic profile the same day."+NL+NL+"With respect,"+NL+"Stephen Henry"+NL+"President, Ras Tafari Inc."+NL+"(872) 255-9333 · stephen@selassiefest.com":"Hi "+f+","+NL+NL+"Everything arrived, and we are so grateful. I put everything you asked for in one place, on a page made for you:"+NL+u+NL+NL+"You can read it, download the signed acknowledgment letter, our W-9 and the photos, and send us any question or concern right from the page."+NL+NL+"Thank you again, from all of us."+NL+NL+"With gratitude,"+NL+"Stephen Henry"+NL+"President, Ras Tafari Inc."+NL+"(872) 255-9333 · stephen@selassiefest.com";
   try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]);status("Email copied with the link live. In Outlook, click in the message and paste (Ctrl+V).")}catch(e){status("Could not copy the email: "+(e&&e.message||e),true)}};
 })();
 </script>
