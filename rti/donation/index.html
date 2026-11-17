@@ -34,9 +34,9 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <p><button type="button" id="shure">Fill in the Shure CQ-1076 example</button> <button type="button" id="serato">Fill in the Serato ticket 1231468 example</button></p></div>
 <div class="card" id="reqBox" hidden><h2>Request pages: files and promises</h2>
 <p class="note">Pick the PDFs from your computer. They go inside the page and are never uploaded anywhere else.</p>
-<label for="fPol">The donor's policy to sign (for Serato: Student Data Policy.pdf)</label><input type="file" id="fPol" accept="application/pdf">
-<label for="fIrs">IRS determination letter (C:/Users/mkepr/Documents/GitHub/selassiefest/Claude outputs/ready-to-send/IRS Determination Letter.pdf)</label><input type="file" id="fIrs" accept="application/pdf">
-<label for="fArt">Certified Illinois articles (C:/Users/mkepr/Documents/Fest/Ras Tafari/02_RAS_TAFARI_INC._Certified Articles.pdf)</label><input type="file" id="fArt" accept="application/pdf">
+<label for="fPol">The donor's policy to sign (for Serato: pick Student_Data_Policy.pdf from C:/Users/mkepr/Downloads/BOB/)</label><input type="file" id="fPol" accept="application/pdf">
+<label for="fIrs">IRS determination letter (preloaded from our document library; choose a file only to replace it)</label><input type="file" id="fIrs" accept="application/pdf">
+<label for="fArt">Certified Illinois articles (preloaded from our document library; choose a file only to replace it)</label><input type="file" id="fArt" accept="application/pdf">
 <label for="prom">How we comply (one per line, as: Heading | what we do)</label><textarea id="prom"></textarea>
 <label for="rlede">Opening paragraph on the page</label><textarea id="rlede"></textarea>
 <div class="cert"><input type="checkbox" id="polOn" checked><label for="polOn">Sign the donor's policy with my signature below (name, title, date and organization are filled in).</label></div>
@@ -48,10 +48,10 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 <div class="row"><div><label for="a1">Donor street address</label><input type="text" id="a1"></div><div><label for="a2">City, state, ZIP</label><input type="text" id="a2"></div></div>
 </div>
 
-<div class="card"><h2>2. What arrived</h2>
-<div id="items"></div><button type="button" id="addItem">+ Add a product</button>
-<label for="use">It will be used for (finishes the sentence "The equipment will be used for ...")</label><textarea id="use"></textarea>
-<label for="track">Shipment / tracking notes (optional, shown on the page)</label><textarea id="track"></textarea>
+<div class="card"><h2 id="h2items">2. What arrived</h2>
+<div id="items"></div><button type="button" id="addItem">+ Add another item</button>
+<label for="use" id="lblUse">It will be used for (finishes the sentence "The equipment will be used for ...")</label><textarea id="use"></textarea>
+<label for="track" id="lblTrack">Shipment / tracking notes (optional, shown on the page)</label><textarea id="track"></textarea>
 </div>
 
 <div class="card"><h2>3. Photos (optional)</h2>
@@ -122,7 +122,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
 
  // ---- request mode
  function kind(){return document.querySelector("input[name=kind]:checked").value}
- function syncKind(){var r=kind()==="request";$("reqBox").hidden=!r;$("make").textContent=r?"Build the request page":"Build the donor package";if(r&&!$("rlede").value&&!$("prom").value){/* leave for the preset */}}
+ function syncKind(){var r=kind()==="request";$("reqBox").hidden=!r;$("h2items").textContent=r?"2. What we are asking for (nothing has been received yet)":"2. What arrived";$("lblUse").textContent=r?"It would be used for (finishes the sentence \"... would be used for ...\")":"It will be used for (finishes the sentence \"The equipment will be used for ...\")";$("lblTrack").hidden=r;$("track").hidden=r;$("make").textContent=r?"Build the request page":"Build the donor package";if(r&&!$("rlede").value&&!$("prom").value){/* leave for the preset */}}
  document.querySelectorAll("input[name=kind]").forEach(function(x){x.onchange=syncKind});
  $("serato").onclick=function(){
   $("kReq").checked=true;syncKind();
@@ -179,7 +179,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
   [["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].forEach(function(x){if(!$(x[0]).value.trim())bad.push([$(x[0]),x[1]])});
   if(!its.length)bad.push([$("items"),"at least one product with a quantity"]);
   var REQ=kind()==="request";
-  if(REQ){if($("polOn").checked&&!$("fPol").files.length)bad.push([$("fPol"),"the donor's policy PDF"]);if(!$("fIrs").files.length)bad.push([$("fIrs"),"the IRS determination letter"]);if(!$("fArt").files.length)bad.push([$("fArt"),"the certified articles"]);if(!$("prom").value.trim())bad.push([$("prom"),"how we comply"]);else if(/MAILBOX/.test($("prom").value))bad.push([$("prom"),"the real staff mailbox in place of [DJ LAB MAILBOX]"]);if(!$("rlede").value.trim())bad.push([$("rlede"),"the opening paragraph"])}
+  if(REQ){if($("polOn").checked&&!$("fPol").files.length)bad.push([$("fPol"),"the donor's policy PDF"]);if(!$("prom").value.trim())bad.push([$("prom"),"how we comply"]);else if(/MAILBOX/.test($("prom").value))bad.push([$("prom"),"the real staff mailbox in place of [DJ LAB MAILBOX]"]);if(!$("rlede").value.trim())bad.push([$("rlede"),"the opening paragraph"])}
   if(!REQ&&$("f8283").checked&&!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("recv").value.trim()))bad.push([$("recv"),"the date received as MM/DD/YYYY"]);
   if(!/^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test($("date").value.trim()))bad.push([$("date"),"the signing date as MM/DD/YYYY"]);
   var mode0=document.querySelector("input[name=mode]:checked").value;
@@ -206,7 +206,7 @@ iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;ma
      {title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)}];
    var rnd="";for(var k=0;k<6;k++)rnd+="abcdefghjkmnpqrstuvwxyz23456789".charAt(Math.floor(Math.random()*31));
    var slug=(dn+"-"+req).toLowerCase().replace(/-+/g,"-")+"-"+rnd;
-   if(REQ){step="reading the files you chose";var irs=await readFile($("fIrs")),art=await readFile($("fArt"));
+   if(REQ){step="reading the files you chose";var irs=await readFile($("fIrs"))||new Uint8Array(await loadPdf("library/irs-determination-letter.pdf",SITE+"donation/library/irs-determination-letter.pdf","the IRS determination letter")),art=await readFile($("fArt"))||new Uint8Array(await loadPdf("library/certified-articles.pdf",SITE+"donation/library/certified-articles.pdf","the certified articles"));
     docs.push({title:"IRS determination letter",desc:"The IRS letter confirming Ras Tafari Inc. is exempt under section 501(c)(3), EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-IRS-Determination-Letter.pdf",dataUri:uri(irs)});
     docs.push({title:"Certified Illinois articles of incorporation",desc:"Certified by the Illinois Secretary of State: our legal existence as an Illinois not-for-profit corporation.",fileName:"Ras-Tafari-Inc-Certified-Articles.pdf",dataUri:uri(art)});
     docs.push({title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)});
