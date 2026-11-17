@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ras Tafari Inc. Donation Thank-You Package</title>
+<style>
+:root{--bg:#fff;--ink:#16182B;--mute:#5b6070;--line:#d6d9e2;--accent:#0b6b3a;--card:#f6f7fa;--bad:#a1281f}
+@media (prefers-color-scheme:dark){:root{--bg:#12141c;--ink:#eef0f6;--mute:#a4a9b8;--line:#2d3142;--accent:#5fd08e;--card:#1a1d29;--bad:#ff8a80}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif}
+main{max-width:820px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0 0 4px}h2{font-size:1.05rem;margin:0 0 6px}.sub{color:var(--mute);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.92rem}
+input[type=text],input[type=file],textarea,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:84px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.r3{grid-template-columns:2fr 1fr 1fr auto}@media(max-width:600px){.row,.r3{grid-template-columns:1fr}}
+.note{color:var(--mute);font-size:.88rem}.warn{color:var(--bad)}
+.pad{border:1px solid var(--line);border-radius:8px;background:#fff;position:relative}
+.pad canvas{display:block;width:100%;height:150px;cursor:crosshair;touch-action:none}
+.pad .ph{position:absolute;left:12px;bottom:8px;color:#9aa;font-size:.85rem;pointer-events:none}
+button{font:inherit;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}button:disabled{opacity:.5;cursor:not-allowed}
+.cert{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.cert input{margin-top:5px}.cert label{margin:0;font-weight:400}
+.invalid{outline:3px solid var(--bad);outline-offset:2px;border-radius:8px;background:rgba(161,40,31,.08)}
+#status{min-height:1.4em;margin:8px 0;font-weight:600}
+iframe{width:100%;height:720px;border:1px solid var(--line);border-radius:8px;margin-top:10px;background:#fff}
+.cap{display:grid;grid-template-columns:3rem 1fr;gap:10px;align-items:center;margin:6px 0}.cap img{width:3rem;height:3rem;object-fit:cover;border-radius:6px}
+.out{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+</style></head><body><main>
+<h1>Donation thank-you package</h1>
+<p class="sub">Fill this in once per donation. It writes the signed written acknowledgment, the W-9 (and, if you choose, Form 8283 Part V), and one thank-you web page with every record and photo inside it. Everything is built in your browser; nothing is sent or stored anywhere.</p>
+<p><button type="button" id="shure">Fill in the Shure CQ-1076 example</button></p>
+
+<div class="card"><h2>1. The donor</h2>
+<div class="row"><div><label for="donor">Donor (company)</label><input type="text" id="donor"></div><div><label for="req">Request / reference number</label><input type="text" id="req"></div></div>
+<div class="row"><div><label for="contact">Contact name</label><input type="text" id="contact"></div><div><label for="ctitle">Contact title (optional)</label><input type="text" id="ctitle"></div></div>
+<div class="row"><div><label for="a1">Donor street address</label><input type="text" id="a1"></div><div><label for="a2">City, state, ZIP</label><input type="text" id="a2"></div></div>
+</div>
+
+<div class="card"><h2>2. What arrived</h2>
+<div id="items"></div><button type="button" id="addItem">+ Add a product</button>
+<label for="use">It will be used for (finishes the sentence "The equipment will be used for ...")</label><textarea id="use"></textarea>
+<label for="track">Shipment / tracking notes (optional, shown on the page)</label><textarea id="track"></textarea>
+</div>
+
+<div class="card"><h2>3. Photos (optional)</h2>
+<input type="file" id="photos" accept="image/*" multiple>
+<div id="caps"></div><p class="note">The first photo becomes the page's backdrop, so pick the best one first (choose files in that order). Photos are shrunk to a web size.</p>
+</div>
+
+<div class="card"><h2>4. What's next (one step per line, as: Heading | what happens)</h2>
+<textarea id="next"></textarea>
+<div class="cert"><input type="checkbox" id="f8283"><label for="f8283">Also include Form 8283 Part V (donee acknowledgment). It states the date received and no value. Needed only if the donor claims over $500 in noncash gifts and asks for it.</label></div>
+<label for="recv">Date received (MM/DD/YYYY; used on Form 8283 only)</label><input type="text" id="recv">
+</div>
+
+<div class="card"><h2>5. Sign</h2>
+<div class="cert"><input type="checkbox" id="cert"><label for="cert">I confirm every product listed was received, no goods or services were given in exchange, and I am signing as President of Ras Tafari Inc.</label></div>
+<label>Signature</label>
+<div class="row"><div><label style="margin-top:0"><input type="radio" name="mode" value="draw" checked> Draw</label></div><div><label style="margin-top:0"><input type="radio" name="mode" value="type"> Type</label></div></div>
+<div id="drawBox"><div class="pad"><canvas id="pad" aria-label="Signature pad"></canvas><div class="ph" id="ph">Sign here</div></div><button type="button" id="clear" style="margin-top:8px">Clear and sign again</button> <button type="button" id="useSaved" style="margin-top:8px" hidden>Use my saved signature</button>
+<div class="cert"><input type="checkbox" id="remember"><label for="remember">Save this signature on this device only, so next time it is one tap (shared with the W-9 page).</label></div></div>
+<div id="typeBox" hidden><input type="text" id="typed" placeholder="Type your full name" value="Stephen Henry"></div>
+<label for="date">Date</label><input type="text" id="date">
+</div>
+
+<div id="status" aria-live="polite"></div>
+<button type="button" class="go" id="make">Build the donor package</button>
+<div class="out" id="out" hidden>
+ <button type="button" class="go" id="dlPage">Download the donor page (.html)</button>
+ <button type="button" id="dlLetter">Letter (.pdf)</button>
+ <button type="button" id="dlW9">W-9 (.pdf)</button>
+ <button type="button" id="dl8283" hidden>Form 8283 (.pdf)</button>
+ <button type="button" id="copyMail">Copy the email text</button>
+</div>
+<iframe id="prev" title="Donor page preview" hidden></iframe>
+<p class="note" style="margin-top:18px">To publish instead of emailing: save the page as <code>donors/&lt;name&gt;/index.html</code> in the site and push. Either way it is one file with everything inside.</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="../w9/w9-fill.js"></script>
+<script src="../form-8283/f8283-fill.js"></script>
+<script src="donation-letter.js"></script>
+<script src="donor-page.js"></script>
+<script>
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ var ORG={name:"Ras Tafari Inc.",ein:"42-3036705",addr:"1401 E. 71st St., Chicago, IL 60619",status:"Illinois not-for-profit corporation; tax-exempt under section 501(c)(3)",signer:"Stephen Henry",title:"President",phone:"(872) 255-9333",email:"stephen@selassiefest.com"};
+ var d0=new Date(),pad2=function(n){return("0"+n).slice(-2)};
+ $("date").value=pad2(d0.getMonth()+1)+"/"+pad2(d0.getDate())+"/"+d0.getFullYear();
+ var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+ var DEFAULT_NEXT="Right away | This page, the written acknowledgment, our W-9 and the photos, all in one place.\nWhen we open | We will send you photos of your gift in use.\nAt our events | Your gift is recognized on our website and from the stage.\nAfter the first term | An impact report: who learned, what they made, and what your gift made possible.";
+ $("next").value=DEFAULT_NEXT;
+
+ // ---- product rows
+ function addItem(v){v=v||{};var r=document.createElement("div");r.className="item";r.innerHTML='<div class="row r3"><div><label>Product</label><input type="text" class="n" value=""></div><div><label>Quantity</label><input type="text" class="q" value=""></div><div><label>Unit</label><input type="text" class="u" placeholder="pairs, units"></div><div><label>&nbsp;</label><button type="button" class="x">Remove</button></div></div><label>Why it matters (shown on the page, optional)</label><input type="text" class="ds">';
+  r.querySelector(".n").value=v.name||"";r.querySelector(".q").value=v.qty||"";r.querySelector(".u").value=v.unit||"";r.querySelector(".ds").value=v.desc||"";
+  r.querySelector(".x").onclick=function(){if($("items").children.length>1)r.remove()};$("items").appendChild(r)}
+ $("addItem").onclick=function(){addItem()};addItem();
+ function items(){return Array.prototype.map.call($("items").children,function(r){return{name:r.querySelector(".n").value.trim(),qty:r.querySelector(".q").value.trim(),unit:r.querySelector(".u").value.trim(),desc:r.querySelector(".ds").value.trim()}}).filter(function(i){return i.name&&i.qty})}
+
+ // ---- Shure example
+ $("shure").onclick=function(){
+  $("donor").value="Shure Incorporated";$("req").value="CQ-1076";$("contact").value="Cheryl Jennison Daproza";$("ctitle").value="Charitable Donations";$("a1").value="995 Chaddick Drive";$("a2").value="Wheeling, IL 60090";
+  $("items").innerHTML="";
+  addItem({name:"Shure SRH440A Professional Studio Headphones",qty:"12",unit:"pairs",desc:"One pair for every one of the 12 stations in the lab, so every child cues a track, listens for the moment and hears two records meet in real studio headphones."});
+  addItem({name:"Shure SM58-LC Cardioid Dynamic Vocal Microphones",qty:"2",unit:"microphones",desc:"The legendary SM58 will carry our students' voices at their showcases, often the first time they introduce a set into a live microphone."});
+  $("use").value="the 12 student stations and the showcases of our free Rainbow DJ Lab for children, opening January 12, 2027";
+  $("track").value="Delivered by UPS Ground from Shure Incorporated, Wheeling, IL. Carton 2 of 2 (14 lbs, headphones): 1Z 610 065 03 9575 9694. Carton 1 of 1 (4 lbs, microphones): 1Z 610 065 03 9567 0743. Numbers copied from the labels on the cartons.";
+  $("next").value="Right away | This page, the written acknowledgment, our W-9 and the photos, all in one place.\nJanuary 12, 2027 | The Rainbow DJ Lab opens, with Shure headphones on every one of the 12 stations from the first class. We will send you photos of them in use.\nAt our showcases | The SM58s carry our students' voices, and Shure is recognized on our website and from the stage.\nAfter the first term | An impact report: who learned, what they made, and what your gift made possible.";
+  status("Shure example filled in. Choose the photos, sign, and build.")};
+
+ // ---- photos
+ var photos=[];
+ function resize(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var m=1600,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.82))};im.onerror=rej;im.src=u})}
+ $("photos").onchange=async function(){photos=[];$("caps").innerHTML="";var fs=Array.prototype.slice.call(this.files);
+  for(var i=0;i<fs.length;i++){var uri=await resize(fs[i]);photos.push({dataUri:uri,fileName:"photo-"+(i+1)+".jpg",caption:""});
+   var r=document.createElement("div");r.className="cap";r.innerHTML='<img src="'+uri+'" alt=""><input type="text" placeholder="Caption (optional)">';(function(p,inp){inp.oninput=function(){p.caption=inp.value}})(photos[i],r.querySelector("input"));$("caps").appendChild(r)}};
+
+ // ---- signature pad (same as the W-9 page)
+ var cv=$("pad"),ctx,ink=false,drawing=false,last=null;
+ function size(){var w=cv.clientWidth,h=150,r=window.devicePixelRatio||1;if(cv.width===Math.round(w*r))return;cv.width=Math.round(w*r);cv.height=Math.round(h*r);ctx=cv.getContext("2d");ctx.scale(r,r);ctx.lineWidth=2.2;ctx.lineCap="round";ctx.strokeStyle="#0b0b2a"}
+ size();window.addEventListener("resize",size);
+ function pt(e){var b=cv.getBoundingClientRect();return{x:e.clientX-b.left,y:e.clientY-b.top}}
+ cv.addEventListener("pointerdown",function(e){drawing=true;last=pt(e);cv.setPointerCapture(e.pointerId);e.preventDefault()});
+ cv.addEventListener("pointermove",function(e){if(!drawing)return;var p=pt(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;ink=true;$("ph").style.display="none"});
+ ["pointerup","pointercancel"].forEach(function(n){cv.addEventListener(n,function(){drawing=false})});
+ $("clear").onclick=function(){ctx.clearRect(0,0,cv.width,cv.height);ink=false;$("ph").style.display="block"};
+ document.querySelectorAll("input[name=mode]").forEach(function(r){r.onchange=function(){var m=document.querySelector("input[name=mode]:checked").value;$("drawBox").hidden=m!=="draw";$("typeBox").hidden=m!=="type"}});
+ var KEY="rti_saved_signature_png";function getSaved(){try{return localStorage.getItem(KEY)}catch(e){return null}}if(getSaved())$("useSaved").hidden=false;
+ $("useSaved").onclick=function(){var sv=getSaved();if(!sv)return;var im=new Image();im.onload=function(){ctx.clearRect(0,0,cv.width,cv.height);var w=cv.clientWidth,h=150,sc=Math.min((w-20)/im.width,(h-20)/im.height);ctx.drawImage(im,10,(h-im.height*sc)/2,im.width*sc,im.height*sc);ink=true;$("ph").style.display="none";status("Saved signature loaded.")};im.src=sv};
+ function trimmedPng(){var w=cv.width,h=cv.height,id=ctx.getImageData(0,0,w,h).data,minX=w,minY=h,maxX=0,maxY=0;
+  for(var y=0;y<h;y++)for(var x=0;x<w;x++){if(id[(y*w+x)*4+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y}}
+  if(maxX<=minX)return null;var o=document.createElement("canvas");o.width=maxX-minX+1;o.height=maxY-minY+1;o.getContext("2d").drawImage(cv,minX,minY,o.width,o.height,0,0,o.width,o.height);
+  var b=atob(o.toDataURL("image/png").split(",")[1]),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+
+ function status(m,bad){var s=$("status");s.textContent=m;s.className=bad?"warn":""}
+ function fail(m,el,f){status(m,true);document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});if(!el)return;el.classList.add("invalid");el.scrollIntoView({behavior:"smooth",block:"center"});if(f&&f.focus)f.focus()}
+ function b64(u8){var s="",c=0x8000;for(var i=0;i<u8.length;i+=c)s+=String.fromCharCode.apply(null,u8.subarray(i,i+c));return btoa(s)}
+ function uri(u8){return"data:application/pdf;base64,"+b64(u8)}
+ var built={};
+ function save(name,u8,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([u8],{type:type||"application/pdf"}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
+
+ $("make").onclick=async function(){
+  document.querySelectorAll(".invalid").forEach(function(x){x.classList.remove("invalid")});
+  var need=[["donor","the donor"],["req","the request number"],["contact","the contact name"],["a1","the donor's street address"],["a2","the donor's city, state, ZIP"],["use","what it will be used for"]].filter(function(x){return!$(x[0]).value.trim()})[0];
+  if(need){fail("Fill in "+need[1]+".",$(need[0]),$(need[0]));return}
+  var its=items();if(!its.length){fail("Add at least one product with a quantity.",$("items"));return}
+  if($("f8283").checked&&!/^\d\d\/\d\d\/\d{4}$/.test($("recv").value.trim())){fail("Enter the date received as MM/DD/YYYY for Form 8283.",$("recv"),$("recv"));return}
+  if(!$("cert").checked){fail("Tick the confirmation box before signing.",$("cert").parentNode,$("cert"));return}
+  var mode=document.querySelector("input[name=mode]:checked").value,png=null,txt=null;
+  if(mode==="draw"){png=trimmedPng();if(!png){fail("Sign in the box first.",cv.parentNode);return}if($("remember").checked){try{localStorage.setItem(KEY,"data:image/png;base64,"+b64(png));$("useSaved").hidden=false}catch(e){}}}
+  else{txt=$("typed").value.trim();if(!txt){fail("Type your name to sign.",$("typed"));return}}
+  try{
+   status("Building the package…");
+   var dp=$("date").value.split("/"),longDate=MONTHS[+dp[0]-1]+" "+(+dp[1])+", "+dp[2];
+   var common={name:ORG.name,ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt};
+   var letter=await buildLetter(PDFLib,{date:longDate,donor:$("donor").value.trim(),contact:$("contact").value.trim(),contactTitle:$("ctitle").value.trim(),donorAddr:[$("a1").value.trim(),$("a2").value.trim()],requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),org:ORG,sigPng:png,sigText:txt});
+   var w9b=await (await fetch("../w9/form.pdf")).arrayBuffer();
+   var w9=await fillW9(PDFLib,w9b,{name:ORG.name,cls:"other",otherText:"501(c)(3) nonprofit corporation",exempt:"1",addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",ein:ORG.ein,date:$("date").value,sigPng:png,sigText:txt});
+   var req=$("req").value.trim().replace(/[^\w-]+/g,"-"),dn=$("donor").value.trim().replace(/[^\w]+/g,"-");
+   var docs=[{title:"Written acknowledgment of donation",desc:"On Ras Tafari Inc. letterhead: lists what we received"+(its.length?" ("+its.map(function(i){return i.qty+" "+i.name}).join("; ")+")":"")+" and states that no goods or services were received in exchange.",fileName:"Ras-Tafari-Inc-Donation-Acknowledgment-"+req+".pdf",dataUri:uri(letter)},
+     {title:"IRS Form W-9",desc:"Our current Request for Taxpayer Identification Number and Certification: Ras Tafari Inc., a 501(c)(3) nonprofit corporation, EIN "+ORG.ein+".",fileName:"Ras-Tafari-Inc-Form-W-9.pdf",dataUri:uri(w9)}];
+   built={letter:letter,w9:w9,req:req,dn:dn};
+   $("dl8283").hidden=true;
+   if($("f8283").checked){var fb=await (await fetch("../form-8283/form.pdf")).arrayBuffer();
+    var f8=await fillF8283(PDFLib,fb,{dateReceived:$("recv").value.trim(),unrelatedUse:"no",name:ORG.name,ein:ORG.ein,addr:"1401 E. 71st St.",cityStateZip:"Chicago, IL 60619",title:"President",date:$("date").value,sigPng:png,sigText:txt});
+    docs.push({title:"Form 8283, donee acknowledgment",desc:"Part V, completed and signed in case your tax team needs it. It acknowledges receipt only and states no value; any value is the donor's to determine.",fileName:"Ras-Tafari-Inc-Form-8283-Part-V.pdf",dataUri:uri(f8)});built.f8283=f8;$("dl8283").hidden=false}
+   var nx=$("next").value.split("\n").map(function(l){var p=l.split("|");return{h:(p[0]||"").trim(),p:p.slice(1).join("|").trim()}}).filter(function(s){return s.h&&s.p});
+   var page=buildDonorPage({donor:$("donor").value.trim(),contact:$("contact").value.trim(),requestNo:$("req").value.trim(),items:its,useLine:$("use").value.trim().replace(/\.$/,""),next:nx,tracking:$("track").value,docs:docs,photos:photos.length?photos:[],org:ORG});
+   built.page=page;
+   if(built.url)URL.revokeObjectURL(built.url);built.url=URL.createObjectURL(new Blob([page],{type:"text/html"}));
+   $("prev").src=built.url;$("prev").hidden=false;$("out").hidden=false;
+   status("Done. Check the preview, then download the donor page.");
+  }catch(e){status("Something went wrong: "+(e&&e.message||e),true)}
+ };
+ $("dlPage").onclick=function(){save("Thank-You-"+built.dn+"-"+built.req+".html",new TextEncoder().encode(built.page),"text/html")};
+ $("dlLetter").onclick=function(){save("Ras Tafari Inc - Donation Acknowledgment "+built.req+".pdf",built.letter)};
+ $("dlW9").onclick=function(){save("Ras Tafari Inc - Form W-9.pdf",built.w9)};
+ $("dl8283").onclick=function(){save("Ras Tafari Inc - Form 8283 Part V.pdf",built.f8283)};
+ $("copyMail").onclick=function(){var f=$("contact").value.trim().split(/\s+/)[0],t="Hi "+f+",\n\nEverything arrived, and we are so grateful. I put everything you asked for in one place: the signed acknowledgment letter, our W-9, and photos. Open the attached page in any browser (or save it to your computer); every document and photo has a download button.\n\nThank you again, from all of us.\n\nWith gratitude,\nStephen Henry\nPresident, Ras Tafari Inc.\n(872) 255-9333 · stephen@selassiefest.com";
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){status("Email text copied. Attach the donor page and the letter PDF.")})};
+})();
+</script>
+</main></body></html>
