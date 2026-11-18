@@ -52,10 +52,13 @@ Deno.serve(async (req) => {
   const threadHeaders: Record<string, string> = {};
   if (mid(b.in_reply_to)) threadHeaders["In-Reply-To"] = mid(b.in_reply_to);
   if (mid(b.references)) threadHeaders["References"] = mid(b.references);
+  // Optional scheduled send: { scheduled_at: ISO 8601 string }, Resend delivers at that time (up to 30 days ahead).
+  const sched = typeof b.scheduled_at === "string" && !isNaN(Date.parse(b.scheduled_at)) ? new Date(b.scheduled_at).toISOString() : undefined;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
+      scheduled_at: sched,
       from: FROM_EMAIL, to, cc: cc.length ? cc : undefined, reply_to: b.reply_to || "stephen@selassiefest.com",
       subject: String(b.subject).slice(0, 200), text: b.text, html: b.html,
       attachments: Array.isArray(b.attachments) ? b.attachments.slice(0, 3) : undefined,
