@@ -1,5 +1,11 @@
+-- RETIRED 2026-11-18. This one-time script was already applied and must NEVER be re-run.
+-- It was not safe to repeat: it overwrote or re-labelled every Jeni's Splendid Ice Creams row (the declined request a8b28c45-6e95-4bde-977a-19731a044f5b and the separate Ice Cream Social row), destroying decision evidence.
+-- The guard below aborts the whole file before any statement runs. Jeni's rows are now managed only by supabase/tracker-update-2026-11-18-jenis-submitted-and-social-row.sql.
+-- Kept for the historical record of what was applied on the day.
+do $$ begin raise exception 'RETIRED script (already applied; re-running would overwrite Jeni''s rows and other tracker data). Do not re-run.'; end $$;
+
 -- Full Spectrum: ice cream master list reconciliation (source: "Rainbow Wednesdays Ice Cream Partner Gap Analysis & Master List.docx", Nov 1 2026, 4 merged research reports + spot checks).
--- Corrects the 8 rows added earlier today and adds the rest of the 23 prospects. Nobody has been contacted. Idempotent.
+-- Corrects the 8 rows added earlier today and adds the rest of the 23 prospects. Nobody has been contacted. NOT idempotent (retired, see guard above).
 -- Apply: supabase db query --linked -f supabase/fs-grants-icecream-master-2026-11-01.sql
 begin;
 select count(*) as before_total from fs_grant_deadlines;
