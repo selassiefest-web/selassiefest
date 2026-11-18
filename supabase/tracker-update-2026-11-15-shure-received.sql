@@ -1,4 +1,9 @@
--- Nov 15, 2026: Shure CQ-1076 shipment received; Cheryl's Nov 10 email asks for confirmation letter + W-9 + photos. Safe to re-run.
+-- RETIRED 2026-11-18. This one-time script was already applied and must NEVER be re-run.
+-- Its first UPDATE is unguarded: re-running it would reset ball_with to 'us', revert next_step and commitment (dropping the Nov 6 receipt date and the acknowledgment), set last_contact_at to now() and duplicate the Nov 10 note.
+-- The guard below aborts the whole file before any statement runs. Shure is now managed by the tracker-update-2026-11-18-shure-*.sql scripts.
+do $$ begin raise exception 'RETIRED script (already applied; re-running would overwrite the Shure partner row). Do not re-run.'; end $$;
+
+-- Nov 15, 2026: Shure CQ-1076 shipment received; Cheryl's Nov 10 email asks for confirmation letter + W-9 + photos. NOT safe to re-run (retired, see guard above).
 begin;
 
 update fs_partners set
