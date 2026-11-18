@@ -26,3 +26,6 @@ Read-only on Supabase and the repo; do not edit files, tracker rows or CURRENT-S
 
 ## Standing fact: Rainbow Wednesdays attendance
 The attendance goal is **300 people a night (about 4,200 visits over 14 nights)** (Stephen, Nov 18, 2026). Use 300 in every funder form, packet, deck and tracker note. Never 150. If any packet or page says 150, flag it. 273 is the real SelassieFest 2026 total, a different number.
+
+## Study the funder first (Stephen, Nov 18, 2026: mandatory)
+Before drafting any ask: read the funder's mission, program and guidelines pages and quote what they fund, what they exclude and their wording. The ask must match that to the letter AND the program budget line for line (same rates, counts, 300 a night). Include only budget lines the funder funds. Never ask for more than the program budget in total across funders, and never ask two funders for the same line without a written withdraw/reduce rule. If a line does not fit, leave it out and say why. No deviation.
