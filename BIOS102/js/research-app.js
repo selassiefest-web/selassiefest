@@ -238,6 +238,7 @@
       <h4>What they study</h4><p>${esc(f.plain)}</p>
       <h4>What a student might do</h4><p>${esc(f.day)}</p>
       ${f.projects.length ? `<h4>Recent student projects they supervised</h4><ul>${f.projects.map((p) => `<li><span class="rm-muted">${esc(p[0])}:</span> ${esc(p[1])}</li>`).join('')}</ul>` : ''}
+      ${sparkHtml(f, false)}
       <h4>Mentoring record</h4><p>${esc(f.mentorship.note)}</p>
       <h4>Read this before you write</h4><p>${esc(f.readFirst)}</p>
       <h4>Good questions for them</h4><ul>${f.ask.map((q) => `<li>${esc(q)}</li>`).join('')}</ul>
@@ -275,6 +276,36 @@
     if (status === 'declined' || status === 'noreply') return `<div class="track"><span class="on" style="background:var(--ink-2)">${esc(E.STATUS[status])}</span></div>`;
     return `<div class="track">${TRACK.map((t, i) => `<span class="${i < idx ? 'past' : i === idx ? 'on' : ''}">${t[1]}</span>`).join('')}</div>`;
   }
+  // ---- Spark cards: reading, fun facts and starters to build the email sentence ----
+  const STARTERS = [
+    'I was surprised to learn that [a fact from above], and it made me wonder [your question].',
+    'What caught my attention was [something specific], because [why it matters to you].',
+    'I have been curious about [topic] since [a moment in class or life], so your work on [their topic] stood out.',
+  ];
+  function sparkHtml(f, withUse) {
+    const sp = f.spark; if (!sp) return '';
+    const L = sp.latest;
+    return `<div class="rm-card tint" style="margin:10px 0"><h4 style="margin:0 0 6px;color:var(--green);text-transform:uppercase;letter-spacing:.07em;font-size:14px">Get to know ${esc(f.honorific + ' ' + f.last)}\u2019s lab in 3 minutes</h4>
+      <p style="margin:0 0 4px"><strong>Newest paper we could read:</strong> <a href="${esc(L.link)}" target="_blank" rel="noopener">${esc(L.title)}</a> <span class="rm-muted">(${esc(L.venue)}, ${L.year})</span></p>
+      <p style="margin:0 0 4px"><strong>In plain English:</strong> ${esc(L.plain)}</p>
+      ${L.said ? `<p style="margin:0 0 8px" class="rm-muted"><strong>From the abstract:</strong> &ldquo;${esc(L.said)}&rdquo;</p>` : ''}
+      <p style="margin:8px 0 4px"><strong>Where the lab is today:</strong> ${esc(sp.today)}</p>
+      <p style="margin:8px 0 2px"><strong>Did you know...</strong></p>
+      <ul style="margin:0 0 6px 18px;padding:0">${sp.facts.map((x, i) => `<li style="margin-bottom:6px">${esc(x.t)}${withUse ? ` <button type="button" class="btn-t" data-act="useFact" data-id="${f.id}" data-i="${i}">Use this in my email</button>` : ''}</li>`).join('')}</ul>
+      <p style="margin:8px 0 2px"><strong>Things to ponder</strong></p>
+      <ul style="margin:0 0 6px 18px;padding:0">${sp.ponder.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      ${withUse ? `<p style="margin:8px 0 2px"><strong>Stuck on how to start your sentence?</strong></p><div>${STARTERS.map((x, i) => `<button type="button" class="chip" data-act="starter" data-id="${f.id}" data-i="${i}">${esc(x)}</button>`).join('')}</div>` : ''}
+      <p class="hint" style="margin-top:8px">Summaries come from the paper abstracts and the professor&rsquo;s own pages (checked ${esc(D.CHECKED)}). Their newest work may not be listed, so asking &ldquo;what are you working on now?&rdquo; is always a good question. Read the paper yourself and put it in your own words.</p></div>`;
+  }
+  function insertInto(id, text) {
+    const ta = document.getElementById('cl-' + id); if (!ta) return;
+    ta.value = ta.value.trim() ? ta.value.replace(/\s+$/, '') + ' ' + text : text;
+    ta.dispatchEvent(new Event('input', { bubbles: true }));
+    ta.focus();
+  }
+
+  // A real sentence, with no [bracketed placeholder] left in it.
+  function sentenceOk(t) { t = String(t || '').trim(); return t.length >= 25 && !/\[[^\]]*\]/.test(t); }
   function sentenceHint(f) {
     const p = f.projects[0];
     return p ? `Mention one specific thing. For example: "I saw that a student studied ${p[1].replace(/\s*\(MS\)$/, '')}, and I would love to understand how that kind of work is done." Use your own words.`
@@ -310,16 +341,17 @@
     const canFollow = o.status === 'sent' && d !== null && d >= 7;
     let body = '';
     if (panel === 'email') {
-      const ok = (o.customLine || '').trim().length >= 25;
+      const ok = sentenceOk(o.customLine);
       const draft = draftFor(f.id);
       body = `<div class="detail"><h4>Your interview request</h4>
+        ${sparkHtml(f, true)}
         <label class="f" for="cl-${f.id}">Your own sentence (required)</label>
         <textarea id="cl-${f.id}" data-bind="outreach.${f.id}.customLine" data-live="${f.id}">${esc(o.customLine || '')}</textarea><p class="hint">${esc(sentenceHint(f))}</p>
         <label class="f" for="tm-${f.id}">When you are free</label>
         <input type="text" id="tm-${f.id}" data-bind="outreach.${f.id}.times" data-live="${f.id}" value="${esc(o.times || '')}" placeholder="for example: Tuesdays after 2 pm or Thursdays before noon" />
         <p class="hint">Read their profile first: <a href="${f.profile}" target="_blank" rel="noopener">${esc(f.honorific + ' ' + f.last)}</a>. ${esc(f.readFirst)}</p>
         <label class="f">Preview</label><div class="preview" id="prev-${f.id}"><b>To:</b> ${esc(draft.to)}\n<b>Subject:</b> ${esc(draft.subject)}\n\n${esc(draft.body)}</div>
-        <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence (at least a full sentence) to unlock the buttons.</p>
+        <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence, with no [brackets] left in it, to unlock the buttons.</p>
         <div class="rm-row"><button class="btn-p" data-act="mailDraft" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">Open in my email app</button>
         <button class="btn-s" data-act="copyDraft" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">Copy the email</button>
         <button class="btn-s" data-act="markSent" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">I sent it</button></div>
@@ -563,6 +595,8 @@
       case 'markAsk': S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
       case 'dictate': toggleDictation(b); break;
+      case 'useFact': insertInto(id, F[id].spark.facts[Number(b.dataset.i)].use); break;
+      case 'starter': insertInto(id, STARTERS[Number(b.dataset.i)]); break;
       case 'emailPlan': emailPlan(b); break;
       default: break;
     }
@@ -583,7 +617,7 @@
 
   function updateLive(id) {
     const o = O(id);
-    const ok = (o.customLine || '').trim().length >= 25;
+    const ok = sentenceOk(o.customLine);
     const draft = draftFor(id);
     const p = $('#prev-' + id);
     if (p) p.innerHTML = '<b>To:</b> ' + esc(draft.to) + '\n<b>Subject:</b> ' + esc(draft.subject) + '\n\n' + esc(draft.body);

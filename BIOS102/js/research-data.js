@@ -403,5 +403,145 @@ window.RM_DATA = (() => {
     page: 'https://www.uwp.edu/departments/biological-sciences/',
   };
 
+  // ---- "Spark" cards: what to read and ponder before writing the email -------
+  // Every fact below comes from the professor's own profile, a paper abstract
+  // (PubMed / Crossref, checked Nov 19, 2026) or the Thomson Fellowship archive.
+  // latest = the newest paper on their profile that we could read an abstract for;
+  // `said` is the abstract's own wording, trimmed; `plain` is our plain-English version.
+  // Posters: the department symposium posters are not posted publicly, so "where the
+  // lab is today" uses the most recent supervised student projects instead.
+  const SPARK = {
+    orlofske: {
+      latest: { title: 'Extensive regional variation in the phenology of insects and their response to temperature across North America', venue: 'Ecology', year: 2023, link: 'https://pubmed.ncbi.nlm.nih.gov/36944538/',
+        said: 'We found strong regional differences in the phenology of insects and their response to temperature, even within the same taxonomic group, habitat type, and time of season.',
+        plain: 'Scientists set insect traps at 96 grassland sites across North America over three summers (2019 to 2021, more than 1,000 samples) to test whether insects everywhere react to temperature the same way. They do not. The same kind of fly can behave differently depending on which part of the continent it lives in, which matters for predicting how climate change will hit insects.' },
+      today: 'The newest student projects in her lab (2025 to 2026) are about habitat water chemistry for the Hine’s emerald dragonfly (Somatochlora hineana) in southeastern Wisconsin, and about how the sinking and floating of a body in water changes the insect evidence investigators rely on.',
+      facts: [
+        { t: 'Did you know a Parkside student studied "Isopods in space"?', use: 'I saw that a student in your lab worked on a project called "Isopods in space," and I would love to know how that started.' },
+        { t: 'Did you know her lab is looking at what makes a stream good enough for a rare dragonfly to live in?', use: 'I read that students in your lab are studying the water conditions that the Hine’s emerald dragonfly needs.' },
+        { t: 'Did you know insects can act as a river’s health report card?', use: 'I learned that you use the insects in a stream to judge how healthy the stream is, and I want to understand how that works.' },
+        { t: 'Did you know one of her latest papers used traps at 96 sites across a whole continent?', use: 'I read your paper on insects at 96 sites across North America and was struck that the same insect group responded to temperature differently in different regions.' },
+      ],
+      ponder: ['If insects in different regions respond differently to warming, why might one region’s results not predict another’s?', 'What would you measure to decide if a stream is healthy, if you could only look at bugs?', 'Why might a rare dragonfly be so picky about water chemistry?'],
+    },
+    richards: {
+      latest: { title: 'Apex predator nematodes and meso-predator bacteria consume their basal insect prey through discrete stages of chemical transformations', venue: 'mSystems', year: 2022, link: 'https://doi.org/10.1128/msystems.00312-22',
+        said: 'Trophic analysis established bacteria as meso-predators and primary insect consumers. Nematodes hold a trophic position of 4.6, indicative of an apex predator, consuming bacteria and likely other nematodes.',
+        plain: 'A tiny worm (a nematode) and the bacterium that lives inside it team up to infect and kill an insect, then multiply inside it. The researchers traced who eats what and found the bacteria act like mid-level predators of the insect, while the worm sits at the top of this microscopic food chain.' },
+      today: 'The most recent student projects (2025 to 2026) look at how E. coli survives on alternative food sources when it is stuck in glucose-phosphate stress, a kind of starvation. His NIH-supported research asks what stresses helpful and harmful microbes face in the human gut.',
+      facts: [
+        { t: 'Did you know bacteria can be starved by the very sugar they eat?', use: 'I learned that E. coli can get into trouble from a sugar problem called glucose-phosphate stress, and I want to understand why that happens.' },
+        { t: 'Did you know he co-wrote a paper where a worm scores as an "apex predator" at a food-chain level of 4.6?', use: 'I read your paper about a nematode acting as an apex predator in a microscopic food chain, and it changed how I think about food chains.' },
+        { t: 'Did you know almost forty students he mentored in research went on to medical school, graduate school or a science job?', use: 'I read on your profile that nearly all of the students you have mentored in research went on to medical school, graduate school or a job in science, and I would like to learn what that experience looks like.' },
+        { t: 'Did you know he gave public talks called "Bacterial Hunger Games" and "The Scary Side of Microbes"?', use: 'I watched part of your talk "Bacterial Hunger Games" and it made me curious about how microbes handle starvation.' },
+      ],
+      ponder: ['What might a gut bacterium do when its favorite food suddenly runs out?', 'Why would knowing how bacteria cope with stress help us understand infections?', 'If you could grow bacteria on different foods, what would you test first?'],
+    },
+    preuss: {
+      latest: { title: 'Fibersol-2 Induces Apoptosis of Apc-deficient Colorectal Cancer (SW480) Cells and Decreases Polyp Formation in Apc-MIN Mice', venue: 'Cancer Biology & Therapy', year: 2016, link: 'https://pubmed.ncbi.nlm.nih.gov/27143108/',
+        said: 'Fibersol-2, a digest-resistant maltodextrin, not only inhibits proliferation of colorectal SW480 cancer cell lines by increasing reactive oxygen species (ROS), but decreases the numbers of the adenoma count in [mice prone to intestinal tumors] by 84 d of age.',
+        plain: 'A dietary fiber ingredient slowed the growth of colon cancer cells in a dish and reduced the number of early tumors (polyps) in mice that are prone to them. This is the newest paper listed on his profile, so his current work (below) is the better thing to ask about.' },
+      today: 'His students’ newest projects (2025 to 2026) include breeding mice with a gene removed only in the colon to study how the body clock and gut microbes talk to each other, and a longitudinal study of how different diets change the gut microbiome.',
+      facts: [
+        { t: 'Did you know your body has an internal clock that also seems to affect your gut?', use: 'I learned that the body’s clock may be tied to gut health, and I want to understand how a clock gene could affect the gut.' },
+        { t: 'Did you know a Parkside student studied possible links between a disrupted body clock and early-onset Parkinson’s?', use: 'I saw that a student in your lab looked for links between circadian rhythm disruption and early-onset Parkinson’s, which I had never thought of as connected.' },
+        { t: 'Did you know he directs the campus Animal Care Facility and has hosted workshops on animal research?', use: 'I read that you direct the Animal Care Facility and that many students have done independent research with you, and I would like to understand what that involves.' },
+        { t: 'Did you know a fiber ingredient reduced early tumors in mice in one of his papers?', use: 'I read your paper showing a dietary fiber reduced polyps in mice, and I wondered how fiber might protect the gut.' },
+      ],
+      ponder: ['Why might the time of day you eat matter for your health?', 'How would you test whether gut microbes cause a change, or just go along with it?', 'What would it take for you to be comfortable working with lab mice?'],
+    },
+    higgs: {
+      latest: { title: 'Characterization of a Chlamydomonas reinhardtii mutant strain with tolerance to low nitrogen and increased growth and biomass under nitrogen stress', venue: 'Algal Research', year: 2020, link: 'https://doi.org/10.1016/j.algal.2020.102000',
+        said: '',
+        plain: 'The title says it: his group found a mutant strain of the green alga Chlamydomonas that keeps growing, and builds more biomass, when nitrogen is scarce. That is useful for understanding how plants and algae cope with low nutrients and for algae-based fuels. (We could not retrieve this paper’s abstract, so read it yourself and use your own words.)' },
+      today: 'The newest student project listed (2024 to 2025) uses CRISPR-Cas9 to make mutations in Chlamydomonas and tests how they change lipid (oil) production. Earlier projects analyzed gene expression in the low-nitrogen mutant.',
+      facts: [
+        { t: 'Did you know he found an alga that grows better than normal when it is short on nitrogen?', use: 'I read that you found an alga mutant that tolerates low nitrogen and even grows more, and I would like to understand how a mutation could do that.' },
+        { t: 'Did you know a student in his lab used CRISPR-Cas9 gene editing on algae to study oil production?', use: 'I saw that a student used CRISPR-Cas9 in algae to study lipid production, and I would love to learn how gene editing works in a lab like yours.' },
+        { t: 'Did you know one of his papers on algae oil for biofuel was presented at the Wisconsin Space Conference?', use: 'I noticed your biofuel algae work was presented at the Wisconsin Space Conference, and I was curious how algae connect to space research.' },
+        { t: 'Did you know he is also the person to ask about the Thomson Research Fellowship?', use: 'I am also interested in learning about the Thomson Research Fellowship, which your department lists you as the contact for.' },
+      ],
+      ponder: ['Why might an alga that thrives on little nitrogen be useful to farmers or fuel makers?', 'If you edited one gene in an alga, how would you know what changed?', 'How does a cell’s nucleus tell its chloroplast what to do?'],
+    },
+    lee: {
+      latest: { title: 'An Autophagy-Independent Role for ATG41 in Sulfur Metabolism During Zinc Deficiency', venue: 'Genetics', year: 2018, link: 'https://pubmed.ncbi.nlm.nih.gov/29321173/',
+        said: 'Atg41 is required for growth in zinc-deficient conditions, but not when zinc is abundant or when other metals are limiting.',
+        plain: 'Baker’s yeast needs a particular gene (ATG41) to grow when zinc is scarce. At first the gene looked like it was needed for the cell’s self-recycling process (autophagy), but the experiments suggested it has another job too, so the team is working out what that second job is.' },
+      today: 'Her page lists her newest paper as 2018, and her most recent Thomson Fellowship students are from 2019 to 2020 (promoter swaps for the MET31 and MET32 genes in yeast). We could not find what her lab is doing now, so that is a great first question for her.',
+      facts: [
+        { t: 'Did you know your skin cells and liver cells have the same DNA?', use: 'I liked your example on your profile that skin cells and liver cells have the same DNA and differ because of gene expression.' },
+        { t: 'Did you know a gene can have a second, hidden job a cell only needs when a nutrient is missing?', use: 'I read your paper about ATG41 and was surprised that a gene could matter for something other than the job it was named for.' },
+        { t: 'Did you know she received an award from Cold Spring Harbor RNA-Seq for the Next Generation program?', use: 'I read that you received the RNA-Seq for the Next Generation award, and I would like to know how undergraduates use RNA-Seq in your lab.' },
+        { t: 'Did you know she studies how yeast handles sulfur, a building block of life?', use: 'I learned that you study sulfur metabolism genes in yeast, and I want to understand why sulfur is so important to a cell.' },
+      ],
+      ponder: ['How does a cell “know” which genes to switch on when it runs out of something?', 'Why would a lab use yeast to learn about human cells?', 'What would count as proof that a gene has a second job?'],
+    },
+    barber: {
+      latest: { title: 'Characterization of a Rhodobacter sphaeroides primary fatty acid kinase', venue: 'Archives of Microbiology', year: 2021, link: 'https://pubmed.ncbi.nlm.nih.gov/33040182/',
+        said: 'Biochemical characterization of a predicted acetate kinase from Rhodobacter sphaeroides reveals a novel enzyme with broad substrate specificity for primary fatty acids of varying lengths (C2 to C8).',
+        plain: 'An enzyme in a purple bacterium that scientists predicted would only handle acetate (a two-carbon fatty acid) turned out to work on fatty acids of many lengths, from 2 to 8 carbons. That is a surprise, because enzymes like it were thought to be pickier.' },
+      today: 'His newest listed student work (Fall 2024) characterizes a short-chain fatty acid kinase from Roseburia intestinalis, a gut bacterium. His lab studies these enzymes for what they might do in gut microbes and for probiotic therapies.',
+      facts: [
+        { t: 'Did you know he thanks DeepMind’s AlphaFold on his faculty page for changing how his lab studies proteins?', use: 'I read that you use predicted protein structures, such as AlphaFold, in your lab, and I would like to learn how they are used with experiments.' },
+        { t: 'Did you know he has written Python tools and a "game" to teach bioinformatics?', use: 'I saw that you wrote a Python-based way to teach genetic-disease alleles and a bioinformatics game, and I would like to learn programming in a biology setting.' },
+        { t: 'Did you know one enzyme he studied handles fatty acids of many sizes, not just one?', use: 'I read your paper on the Rhodobacter fatty acid kinase and was surprised an enzyme could work on fatty acids of such different lengths.' },
+        { t: 'Did you know his lab studies enzymes from gut bacteria that might one day help in probiotic treatments?', use: 'I learned that the enzymes you study in gut bacteria could matter for probiotic therapies, and I want to understand how.' },
+      ],
+      ponder: ['How could you tell whether two enzymes are related just by comparing their sequences?', 'What would you test to learn what a gut bacterium’s enzyme does?', 'Do you like the bench, the computer, or the mix? He uses both.'],
+    },
+    noto: {
+      latest: { title: 'Multiproxy synthesis at the Arlington Archosaur Site: New insights into Cretaceous paralic paleoenvironments and regional stratigraphy, Woodbine Group, Texas, USA', venue: 'Sedimentologika', year: 2025, link: 'https://doi.org/10.57035/journals/sdk.2025.e31.1435',
+        said: 'Here we describe a new, high-resolution palynological and sedimentologic dataset from the Arlington Archosaur Site (AAS) of the Lewisville Formation (Woodbine Group; Middle Cenomanian).',
+        plain: 'The Arlington Archosaur Site in Texas is a rich fossil bed from the middle of the Cretaceous. This paper combines new pollen-and-spore data with rock layers and fossil evidence to rebuild what that ancient coastal environment was like and to pin down when it existed.' },
+      today: 'His 2023 fellowship student built 3D models of the forelimb of Protohadros, a duck-billed dinosaur, to test how its arm could move. He is currently using geometric morphometrics on fossil claw shape and studying the soft-tissue anatomy of bird claws to learn about the evolution of flight.',
+      facts: [
+        { t: 'Did you know he helped prepare fossils of the giant crocodile relative Sarcosuchus as an undergraduate at the University of Chicago?', use: 'I read that you prepared fossils for Paul Sereno as an undergraduate, including Sarcosuchus, and I would love to hear how you got started.' },
+        { t: 'Did you know the Arlington Archosaur Site sits between Dallas and Fort Worth and has produced fish, turtles, dinosaurs and a new species of giant crocodilian?', use: 'I learned that the Arlington Archosaur Site in Texas has produced everything from fish to dinosaurs and a new giant crocodilian, and I would like to know how a student can get involved.' },
+        { t: 'Did you know a Parkside student made 3D models of a dinosaur forelimb to test how far it could move?', use: 'I saw that a student built 3D models of Protohadros forelimb mobility, and I am curious how you test the range of motion of a fossil.' },
+        { t: 'Did you know studying the claws of modern birds helps explain how dinosaurs evolved toward flight?', use: 'I learned that you study bird claws to understand dinosaur claws and the evolution of flight, which I had never thought to connect.' },
+      ],
+      ponder: ['How can pollen and spores tell you what a place was like 95 million years ago?', 'Would you rather dig in the field, prepare fossils, or build 3D models at a computer?', 'If you could only use one bone to reconstruct an animal, what would you hope for?'],
+    },
+    taft: {
+      latest: { title: 'Fin ray patterns at the fin-to-limb transition', venue: 'Proceedings of the National Academy of Sciences', year: 2020, link: 'https://pubmed.ncbi.nlm.nih.gov/31888998/',
+        said: 'In Tiktaalik, dorsal rays fully cover the third and fourth mesomeres, while ventral rays are restricted distal to these elements, suggesting the presence of ventralized musculature at the fin tip analogous to a fleshy "palm."',
+        plain: 'Using CT scans of fossil fish fins (including Tiktaalik, a famous fish-to-land transition animal), the team found that the fin’s fine rays changed in a pattern as the fin turned into a limb. In Tiktaalik the pattern hints at a fleshy, palm-like pad at the tip of the fin.' },
+      today: 'Her page lists her newest paper as 2020 and her fellowship students from 2015 to 2019 (fin ray stiffness in Coho salmon, sturgeon fins). Her page also mentions new interest in the evolution of fish coloration. Ask her what is active now.',
+      facts: [
+        { t: 'Did you know the fins of Tiktaalik may have had something like a fleshy "palm"?', use: 'I read your PNAS paper about Tiktaalik’s fin rays suggesting a fleshy palm at the fin tip, and I would love to understand how CT scans reveal that.' },
+        { t: 'Did you know a Parkside student asked "Climbing sucks: do fin rays help?"', use: 'I saw a past student project called "Climbing sucks: do fin rays help?" and I am curious how fish fins get used for climbing.' },
+        { t: 'Did you know she did her postdoc with Neil Shubin, who helped discover Tiktaalik?', use: 'I saw that you did a postdoc with Neil Shubin, and I would like to hear how that shaped your work on fins and limbs.' },
+        { t: 'Did you know she is newly interested in why fish are colored the way they are?', use: 'I read that you are starting to study the evolution of fish coloration, and I wondered what you hope to learn.' },
+      ],
+      ponder: ['How would you measure how stiff or flexible a fin is?', 'What could a flatfish’s fins tell you that a trout’s cannot?', 'What is the difference between "how a fin works" and "how a fin evolved"?'],
+    },
+    rogers: {
+      latest: { title: 'Sixty years of community change in the prairie-savanna-forest mosaic of Wisconsin', venue: 'Ecology and Evolution', year: 2018, link: 'https://pubmed.ncbi.nlm.nih.gov/30250715/',
+        said: 'Savanna community structure and composition changed substantially over the past 60 years. Tree canopy density nearly doubled and many prairie and savanna specialist species were replaced by forest and non-native species.',
+        plain: 'The team went back to savanna plots that scientists first surveyed in the 1950s and surveyed them again. In 60 years the tree canopy nearly doubled, and many plants that specialize in open prairie and savanna were replaced by forest and non-native plants.' },
+      today: 'His page and papers describe ongoing resurveys of Wisconsin plant communities and work with regional land managers on restoration. His only Thomson Fellowship project is from 2015, so ask what undergraduates can join now.',
+      facts: [
+        { t: 'Did you know he re-surveyed plants at sites first studied in the 1950s?', use: 'I read that you re-surveyed Wisconsin plant communities first measured in the 1950s, and I would love to know how you find and relocate the old plots.' },
+        { t: 'Did you know in remnant prairies the rate of plants arriving and disappearing sped up by over 100% between survey periods?', use: 'I read your Science Advances paper showing the pace of change in remnant prairies is accelerating, and I wondered what is driving it.' },
+        { t: 'Did you know tree canopy in the savannas he studied nearly doubled in 60 years?', use: 'I learned from your savanna paper that tree canopy nearly doubled in 60 years, and I am curious what that means for the plants that live there.' },
+        { t: 'Did you know he spent years doing botany and forestry fieldwork around the country before graduate school?', use: 'I read that you did botany and forestry fieldwork around the U.S. before graduate school, and I would like to hear how you got into plant ecology.' },
+      ],
+      ponder: ['What could old survey notebooks tell you that a new survey cannot?', 'Is a prairie that is slowly turning into forest a problem? For whom?', 'Could you identify plants well enough to survey a plot, or would you want to learn?'],
+    },
+    mayer: {
+      latest: { title: 'Morphometrics, systematics and distribution of the Puerto Rican woodpecker (Melanerpes portoricensis)', venue: 'Thomson Fellowship project (MS), Spring–Summer 2024', year: 2024, link: 'https://www.uwp.edu/departments/biological-sciences/thomson-research-fellowship/',
+        said: '',
+        plain: 'This is a student project he supervised, listed on the department’s fellowship page. It measures and compares Puerto Rican woodpeckers to work out how they are related and where they live. His own faculty page does not list publications, so read his CV (linked on his profile) and ask him what he is working on.' },
+      today: 'Two supervised projects are listed: the quantitative genetics of body shape in sea snakes (2021 to 2022) and the woodpecker project (2024). He teaches evolutionary biology and vertebrate zoology.',
+      facts: [
+        { t: 'Did you know a Parkside student studied the genetics of the body shapes of sea snakes?', use: 'I saw that a student in your group studied the quantitative genetics of sea snake body shape, and I would love to understand how you study genetics through measurements.' },
+        { t: 'Did you know another project measured the Puerto Rican woodpecker to untangle how it is related to other woodpeckers?', use: 'I read about the Puerto Rican woodpecker project and was curious how measurements of a bird can show how species are related.' },
+        { t: 'Did you know he teaches both Evolutionary Biology and Vertebrate Zoology?', use: 'I saw you teach Evolutionary Biology and Vertebrate Zoology, and I would like to know which of your questions you most want students to explore.' },
+      ],
+      ponder: ['How can you tell two species apart when they look almost identical?', 'What would you measure on a skull to learn about relatedness?', 'Do you prefer specimens in a museum drawer or animals in the field?'],
+    },
+  };
+  FACULTY.forEach((f) => { f.spark = SPARK[f.id] || null; });
+
   return { CHECKED, TAGS, FACULTY, OTHERS, CARDS, CHOICES, CONSTRAINTS, FREE, QUESTIONS, OPPORTUNITIES, DEPT };
 })();
