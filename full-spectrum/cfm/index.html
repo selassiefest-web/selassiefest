@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Rainbow Wednesdays: free live reggae and young DJs on the South Side lakefront. A co-sponsorship proposal for the Chicago Federation of Musicians, Local 10-208, prepared by Ras Tafari Inc. for John Floeter.">
+<title>Rainbow Wednesdays for the Chicago Federation of Musicians</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#08090F; --panel:#11131F; --panel-2:#171A2A; --ink:#F2F0EA; --ink-soft:#C9C5BC; --ink-faint:#9A968E;
+    --line:rgba(255,255,255,.12); --accent:#EDBB2E;
+    --rd-red:#D2292D; --rd-gold:#EDBB2E; --rd-blue:#2F6AC0; --rd-green:#4B5320;
+    --spectrum:linear-gradient(90deg,var(--rd-red) 0 33.34%,var(--rd-gold) 33.34% 66.67%,var(--rd-blue) 66.67% 100%);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font:16px/1.65 "Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  a{color:var(--accent);}
+  h1,h2,h3{font-family:"Montserrat",sans-serif; line-height:1.08; letter-spacing:-.015em;}
+  .bar{height:7px; background:var(--spectrum);}
+  .wrap{width:100%; max-width:1040px; margin:0 auto; padding:0 20px;}
+  .eyebrow{font:700 .74rem/1 "JetBrains Mono",ui-monospace,monospace; letter-spacing:.16em; text-transform:uppercase; color:var(--accent);}
+  .rb{background:var(--spectrum); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  nav{position:sticky; top:0; z-index:20; background:rgba(8,9,15,.92); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; gap:6px 18px; align-items:center; flex-wrap:wrap; padding-top:10px; padding-bottom:10px;}
+  nav strong{font:800 .86rem "Montserrat",sans-serif; margin-right:auto;}
+  nav a{font-size:.8rem; color:var(--ink-soft); text-decoration:none;}
+  nav a:hover{color:var(--accent);}
+
+  .hero{position:relative; padding:84px 0 70px; background:
+    linear-gradient(180deg,rgba(8,9,15,.55) 0%,rgba(8,9,15,.92) 78%,var(--bg) 100%),
+    linear-gradient(90deg,rgba(8,9,15,.9) 0%,rgba(8,9,15,.55) 60%,rgba(8,9,15,.4) 100%),
+    url("/full-spectrum/img/05-b-rainbow-wednesdays.jpg") center 40% / cover no-repeat;}
+  .hero h1{font-size:clamp(2.3rem,7vw,4.6rem); font-weight:900; margin:16px 0 18px; max-width:15ch;}
+  .hero .lede{font-size:1.18rem; max-width:58ch; color:var(--ink-soft);}
+  .hero .for{margin-top:22px; font-size:.9rem; color:var(--ink-faint);}
+  .cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;}
+  .btn{display:inline-block; padding:13px 20px; border-radius:999px; font-weight:700; text-decoration:none; border:2px solid var(--accent); color:var(--ink);}
+  .btn.solid{background:var(--accent); color:#1a1405;}
+  .btn:hover{filter:brightness(1.12);}
+  .caption{font-size:.72rem; color:var(--ink-faint); margin-top:34px;}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border-block:1px solid var(--line);}
+  .stats div{background:var(--panel); padding:22px 16px; text-align:center;}
+  .stats b{display:block; font:900 clamp(1.5rem,4.5vw,2.4rem) "Montserrat",sans-serif;}
+  .stats span{font-size:.8rem; color:var(--ink-soft);}
+  @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+  section{padding:64px 0; border-bottom:1px solid var(--line);}
+  section h2{font-size:clamp(1.7rem,4.5vw,2.6rem); font-weight:800; margin:12px 0 18px; max-width:22ch;}
+  section p{max-width:66ch; color:var(--ink-soft); margin-bottom:14px;}
+  section p b, section li b{color:var(--ink);}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:22px;}
+  @media(max-width:760px){.two{grid-template-columns:1fr;}}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px;}
+  .card h3{font-size:1.1rem; margin-bottom:8px;}
+  .card p{margin-bottom:8px; font-size:.95rem;}
+  .rule{border-left:4px solid var(--accent); background:var(--panel-2); padding:16px 20px; border-radius:0 12px 12px 0; margin:8px 0 12px; max-width:66ch;}
+  .rule b{font-family:"Montserrat",sans-serif;}
+
+  .bandgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-top:24px;}
+  .member{background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--rd-gold); border-radius:12px; padding:18px;}
+  .member:nth-child(3n+1){border-top-color:var(--rd-red);} .member:nth-child(3n){border-top-color:var(--rd-blue);}
+  .member h3{font-size:1.05rem;} .member .role{font:700 .7rem "JetBrains Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:4px 0 8px;}
+  .member p{font-size:.9rem; margin:0;}
+
+  table{width:100%; border-collapse:collapse; margin-top:18px; font-size:.95rem;}
+  th,td{text-align:left; padding:12px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font:700 .72rem "JetBrains Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint);}
+  td.yes{color:var(--rd-gold); font-weight:700; white-space:nowrap;}
+  .tbl{overflow-x:auto;}
+  .money td:last-child, .money th:last-child{text-align:right; white-space:nowrap;}
+  .money tr.total td{font-weight:800; color:var(--ink); border-bottom:2px solid var(--accent);}
+  .est{font-size:.82rem; color:var(--ink-faint); margin-top:12px;}
+
+  .steps{list-style:none; counter-reset:s; margin-top:20px; max-width:70ch;}
+  .steps li{counter-increment:s; position:relative; padding:0 0 18px 52px; color:var(--ink-soft);}
+  .steps li::before{content:counter(s); position:absolute; left:0; top:0; width:36px; height:36px; border-radius:50%; background:var(--accent); color:#1a1405; font:800 1rem "Montserrat",sans-serif; display:grid; place-items:center;}
+  .steps li b{color:var(--ink);}
+
+  .contact{padding:70px 0 80px; text-align:left; border-bottom:0;}
+  .contact h2{max-width:24ch;}
+  footer{padding:26px 0 40px; font-size:.78rem; color:var(--ink-faint); border-top:1px solid var(--line);}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<nav><div class="wrap">
+  <strong>Rainbow Wednesdays &middot; Ras Tafari Inc.</strong>
+  <a href="#night">The night</a><a href="#band">The band</a><a href="#fit">MPTF fit</a><a href="#numbers">The numbers</a><a href="#dates">Dates</a><a href="#questions">Questions</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">A proposal for Local 10-208 and the Music Performance Trust Fund</div>
+  <h1>Live reggae and young DJs, <span class="rb">free on the South Side lakefront.</span></h1>
+  <p class="lede">Rainbow Wednesdays is 14 free summer evenings at Rainbow Beach Park, where a professional live band plays with a vocalist and young DJs mix in with the live instruments. We would like Local 10-208 to bring one or two of those nights to the MPTF, starting with <b>Wednesday, July 21, 2027</b>.</p>
+  <div class="cta"><a class="btn solid" href="#night">See the night</a><a class="btn" href="#numbers">See the numbers</a><a class="btn" href="#questions">Our two questions</a></div>
+  <p class="for">Prepared for <b>John Floeter</b>, Vice President, Chicago Federation of Musicians, by Stephen Henry, President, Ras Tafari Inc.</p>
+  <p class="caption">Artist&rsquo;s illustration of a Rainbow Wednesday at Rainbow Beach.</p>
+</div></header>
+
+<div class="stats">
+  <div><b>14</b><span>free Wednesday evenings, June 2 to September 1, 2027</span></div>
+  <div><b>$0</b><span>admission, open to everyone</span></div>
+  <div><b>300</b><span>people a night is our goal</span></div>
+  <div><b>6:00&ndash;8:30</b><span>pm, on the lawn at Rainbow Beach Park</span></div>
+</div>
+
+<section id="why"><div class="wrap">
+  <div class="eyebrow">Why this belongs with MPTF</div>
+  <h2>A free summer series in a public park, with music as the only draw.</h2>
+  <p>We read the MPTF&rsquo;s own pages before writing to you. The community events it supports are &ldquo;admission-free live music presented in parks and public spaces,&rdquo; including summer series, and most are started by the local union working with parks programs and community leaders. That is what Rainbow Wednesdays is.</p>
+  <div class="rule"><b>Rule 1.</b> The performance is free and open to the public.</div>
+  <div class="rule"><b>Rule 2.</b> Music is the prime reason people are at that place at that time.</div>
+  <p>Rainbow Beach is a Chicago Park District park on the South Side lakefront. Our partnership proposal is with the Park District and is under review, so every date here is provisional until the Park District confirms.</p>
+</div></section>
+
+<section id="night"><div class="wrap">
+  <div class="eyebrow">The night</div>
+  <h2>Wednesday, July 21, 2027: Roots &amp; Culture.</h2>
+  <p>Roots reggae in the sound-system tradition, three days before SelassieFest. A live band and a lead vocalist share the stage with young DJs who mix in with the live instruments, in the spirit of acid jazz, where a live band and a DJ build the night together.</p>
+  <div class="two">
+    <div class="card"><h3>What the audience gets</h3><p>A real band with guitar, keys and a lead singer (the full lineup to be confirmed with the band), playing roots, lovers rock and dancehall. Then moments where the DJ and the singer play off each other: a rewind, a face-off, a countdown, a dubplate with the singer&rsquo;s name on it.</p></div>
+    <div class="card"><h3>What it does for young people</h3><p>Young DJs from our free Tuesday class sit in with working professionals and learn what it is to lock in with live players. They are not part of this request. The MPTF funds would pay the band.</p></div>
+  </div>
+</div></section>
+
+<section id="band"><div class="wrap">
+  <div class="eyebrow">The band</div>
+  <h2>Ifficial Reggae Movement.</h2>
+  <p>A Chicago-area reggae band that, in its own words, has been &ldquo;rocking shows all over the Midwest for decades&rdquo; while creating new and original music (<a href="https://www.ifficialreggae.com/">ifficialreggae.com</a>). Lead singers share the front line. The lineup for July 21 will be confirmed with the band.</p>
+  <div class="bandgrid">
+    <div class="member"><h3>Livingston</h3><div class="role">Lead vocals</div><p>Born in Montego Bay, Jamaica. A vocalist and songwriter with the smoothness of roots and lovers rock and the roughness of dancehall.</p></div>
+    <div class="member"><h3>JayRebl</h3><div class="role">Featured singer &middot; guitar</div><p>From Kingston, Jamaica. Sings and plays guitar, and shares the lead spot. The DJ and JayRebl play off each other all night.</p></div>
+    <div class="member"><h3>Nego Hights</h3><div class="role">Featured singer</div><p>Shares the lead spot with Livingston and JayRebl.</p></div>
+    <div class="member"><h3>Vinnie</h3><div class="role">Guitar</div><p>Jamaican-born, plays all genres and works them into the reggae shows. An established producer.</p></div>
+    <div class="member"><h3>Charles</h3><div class="role">Keyboards</div><p>Years on the reggae scene; a singer with harmonies who teaches music theory and keyboard to young people.</p></div>
+  </div>
+  <p class="est">Sources: the band&rsquo;s own site and our live-reggae page. Whether each player is a Local 10-208 member is something we do not know yet. We are asking you.</p>
+</div></section>
+
+<section id="fit"><div class="wrap">
+  <div class="eyebrow">Your rules, one by one</div>
+  <h2>How the night meets the MPTF requirements.</h2>
+  <p>We read the MPTF&rsquo;s &ldquo;will not be approved&rdquo; list and the attachment you sent. This is how the July 21 night stands against it.</p>
+  <div class="tbl"><table>
+    <tr><th>Requirement</th><th></th><th>How it is met</th></tr>
+    <tr><td>Free and open to the public</td><td class="yes">Yes</td><td>No ticket, no registration, no admission of any kind.</td></tr>
+    <tr><td>Music is the prime purpose</td><td class="yes">Yes</td><td>A live band is the headline; nothing competes with it.</td></tr>
+    <tr><td>Not a fundraiser</td><td class="yes">Yes</td><td>No fundraising activity on the funded night.</td></tr>
+    <tr><td>No recording</td><td class="yes">Yes</td><td>No audio or video recording of the funded performance. Photographs only, for the MPTF.</td></tr>
+    <tr><td>Not a workshop, seminar or graduation</td><td class="yes">Yes</td><td>Our DJ classes, showcases and graduation are separate programs and are not part of this request.</td></tr>
+    <tr><td>Not a religious or members-only event</td><td class="yes">Yes</td><td>A public concert on a public lawn.</td></tr>
+    <tr><td>Not for any one person&rsquo;s or business&rsquo;s advantage</td><td class="yes">Yes</td><td>A nonprofit community series. The night is kept about the music.</td></tr>
+    <tr><td>Paid professional musicians</td><td class="yes">Planned</td><td>The band is paid. Union status of each player is the first thing we want to learn from you.</td></tr>
+  </table></div>
+</div></section>
+
+<section id="numbers"><div class="wrap">
+  <div class="eyebrow">The numbers</div>
+  <h2>A first rough proposal, as you asked.</h2>
+  <p>You asked for a rough idea of the number of musicians. This is our first estimate for one night. We would be glad to have you correct it.</p>
+  <div class="tbl"><table class="money">
+    <tr><th>Item</th><th>Basis</th><th>Amount</th></tr>
+    <tr><td>Band</td><td>5 players at about $250 each, the average full cost you gave</td><td>about $1,250</td></tr>
+    <tr><td>MPTF share</td><td>about 50% of performer wages and cartage</td><td>about $625</td></tr>
+    <tr class="total"><td>Ras Tafari Inc. share</td><td>the remainder of the band, plus sound, stage and tech, which are not part of the grant</td><td>about $625 + tech</td></tr>
+  </table></div>
+  <p class="est">Planning estimates only. The player count is our assumption and the band&rsquo;s own fee will be confirmed with them. Nothing here is a quote.</p>
+  <div class="two">
+    <div class="card"><h3>What we take on as sponsor</h3><p>Submit our W-9 and sign the MPTF terms. Pay the leader the full amount on time, so musicians, dues and pension are covered. Send any pension and health-and-welfare payments. Provide photographs. Put the MPTF logo on flyers and announcements.</p></div>
+    <div class="card"><h3>How the money moves</h3><p>You apply to the MPTF on our behalf. The MPTF sends the grant check to us after the performance. We pay the leader the full amount.</p></div>
+  </div>
+</div></section>
+
+<section id="dates"><div class="wrap">
+  <div class="eyebrow">Timeline, 2027 (provisional)</div>
+  <h2>What has to happen, and by when.</h2>
+  <ol class="steps">
+    <li><b>Now:</b> you tell us whether this fits, who the leader should be, and what you need from us.</li>
+    <li><b>By Wednesday, June 9:</b> everything in your office, which is six weeks before the performance. You also wrote 45 days, which would be Sunday, June 6, so we are planning to the earlier date until you tell us which governs.</li>
+    <li><b>Wednesday, July 21, 6:00 to 8:30 pm:</b> the performance at Rainbow Beach Park, if the Park District has confirmed the season.</li>
+    <li><b>After the performance:</b> the MPTF check comes to us and we pay the leader in full.</li>
+  </ol>
+  <p>You wrote that you may be able to co-sponsor one or two events. We would welcome your guidance on a second night and will propose a date once the Park District confirms the season.</p>
+</div></section>
+
+<section id="questions"><div class="wrap">
+  <div class="eyebrow">Two questions for you</div>
+  <h2>What we would like to learn from you.</h2>
+  <ol class="steps">
+    <li><b>Are band members who are not Local 10-208 members acceptable?</b> You wrote that membership is preferred, not required. We want to do this properly.</li>
+    <li><b>Which deadline governs, six weeks or 45 days?</b> We will plan to whichever you tell us.</li>
+  </ol>
+</div></section>
+
+<section class="contact" id="contact"><div class="wrap">
+  <div class="eyebrow">About us</div>
+  <h2>Ras Tafari Inc.</h2>
+  <p>A Chicago 501(c)(3) at 1401 E. 71st St., Chicago, IL 60619 (EIN 42-3036705). We produced SelassieFest 2026, a free roots reggae and cultural festival that drew about 273 people and was planned in 47 days, and we open the Rainbow DJ Lab, a free year-round Tuesday DJ class for South Side young people, on January 12, 2027.</p>
+  <p><b>Stephen Henry</b>, President<br>(872) 255-9333 &middot; <a href="mailto:stephen@selassiefest.com">stephen@selassiefest.com</a></p>
+  <div class="cta"><a class="btn solid" href="mailto:stephen@selassiefest.com?subject=Re%3A%20Music%20Performance%20Funds%20for%20free%20summer%20music%20at%20Rainbow%20Beach%20Park">Reply by email</a></div>
+</div></section>
+
+<footer><div class="wrap">Prepared November 18, 2026 for John Floeter. All dates and figures are provisional planning estimates, not quotes or commitments. Not indexed by search engines.</div></footer>
+<div class="bar"></div>
+</body>
+</html>
