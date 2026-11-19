@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <title>BIOS102 Lab Companion | Gradebook (instructors)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/BIOS102/css/research.css" />
+  <link rel="stylesheet" href="/BIOS102/css/docket.css" />
   <link rel="stylesheet" href="/BIOS102/css/style.css" />
   <style>
     .wrap.wide { max-width: 1280px; }
@@ -13,9 +14,9 @@
     .bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); font-size: 0.88rem; color: var(--text-dim); }
     .bar label { display: inline-flex; align-items: center; gap: 6px; }
     .bar b { color: var(--text); font-weight: 500; }
-    select, input[type=number], input[type=text], input[type=search] { font-family: inherit; font-size: 0.88rem; padding: 6px 9px; border-radius: 6px; border: 1px solid var(--border); background: #0b1210; color: var(--text); }
+    select, input[type=number], input[type=text], input[type=search] { font-family: inherit; font-size: 0.88rem; padding: 6px 9px; border-radius: 6px; border: 1px solid var(--border); background: #fffcf6; color: var(--text); }
     select:focus, input:focus { outline: none; border-color: var(--accent); }
-    .b { font-family: inherit; font-size: 0.84rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,.05); color: var(--text); cursor: pointer; }
+    .b { font-family: inherit; font-size: 0.84rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(23,36,31,.04); color: var(--text); cursor: pointer; }
     .b:hover { border-color: var(--accent); }
     .b.on, .b.pri { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
     .b:disabled { opacity: .4; cursor: default; }
@@ -30,22 +31,22 @@
     table.t { border-collapse: collapse; width: 100%; font-size: .86rem; }
     table.t th, table.t td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
     table.t th:first-child, table.t td:first-child, table.t th.l, table.t td.l { text-align: left; }
-    table.t thead th { position: sticky; top: 0; background: #121a17; color: var(--accent); font-weight: 500; cursor: pointer; z-index: 1; }
+    table.t thead th { position: sticky; top: 0; background: #f3f0e8; color: var(--accent); font-weight: 500; cursor: pointer; z-index: 1; }
     table.t thead tr.grp th { color: var(--amber); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; cursor: default; }
-    table.t tbody tr:hover { background: rgba(255,255,255,.03); }
+    table.t tbody tr:hover { background: rgba(23,36,31,.04); }
     table.t tr.off td { opacity: .4; }
     table.t td.low { color: var(--danger); }
     table.t td.none { color: var(--text-dim); font-style: italic; }
     table.t td input[type=number] { width: 78px; padding: 3px 6px; text-align: right; }
-    table.t td.calc { background: rgba(224,169,64,.06); }
+    table.t td.calc { background: rgba(162,75,40,.07); }
     .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
     .card2 { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); padding: 14px 16px; }
     .card2 h3 { font-weight: 500; font-size: 1rem; margin-bottom: 8px; }
     .help { font-size: .8rem; color: var(--text-dim); margin-top: 6px; }
     .checks { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 6px 0 12px; font-size: .86rem; }
     .checks label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
-    svg.chart { width: 100%; max-width: 760px; height: auto; background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: var(--radius); }
-    svg text { fill: #9fb3ac; font-family: Jost, sans-serif; font-size: 11px; }
+    svg.chart { width: 100%; max-width: 760px; height: auto; background: rgba(23,36,31,.04); border: 1px solid var(--border); border-radius: var(--radius); }
+    svg text { fill: #5e6a62; font-family: "Source Sans 3", sans-serif; font-size: 11px; }
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 16px; }
     .stat-grid div { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; background: var(--bg-panel); }
     .stat-grid small { display: block; color: var(--text-dim); font-size: .74rem; }
@@ -63,6 +64,7 @@
 </head>
 <body>
   <div id="topbar" class="topbar"></div>
+  <div class="sd-wrap" style="max-width:1100px;margin:0 auto;padding:18px 20px 0"><header class="sd-head"><div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/grades-instructor.webp)"></div><p class="sd-kicker">Instructor tools</p><h1 class="rm-h1">Gradebook</h1><p class="rm-lede">Scores, averages, charts and imports for the class.</p></header></div>
   <div class="wrap wide" id="app">
     <div class="gate" id="gate">Checking your instructor access&hellip;</div>
   </div>
@@ -266,12 +268,12 @@
     bands.forEach(function (b, i) {
       var bh = (Hh - T - B) * counts[i] / mx, x = L + i * bw + 4, y = Hh - B - bh, col = 'rgb(' + b[3].join(',') + ')', cx = x + (bw - 8) / 2;
       s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 8) + '" height="' + Math.max(bh, 2) + '" rx="5" fill="' + col + '"/>' +
-        '<text x="' + cx + '" y="' + (y - 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:15px;font-weight:500">' + counts[i] + '</text>' +
+        '<text x="' + cx + '" y="' + (y - 18) + '" text-anchor="middle" style="fill:#17241f;font-size:15px;font-weight:500">' + counts[i] + '</text>' +
         '<text x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle">' + f(counts[i] / a.length * 100, 0) + '%</text>' +
-        '<text x="' + cx + '" y="' + (Hh - B + 18) + '" text-anchor="middle" style="fill:#eef3f0;font-size:14px">' + b[0] + '</text>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 18) + '" text-anchor="middle" style="fill:#17241f;font-size:14px">' + b[0] + '</text>' +
         '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[1] === 0 ? '<' + (bands[i - 1] ? bands[i - 1][1] : 0) : b[1] + '+') + '</text>';
     });
-    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#3a4642"/>';
+    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#cfc5b2"/>';
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Grade distribution">' + s + '</svg>';
   }
 
@@ -279,20 +281,20 @@
     var W = Math.max(520, 96 * cols.length + 60), Hh = 330, L = 40, B = 50, T = 14, s = '';
     var Y = function (v) { return Hh - B - (Hh - B - T) * Math.max(0, Math.min(105, v)) / 100; };
     for (var g = 0; g <= 100; g += 20) s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke="#26302d"/><text x="' + (L - 6) + '" y="' + (Y(g) + 4) + '" text-anchor="end">' + g + '</text>';
-    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(ui.pass) + '" y2="' + Y(ui.pass) + '" stroke="#e0a940" stroke-dasharray="4 4" opacity=".7"/><text x="' + (W - 10) + '" y="' + (Y(ui.pass) - 4) + '" text-anchor="end" style="fill:#e0a940">pass line</text>';
+    s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(ui.pass) + '" y2="' + Y(ui.pass) + '" stroke="#a24b28" stroke-dasharray="4 4" opacity=".7"/><text x="' + (W - 10) + '" y="' + (Y(ui.pass) - 4) + '" text-anchor="end" style="fill:#a24b28">pass line</text>';
     cols.forEach(function (c, i) {
       var cx = L + 46 + i * 96, pts = rows.map(function (r) { return { s: r.student, p: pctOf(r, c) }; }).filter(function (x) { return x.p != null; }).sort(function (x, y) { return x.p - y.p; });
       if (!pts.length) return;
       var a = pts.map(function (x) { return x.p; }), q1 = quant(a, 0.25), q3 = quant(a, 0.75), md = quant(a, 0.5);
-      s += '<rect x="' + (cx - 24) + '" y="' + Y(q3) + '" width="48" height="' + Math.max(2, Y(q1) - Y(q3)) + '" rx="6" fill="rgba(63,174,116,.13)"/>';
+      s += '<rect x="' + (cx - 24) + '" y="' + Y(q3) + '" width="48" height="' + Math.max(2, Y(q1) - Y(q3)) + '" rx="6" fill="rgba(27,77,62,.13)"/>';
       var placed = [];
       pts.forEach(function (x) {
         var k = placed.filter(function (q) { return Math.abs(q.y - Y(x.p)) < 9; }).length, off = k === 0 ? 0 : (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 10;
         placed.push({ y: Y(x.p) });
-        s += '<circle cx="' + (cx + off) + '" cy="' + Y(x.p) + '" r="4.5" fill="' + heat(x.p) + '" stroke="#0b1210" stroke-width="1"><title>' + esc(x.s) + ': ' + f(x.p, 0) + '%</title></circle>';
+        s += '<circle cx="' + (cx + off) + '" cy="' + Y(x.p) + '" r="4.5" fill="' + heat(x.p) + '" stroke="#fffcf6" stroke-width="1"><title>' + esc(x.s) + ': ' + f(x.p, 0) + '%</title></circle>';
       });
-      s += '<line x1="' + (cx - 26) + '" x2="' + (cx + 26) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#eef3f0" stroke-width="2"/>' +
-        '<text x="' + cx + '" y="' + (Hh - B + 16) + '" text-anchor="middle" style="fill:#eef3f0">' + esc(short12(c.label)) + '</text>' +
+      s += '<line x1="' + (cx - 26) + '" x2="' + (cx + 26) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#17241f" stroke-width="2"/>' +
+        '<text x="' + cx + '" y="' + (Hh - B + 16) + '" text-anchor="middle" style="fill:#17241f">' + esc(short12(c.label)) + '</text>' +
         '<text x="' + cx + '" y="' + (Hh - B + 30) + '" text-anchor="middle">median ' + f(md, 0) + '%</text>';
     });
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Dot plot of each column" style="max-width:' + W + 'px">' + s + '</svg><div class="help">Each dot is a student (hover for the name). White line = median; shaded box = middle half of the class.</div>';
@@ -303,14 +305,14 @@
     var key = ex || cols[0], order = rows.slice().sort(function (x, y) { var a = pctOf(x, key), b = pctOf(y, key); return (b == null ? -1 : b) - (a == null ? -1 : a); });
     var cw = 96, rh = 26, L = 96, T = 40, W = L + cols.length * cw + 10, Hh = T + order.length * rh + 8;
     var s = '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#161e1b"/><line x1="0" y1="0" x2="0" y2="6" stroke="#2c3733" stroke-width="2"/></pattern></defs>';
-    cols.forEach(function (c, i) { s += '<text x="' + (L + i * cw + cw / 2) + '" y="' + (T - 14) + '" text-anchor="middle" style="fill:#eef3f0">' + esc(short12(c.label)) + '</text>'; });
+    cols.forEach(function (c, i) { s += '<text x="' + (L + i * cw + cw / 2) + '" y="' + (T - 14) + '" text-anchor="middle" style="fill:#17241f">' + esc(short12(c.label)) + '</text>'; });
     order.forEach(function (r, j) {
       var y = T + j * rh;
-      s += '<text x="' + (L - 10) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="end" style="fill:#eef3f0">' + esc(r.student) + '</text>';
+      s += '<text x="' + (L - 10) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="end" style="fill:#17241f">' + esc(r.student) + '</text>';
       cols.forEach(function (c, i) {
         var p = pctOf(r, c), x = L + i * cw;
         if (p == null) s += '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="' + (cw - 4) + '" height="' + (rh - 4) + '" rx="5" fill="url(#hatch)"><title>' + esc(r.student) + ', ' + esc(c.label) + ': excused / no score</title></rect>';
-        else s += '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="' + (cw - 4) + '" height="' + (rh - 4) + '" rx="5" fill="' + heat(p) + '" opacity=".92"><title>' + esc(r.student) + ', ' + esc(c.label) + ': ' + f(p, 0) + '%</title></rect><text x="' + (x + cw / 2) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="middle" style="fill:#0b1210;font-weight:500">' + f(p, 0) + '</text>';
+        else s += '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="' + (cw - 4) + '" height="' + (rh - 4) + '" rx="5" fill="' + heat(p) + '" opacity=".92"><title>' + esc(r.student) + ', ' + esc(c.label) + ': ' + f(p, 0) + '%</title></rect><text x="' + (x + cw / 2) + '" y="' + (y + rh / 2 + 4) + '" text-anchor="middle" style="fill:#fffcf6;font-weight:500">' + f(p, 0) + '</text>';
       });
     });
     return '<div class="scroll"><svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Heat map" style="max-width:' + W + 'px;border:0">' + s + '</svg></div><div class="help">Rows are ordered by ' + esc(key.label) + ', best at the top. Green is strong, amber is middling, red needs attention, hatched means excused or not scored yet.</div>';
@@ -319,10 +321,10 @@
   function corrBars(ex, work, rows) {
     var items = work.map(function (c) { var cr = corr(rows.map(function (r) { return pctOf(r, ex); }), rows.map(function (r) { return pctOf(r, c); })); return { c: c, r: cr.r, n: cr.n }; }).filter(function (x) { return isNum(x.r); }).sort(function (a, b) { return Math.abs(b.r) - Math.abs(a.r); });
     if (!items.length) return '<div class="card2">Not enough overlapping scores.</div>';
-    var W = 520, rh = 38, Hh = items.length * rh + 44, mid = 300, half = 190, s = '<line x1="' + mid + '" x2="' + mid + '" y1="6" y2="' + (Hh - 28) + '" stroke="#3a4642"/>';
+    var W = 520, rh = 38, Hh = items.length * rh + 44, mid = 300, half = 190, s = '<line x1="' + mid + '" x2="' + mid + '" y1="6" y2="' + (Hh - 28) + '" stroke="#cfc5b2"/>';
     items.forEach(function (it, i) {
-      var y = 10 + i * rh, w = Math.abs(it.r) * half, x = it.r >= 0 ? mid : mid - w, col = it.r >= 0 ? '#3fae74' : '#c85a5a', weak = Math.abs(it.r) < 0.4;
-      s += '<text x="' + (mid - half - 6) + '" y="' + (y + 19) + '" text-anchor="end" style="fill:#eef3f0">' + esc(it.c.label) + '</text><rect x="' + x + '" y="' + y + '" width="' + Math.max(w, 2) + '" height="26" rx="5" fill="' + col + '" opacity="' + (weak ? 0.45 : 0.95) + '"/><text x="' + (it.r >= 0 ? mid + w + 6 : mid - w - 6) + '" y="' + (y + 18) + '" text-anchor="' + (it.r >= 0 ? 'start' : 'end') + '" style="fill:#eef3f0">' + f(it.r, 2) + '</text>';
+      var y = 10 + i * rh, w = Math.abs(it.r) * half, x = it.r >= 0 ? mid : mid - w, col = it.r >= 0 ? '#1b4d3e' : '#a24b28', weak = Math.abs(it.r) < 0.4;
+      s += '<text x="' + (mid - half - 6) + '" y="' + (y + 19) + '" text-anchor="end" style="fill:#17241f">' + esc(it.c.label) + '</text><rect x="' + x + '" y="' + y + '" width="' + Math.max(w, 2) + '" height="26" rx="5" fill="' + col + '" opacity="' + (weak ? 0.45 : 0.95) + '"/><text x="' + (it.r >= 0 ? mid + w + 6 : mid - w - 6) + '" y="' + (y + 18) + '" text-anchor="' + (it.r >= 0 ? 'start' : 'end') + '" style="fill:#17241f">' + f(it.r, 2) + '</text>';
     });
     s += '<text x="' + mid + '" y="' + (Hh - 8) + '" text-anchor="middle">0 = no link  ·  +1 = rise together  ·  faded = weak (|r| &lt; 0.4)</text>';
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Correlation with exam">' + s + '</svg>';
@@ -512,12 +514,12 @@
     var W = 640, Hh = 300, L = 44, B = 40, T = 24, R = 12, mx = Math.max.apply(null, counts), bw = (W - L - R) / bins, s = '';
     counts.forEach(function (n, i) {
       var bh = (Hh - T - B) * n / mx, x = L + i * bw, y = Hh - B - bh;
-      s += '<rect x="' + (x + 1) + '" y="' + y + '" width="' + (bw - 2) + '" height="' + bh + '" fill="#3fae74" opacity=".85"/>' + (n ? '<text x="' + (x + bw / 2) + '" y="' + (y - 4) + '" text-anchor="middle">' + n + '</text>' : '') +
+      s += '<rect x="' + (x + 1) + '" y="' + y + '" width="' + (bw - 2) + '" height="' + bh + '" fill="#1b4d3e" opacity=".85"/>' + (n ? '<text x="' + (x + bw / 2) + '" y="' + (y - 4) + '" text-anchor="middle">' + n + '</text>' : '') +
         '<text x="' + (x + bw / 2) + '" y="' + (Hh - B + 14) + '" text-anchor="middle">' + f(lo + i * w, 0) + '</text>';
     });
     s += '<text x="' + (W / 2) + '" y="' + (Hh - 6) + '" text-anchor="middle">' + esc(c.label) + (ui.pct && c.max ? ' (%)' : '') + '  ·  n = ' + a.length + ', mean ' + f(mean(a), 1) + '</text>';
     var m = mean(a), mxp = L + (m - lo) / (hi - lo) * (W - L - R);
-    s += '<line x1="' + mxp + '" x2="' + mxp + '" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#e0a940" stroke-dasharray="4 3"/><text x="' + mxp + '" y="' + (T - 6) + '" text-anchor="middle" style="fill:#e0a940">mean</text>';
+    s += '<line x1="' + mxp + '" x2="' + mxp + '" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#a24b28" stroke-dasharray="4 3"/><text x="' + mxp + '" y="' + (T - 6) + '" text-anchor="middle" style="fill:#a24b28">mean</text>';
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Histogram of ' + esc(c.label) + '">' + s + '</svg>';
   }
   function scatter(cx, cy, rows) {
@@ -528,10 +530,10 @@
     if (xl === xh) { xl--; xh++; } if (yl === yh) { yl--; yh++; }
     var sx = function (v) { return L + (v - xl) / (xh - xl) * (W - L - R); }, sy = function (v) { return Hh - B - (v - yl) / (yh - yl) * (Hh - B - T); };
     var s = '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#555"/><line x1="' + L + '" x2="' + L + '" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#555"/>';
-    s += '<line x1="' + sx(xl) + '" y1="' + sy(cr.icpt + cr.slope * xl) + '" x2="' + sx(xh) + '" y2="' + sy(cr.icpt + cr.slope * xh) + '" stroke="#e0a940" stroke-dasharray="5 3"/>';
+    s += '<line x1="' + sx(xl) + '" y1="' + sy(cr.icpt + cr.slope * xl) + '" x2="' + sx(xh) + '" y2="' + sy(cr.icpt + cr.slope * xh) + '" stroke="#a24b28" stroke-dasharray="5 3"/>';
     var k = 0; rows.forEach(function (r) {
       var xv = show(r, cx), yv = show(r, cy); if (!isNum(xv) || !isNum(yv)) return;
-      s += '<circle cx="' + sx(xv) + '" cy="' + sy(yv) + '" r="5" fill="#3fae74" opacity=".85"><title>' + esc(r.student) + ': ' + f(xv, 1) + ', ' + f(yv, 1) + '</title></circle>'; k++;
+      s += '<circle cx="' + sx(xv) + '" cy="' + sy(yv) + '" r="5" fill="#1b4d3e" opacity=".85"><title>' + esc(r.student) + ': ' + f(xv, 1) + ', ' + f(yv, 1) + '</title></circle>'; k++;
     });
     s += '<text x="' + (W / 2) + '" y="' + (Hh - 6) + '" text-anchor="middle">' + esc(cx.label) + '  →  ' + esc(cy.label) + '</text>';
     s += '<text x="' + (L + 6) + '" y="' + (T + 10) + '">r = ' + f(cr.r, 2) + '   R² = ' + f(cr.r * cr.r, 2) + '   n = ' + cr.n + '   slope ' + f(cr.slope, 2) + '</text>';
@@ -546,8 +548,8 @@
     keys.forEach(function (c, i) {
       var a = colValues(c, rows).map(function (v) { return ui.pct ? v : v / c.max * 100; }), cx = L + 50 + i * 90;
       var q1 = quant(a, .25), q3 = quant(a, .75), md = quant(a, .5), iqr = q3 - q1, lo = Math.min.apply(null, a.filter(function (v) { return v >= q1 - 1.5 * iqr; })), hi = Math.max.apply(null, a.filter(function (v) { return v <= q3 + 1.5 * iqr; }));
-      s += '<line x1="' + cx + '" x2="' + cx + '" y1="' + Y(lo) + '" y2="' + Y(hi) + '" stroke="#9fb3ac"/><rect x="' + (cx - 20) + '" y="' + Y(q3) + '" width="40" height="' + Math.max(1, Y(q1) - Y(q3)) + '" fill="rgba(63,174,116,.35)" stroke="#3fae74"/><line x1="' + (cx - 20) + '" x2="' + (cx + 20) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#e0a940" stroke-width="2"/>';
-      a.forEach(function (v) { if (v < lo || v > hi) s += '<circle cx="' + cx + '" cy="' + Y(v) + '" r="3" fill="none" stroke="#c85a5a"/>'; });
+      s += '<line x1="' + cx + '" x2="' + cx + '" y1="' + Y(lo) + '" y2="' + Y(hi) + '" stroke="#5e6a62"/><rect x="' + (cx - 20) + '" y="' + Y(q3) + '" width="40" height="' + Math.max(1, Y(q1) - Y(q3)) + '" fill="rgba(27,77,62,.35)" stroke="#1b4d3e"/><line x1="' + (cx - 20) + '" x2="' + (cx + 20) + '" y1="' + Y(md) + '" y2="' + Y(md) + '" stroke="#a24b28" stroke-width="2"/>';
+      a.forEach(function (v) { if (v < lo || v > hi) s += '<circle cx="' + cx + '" cy="' + Y(v) + '" r="3" fill="none" stroke="#a24b28"/>'; });
       s += '<text x="' + cx + '" y="' + (Hh - B + 16) + '" text-anchor="middle">' + esc(c.label.length > 13 ? c.label.slice(0, 12) + '…' : c.label) + '</text>';
     });
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Box plots" style="max-width:' + W + 'px">' + s + '</svg><div class="help">Box = middle 50%, orange line = median, whiskers reach the furthest score within 1.5&times;IQR, red circles are outliers.</div>';

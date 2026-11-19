@@ -28,5 +28,18 @@ window.Docket = (function () {
       el = next;
     }
   }
-  return { head };
+  // Fill a list with links to the page's own section headings (h2), with smooth scrolling.
+  function pageNav(ol, root) {
+    if (!ol || !root) return;
+    const hs = Array.from(root.querySelectorAll('h2')).filter((h) => h.offsetParent !== null || true);
+    const seen = {};
+    ol.innerHTML = hs.map((h) => {
+      let id = h.id || h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+      while (seen[id]) id += '-2';
+      seen[id] = 1; h.id = id;
+      return '<li><a href="#' + id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' + h.textContent.trim().replace(/</g, '&lt;') + '</a></li>';
+    }).join('');
+    ol.addEventListener('click', (e) => { const a = e.target.closest('a'); if (!a) return; const t = document.getElementById(a.getAttribute('href').slice(1)); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+  }
+  return { head, pageNav };
 })();
