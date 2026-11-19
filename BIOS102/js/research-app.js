@@ -109,6 +109,7 @@
       interview: doneIv, decide: !!(S.final && S.final.askSentAt) }[id] || false;
   }
   function go(v) {
+    if (['home', 'know', 'matches', 'meet', 'interview', 'decide', 'class'].indexOf(v) < 0) v = 'home';   // never save or show a view that does not exist
     view = v;
     S.stage = v;
     render();
@@ -713,9 +714,16 @@
   async function resetAll() {
     if (!window.confirm('Erase all your Research Match answers, matches, interview list and notes? This cannot be undone.')) return;
     clearTimeout(saveTimer);
-    S = blank();
-    try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ }
-    try { await window.sfSupabase.bios102RmSave(session.sessionToken, S); } catch (e) { /* the empty local state will still win on reload */ }
+    const fresh = blank();
+    // Erase the account copy FIRST. If that fails, keep everything as it was and say so,
+    // because a surviving server copy would silently come back on the next load.
+    try { await window.sfSupabase.bios102RmSave(session.sessionToken, fresh); }
+    catch (e) {
+      if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner();
+      flash('Could not erase your account copy, so nothing was erased. Check your connection and try again.', true);
+      return;
+    }
+    S = fresh;
     try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ }
     view = 'home'; ui = { open: {}, panel: {}, step: {}, filter: '' };
     render(); window.scrollTo(0, 0); flash('Everything erased. You are starting fresh.');
