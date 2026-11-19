@@ -543,5 +543,20 @@ window.RM_DATA = (() => {
   };
   FACULTY.forEach((f) => { f.spark = SPARK[f.id] || null; });
 
-  return { CHECKED, TAGS, FACULTY, OTHERS, CARDS, CHOICES, CONSTRAINTS, FREE, QUESTIONS, OPPORTUNITIES, DEPT };
+
+  // ---- Nervous? Content (interview-day script and honest reassurance) -------
+  const CALM = {
+    opening: 'Hi Dr. [Last name], thank you for making time. I am [name], a [year] student in BIOS102. I read [one thing from their page or paper] and it made me curious. I am trying to find out what research is really like, so I have a few questions.',
+    blank: 'If your mind goes blank, say this: "Can I look at my notes for a second?" Then read the next question off your list. Nobody minds. Professors like students who come prepared.',
+    close: 'Before you leave say: "Thank you. What is the best next step for me?" Then write down exactly what they say and send your thank-you note the same day.',
+    grades: 'If your grades are not where you want them: the department pages I checked do not list a GPA minimum for independent study, and the Thomson Fellowship page only says you must be a declared Biological Sciences major. Requirements can differ by professor, so ask. You can say: "I have not done as well as I would like in some classes, and I am working on it. I want to show what I can do in a lab. What would you need to see from me?" Professors mostly care that you show up, follow through and are curious.',
+    nerves: [
+      'Being nervous means you care. It does not mean you will do badly.',
+      'You only need to do one small step at a time. Today\u2019s step can take 10 minutes.',
+      'A friend sitting next to you while you work (even quietly) makes starting easier.',
+      'You are asking for 20 minutes, not a job. A "no" or silence is about their schedule.',
+      'Set a phone alarm for 10 minutes. When it rings you are allowed to stop.',
+    ],
+  };
+  return { CHECKED, TAGS, FACULTY, OTHERS, CARDS, CHOICES, CONSTRAINTS, FREE, QUESTIONS, OPPORTUNITIES, DEPT, CALM };
 })();

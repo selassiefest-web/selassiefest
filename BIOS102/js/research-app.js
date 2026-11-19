@@ -18,7 +18,7 @@
   let S = blank();
   let view = 'home';
   let isInstructor = false;
-  let ui = { open: {}, panel: {}, filter: '' };
+  let ui = { open: {}, panel: {}, step: {}, filter: '' };
   let saveTimer = null;
 
   function blank() {
@@ -62,19 +62,26 @@
     clearTimeout(saveTimer);
     saveTimer = setTimeout(pushServer, now ? 0 : 900);
   }
+  function expiredBanner() {
+    if (document.getElementById('expired')) return;
+    const b = document.createElement('div'); b.id = 'expired'; b.className = 'rm-card warn'; b.style.cssText = 'margin:0;border-radius:0;position:sticky;top:0;z-index:60';
+    b.innerHTML = '<strong>Your sign-in expired.</strong> Your work is safe on this device. <a href="/BIOS102/index.html">Sign in again</a> to keep saving to your account.';
+    document.body.insertBefore(b, document.body.firstChild);
+  }
   async function pushServer() {
     try {
       await window.sfSupabase.bios102RmSave(session.sessionToken, S);
       flash('Saved');
     } catch (e) {
-      flash('Could not save to the server. Your work is kept on this device.', true);
+      if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner();
+      else flash('Could not save to the server. Your work is kept on this device.', true);
     }
   }
   async function load() {
     let local = null;
     try { local = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { local = null; }
     let remote = null;
-    try { remote = await window.sfSupabase.bios102RmLoad(session.sessionToken); } catch (e) { remote = null; }
+    try { remote = await window.sfSupabase.bios102RmLoad(session.sessionToken); } catch (e) { remote = null; if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner(); }
     const pick = (remote && remote.v ? remote : null);
     if (pick && local && local._t > (pick._t || 0)) S = Object.assign(blank(), local);
     else if (pick) S = Object.assign(blank(), pick);
@@ -136,6 +143,8 @@
     return `
       <h1 class="rm-h1">Hi ${first}. Let&rsquo;s find the research that fits you.</h1>
       <p class="rm-lede">UW&ndash;Parkside&rsquo;s biology faculty run real labs and field projects, and the department openly invites students to schedule an appointment with any of them to talk about research. This page walks you through doing exactly that: figure out what you care about, see who studies it, then set up and run your own interviews.</p>
+      <div class="rm-card warn"><strong>Check your UWP Outlook every day.</strong> Professors will reply to your university email, and replies sometimes land in Junk or Other. If you set up Outlook on your phone, turn on notifications.</div>
+      <div class="rm-card tint"><strong>Feeling nervous or behind? That is normal.</strong> You do not have to do everything today. Each step below can take 10 minutes, and the page saves your place. Your first step is only to rate a few activities.</div>
       ${next ? `<div class="rm-card green"><div class="rm-spread"><div><div class="band s1">Your next step</div><p style="margin:4px 0 0;font-size:18px">${esc(next.text)}</p></div><button class="btn-p" data-act="go" data-v="${next.stage === 'debrief' ? 'decide' : next.stage === 'know' ? 'know' : next.stage}">Go</button></div></div>` : ''}
       <div class="rm-grid">
         ${steps.map(([id, n, t, d]) => `<div class="rm-card" style="margin:0"><div class="rm-row"><span class="rank">${n}</span><h3 class="rm-h3" style="margin:0">${t}</h3>${stepDone(id) ? '<span class="chip g">done</span>' : ''}</div><p style="margin:8px 0 12px" class="rm-muted">${d}</p><button class="btn-s btn-sm" data-act="go" data-v="${id}">${stepDone(id) ? 'Review' : 'Open'}</button></div>`).join('')}
@@ -144,7 +153,7 @@
       <div class="rm-card tint">
         <ul style="margin:0 0 0 18px;padding:0">
           <li><strong>You are asking for a conversation, not a job.</strong> Twenty minutes to hear about their work. That is what the department invites.</li>
-          <li><strong>You write and send every email yourself</strong>, from your Rangers account. This site never emails a professor for you.</li>
+          <li><strong>You write and send every email yourself</strong>, from your UWP Outlook account. This site never emails a professor for you.</li>
           <li><strong>Be specific.</strong> Each draft makes you add one sentence about their actual work. Generic emails get ignored.</li>
           <li><strong>Talk to two or three people, not all of them.</strong> Faculty are busy and your classmates are doing this too. The page stops you at ${MAX_LIST}.</li>
           <li><strong>A no, or no reply, is normal.</strong> It is about their time, not your worth. The tracker tells you when to follow up once and when to move on.</li>
@@ -167,13 +176,14 @@
     const choices = D.CHOICES.map((q) => `<div class="rm-card"><h3 class="rm-h3">${esc(q.text)}</h3>${radio('answers.choices.' + q.id, q.options.map((o) => [o.v, o.label]), a.choices[q.id])}</div>`).join('');
     const K = D.CONSTRAINTS;
     const cons = Object.entries(K).map(([id, q]) => `<div class="rm-card"><h3 class="rm-h3">${esc(q.text)}</h3>${radio('answers.constraints.' + id, q.options, (a.constraints || {})[id])}</div>`).join('');
-    const free = D.FREE.map((q) => `<div class="rm-card"><label class="f" for="free-${q.id}" style="margin-top:0">${esc(q.text)} <span class="rm-muted">(optional, but it makes your emails better)</span></label><textarea id="free-${q.id}" data-bind="answers.free.${q.id}" placeholder="${esc(q.hint)}">${esc((a.free || {})[q.id] || '')}</textarea></div>`).join('');
+    const free = D.FREE.map((q) => `<div class="rm-card"><label class="f" for="free-${q.id}" style="margin-top:0">${esc(q.text)} <span class="rm-muted">(optional: skip it if you want. It makes your emails better)</span></label><textarea id="free-${q.id}" data-bind="answers.free.${q.id}" placeholder="${esc(q.hint)}">${esc((a.free || {})[q.id] || '')}</textarea></div>`).join('');
     return `
       <h1 class="rm-h1">Know yourself first</h1>
       <p class="rm-lede">Rate each activity from 1 to 5 by how much you would want to spend a week doing it. Go with your gut. You are not choosing a career, only finding where to start talking to people.</p>
       <div class="progress"><div class="rm-muted" id="know-count">${rated} of ${D.CARDS.length} rated</div><div class="bar"><i id="know-bar" style="width:${Math.round(rated / D.CARDS.length * 100)}%"></i></div></div>
+      <div class="rm-card green" id="early" hidden></div>
       ${cards}
-      <h2 class="rm-h2">A few quick questions</h2>
+      <h2 class="rm-h2">A few quick questions <span class="rm-muted" style="font-size:14px">(optional, but the animals and travel ones help)</span></h2>
       ${choices}${cons}
       <h2 class="rm-h2">In your own words</h2>
       ${free}
@@ -184,10 +194,19 @@
     const rated = E.answeredCount(a);
     const cnt = $('#know-count'); if (!cnt) return;
     cnt.textContent = rated + ' of ' + D.CARDS.length + ' rated';
+    if (rated >= 1 && rated < D.CARDS.length) cnt.textContent += ' (you can stop after ' + E.MIN_CARDS + ')';
     $('#know-bar').style.width = Math.round(rated / D.CARDS.length * 100) + '%';
     const ok = E.profileComplete(a);
     $('#know-done').disabled = !ok;
-    $('#know-status').textContent = ok ? 'Ready. Your matches are waiting.' : 'Finish all the cards and the multiple-choice questions to see your matches.';
+    $('#know-status').textContent = ok ? (rated >= D.CARDS.length ? 'Ready. Your matches are waiting.' : 'You can see your matches now. Rating the rest makes them sharper.') : 'Rate at least ' + E.MIN_CARDS + ' cards to see your matches (' + (E.MIN_CARDS - rated) + ' to go).';
+    const early = $('#early');
+    if (early) {
+      if (rated >= 5) {
+        const top = E.matchAll(a).filter((m) => m.score > 0).slice(0, 2);
+        early.hidden = !top.length;
+        early.innerHTML = top.length ? '<strong>Early read, already:</strong> you are leaning toward ' + top.map((m) => esc(m.f.honorific + ' ' + m.f.last) + ' (' + esc(m.f.oneLine.split(':')[0].split(',')[0]) + ')').join(' and ') + '. <span class="rm-muted">Just a guess so far. It changes as you answer more.</span>' : '';
+      } else early.hidden = true;
+    }
     $$('label.opt').forEach((l) => { const r = $('input', l); l.classList.toggle('on', !!(r && r.checked)); });
   }
 
@@ -282,6 +301,17 @@
     'What caught my attention was [something specific], because [why it matters to you].',
     'I have been curious about [topic] since [a moment in class or life], so your work on [their topic] stood out.',
   ];
+  function sparkPick(f) {
+    const sp = f.spark; if (!sp) return '';
+    const L = sp.latest;
+    return `<div class="rm-card tint" style="margin:10px 0"><p style="margin:0 0 6px"><strong>Newest paper:</strong> <a href="${esc(L.link)}" target="_blank" rel="noopener">${esc(L.title)}</a> <span class="rm-muted">(${esc(L.venue)}, ${L.year})</span></p>
+      <p style="margin:0 0 6px">${esc(L.plain)}</p>
+      <p style="margin:0"><strong>Where the lab is today:</strong> ${esc(sp.today)}</p></div>
+      <p style="margin:14px 0 6px"><strong>Which of these makes you most curious?</strong> Tap one. You will put it in your own words next.</p>
+      ${sp.facts.map((x, i) => `<div class="card-q" style="padding:12px 14px"><p style="margin:0 0 8px;font-size:16px">${esc(x.t)}</p><button type="button" class="btn-s btn-sm" data-act="useFact" data-id="${f.id}" data-i="${i}">This one</button></div>`).join('')}
+      <details class="rm-card"><summary><strong>Want to think a bit more first?</strong></summary><ul style="margin:8px 0 0 18px;padding:0">${sp.ponder.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>${L.said ? `<p class="rm-muted" style="margin:8px 0 0"><strong>From the abstract:</strong> &ldquo;${esc(L.said)}&rdquo;</p>` : ''}</details>
+      <p class="hint">Summaries come from paper abstracts and the professor&rsquo;s own pages (checked ${esc(D.CHECKED)}). Their newest work may not be listed, so &ldquo;what are you working on now?&rdquo; is always a good question.</p>`;
+  }
   function sparkHtml(f, withUse) {
     const sp = f.spark; if (!sp) return '';
     const L = sp.latest;
@@ -318,9 +348,11 @@
     const cards = S.shortlist.map((id) => interviewCard(F[id])).join('');
     return `
       <h1 class="rm-h1">Set up your interviews</h1>
-      <p class="rm-lede">You are asking each professor for 20 minutes. You write the email, you send it from your Rangers account, you run the conversation. Each card below walks you through one professor.</p>
+      <p class="rm-lede">You are asking each professor for 20 minutes. You write the email, you send it from your UWP Outlook account, you run the conversation. Each card below walks you through one professor.</p>
+      <div class="rm-card warn"><strong>Check your UWP Outlook every day.</strong> Replies come to your university email and sometimes land in Junk or Other.</div>
+      ${calmCard()}
       <details class="rm-card tint"><summary><strong>Email etiquette (read this once)</strong></summary><ul style="margin:8px 0 0 18px;padding:0">
-        <li>Send from your @rangers.uwp.edu address and sign with your full name.</li>
+        <li>Send from your UWP Outlook email and sign with your full name.</li>
         <li>Keep it short. One specific sentence about their work beats a paragraph of flattery.</li>
         <li>Offer two or three time windows, and say you can work around office hours.</li>
         <li>Wait a week, then send one polite follow-up. Then move on. Visiting office hours in person also works.</li>
@@ -343,19 +375,36 @@
     if (panel === 'email') {
       const ok = sentenceOk(o.customLine);
       const draft = draftFor(f.id);
-      body = `<div class="detail"><h4>Your interview request</h4>
-        ${sparkHtml(f, true)}
-        <label class="f" for="cl-${f.id}">Your own sentence (required)</label>
-        <textarea id="cl-${f.id}" data-bind="outreach.${f.id}.customLine" data-live="${f.id}">${esc(o.customLine || '')}</textarea><p class="hint">${esc(sentenceHint(f))}</p>
-        <label class="f" for="tm-${f.id}">When you are free</label>
-        <input type="text" id="tm-${f.id}" data-bind="outreach.${f.id}.times" data-live="${f.id}" value="${esc(o.times || '')}" placeholder="for example: Tuesdays after 2 pm or Thursdays before noon" />
-        <p class="hint">Read their profile first: <a href="${f.profile}" target="_blank" rel="noopener">${esc(f.honorific + ' ' + f.last)}</a>. ${esc(f.readFirst)}</p>
-        <label class="f">Preview</label><div class="preview" id="prev-${f.id}"><b>To:</b> ${esc(draft.to)}\n<b>Subject:</b> ${esc(draft.subject)}\n\n${esc(draft.body)}</div>
-        <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence, with no [brackets] left in it, to unlock the buttons.</p>
-        <div class="rm-row"><button class="btn-p" data-act="mailDraft" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">Open in my email app</button>
-        <button class="btn-s" data-act="copyDraft" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">Copy the email</button>
-        <button class="btn-s" data-act="markSent" data-id="${f.id}" ${ok ? '' : 'disabled'} data-needs="${f.id}">I sent it</button></div>
-        <p class="hint">Your email app opens with the message ready. Check that it is going from your Rangers address, then press send there. Come back and tap &ldquo;I sent it.&rdquo;</p></div>`;
+      const step = ui.step[f.id] || 1;
+      const nav = `<div class="rm-muted" style="margin-bottom:8px"><strong>Step ${step} of 3</strong> &middot; ${['Pick what sparks your curiosity', 'Say it in your own words', 'Check it and send it yourself'][step - 1]}</div>`;
+      if (step === 1) {
+        body = `<div class="detail">${nav}${sparkPick(f)}<div class="rm-row"><button class="btn-t" data-act="step" data-id="${f.id}" data-v="2">I will write my own instead</button></div></div>`;
+      } else if (step === 2) {
+        body = `<div class="detail">${nav}
+          <p style="margin:0 0 6px">Say what you found interesting, in your own words. One or two sentences is plenty. You can speak it instead of typing.</p>
+          <label class="f" for="cl-${f.id}">Your sentence</label>
+          <textarea id="cl-${f.id}" data-bind="outreach.${f.id}.customLine" data-live="${f.id}">${esc(o.customLine || '')}</textarea>
+          <p class="hint">${esc(sentenceHint(f))}</p>
+          <p style="margin:8px 0 4px"><strong>Stuck on how to start?</strong> Tap one and fill in the brackets.</p><div>${STARTERS.map((x, i) => `<button type="button" class="chip" data-act="starter" data-id="${f.id}" data-i="${i}">${esc(x)}</button>`).join('')}</div>
+          <label class="f" for="tm-${f.id}">When are you free?</label>
+          <input type="text" id="tm-${f.id}" data-bind="outreach.${f.id}.times" data-live="${f.id}" value="${esc(o.times || '')}" placeholder="for example: Tuesdays after 2 pm or Thursdays before noon" />
+          <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence, with no [brackets] left in it, to go on.</p>
+          <div class="rm-row" style="margin-top:12px"><button class="btn-s" data-act="step" data-id="${f.id}" data-v="1">Back</button><button class="btn-p" data-act="step" data-id="${f.id}" data-v="3" ${ok ? '' : 'disabled'} data-needs="${f.id}">Next</button></div></div>`;
+      } else {
+        body = `<div class="detail">${nav}
+          <p style="margin:0 0 6px">Read it once. If it sounds like you, send it.</p>
+          <div class="preview" id="prev-${f.id}"><b>To:</b> ${esc(draft.to)}\n<b>Subject:</b> ${esc(draft.subject)}\n\n${esc(draft.body)}</div>
+          <div class="rm-row"><button class="btn-p" data-act="outlookDraft" data-id="${f.id}">Open in Outlook (web)</button>
+          <button class="btn-s" data-act="mailDraft" data-id="${f.id}">Open in my mail app</button>
+          <button class="btn-s" data-act="copyDraft" data-id="${f.id}">Copy the email</button></div>
+          <p class="hint">Outlook opens with the message filled in. Press send there, then come back and tap the button below.</p>
+          <div class="rm-row" style="margin-top:10px"><button class="btn-s" data-act="step" data-id="${f.id}" data-v="2">Back and edit</button><button class="btn-p" data-act="markSent" data-id="${f.id}">I sent it</button></div></div>`;
+      }
+    } else if (panel === 'sentok') {
+      const fu = new Date(new Date(o.sentAt || Date.now()).getTime() + 7 * 86400000); fu.setHours(9, 0, 0, 0);
+      const ev = { title: 'Follow up with ' + f.honorific + ' ' + f.last + ' about a research conversation', start: fu.toISOString(), minutes: 15, description: 'If there is no reply by today, send one short follow-up from the Research Match page, or visit office hours. Then move on to the next professor on your list.' };
+      body = `<div class="detail"><h4>Sent. Nice work.</h4><p>That was the hardest step. Now:</p><ul style="margin:0 0 8px 18px;padding:0"><li><strong>Check your UWP Outlook every day</strong>, including Junk and Other. A reply can come in hours or days.</li><li>Set a reminder so you do not have to remember to follow up in a week.</li></ul>
+        <div class="rm-row"><a class="btn-p btn-sm" href="${esc(E.outlookEvent(ev))}" target="_blank" rel="noopener">Add a follow-up reminder to Outlook</a><button class="btn-s btn-sm" data-act="followIcs" data-id="${f.id}">Download for another calendar</button><button class="btn-t" data-act="panel" data-id="${f.id}" data-v="sentok">Close</button></div></div>`;
     } else if (panel === 'follow') {
       const fu = E.followUp(student(), f, o);
       body = `<div class="detail"><h4>One polite follow-up</h4><div class="preview"><b>To:</b> ${esc(fu.to)}\n<b>Subject:</b> ${esc(fu.subject)}\n\n${esc(fu.body)}</div>
@@ -384,7 +433,8 @@
     }
     if (o.status === 'scheduled') {
       acts.push(`<button class="btn-p btn-sm" data-act="panel" data-id="${f.id}" data-v="prep">Prep sheet and questions</button>`);
-      acts.push(`<button class="btn-s btn-sm" data-act="ics" data-id="${f.id}">Add to my calendar</button>`);
+      acts.push(`<button class="btn-s btn-sm" data-act="outlookInterview" data-id="${f.id}">Add to Outlook calendar</button>`);
+      acts.push(`<button class="btn-t" data-act="ics" data-id="${f.id}">Other calendar (.ics)</button>`);
       acts.push(`<button class="btn-s btn-sm" data-act="setStatus" data-id="${f.id}" data-v="done">Interview done</button>`);
       acts.push(`<button class="btn-t" data-act="panel" data-id="${f.id}" data-v="schedule">Change time</button>`);
     }
@@ -541,6 +591,23 @@
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'interview-' + f.last.toLowerCase() + '.ics';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
+  function followIcs(id) {
+    const f = F[id], o = O(id);
+    const fu = new Date(new Date(o.sentAt || Date.now()).getTime() + 7 * 86400000); fu.setHours(9, 0, 0, 0);
+    const ics = E.icsEvent({ title: 'Follow up with ' + f.honorific + ' ' + f.last, start: fu.toISOString(), minutes: 15, description: 'No reply yet? Send one short follow-up, or visit office hours. Then move on.' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'followup-' + f.last.toLowerCase() + '.ics';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  function calmCard() {
+    const C = D.CALM;
+    const worry = ((S.answers.free || {}).worry || '').trim();
+    return `<details class="rm-card green"><summary><strong>Nervous about this? Open this first.</strong></summary>
+      ${worry ? `<p style="margin:10px 0 0"><strong>You wrote that you worry:</strong> &ldquo;${esc(worry)}&rdquo; That is a very common worry, and the steps below are built for it.</p>` : ''}
+      <ul style="margin:10px 0 0 18px;padding:0">${C.nerves.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      <h4 style="margin:14px 0 4px;color:var(--green)">If your grades are not where you want them</h4><p style="margin:0">${esc(C.grades)}</p>
+      <h4 style="margin:14px 0 4px;color:var(--green)">Your script for the interview</h4>
+      <p style="margin:0 0 6px"><strong>Opening:</strong> ${esc(C.opening)}</p><p style="margin:0 0 6px"><strong>If you blank:</strong> ${esc(C.blank)}</p><p style="margin:0"><strong>Closing:</strong> ${esc(C.close)}</p></details>`;
+  }
   function printSheet(id) {
     const f = F[id], o = O(id);
     const qs = (o.questions || []).concat((o.ownQ || '').split('\n').map((x) => x.trim()).filter(Boolean));
@@ -549,6 +616,7 @@
       <h2>What they study</h2><p>${esc(f.oneLine)}</p><p><b>Read first:</b> ${esc(f.readFirst)}</p>
       <h2>My questions</h2><ol>${qs.map((q) => `<li>${esc(q)}<div class="lines"></div></li>`).join('') || '<li>(none picked)</li>'}</ol>
       <h2>Before I walk in</h2><ul><li>Arrive 5 minutes early. Silence my phone.</li><li>Open with 30 seconds on who I am and why I asked for this meeting.</li><li>Take notes. Ask what the next step is.</li><li>Thank them by email within 24 hours.</li></ul>
+      <h2>If I get nervous</h2><p>${esc(D.CALM.blank)}</p><p>${esc(D.CALM.close)}</p>
       <h2>Notes</h2><div class="lines"></div><div class="lines"></div><div class="lines"></div><div class="lines"></div>`;
     window.print();
   }
@@ -574,10 +642,14 @@
       case 'finishKnow':
         if (!E.profileComplete(S.answers)) return;
         S.profileDone = true; save(true); go('matches'); break;
-      case 'panel': ui.panel[id] = ui.panel[id] === v ? null : v; render(); break;
+      case 'panel': ui.panel[id] = ui.panel[id] === v ? null : v; if (v === 'email' && ui.panel[id]) ui.step[id] = ui.step[id] || (sentenceOk(O(id).customLine) ? 3 : 1); render(); break;
+      case 'step': ui.step[id] = Number(v); render(); break;
+      case 'outlookDraft': draftedMark(id); window.open(E.outlookCompose(draftFor(id)), '_blank', 'noopener'); break;
       case 'mailDraft': draftedMark(id); window.location.href = E.mailto(draftFor(id)); break;
+      case 'followIcs': followIcs(id); break;
+      case 'outlookInterview': { const o2 = O(id); if (!o2.interviewDate) { flash('Add a date and time first.', true); break; } window.open(E.outlookEvent({ title: 'Research interview: ' + F[id].honorific + ' ' + F[id].last, start: o2.interviewDate, minutes: 20, location: o2.place || '', description: 'Bring your questions. Thank-you email within 24 hours.' }), '_blank', 'noopener'); break; }
       case 'copyDraft': draftedMark(id); copy(asText(draftFor(id)), 'Email copied'); break;
-      case 'markSent': { const o = O(id); if (o.status !== 'sent') { o.status = 'sent'; o.sentAt = new Date().toISOString(); } ui.panel[id] = null; save(); render(); flash('Marked as sent'); break; }
+      case 'markSent': { const o = O(id); if (o.status !== 'sent') { o.status = 'sent'; o.sentAt = new Date().toISOString(); } ui.panel[id] = 'sentok'; save(); render(); flash('Marked as sent'); break; }
       case 'mailFollow': { const o = O(id); o.followedUp = new Date().toISOString(); save(); window.location.href = E.mailto(E.followUp(student(), F[id], o)); break; }
       case 'copyFollow': copy(asText(E.followUp(student(), F[id], O(id))), 'Follow-up copied'); break;
       case 'setStatus': { const o = O(id); o.status = v; if (v === 'done') o.doneAt = new Date().toISOString(); ui.panel[id] = null; save(); render(); break; }
@@ -595,7 +667,7 @@
       case 'markAsk': S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
       case 'dictate': toggleDictation(b); break;
-      case 'useFact': insertInto(id, F[id].spark.facts[Number(b.dataset.i)].use); break;
+      case 'useFact': { const o3 = O(id); const u = F[id].spark.facts[Number(b.dataset.i)].use; o3.customLine = (o3.customLine || '').trim() ? o3.customLine.trim() + ' ' + u : u; ui.step[id] = 2; save(); render(); break; }
       case 'starter': insertInto(id, STARTERS[Number(b.dataset.i)]); break;
       case 'emailPlan': emailPlan(b); break;
       default: break;

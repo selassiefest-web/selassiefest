@@ -44,14 +44,14 @@ window.RM_ENGINE = (() => {
     return Object.keys(r).filter((id) => Number(r[id]) > 0).length;
   }
 
+  const MIN_CARDS = 8;
   function profileComplete(answers) {
     const a = answers || {};
     const rated = answeredCount(a);
     const choices = a.choices || {};
     const k = a.constraints || {};
-    return rated >= D().CARDS.length
-      && D().CHOICES.every((q) => choices[q.id])
-      && ['animals', 'travel', 'hours', 'goal', 'stage'].every((id) => k[id]);
+    // Eight cards are enough to get useful matches. The rest sharpen them but are optional.
+    return rated >= MIN_CARDS;
   }
 
   const MENTOR_BONUS = { strong: 1.0, good: 0.6, some: 0.2, pathway: 0.3, few: 0 };
@@ -192,6 +192,18 @@ ${sig(student)}`,
     return h === '2-3' ? '2 to 3' : h === '4-6' ? '4 to 6' : h === '7+' ? '7 or more' : '[hours per week]';
   }
 
+  // Students have UWP Outlook (Microsoft 365). These open Outlook on the web with the message
+  // or event already filled in, so nothing depends on a desktop mail app being set up.
+  function outlookCompose(draft) {
+    return 'https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(draft.to) + '&subject=' + encodeURIComponent(draft.subject) + '&body=' + encodeURIComponent(draft.body);
+  }
+  function outlookEvent({ title, start, minutes, location, description }) {
+    const d = new Date(start); const e = new Date(d.getTime() + (minutes || 20) * 60000);
+    return 'https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&subject=' + encodeURIComponent(title)
+      + '&startdt=' + encodeURIComponent(d.toISOString()) + '&enddt=' + encodeURIComponent(e.toISOString())
+      + (location ? '&location=' + encodeURIComponent(location) : '') + '&body=' + encodeURIComponent(description || '');
+  }
+
   function mailto(draft) {
     return 'mailto:' + encodeURIComponent(draft.to).replace('%40', '@') + '?subject=' + encodeURIComponent(draft.subject) + '&body=' + encodeURIComponent(draft.body);
   }
@@ -297,7 +309,7 @@ ${sig(student)}`,
 
   return {
     computePrefs, answeredCount, profileComplete, matchAll, fingerprint,
-    interviewRequest, followUp, thankYou, askEmail, mailto,
+    interviewRequest, followUp, thankYou, askEmail, mailto, outlookCompose, outlookEvent, MIN_CARDS,
     fmtDate, fmtDateTime, daysSince, icsEvent,
     STATUS, outreachOf, nextActions, finalRanking,
   };

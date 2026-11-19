@@ -52,7 +52,8 @@ Deno.serve(async (req) => {
       ${list.length ? `<p><b>Your interview list</b></p><ul>${list.map((i: string) => li(`${esc(FAC[i].n)}: ${esc(STATUS[s.outreach?.[i]?.status ?? "none"] ?? "")}${s.outreach?.[i]?.interviewDate ? ` (${esc(new Date(s.outreach[i].interviewDate).toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }))})` : ""}`)).join("")}</ul>` : "<p>You have not picked professors yet.</p>"}
       ${fin ? `<p><b>Your first choice:</b> ${esc(fin.n)}</p>` : ""}
       <p><b>Next steps</b></p><ul>
-        ${li("Email only from your Rangers account, with one specific sentence about their work.")}
+        ${li("Check your UWP Outlook every day, including Junk and Other. Professors reply there.")}
+        ${li("Email only from your UWP Outlook account, with one specific sentence about their work.")}
         ${li("No reply after a week: send one short follow-up, or visit office hours. Then move on.")}
         ${li("Thank each professor by email within 24 hours of an interview.")}
         ${li("Fellowship questions: Dr. Higgs (higgs@uwp.edu) for the Thomson Research Fellowship. Pre-Health advising: Lisa Lee, Greenquist 302.")}
