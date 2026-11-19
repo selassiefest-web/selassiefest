@@ -116,18 +116,18 @@ window.RM_ENGINE = (() => {
 
   // ---- Email drafts -------------------------------------------------------
   function sig(student) {
-    return [student.name || '[Your name]', 'BIOS102 student, UW\u2013Parkside', student.email || ''].filter(Boolean).join('\n');
+    return [student.name || '[Your name]', 'UW\u2013Parkside student', student.email || ''].filter(Boolean).join('\n');
   }
 
   function interviewRequest(student, f, o) {
     const line = (o && o.customLine && o.customLine.trim()) || '[YOUR OWN SENTENCE: what in their work caught your attention, and why]';
     const when = (o && o.times && o.times.trim()) || '[2 or 3 days and times you are free, for example Tuesday after 2 pm]';
     const stage = (o && o.stage) || '';
-    const subject = 'BIOS102 student asking for 20 minutes to learn about your research';
+    const subject = 'Student asking for 20 minutes to learn about your research';
     const body =
 `Dear ${f.honorific} ${f.last},
 
-My name is ${student.name || '[Your name]'} and I am a student in Professor Harris's BIOS102 (Organismal Biology) class${stage ? ', ' + stage : ''}. As part of a course project I am learning how research works at Parkside and finding out which labs might be a good fit for me.
+My name is ${student.name || '[Your name]'} and I am a student at UW\u2013Parkside${stage ? ', ' + stage : ''}. I am learning how research works at Parkside and finding out which labs might be a good fit for me.
 
 ${line}
 
@@ -142,7 +142,7 @@ ${sig(student)}`;
   function followUp(student, f, o) {
     return {
       to: f.email,
-      subject: 'Following up: BIOS102 student request to talk about your research',
+      subject: 'Following up: student request to talk about your research',
       body:
 `Dear ${f.honorific} ${f.last},
 
@@ -234,7 +234,7 @@ ${sig(student)}`,
     const stamp = (x) => `${x.getFullYear()}${p(x.getMonth() + 1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`;
     const end = new Date(d.getTime() + (minutes || 20) * 60000);
     const esc = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
-    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//BIOS102 Research Match//EN', 'BEGIN:VEVENT',
+    return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//UWP Research Match//EN', 'BEGIN:VEVENT',
       'UID:rm-' + d.getTime() + '@selassiefest.com', 'DTSTAMP:' + stamp(new Date()), 'DTSTART:' + stamp(d), 'DTEND:' + stamp(end),
       'SUMMARY:' + esc(title), location ? 'LOCATION:' + esc(location) : '', 'DESCRIPTION:' + esc(description),
       'BEGIN:VALARM', 'TRIGGER:-PT60M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(title), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR']

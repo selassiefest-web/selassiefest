@@ -249,6 +249,7 @@
     return `
       <div class="rm-hero"><h1 class="rm-h1">Hi ${first}. Let&rsquo;s get your summer research applications ready.</h1>
       <p class="rm-lede">Fill in your information once. This hub keeps it ready, builds a packet for every program, and puts a copy button next to every answer. You press Submit yourself in each program&rsquo;s official portal.</p></div>
+      <div class="rm-card tint rm-spread"><div><strong>Looking for a research mentor on campus?</strong><div class="rm-muted">Research Match helps you choose a Parkside professor and set up the interview.</div></div><a class="btn-s" href="/BIOS102/research-match.html">Open Research Match</a></div>
       <div class="rm-card warn"><strong>Your information stays on this computer.</strong> Everything you type here is saved only in this browser. It is never sent to a server, and your instructor cannot see it. Use &ldquo;Save a backup file&rdquo; at the bottom to move it to another device. Check your UWP Outlook every day; programs write to that address.</div>
       <div class="rm-grid">
         ${step(1, 'Fill in your profile', 'Name, contact, school, GPA, and the eligibility answers programs ask for. ' + pct + '% complete.', pct === 100, 'profile', pct === 100 ? 'Review' : 'Open my profile')}
@@ -295,14 +296,14 @@
     const ta = (path, lab, hint, rows) => `<label class="f" for="s-${path}">${lab}</label><textarea id="s-${path}" data-bind="story.${path}" style="min-height:${rows || 84}px" placeholder="${esc(hint || '')}">${esc(getPath(S, 'story.' + path) || '')}</textarea>`;
     return `<h1 class="rm-h1">My story</h1>
       <p class="rm-lede">Programs read what you actually did and how you think. Describe only experience you really have. A careful observation, a revised idea, or a clear record of something unexpected shows how you handle evidence. You can speak any answer instead of typing it.</p>
-      <div class="rm-card tint"><strong>New to research? That is fine.</strong> Several of these programs are built for students with little or no lab experience. Describe something the reader can picture, like a lab you did in BIOS102.</div>
+      <div class="rm-card tint"><strong>New to research? That is fine.</strong> Several of these programs are built for students with little or no lab experience. Describe something the reader can picture, like a lab you did in a class.</div>
       <h2 class="rm-h2">1. Build your master statement</h2>
       <div class="rm-card">${D.STATEMENT_FIELDS.map((q) => ta('fields.' + q.id, esc(q.label), q.hint, 70)).join('')}</div>
       <div class="rm-card green" id="master-box">${masterBox()}</div>
       <h2 class="rm-h2">2. Your background in plain facts</h2>
       <div class="rm-card">
         ${ta('courses', 'Science and math courses you have taken (and are taking)', 'One per line, for example: BIOS 102 Organismal Biology, CHEM 101')}
-        ${ta('labs', 'Lab, fieldwork or research experience (class labs count)', 'For example: BIOS102 lab: dissections, microscope work, Pilobolus experiment. Be specific about what YOU did.')}
+        ${ta('labs', 'Lab, fieldwork or research experience (class labs count)', 'For example: a class lab with dissections and microscope work. Be specific about what YOU did.')}
         ${ta('work', 'Jobs and volunteering', 'One per line: Role, place, dates, what you did or learned')}
         ${ta('skills', 'Skills', 'For example: microscopy, sterile technique, Excel, Python, Spanish, careful note-taking')}
         ${ta('honors', 'Honors, activities and leadership', 'One per line')}
@@ -508,7 +509,7 @@ ${prof().email || ''}`;
     });
     const pad = (n) => String(n).padStart(2, '0'); const st = (x) => `${x.getFullYear()}${pad(x.getMonth() + 1)}${pad(x.getDate())}T${pad(x.getHours())}${pad(x.getMinutes())}00`;
     const esc2 = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
-    const out = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//BIOS102 Application Hub//EN'];
+    const out = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//UWP Application Hub//EN'];
     ev.forEach((e, i) => { const end = new Date(e.start.getTime() + 30 * 60000); out.push('BEGIN:VEVENT', 'UID:ap-' + i + '-' + e.start.getTime() + '@selassiefest.com', 'DTSTAMP:' + st(new Date()), 'DTSTART:' + st(e.start), 'DTEND:' + st(end), 'SUMMARY:' + esc2(e.title), 'DESCRIPTION:' + esc2(e.desc), 'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc2(e.title), 'END:VALARM', 'END:VEVENT'); });
     out.push('END:VCALENDAR');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([out.join('\r\n')], { type: 'text/calendar' })); a.download = 'my-research-application-deadlines.ics'; document.body.appendChild(a); a.click(); document.body.removeChild(a);

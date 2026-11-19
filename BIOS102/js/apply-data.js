@@ -255,7 +255,7 @@ window.AP_DATA = (() => {
 
   // Master statement template pieces (from the directory). The student fills in their own words.
   const STATEMENT_FIELDS = [
-    { id: 'noticed', label: 'Where did you notice something? (a course, lab, job or volunteer experience)', hint: 'For example: in BIOS102 lab, while dissecting an earthworm.' },
+    { id: 'noticed', label: 'Where did you notice something? (a course, lab, job or volunteer experience)', hint: 'For example: in a biology lab, while dissecting an earthworm.' },
     { id: 'observation', label: 'What specific thing did you notice?', hint: 'One concrete observation you can picture.' },
     { id: 'question', label: 'What question did it make you curious about?', hint: 'A real question, not a slogan.' },
     { id: 'didwhat', label: 'What did you actually do to explore it?', hint: 'Only what you really did, even if small: looked it up, asked your instructor, repeated a measurement.' },

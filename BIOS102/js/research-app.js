@@ -150,17 +150,18 @@
       <div class="rm-grid">
         ${steps.map(([id, n, t, d]) => `<div class="rm-card" style="margin:0"><div class="rm-row"><span class="rank">${n}</span><h3 class="rm-h3" style="margin:0">${t}</h3>${stepDone(id) ? '<span class="chip g">done</span>' : ''}</div><p style="margin:8px 0 12px" class="rm-muted">${d}</p><button class="btn-s btn-sm" data-act="go" data-v="${id}">${stepDone(id) ? 'Review' : 'Open'}</button></div>`).join('')}
       </div>
+      <div class="rm-card tint rm-spread"><div><strong>Applying for summer research programs?</strong><div class="rm-muted">Fill in your information once and get a copy-ready packet for each program.</div></div><a class="btn-s" href="/BIOS102/apply.html">Open the Application Hub</a></div>
       <h2 class="rm-h2">Ground rules</h2>
       <div class="rm-card tint">
         <ul style="margin:0 0 0 18px;padding:0">
           <li><strong>You are asking for a conversation, not a job.</strong> Twenty minutes to hear about their work. That is what the department invites.</li>
-          <li><strong>You write and send every email yourself</strong>, from your UWP Outlook account. This site never emails a professor for you.</li>
+          <li><strong>You write and send every email yourself</strong>, from your UWP Outlook account.</li>
           <li><strong>Be specific.</strong> Each draft makes you add one sentence about their actual work. Generic emails get ignored.</li>
           <li><strong>Talk to two or three people, not all of them.</strong> Faculty are busy and your classmates are doing this too. The page stops you at ${MAX_LIST}.</li>
           <li><strong>A no, or no reply, is normal.</strong> It is about their time, not your worth. The tracker tells you when to follow up once and when to move on.</li>
         </ul>
       </div>
-      <p class="rm-muted">Stuck? Your instructor, ${esc(D.DEPT.instructor.name)} (<a href="mailto:${D.DEPT.instructor.email}">${D.DEPT.instructor.email}</a>), is the right person to ask how to get started. Department office: ${esc(D.DEPT.office)}.</p>`;
+      <p class="rm-muted">Stuck? Visit the department office: ${esc(D.DEPT.office)}.</p>`;
   }
 
   // --- Know yourself ---
@@ -591,7 +592,7 @@
   function downloadICS(id) {
     const f = F[id], o = O(id);
     if (!o.interviewDate) { flash('Add a date and time first.', true); return; }
-    const ics = E.icsEvent({ title: 'Research interview: ' + f.honorific + ' ' + f.last, start: o.interviewDate, minutes: 20, location: o.place || '', description: 'BIOS102 research mentor interview. Bring your questions. Thank-you email within 24 hours.' });
+    const ics = E.icsEvent({ title: 'Research interview: ' + f.honorific + ' ' + f.last, start: o.interviewDate, minutes: 20, location: o.place || '', description: 'Research mentor interview. Bring your questions. Thank-you email within 24 hours.' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'interview-' + f.last.toLowerCase() + '.ics';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }

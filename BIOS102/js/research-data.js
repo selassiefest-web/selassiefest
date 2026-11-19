@@ -246,7 +246,7 @@ window.RM_DATA = (() => {
   // Everyone else on the Biological Sciences directory (not matchable as research mentors,
   // but the student should know who they are and why).
   const OTHERS = [
-    { name: 'Albert Harris', role: 'Lecturer', note: 'Your BIOS102 instructor. Teaches BIOS 100, 101, 102, 202 and 303. No research program is listed; he is a good person to ask how to prepare for any of the interviews.', email: 'harria01@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/harria01/' },
+    { name: 'Albert Harris', role: 'Lecturer', note: 'Teaches BIOS 100, 101, 102, 202 and 303. No research program is listed; he is a good person to ask how to prepare for any of the interviews.', email: 'harria01@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/harria01/' },
     { name: 'Catherine “Cathy” Mossman', role: 'Distinguished Lecturer', note: 'Teaches introductory organismal biology, animal behavior and biostatistics, and has taught at Parkside for over 20 years. She does not have an active research lab on campus, but she is a good person to ask for advice about animal behavior and how to get started.', email: 'mossman@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/mossman/' },
     { name: 'John Bennett', role: 'Visiting Assistant Professor', note: 'His profile says he has no active research. His most recent project helped a student study dementia-related health-care policy in Milwaukee County. A good conversation if health law or policy interests you.', email: 'bennettj@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/bennettj/' },
     { name: 'Anna Kase', role: 'Adjunct Instructor', note: 'Teaches BIOS 101. No research listed.', email: 'kase@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/kase/' },
@@ -396,7 +396,7 @@ window.RM_DATA = (() => {
   ];
 
   const DEPT = {
-    office: 'Greenquist Hall L321',
+    office: 'D132, or text 312-296-9816',
     chair: { name: 'Dr. Christopher Noto', email: 'noto@uwp.edu', phone: '262-595-2213' },
     instructor: { name: 'Professor Albert Harris', email: 'harria01@uwp.edu' },
     directory: 'https://www.uwp.edu/faculty-and-staff/',
@@ -556,7 +556,7 @@ window.RM_DATA = (() => {
 
   // ---- Nervous? Content (interview-day script and honest reassurance) -------
   const CALM = {
-    opening: 'Hi Dr. [Last name], thank you for making time. I am [name], a [year] student in BIOS102. I read [one thing from their page or paper] and it made me curious. I am trying to find out what research is really like, so I have a few questions.',
+    opening: 'Hi Dr. [Last name], thank you for making time. I am [name], a [year] student at Parkside. I read [one thing from their page or paper] and it made me curious. I am trying to find out what research is really like, so I have a few questions.',
     blank: 'If your mind goes blank, say this: "Can I look at my notes for a second?" Then read the next question off your list. Nobody minds. Professors like students who come prepared.',
     close: 'Before you leave say: "Thank you. What is the best next step for me?" Then write down exactly what they say and send your thank-you note the same day.',
     grades: 'If your grades are not where you want them: the department pages I checked do not list a GPA minimum for independent study, and the Thomson Fellowship page only says you must be a declared Biological Sciences major. Requirements can differ by professor, so ask. You can say: "I have not done as well as I would like in some classes, and I am working on it. I want to show what I can do in a lab. What would you need to see from me?" Professors mostly care that you show up, follow through and are curious.',

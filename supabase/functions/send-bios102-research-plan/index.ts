@@ -8,7 +8,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const FROM = "BIOS102 Lab Companion <hello@selassiefest.com>";
+const FROM = "UWP Research Match <hello@selassiefest.com>";
 const INSTRUCTOR = "harria01@uwp.edu";
 const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Content-Type": "application/json" };
 
@@ -59,12 +59,12 @@ Deno.serve(async (req) => {
         ${li("Fellowship questions: Dr. Higgs (higgs@uwp.edu) for the Thomson Research Fellowship. Pre-Health advising: Lisa Lee, Greenquist 302.")}
       </ul>
       <p><a href="https://selassiefest.com/BIOS102/research-match.html" style="background:#154734;color:#fff;padding:10px 18px;text-decoration:none">Open Research Match</a></p>
-      <p style="color:#4a544f;font-size:12px">An independent BIOS102 course tool, not an official UW&ndash;Parkside site. Questions? Reply to this email to reach Professor Harris.</p></div>`;
+      <p style="color:#4a544f;font-size:12px">An independent tool for UW&ndash;Parkside biology students, not an official UW&ndash;Parkside site. Questions? Reply to this email, or visit the department office, D132, or text 312-296-9816.</p></div>`;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: FROM, to: stu.email, reply_to: INSTRUCTOR, subject: "Your BIOS102 research plan", html }),
+      body: JSON.stringify({ from: FROM, to: stu.email, reply_to: INSTRUCTOR, subject: "Your research plan", html }),
     });
     if (!res.ok) return reply(502, { error: "The email service refused it. Try again later." });
     await admin.from("bios102_research_state").update({ last_emailed_at: new Date().toISOString() }).ilike("email", stu.email);
