@@ -44,6 +44,22 @@ Rainbow Beach is named for the 42nd "Rainbow" Division. Its shoulder patch is a 
 - The DJ Lab family site is generated: change colors in `dj-lab/_build/template.html` and `dj-lab/_build/build.py` (`SECTION_COLOR`), then rebuild.
 - The sweep script is `Claude outputs\rainbow-legacy-partners\recolor.js` (dry-run by default, `--apply` to write). Open items: PNG/SVG logos with a seven-color rainbow cannot be recolored by script; the pages' general UI theme (indigo links, amber eyebrow, teal) is separate and untouched.
 
+## Who does what: agent ownership (Stephen, Nov 18, 2026; the main session must not do an agent's job)
+
+Project agents live in `C:\Users\mkepr\Documents\GitHub\selassiefest\.claude\agents\` (all Sonnet). Stephen has authorized the main session to delegate to them as standing practice; this overrides the "no subagents" default in CLAUDE.local.md for these agents only. Agents analyze and draft (read-only); the main session applies approved writes. Route by scope:
+
+| Work | Owner agent | Then |
+|---|---|---|
+| Grant rows (`fs_grant_deadlines`): status, awards, declines, amounts, dates, next steps, past-due triage | `grants-awards-steward` | `partner-grant-data-quality-reviewer` reviews, main session applies |
+| Partner rows, `fs_partner_activity`, every incoming .eml in BOB | `partner-records-steward` | reviewer, then main session applies |
+| Any tracker write before it is applied | `partner-grant-data-quality-reviewer` | main session applies if pass |
+| Preparing one application/inquiry (packet vs funder's current pages, answers, steps, Chrome fill up to Submit) | `application-preparer` | Stephen presses Submit |
+| Meetings, calls, reminders, alarms (calendar sentinel) | `calendar-keeper` finds them | main session runs `add-event.js --apply` |
+| Board results and dashboards | `board-reporting-steward` | main session |
+| Board task ownership, reminders, escalation | `board-accountability-steward` | main session |
+
+The main session: talks to Stephen, applies approved writes, runs approved sends only after Stephen says "send", commits and pushes, and handles anything outside these scopes. It does NOT re-derive an agent's analysis itself. **Before giving Stephen any list of open items, the owning agent verifies each item against the live tracker, `eml-processed.md` and Stephen's chat** (CURRENT-STATUS.md can be stale: a done item once went on a list this way). Stephen's word in chat that something is done beats any file.
+
 ## What this is
 
 A plain static HTML/CSS/JS site for SelassieFest (a roots reggae & cultural festival, run by Ras Tafari Inc, a 501c3). There is no build system, no package manager, and no server-side rendering — every page is a hand-authored, self-contained `.html` file, typically with its CSS inlined in a `<style>` block in the `<head>`. There is nothing to `npm install`, build, lint, or test in the traditional sense.
