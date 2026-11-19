@@ -22,6 +22,11 @@
   --warn-soft: #fff4e0;
   --bad: #9a2b2b;
   --focus: #0b5cad;
+  /* Research-area colors: muted on purpose, used only as thin accents. */
+  --a-eco: #4f7a2b;  --a-eco-soft: #eef4e6;
+  --a-mol: #2b5f9e;  --a-mol-soft: #e8f0fa;
+  --a-body: #b0532c; --a-body-soft: #fbece5;
+  --a-evo: #7a5a2e;  --a-evo-soft: #f4ede2;
 }
 
 * { box-sizing: border-box; }
@@ -36,7 +41,7 @@ a:hover { color: var(--green); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 /* ---- Header ---- */
-.rm-head { background: var(--green); color: #fff; }
+.rm-head { background: linear-gradient(120deg, #123c2c 0%, #154734 45%, #1f6a4c 100%); color: #fff; }
 .rm-head-in { max-width: 1080px; margin: 0 auto; padding: 14px 20px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .rm-brand { display: flex; flex-direction: column; line-height: 1.15; }
 .rm-brand-mark { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
@@ -171,3 +176,43 @@ table.rm th { background: var(--green-soft); color: var(--green); }
   .scale button { min-width: 60px; font-size: 12px; }
   .rm-wrap { padding: 18px 14px 70px; }
 }
+
+/* ---- Color meaning ---- */
+/* Callout cards: a colored left edge says what kind of card it is. */
+.rm-card.green { border-left: 5px solid var(--green); }      /* do this */
+.rm-card.tint  { border-left: 5px solid #3b82c4; }           /* good to know */
+.rm-card.warn  { border-left: 5px solid #d89a1d; }           /* heads-up */
+
+/* Professor cards: top bar and label by research area. */
+.fac.a-eco  { border-top-color: var(--a-eco); }
+.fac.a-mol  { border-top-color: var(--a-mol); }
+.fac.a-body { border-top-color: var(--a-body); }
+.fac.a-evo  { border-top-color: var(--a-evo); }
+.fac.a-eco h3  { color: var(--a-eco); }
+.fac.a-mol h3  { color: var(--a-mol); }
+.fac.a-body h3 { color: var(--a-body); }
+.fac.a-evo h3  { color: var(--a-evo); }
+.area { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 9px; margin: 0 6px 6px 0; border: 1px solid; }
+.area.a-eco  { color: var(--a-eco);  background: var(--a-eco-soft);  border-color: #cddcb8; }
+.area.a-mol  { color: var(--a-mol);  background: var(--a-mol-soft);  border-color: #bfd4ee; }
+.area.a-body { color: var(--a-body); background: var(--a-body-soft); border-color: #efc9b8; }
+.area.a-evo  { color: var(--a-evo);  background: var(--a-evo-soft);  border-color: #e0cfb2; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--ink-2); }
+
+/* Interview cards: left edge shows where you are. */
+.rm-card.s-none, .rm-card.s-drafted { border-left: 5px solid #aab4ae; }
+.rm-card.s-sent      { border-left: 5px solid #3b82c4; }
+.rm-card.s-scheduled { border-left: 5px solid #d89a1d; }
+.rm-card.s-done      { border-left: 5px solid var(--green); }
+.rm-card.s-declined, .rm-card.s-noreply { border-left: 5px solid #8a8f8c; opacity: .85; }
+
+/* Start-page hero: soft gradient with a faint contour pattern (this page only). */
+.rm-hero {
+  position: relative; padding: 26px 24px 18px; margin: 0 0 18px; border: 1px solid #cfdcd3;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='160' viewBox='0 0 320 160'><g fill='none' stroke='%23154734' stroke-opacity='.07' stroke-width='1.4'><path d='M-10 120 C 50 70, 110 150, 170 100 S 290 60, 340 110'/><path d='M-10 100 C 50 50, 110 130, 170 80 S 290 40, 340 90'/><path d='M-10 80 C 50 30, 110 110, 170 60 S 290 20, 340 70'/><path d='M-10 140 C 50 90, 110 170, 170 120 S 290 80, 340 130'/></g></svg>"),
+    linear-gradient(135deg, #e6efe9 0%, #eef4f0 55%, #e8f3ff 100%);
+  background-size: 320px 160px, cover;
+}
+.rm-hero .rm-h1 { margin-top: 0; }
+.rm-hero .rm-lede { margin-bottom: 4px; }

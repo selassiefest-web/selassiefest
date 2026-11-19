@@ -543,6 +543,16 @@ window.RM_DATA = (() => {
   };
   FACULTY.forEach((f) => { f.spark = SPARK[f.id] || null; });
 
+  // Research-area color groups (one color per area, used for scanning cards only).
+  const AREAS = {
+    eco:  'Ecology and field work',
+    mol:  'Molecules, genes and microbes',
+    body: 'Animals and health',
+    evo:  'Fossils, evolution and form',
+  };
+  const AREA_OF = { orlofske: 'eco', rogers: 'eco', richards: 'mol', lee: 'mol', higgs: 'mol', barber: 'mol', preuss: 'body', noto: 'evo', taft: 'evo', mayer: 'evo' };
+  FACULTY.forEach((f) => { f.area = AREA_OF[f.id] || 'mol'; });
+
 
   // ---- Nervous? Content (interview-day script and honest reassurance) -------
   const CALM = {
@@ -558,5 +568,5 @@ window.RM_DATA = (() => {
       'Set a phone alarm for 10 minutes. When it rings you are allowed to stop.',
     ],
   };
-  return { CHECKED, TAGS, FACULTY, OTHERS, CARDS, CHOICES, CONSTRAINTS, FREE, QUESTIONS, OPPORTUNITIES, DEPT, CALM };
+  return { CHECKED, TAGS, FACULTY, OTHERS, CARDS, CHOICES, CONSTRAINTS, FREE, QUESTIONS, OPPORTUNITIES, DEPT, CALM, AREAS };
 })();

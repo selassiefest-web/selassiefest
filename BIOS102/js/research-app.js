@@ -137,12 +137,13 @@
     const steps = [
       ['know', '1', 'Know yourself', 'Rate real research activities and answer a few quick questions. About 8 minutes. Nothing here is graded.'],
       ['matches', '2', 'See your matches', 'The researchers whose work fits what you told us, with the reasons shown, so you can argue with them.'],
+      ['meet', '3', 'Meet the researchers', 'Read about every professor in plain English: what they study, what students do, and what to read first. Browse any time.'],
       ['interview', '4', 'Set up your own interviews', 'You write the email, you send it, you ask the questions. We give you the drafts, the question bank and a prep sheet.'],
       ['decide', '5', 'Decide and ask', 'Compare what you learned and ask for a place in the lab that fits. Includes the real programs that can pay you or give you credit.'],
     ];
     return `
-      <h1 class="rm-h1">Hi ${first}. Let&rsquo;s find the research that fits you.</h1>
-      <p class="rm-lede">UW&ndash;Parkside&rsquo;s biology faculty run real labs and field projects, and the department openly invites students to schedule an appointment with any of them to talk about research. This page walks you through doing exactly that: figure out what you care about, see who studies it, then set up and run your own interviews.</p>
+      <div class="rm-hero"><h1 class="rm-h1">Hi ${first}. Let&rsquo;s find the research that fits you.</h1>
+      <p class="rm-lede">UW&ndash;Parkside&rsquo;s biology faculty run real labs and field projects, and the department openly invites students to schedule an appointment with any of them to talk about research. This page walks you through doing exactly that: figure out what you care about, see who studies it, then set up and run your own interviews.</p></div>
       <div class="rm-card warn"><strong>Check your UWP Outlook every day.</strong> Professors will reply to your university email, and replies sometimes land in Junk or Other. If you set up Outlook on your phone, turn on notifications.</div>
       <div class="rm-card tint"><strong>Feeling nervous or behind? That is normal.</strong> You do not have to do everything today. Each step below can take 10 minutes, and the page saves your place. Your first step is only to rate a few activities.</div>
       ${next ? `<div class="rm-card green"><div class="rm-spread"><div><div class="band s1">Your next step</div><p style="margin:4px 0 0;font-size:18px">${esc(next.text)}</p></div><button class="btn-p" data-act="go" data-v="${next.stage === 'debrief' ? 'decide' : next.stage === 'know' ? 'know' : next.stage}">Go</button></div></div>` : ''}
@@ -223,7 +224,7 @@
     const bandCls = (b) => (b === 'Strongest match' ? 's1' : b === 'Strong match' ? 's2' : b === 'Worth a conversation' ? 's3' : 's4');
     const rows = m.map((x) => {
       const f = x.f; const on = S.shortlist.indexOf(f.id) >= 0;
-      return `<div class="fac" style="margin-bottom:14px"><div class="rm-spread"><div class="rm-row"><span class="rank">${x.rank}</span><div><div class="band ${bandCls(x.band)}">${esc(x.band)}</div><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div></div></div>
+      return `<div class="fac a-${f.area}" style="margin-bottom:14px"><div class="rm-spread"><div class="rm-row"><span class="rank">${x.rank}</span><div><div class="band ${bandCls(x.band)}">${esc(x.band)}</div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div></div></div>
         <button class="btn-${on ? 's' : 'p'} btn-sm" data-act="toggleList" data-id="${f.id}">${on ? 'On my interview list ✓' : 'Add to my interview list'}</button></div>
         <div class="bar" title="Relative to your best match"><i style="width:${Math.round(x.rel * 100)}%"></i></div>
         <p class="one">${esc(f.oneLine)}</p>
@@ -240,6 +241,7 @@
         <div style="margin-top:6px"><button class="btn-t" data-act="go" data-v="know">Change my answers</button></div></div>
       <details class="rm-card"><summary><strong>How is this calculated?</strong></summary>
         <p>Each card you rated becomes a vote: a 5 adds a lot of weight to the topics that card touches, a 1 subtracts. Every professor has a profile of what their work involves (for example outdoors, bench work, animals, data), built only from their own faculty page and the student projects they have supervised. Your match is how well your votes line up with theirs. If you said you would rather not work with live animals, or cannot travel, the labs that involve those are pushed down and flagged. Labs with a record of supervising student projects get a small nudge that only breaks near-ties. The bar compares each professor to your best match, so it is not a percentage of anything. Different answers give different results, so retake the cards if a result surprises you.</p></details>
+      ${legend()}
       ${rows}
       <div class="rm-card"><strong>Also on the Biological Sciences directory</strong>
         <p class="rm-muted">Instructors and lecturers without a research program, who are still good people to ask for advice.</p>
@@ -247,6 +249,7 @@
       ${(S.shortlist || []).length ? `<div class="rm-card green rm-spread"><div><strong>${S.shortlist.length} on your interview list.</strong> <span class="rm-muted">Two or three is the sweet spot.</span></div><button class="btn-p" data-act="go" data-v="interview">Set up my interviews</button></div>` : ''}`;
   }
 
+  const legend = () => `<div class="legend"><strong>Color key:</strong>${Object.entries(D.AREAS).map(([k, v]) => `<span class="area a-${k}">${esc(v)}</span>`).join('')}</div>`;
   function evidenceChips(f) {
     const lvl = { strong: ['Strong record of mentoring students', 'g'], good: ['Has mentored students', 'g'], some: ['Some student projects listed', 'b'], few: ['One student project listed', 'w'], pathway: ['Starts through a class project', 'b'] }[f.mentorship.level];
     return `<span class="chip ${lvl[1]}">${lvl[0]}</span>` + (f.animals ? '<span class="chip w">Works with live animals</span>' : '') + (f.outdoors ? '<span class="chip b">Outdoor fieldwork</span>' : '') + (f.summerTravel ? '<span class="chip w">Summer travel</span>' : '') + (f.unverifiedNote ? '<span class="chip w">Profile is thin: confirm in your interview</span>' : '');
@@ -271,7 +274,7 @@
     const list = D.FACULTY.filter((f) => !ui.filter || (f.tags[ui.filter] || 0) >= 2);
     const cards = list.map((f) => {
       const on = S.shortlist.indexOf(f.id) >= 0;
-      return `<div class="fac"><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div><p class="one">${esc(f.oneLine)}</p>
+      return `<div class="fac a-${f.area}"><div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span></div><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div><p class="one">${esc(f.oneLine)}</p>
         <div>${f.areas.slice(0, 3).map((a) => `<span class="chip">${esc(a)}</span>`).join('')}</div><div>${evidenceChips(f)}</div>
         <div class="rm-row"><button class="btn-s btn-sm" data-act="openFac" data-id="${f.id}">${ui.open[f.id] ? 'Hide' : 'Read more'}</button><button class="btn-${on ? 's' : 'p'} btn-sm" data-act="toggleList" data-id="${f.id}">${on ? 'On my list ✓' : 'Add to my list'}</button></div>
         ${ui.open[f.id] ? facDetail(f) : ''}</div>`;
@@ -282,6 +285,7 @@
       <h1 class="rm-h1">The researchers</h1>
       <p class="rm-lede">Everyone below is on the official Biological Sciences directory and has either a research program or a record of supervising student projects. Descriptions restate their own faculty pages in plain English. Checked ${esc(D.CHECKED)}.</p>
       <div class="rm-row" style="margin-bottom:14px" role="group" aria-label="Filter">${FILTERS.map(([v, l]) => `<button type="button" class="chip ${ui.filter === v ? 'on' : ''}" data-act="filter" data-v="${v}">${esc(l)}</button>`).join('')}</div>
+      ${legend()}
       <div class="rm-grid">${cards}</div>
       <h2 class="rm-h2">Real ways to get involved</h2>
       <p class="rm-muted">Pulled from the department pages. Ask your mentor which one applies to you.</p>
@@ -441,7 +445,7 @@
     if (o.status === 'done') acts.push(`<button class="btn-p btn-sm" data-act="go" data-v="decide">Write my debrief</button>`);
     if (o.status === 'declined' || o.status === 'noreply') acts.push(`<button class="btn-s btn-sm" data-act="setStatus" data-id="${f.id}" data-v="none">Try again</button>`);
     const removable = ['none', 'drafted', 'declined', 'noreply'].indexOf(o.status) >= 0;
-    return `<div class="rm-card" id="iv-${f.id}"><div class="rm-spread"><div><h3 class="rm-h3" style="font-size:19px;color:var(--green)">${esc(f.honorific)} ${esc(f.name)}</h3><div class="rm-muted">${esc(f.title)}</div></div>${removable ? `<button class="btn-t" data-act="toggleList" data-id="${f.id}">Remove from my list</button>` : ''}</div>
+    return `<div class="rm-card s-${o.status}" id="iv-${f.id}"><div class="rm-spread"><div><h3 class="rm-h3" style="font-size:19px;color:var(--green)">${esc(f.honorific)} ${esc(f.name)}</h3><div class="rm-muted">${esc(f.title)}</div></div>${removable ? `<button class="btn-t" data-act="toggleList" data-id="${f.id}">Remove from my list</button>` : ''}</div>
       ${trackBar(o.status)}
       ${o.status === 'scheduled' && o.interviewDate ? `<p><strong>${esc(E.fmtDateTime(o.interviewDate))}</strong>${o.place ? ' &middot; ' + esc(o.place) : ''}</p>` : ''}
       ${canFollow ? `<div class="caution">&#9888; Sent ${d} days ago with no reply. Time for one follow-up.</div>` : ''}
