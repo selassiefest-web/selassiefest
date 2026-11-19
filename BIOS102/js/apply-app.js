@@ -165,11 +165,12 @@
     return '<span class="chip">' + esc(lab.length > 44 ? 'Not open' : lab) + '</span>';
   }
   function verifChip(p) {
-    if (p.checked === 'page') return `<span class="chip b">Official page re-read ${esc(D.CHECKED.replace(', 2026', ''))}</span>`;
-    if (p.checked === 'supplement') return '<span class="chip b">Verified supplement, ' + esc(D.CHECKED.replace(', 2026', '')) + '</span>';
-    if (p.checked === 'note') return '<span class="chip w">From correction notes: confirm on the official page</span>';
-    return '<span class="chip">Directory, ' + esc(D.CHECKED.replace(', 2026', '')) + ': confirm on the official page</span>';
+    const d = p.v && p.v.d;
+    if (d === 'c') return '<span class="chip b">&#10003; Deadline confirmed on the official page, Nov 19</span>';
+    if (d === 'n') return '<span class="chip">No deadline published</span>';
+    return '<span class="chip w">Deadline NOT confirmed: check the official page</span>';
   }
+  const dlConfirmed = (p) => !!(p.v && p.v.d === 'c');
 
   // ---------------- dates ----------------
   function dl(p) { if (!p.deadline) return null; const [y, m, d] = p.deadline.split('-').map(Number); return new Date(y, m - 1, d, 23, 59, 0); }
@@ -181,7 +182,9 @@
     const d = dl(p).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     if (n < 0) return `<span class="chip">Closed ${d}</span>`;
     const cls = n <= 14 ? 'bad' : n <= 35 ? 'w' : 'g';
-    return `<span class="chip ${cls}">${d} &middot; ${n === 0 ? 'today' : n + ' day' + (n === 1 ? '' : 's')}</span>`;
+    const mark = dlConfirmed(p) ? '&#10003; ' : '';
+    const un = (p.v && p.v.d === 'u') ? ' (unconfirmed)' : '';
+    return `<span class="chip ${cls}">${mark}${d}${un} &middot; ${n === 0 ? 'today' : n + ' day' + (n === 1 ? '' : 's')}</span>`;
   }
   const fmtD = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
 
@@ -427,9 +430,10 @@ ${prof().email || ''}`;
     if (N.indexOf('fed') >= 0) list = list.filter((p) => p.federal || p.nsf);
     if (N.indexOf('open') >= 0) list = list.filter(open);
     if (N.indexOf('fit') >= 0) list = list.filter((p) => eligibility(p).lvl !== 'no');
+    if (N.indexOf('conf') >= 0) list = list.filter(dlConfirmed);
     list.sort(ui.sort === 'rank' ? (a, b) => (a.rank || 999) - (b.rank || 999) || byDeadline(a, b) : byDeadline);
     const SHOW = [['active', 'All active (' + D.PROGRAMS.filter(isActive).length + ')'], ['top', 'Top 20 picks'], ['inactive', 'Closed or not announced (' + D.PROGRAMS.filter((p) => !isActive(p)).length + ')']];
-    const NAR = [['near', 'Wisconsin and Illinois'], ['nat', 'National'], ['beg', 'Little or no lab experience'], ['house', 'Housing help'], ['fed', 'Federal and NSF'], ['open', 'Open now'], ['fit', 'I look eligible']];
+    const NAR = [['near', 'Wisconsin and Illinois'], ['nat', 'National'], ['beg', 'Little or no lab experience'], ['house', 'Housing help'], ['fed', 'Federal and NSF'], ['open', 'Open now'], ['fit', 'I look eligible'], ['conf', 'Deadline confirmed']];
     const card = (p) => {
       const on = S.mine.indexOf(p.id) >= 0; const e = eligibility(p);
       return `<div class="fac a-${p.region === 'National' ? 'mol' : p.region === 'WI' ? 'eco' : 'evo'}"><div class="rm-row">${p.rank ? `<span class="chip g">Top 20 #${p.rank}</span>` : ''}${statusChip(p)}${dlChip(p)}${eligChip(e)}</div><h3>${esc(p.name)}</h3><div class="t">${esc(p.org)}${p.city ? ' &middot; ' + esc(p.city) : ''}</div><p class="one">${esc(p.focus)}</p>
@@ -439,6 +443,7 @@ ${prof().email || ''}`;
     const rel = (D.RELATED || []).map((r) => `<li style="margin-bottom:6px"><strong>${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>` : esc(r.name)}</strong> <span class="rm-muted">(${esc(r.status)}${r.deadlineText ? '; ' + esc(r.deadlineText) : ''})</span>. ${esc(r.note)}</li>`).join('');
     return `<h1 class="rm-h1">Programs</h1>
       <p class="rm-lede">Summer 2027 research programs, merged from the UW&ndash;Parkside directory, the federal supplement and the playbook (checked ${esc(D.CHECKED)}). Dates change, so every program page tells you to re-check the official site the week you apply.</p>
+      <div class="rm-card green"><strong>How credible is this list?</strong> On ${esc(D.CHECKED)} we fetched each program&rsquo;s official pages and compared them with the listed deadline. <strong>${D.PROGRAMS.filter((p) => ['open', 'upcoming', 'check'].indexOf(p.status) >= 0 && !(p.req && p.req.blocked) && dlConfirmed(p)).length} of ${D.PROGRAMS.filter((p) => ['open', 'upcoming', 'check'].indexOf(p.status) >= 0 && !(p.req && p.req.blocked)).length}</strong> open or upcoming programs have their deadline confirmed on the official page (&#10003;). The rest are marked, because the page was blocked, did not publish a date, or only an older cycle exists. A confirmed date can still change, so recheck the week you apply.</div>
       <div class="rm-card tint"><strong>How to choose.</strong> Pick five or six. Choose a mix: a couple of very competitive programs you would love to get into, and a few that say they welcome students with little or no lab experience (look for the green &ldquo;Beginner-friendly&rdquo; tag). That way you have a good chance of a yes somewhere. Check the eligibility tag first, then the deadline. Programs with early January deadlines mean you should start this week.</div>
       <div class="rm-card green"><strong>Staying on campus?</strong> The Thomson Research Fellowship has no announced 2027 deadline yet. Ask Dr. David Higgs, and use <a href="/BIOS102/research-match.html">Research Match</a> to find a Parkside mentor first.</div>
       <div class="rm-card"><strong>What the badges mean.</strong> <span class="chip b">Official page re-read</span> and <span class="chip b">Verified supplement</span> were individually confirmed on Nov 19. <span class="chip">Directory</span> and <span class="chip w">Correction notes</span> were not re-read by us: open the official page before you rely on a date, pay or rule. Many directory rows say details were &ldquo;not verified&rdquo;; the app shows that instead of guessing.</div>
@@ -498,6 +503,7 @@ ${prof().email || ''}`;
         <button class="btn-s" data-act="mini" data-id="${p.id}">Open the copy helper in its own window</button></div>
       <div class="rm-card ${e.lvl === 'no' ? 'warn' : e.lvl === 'ok' ? 'green' : 'tint'}"><h3 class="rm-h3">Do you qualify?</h3><ul style="margin:0 0 6px 18px;padding:0">${e.items.map((x) => `<li>${x.lvl === 'ok' ? '&#10003;' : x.lvl === 'no' ? '&#10007;' : '&#9888;'} ${esc(x.t)}</li>`).join('')}</ul><p style="margin:6px 0 0"><strong>The program says:</strong> ${esc(p.eligibility)}</p><p class="hint">This check is a guide built from the program&rsquo;s published rules. The program decides eligibility.${pm.length ? ' Fill in My profile to sharpen it.' : ''}</p></div>
       <div class="rm-card"><h3 class="rm-h3">Know before you start</h3><ul style="margin:0 0 0 18px;padding:0"><li><strong>Dates:</strong> ${esc(p.dates)}</li><li><strong>Deadline:</strong> ${esc(p.deadlineText)}</li><li><strong>Pay:</strong> ${esc(p.pay)}</li><li><strong>Housing and travel:</strong> ${esc(p.housing)}</li><li><strong>Status:</strong> ${esc(p.statusLabel || p.status)}</li>${p.contact ? `<li><strong>Contact:</strong> ${esc(p.contact)}</li>` : ''}${p.recsNote ? `<li><strong>Recommendations:</strong> ${esc(p.recsNote)}</li>` : ''}${p.materials.map((m) => `<li><strong>Needs:</strong> ${esc(m)}</li>`).join('')}${p.notes.map((n) => `<li class="caution">${esc(n)}</li>`).join('')}</ul></div>
+      <div class="rm-card ${dlConfirmed(p) ? 'green' : 'warn'}"><h3 class="rm-h3">What we confirmed on the official page</h3>${p.v && p.v.d === 'c' ? `<p style="margin:0 0 6px"><strong>Deadline confirmed</strong> on ${esc(p.v.on)}. The page says: &ldquo;${esc(p.v.q)}&rdquo;${p.v.u ? ` <a href="${esc(p.v.u)}" target="_blank" rel="noopener">Open that page</a>` : ''}</p>` : `<p style="margin:0 0 6px"><strong>${p.v && p.v.d === 'n' ? 'The official page does not publish a 2027 deadline.' : 'We could not confirm the deadline on the official page.'}</strong> ${p.v && p.v.read ? 'The page loaded but does not show the listed date.' : 'The page could not be read automatically (blocked or sign-in only).'} Open the official page and confirm it yourself before you rely on the date.</p>`}<p class="hint" style="margin:0">Pay, GPA and eligibility rules below come from the directory or supplement unless this page says otherwise. Always read the official eligibility section too.</p></div>
       <h2 class="rm-h2">Your checklist <span class="rm-muted" style="font-size:15px">(${g.done} of ${g.total})</span></h2><div class="rm-card">${check}</div>
       <h2 class="rm-h2">Essays and statements</h2>${prompts}
       <h2 class="rm-h2">Recommenders</h2><div class="rm-card">${p.recsNote ? `<p style="margin:0 0 6px">${esc(p.recsNote)}</p>` : ''}${recs ? `<ul style="margin:0 0 8px 18px;padding:0">${recs}</ul>` : '<p class="rm-muted">No recommenders added yet.</p>'}<button class="btn-s btn-sm" data-act="go" data-v="recs">Open the Recommenders tab</button></div>

@@ -81,7 +81,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "as they prepare for graduate school and research careers in biology. 2027 applications are open! Apply by February 10, 2027. Apply Now On this page About the program Eligibility How to apply Information",
+"u": "https://wiscience.wisc.edu/research/summer_research_program/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "medical-college-of-summer-program-for-undergra",
@@ -131,7 +138,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "d and/or postmarked by the application deadline. The application for SPUR '27 is now open and the deadline is February 1, 2027. Transcripts can be sent electronically via email to spur@mcw.edu or sent to the fo",
+"u": "https://www.mcw.edu/education/graduate-school/prospective-students/summer-program-for-undergraduate-research",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "water-uw-madison-freshwater-uw-summer-research",
@@ -186,7 +200,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "le, UW-River Falls, UW-Stevens Point and Manitowoc, WI. Applications open: Nov. 1, 2026 Applications close: Feb 10, 2027 Stipend: $6,732 Housing is provided, options vary by site but are usually dorm style.",
+"u": "https://water.wisc.edu/wateruw-madison-undergraduate-research/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "sure",
@@ -240,7 +261,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "graduate students each summer. Learn more about the SURE program (PDF) Apply Now for Summer ‘27 – Deadline Feb. 1, 2027 About the SURE Program Important SURE Program Dates Application Deadline: February 1,",
+"u": "https://www.mcw.edu/departments/cardiovascular-research-center/education/supporting-undergraduate-research-experiences-sure-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-illi-summer-undergraduate-resear",
@@ -293,7 +321,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "t a research intensive university with outstanding toxicology programs. Apply Today! Application deadline: February 15, 2027 Applications must include the completed website form, transcripts, personal statement",
+"u": "https://vetmed.illinois.edu/suretox/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "suip",
@@ -354,7 +389,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "s Applications for SUIP 2027 open on October 1st, 2026 via the Penn application. All applications are due on February 1st, 2027 by 11:59 pm Eastern Time. All components of the application, including letters of ",
+"u": "https://www.med.upenn.edu/research-trainee-affairs/suip/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uw-madison-school-mstp-undergraduate-summer-pr",
@@ -410,7 +452,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "Application period: November 1 – February 10",
+"u": "https://www.med.wisc.edu/education/md-phd/undergraduate-summer-program/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "argonne-national-l-science-undergraduate-labor",
@@ -467,7 +516,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": false,
 "federal": true,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "graduate Laboratory Internships (SULI) application is now open for the Summer 2027 term. Applications are due January 6, 2027 at 5:00 PM ET . Access to the online application system is available here . Applicat",
+"u": "https://science.osti.gov/wdts/suli/How-to-Apply",
+"on": "Nov 19, 2026",
+"read": 4
+}
 },
 {
 "id": "university-of-illi-u-create-undergraduate-canc",
@@ -517,7 +573,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "on is left idle for too long. Please submit the completed application no later than 11:59 PM (CT) on Sunday, January 17, 2027. Personal Statement The Personal Statement (up to 500 words or 1 page) is an essay t",
+"u": "https://redcap.link/UCREATE2027",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "lyric",
@@ -590,7 +653,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "p application. Please apply online here . Your completed application must be received by midnight on Sunday, February 14, 2027. Early application is encouraged to ensure available space. Arrange for letters of ",
+"u": "https://www.cancer.northwestern.edu/research/education-training/summer-research/lyric.html",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "northwestern-unive-summer-research-opportunity",
@@ -645,7 +715,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "be completed by Feburary 10th, including the transcript upload",
+"u": "https://apps.btaa.org/srop/apply",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "cornell-university-summer-research-experience-",
@@ -702,7 +779,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "December 1, 2026 - February 1, 2027.",
+"u": "https://cals.cornell.edu/molecular-biology-genetics/academics/undergraduate/summer-research-experience-for-undergraduates-reu-program",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "the-jackson-labora-jax-summer-student-program-",
@@ -755,7 +839,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": true,
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "t Important Dates and Details 2027 Application Applications opened November 2, 2026 2027 Applications Due January 25, 2027 at 5:00 p.m. ET Stipend $7,500, plus room, board and travel Program duration 10 weeks",
+"u": "https://www.jax.org/education-and-learning/high-school-students-and-undergraduates/learn-earn-and-explore",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "weill-cornell-medi-access-summer-internship-pr",
@@ -810,7 +901,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "e application package, including two letters of recommendation and official transcript(s), is received by the February 3, 2027, deadline. The Leadership Alliance programs encourage diversity to further its goal",
+"u": "https://theleadershipalliance.org/summer-research-early-identification-program",
+"on": "Nov 19, 2026",
+"read": 3
+}
 },
 {
 "id": "harvard-university-harvard-amgen-scholars-prog",
@@ -866,7 +964,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ion: All application materials should be submitted to the Harvard University Funding Portal by the deadline: February 1, 2027, 11:59PM EASTERN TIME. Incomplete applications will not be considered. There are 5 c",
+"u": "https://btly.communityforce.com/4h2EU0k",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "uw-madison-carbone-science-careers-in-oncology",
@@ -920,7 +1025,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"noAI": true
+"noAI": true,
+"v": {
+"d": "c",
+"q": "Application period: November 1-February 10 (including letter of recommendation)",
+"u": "https://cancer.wisc.edu/education/score/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uchicago-medicine-advanced-research-internship",
@@ -969,7 +1081,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "in a professional research setting. To apply: Submit the online application form by 11:59 p.m. CT on Monday, January 18, 2027. The form is available at https://redcap.link/2027UCCCCPathwayPrograms . We are usin",
+"u": "https://www.uchicagomedicine.org/cancer/education-outreach/student-education/high-school-undergraduate/dicr",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "washu-division-of-washu-amgen-scholars-program",
@@ -1028,7 +1147,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "assistance for the DBBS Amgen Scholars Program. 2027 Application Apply Here 2027 Cohort Deadline: Monday, February 1st, at 11:59pm Central Time The Amgen Scholars Program at the Vagelos Division of Biology",
+"u": "https://dbbs.wustl.edu/admissions/summer-undergraduate-research-programs/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "cold-spring-harbor-cold-spring-harbor-laborato",
@@ -1083,7 +1209,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "in laboratory safety. Current sophomores and juniors are eligible. Applications must be submitted online by January 15. Online Application All applicants must complete an URP application form with a persona",
+"u": "https://www.cshl.edu/education/undergraduate-research-program/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "mayo-clinic-gradua-mayo-clinic-summer-undergra",
@@ -1134,7 +1267,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "ss , you will indicate your research preference area. Application window Application window: Nov. 1, 2026 - Feb. 3, 2027 Program dates: June 1, 2027- August 6, 2027 How to apply Contact Mayo Clinic Gradua",
+"u": "https://college.mayo.edu/academics/biomedical-research-training/summer-undergraduate-research-fellowship-surf/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "moffitt-cancer-cen-spark-summer-program-for-th",
@@ -1183,7 +1323,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "Skip to left navigation Moffitt Apply SPARK Summer Application Opens Nov 9 2026 12:00 AM (EST) Deadline Jan 6 2027 11:59 PM (EST) Description Instructions and Important Information for Applicants Plea",
+"u": "https://moffitt.smapply.io/prog/spark_summer_application/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "u-s-department-of-community-college-internship",
@@ -1228,7 +1375,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "he Community College Internships (CCI) application is now open for the Summer 2027 term. Applications are due January 6, 2027 at 5:00 PM ET . Access to the online application system is available here . Applicat",
+"u": "https://science.osti.gov/wdts/cci/How-to-Apply",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-mich-frankel-cvc-summer-undergra",
@@ -1273,7 +1427,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "materials": [],
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "kel CVC Summer Undergraduate Research Fellowship Application 2027 Opens Nov 16 2026 12:00 AM (EST) Deadline Jan 8 2027 11:59 PM (EST) Description Frankel CVC Summer Undergraduate Research Fellowship Program",
+"u": "https://fcvcsummerfellowship.smapply.io/prog/frankel_cvc_summer_undergraduate_research_fellowship_application_2027/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "fred-hutch-cancer-summer-undergraduate-researc",
@@ -1328,7 +1489,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "on for the 2027 SURP is now live! Apply here today! The application deadline is midnight (PST) on Friday, January 8, 2027 . The deadline to submit letters of recommendation on behalf of an applicant is midnight",
+"u": "https://www.fredhutch.org/en/education-training/undergraduate-students/summer-undergraduate-research-program.html",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "u-s-department-of-mickey-leland-energy-fellows",
@@ -1373,7 +1541,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "-Mickey Leland Energy Fellowship Program (MLEF) Fellowship Hydrocarbons and Geothermal Energy Office Open 1/8/2027 Varies Zintellect FAQ About Federal Employment HGEO employees are our greatest asset",
+"u": "https://www.energy.gov/hgeo/hgeo-employment-opportunities",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-colo-creu-acs-summer-undergradua",
@@ -1424,7 +1599,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ho historically have lacked access to the cancer-related sciences field. Important Dates November 1, 2026 – January 10, 2027: Program application open January 10, 2027: Final application deadline (11:59 pm MT) ",
+"u": "https://medschool.cuanschutz.edu/colorado-cancer-center/education/undergraduate-education-opportunities",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "icahn-school-of-me-summer-undergraduate-resear",
@@ -1469,7 +1651,14 @@ window.AP_PROGRAMS = [
 "notes": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "broad-institute-of-broad-summer-research-progr",
@@ -1524,7 +1713,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "federal-agency-afrl-scholars",
@@ -1567,7 +1763,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "r. Scholars Professionals Call for Applications Summer 2027 Full-time Internship Application Open Until Jan 11, 2027 In-person Various Locations Must be a U.S Citizen to apply and 16 years or older by a",
+"u": "https://afrlscholars.usra.edu/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "great-lakes-bioene-glbrc-summer-undergraduate-",
@@ -1582,8 +1785,8 @@ window.AP_PROGRAMS = [
 "deadlineText": "January 12, 2027 (host announcement; no verified 2027 form)",
 "pay": "$6,500.",
 "housing": "Housing support; terms not specified.",
-"status": "upcoming",
-"statusLabel": "Upcoming (not open yet)",
+"status": "open",
+"statusLabel": "Open: the page says \"Summer 2027 Program: Apply here now!\"",
 "external": "Check",
 "beginner": false,
 "beginnerText": "Not stated",
@@ -1602,6 +1805,7 @@ window.AP_PROGRAMS = [
 }
 ],
 "notes": [
+"The page lists $6,500 with housing, meal and travel support, May 23 to July 31, 2027. Applications run through the Plant Genomics REU.",
 "GLBRC says 2027 is open; the sponsor-linked Plant Genomics application page says 2025 closed. Do not submit via an old ETAP listing. (official program guidance · application instructions)."
 ],
 "contact": "tumbala1@msu.edu. Not published or verified: materials, recommendations, interview.",
@@ -1614,7 +1818,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "ligibility requirements. Stipend $6,500 with housing, meal, and travel support Application Deadline Tue, 01/12/2027 - 00:00 Summer Undergraduate Research Program - MSU | Great Lakes Bioenergy Research Cent",
+"u": "https://www.glbrc.org/outreach/programs/summer-undergraduate-research-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "vanderbilt-univers-aspirnaut-undergraduate-dis",
@@ -1665,7 +1876,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "All applications and supplementary materials are due on Wednesday January 13, 2027, at 11:59 PM CST for consideration.",
+"u": "https://medschool.vanderbilt.edu/vssa/aspirnaut-undergraduate-discovery-science-experience-in-renal-biology-and-disease/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "case-comprehensive-cancer-focused-summer-under",
@@ -1716,7 +1934,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "Undergraduate Research (CanSUR) Launch Your Future in Cancer Research Applications for 2027 are open until January 15, 2027. Launch Application Portal Cancer-focused Summer Undergraduate Research (CanSUR) give",
+"u": "https://case.edu/cancer/training-education/cansur",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "smithsonian-nation-smithsonian-mason-conservat",
@@ -1765,7 +1990,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": true,
 "nsf": true,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "ands-on, immersive research opportunity for 10 weeks during the summer Applications open November 2, 2026 – January 15, 2027 Frequently Asked Questions Past Projects Apply →Note on application status : Accep",
+"u": "https://smconservation.gmu.edu/nsf-reu/",
+"on": "Nov 19, 2026",
+"read": 3
+}
 },
 {
 "id": "uc-san-diego-summer-training-academy-for-resea",
@@ -1818,7 +2050,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "oregon-health-sc-ohsu-knight-cancer-institute-",
@@ -1877,7 +2116,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "cluding letter(s) of recommendation, must be submitted online by the deadline of 11:59 p.m. (PST) on Tuesday, January 19, 2027 . Selection and notifications will take place by early March 2027. The B-BRITE prog",
+"u": "https://app.rlogx.com/training-opportunity/28D4B071-EF0E-D1F1-4272-F1A01ABF",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "dartmouth-geisel-translational-oncology-progra",
@@ -1925,7 +2171,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "university-of-notr-notre-dame-integrative-cell",
@@ -1941,7 +2194,7 @@ window.AP_PROGRAMS = [
 "pay": "$7,000 stipend plus $1,000 for lab supplies",
 "housing": "Free housing, $1,400 for meals, travel up to $500",
 "status": "open",
-"statusLabel": "Open (from the correction notes)",
+"statusLabel": "Open",
 "external": "yes",
 "beginner": true,
 "beginnerText": "Workbook lists no prior lab experience required",
@@ -1963,20 +2216,27 @@ window.AP_PROGRAMS = [
 }
 ],
 "notes": [
-"This record comes from the correction notes you supplied and was not re-read on the official page."
+"Confirmed on the official page: application window 11/01/2026 to 01/20/2027 at 11:59 PM ET; May 17 to July 23, 2027; U.S. citizens or permanent residents."
 ],
 "lists": [
 "C",
 "H"
 ],
-"checked": "note",
+"checked": "page",
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "als: Application portal is https://etap.nsf.gov/award/1915/opportunity/11499 Application window 11/01/2026-01/20/2027 11:59 PM ET Applications should include: Personal statement stating your career goals,",
+"u": "http://nd.edu/~biosreu/apply.html",
+"on": "Nov 19, 2026",
+"read": 3
+}
 },
 {
 "id": "marshfield-clinic-summer-research-internship-p",
@@ -1988,7 +2248,7 @@ window.AP_PROGRAMS = [
 "focus": "Clinical, translational and population research",
 "dates": "June 1 to August 6, 2027",
 "deadline": "2027-01-22",
-"deadlineText": "Application window November 23, 2026 to January 22, 2027 (not open until November 23)",
+"deadlineText": "Application window November 23, 2026 to January 22, 2027. Due Friday at 11:59 pm CST; references due 48 hours later (Sunday 11:59 pm CST).",
 "pay": "Not stated on the application page. Do not assume an hourly wage.",
 "housing": "n.a.",
 "status": "upcoming",
@@ -2019,17 +2279,24 @@ window.AP_PROGRAMS = [
 }
 ],
 "notes": [
+"Confirmed on the official page. Pay is not stated; do not assume an hourly wage. The REDCap form link is not published until the window opens.",
 "The research-areas page still shows a February 2026 deadline. It is not a 2027 deadline. (official program guidance · application instructions).",
 "Beginner fit: The program is open to undergraduate students and provides a mentored independent project; prior research experience is not stated as a prerequisite. Project-specific classification requirements and the absence of 2027 details limit assessment of fit. (official program).",
-"The REDCap form URL is not published on the instructions page. Use the instructions page when the window opens.",
-"Undergraduates and graduate students; F-1 students with a valid EAD may apply. Dates come from the correction notes you supplied."
+"The REDCap form URL is not published on the instructions page. Use the instructions page when the window opens."
 ],
 "contact": "srip@marshfieldresearch.org",
 "lists": [],
-"checked": "note",
+"checked": "page",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "Timeline SRIP runs three phases in a standard year. Application Window: Opening Nov. 23, 2026 and closing Jan. 22, 2027 Review/Interview: From Feb. to March 2027 Program Dates: June 1 - Aug. 6, 2027 Pros",
+"u": "https://marshfieldresearch.org/srip-application",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "baylor-college-of-summer-undergraduate-researc",
@@ -2083,7 +2350,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "r College of Medicine The SMART program application for Summer 2027 is now open. The application deadline is Jan. 22. Apply Today h2]:mb-0\"> A Unique Experience Awaits! Your position is a real job, with",
+"u": "https://www.bcm.edu/education/graduate-school-of-biomedical-sciences/degree-programs-and-certificates/smart-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "national-cancer-in-cancer-research-interns-sum",
@@ -2136,7 +2410,14 @@ window.AP_PROGRAMS = [
 "federal": true,
 "nsf": false,
 "materials": [],
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "ranch/division on a regular basis. CRI Timeline Application Cycle Opens Nov 4, 2026 Application Due Date Jan 22, 2027 Reference Letter Due Date Jan 29, 2027 Selection for Interviews Feb 24, 2027 Program",
+"u": "https://trainatnci.cancer.gov/programs/cri-sp/",
+"on": "Nov 19, 2026",
+"read": 4
+}
 },
 {
 "id": "university-of-utah-summer-program-for-undergra",
@@ -2185,7 +2466,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "northwestern-unive-northwestern-synbreu-synthe",
@@ -2201,7 +2489,7 @@ window.AP_PROGRAMS = [
 "pay": "$7,000",
 "housing": "Shared dorm, meal funds, travel if you live outside the Chicago area",
 "status": "open",
-"statusLabel": "Open (from the correction notes)",
+"statusLabel": "Open",
 "external": "yes",
 "beginner": true,
 "beginnerText": "Prior research not required",
@@ -2226,21 +2514,26 @@ window.AP_PROGRAMS = [
 "hint": "Check the portal for the exact prompt and length. Start from your master statement."
 }
 ],
-"notes": [
-"This record comes from the correction notes you supplied and was not re-read on the official page."
-],
+"notes": [],
 "lists": [
 "C",
 "H"
 ],
-"checked": "note",
+"checked": "page",
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "weeks of the program starting June 14th. Application Deadlines Applications for 2027 will close on Monday, January 25th, 2027 at 11:59pm EST . Click the purple button below to apply! Funding This program is sup",
+"u": "https://syntheticbiology.northwestern.edu/education/undergraduate-education/synbreu/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "uicsurf",
@@ -2298,7 +2591,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "e deadline Submit completed application form, including uploading the personal statement and transcripts, by January 25, 2027. Request that your letters of references are e-mailed to surf@uic.edu by January 25,",
+"u": "https://surf.pharmacy.uic.edu/apply/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "national-institute-summer-internship-program-s",
@@ -2351,7 +2651,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": false,
 "federal": true,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ply Opening and closing dates The SIP 2027 application is now open. The application will close on Tuesday, January 26, 2027 at 12 pm (noon) ET. Reference Letters are due Tuesday, February 2, 2027 at 12 pm (noon",
+"u": "https://beta.nih.gov/research-training/pb/sip",
+"on": "Nov 19, 2026",
+"read": 3
+}
 },
 {
 "id": "university-of-flor-florida-summer-undergraduat",
@@ -2401,7 +2708,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "view Learn more about our SURF Program by watching this video. Applications for Summer 2027 are open until January 29th, 2027! Transform Your Research Experience into Scientific Leadership Are you an experience",
+"u": "https://pharmacology.med.ufl.edu/education/surf-program/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "mit-biology-and-br-mit-bsg-msrp-bio",
@@ -2459,7 +2773,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": true,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "tivities. Online Application Deadline Date Application opens November 25th, 2026 Application deadline January 30, 2027 at 11:59 p.m. Late submissions will not be accepted Admission decisions By March 31,",
+"u": "https://biology.mit.edu/program-details-bsg-msrp-bio/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "federal-agency-morehouse-cdc-lewis-scholars-pr",
@@ -2502,7 +2823,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "INTERN REQUIREMENTS If you are interested and meet the following qualifications, we invite you to apply by January 31st. Intern Application Portal Opens: October 1st. Current junior, senior, or recent gradua",
+"u": "https://morehouse.edu/academics/programs/summer-academy/project-imhotep",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "noaa-noaa-ernest-f-hollings-scholarship",
@@ -2554,7 +2882,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Scholarship? Application status: OPEN The Hollings undergraduate scholarship application is open through January 31, 2027, 11:59 p.m. Eastern Time Apply to the Hollings undergraduate scholarship Am I eligible",
+"u": "https://www.noaa.gov/office-education/hollings-scholarship/prospective/faq",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "columbia-mailman-s-columbia-summer-public-heal",
@@ -2612,7 +2947,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "views will be conducted. Timeline Application Opens : November 1, 2026, @12 AM EST Application Deadline : January 31, 2027, @11:59 PM EST Phone/Zoom Interview Notifications: March 1, 2027, @ 5PM EST Phone/Zoo",
+"u": "https://www.publichealth.columbia.edu/academics/non-degree-special-programs/pathway-programs/summer-public-health-scholars-program/application-eligibility-selection",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "kennedy-krieger-in-kennedy-krieger-mchc-rise-u",
@@ -2668,7 +3010,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "Application submission period: November 2, 2026 to January 31, 2027",
+"u": "https://www.kennedykrieger.org/training/programs/center-for-excellence-in-public-health-leadership/mchc-rise-up",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "reuextend",
@@ -2728,7 +3077,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "l development seminars, and science skills workshops. Application Timeline Nov. 1, 2026: Application opens Jan. 31, 2027: Application closes Feb. 22, 2027: Offer letters sent March 19, 2027: Deadline to accep",
+"u": "https://www.prairie.illinois.edu/about/internships/reu-extend/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "aspire",
@@ -2781,7 +3137,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "aduate students each summer. Learn more about the ASPIRE program (PDF) Apply Now for Summer ‘27 – Deadline Feb. 1, 2027 About the ASPIRE Program Important ASPIRE Program Dates Application Deadline: Februar",
+"u": "https://www.mcw.edu/departments/cardiovascular-research-center/education/advancing-student-potential-for-inclusion-with-research-experiences-aspire",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "yale-school-of-med-yale-biomed-amgen-scholars-",
@@ -2836,7 +3199,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "An interest in pursuing a PhD or MD-PhD Applications will be available in early November and accepted until February 1, 5:00 pm (ET). Candidates will be evaluated based on their personal statement of backgrou",
+"u": "https://medicine.yale.edu/biomedsurf/program-details/",
+"on": "Nov 19, 2026",
+"read": 4
+}
 },
 {
 "id": "ucla-ucla-amgen-scholars-program",
@@ -2891,7 +3261,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "mmender as soon as possible about the letter of recommendation. All application materials must be received by February 1, 2027 . Please include your transcript attached to the end of the application packet and ",
+"u": "https://sciences.ugresearch.ucla.edu/programs-and-scholarships/amgen-scholars/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uc-san-francisco-summer-research-training-prog",
@@ -2944,7 +3321,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "gust 7, 2027 Applications open on Sunday, November 1, 2026 (12:01 a.m. PST). Application closes on Monday, February 1, 2027 (11:59 p.m. PST). Overview Students selected for summer research at UC San Francisco s",
+"u": "https://graduate.ucsf.edu/academics/srtp",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "ut-southwestern-me-summer-undergraduate-resear",
@@ -2993,7 +3377,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ink to upload their recommendation letter. Application for SURF 2027 opens November 1, 2026 The deadline is February 1, 2027 Housing Housing needs for SURF students are coordinated through the SURF office. SURF",
+"u": "https://gsbs.utsouthwestern.edu/research-opportunities/surf/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "stanford-bioscienc-stanford-summer-research-pr",
@@ -3046,7 +3437,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "coming summer. Application Timeline: Application Open Date: November 1, 2026 Application Materials Due: February 1, 2027 at 11:59 PM PDT Admission Notifications Sent: Mid-March through April 2027 *Please note",
+"u": "https://biosciences.stanford.edu/pathways/ssrp-amgen-scholars-program/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "duke-university-amgen-scholars-program-at-duke",
@@ -3097,7 +3495,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": ") and health-related research careers. The deadline for receipt of COMPLETE application materials is Monday, February 1, 2027 . INCOMPLETE OR LATE APPLICATIONS WILL NOT BE CONSIDERED. Step 1: Review Faculty Men",
+"u": "https://undergraduateresearch.duke.edu/amgen-application-instructions",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "duke-university-prime-cancer-research-program",
@@ -3145,7 +3550,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "rest in pursuing a biomedical research career. The deadline for receipt of COMPLETE application materials is February 1, 2027 . INCOMPLETE OR LATE APPLICATIONS WILL NOT BE CONSIDERED. For inquiries related to t",
+"u": "https://undergraduateresearch.duke.edu/application-instructions",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "johns-hopkins-univ-amgen-scholars-program-at-j",
@@ -3198,7 +3610,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Creative Activity Amgen Scholars 2027 at Johns Hopkins University Opens Nov 1 2026 12:00 AM (EDT) Deadline Feb 1 2027 11:59 PM (EST) Description The Amgen Scholars Program is a ten-week undergraduate summe",
+"u": "https://johnshopkins.smapply.io/prog/amgen_scholars_2027",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "st-jude-children-st-jude-pediatric-oncology-ed",
@@ -3252,7 +3671,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "ogram are now open. The deadline for receipt of applications and all credentials for our 2027 program will be February 1, 2027. Students should submit their application without waiting for their recommenders to",
+"u": "https://www.stjude.org/education-training/research-training/undergraduate/poe.html",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "scripps-research-summer-undergraduate-research",
@@ -3300,7 +3726,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "RAM DATES June 1 to August 6, 2027 (10 weeks) Start and end dates are not flexible. APPLICATION DEADLINE February 1 (annually) Finalists will be invited to interview in late February and applicants will b",
+"u": "https://education.scripps.edu/undergraduate/summer-research/surf-program/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "van-andel-institut-undergraduate-student-resea",
@@ -3352,7 +3785,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "r Semester (January 2027-April 2027) | Apply by Oct. 1, 2026 Summer Semester (May 2027-July 2027) | Apply by Feb. 1, 2027 Fall Semester (August 2027-December 2027) | Apply by June 1, 2027 International student",
+"u": "https://www.vai.org/graduate-school/research-internships/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "memorial-sloan-ket-mechanistic-biology-summer-",
@@ -3405,7 +3845,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "o, structural, molecular, cell, and cancer biology. Program Timeline Nov 2, 2026: Application portal opens February 1, 2027: Application closes at 8:00 a.m. (Eastern time) Offers will be made no later than Marc",
+"u": "https://www.mskcc.org/education-training/summer-scientific-undergraduate-programs/mechanistic-biology-summer-program",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "uc-berkeley-uc-berkeley-amgen-scholars-program",
@@ -3461,7 +3908,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "plication Dashboard Welcome to the UC Berkeley Amgen Scholars Application Dashboard Application Deadline: February 1, 2027 Login to the UCB Amgen Scholars Application Create New Account * First Name: Middle",
+"u": "https://amgenscholars.berkeley.edu/applicants/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "california-institu-caltech-amgen-scholars-prog",
@@ -3512,7 +3966,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-colo-cu-boulder-smart",
@@ -3570,7 +4031,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "y from the pool of accepted applicants to the Leadership Alliance SR-EIP. The application deadline is usually February 1. For more information, please contact the SMART office at the University of Colorado Bou",
+"u": "https://www.colorado.edu/support/gar/undergraduate-stem-research/smart-program-information",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-iowa-university-of-iowa-biomedic",
@@ -3626,7 +4094,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "The application portal is open November 1 – February 1",
+"u": "https://webapps1.healthcare.uiowa.edu/ISURP/Apply",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-virg-uva-cancer-research-summer-",
@@ -3680,7 +4155,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": true,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "national-institute-niddk-step-up",
@@ -3728,7 +4210,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "nyu-grossman-schoo-summer-undergraduate-resear",
@@ -3771,7 +4260,14 @@ window.AP_PROGRAMS = [
 "notes": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "e beyond your undergraduate studies. The application for SURP 2027 is now open . The application deadline is February 2, 2027, 5 p.m. ET. The program will run June 1, 2027, through July 30, 2027. VIDEO: Experie",
+"u": "https://med.nyu.edu/research/vilcek-institute-graduate-biomedical-sciences/summer-undergraduate-research-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "harvard-medical-sc-summer-honors-undergraduate",
@@ -3822,7 +4318,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "e application package, including two letters of recommendation and official transcript(s), is received by the February 3, 2027, deadline. The Leadership Alliance programs encourage diversity to further its goal",
+"u": "https://theleadershipalliance.org/summer-research-early-identification-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "princeton-neurosci-princeton-neuroscience-inst",
@@ -3872,7 +4375,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "brown-university-brown-summer-research-early-i",
@@ -3926,7 +4436,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "e application package, including two letters of recommendation and official transcript(s), is received by the February 3, 2027, deadline. The Leadership Alliance programs encourage diversity to further its goal",
+"u": "https://theleadershipalliance.org/summer-research-early-identification-program",
+"on": "Nov 19, 2026",
+"read": 4
+}
 },
 {
 "id": "mayo-clinic-illino-summer-undergraduate-resear",
@@ -3973,7 +4490,14 @@ window.AP_PROGRAMS = [
 "notes": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "s preselection application closes Dec.7-9, 2026 | Finalist interviews Jan. 8, 2027 | Award notification Feb. 3, 2027 | Mayo Clinic application deadline May 25 - July 30, 2027 | SURF program Application",
+"u": "https://mayoillinois.org/education-training/summer-undergraduate-research-fellowship",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "the-leadership-all-leadership-alliance-sr-eip-",
@@ -4026,7 +4550,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "c",
+"q": "e application package, including two letters of recommendation and official transcript(s), is received by the February 3, 2027, deadline. The Leadership Alliance programs encourage diversity to further its goal",
+"u": "https://theleadershipalliance.org/summer-research-early-identification-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "columbia-universit-summer-program-for-undergra",
@@ -4079,7 +4610,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ation will become available on December 14, 2026. Completed applications must be submitted electronically by February 5, 2027. Notifications of decisions will be sent by March 5, 2027. ​ Demographic information",
+"u": "https://www.spursprogram.com/application",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uw-madison-integrated-reu-in-chemistry-and-che",
@@ -4126,7 +4664,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "notes": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Apply online by Feb. 10",
+"u": "https://go.wisc.edu/srop-application",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uw-madison-school-summer-program-for-undergrad",
@@ -4174,7 +4719,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "h – UW–Madison Skip to main content Applying to SPUUR The 2027 SPUUR application process is open through February 15, 2027 . The dates of the 10-week summer program in 2027 are Monday, May 24 through Friday, Au",
+"u": "https://spuur.urology.wisc.edu/spuur-applying/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-illi-ncsa-research-experiences-f",
@@ -4224,7 +4776,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "Online application : December 15, 2026 – February 15, 2027",
+"u": "https://reu.ncsa.illinois.edu/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "rush-university-summer-scholars-program-summer",
@@ -4276,7 +4835,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "c",
+"q": "ired information will result in your application being disqualified and not reviewed. Application deadline: February 15, 2027. For any questions, please contact SSP_admin@rush.edu",
+"u": "https://www.rushu.rush.edu/rush-medical-college/departments/division-translational-science/summer-research-program",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-pitt-summer-undergraduate-resear",
@@ -4324,7 +4890,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "es *all dates subject to change* Application opens November 1, 2026 Applications will be accepted through February 15, 2027. Late submissions/materials will not be accepted. Applicants generally receive an emai",
+"u": "https://somgrad.pitt.edu/prospective-students/summer-undergraduate-research-program-surp",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "usda-colorado-state-usda-reeu",
@@ -4363,11 +4936,20 @@ window.AP_PROGRAMS = [
 "federal": true,
 "nsf": false,
 "materials": [],
-"notes": [],
+"notes": [
+"The page says to EMAIL your application to a.szczepaniec@colostate.edu by February 15, 2027. There is no portal."
+],
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Email your application to a.szczepaniec@colostate.edu by February 15, 2027.",
+"u": "https://agsci.colostate.edu/agbio/ipm/reeu-information/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-iowa-university-of-iowa-microbio",
@@ -4419,7 +5001,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"notes": []
+"notes": [],
+"v": {
+"d": "c",
+"q": "The application is now open and will close on Feb. 15.",
+"u": "https://microbiology.medicine.uiowa.edu/undergraduate-education/research-opportunities/summer-undergraduate-research",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "university-of-chic-uchicago-molecular-engineer",
@@ -4435,7 +5024,7 @@ window.AP_PROGRAMS = [
 "pay": "$7,000",
 "housing": "Housing, meals and modest travel",
 "status": "open",
-"statusLabel": "Open (from the correction notes)",
+"statusLabel": "Open",
 "external": "yes",
 "beginner": false,
 "eligibility": "U.S. citizen or permanent resident. Enrolled STEM major who has not graduated.",
@@ -4456,20 +5045,26 @@ window.AP_PROGRAMS = [
 }
 ],
 "notes": [
-"The page still says applications open in early November. Confirm the REU term is selectable in the form before you submit.",
-"This record comes from the correction notes you supplied and was not re-read on the official page."
+"The page still says applications open in early November. Confirm the REU term is selectable in the form before you submit."
 ],
 "lists": [
 "H"
 ],
-"checked": "note",
+"checked": "page",
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "To apply for the REU Program in Molecular Engineering, complete the online application by February 15, 2027.",
+"u": "https://pme.uchicago.edu/academics/stem-education-community-outreach/summer-research-experiences-programs/research",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "marquette-universi-undergraduate-summer-resear",
@@ -4517,7 +5112,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "grees to supervise their summer research project. Summer Research Fellowship applications must be received by February 27, 2027 . Marquette Biology Department Summer Research Fellowship 2026 Application What ar",
+"u": "https://www.marquette.edu/biology/undergraduate-summer-research-program.php",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "university-of-roch-summer-scholars-program",
@@ -4565,7 +5167,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "utah-state-univers-utah-state-plant-stem-reu",
@@ -4613,7 +5222,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": true,
 "notes": [],
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "nasa-nasa-ostem-summer-internships",
@@ -4661,7 +5277,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "fer three sessions annually, so visit our website often for opportunities. Summer 2027 Application Deadline: March 1, 2027 (11:59 p.m. EST) Fall 2027 Application Deadline: May 24, 2027 (11:59 p.m. EST) Click He",
+"u": "https://www.nasa.gov/learning-resources/internship-programs/",
+"on": "Nov 19, 2026",
+"read": 3
+}
 },
 {
 "id": "boston-university-boston-university-surf-nsf-r",
@@ -4713,7 +5336,14 @@ window.AP_PROGRAMS = [
 "checked": "supplement",
 "linkUnverified": true,
 "federal": false,
-"nsf": true
+"nsf": true,
+"v": {
+"d": "c",
+"q": "ortunities”. The application period for the Summer 2027 SURF program will run from late January, 2027 until April 1, 2027. Applications will be reviewed and offers will be made on a rolling basis, so it is adva",
+"u": "https://www.bu.edu/surf/",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uw-madison-biomedical-data-science-summer-rese",
@@ -4759,7 +5389,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "uw-madison-waisman-waisman-summer-research-opp",
@@ -4805,7 +5442,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "thomson",
@@ -4857,7 +5501,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "promega-r-d-assay-development-intern-req-id-43",
@@ -4903,7 +5554,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "promega-research-scientist-intern-summer-2027",
@@ -4950,7 +5608,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "versiti-blood-rese-summer-2026-student-interns",
@@ -4996,7 +5661,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "morgridge-institut-stefely-lab-undergraduate-r",
@@ -5044,7 +5716,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "abbvie-2027-product-development-science-and-te",
@@ -5089,7 +5768,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "ann-robert-h-lu-camp-exceptional-student-progr",
@@ -5139,7 +5825,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "fermilab-fermilab-environmental-management-int",
@@ -5190,7 +5883,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": false,
-"contact": ""
+"contact": "",
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "loyola-university-oncology-research-summer-int",
@@ -5237,7 +5937,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "siu-medicine-simmons-cancer-institute-summer-i",
@@ -5283,7 +5990,14 @@ window.AP_PROGRAMS = [
 "materials": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "rosalind-franklin-lfc-rfu-summer-research-scho",
@@ -5331,7 +6045,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "the-morton-arboret-research-experiences-for-un",
@@ -5379,7 +6100,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "princeton-chemistr-summer-undergraduate-resear",
@@ -5430,7 +6158,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "columbia-universit-amgen-scholars-program-at-c",
@@ -5483,7 +6218,14 @@ window.AP_PROGRAMS = [
 "federal": false,
 "nsf": false,
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "columbia-universit-columbia-biological-science",
@@ -5534,7 +6276,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "dartmouth-thayer-s-research-experience-for-und",
@@ -5585,7 +6334,14 @@ window.AP_PROGRAMS = [
 "linkUnverified": false,
 "federal": false,
 "nsf": true,
-"contact": ""
+"contact": "",
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "emory-university-lgs-summer-opportunity-for-ac",
@@ -5631,7 +6387,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "emory-university-winship-summer-opportunity-in",
@@ -5674,7 +6437,14 @@ window.AP_PROGRAMS = [
 "notes": [],
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "ohio-state-univers-aspire-medical-research-pro",
@@ -5723,7 +6493,14 @@ window.AP_PROGRAMS = [
 "nsf": false,
 "materials": [],
 "recsNote": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "johns-hopkins-scho-johns-hopkins-summer-intern",
@@ -5775,7 +6552,14 @@ window.AP_PROGRAMS = [
 "checked": "directory",
 "linkUnverified": false,
 "federal": false,
-"nsf": false
+"nsf": false,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "federal-agency-nist-surf-gaithersburg-and-boul",
@@ -5822,7 +6606,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "usda-kansas-state-usda-reeu",
@@ -5865,7 +6656,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "federal-agency-fda-nctr-summer-student-researc",
@@ -5908,7 +6706,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "nsf-reu-site-uc-berkeley-cell-developmental-an",
@@ -5918,12 +6723,12 @@ window.AP_PROGRAMS = [
 "region": "National",
 "city": "Berkeley, CA",
 "focus": "Cell, developmental and evolutionary research",
-"deadline": null,
-"deadlineText": "See official cycle",
+"deadline": "2027-02-15",
+"deadlineText": "February 15, 2027",
 "pay": "See award",
 "housing": "See award",
-"status": "check",
-"statusLabel": "2027 details to confirm",
+"status": "open",
+"statusLabel": "Open",
 "external": "check",
 "beginner": false,
 "beginnerText": "Check host",
@@ -5951,7 +6756,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Application Deadline: February 15, 2027",
+"u": "https://mcb.berkeley.edu/nsfreu/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "national-institute-nibib-besip",
@@ -5965,8 +6777,8 @@ window.AP_PROGRAMS = [
 "deadlineText": "Verify 2027 date with NIBIB",
 "pay": "See sponsor",
 "housing": "See sponsor",
-"status": "check",
-"statusLabel": "2027 application link not verified",
+"status": "historical",
+"statusLabel": "Older cycle only",
 "external": "check",
 "beginner": false,
 "beginnerText": "Check requirements",
@@ -5990,11 +6802,20 @@ window.AP_PROGRAMS = [
 "federal": true,
 "nsf": false,
 "materials": [],
-"notes": [],
+"notes": [
+"The official page still shows a February 18, 2026 deadline. No 2027 date is published."
+],
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "national-institute-nia-summer-internship-progr",
@@ -6037,7 +6858,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "national-institute-niddk-undergraduate-trainin",
@@ -6080,7 +6908,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "national-institute-niddk-step-up-mcw-college-p",
@@ -6123,7 +6958,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "national-institute-nida-rturp",
@@ -6166,7 +7008,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "nsf-reu-site-purdue-biochemistry-reu",
@@ -6176,17 +7025,19 @@ window.AP_PROGRAMS = [
 "region": "National",
 "city": "West Lafayette, IN",
 "focus": "Biochemistry research, May 24–Jul 30",
-"deadline": null,
-"deadlineText": "Check program instructions",
+"deadline": "2027-02-15",
+"deadlineText": "Applications open November 15, 2026. Deadline February 15, 2027.",
 "pay": "See sponsor",
 "housing": "See sponsor",
-"status": "check",
-"statusLabel": "2027 published",
+"status": "open",
+"statusLabel": "Open",
 "external": "check",
 "beginner": false,
 "beginnerText": "Check host",
-"eligibility": "See host Conditional",
-"req": {},
+"eligibility": "GPA 3.0 or higher (the FAQ says below 3.0 is not accepted). At least 4 semesters of college coursework completed. May 24 to July 30, 2027. See host Conditional",
+"req": {
+"gpa": 3.0
+},
 "links": {
 "page": "https://ag.purdue.edu/department/biochem/research/reu-program-information.html",
 "apply": "https://ag.purdue.edu/department/biochem/research/reu-program-information.html",
@@ -6209,7 +7060,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Applications for Summer 2027 will open November 15, 2026. Deadline to apply will be in February 15, 2027.",
+"u": "https://ag.purdue.edu/department/biochem/research/reu-program-information.html",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "usda-washington-state-usda-reeu",
@@ -6252,7 +7110,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "usda-ars-regional-summer-research",
@@ -6295,7 +7160,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "noaa-epp-undergraduate-scholarship",
@@ -6340,7 +7212,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "noaa-william-m-lapenta-student-internship",
@@ -6350,8 +7229,8 @@ window.AP_PROGRAMS = [
 "region": "National",
 "city": "Multiple NOAA offices",
 "focus": "NOAA projects; many weather, climate or ocean data positions",
-"deadline": null,
-"deadlineText": "Check deadline in form",
+"deadline": "2026-11-26",
+"deadlineText": "The USAJOBS listing expires November 26, 2026",
 "pay": "Check announcement",
 "housing": "Check announcement",
 "status": "check",
@@ -6383,7 +7262,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "c",
+"q": "Recruitment began on October 26, 2026 and the job listing Expires on November 26, 2026",
+"u": "https://careerhub.students.duke.edu/jobs/national-oceanic-and-atmospheric-administration-noaa-william-m-lapenta-noaa-student-internship-2027/",
+"on": "Nov 19, 2026",
+"read": 1
+}
 },
 {
 "id": "epa-via-orise-epa-orise-research-appointments",
@@ -6426,7 +7312,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 },
 {
 "id": "federal-agency-walter-reed-army-institute-of-r",
@@ -6469,7 +7362,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "u",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 0
+}
 },
 {
 "id": "federal-agency-u-s-army-aeromedical-research-l",
@@ -6512,7 +7412,14 @@ window.AP_PROGRAMS = [
 "dates": "",
 "recsNote": "",
 "contact": "",
-"recs": null
+"recs": null,
+"v": {
+"d": "n",
+"q": "",
+"u": "",
+"on": "Nov 19, 2026",
+"read": 2
+}
 }
 ];
 window.AP_RELATED = [
