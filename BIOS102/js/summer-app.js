@@ -106,10 +106,20 @@
   // ---------------- navigation ----------------
   const TABS = [['start', 'Start'], ['setup', 'Campus and me'], ['people', 'People'], ['weeks', 'Ten weeks'], ['letters', 'Letters'], ['after', 'After the summer']];
   function go(v) { view = v; render(); window.scrollTo(0, 0); }
+  // Simple line icons (24x24, stroke) for the left panel.
+  const IC = {
+    start: '<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',
+    setup: '<path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/>',
+    people: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .8 3.5 2.8 3.5 5.8"/>',
+    weeks: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18M7 14h2M11 14h2M15 14h2M7 17h2M11 17h2"/>',
+    letters: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    after: '<path d="M12 3v18M5 8h11l3 3-3 3H5zM12 6V3"/>',
+  };
+  const KICKERS = { start: 'Summer research engagement', setup: 'Campus and profile', people: 'People you have verified', weeks: 'The ten-week plan', letters: 'Letters you review and send yourself', after: 'After the summer' };
   function render() {
-    $('#steps').innerHTML = TABS.map(([id, l]) => `<li><button type="button" data-act="go" data-v="${id}" ${view === id ? 'aria-current="step"' : ''}>${esc(l)}</button></li>`).join('');
+    $('#steps').innerHTML = TABS.map(([id, l]) => `<li><button type="button" data-act="go" data-v="${id}" ${view === id ? 'aria-current="step"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[id] || ''}</svg>${esc(l)}</button></li>`).join('');
     const fn = { start: vStart, setup: vSetup, people: vPeople, weeks: vWeeks, letters: vLetters, after: vAfter }[view] || vStart;
-    $('#view').innerHTML = fn();
+    $('#view').innerHTML = `<p class="sd-kicker">${esc(KICKERS[view] || '')}</p>` + fn();
     addMics();
   }
 
@@ -117,15 +127,24 @@
   function vStart() {
     const first = esc((S.me.name || '').split(' ')[0] || 'there');
     const wk = currentWeek(); const cts = counts(); const acts = nextActions();
+    const wn = wk && wk >= 1 && wk <= 10 ? wk : 1; const aw = WEEKS[wn - 1];
+    const openTasks = aw.k.map((t, j) => ({ t, id: 'w' + wn + '-' + j })).filter((x) => !S.done[x.id]);
+    const wdates = S.setup.start && wk >= 1 && wk <= 10 ? (() => { const f = new Date(new Date(S.setup.start + 'T00:00:00').getTime() + (wn - 1) * 7 * 86400000); return fmt(f.toISOString()) + ' \u2013 ' + fmt(new Date(f.getTime() + 6 * 86400000).toISOString()); })() : '';
     const aim = (k) => { const a = AIMS[k]; const c = cts[k].met; return `<div class="rm-card" style="margin:0"><div class="rm-muted" style="font-weight:600">${esc(kindLabel(k))}</div><div class="rank" style="font-size:32px">${c}<span class="rm-muted" style="font-size:16px"> met</span></div><div class="rm-muted">${cts[k].all} on the list &middot; aim ${a[0]}&ndash;${a[1]}${c > a[1] ? '. Enough: more will crowd the lab.' : ''}</div></div>`; };
     return `<div class="rm-hero"><h1 class="rm-h1">Hi ${first}. Run the summer as a program.</h1>
       <p class="rm-lede">You won a research spot. This plan helps you do the research well and also learn from the people around it, without letting the lab slip. It starts empty: nothing here is invented for you.</p></div>
       <div class="rm-card warn"><strong>Your information stays on this computer.</strong> Nothing here is sent anywhere. The tool never sends a message for you; you review and send every email yourself from your UWP Outlook. Check Outlook every day.</div>
       ${!S.setup.program ? `<div class="rm-card green rm-spread"><div><strong>First, tell it about your program.</strong><div class="rm-muted">Your program, host campus and dates (it builds your ten weeks from them).</div></div><button class="btn-p" data-act="go" data-v="setup">Set up</button></div>` : `<div class="rm-card green"><strong>${esc(S.setup.program)}</strong>${S.setup.university ? ' at ' + esc(S.setup.university) : ''}${wk ? ' &middot; ' + (wk >= 1 && wk <= 10 ? 'Week ' + wk : wk === 0 ? 'starts ' + esc(fmt(S.setup.start)) : 'program ended') : ''}</div>`}
-      <div class="rm-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${['researcher', 'leadership', 'mentor', 'student'].map(aim).join('')}</div>
+      <div class="rm-grid sd-aims" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${['researcher', 'leadership', 'mentor', 'student'].map(aim).join('')}</div>
       <p class="hint">These counts are aims, not promises anyone owes you. Quality beats quantity.</p>
-      <h2 class="rm-h2">Next actions</h2>
-      ${acts.length ? acts.slice(0, 6).map((a) => `<div class="rm-card ${a.tone === 'bad' ? 'warn' : ''}"><div class="rm-spread"><div><strong>${esc(a.c.name || 'Unnamed contact')}</strong><div class="rm-muted">${esc(a.t)}</div></div><button class="btn-s btn-sm" data-act="open" data-id="${a.c.id}">Open</button></div></div>`).join('') : '<div class="rm-card"><p style="margin:0" class="rm-muted">Nothing is waiting. Add a verified person, or finish this week&rsquo;s lab tasks, before you look for another meeting.</p></div>'}
+      <div class="rm-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start;margin-top:16px">
+        <section class="rm-card"><div class="rm-spread"><h2 class="rm-h3" style="font-size:24px;margin:0">${wk >= 1 && wk <= 10 ? 'Week ' + wk : 'Week 1, when you start'}</h2><span class="rm-muted">${esc(wdates)}</span></div>
+          <p style="margin:6px 0 2px;font-weight:600">${esc(aw.t)}</p><p class="rm-muted" style="margin:0 0 10px">${esc(aw.i)}</p>
+          <ul style="margin:0 0 12px 18px;padding:0">${(openTasks.length ? openTasks.map((x) => x.t) : aw.k).slice(0, 4).map((t) => `<li style="margin-bottom:4px">${esc(t)}</li>`).join('')}</ul>
+          <button class="btn-s btn-sm" data-act="go" data-v="weeks">Open the ten weeks</button></section>
+        <section class="rm-card"><h2 class="rm-h3" style="font-size:24px;margin:0 0 10px">Next actions</h2>
+          ${acts.length ? acts.slice(0, 5).map((a) => `<div class="rm-spread" style="margin-bottom:10px"><div><strong>${esc(a.c.name || 'Unnamed contact')}</strong><div class="rm-muted">${esc(a.t)}</div></div><button class="btn-s btn-sm" data-act="open" data-id="${a.c.id}">Open</button></div>`).join('') : '<p class="rm-muted" style="margin:0">Nothing is waiting. Add a verified person, or finish this week\u2019s lab tasks, before you look for another meeting.</p>'}</section>
+      </div>
       <h2 class="rm-h2">Rules that do not bend</h2>
       <div class="rm-card tint"><ul style="margin:0 0 0 18px;padding:0">
         <li><strong>The lab comes first.</strong> No more than ${WEEK_CAP} outside meetings in a week, scheduled around your experiments.</li>

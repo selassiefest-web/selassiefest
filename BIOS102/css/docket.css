@@ -1,0 +1,111 @@
+/* BIOS102 "Docket" look: a deep-green left panel, warm paper, cream cards, serif headings.
+   Adapted from the Summer Docket app's design (palette, type, layout) and written as plain CSS in our
+   BIOS102 conventions. Load AFTER research.css and apply.css: it re-skins the same class names, so any
+   BIOS102 tool can adopt this look by adding the .sd-shell markup and this file.
+   Fonts: Fraunces (headings) and Source Sans 3 (text) from Google Fonts, with safe fallbacks. */
+
+:root {
+  --green: #1b4d3e; --green-2: #25695a; --green-soft: #e8efe9;
+  --blue-soft: #f1ebde; --ink: #17241f; --ink-2: #5e6a62;
+  --line: #e3d9c8; --paper: #fffcf6; --wash: #f3efe6;
+  --gold: #a24b28; --warn: #7d3a1b; --warn-soft: #f8eadf; --bad: #a24b28;
+  --nav: #12211c; --nav-fg: #e7efe9; --nav-muted: #9aada3;
+  --r-card: 18px; --r-ctl: 10px; --focus: #1b4d3e;
+}
+body { font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--wash); color: var(--ink); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, .rm-h1, .rm-h2, .rm-h3, .rank { font-family: "Fraunces", ui-serif, Georgia, serif; font-weight: 560; text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* ---- Shell: sticky left panel + content ---- */
+.sd-shell { min-height: 100vh; display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); }
+.sd-nav { background: var(--nav); color: var(--nav-fg); position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; overflow-y: auto; }
+.sd-brand { padding: 24px 20px 16px; }
+.sd-brand b { display: block; font-family: "Fraunces", ui-serif, Georgia, serif; font-size: 22px; font-weight: 560; line-height: 1.05; color: var(--nav-fg); }
+.sd-brand span { display: block; margin-top: 5px; font-size: 14px; color: var(--nav-muted); }
+.sd-nav ol { list-style: none; margin: 0; padding: 4px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.sd-nav ol button { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: var(--nav-muted); font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; }
+.sd-nav ol button svg { width: 17px; height: 17px; flex: none; }
+.sd-nav ol button:hover { color: var(--nav-fg); background: rgba(255, 255, 255, .06); }
+.sd-nav ol button[aria-current="step"] { background: var(--green); color: #f6f3ea; }
+.sd-nav ol button:focus-visible { outline: 2px solid #f6f3ea; outline-offset: 2px; }
+.sd-foot { padding: 12px 12px 18px; border-top: 1px solid rgba(255, 255, 255, .09); display: flex; flex-direction: column; gap: 2px; }
+.sd-foot a, .sd-foot button { display: block; padding: 8px 12px; border: 0; background: none; color: var(--nav-muted); font: inherit; font-size: 14px; text-align: left; text-decoration: none; border-radius: 8px; cursor: pointer; }
+.sd-foot a:hover, .sd-foot button:hover { color: var(--nav-fg); background: rgba(255, 255, 255, .06); }
+.sd-foot .sd-who { padding: 4px 12px 8px; font-size: 13px; color: var(--nav-muted); }
+.sd-main { min-width: 0; padding: 32px 32px 64px; }
+.sd-wrap { max-width: 64rem; margin: 0 auto; }
+.sd-kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); }
+.sd-disclaimer { max-width: 64rem; margin: 40px auto 0; font-size: 13px; color: var(--ink-2); }
+
+/* ---- Type and cards ---- */
+.rm-h1 { font-size: 36px; line-height: 1.12; color: var(--ink); margin: 0 0 10px; }
+.rm-h2 { font-size: 24px; color: var(--ink); margin: 34px 0 12px; }
+.rm-h3 { font-size: 18px; color: var(--ink); }
+.rm-lede { font-size: 18px; color: var(--ink-2); max-width: 46rem; line-height: 1.6; }
+.rm-muted, .hint { color: var(--ink-2); }
+.rm-hero { background: none; border: 0; padding: 0; margin: 0 0 18px; }
+.rm-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-card); padding: 20px 22px; }
+.rm-card.green, .rm-card.tint, .rm-card.warn { border-left-width: 1px; }
+.rm-card.green { background: var(--green-soft); border-color: #c9dccd; }
+.rm-card.tint { background: var(--blue-soft); border-color: #e0d5bd; }
+.rm-card.warn { background: var(--warn-soft); border-color: #ebcdb7; }
+.rm-card.s-none, .rm-card.s-drafted { border-left: 5px solid #cfc3ad; }
+.rm-card.s-sent { border-left: 5px solid #6f8f9c; }
+.rm-card.s-scheduled { border-left: 5px solid var(--gold); }
+.rm-card.s-done { border-left: 5px solid var(--green); }
+.rank { font-size: 34px; color: var(--ink); line-height: 1; }
+.rank .rm-muted { font-family: "Fraunces", Georgia, serif; }
+
+/* ---- Controls ---- */
+.btn-p, .btn-s, .btn-t { border-radius: var(--r-ctl); min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; padding: 0 18px; }
+.btn-sm { min-height: 38px !important; padding: 0 14px !important; }
+.btn-p { background: var(--green); border: 1px solid var(--green); color: #f6f3ea; }
+.btn-p:hover { background: var(--green); opacity: .9; color: #f6f3ea; }
+.btn-s { background: var(--paper); border: 1px solid var(--line); color: var(--ink); }
+.btn-s:hover { background: var(--wash); }
+.btn-t { color: var(--gold); }
+input[type=text], input[type=email], input[type=date], input[type=datetime-local], input[type=tel], textarea, select { border: 1px solid var(--line); background: var(--wash); border-radius: var(--r-ctl); min-height: 44px; padding: 9px 12px; color: var(--ink); }
+textarea { min-height: 96px; line-height: 1.5; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--green); }
+label.f { font-weight: 600; font-size: 14px; color: var(--ink); }
+.chip { border-radius: 7px; background: var(--wash); border-color: var(--line); color: var(--ink-2); font-weight: 600; font-size: 12.5px; }
+.chip.g { background: var(--green); border-color: var(--green); color: #f6f3ea; }
+.chip.b { background: var(--green-soft); border-color: #c9dccd; color: var(--green); }
+.chip.w { background: var(--gold); border-color: var(--gold); color: #fff8f3; }
+.chip.bad { background: var(--gold); border-color: var(--gold); color: #fff8f3; }
+.preview { background: var(--wash); border-color: var(--line); border-radius: 12px; }
+.detail { border-top-color: var(--line); }
+.detail h4 { color: var(--green); }
+table.rm { border-radius: 12px; overflow: hidden; background: var(--paper); }
+table.rm th { background: var(--green-soft); color: var(--green); }
+table.rm th, table.rm td { border-color: var(--line); }
+.q-item { border-bottom-color: var(--line); }
+.bar { background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar > i { background: var(--green); }
+.need { color: var(--gold); }
+.saved { background: var(--nav); border-radius: 10px; }
+.opt { border-radius: 12px; border-color: var(--line); background: var(--paper); }
+.opt.on, .opt:hover { background: var(--green-soft); }
+
+/* ---- Narrow screens: the panel becomes a scrolling bar across the top ---- */
+@media (max-width: 800px) {
+  .sd-shell { display: block; }
+  .sd-nav { position: static; height: auto; overflow: visible; }
+  .sd-brand { padding: 16px 16px 8px; display: flex; align-items: baseline; gap: 10px; }
+  .sd-brand span { margin: 0; }
+  .sd-nav ol { flex-direction: row; overflow-x: auto; padding: 4px 10px 10px; flex: none; }
+  .sd-nav ol button { width: auto; white-space: nowrap; }
+  .sd-foot { flex-direction: row; flex-wrap: wrap; padding: 6px 12px 12px; border-top: 0; }
+  .sd-foot .sd-who { display: none; }
+  .sd-main { padding: 20px 16px 56px; overflow-x: hidden; }
+  .rm-grid { grid-template-columns: 1fr !important; }
+  .rm-grid.sd-aims { grid-template-columns: repeat(2, 1fr) !important; }
+  .rm-h1 { font-size: 29px; }
+}
+
+@media print {
+  .sd-nav, .sd-disclaimer { display: none !important; }
+  .sd-shell { display: block; }
+  .sd-main { padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
