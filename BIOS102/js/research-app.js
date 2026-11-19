@@ -12,6 +12,9 @@
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const F = Object.fromEntries(D.FACULTY.map((f) => [f.id, f]));
+  // Illustrated photo badges (BIOS102/img/researchers/<id>.webp). A professor without a file simply shows no photo.
+  const PHOTOS = ['barber', 'higgs', 'lee', 'noto', 'orlofske', 'preuss', 'richards', 'rogers', 'taft'];
+  const photo = (f) => (PHOTOS.indexOf(f.id) >= 0 ? `<img class="fac-photo" src="/BIOS102/img/researchers/${f.id}.webp" width="88" height="88" loading="lazy" alt="Photo badge of ${esc(f.honorific + ' ' + f.last)}">` : '');
   const LS_KEY = 'rm_state_v1_' + String(session.email || '').toLowerCase();
   const MAX_LIST = 4;
 
@@ -287,7 +290,7 @@
     const bandCls = (b) => (b === 'Strongest match' ? 's1' : b === 'Strong match' ? 's2' : b === 'Worth a conversation' ? 's3' : 's4');
     const rows = m.map((x) => {
       const f = x.f; const on = S.shortlist.indexOf(f.id) >= 0;
-      return `<div class="fac a-${f.area}" style="margin-bottom:14px"><div class="rm-spread"><div class="rm-row"><span class="rank">${x.rank}</span><div><div class="band ${bandCls(x.band)}">${esc(x.band)}</div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div></div></div>
+      return `<div class="fac a-${f.area}" style="margin-bottom:14px"><div class="rm-spread"><div class="rm-row"><span class="rank">${x.rank}</span>${photo(f)}<div><div class="band ${bandCls(x.band)}">${esc(x.band)}</div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div></div></div>
         <button class="btn-${on ? 's' : 'p'} btn-sm" data-act="toggleList" data-id="${f.id}">${on ? 'On my interview list ✓' : 'Add to my interview list'}</button></div>
         <div class="bar" title="Relative to your best match"><i style="width:${Math.round(x.rel * 100)}%"></i></div>
         <p class="one">${esc(f.oneLine)}</p>
@@ -337,7 +340,7 @@
     const list = D.FACULTY.filter((f) => !ui.filter || (f.tags[ui.filter] || 0) >= 2);
     const cards = list.map((f) => {
       const on = S.shortlist.indexOf(f.id) >= 0;
-      return `<div class="fac a-${f.area}"><div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span></div><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div><p class="one">${esc(f.oneLine)}</p>
+      return `<div class="fac a-${f.area}"><div class="fac-head"><div><div><span class="area a-${f.area}">${esc(D.AREAS[f.area])}</span></div><h3>${esc(f.honorific)} ${esc(f.name)}</h3><div class="t">${esc(f.title)}</div></div>${photo(f)}</div><p class="one">${esc(f.oneLine)}</p>
         <div>${f.areas.slice(0, 3).map((a) => `<span class="chip">${esc(a)}</span>`).join('')}</div><div>${evidenceChips(f)}</div>
         <div class="rm-row"><button class="btn-s btn-sm" data-act="openFac" data-id="${f.id}">${ui.open[f.id] ? 'Hide' : 'Read more'}</button><button class="btn-${on ? 's' : 'p'} btn-sm" data-act="toggleList" data-id="${f.id}">${on ? 'On my list ✓' : 'Add to my list'}</button></div>
         ${ui.open[f.id] ? facDetail(f) : ''}</div>`;
