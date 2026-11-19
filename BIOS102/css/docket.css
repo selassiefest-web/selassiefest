@@ -7,7 +7,7 @@
 :root {
   --green: #1b4d3e; --green-2: #25695a; --green-soft: #e8efe9;
   --blue-soft: #f1ebde; --ink: #17241f; --ink-2: #5e6a62;
-  --line: #e3d9c8; --paper: #fffcf6; --wash: #f3efe6;
+  --line: #e3d9c8; --paper: #fffcf6; --wash: #f3f0e8;
   --gold: #a24b28; --warn: #7d3a1b; --warn-soft: #f8eadf; --bad: #a24b28;
   --nav: #12211c; --nav-fg: #e7efe9; --nav-muted: #9aada3;
   --r-card: 18px; --r-ctl: 10px; --focus: #1b4d3e;
@@ -108,3 +108,18 @@ table.rm th, table.rm td { border-color: var(--line); }
 }
 .sd-nav ol button .ck { margin-left: auto; font-size: 13px; color: #8fd1a9; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---- Header block: the illustration fills a 4:1 box; the title and intro sit on its left side ---- */
+.sd-head { position: relative; aspect-ratio: 4 / 1; margin: -4px 0 16px; }
+.sd-head .sd-bannerbg { position: absolute; inset: 0; background-repeat: no-repeat; background-size: contain; background-position: right top; pointer-events: none; z-index: 0; }
+.sd-head > *:not(.sd-bannerbg) { position: relative; z-index: 1; }
+.sd-head .sd-kicker, .sd-head .rm-h1, .sd-head .rm-lede, .sd-head .rm-hero { max-width: 58%; }
+.sd-head .rm-hero .rm-h1, .sd-head .rm-hero .rm-lede { max-width: none; }
+.sd-head .rm-lede { margin-bottom: 4px; }
+@media (max-width: 800px) {
+  /* On a phone the illustration becomes a strip above the title, so it never sits behind text. */
+  .sd-head { aspect-ratio: auto; margin-top: 0; }
+  .sd-head .sd-bannerbg { position: static; inset: auto; height: 168px; margin: 0 0 8px; background-size: 190% auto; background-position: right center; }
+  .sd-head .sd-kicker, .sd-head .rm-h1, .sd-head .rm-lede, .sd-head .rm-hero { max-width: none; }
+}
+@media print { .sd-bannerbg { display: none; } }

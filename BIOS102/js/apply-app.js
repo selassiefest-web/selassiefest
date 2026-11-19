@@ -255,7 +255,9 @@
     renderTabs();
     const fn = { dash: vDash, profile: vProfile, story: vStory, recs: vRecs, programs: vPrograms, mine: vMine, plan: vPlan, packet: vPacket }[view] || vDash;
     const KICK = { dash: 'Summer 2027 applications', profile: 'Type it once', story: 'Your honest story', recs: 'Letters of recommendation', programs: 'Find programs', mine: 'In deadline order', plan: 'Plan and deadlines', packet: 'Program packet' };
-    $('#view').innerHTML = `<p class="sd-kicker">${esc(KICK[view] || '')}</p>` + fn();
+    const HDR = { dash: 'ap-dash', profile: 'ap-profile', story: 'ap-story', recs: 'ap-recs', programs: 'ap-programs', mine: 'ap-mine', plan: 'ap-plan', packet: 'ap-packet' };
+    $('#view').innerHTML = `<div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/${HDR[view] || 'ap-dash'}.webp)"></div><p class="sd-kicker">${esc(KICK[view] || '')}</p>` + fn();
+    if (window.Docket) Docket.head($('#view'));
     addMics();
     if (view === 'profile') refreshProfileMeter();
   }

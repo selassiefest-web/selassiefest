@@ -136,9 +136,10 @@
     const out = fn();
     stopDictation();
     const KICK = { home: 'Find your research mentor', know: 'Step 1 of 5', matches: 'Step 2 of 5', meet: 'Step 3 of 5', interview: 'Step 4 of 5', decide: 'Step 5 of 5', class: 'For instructors' };
-    const kick = `<p class="sd-kicker">${esc(KICK[view] || '')}</p>`;
-    if (typeof out === 'string') { $('#view').innerHTML = kick + out; if (view === 'know') refreshKnow(); addMics(); }
-    else out.then((h) => { $('#view').innerHTML = kick + h; addMics(); });
+    const HDR = { home: 'rm-start', know: 'rm-know', matches: 'rm-matches', meet: 'rm-researchers', interview: 'rm-interview', decide: 'rm-decide', class: 'rm-class' };
+    const kick = `<div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/${HDR[view] || 'rm-start'}.webp)"></div><p class="sd-kicker">${esc(KICK[view] || '')}</p>`;
+    if (typeof out === 'string') { $('#view').innerHTML = kick + out; if (window.Docket) Docket.head($('#view')); if (view === 'know') refreshKnow(); addMics(); }
+    else out.then((h) => { $('#view').innerHTML = kick + h; if (window.Docket) Docket.head($('#view')); addMics(); });
   }
 
   // --- Home ---

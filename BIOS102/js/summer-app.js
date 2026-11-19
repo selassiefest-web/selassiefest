@@ -119,7 +119,9 @@
   function render() {
     $('#steps').innerHTML = TABS.map(([id, l]) => `<li><button type="button" data-act="go" data-v="${id}" ${view === id ? 'aria-current="step"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[id] || ''}</svg>${esc(l)}</button></li>`).join('');
     const fn = { start: vStart, setup: vSetup, people: vPeople, weeks: vWeeks, letters: vLetters, after: vAfter }[view] || vStart;
-    $('#view').innerHTML = `<p class="sd-kicker">${esc(KICKERS[view] || '')}</p>` + fn();
+    const HDR = { start: 'sp-start', setup: 'sp-setup', people: 'sp-people', weeks: 'sp-weeks', letters: 'sp-letters', after: 'sp-after' };
+    $('#view').innerHTML = `<div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/${HDR[view] || 'sp-start'}.webp)"></div><p class="sd-kicker">${esc(KICKERS[view] || '')}</p>` + fn();
+    if (window.Docket) Docket.head($('#view'));
     addMics();
   }
 
