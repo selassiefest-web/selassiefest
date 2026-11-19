@@ -54,7 +54,7 @@
     el.textContent = msg;
     el.className = 'saved show' + (err ? ' err' : '');
     clearTimeout(flash.t);
-    if (!err) flash.t = setTimeout(() => { el.className = 'saved'; }, 1400);
+    flash.t = setTimeout(() => { el.className = 'saved'; }, err ? 7000 : 1400);
   }
   function save(now) {
     S._t = Date.now();
@@ -354,6 +354,24 @@
 
   // A real sentence, with no [bracketed placeholder] left in it.
   function sentenceOk(t) { t = String(t || '').trim(); return t.length >= 25 && !/\[[^\]]*\]/.test(t); }
+  // Free text that is filled in and has no [bracket] left in it.
+  function filled(t) { t = String(t || '').trim(); return t.length > 0 && !/\[[^\]]*\]/.test(t); }
+  // Interview request is ready only when the student wrote their sentence AND when they are free.
+  function ivReady(o) { return sentenceOk(o.customLine) && filled(o.times); }
+  // The ask is ready only when the reason is a real sentence AND a start time is given.
+  function askReady(fin) { fin = fin || {}; return sentenceOk(fin.askWhy) && filled(fin.askStart); }
+  // Last line of defence: no draft leaves this page with a [bracket placeholder] still in it.
+  function guardDraft(d) {
+    const left = ((d.subject || '') + '\n' + (d.body || '')).match(/\[[^\]]*\]/g) || [];
+    if (!left.length) return true;
+    const t = left[0].toLowerCase();
+    let msg;
+    if (t.indexOf('your name') >= 0) msg = 'Your name is missing from your account, so the email cannot be signed. Ask your instructor to fix your roster name.';
+    else if (t.indexOf('hours per week') >= 0) msg = 'Answer the "hours a week" question under Know yourself first, so the email can say how much time you can give.';
+    else msg = 'This email still has a [bracket] to fill in: ' + left[0] + ' Finish it before you send.';
+    flash(msg, true);
+    return false;
+  }
   function sentenceHint(f) {
     const p = f.projects[0];
     return p ? `Mention one specific thing. For example: "I saw that a student studied ${p[1].replace(/\s*\(MS\)$/, '')}, and I would love to understand how that kind of work is done." Use your own words.`
@@ -391,7 +409,7 @@
     const canFollow = o.status === 'sent' && d !== null && d >= 7;
     let body = '';
     if (panel === 'email') {
-      const ok = sentenceOk(o.customLine);
+      const ok = ivReady(o);
       const draft = draftFor(f.id);
       const step = ui.step[f.id] || 1;
       const nav = `<div class="rm-muted" style="margin-bottom:8px"><strong>Step ${step} of 3</strong> &middot; ${['Pick what sparks your curiosity', 'Say it in your own words', 'Check it and send it yourself'][step - 1]}</div>`;
@@ -406,7 +424,7 @@
           <p style="margin:8px 0 4px"><strong>Stuck on how to start?</strong> Tap one and fill in the brackets.</p><div>${STARTERS.map((x, i) => `<button type="button" class="chip" data-act="starter" data-id="${f.id}" data-i="${i}">${esc(x)}</button>`).join('')}</div>
           <label class="f" for="tm-${f.id}">When are you free?</label>
           <input type="text" id="tm-${f.id}" data-bind="outreach.${f.id}.times" data-live="${f.id}" value="${esc(o.times || '')}" placeholder="for example: Tuesdays after 2 pm or Thursdays before noon" />
-          <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence, with no [brackets] left in it, to go on.</p>
+          <p class="need" id="need-${f.id}" ${ok ? 'hidden' : ''}>Write your own sentence and when you are free, with no [brackets] left in either, to go on.</p>
           <div class="rm-row" style="margin-top:12px"><button class="btn-s" data-act="step" data-id="${f.id}" data-v="1">Back</button><button class="btn-p" data-act="step" data-id="${f.id}" data-v="3" ${ok ? '' : 'disabled'} data-needs="${f.id}">Next</button></div></div>`;
       } else {
         body = `<div class="detail">${nav}
@@ -509,10 +527,10 @@
         <div class="rm-card"><label class="f" for="path" style="margin-top:0">Which route will you ask about?</label>
         <select id="path" data-bind="final.path" data-redraft="1"><option value="">I will ask them what the options are</option>${D.OPPORTUNITIES.filter((x) => ['thomson', 'indep', 'mbb'].indexOf(x.id) >= 0).map((x) => `<option value="${x.id}" ${fin.path === x.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <label class="f" for="aw">Why this lab, in your own words (required)</label><textarea id="aw" data-bind="final.askWhy" data-redraft="1">${esc(fin.askWhy || '')}</textarea>
-        <label class="f" for="as">When you could start</label><input type="text" id="as" data-bind="final.askStart" data-redraft="1" value="${esc(fin.askStart || '')}" placeholder="for example: next spring semester" />
+        <label class="f" for="as">When you could start (required)</label><input type="text" id="as" data-bind="final.askStart" data-redraft="1" value="${esc(fin.askStart || '')}" placeholder="for example: next spring semester" />
         <label class="f">Preview</label><div class="preview" id="ask-prev"><b>To:</b> ${esc(draft.to)}\n<b>Subject:</b> ${esc(draft.subject)}\n\n${esc(draft.body)}</div>
-        <p class="need" id="ask-need" ${(fin.askWhy || '').trim().length >= 25 ? 'hidden' : ''}>Write your own reason (at least a sentence) to unlock the buttons.</p>
-        <div class="rm-row"><button class="btn-p" data-act="mailAsk" ${(fin.askWhy || '').trim().length >= 25 ? '' : 'disabled'} data-needs="ask">Open in my email app</button><button class="btn-s" data-act="copyAsk" ${(fin.askWhy || '').trim().length >= 25 ? '' : 'disabled'} data-needs="ask">Copy it</button>${fin.askSentAt ? '<span class="chip g">sent</span>' : `<button class="btn-s" data-act="markAsk" ${(fin.askWhy || '').trim().length >= 25 ? '' : 'disabled'} data-needs="ask">I sent it</button>`}</div></div>
+        <p class="need" id="ask-need" ${askReady(fin) ? 'hidden' : ''}>Write your own reason (at least a sentence) and when you could start, with no [brackets] left, to unlock the buttons.</p>
+        <div class="rm-row"><button class="btn-p" data-act="mailAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Open in my email app</button><button class="btn-s" data-act="copyAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Copy it</button>${fin.askSentAt ? '<span class="chip g">sent</span>' : `<button class="btn-s" data-act="markAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">I sent it</button>`}</div></div>
         <h2 class="rm-h2">Your next 30 days</h2>${planHtml()}
         <div class="rm-card green rm-spread"><div><strong>Want this plan in your inbox?</strong><div class="rm-muted">We email it only to your own roster address.</div></div><div class="rm-row"><button class="btn-p" data-act="emailPlan" id="emailPlanBtn">Email me my plan</button><button class="btn-s" data-act="printPlan">Print it</button></div></div>`;
     }
@@ -660,16 +678,16 @@
       case 'finishKnow':
         if (!E.profileComplete(S.answers)) return;
         S.profileDone = true; save(true); go('matches'); break;
-      case 'panel': ui.panel[id] = ui.panel[id] === v ? null : v; if (v === 'email' && ui.panel[id]) ui.step[id] = ui.step[id] || (sentenceOk(O(id).customLine) ? 3 : 1); render(); break;
+      case 'panel': ui.panel[id] = ui.panel[id] === v ? null : v; if (v === 'email' && ui.panel[id]) ui.step[id] = ui.step[id] || (ivReady(O(id)) ? 3 : 1); render(); break;
       case 'step': ui.step[id] = Number(v); render(); break;
-      case 'outlookDraft': draftedMark(id); window.open(E.outlookCompose(draftFor(id)), '_blank', 'noopener'); break;
-      case 'mailDraft': draftedMark(id); window.location.href = E.mailto(draftFor(id)); break;
+      case 'outlookDraft': if (!guardDraft(draftFor(id))) break; draftedMark(id); window.open(E.outlookCompose(draftFor(id)), '_blank', 'noopener'); break;
+      case 'mailDraft': if (!guardDraft(draftFor(id))) break; draftedMark(id); window.location.href = E.mailto(draftFor(id)); break;
       case 'followIcs': followIcs(id); break;
       case 'outlookInterview': { const o2 = O(id); if (!o2.interviewDate) { flash('Add a date and time first.', true); break; } window.open(E.outlookEvent({ title: 'Research interview: ' + F[id].honorific + ' ' + F[id].last, start: o2.interviewDate, minutes: 20, location: o2.place || '', description: 'Bring your questions. Thank-you email within 24 hours.' }), '_blank', 'noopener'); break; }
-      case 'copyDraft': draftedMark(id); copy(asText(draftFor(id)), 'Email copied'); break;
-      case 'markSent': { const o = O(id); if (o.status !== 'sent') { o.status = 'sent'; o.sentAt = new Date().toISOString(); } ui.panel[id] = 'sentok'; save(); render(); flash('Marked as sent'); break; }
-      case 'mailFollow': { const o = O(id); o.followedUp = new Date().toISOString(); save(); window.location.href = E.mailto(E.followUp(student(), F[id], o)); break; }
-      case 'copyFollow': copy(asText(E.followUp(student(), F[id], O(id))), 'Follow-up copied'); break;
+      case 'copyDraft': if (!guardDraft(draftFor(id))) break; draftedMark(id); copy(asText(draftFor(id)), 'Email copied'); break;
+      case 'markSent': { const o = O(id); if (o.status !== 'sent' && !guardDraft(draftFor(id))) break; if (o.status !== 'sent') { o.status = 'sent'; o.sentAt = new Date().toISOString(); } ui.panel[id] = 'sentok'; save(); render(); flash('Marked as sent'); break; }
+      case 'mailFollow': { const o = O(id); if (!guardDraft(E.followUp(student(), F[id], o))) break; o.followedUp = new Date().toISOString(); save(); window.location.href = E.mailto(E.followUp(student(), F[id], o)); break; }
+      case 'copyFollow': if (!guardDraft(E.followUp(student(), F[id], O(id)))) break; copy(asText(E.followUp(student(), F[id], O(id))), 'Follow-up copied'); break;
       case 'setStatus': { const o = O(id); o.status = v; if (v === 'done') o.doneAt = new Date().toISOString(); ui.panel[id] = null; save(); render(); break; }
       case 'confirmSchedule': {
         const o = O(id); if (!o.interviewDate) { flash('Pick a date and time first.', true); return; }
@@ -677,12 +695,12 @@
       }
       case 'ics': downloadICS(id); break;
       case 'printPrep': printSheet(id); break;
-      case 'mailThanks': window.location.href = E.mailto(E.thankYou(student(), F[id], O(id))); break;
-      case 'copyThanks': copy(asText(E.thankYou(student(), F[id], O(id))), 'Thank-you copied'); break;
-      case 'markThanked': O(id).thanked = new Date().toISOString(); save(); render(); break;
-      case 'mailAsk': window.location.href = E.mailto(askDraft()); break;
-      case 'copyAsk': copy(asText(askDraft()), 'Ask copied'); break;
-      case 'markAsk': S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
+      case 'mailThanks': if (!guardDraft(E.thankYou(student(), F[id], O(id)))) break; window.location.href = E.mailto(E.thankYou(student(), F[id], O(id))); break;
+      case 'copyThanks': if (!guardDraft(E.thankYou(student(), F[id], O(id)))) break; copy(asText(E.thankYou(student(), F[id], O(id))), 'Thank-you copied'); break;
+      case 'markThanked': if (!guardDraft(E.thankYou(student(), F[id], O(id)))) break; O(id).thanked = new Date().toISOString(); save(); render(); break;
+      case 'mailAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; window.location.href = E.mailto(askDraft()); break;
+      case 'copyAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; copy(asText(askDraft()), 'Ask copied'); break;
+      case 'markAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
       case 'resetAll': resetAll(); break;
       case 'dictate': toggleDictation(b); break;
@@ -718,7 +736,7 @@
 
   function updateLive(id) {
     const o = O(id);
-    const ok = sentenceOk(o.customLine);
+    const ok = ivReady(o);
     const draft = draftFor(id);
     const p = $('#prev-' + id);
     if (p) p.innerHTML = '<b>To:</b> ' + esc(draft.to) + '\n<b>Subject:</b> ' + esc(draft.subject) + '\n\n' + esc(draft.body);
@@ -727,7 +745,7 @@
   }
   function updateAsk() {
     const fin = S.final || {};
-    const ok = (fin.askWhy || '').trim().length >= 25;
+    const ok = askReady(fin);
     const d = askDraft();
     const p = $('#ask-prev'); if (p) p.innerHTML = '<b>To:</b> ' + esc(d.to) + '\n<b>Subject:</b> ' + esc(d.subject) + '\n\n' + esc(d.body);
     $$('[data-needs="ask"]').forEach((x) => { x.disabled = !ok; });
