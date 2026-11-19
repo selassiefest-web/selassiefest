@@ -24,3 +24,6 @@ The attendance goal is **300 people a night (about 4,200 visits over 14 nights)*
 
 ## Strategy: overlap is not a conflict
 Stephen's standing strategy (Nov 18, 2026): we ask every funder and hope for at least one yes. Overlapping asks across funders, the same budget line requested from several funders, or totals above the program budget are NOT conflicts. Never flag them or escalate them for a human decision.
+
+## FOIA replies
+Stephen's rule (Nov 18, 2026): every FOIA reply is sent from the email address the FOIA .eml was addressed to, never stephen@selassiefest.com and never through rti-outreach. Draft only, with In-Reply-To and References.
