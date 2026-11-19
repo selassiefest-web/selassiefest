@@ -14,6 +14,8 @@
 -- returns structure only (stage, who is on whose shortlist, outreach
 -- status). It never returns free-text answers or interview notes.
 --
+-- WARNING: re-running this file reverts bios102_rm_save to the version WITHOUT the two-device conflict check.
+-- After any re-run, also apply supabase/bios102-research-match-conflict.sql.
 -- Safe to re-run: create-if-not-exists and create-or-replace throughout.
 -- Apply with:  supabase db query --linked -f supabase/bios102-research-match.sql
 -- ─────────────────────────────────────────────────────────────────────────

@@ -20,6 +20,8 @@
   let isInstructor = false;
   let ui = { open: {}, panel: {}, step: {}, filter: '' };
   let saveTimer = null;
+  let baseT = null;        // the _t of the server version this page last loaded or saved
+  let conflict = false;    // true while the student has to choose between two versions
 
   function blank() {
     return { v: 1, stage: 'home', profileDone: false, answers: { ratings: {}, choices: {}, constraints: {}, free: {} }, shortlist: [], outreach: {}, matchTop: [], final: {}, _t: 0 };
@@ -60,7 +62,7 @@
     S._t = Date.now();
     try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* private mode: server copy still works */ }
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(pushServer, now ? 0 : 900);
+    if (!conflict) saveTimer = setTimeout(pushServer, now ? 0 : 900);
   }
   function expiredBanner() {
     if (document.getElementById('expired')) return;
@@ -68,14 +70,53 @@
     b.innerHTML = '<strong>Your sign-in expired.</strong> Your work is safe on this device. <a href="/BIOS102/index.html">Sign in again</a> to keep saving to your account.';
     document.body.insertBefore(b, document.body.firstChild);
   }
-  async function pushServer() {
+  // Saves run one at a time, so a second save never goes out with a stale base while the first is in flight.
+  let pushChain = Promise.resolve();
+  function pushServer() { pushChain = pushChain.then(doPush, doPush); return pushChain; }
+  async function doPush() {
+    if (conflict) return;
+    const payload = Object.assign({}, S, { _base: baseT });
+    const sent = payload._t;
     try {
-      await window.sfSupabase.bios102RmSave(session.sessionToken, S);
+      await window.sfSupabase.bios102RmSave(session.sessionToken, payload);
+      baseT = sent; S._base = sent;
       flash('Saved');
     } catch (e) {
-      if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner();
+      const m = String((e && e.message) || e);
+      if (/rm_conflict/i.test(m)) resolveConflict();
+      else if (/invalid or expired/i.test(m)) expiredBanner();
       else flash('Could not save to the server. Your work is kept on this device.', true);
     }
+  }
+  // Another device saved a newer version. Ask which one to keep; never overwrite silently.
+  async function resolveConflict() {
+    let remote = null;
+    try { remote = await window.sfSupabase.bios102RmLoad(session.sessionToken); } catch (e) { remote = null; }
+    if (!remote || !remote.v) { flash('Could not check your account for newer work. Your work is kept on this device.', true); return; }
+    showConflict(remote);
+  }
+  function showConflict(remote) {
+    conflict = true;
+    clearTimeout(saveTimer);
+    const old = document.getElementById('conflict'); if (old) old.remove();
+    const when = remote._t ? new Date(remote._t).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'earlier';
+    const b = document.createElement('div'); b.id = 'conflict'; b.className = 'rm-card warn'; b.style.cssText = 'margin:0;border-radius:0;position:sticky;top:0;z-index:60';
+    b.innerHTML = '<strong>Newer work was saved from another device (' + esc(when) + ').</strong> Choose which version to keep. Nothing has been overwritten yet.<div class="rm-row" style="margin-top:8px"><button type="button" class="btn-p btn-sm" data-c="remote">Use the newer version from my account</button><button type="button" class="btn-s btn-sm" data-c="mine">Keep what is on this device</button></div>';
+    b.addEventListener('click', (ev) => {
+      const c = ev.target.closest('[data-c]'); if (!c) return;
+      if (c.dataset.c === 'remote') {
+        S = Object.assign(blank(), remote);
+        S.shortlist = (S.shortlist || []).filter((id) => F[id]); S.matchTop = (S.matchTop || []).filter((id) => F[id]);
+        S.answers = Object.assign({ ratings: {}, choices: {}, constraints: {}, free: {} }, S.answers || {});
+        baseT = remote._t == null ? null : remote._t; S._base = baseT;
+        try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+        conflict = false; b.remove(); view = 'home'; ui = { open: {}, panel: {}, step: {}, filter: '' }; render(); flash('Loaded the newer version from your account.');
+      } else {
+        baseT = remote._t == null ? null : remote._t;
+        conflict = false; b.remove(); save(true); flash('Keeping this device’s version.');
+      }
+    });
+    document.body.insertBefore(b, document.body.firstChild);
   }
   async function load() {
     let local = null;
@@ -83,13 +124,18 @@
     let remote = null;
     try { remote = await window.sfSupabase.bios102RmLoad(session.sessionToken); } catch (e) { remote = null; if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner(); }
     const pick = (remote && remote.v ? remote : null);
+    baseT = pick && pick._t != null ? pick._t : null;
     if (pick && local && local._t > (pick._t || 0)) S = Object.assign(blank(), local);
     else if (pick) S = Object.assign(blank(), pick);
     else if (local) S = Object.assign(blank(), local);
     S.shortlist = (S.shortlist || []).filter((id) => F[id]);
     S.matchTop = (S.matchTop || []).filter((id) => F[id]);
     S.answers = Object.assign({ ratings: {}, choices: {}, constraints: {}, free: {} }, S.answers || {});
-    if (local && pick && local._t > (pick._t || 0)) save(true);
+    if (local && pick && local._t > (pick._t || 0)) {
+      // Only a clean continuation of the server version may be pushed; otherwise ask.
+      if (local._base === pick._t || (local._base == null && pick._t == null)) save(true);
+      else showConflict(pick);
+    }
     try { isInstructor = !!(await window.sfSupabase.bios102GradesIsInstructor(session.sessionToken)); } catch (e) { isInstructor = false; }
   }
 
@@ -717,13 +763,15 @@
     const fresh = blank();
     // Erase the account copy FIRST. If that fails, keep everything as it was and say so,
     // because a surviving server copy would silently come back on the next load.
-    try { await window.sfSupabase.bios102RmSave(session.sessionToken, fresh); }
+    try { await window.sfSupabase.bios102RmSave(session.sessionToken, Object.assign({}, fresh, { _base: baseT })); }
     catch (e) {
-      if (/invalid or expired/i.test(String((e && e.message) || e))) expiredBanner();
+      const m = String((e && e.message) || e);
+      if (/invalid or expired/i.test(m)) expiredBanner();
+      if (/rm_conflict/i.test(m)) { flash('Newer work was saved from another device, so nothing was erased. Reload this page, then try again.', true); return; }
       flash('Could not erase your account copy, so nothing was erased. Check your connection and try again.', true);
       return;
     }
-    S = fresh;
+    S = fresh; baseT = fresh._t; S._base = baseT;
     try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ }
     view = 'home'; ui = { open: {}, panel: {}, step: {}, filter: '' };
     render(); window.scrollTo(0, 0); flash('Everything erased. You are starting fresh.');
