@@ -46,12 +46,8 @@ window.RM_ENGINE = (() => {
 
   const MIN_CARDS = 8;
   function profileComplete(answers) {
-    const a = answers || {};
-    const rated = answeredCount(a);
-    const choices = a.choices || {};
-    const k = a.constraints || {};
     // Eight cards are enough to get useful matches. The rest sharpen them but are optional.
-    return rated >= MIN_CARDS;
+    return answeredCount(answers || {}) >= MIN_CARDS;
   }
 
   const MENTOR_BONUS = { strong: 1.0, good: 0.6, some: 0.2, pathway: 0.3, few: 0 };
@@ -146,7 +142,7 @@ ${sig(student)}`;
       body:
 `Dear ${f.honorific} ${f.last},
 
-I wrote last week asking for 20 minutes to learn about your research. I know this is a busy time of the semester, so I wanted to follow up once in case my note was buried. If it is easier, I can stop by your office hours. If now is not a good time, no problem at all and thank you for reading.
+${(o && o.sentAt && !isNaN(toDate(o.sentAt))) ? 'I wrote on ' + fmtDate(o.sentAt) : 'I wrote recently'} asking for 20 minutes to learn about your research. I know this is a busy time of the semester, so I wanted to follow up once in case my note was buried. If it is easier, I can stop by your office hours. If now is not a good time, no problem at all and thank you for reading.
 
 ${sig(student)}`,
     };

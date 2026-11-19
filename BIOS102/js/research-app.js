@@ -20,7 +20,8 @@
   let isInstructor = false;
   let ui = { open: {}, panel: {}, step: {}, filter: '' };
   let saveTimer = null;
-  let baseT = null;        // the _t of the server version this page last loaded or saved
+  let renderToken = 0;
+  let baseT = null;       // the _t of the server version this page last loaded or saved
   let conflict = false;    // true while the student has to choose between two versions
 
   function blank() {
@@ -181,12 +182,13 @@
     const fn = { home: vHome, know: vKnow, matches: vMatches, meet: vMeet, interview: vInterview, decide: vDecide, class: vClass }[view] || vHome;
     renderSteps();
     const out = fn();
+    const token = ++renderToken;   // a slow async view (Class view) must not overwrite a newer page
     stopDictation();
     const KICK = { home: 'Find your research mentor', know: 'Step 1 of 5', matches: 'Step 2 of 5', meet: 'Step 3 of 5', interview: 'Step 4 of 5', decide: 'Step 5 of 5', class: 'For instructors' };
     const HDR = { home: 'rm-start', know: 'rm-know', matches: 'rm-matches', meet: 'rm-researchers', interview: 'rm-interview', decide: 'rm-decide', class: 'rm-class' };
     const kick = `<div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/${HDR[view] || 'rm-start'}.webp)"></div><p class="sd-kicker">${esc(KICK[view] || '')}</p>`;
     if (typeof out === 'string') { $('#view').innerHTML = kick + out; if (window.Docket) Docket.head($('#view')); if (view === 'know') refreshKnow(); addMics(); }
-    else out.then((h) => { $('#view').innerHTML = kick + h; if (window.Docket) Docket.head($('#view')); addMics(); });
+    else out.then((h) => { if (token !== renderToken) return; $('#view').innerHTML = kick + h; if (window.Docket) Docket.head($('#view')); addMics(); });
   }
 
   // --- Home ---
