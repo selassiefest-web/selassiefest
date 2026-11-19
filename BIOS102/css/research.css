@@ -1,0 +1,173 @@
+/* BIOS102 Research Match -- UW-Parkside Biological Sciences look.
+   Brand notes (from uwp.edu's published guidance): forest green (Pantone 3435,
+   about #154734), white, black and light gray; light blue (#e8f3ff) callout
+   blocks; square-cornered buttons. No UW-Parkside logo is used here because
+   logo files need approval from University Relations / Creative Services
+   (creativeservices@uwp.edu). This is an independent course tool, and the
+   footer says so. To add the official lockup later, drop it into
+   .rm-brand-mark and keep it unscaled, uncropped, in black, white or green. */
+
+:root {
+  --green: #154734;
+  --green-2: #1d6a4b;
+  --green-soft: #e6efe9;
+  --blue-soft: #e8f3ff;
+  --ink: #1b1f1d;
+  --ink-2: #4a544f;
+  --line: #d5dbd7;
+  --paper: #ffffff;
+  --wash: #f4f6f5;
+  --gold: #b8860b;
+  --warn: #8a4b00;
+  --warn-soft: #fff4e0;
+  --bad: #9a2b2b;
+  --focus: #0b5cad;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--wash); color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+a { color: var(--green-2); }
+a:hover { color: var(--green); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Header ---- */
+.rm-head { background: var(--green); color: #fff; }
+.rm-head-in { max-width: 1080px; margin: 0 auto; padding: 14px 20px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.rm-brand { display: flex; flex-direction: column; line-height: 1.15; }
+.rm-brand-mark { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.rm-brand-title { font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+.rm-head-links { display: flex; gap: 14px; align-items: center; font-size: 14px; flex-wrap: wrap; }
+.rm-head-links a, .rm-head-links button { color: #fff; background: none; border: 1px solid rgba(255,255,255,.55); padding: 6px 12px; font: inherit; cursor: pointer; text-decoration: none; border-radius: 0; }
+.rm-head-links a:hover, .rm-head-links button:hover { background: rgba(255,255,255,.14); }
+.rm-who { opacity: .9; }
+
+/* ---- Stepper ---- */
+.rm-steps { background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+.rm-steps ol { max-width: 1080px; margin: 0 auto; padding: 0 20px; list-style: none; display: flex; overflow-x: auto; }
+.rm-steps li { flex: 0 0 auto; }
+.rm-steps button { background: none; border: 0; border-bottom: 4px solid transparent; padding: 14px 14px 10px; font: inherit; font-size: 14px; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+.rm-steps button .n { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background: var(--line); color: var(--ink); font-size: 12px; margin-right: 7px; font-weight: 700; }
+.rm-steps button.done .n { background: var(--green); color: #fff; }
+.rm-steps button[aria-current="step"] { color: var(--green); font-weight: 700; border-bottom-color: var(--green); }
+.rm-steps button:hover { color: var(--green); }
+
+/* ---- Layout ---- */
+.rm-wrap { max-width: 1080px; margin: 0 auto; padding: 26px 20px 80px; }
+.rm-h1 { font-size: 30px; line-height: 1.15; margin: 0 0 8px; color: var(--green); }
+.rm-h2 { font-size: 21px; margin: 30px 0 10px; color: var(--green); }
+.rm-h3 { font-size: 17px; margin: 0 0 6px; }
+.rm-lede { font-size: 18px; color: var(--ink-2); max-width: 760px; margin: 0 0 20px; }
+.rm-muted { color: var(--ink-2); font-size: 14px; }
+.rm-card { background: var(--paper); border: 1px solid var(--line); padding: 18px 20px; margin: 0 0 14px; }
+.rm-card.tint { background: var(--blue-soft); border-color: #c5dcf5; }
+.rm-card.green { background: var(--green-soft); border-color: #bfd3c8; }
+.rm-card.warn { background: var(--warn-soft); border-color: #ecd09b; }
+.rm-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.rm-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.rm-spread { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+
+/* ---- Buttons ---- */
+.btn-p, .btn-s, .btn-t { font: inherit; font-size: 15px; font-weight: 600; padding: 10px 18px; cursor: pointer; border-radius: 0; text-decoration: none; display: inline-block; }
+.btn-p { background: var(--green); color: #fff; border: 2px solid var(--green); }
+.btn-p:hover { background: var(--green-2); border-color: var(--green-2); color: #fff; }
+.btn-s { background: #fff; color: var(--green); border: 2px solid var(--green); }
+.btn-s:hover { background: var(--green-soft); }
+.btn-t { background: none; border: 0; color: var(--green-2); padding: 6px 4px; text-decoration: underline; font-weight: 500; }
+.btn-p[disabled], .btn-s[disabled] { opacity: .45; cursor: not-allowed; }
+.btn-sm { padding: 6px 12px !important; font-size: 14px !important; }
+
+/* ---- Chips ---- */
+.chip { display: inline-block; font-size: 13px; padding: 2px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink-2); margin: 0 6px 6px 0; }
+.chip.g { background: var(--green-soft); border-color: #bfd3c8; color: var(--green); }
+.chip.w { background: var(--warn-soft); border-color: #ecd09b; color: var(--warn); }
+.chip.b { background: var(--blue-soft); border-color: #c5dcf5; color: #124a86; }
+button.chip { cursor: pointer; font: inherit; font-size: 13px; }
+button.chip.on { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* ---- Interest cards ---- */
+.card-q { background: #fff; border: 1px solid var(--line); padding: 16px 18px; margin-bottom: 12px; }
+.card-q p { margin: 0 0 10px; font-size: 17px; }
+.scale { display: flex; gap: 0; flex-wrap: wrap; }
+.scale button { flex: 1 1 0; min-width: 78px; font: inherit; font-size: 14px; padding: 10px 6px; border: 1px solid var(--line); border-left-width: 0; background: #fff; cursor: pointer; color: var(--ink-2); }
+.scale button:first-child { border-left-width: 1px; }
+.scale button:hover { background: var(--green-soft); }
+.scale button[aria-pressed="true"] { background: var(--green); color: #fff; border-color: var(--green); font-weight: 700; }
+.scale button b { display: block; font-size: 18px; }
+.opt { display: block; border: 1px solid var(--line); background: #fff; padding: 12px 14px; margin: 0 0 8px; cursor: pointer; }
+.opt:hover { background: var(--green-soft); }
+.opt input { margin-right: 10px; }
+.opt.on { border-color: var(--green); background: var(--green-soft); }
+.bar { height: 10px; background: var(--line); }
+.bar > i { display: block; height: 100%; background: var(--green-2); }
+.progress { margin: 6px 0 18px; }
+
+/* ---- Faculty cards ---- */
+.fac { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--green); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.fac h3 { margin: 0; font-size: 19px; color: var(--green); }
+.fac .t { font-size: 13px; color: var(--ink-2); }
+.fac .one { margin: 0; }
+.rank { font-size: 28px; font-weight: 800; color: var(--green); line-height: 1; min-width: 34px; }
+.band { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.band.s1 { color: var(--green); }
+.band.s2 { color: var(--green-2); }
+.band.s3 { color: var(--gold); }
+.band.s4 { color: var(--ink-2); }
+.detail { border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 10px; }
+.detail h4 { margin: 12px 0 4px; font-size: 14px; text-transform: uppercase; letter-spacing: .07em; color: var(--green); }
+.detail ul { margin: 4px 0 8px 18px; padding: 0; }
+.detail li { margin-bottom: 4px; }
+.why li { margin-bottom: 3px; }
+.caution { color: var(--warn); font-size: 14px; margin: 4px 0; }
+
+/* ---- Tracker ---- */
+.track { display: flex; flex-wrap: wrap; gap: 0; margin: 10px 0 14px; }
+.track span { flex: 1 1 110px; font-size: 12px; text-align: center; padding: 7px 4px; background: var(--line); color: var(--ink-2); border-right: 2px solid #fff; }
+.track span.on { background: var(--green); color: #fff; font-weight: 700; }
+.track span.past { background: var(--green-soft); color: var(--green); }
+
+label.f { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 14px; }
+input[type=text], input[type=datetime-local], input[type=date], textarea, select {
+  width: 100%; font: inherit; padding: 10px 12px; border: 1px solid #aab4ae; background: #fff; border-radius: 0; color: var(--ink);
+}
+textarea { min-height: 84px; resize: vertical; }
+.preview { white-space: pre-wrap; background: #fbfcfb; border: 1px solid var(--line); padding: 14px 16px; font-size: 15px; font-family: Georgia, "Times New Roman", serif; margin: 8px 0; }
+.hint { font-size: 13px; color: var(--ink-2); margin: 3px 0 0; }
+.need { color: var(--bad); font-size: 13px; }
+
+table.rm { width: 100%; border-collapse: collapse; background: #fff; font-size: 14px; }
+table.rm th, table.rm td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+table.rm th { background: var(--green-soft); color: var(--green); }
+.tablewrap { overflow-x: auto; }
+
+.q-cat { margin: 14px 0 4px; font-weight: 700; color: var(--green); }
+.q-item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.q-item input { margin-top: 5px; }
+
+.saved { position: fixed; right: 14px; bottom: 14px; background: var(--ink); color: #fff; padding: 8px 14px; font-size: 13px; opacity: 0; transition: opacity .25s; z-index: 50; pointer-events: none; }
+.saved.show { opacity: .92; }
+.saved.err { background: var(--bad); opacity: 1; }
+
+.rm-foot { max-width: 1080px; margin: 0 auto; padding: 0 20px 40px; font-size: 13px; color: var(--ink-2); }
+
+/* ---- Print: prep sheet only ---- */
+#printSheet { display: none; }
+@media print {
+  body { background: #fff; }
+  .rm-head, .rm-steps, .rm-wrap, .rm-foot, .saved { display: none !important; }
+  #printSheet { display: block; padding: 0; font-size: 12pt; color: #000; }
+  #printSheet h1 { font-size: 18pt; margin: 0 0 4pt; color: #154734; }
+  #printSheet h2 { font-size: 13pt; margin: 12pt 0 4pt; color: #154734; border-bottom: 1px solid #999; }
+  #printSheet li { margin-bottom: 6pt; }
+  #printSheet .lines { border-bottom: 1px solid #999; height: 22pt; }
+}
+
+@media (max-width: 560px) {
+  .rm-h1 { font-size: 25px; }
+  .scale button { min-width: 60px; font-size: 12px; }
+  .rm-wrap { padding: 18px 14px 70px; }
+}

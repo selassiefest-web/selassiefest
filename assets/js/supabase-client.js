@@ -651,6 +651,23 @@ window.sfSupabase = {
   bios102GradesMine(sessionToken) { return this.bios102Rpc('bios102_grades_mine', { p_session: sessionToken }); },
   // Instructor read of the Cnidaria video quiz (Lab 7 points) -- see supabase/bios102-video-quiz-results.sql.
   bios102VideoQuizResults(sessionToken) { return this.bios102Rpc('bios102_video_quiz_results', { p_session: sessionToken }); },
+  // Research Match (/BIOS102/research-match.html) -- see supabase/bios102-research-match.sql.
+  // A student only ever reads and writes their own state; the overview is instructor-only.
+  bios102RmLoad(sessionToken) { return this.bios102Rpc('bios102_rm_load', { p_session: sessionToken }); },
+  bios102RmSave(sessionToken, state) { return this.bios102Rpc('bios102_rm_save', { p_session: sessionToken, p_state: state }); },
+  bios102RmOverview(sessionToken) { return this.bios102Rpc('bios102_rm_overview', { p_session: sessionToken }); },
+  // Emails the signed-in student their own plan (edge function send-bios102-research-plan; the
+  // function looks the address up from the session, so it can only ever go to the student).
+  async bios102RmEmailPlan(sessionToken) {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/send-bios102-research-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ session: sessionToken }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || 'Could not send the email.');
+    return out;
+  },
   bios102GradesDelete(sessionToken, setId) { return this.bios102Rpc('bios102_grades_delete', { p_session: sessionToken, p_set: setId }); },
   bios102MockAdminLoad(sessionToken) { return this.bios102Rpc('bios102_mock_admin_load', { p_session: sessionToken }); },
   bios102MockSetAccess(sessionToken, email, mode) { return this.bios102Rpc('bios102_mock_set_access', { p_session: sessionToken, p_email: email, p_mode: mode }); },
