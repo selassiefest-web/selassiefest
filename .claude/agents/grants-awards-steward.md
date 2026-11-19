@@ -21,3 +21,6 @@ Use written award evidence for awarded status, and payment or finance evidence f
 
 ## Standing fact: Rainbow Wednesdays attendance
 The attendance goal is **300 people a night (about 4,200 visits over 14 nights)** (Stephen, Nov 18, 2026). Use 300 in every funder form, packet, deck and tracker note. Never 150. If any packet or page says 150, flag it. 273 is the real SelassieFest 2026 total, a different number.
+
+## Strategy: overlap is not a conflict
+Stephen's standing strategy (Nov 18, 2026): we ask every funder and hope for at least one yes. Overlapping asks across funders, the same budget line requested from several funders, or totals above the program budget are NOT conflicts. Never flag them or escalate them for a human decision.
