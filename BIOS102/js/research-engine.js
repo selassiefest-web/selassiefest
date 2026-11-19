@@ -281,10 +281,12 @@ ${sig(student)}`,
         const when = o.interviewDate ? ' ' + fmtDateTime(o.interviewDate) : '';
         out.push({ stage: 'interview', id, text: 'Interview with ' + nm + when + '. Choose your questions and print the prep sheet.', urgency: 3 });
       } else if (o.status === 'done') {
-        if (!o.fit) out.push({ stage: 'debrief', id, text: 'Write your debrief for ' + nm + ' while it is fresh, and send the thank-you within 24 hours.', urgency: 3 });
+        if (!(o.fit && Number(o.fit.overall) > 0)) out.push({ stage: 'debrief', id, text: 'Finish rating and writing up your interview with ' + nm + ' while it is fresh (all five ratings), and send the thank-you within 24 hours.', urgency: 3 });
       }
     });
-    const doneCount = list.filter((id) => outreachOf(s, id).status === 'done' && outreachOf(s, id).fit).length;
+    const live = list.filter((id) => ['declined', 'noreply'].indexOf(outreachOf(s, id).status) < 0);
+    if (list.length && !live.length) out.push({ stage: 'matches', text: 'Everyone on your list said not now or did not reply. Add another professor from your matches, or tap Try again on one of them.', urgency: 2 });
+    const doneCount = list.filter((id) => outreachOf(s, id).status === 'done' && outreachOf(s, id).fit && Number(outreachOf(s, id).fit.overall) > 0).length;
     if (doneCount && !(s.final && s.final.faculty)) out.push({ stage: 'decide', text: 'Compare your interviews and choose where to ask for a place.', urgency: 2 });
     if (s.final && s.final.faculty) out.push({ stage: 'decide', text: 'Send your ask to ' + (F[s.final.faculty] ? F[s.final.faculty].honorific + ' ' + F[s.final.faculty].last : 'your first choice') + '.', urgency: 2 });
     out.sort((a, b) => b.urgency - a.urgency);
@@ -295,7 +297,7 @@ ${sig(student)}`,
   function finalRanking(state, matches) {
     const byId = Object.fromEntries(matches.map((m) => [m.f.id, m]));
     const s = state || {};
-    const rows = (s.shortlist || []).map((id) => {
+    const rows = (s.shortlist || []).filter((id) => outreachOf(s, id).status === 'done').map((id) => {
       const o = outreachOf(s, id);
       const m = byId[id];
       const pre = m ? m.rel : 0;                       // 0-1

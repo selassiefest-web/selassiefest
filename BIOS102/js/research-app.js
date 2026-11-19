@@ -557,7 +557,8 @@
         ${[['yes', 'Yes'], ['maybe', 'Maybe'], ['no', 'No']].map(([v, l]) => `<label class="opt ${o.would === v ? 'on' : ''}"><input type="radio" name="w-${id}" data-bind="outreach.${id}.would" value="${v}" ${o.would === v ? 'checked' : ''}> ${l}</label>`).join('')}
         <h4 style="margin:16px 0 4px;color:var(--green)">Thank-you note (send within 24 hours)</h4>
         <div class="preview" id="ty-${id}"><b>To:</b> ${esc(ty.to)}\n<b>Subject:</b> ${esc(ty.subject)}\n\n${esc(ty.body)}</div>
-        <div class="rm-row"><button class="btn-p btn-sm" data-act="mailThanks" data-id="${id}">Open in my email app</button><button class="btn-s btn-sm" data-act="copyThanks" data-id="${id}">Copy it</button>${o.thanked ? '<span class="chip g">thank-you sent</span>' : `<button class="btn-s btn-sm" data-act="markThanked" data-id="${id}">I sent it</button>`}</div></div>`;
+        <p class="need" id="tyneed-${id}" ${filled((o.notes || {}).learned) ? 'hidden' : ''}>Write the one thing you learned or found interesting (above), with no [brackets], to unlock the buttons.</p>
+        <div class="rm-row"><button class="btn-p btn-sm" data-act="mailThanks" data-id="${id}" data-needs="ty-${id}" ${filled((o.notes || {}).learned) ? '' : 'disabled'}>Open in my email app</button><button class="btn-s btn-sm" data-act="copyThanks" data-id="${id}" data-needs="ty-${id}" ${filled((o.notes || {}).learned) ? '' : 'disabled'}>Copy it</button>${o.thanked ? '<span class="chip g">thank-you sent</span>' : `<button class="btn-s btn-sm" data-act="markThanked" data-id="${id}" data-needs="ty-${id}" ${filled((o.notes || {}).learned) ? '' : 'disabled'}>I sent it</button>`}</div></div>`;
     }).join('');
 
     const m = matchesNow();
@@ -566,7 +567,7 @@
     const table = `<div class="tablewrap"><table class="rm"><thead><tr><th>Professor</th><th>Match before</th><th>Interview rating</th><th>Would you go?</th><th>Combined</th><th>My first choice</th></tr></thead><tbody>${rank.map((r) => `<tr><td>${esc(r.f ? r.f.honorific + ' ' + r.f.last : r.id)}</td><td>${Math.round(r.pre * 100)}</td><td>${r.post === null ? '<span class="rm-muted">not rated</span>' : (r.post * 5).toFixed(1) + ' / 5'}</td><td>${esc(r.would || '')}</td><td><strong>${Math.round(r.score * 100)}</strong></td><td><input type="radio" name="firstchoice" data-bind="final.faculty" value="${r.id}" ${fin.faculty === r.id ? 'checked' : ''} aria-label="First choice ${esc(r.f ? r.f.last : r.id)}"></td></tr>`).join('')}</tbody></table></div>
       <p class="rm-muted">Combined = 30% how well they matched your interests before + 70% how the interview actually felt (50% of the match score until you have rated an interview). The number is a nudge for your own thinking. If your gut disagrees with it, listen to your gut and find out why.</p>`;
     let ask = '';
-    if (fin.faculty && F[fin.faculty]) {
+    if (fin.faculty && F[fin.faculty] && done.indexOf(fin.faculty) >= 0) {
       const f = F[fin.faculty];
       const pathName = (D.OPPORTUNITIES.find((x) => x.id === fin.path) || {}).name || '';
       const draft = E.askEmail(student(), f, { askWhy: fin.askWhy, askStart: fin.askStart }, pathName);
@@ -799,6 +800,14 @@
     $$('[data-needs="' + id + '"]').forEach((x) => { x.disabled = !ok; });
     const n = $('#need-' + id); if (n) n.hidden = ok;
   }
+  function updateThanks(id) {
+    const o = O(id);
+    const ty = E.thankYou(student(), F[id], o);
+    const p = $('#ty-' + id); if (p) p.innerHTML = '<b>To:</b> ' + esc(ty.to) + '\n<b>Subject:</b> ' + esc(ty.subject) + '\n\n' + esc(ty.body);
+    const ok = filled((o.notes || {}).learned);
+    $$('[data-needs="ty-' + id + '"]').forEach((x) => { x.disabled = !ok; });
+    const n = $('#tyneed-' + id); if (n) n.hidden = ok;
+  }
   function updateAsk() {
     const fin = S.final || {};
     const ok = askReady(fin);
@@ -827,6 +836,7 @@
     if (t.dataset.live) updateLive(t.dataset.live);
     if (t.dataset.fit) { const o = O(t.dataset.fit); o.fit = o.fit || {}; o.fit.overall = overallFit(o); }
     if (t.dataset.redraft) updateAsk();
+    { const mt = /^outreach\.([^.]+)\.notes\./.exec(path); if (mt && F[mt[1]]) updateThanks(mt[1]); }
     if (path.indexOf('.would') > 0 || path === 'final.faculty' || t.dataset.fit) { if (e.type === 'change') { save(); render(); return; } }
     save();
   }
