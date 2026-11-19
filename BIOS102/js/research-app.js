@@ -161,7 +161,8 @@
           <li><strong>A no, or no reply, is normal.</strong> It is about their time, not your worth. The tracker tells you when to follow up once and when to move on.</li>
         </ul>
       </div>
-      <p class="rm-muted">Stuck? Visit the department office: ${esc(D.DEPT.office)}.</p>`;
+      <p class="rm-muted">Stuck? Visit the department office: ${esc(D.DEPT.office)}.</p>
+      <div class="rm-card" style="margin-top:18px"><strong>Want to start over?</strong> <span class="rm-muted">This erases your answers, matches, interview list and notes on this device and on your account.</span><div style="margin-top:8px"><button class="btn-s btn-sm" data-act="resetAll">Erase everything and start over</button></div></div>`;
   }
 
   // --- Know yourself ---
@@ -671,12 +672,23 @@
       case 'copyAsk': copy(asText(askDraft()), 'Ask copied'); break;
       case 'markAsk': S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
+      case 'resetAll': resetAll(); break;
       case 'dictate': toggleDictation(b); break;
       case 'useFact': { const o3 = O(id); const u = F[id].spark.facts[Number(b.dataset.i)].use; o3.customLine = (o3.customLine || '').trim() ? o3.customLine.trim() + ' ' + u : u; ui.step[id] = 2; save(); render(); break; }
       case 'starter': insertInto(id, STARTERS[Number(b.dataset.i)]); break;
       case 'emailPlan': emailPlan(b); break;
       default: break;
     }
+  }
+  async function resetAll() {
+    if (!window.confirm('Erase all your Research Match answers, matches, interview list and notes? This cannot be undone.')) return;
+    clearTimeout(saveTimer);
+    S = blank();
+    try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ }
+    try { await window.sfSupabase.bios102RmSave(session.sessionToken, S); } catch (e) { /* the empty local state will still win on reload */ }
+    try { localStorage.removeItem(LS_KEY); } catch (e) { /* ignore */ }
+    view = 'home'; ui = { open: {}, panel: {}, step: {}, filter: '' };
+    render(); window.scrollTo(0, 0); flash('Everything erased. You are starting fresh.');
   }
   function askDraft() {
     const fin = S.final || {};

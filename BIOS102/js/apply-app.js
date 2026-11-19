@@ -32,7 +32,7 @@
   }
   let S = blank();
   let view = 'dash';
-  let ui = { filter: 'all', sort: 'deadline', open: null, recSel: null, recTone: {} };
+  let ui = { show: 'active', narrow: [], sort: 'deadline', open: null, recSel: null, recTone: {} };
 
   function loadState() {
     try {
@@ -46,6 +46,7 @@
         S.story.fields = got.story && got.story.fields ? got.story.fields : {};
         S.recs = got.recs && got.recs.length ? got.recs : b.recs;
         S.mine = (got.mine || []).filter((id) => PR[id]);
+        S.afford = got.afford || {};
       }
     } catch (e) { S = blank(); }
   }
@@ -111,9 +112,14 @@
     const r = p.req || {}, pf = prof(); const out = []; // {lvl:'ok'|'check'|'no', t}
     const add = (lvl, t) => out.push({ lvl, t });
     if (r.blocked) add('no', r.blocked);
+    if (p.status === 'historical' || p.status === 'notannounced' || p.status === 'closed' || p.status === 'discontinued') add('check', 'There is no confirmed open 2027 cycle for this program right now (' + (p.statusLabel || p.status) + ').');
+    if (p.status === 'upcoming') add('check', 'This program has not opened yet. Check back on the official page.');
     if (r.cit) {
       const c = pf.citizenship;
       if (!c) add('check', 'Add your citizenship status in My profile.');
+      else if (r.cit === 'us-only' && c === 'pr') add('no', 'This program requires U.S. citizenship. Permanent residents do not qualify.');
+      else if (r.cit === 'us-only' && c === 'us') add('ok', 'Citizenship: you meet this.');
+      else if (r.cit === 'us-only') add('no', 'This program requires U.S. citizenship.');
       else if (c === 'us' || c === 'pr') add('ok', 'Citizenship: you meet this.');
       else if (r.cit === 'visa-ok' && c === 'visa') add('check', 'Visa holders can apply only with approved OPT or CPT before the appointment. Confirm with the program.');
       else if (r.cit === 'visa-ok') add('check', 'Confirm your status with the program.');
@@ -148,11 +154,29 @@
   }
   const eligChip = (e) => e.lvl === 'ok' ? '<span class="chip g">Looks eligible</span>' : e.lvl === 'no' ? '<span class="chip bad">Probably not eligible</span>' : '<span class="chip w">Check ' + e.items.filter((x) => x.lvl === 'check').length + ' item(s)</span>';
 
+  // ---------------- status and verification chips ----------------
+  const INACTIVE = ['historical', 'notannounced', 'closed', 'discontinued', 'excluded'];
+  const isActive = (p) => INACTIVE.indexOf(p.status) < 0;
+  function statusChip(p) {
+    const lab = p.statusLabel || p.status;
+    if (p.status === 'open') return '<span class="chip g">Open</span>';
+    if (p.status === 'upcoming') return '<span class="chip b">Not open yet</span>';
+    if (p.status === 'check') return '<span class="chip w">' + esc(lab.length > 44 ? 'Check the sponsor' : lab) + '</span>';
+    return '<span class="chip">' + esc(lab.length > 44 ? 'Not open' : lab) + '</span>';
+  }
+  function verifChip(p) {
+    if (p.checked === 'page') return `<span class="chip b">Official page re-read ${esc(D.CHECKED.replace(', 2026', ''))}</span>`;
+    if (p.checked === 'supplement') return '<span class="chip b">Verified supplement, ' + esc(D.CHECKED.replace(', 2026', '')) + '</span>';
+    if (p.checked === 'note') return '<span class="chip w">From correction notes: confirm on the official page</span>';
+    return '<span class="chip">Directory, ' + esc(D.CHECKED.replace(', 2026', '')) + ': confirm on the official page</span>';
+  }
+
   // ---------------- dates ----------------
   function dl(p) { if (!p.deadline) return null; const [y, m, d] = p.deadline.split('-').map(Number); return new Date(y, m - 1, d, 23, 59, 0); }
   function daysLeft(p) { const d = dl(p); return d ? Math.ceil((d.getTime() - Date.now()) / 86400000) : null; }
   function dlChip(p) {
     const n = daysLeft(p);
+    if (!isActive(p)) return '<span class="chip">No open 2027 cycle</span>';
     if (n === null) return '<span class="chip">Date not verified</span>';
     const d = dl(p).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     if (n < 0) return `<span class="chip">Closed ${d}</span>`;
@@ -260,7 +284,7 @@
       ${autofillCard()}
       <h2 class="rm-h2">Coming up</h2>
       ${upcoming.length ? upcoming.map((p) => { const g = progress(p); return `<div class="rm-card ${daysLeft(p) !== null && daysLeft(p) <= 14 ? 'warn' : ''}"><div class="rm-spread"><div><strong>${esc(p.name)}</strong><div class="rm-row">${dlChip(p)}${eligChip(eligibility(p))}</div><div class="rm-muted" style="margin-top:4px">${g.done} of ${g.total} steps done${g.next ? '. Next: ' + esc(g.next.t) : ''}</div></div><button class="btn-p btn-sm" data-act="packet" data-id="${p.id}">Open packet</button></div></div>`; }).join('')
-        : `<div class="rm-card green"><p style="margin:0 0 10px">You have not picked any programs yet. A good start is the beginner-friendly ones you look eligible for.</p><div class="rm-row"><button class="btn-p" data-act="addBeginner">Add up to 5 that fit me</button><button class="btn-s" data-act="go" data-v="programs">Browse them all</button></div><p class="hint">Fill in your profile first so the fit check is accurate.</p></div>`}
+        : `<div class="rm-card green"><p style="margin:0 0 10px">You have not picked any programs yet. A good start is the beginner-friendly ones you look eligible for.</p><div class="rm-row"><button class="btn-p" data-act="addStarter">Add a starter set (3 nearby, 2 national)</button><button class="btn-s" data-act="go" data-v="programs">Browse them all</button></div><p class="hint">Fill in your profile first so the fit check is accurate. The playbook suggests three Wisconsin or Illinois programs, two national ones with funding, and one backup.</p></div>`}
       <h2 class="rm-h2">Your data</h2>
       <div class="rm-card"><div class="rm-row"><button class="btn-s btn-sm" data-act="backup">Save a backup file</button><label class="btn-s btn-sm" style="cursor:pointer">Restore from a backup<input type="file" id="restore" accept="application/json" hidden></label><button class="btn-t" data-act="wipe">Erase everything on this device</button></div>
       <p class="hint">${saveOk ? 'Saved in this browser.' : 'This browser blocked saving. Use a backup file.'} A backup file contains your personal details, so keep it private.</p></div>`;
@@ -390,32 +414,43 @@ ${prof().email || ''}`;
   // Programs browse
   function byDeadline(a, b) { const x = dl(a), y = dl(b); if (x && y) return x - y; if (x) return -1; if (y) return 1; return (a.rank || 99) - (b.rank || 99); }
   function vPrograms() {
-    const f = ui.filter;
+    const open = (p) => { const n = daysLeft(p); return p.status === 'open' && (n === null || n >= 0); };
     let list = D.PROGRAMS.slice();
-    const open = (p) => { const n = daysLeft(p); return n === null || n >= 0; };
-    if (f === 'beginner') list = list.filter((p) => p.lists.indexOf('beginner') >= 0);
-    else if (f === 'housing') list = list.filter((p) => p.lists.indexOf('housing') >= 0);
-    else if (f === 'regional') list = list.filter((p) => p.lists.indexOf('regional') >= 0);
-    else if (f === 'national') list = list.filter((p) => p.lists.indexOf('national') >= 0);
-    else if (f === 'fit') list = list.filter((p) => eligibility(p).lvl !== 'no' && open(p));
-    else if (f === 'open') list = list.filter(open);
-    list.sort(ui.sort === 'rank' ? (a, b) => (a.rank || 99) - (b.rank || 99) : byDeadline);
-    const FIL = [['all', 'All ' + D.PROGRAMS.length], ['beginner', 'Beginner-friendly'], ['housing', 'Housing help'], ['regional', 'Wisconsin and Illinois'], ['national', 'National'], ['open', 'Still open'], ['fit', 'I look eligible']];
+    if (ui.show === 'top') list = list.filter((p) => p.rank);
+    else if (ui.show === 'inactive') list = list.filter((p) => !isActive(p));
+    else list = list.filter(isActive);
+    const N = ui.narrow;
+    if (N.indexOf('near') >= 0) list = list.filter((p) => p.region !== 'National');
+    if (N.indexOf('nat') >= 0) list = list.filter((p) => p.region === 'National');
+    if (N.indexOf('beg') >= 0) list = list.filter((p) => p.beginner || p.lists.indexOf('C') >= 0);
+    if (N.indexOf('house') >= 0) list = list.filter((p) => p.lists.indexOf('H') >= 0);
+    if (N.indexOf('fed') >= 0) list = list.filter((p) => p.federal || p.nsf);
+    if (N.indexOf('open') >= 0) list = list.filter(open);
+    if (N.indexOf('fit') >= 0) list = list.filter((p) => eligibility(p).lvl !== 'no');
+    list.sort(ui.sort === 'rank' ? (a, b) => (a.rank || 999) - (b.rank || 999) || byDeadline(a, b) : byDeadline);
+    const SHOW = [['active', 'All active (' + D.PROGRAMS.filter(isActive).length + ')'], ['top', 'Top 20 picks'], ['inactive', 'Closed or not announced (' + D.PROGRAMS.filter((p) => !isActive(p)).length + ')']];
+    const NAR = [['near', 'Wisconsin and Illinois'], ['nat', 'National'], ['beg', 'Little or no lab experience'], ['house', 'Housing help'], ['fed', 'Federal and NSF'], ['open', 'Open now'], ['fit', 'I look eligible']];
     const card = (p) => {
       const on = S.mine.indexOf(p.id) >= 0; const e = eligibility(p);
-      return `<div class="fac a-${p.region === 'National' ? 'mol' : p.region === 'WI' ? 'eco' : 'evo'}"><div class="rm-row">${dlChip(p)}${eligChip(e)}</div><h3>${esc(p.name)}</h3><div class="t">${esc(p.org)} &middot; ${esc(p.city)}</div><p class="one">${esc(p.focus)}</p>
-        <div><span class="chip">${esc(p.pay.length > 60 ? p.pay.slice(0, 57) + '...' : p.pay)}</span>${p.beginner ? '<span class="chip g">Beginner-friendly</span>' : ''}<span class="chip ${p.checked === 'page' ? 'b' : ''}">${p.checked === 'page' ? 'Official page re-read ' + esc(D.CHECKED.replace(', 2026', '')) : 'From directory: confirm on official page'}</span></div>
+      return `<div class="fac a-${p.region === 'National' ? 'mol' : p.region === 'WI' ? 'eco' : 'evo'}"><div class="rm-row">${p.rank ? `<span class="chip g">Top 20 #${p.rank}</span>` : ''}${statusChip(p)}${dlChip(p)}${eligChip(e)}</div><h3>${esc(p.name)}</h3><div class="t">${esc(p.org)}${p.city ? ' &middot; ' + esc(p.city) : ''}</div><p class="one">${esc(p.focus)}</p>
+        <div>${p.pay ? `<span class="chip">${esc(p.pay.length > 70 ? p.pay.slice(0, 67) + '...' : p.pay)}</span>` : ''}${p.beginner ? '<span class="chip g">Beginner-friendly</span>' : ''}${p.kind === 'scholarship' ? '<span class="chip w">Scholarship</span>' : ''}${p.linkUnverified ? '<span class="chip w">No verified application link yet</span>' : ''}${verifChip(p)}</div>
         <div class="rm-row"><button class="btn-${on ? 's' : 'p'} btn-sm" data-act="toggleMine" data-id="${p.id}">${on ? 'On my list \u2713' : 'Add to my list'}</button><button class="btn-s btn-sm" data-act="packet" data-id="${p.id}">Open details</button></div></div>`;
     };
+    const rel = (D.RELATED || []).map((r) => `<li style="margin-bottom:6px"><strong>${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>` : esc(r.name)}</strong> <span class="rm-muted">(${esc(r.status)}${r.deadlineText ? '; ' + esc(r.deadlineText) : ''})</span>. ${esc(r.note)}</li>`).join('');
     return `<h1 class="rm-h1">Programs</h1>
-      <p class="rm-lede">Summer 2027 research programs, from the UW&ndash;Parkside directory (checked ${esc(D.CHECKED)}). Dates change, so every program page tells you to re-check the official site the week you apply.</p>
+      <p class="rm-lede">Summer 2027 research programs, merged from the UW&ndash;Parkside directory, the federal supplement and the playbook (checked ${esc(D.CHECKED)}). Dates change, so every program page tells you to re-check the official site the week you apply.</p>
       <div class="rm-card tint"><strong>How to choose.</strong> Pick five or six. Choose a mix: a couple of very competitive programs you would love to get into, and a few that say they welcome students with little or no lab experience (look for the green &ldquo;Beginner-friendly&rdquo; tag). That way you have a good chance of a yes somewhere. Check the eligibility tag first, then the deadline. Programs with early January deadlines mean you should start this week.</div>
-      <div class="rm-row" style="margin-bottom:10px">${FIL.map(([v, l]) => `<button type="button" class="chip ${f === v ? 'on' : ''}" data-act="filter" data-v="${v}">${esc(l)}</button>`).join('')}</div>
-      <div class="rm-row" style="margin-bottom:12px"><span class="rm-muted">Sort:</span><button type="button" class="chip ${ui.sort === 'deadline' ? 'on' : ''}" data-act="sort" data-v="deadline">By deadline</button><button type="button" class="chip ${ui.sort === 'rank' ? 'on' : ''}" data-act="sort" data-v="rank">By directory rank</button></div>
+      <div class="rm-card green"><strong>Staying on campus?</strong> The Thomson Research Fellowship has no announced 2027 deadline yet. Ask Dr. David Higgs, and use <a href="/BIOS102/research-match.html">Research Match</a> to find a Parkside mentor first.</div>
+      <div class="rm-card"><strong>What the badges mean.</strong> <span class="chip b">Official page re-read</span> and <span class="chip b">Verified supplement</span> were individually confirmed on Nov 19. <span class="chip">Directory</span> and <span class="chip w">Correction notes</span> were not re-read by us: open the official page before you rely on a date, pay or rule. Many directory rows say details were &ldquo;not verified&rdquo;; the app shows that instead of guessing.</div>
+      <div class="rm-row" style="margin-bottom:8px"><span class="rm-muted">Show:</span>${SHOW.map(([v, l]) => `<button type="button" class="chip ${ui.show === v ? 'on' : ''}" data-act="show" data-v="${v}">${esc(l)}</button>`).join('')}</div>
+      <div class="rm-row" style="margin-bottom:8px"><span class="rm-muted">Narrow:</span>${NAR.map(([v, l]) => `<button type="button" class="chip ${N.indexOf(v) >= 0 ? 'on' : ''}" data-act="narrow" data-v="${v}">${esc(l)}</button>`).join('')}</div>
+      <div class="rm-row" style="margin-bottom:12px"><span class="rm-muted">Sort:</span><button type="button" class="chip ${ui.sort === 'deadline' ? 'on' : ''}" data-act="sort" data-v="deadline">By deadline</button><button type="button" class="chip ${ui.sort === 'rank' ? 'on' : ''}" data-act="sort" data-v="rank">By playbook priority</button><span class="rm-muted">${list.length} shown</span></div>
       ${S.mine.length > WARN_LIST ? `<div class="rm-card warn">You have ${S.mine.length} programs on your list. Five or six strong applications beat a dozen rushed ones. Consider removing a few.</div>` : ''}
-      <div class="rm-grid">${list.map(card).join('') || '<p class="rm-muted">Nothing matches that filter.</p>'}</div>
-      <h2 class="rm-h2">Programs that are not open to most Parkside students</h2>
-      <div class="rm-card"><ul style="margin:0 0 0 18px;padding:0">${D.NOT_FOR_YOU.map((x) => `<li style="margin-bottom:4px">${esc(x)}</li>`).join('')}</ul></div>`;
+      <div class="rm-grid">${list.map(card).join('') || '<p class="rm-muted">Nothing matches those filters.</p>'}</div>
+      <h2 class="rm-h2">Not open to most Parkside students</h2>
+      <div class="rm-card"><ul style="margin:0 0 0 18px;padding:0">${D.NOT_FOR_YOU.map((x) => `<li style="margin-bottom:4px">${esc(x)}</li>`).join('')}</ul><p class="hint">Programs flagged &ldquo;Probably not eligible&rdquo; above are for a host school&rsquo;s own students or a restricted group.</p></div>
+      <h2 class="rm-h2">Scholarships, resources and leads (not summer lab placements)</h2>
+      <div class="rm-card"><ul style="margin:0 0 0 18px;padding:0">${rel}</ul></div>`;
   }
 
   // My applications
@@ -436,7 +471,7 @@ ${prof().email || ''}`;
   function vPacket() {
     const p = PR[ui.open]; if (!p) return vMine();
     const st = PS(p.id); const e = eligibility(p); const g = progress(p); const on = S.mine.indexOf(p.id) >= 0;
-    const verif = p.checked === 'page' ? `<span class="chip b">Official page re-read on ${esc(D.CHECKED)}</span>` : '<span class="chip w">From the directory. Not re-read on the official page: confirm every detail there.</span>';
+    const verif = verifChip(p);
     const portal = p.links.applyKind === 'portal';
     const prompts = p.prompts.map((q) => {
       const txt = st.text[q.id] || ''; const wc = wordCount(txt); const lim = q.limit || {}; const over = (lim.words && wc > lim.words) || (lim.chars && txt.length > lim.chars);
@@ -444,28 +479,32 @@ ${prof().email || ''}`;
       return `<div class="rm-card"><label class="f" for="t-${q.id}" style="margin-top:0">${esc(q.label)}</label>${q.hint ? `<p class="hint">${esc(q.hint)}</p>` : ''}
         <textarea id="t-${q.id}" data-bind="programs.${p.id}.text.${q.id}" data-count="${q.id}" style="min-height:150px">${esc(txt)}</textarea>
         <div class="rm-row" style="margin-top:6px"><span class="rm-muted" id="cnt-${q.id}" ${over ? 'style="color:var(--bad);font-weight:700"' : ''}>${wc} words, ${txt.length} characters${lim.words ? ' (limit ' + lim.words + ' words)' : ''}${lim.chars ? ' (limit ' + lim.chars.toLocaleString() + ' characters)' : ''}${lim.note ? ' (' + esc(lim.note) + ')' : ''}</span><span class="need" id="br-${q.id}" ${br ? '' : 'hidden'}>Replace the [brackets] before you submit.</span></div>
-        <div class="rm-row" style="margin-top:6px"><button class="btn-s btn-sm" data-act="seed" data-id="${p.id}" data-q="${q.id}">Start from my master statement</button><button class="btn-s btn-sm" data-act="copyText" data-id="${p.id}" data-q="${q.id}">Copy this answer</button></div></div>`;
+        <div class="rm-row" style="margin-top:6px">${p.noAI ? '' : `<button class="btn-s btn-sm" data-act="seed" data-id="${p.id}" data-q="${q.id}">Start from my master statement</button>`}<button class="btn-s btn-sm" data-act="copyText" data-id="${p.id}" data-q="${q.id}">Copy this answer</button></div></div>`;
     }).join('');
     const check = checklist(p).map((i) => `<label class="q-item"><input type="checkbox" ${i.auto ? 'checked' : ''} ${i.man ? `data-act="toggleCheck" data-id="${p.id}" data-k="${i.k}"` : 'disabled'}> <span>${esc(i.t)}${!i.man ? ' <span class="rm-muted">(updates by itself)</span>' : ''}</span></label>`).join('');
     const recs = S.recs.filter((r) => r.name).map((r) => `<li>${esc(r.name)}: <strong>${esc(label([['', 'Not asked'], ['asked', 'Asked'], ['confirmed', 'Said yes'], ['received', 'Letter sent']], (S.recStatus[r.id] || {})[p.id] || ''))}</strong></li>`).join('');
     const pm = missing();
     return `<button class="btn-t" data-act="go" data-v="mine">&larr; My applications</button>
       <h1 class="rm-h1" style="margin-top:6px">${esc(p.name)}</h1>
-      <div class="rm-row">${dlChip(p)}${eligChip(e)}${verif}</div>
+      <div class="rm-row">${statusChip(p)}${dlChip(p)}${eligChip(e)}${verif}</div>
+      ${p.status === 'upcoming' ? '<div class="rm-card tint"><strong>Not open yet.</strong> Check the official page for the opening date before you start.</div>' : ''}
+      ${p.kind === 'scholarship' ? '<div class="rm-card warn"><strong>This is a scholarship, not a Summer 2027 lab placement.</strong> See the notes below for when the internship happens.</div>' : ''}
+      ${p.noAI ? '<div class="rm-card warn"><strong>Write every answer yourself.</strong> This program says not to use any AI-generated wording in any part of the application. Use the master statement only as an outline for your own sentences.</div>' : ''}
+      ${p.linkUnverified ? '<div class="rm-card warn"><strong>No verified application link yet.</strong> Use the official page. The notes below say what to do and when to come back.</div>' : ''}
       <p class="rm-lede" style="margin-top:8px">${esc(p.focus)}</p>
       <div class="rm-row" style="margin-bottom:14px">${!on ? `<button class="btn-p" data-act="toggleMine" data-id="${p.id}">Add to my list</button>` : `<select data-bind="programs.${p.id}.status" data-rerender="1" aria-label="Status">${STATUS.map(([v, l]) => `<option value="${v}" ${st.status === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`}
-        ${p.links.apply ? `<a class="btn-p" href="${esc(p.links.apply)}" target="_blank" rel="noopener">${portal ? 'Open the application portal' : 'Open the official instructions (start here)'}</a>` : '<span class="chip w">No application link verified yet</span>'}
+        ${p.links.apply ? `<a class="btn-p" href="${esc(p.links.apply)}" target="_blank" rel="noopener">${p.linkUnverified ? 'Open the official page (application link not verified yet)' : portal ? 'Open the application portal' : 'Open the official instructions (start here)'}</a>` : '<span class="chip w">No application link verified yet</span>'}
         <a class="btn-s" href="${esc(p.links.page)}" target="_blank" rel="noopener">Official program page</a>
         <button class="btn-s" data-act="mini" data-id="${p.id}">Open the copy helper in its own window</button></div>
       <div class="rm-card ${e.lvl === 'no' ? 'warn' : e.lvl === 'ok' ? 'green' : 'tint'}"><h3 class="rm-h3">Do you qualify?</h3><ul style="margin:0 0 6px 18px;padding:0">${e.items.map((x) => `<li>${x.lvl === 'ok' ? '&#10003;' : x.lvl === 'no' ? '&#10007;' : '&#9888;'} ${esc(x.t)}</li>`).join('')}</ul><p style="margin:6px 0 0"><strong>The program says:</strong> ${esc(p.eligibility)}</p><p class="hint">This check is a guide built from the program&rsquo;s published rules. The program decides eligibility.${pm.length ? ' Fill in My profile to sharpen it.' : ''}</p></div>
-      <div class="rm-card"><h3 class="rm-h3">Know before you start</h3><ul style="margin:0 0 0 18px;padding:0"><li><strong>Dates:</strong> ${esc(p.dates)}</li><li><strong>Deadline:</strong> ${esc(p.deadlineText)}</li><li><strong>Pay:</strong> ${esc(p.pay)}</li><li><strong>Housing and travel:</strong> ${esc(p.housing)}</li><li><strong>Status:</strong> ${esc(p.status)}</li>${p.materials.map((m) => `<li><strong>Needs:</strong> ${esc(m)}</li>`).join('')}${p.notes.map((n) => `<li class="caution">${esc(n)}</li>`).join('')}</ul></div>
+      <div class="rm-card"><h3 class="rm-h3">Know before you start</h3><ul style="margin:0 0 0 18px;padding:0"><li><strong>Dates:</strong> ${esc(p.dates)}</li><li><strong>Deadline:</strong> ${esc(p.deadlineText)}</li><li><strong>Pay:</strong> ${esc(p.pay)}</li><li><strong>Housing and travel:</strong> ${esc(p.housing)}</li><li><strong>Status:</strong> ${esc(p.statusLabel || p.status)}</li>${p.contact ? `<li><strong>Contact:</strong> ${esc(p.contact)}</li>` : ''}${p.recsNote ? `<li><strong>Recommendations:</strong> ${esc(p.recsNote)}</li>` : ''}${p.materials.map((m) => `<li><strong>Needs:</strong> ${esc(m)}</li>`).join('')}${p.notes.map((n) => `<li class="caution">${esc(n)}</li>`).join('')}</ul></div>
       <h2 class="rm-h2">Your checklist <span class="rm-muted" style="font-size:15px">(${g.done} of ${g.total})</span></h2><div class="rm-card">${check}</div>
       <h2 class="rm-h2">Essays and statements</h2>${prompts}
       <h2 class="rm-h2">Recommenders</h2><div class="rm-card">${p.recsNote ? `<p style="margin:0 0 6px">${esc(p.recsNote)}</p>` : ''}${recs ? `<ul style="margin:0 0 8px 18px;padding:0">${recs}</ul>` : '<p class="rm-muted">No recommenders added yet.</p>'}<button class="btn-s btn-sm" data-act="go" data-v="recs">Open the Recommenders tab</button></div>
       <h2 class="rm-h2">Copy-ready fields</h2>${copyFields(false)}
       <h2 class="rm-h2">Submit it</h2>
       <div class="rm-card"><ol style="margin:0 0 0 18px;padding:0">
-        <li style="margin-bottom:6px"><strong>Re-read the official page</strong> once more. Dates and rules change.</li>
+        <li style="margin-bottom:6px"><strong>Re-read the official page</strong> once more. Dates and rules change. Then check the form:<ul style="margin:4px 0 0 18px">${D.VERIFY.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></li>
         <li style="margin-bottom:6px">Open the application ${portal ? 'portal' : 'instructions'} above. <strong>These portals do not accept submissions from other sites, so you press Submit yourself.</strong> That is how it works for every program here.</li>
         <li style="margin-bottom:6px">Click &ldquo;Open the copy helper in its own window.&rdquo; Put it next to the portal (on Windows, press the Windows key and an arrow key to snap windows side by side). Copy each field across.</li>
         <li style="margin-bottom:6px">Before you press Submit: no [brackets] left, every required upload attached, letters requested, and the time zone checked.</li>
@@ -492,13 +531,25 @@ ${prof().email || ''}`;
   // Plan
   function vPlan() {
     const mine = S.mine.map((id) => PR[id]).sort(byDeadline);
-    const all = D.PROGRAMS.filter((p) => p.deadline).sort(byDeadline);
+    const all = D.PROGRAMS.filter((p) => p.deadline && isActive(p)).sort(byDeadline);
     return `<h1 class="rm-h1">Plan and deadlines</h1>
       <p class="rm-lede">Work backward from the first deadline. Your own programs are marked.</p>
       <div class="rm-card tint">${D.PREP.map((x) => `<p style="margin:0 0 10px"><strong>${esc(x.when)}.</strong> ${esc(x.text)}</p>`).join('')}</div>
       <div class="rm-row" style="margin-bottom:10px"><button class="btn-p btn-sm" data-act="icsAll" ${mine.some((p) => p.deadline) ? '' : 'disabled'}>Download my deadlines for my calendar</button><span class="rm-muted">Adds a reminder one week before and on each deadline day.</span></div>
       <div class="tablewrap"><table class="rm"><thead><tr><th>Deadline</th><th>Program</th><th>Time and notes</th><th></th></tr></thead><tbody>${all.map((p) => { const m = S.mine.indexOf(p.id) >= 0; return `<tr${m ? ' style="background:var(--green-soft)"' : ''}><td>${dlChip(p)}</td><td><strong>${esc(p.name)}</strong>${m ? ' <span class="chip g">mine</span>' : ''}</td><td>${esc(p.deadlineText)}</td><td><button class="btn-s btn-sm" data-act="packet" data-id="${p.id}">Open</button></td></tr>`; }).join('')}</tbody></table></div>
-      <p class="hint">Programs without a verified date are on the Programs page. Check their official pages.</p>`;
+      <p class="hint">Programs without a verified date are on the Programs page. Check their official pages.</p>
+      <h2 class="rm-h2">Is an offer affordable?</h2>
+      <div class="rm-card"><p>${esc(D.AFFORD)}</p>
+        <div class="rm-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${[['stipend', 'Stipend (gross, $)'], ['housing', 'Housing you would pay ($)'], ['meals', 'Meals you would pay ($)'], ['transport', 'Local transportation ($)'], ['travel', 'Travel not covered ($)'], ['fees', 'Fees and deposits ($)'], ['taxpct', 'Tax reserve (% of stipend)']].map(([k, l]) => `<div><label class="f" for="af-${k}">${esc(l)}</label><input type="text" inputmode="decimal" id="af-${k}" data-bind="afford.${k}" data-calc="1" value="${esc((S.afford || {})[k] || '')}"></div>`).join('')}</div>
+        <div class="rm-card green" style="margin:12px 0 0" id="af-out">${affordOut()}</div>
+        <p class="hint">An estimate to help you compare offers. Ask each program when the first payment arrives, since some pay halfway through.</p></div>`;
+  }
+  function affordOut() {
+    const a = S.afford || {}; const n = (k) => parseFloat(String(a[k] || '').replace(/[$,]/g, '')) || 0;
+    if (!n('stipend')) return '<span class="rm-muted">Enter a stipend to see what you would keep.</span>';
+    const tax = n('stipend') * n('taxpct') / 100; const costs = n('housing') + n('meals') + n('transport') + n('travel') + n('fees') + tax;
+    const left = n('stipend') - costs;
+    return `<strong>Estimated cash left: ${left < 0 ? '-' : ''}$${Math.abs(Math.round(left)).toLocaleString()}</strong> <span class="rm-muted">(stipend $${Math.round(n('stipend')).toLocaleString()} minus costs $${Math.round(costs).toLocaleString()}${tax ? ', including a tax reserve of $' + Math.round(tax).toLocaleString() : ''})</span>`;
   }
   function icsAll() {
     const ev = [];
@@ -554,11 +605,15 @@ ${prof().email || ''}`;
       case 'go': go(v); break;
       case 'packet': ui.open = id; go('packet', id); break;
       case 'toggleMine': toggleMine(id); break;
-      case 'filter': ui.filter = v; render(); break;
       case 'sort': ui.sort = v; render(); break;
-      case 'addBeginner': {
-        const c = D.PROGRAMS.filter((p) => p.lists.indexOf('beginner') >= 0 && eligibility(p).lvl !== 'no' && (daysLeft(p) === null || daysLeft(p) >= 0) && p.id !== 'thomson').sort(byDeadline).slice(0, 5);
-        c.forEach((p) => { if (S.mine.indexOf(p.id) < 0) { S.mine.push(p.id); PS(p.id); } }); save(); go('mine'); break; }
+      case 'addStarter': {
+        const ok = (p) => p.status === 'open' && eligibility(p).lvl !== 'no' && (daysLeft(p) === null || daysLeft(p) >= 0) && p.id !== 'thomson';
+        const ranked = D.PROGRAMS.filter((p) => p.rank && ok(p)).sort((a, b) => a.rank - b.rank);
+        const near = ranked.filter((p) => p.region !== 'National').slice(0, 3), nat = ranked.filter((p) => p.region === 'National').slice(0, 2);
+        near.concat(nat).forEach((p) => { if (S.mine.indexOf(p.id) < 0) { S.mine.push(p.id); PS(p.id); } });
+        save(); go('mine'); break; }
+      case 'show': ui.show = v; render(); break;
+      case 'narrow': { const i = ui.narrow.indexOf(v); if (i >= 0) ui.narrow.splice(i, 1); else ui.narrow.push(v); render(); break; }
       case 'copyRow': { const r = applicantFields()[Number(b.dataset.i)]; if (r && r[1]) copy(r[1], r[0] + ' copied'); break; }
       case 'copyAll': copy(applicantFields().filter((r) => r[1]).map((r) => r[0] + ': ' + r[1]).join('\n'), 'All details copied'); break;
       case 'copyMaster': copy(masterText(), 'Statement copied'); break;
@@ -604,6 +659,7 @@ ${prof().email || ''}`;
     if (path.indexOf('profile.') === 0 && view === 'profile') refreshProfileMeter();
     if (t.dataset.count) { const pid = path.split('.')[1]; const q = PR[pid].prompts.find((x) => x.id === t.dataset.count); const c = $('#cnt-' + t.dataset.count); if (c && q) { const lim = q.limit || {}; const wc = wordCount(val); const over = (lim.words && wc > lim.words) || (lim.chars && val.length > lim.chars); c.textContent = wc + ' words, ' + val.length + ' characters' + (lim.words ? ' (limit ' + lim.words + ' words)' : '') + (lim.chars ? ' (limit ' + lim.chars.toLocaleString() + ' characters)' : '') + (lim.note ? ' (' + lim.note + ')' : ''); c.style.color = over ? 'var(--bad)' : ''; c.style.fontWeight = over ? '700' : ''; } const br = $('#br-' + t.dataset.count); if (br) br.hidden = !/\[[^\]]*\]/.test(val); }
     if (path.indexOf('story.fields.') === 0) { const mb = $('#master-box'); if (mb) mb.innerHTML = masterBox(); }
+    if (t.dataset.calc) { const o = $('#af-out'); if (o) o.innerHTML = affordOut(); }
     if (t.dataset.rerender && e.type === 'change') render();
     if (path.indexOf('recStatus.') === 0 && e.type === 'change') render();
     if (path === 'story.showGpa') { /* saved */ }
