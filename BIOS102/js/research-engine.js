@@ -266,7 +266,7 @@ ${sig(student)}`,
       return out;
     }
     const list = s.shortlist || [];
-    if (!list.length) { out.push({ stage: 'match', text: 'Pick 2 or 3 professors from your matches to interview.', urgency: 1 }); return out; }
+    if (!list.length) { out.push({ stage: 'matches', text: 'Pick 2 or 3 professors from your matches to interview.', urgency: 1 }); return out; }
     list.forEach((id) => {
       const f = F[id]; if (!f) return;
       const o = outreachOf(s, id);
