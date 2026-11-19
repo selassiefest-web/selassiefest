@@ -16,7 +16,7 @@ Outreach emails go out through the `rti-outreach` Edge Function (Resend), which 
 
 ## Incoming .eml files: full tracker due diligence, every time (Stephen's standing order)
 
-Stephen saves replies and confirmations as `.eml` files in `C:\Users\mkepr\Downloads\BOB\` (or drops one in the chat). **An .eml is a record that must be fully reflected in the tracker, not just read.** A partial update ("Shure has no commitment text", "Benevity has no activity") is a failure. At the start of every session, and whenever Stephen mentions an email, a reply or a file in BOB, list `C:\Users\mkepr\Downloads\BOB\*.eml`, compare against `C:\Users\mkepr\Documents\GitHub\selassiefest\legal\documents-inbox\eml-processed.md`, and process anything not logged there. Do not wait to be told.
+Stephen saves replies and confirmations as `.eml` files in `C:\Users\mkepr\Downloads\BOB\` (or drops one in the chat). **An .eml is a record that must be fully reflected in the tracker, not just read.** A partial update ("Shure has no commitment text", "Benevity has no activity") is a failure. At the start of every session, and whenever Stephen mentions an email, a reply or a file in BOB, list `C:\Users\mkepr\Downloads\BOB\*.eml`, check each Message-ID against live Supabase (`fs_partner_activity.summary` and grant `notes`; `eml-processed.md` is a stale local note, not the check), and process anything not logged there. Do not wait to be told.
 
 For each .eml, in this order:
 1. **Read all of it**: From, To, Cc, Date, Subject, Message-ID, the decoded body (quoted-printable / base64 / HTML-only), and list every attachment. Pull out every fact: amounts, quantities, dates, deadlines, names, titles, phones, emails, addresses, reference numbers, conditions, who owes the next move.
@@ -43,6 +43,10 @@ Rainbow Beach is named for the 42nd "Rainbow" Division. Its shoulder patch is a 
 - Functional status colors (traffic-light green/yellow/red in the DJ Lab live app) are not decoration and stay.
 - The DJ Lab family site is generated: change colors in `dj-lab/_build/template.html` and `dj-lab/_build/build.py` (`SECTION_COLOR`), then rebuild.
 - The sweep script is `Claude outputs\rainbow-legacy-partners\recolor.js` (dry-run by default, `--apply` to write). Open items: PNG/SVG logos with a seven-color rainbow cannot be recolored by script; the pages' general UI theme (indigo links, amber eyebrow, teal) is separate and untouched.
+
+## Source of truth: Supabase and GitHub, never local folders (Stephen, Nov 18, 2026)
+
+The only authorities for "what is done, open or logged" are (1) **live Supabase** (`fs_partners`, `fs_partner_activity`, `fs_grant_deadlines`, `fs_partner_letters`, `rti_calendar_events`, signing tables) and (2) **committed files on GitHub origin/main** (for example the applied `supabase/tracker-update-*.sql` scripts). `legal/documents-inbox/CURRENT-STATUS.md`, `legal/documents-inbox/eml-processed.md`, `Claude outputs\` and every other folder on this PC are **gitignored, local-only working notes**: they go stale and must never be used as evidence that something is open, done or logged. Reading them for background is fine; deciding from them is not. Before telling Stephen anything is open: query Supabase (activity text, Message-ID, status, dates) and `git fetch` / `git log origin/main`. To check whether an .eml is already logged, search `fs_partner_activity.summary` and the grant `notes` for its Message-ID in Supabase, not `eml-processed.md`. When a local note disagrees with Supabase, Supabase wins and the local note gets fixed. Stephen's word in chat beats both.
 
 ## Who does what: agent ownership (Stephen, Nov 18, 2026; the main session must not do an agent's job)
 
