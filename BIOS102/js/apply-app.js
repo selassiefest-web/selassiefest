@@ -238,14 +238,24 @@
   const TABS = [['dash', 'Dashboard'], ['profile', 'My profile'], ['story', 'My story'], ['recs', 'Recommenders'], ['programs', 'Programs'], ['mine', 'My applications'], ['plan', 'Plan and deadlines']];
   function go(v, extra) { view = v; if (extra !== undefined) ui.open = extra; render(); window.scrollTo(0, 0); }
   function renderTabs() {
-    $('#steps').innerHTML = TABS.map(([id, l]) => `<li><button type="button" data-act="go" data-v="${id}" ${view === id || (view === 'packet' && id === 'mine') ? 'aria-current="step"' : ''}>${esc(l)}${id === 'mine' && S.mine.length ? ` <span class="chip" style="margin:0 0 0 4px">${S.mine.length}</span>` : ''}</button></li>`).join('');
+    const IC = {
+      dash: '<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',
+      profile: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/>',
+      story: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/>',
+      recs: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .8 3.5 2.8 3.5 5.8"/>',
+      programs: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+      mine: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+      plan: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18M7 14h2M11 14h2M15 14h2"/>',
+    };
+    $('#steps').innerHTML = TABS.map(([id, l]) => `<li><button type="button" data-act="go" data-v="${id}" ${view === id || (view === 'packet' && id === 'mine') ? 'aria-current="step"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[id] || ''}</svg>${esc(l)}${id === 'mine' && S.mine.length ? `<span class="ck">${S.mine.length}</span>` : ''}</button></li>`).join('');
   }
   function render() {
     stopDictation();
     if (MINI) { $('#view').innerHTML = vMini(); return; }
     renderTabs();
     const fn = { dash: vDash, profile: vProfile, story: vStory, recs: vRecs, programs: vPrograms, mine: vMine, plan: vPlan, packet: vPacket }[view] || vDash;
-    $('#view').innerHTML = fn();
+    const KICK = { dash: 'Summer 2027 applications', profile: 'Type it once', story: 'Your honest story', recs: 'Letters of recommendation', programs: 'Find programs', mine: 'In deadline order', plan: 'Plan and deadlines', packet: 'Program packet' };
+    $('#view').innerHTML = `<p class="sd-kicker">${esc(KICK[view] || '')}</p>` + fn();
     addMics();
     if (view === 'profile') refreshProfileMeter();
   }
@@ -502,7 +512,7 @@ ${prof().email || ''}`;
         <a class="btn-s" href="${esc(p.links.page)}" target="_blank" rel="noopener">Official program page</a>
         <button class="btn-s" data-act="mini" data-id="${p.id}">Open the copy helper in its own window</button></div>
       <div class="rm-card ${e.lvl === 'no' ? 'warn' : e.lvl === 'ok' ? 'green' : 'tint'}"><h3 class="rm-h3">Do you qualify?</h3><ul style="margin:0 0 6px 18px;padding:0">${e.items.map((x) => `<li>${x.lvl === 'ok' ? '&#10003;' : x.lvl === 'no' ? '&#10007;' : '&#9888;'} ${esc(x.t)}</li>`).join('')}</ul><p style="margin:6px 0 0"><strong>The program says:</strong> ${esc(p.eligibility)}</p><p class="hint">This check is a guide built from the program&rsquo;s published rules. The program decides eligibility.${pm.length ? ' Fill in My profile to sharpen it.' : ''}</p></div>
-      <div class="rm-card"><h3 class="rm-h3">Know before you start</h3><ul style="margin:0 0 0 18px;padding:0"><li><strong>Dates:</strong> ${esc(p.dates)}</li><li><strong>Deadline:</strong> ${esc(p.deadlineText)}</li><li><strong>Pay:</strong> ${esc(p.pay)}</li><li><strong>Housing and travel:</strong> ${esc(p.housing)}</li><li><strong>Status:</strong> ${esc(p.statusLabel || p.status)}</li>${p.contact ? `<li><strong>Contact:</strong> ${esc(p.contact)}</li>` : ''}${p.recsNote ? `<li><strong>Recommendations:</strong> ${esc(p.recsNote)}</li>` : ''}${p.materials.map((m) => `<li><strong>Needs:</strong> ${esc(m)}</li>`).join('')}${p.notes.map((n) => `<li class="caution">${esc(n)}</li>`).join('')}</ul></div>
+      <div class="rm-card"><h3 class="rm-h3">Know before you start</h3><ul style="margin:0 0 0 18px;padding:0"><li><strong>Dates:</strong> ${esc(p.dates || "Not published")}</li><li><strong>Deadline:</strong> ${esc(p.deadlineText)}</li><li><strong>Pay:</strong> ${esc(p.pay)}</li><li><strong>Housing and travel:</strong> ${esc(p.housing)}</li><li><strong>Status:</strong> ${esc(p.statusLabel || p.status)}</li>${p.contact ? `<li><strong>Contact:</strong> ${esc(p.contact)}</li>` : ''}${p.recsNote ? `<li><strong>Recommendations:</strong> ${esc(p.recsNote)}</li>` : ''}${p.materials.map((m) => `<li><strong>Needs:</strong> ${esc(m)}</li>`).join('')}${p.notes.map((n) => `<li class="caution">${esc(n)}</li>`).join('')}</ul></div>
       <div class="rm-card ${dlConfirmed(p) ? 'green' : 'warn'}"><h3 class="rm-h3">What we confirmed on the official page</h3>${p.v && p.v.d === 'c' ? `<p style="margin:0 0 6px"><strong>Deadline confirmed</strong> on ${esc(p.v.on)}. The page says: &ldquo;${esc(p.v.q)}&rdquo;${p.v.u ? ` <a href="${esc(p.v.u)}" target="_blank" rel="noopener">Open that page</a>` : ''}</p>` : `<p style="margin:0 0 6px"><strong>${p.v && p.v.d === 'n' ? 'The official page does not publish a 2027 deadline.' : 'We could not confirm the deadline on the official page.'}</strong> ${p.v && p.v.read ? 'The page loaded but does not show the listed date.' : 'The page could not be read automatically (blocked or sign-in only).'} Open the official page and confirm it yourself before you rely on the date.</p>`}<p class="hint" style="margin:0">Pay, GPA and eligibility rules below come from the directory or supplement unless this page says otherwise. Always read the official eligibility section too.</p></div>
       <h2 class="rm-h2">Your checklist <span class="rm-muted" style="font-size:15px">(${g.done} of ${g.total})</span></h2><div class="rm-card">${check}</div>
       <h2 class="rm-h2">Essays and statements</h2>${prompts}

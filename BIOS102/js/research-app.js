@@ -117,7 +117,16 @@
   function renderSteps() {
     const steps = STEPS.slice();
     if (isInstructor) steps.push({ id: 'class', label: 'Class view', n: '' });
-    $('#steps').innerHTML = steps.map((s) => `<li><button type="button" data-act="go" data-v="${s.id}" class="${stepDone(s.id) ? 'done' : ''}" ${view === s.id ? 'aria-current="step"' : ''}>${s.n ? `<span class="n">${stepDone(s.id) ? '&#10003;' : s.n}</span>` : ''}${esc(s.label)}</button></li>`).join('');
+    const IC = {
+      home: '<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',
+      know: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/>',
+      matches: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+      meet: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5zM20 19v2.5H6.5"/>',
+      interview: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      decide: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+      class: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    };
+    $('#steps').innerHTML = steps.map((s) => `<li><button type="button" data-act="go" data-v="${s.id}" ${view === s.id ? 'aria-current="step"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[s.id] || ''}</svg>${esc(s.label)}${stepDone(s.id) ? '<span class="ck" aria-label="done">&#10003;</span>' : ''}</button></li>`).join('');
   }
 
   // ---------- views ----------
@@ -126,8 +135,10 @@
     renderSteps();
     const out = fn();
     stopDictation();
-    if (typeof out === 'string') { $('#view').innerHTML = out; if (view === 'know') refreshKnow(); addMics(); }
-    else out.then((h) => { $('#view').innerHTML = h; addMics(); });
+    const KICK = { home: 'Find your research mentor', know: 'Step 1 of 5', matches: 'Step 2 of 5', meet: 'Step 3 of 5', interview: 'Step 4 of 5', decide: 'Step 5 of 5', class: 'For instructors' };
+    const kick = `<p class="sd-kicker">${esc(KICK[view] || '')}</p>`;
+    if (typeof out === 'string') { $('#view').innerHTML = kick + out; if (view === 'know') refreshKnow(); addMics(); }
+    else out.then((h) => { $('#view').innerHTML = kick + h; addMics(); });
   }
 
   // --- Home ---
