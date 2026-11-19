@@ -63,6 +63,7 @@ Project agents live in `C:\Users\mkepr\Documents\GitHub\selassiefest\.claude\age
 | Any tracker write before it is applied | `partner-grant-data-quality-reviewer` | main session applies if pass |
 | Preparing one application/inquiry (packet vs funder's current pages, answers, steps, Chrome fill up to Submit) | `application-preparer` | Stephen presses Submit |
 | Meetings, calls, reminders, alarms (calendar sentinel) | `calendar-keeper` finds them | main session runs `add-event.js --apply` |
+| Every FOIA request, email, extension, deadline and reply draft (reply ALWAYS from the address in the FOIA .eml) | `foia-steward` | reviewer, then main session applies; Stephen or the volunteer sends from that address |
 | Board results and dashboards | `board-reporting-steward` | main session |
 | Board task ownership, reminders, escalation | `board-accountability-steward` | main session |
 
