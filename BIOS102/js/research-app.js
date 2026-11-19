@@ -79,6 +79,8 @@
     if (pick && local && local._t > (pick._t || 0)) S = Object.assign(blank(), local);
     else if (pick) S = Object.assign(blank(), pick);
     else if (local) S = Object.assign(blank(), local);
+    S.shortlist = (S.shortlist || []).filter((id) => F[id]);
+    S.matchTop = (S.matchTop || []).filter((id) => F[id]);
     S.answers = Object.assign({ ratings: {}, choices: {}, constraints: {}, free: {} }, S.answers || {});
     if (local && pick && local._t > (pick._t || 0)) save(true);
     try { isInstructor = !!(await window.sfSupabase.bios102GradesIsInstructor(session.sessionToken)); } catch (e) { isInstructor = false; }
@@ -116,8 +118,9 @@
     const fn = { home: vHome, know: vKnow, matches: vMatches, meet: vMeet, interview: vInterview, decide: vDecide, class: vClass }[view] || vHome;
     renderSteps();
     const out = fn();
-    if (typeof out === 'string') { $('#view').innerHTML = out; if (view === 'know') refreshKnow(); }
-    else out.then((h) => { $('#view').innerHTML = h; });
+    stopDictation();
+    if (typeof out === 'string') { $('#view').innerHTML = out; if (view === 'know') refreshKnow(); addMics(); }
+    else out.then((h) => { $('#view').innerHTML = h; addMics(); });
   }
 
   // --- Home ---
@@ -125,7 +128,7 @@
     const next = E.nextActions(S)[0];
     const first = esc((session.displayName || '').split(' ')[0] || 'there');
     const steps = [
-      ['know', '1', 'Know yourself', 'Rate 14 real research activities and answer a few quick questions. About 8 minutes. Nothing here is graded.'],
+      ['know', '1', 'Know yourself', 'Rate real research activities and answer a few quick questions. About 8 minutes. Nothing here is graded.'],
       ['matches', '2', 'See your matches', 'The researchers whose work fits what you told us, with the reasons shown, so you can argue with them.'],
       ['interview', '4', 'Set up your own interviews', 'You write the email, you send it, you ask the questions. We give you the drafts, the question bank and a prep sheet.'],
       ['decide', '5', 'Decide and ask', 'Compare what you learned and ask for a place in the lab that fits. Includes the real programs that can pay you or give you credit.'],
@@ -559,6 +562,7 @@
       case 'copyAsk': copy(asText(askDraft()), 'Ask copied'); break;
       case 'markAsk': S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
+      case 'dictate': toggleDictation(b); break;
       case 'emailPlan': emailPlan(b); break;
       default: break;
     }
@@ -617,6 +621,46 @@
     if (path.indexOf('.would') > 0 || path === 'final.faculty' || t.dataset.fit) { if (e.type === 'change') { save(); render(); return; } }
     save();
   }
+  // ---- Dictation: a mic button on every writing box (browser speech recognition) ----
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null, recBtn = null;
+  const MIC_LABEL = 'Speak instead of typing';
+  function stopDictation() { if (rec) { try { rec.stop(); } catch (e) { /* already stopped */ } } }
+  function addMics() {
+    $$('textarea[data-bind]').forEach((ta) => {
+      if (ta.dataset.mic) return;
+      ta.dataset.mic = '1';
+      const row = document.createElement('div');
+      row.className = 'rm-row'; row.style.margin = '4px 0 0';
+      if (SR) {
+        row.innerHTML = '<button type="button" class="btn-s btn-sm" data-act="dictate">' + MIC_LABEL + '</button><span class="hint"></span>';
+        row.firstChild.dataset.target = ta.id;
+      } else {
+        row.innerHTML = '<span class="hint">To speak instead of typing, use the microphone key on your phone or computer keyboard, or open this page in Chrome, Edge or Safari.</span>';
+      }
+      ta.insertAdjacentElement('afterend', row);
+    });
+  }
+  function toggleDictation(btn) {
+    const ta = document.getElementById(btn.dataset.target);
+    const hint = btn.nextElementSibling;
+    if (rec && recBtn === btn) { stopDictation(); return; }
+    stopDictation();
+    rec = new SR(); recBtn = btn;
+    rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = false;
+    rec.onresult = (ev) => {
+      let txt = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) if (ev.results[i].isFinal) txt += ev.results[i][0].transcript;
+      if (!txt) return;
+      ta.value = (ta.value && !/\s$/.test(ta.value) ? ta.value + ' ' : ta.value) + txt.trim();
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    rec.onerror = (ev) => { hint.textContent = ev.error === 'not-allowed' ? 'The microphone is blocked. Allow it in your browser settings and try again.' : 'Could not hear you. Try again.'; };
+    rec.onend = () => { btn.textContent = MIC_LABEL; if (/^Listening/.test(hint.textContent)) hint.textContent = ''; rec = null; recBtn = null; };
+    btn.textContent = 'Stop'; hint.textContent = 'Listening... speak, then press Stop. Edit the text afterward.';
+    try { rec.start(); } catch (e) { hint.textContent = 'Could not start the microphone.'; }
+  }
+
   function refreshKnowIfOpen() { if (view === 'know') refreshKnow(); }
 
   // ---------- boot ----------

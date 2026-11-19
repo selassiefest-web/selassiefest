@@ -29,7 +29,6 @@ window.RM_DATA = (() => {
     aquatic:      'Streams, rivers and freshwater life',
     paleo:        'Fossils and ancient life',
     health:       'Human health and disease',
-    behavior:     'Animal behavior',
     computing:    'Data, statistics and coding',
     field:        'Working outdoors in the field',
     wetlab:       'Bench work in a lab',
@@ -93,7 +92,7 @@ window.RM_DATA = (() => {
       oneLine: 'Your body clock, your diet and your gut microbes, studied in mice.',
       plain: 'Dr. Preuss studies circadian rhythms (the body’s internal clock) and how they affect physiology, sleep and aging. His current work links the circadian system to how the body responds to diet and disease, with a focus on the gut microbiota. He directs UW–Parkside’s Animal Care Facility, has hosted workshops in animal research and says dozens of independent-study students have done research with him.',
       day: 'Based on past student projects: working with mouse models (including breeding and genetics), tracking diets and body-clock genes, and sampling and analyzing gut microbiomes. This is animal research, so it involves handling mice.',
-      tags: { animals: 3, health: 3, microbes: 2, genes: 2, animalfac: 3, wetlab: 2, behavior: 1 },
+      tags: { animals: 3, health: 3, microbes: 2, genes: 2, animalfac: 3, wetlab: 2 },
       projects: [
         ['Spring–Summer 2026', 'Breeding colon specific conditional knockout mice to investigate circadian and microbiome signaling in gut homeostasis'],
         ['Fall 2025 – Spring 2026', 'Longitudinal effects of diets on the gut microbiome'],
@@ -223,22 +222,6 @@ window.RM_DATA = (() => {
       ask: ['Are there field seasons or survey projects where an undergraduate can help?', 'Do I need to know plant identification already, or do I learn it on the job?'],
     },
     {
-      id: 'mossman', name: 'Catherine “Cathy” Mossman', first: 'Cathy', last: 'Mossman', honorific: 'Dr.',
-      title: 'Distinguished Lecturer in Biological Science',
-      email: 'mossman@uwp.edu', phone: '(262) 595-2676',
-      profile: 'https://www.uwp.edu/faculty-and-staff/mossman/', website: '',
-      areas: ['Animal behavior', 'Ecology', 'Organismal biology'],
-      oneLine: 'Animal behavior and mammal ecology; a natural first stop for BIOS102 students.',
-      plain: 'Dr. Mossman’s PhD (Purdue, ecology) studied molecular effects of habitat fragmentation on deer mice. Her research interests are mammalian ecology, animal behavior and molecular ecology. Her profile says she enjoys helping students grow research interests that begin as small projects in the 300-level animal behavior class. She has taught at UW–Parkside for over 20 years, including introductory organismal biology.',
-      day: 'Her profile describes starting with small class projects in animal behavior. Ask what comes next after the class.',
-      tags: { behavior: 3, animals: 2, ecology: 2, field: 1, genes: 1, computing: 1 },
-      projects: [],
-      mentorship: { level: 'pathway', note: 'No Thomson Fellowship project is listed. Her stated pathway is turning an animal behavior class project into a research interest.' },
-      readFirst: 'Her profile page (linked above), especially the research interests paragraph.',
-      animals: false, outdoors: false, summerTravel: false,
-      ask: ['What does a good student project in animal behavior look like?', 'How do students continue past the class project?'],
-    },
-    {
       id: 'mayer', name: 'Gregory Mayer', first: 'Gregory', last: 'Mayer', honorific: 'Dr.',
       title: 'Professor of Biological Sciences',
       email: 'mayerg@uwp.edu', phone: '(262) 595-2074',
@@ -263,7 +246,8 @@ window.RM_DATA = (() => {
   // Everyone else on the Biological Sciences directory (not matchable as research mentors,
   // but the student should know who they are and why).
   const OTHERS = [
-    { name: 'Albert Harris', role: 'Lecturer', note: 'Your BIOS102 instructor. Teaches BIOS 100, 101, 102, 202 and 303. No research program is listed; he is the best person to ask how to prepare for any of the interviews.', email: 'harria01@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/harria01/' },
+    { name: 'Albert Harris', role: 'Lecturer', note: 'Your BIOS102 instructor. Teaches BIOS 100, 101, 102, 202 and 303. No research program is listed; he is a good person to ask how to prepare for any of the interviews.', email: 'harria01@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/harria01/' },
+    { name: 'Catherine “Cathy” Mossman', role: 'Distinguished Lecturer', note: 'Teaches introductory organismal biology, animal behavior and biostatistics, and has taught at Parkside for over 20 years. She does not have an active research lab on campus, but she is a good person to ask for advice about animal behavior and how to get started.', email: 'mossman@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/mossman/' },
     { name: 'John Bennett', role: 'Visiting Assistant Professor', note: 'His profile says he has no active research. His most recent project helped a student study dementia-related health-care policy in Milwaukee County. A good conversation if health law or policy interests you.', email: 'bennettj@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/bennettj/' },
     { name: 'Anna Kase', role: 'Adjunct Instructor', note: 'Teaches BIOS 101. No research listed.', email: 'kase@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/kase/' },
     { name: 'Sarah Pergande', role: 'Adjunct Instructor', note: 'Teaches BIOS 300 Human Functional Anatomy. No research listed.', email: 'pergande@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/pergande/' },
@@ -283,7 +267,6 @@ window.RM_DATA = (() => {
     { id: 'c_code', text: 'Write code that compares protein sequences to figure out how enzymes evolved', tags: { proteins: 1, computing: 1.2, evolution: 0.7 } },
     { id: 'c_prairie', text: 'Survey prairie and forest plots and compare them with records from the 1950s', tags: { plants: 1, ecology: 1, conservation: 0.8, field: 1, computing: 0.5 } },
     { id: 'c_yeast', text: 'Use yeast to discover how a cell decides which genes to switch on', tags: { genes: 1, proteins: 0.7, wetlab: 1 } },
-    { id: 'c_behave', text: 'Watch animals, design a small behavior study, and analyze what they do', tags: { behavior: 1, animals: 0.8, ecology: 0.5, field: 0.5 } },
     { id: 'c_museum', text: 'Measure skulls and feathers from museum collections to sort out which species are related', tags: { collections: 1, evolution: 1, form: 0.7, computing: 0.5 } },
     { id: 'c_parasite', text: 'Search fish and insects for parasites and work out how they spread', tags: { ecology: 0.8, health: 0.5, aquatic: 0.6, wetlab: 0.5, field: 0.4 } },
     { id: 'c_stats', text: 'Spend a day turning messy data into graphs and statistics that answer a question', tags: { computing: 1 } },
@@ -304,7 +287,7 @@ window.RM_DATA = (() => {
     ] },
     { id: 'scale', text: 'Which scale feels most exciting?', options: [
       { v: 'tiny', label: 'Molecules and cells (genes, proteins, bacteria)', tags: { genes: 0.6, proteins: 0.6, microbes: 0.6 } },
-      { v: 'organism', label: 'Whole organisms (bodies, behavior, anatomy)', tags: { animals: 0.6, form: 0.6, behavior: 0.6 } },
+      { v: 'organism', label: 'Whole organisms (bodies, behavior, anatomy)', tags: { animals: 0.6, form: 0.6 } },
       { v: 'big', label: 'Populations, ecosystems and deep time', tags: { ecology: 0.6, conservation: 0.6, paleo: 0.6, evolution: 0.4 } },
     ] },
   ];
