@@ -22,6 +22,8 @@ const FAC: Record<string, { n: string; e: string }> = {
 };
 const STATUS: Record<string, string> = { none: "Not started", drafted: "Email drafted", sent: "Email sent", scheduled: "Interview scheduled", done: "Interview done", declined: "Said not now", noreply: "No reply, moved on" };
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+// ilike treats % and _ as wildcards; an underscore in an email must match only itself.
+const lit = (s: unknown) => String(s ?? "").replace(/[\\%_]/g, "\\$&");
 const reply = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: CORS });
 
 Deno.serve(async (req) => {
@@ -32,14 +34,14 @@ Deno.serve(async (req) => {
     if (!session || !/^[0-9a-f-]{36}$/i.test(String(session))) return reply(400, { error: "Missing session." });
     const { data: link } = await admin.from("bios102_login_links").select("email").eq("id", session).eq("status", "active").maybeSingle();
     if (!link) return reply(401, { error: "Please sign in again." });
-    const { data: stu } = await admin.from("bios102_students").select("email, display_name").ilike("email", link.email).maybeSingle();
+    const { data: stu } = await admin.from("bios102_students").select("email, display_name").ilike("email", lit(link.email)).maybeSingle();
     if (!stu) return reply(401, { error: "Not on the roster." });
-    const { data: row } = await admin.from("bios102_research_state").select("state, last_emailed_at").ilike("email", stu.email).maybeSingle();
+    const { data: row } = await admin.from("bios102_research_state").select("state, last_emailed_at").ilike("email", lit(stu.email)).maybeSingle();
     if (!row) return reply(400, { error: "Nothing saved yet." });
     if (row.last_emailed_at && Date.now() - new Date(row.last_emailed_at).getTime() < 60000) return reply(429, { error: "Wait a minute before sending another." });
 
     const s = row.state ?? {};
-    const first = esc(String(stu.display_name).split(" ")[0]);
+    const first = esc(String(stu.display_name ?? "").trim().split(/\s+/)[0] || "there");
     const top = (s.matchTop ?? []).slice(0, 3).filter((i: string) => FAC[i]);
     const list: string[] = (s.shortlist ?? []).filter((i: string) => FAC[i]);
     const fin = s.final?.faculty && FAC[s.final.faculty] ? FAC[s.final.faculty] : null;
@@ -67,7 +69,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({ from: FROM, to: stu.email, reply_to: INSTRUCTOR, subject: "Your research plan", html }),
     });
     if (!res.ok) return reply(502, { error: "The email service refused it. Try again later." });
-    await admin.from("bios102_research_state").update({ last_emailed_at: new Date().toISOString() }).ilike("email", stu.email);
+    await admin.from("bios102_research_state").update({ last_emailed_at: new Date().toISOString() }).ilike("email", lit(stu.email));
     return reply(200, { ok: true });
   } catch (_e) {
     return reply(500, { error: "Something went wrong." });

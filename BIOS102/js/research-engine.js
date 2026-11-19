@@ -198,7 +198,7 @@ ${sig(student)}`,
     return 'https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(draft.to) + '&subject=' + encodeURIComponent(draft.subject) + '&body=' + encodeURIComponent(draft.body);
   }
   function outlookEvent({ title, start, minutes, location, description }) {
-    const d = new Date(start); const e = new Date(d.getTime() + (minutes || 20) * 60000);
+    const d = toDate(start); const e = new Date(d.getTime() + (minutes || 20) * 60000);
     return 'https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&subject=' + encodeURIComponent(title)
       + '&startdt=' + encodeURIComponent(d.toISOString()) + '&enddt=' + encodeURIComponent(e.toISOString())
       + (location ? '&location=' + encodeURIComponent(location) : '') + '&body=' + encodeURIComponent(description || '');
@@ -208,28 +208,34 @@ ${sig(student)}`,
     return 'mailto:' + encodeURIComponent(draft.to).replace('%40', '@') + '?subject=' + encodeURIComponent(draft.subject) + '&body=' + encodeURIComponent(draft.body);
   }
 
+  // A bare YYYY-MM-DD means that calendar day locally; new Date() would read it as UTC midnight
+  // and show the day before in US time zones.
+  function toDate(v) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v == null ? '' : v));
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(v);
+  }
   // ---- Dates / calendar ---------------------------------------------------
   function fmtDate(iso) {
     if (!iso) return '';
-    const d = new Date(iso);
+    const d = toDate(iso);
     if (isNaN(d)) return String(iso);
     return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   }
   function fmtDateTime(iso) {
     if (!iso) return '';
-    const d = new Date(iso);
+    const d = toDate(iso);
     if (isNaN(d)) return String(iso);
     return d.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
   function daysSince(iso) {
     if (!iso) return null;
-    const t = new Date(iso).getTime();
+    const t = toDate(iso).getTime();
     return isNaN(t) ? null : Math.floor((Date.now() - t) / 86400000);
   }
 
   // Floating (local-time) .ics event so it lands at the right hour in any calendar.
   function icsEvent({ title, start, minutes, location, description }) {
-    const d = new Date(start);
+    const d = toDate(start);
     const p = (n) => String(n).padStart(2, '0');
     const stamp = (x) => `${x.getFullYear()}${p(x.getMonth() + 1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`;
     const end = new Date(d.getTime() + (minutes || 20) * 60000);
