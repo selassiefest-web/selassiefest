@@ -15,7 +15,8 @@
 -- status). It never returns free-text answers or interview notes.
 --
 -- WARNING: re-running this file reverts bios102_rm_save to the version WITHOUT the two-device conflict check.
--- After any re-run, also apply supabase/bios102-research-match-conflict.sql.
+-- After any re-run, also apply supabase/bios102-research-match-conflict.sql AND supabase/bios102-research-match-overview.sql
+-- (this file still has the old overview that returns interview fit ratings).
 -- Safe to re-run: create-if-not-exists and create-or-replace throughout.
 -- Apply with:  supabase db query --linked -f supabase/bios102-research-match.sql
 -- ─────────────────────────────────────────────────────────────────────────
