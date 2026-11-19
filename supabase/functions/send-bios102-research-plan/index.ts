@@ -18,7 +18,6 @@ const FAC: Record<string, { n: string; e: string }> = {
   lee: { n: "Dr. Traci Lee", e: "leet@uwp.edu" }, barber: { n: "Dr. Robert Barber", e: "barber@uwp.edu" },
   noto: { n: "Dr. Christopher Noto", e: "noto@uwp.edu" }, taft: { n: "Dr. Natalia Taft", e: "taft@uwp.edu" },
   rogers: { n: "Dr. David Rogers", e: "rogersd@uwp.edu" },
-  mayer: { n: "Dr. Gregory Mayer", e: "mayerg@uwp.edu" },
 };
 const STATUS: Record<string, string> = { none: "Not started", drafted: "Email drafted", sent: "Email sent", scheduled: "Interview scheduled", done: "Interview done", declined: "Said not now", noreply: "No reply, moved on" };
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));

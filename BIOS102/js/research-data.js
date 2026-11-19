@@ -221,33 +221,12 @@ window.RM_DATA = (() => {
       animals: false, outdoors: true, summerTravel: false,
       ask: ['Are there field seasons or survey projects where an undergraduate can help?', 'Do I need to know plant identification already, or do I learn it on the job?'],
     },
-    {
-      id: 'mayer', name: 'Gregory Mayer', first: 'Gregory', last: 'Mayer', honorific: 'Dr.',
-      title: 'Professor of Biological Sciences',
-      email: 'mayerg@uwp.edu', phone: '(262) 595-2074',
-      profile: 'https://www.uwp.edu/faculty-and-staff/mayerg/', website: 'http://homepages.uwp.edu/mayerg/cvgcm.pdf',
-      areas: ['Evolutionary biology and vertebrate zoology (from the courses he teaches: BIOS 314, 318)'],
-      oneLine: 'Evolution and vertebrate diversity, measured on real specimens (sea snakes, woodpeckers).',
-      plain: 'His profile page lists courses (Evolutionary Biology, Vertebrate Zoology, Independent Study, Thesis) but no research statement, so what we know comes from the fellowship archive and his CV (linked above). The projects he has mentored measure and compare animal specimens: the quantitative genetics of sea-snake body form, and the morphometrics, systematics and distribution of the Puerto Rican woodpecker.',
-      day: 'Based on two past projects: measuring specimens, statistics on shape, and working out how species are related and where they live.',
-      tags: { evolution: 3, form: 2, collections: 3, animals: 2, computing: 2, field: 0 },
-      projects: [
-        ['Spring–Summer 2024', 'Morphometrics, systematics and distribution of the Puerto Rican woodpecker (Melanerpes portoricensis) (MS)'],
-        ['Fall 2021 – Spring 2022', 'Quantitative genetics of morphological characteristics of sea snakes'],
-      ],
-      mentorship: { level: 'some', note: 'Two Thomson Fellowship projects are listed (2022 and 2024). He teaches Independent Study (BIOS 499) and Thesis (BIOS 711). His own profile has no research statement, so read his CV first.' },
-      readFirst: 'His CV, linked above.',
-      animals: false, outdoors: false, summerTravel: false,
-      unverifiedNote: 'Research focus is inferred from past student projects and course list; confirm in your interview.',
-      ask: ['What are you working on right now, and is there a piece a student could take?', 'Is the work done on museum specimens, in the field or on a computer?'],
-    },
   ];
 
   // Everyone else on the Biological Sciences directory (not matchable as research mentors,
   // but the student should know who they are and why).
   const OTHERS = [
     { name: 'Albert Harris', role: 'Lecturer', note: 'Teaches BIOS 100, 101, 102, 202 and 303. No research program is listed; he is a good person to ask how to prepare for any of the interviews.', email: 'harria01@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/harria01/' },
-    { name: 'Catherine “Cathy” Mossman', role: 'Distinguished Lecturer', note: 'Teaches introductory organismal biology, animal behavior and biostatistics, and has taught at Parkside for over 20 years. She does not have an active research lab on campus, but she is a good person to ask for advice about animal behavior and how to get started.', email: 'mossman@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/mossman/' },
     { name: 'John Bennett', role: 'Visiting Assistant Professor', note: 'His profile says he has no active research. His most recent project helped a student study dementia-related health-care policy in Milwaukee County. A good conversation if health law or policy interests you.', email: 'bennettj@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/bennettj/' },
     { name: 'Anna Kase', role: 'Adjunct Instructor', note: 'Teaches BIOS 101. No research listed.', email: 'kase@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/kase/' },
     { name: 'Sarah Pergande', role: 'Adjunct Instructor', note: 'Teaches BIOS 300 Human Functional Anatomy. No research listed.', email: 'pergande@uwp.edu', profile: 'https://www.uwp.edu/faculty-and-staff/pergande/' },
@@ -381,7 +360,7 @@ window.RM_DATA = (() => {
     },
     {
       id: 'ritr', name: 'Research in the Rotunda', verified: false,
-      what: 'A statewide showcase where undergraduates present research to legislators. It is mentioned in secondary sources about Parkside students (Higgs, Orlofske, Mayer). This was not confirmed on the official pages checked.',
+      what: 'A statewide showcase where undergraduates present research to legislators. It is mentioned in secondary sources about Parkside students (Higgs, Orlofske). This was not confirmed on the official pages checked.',
       who: 'Ask your mentor.',
       next: 'Ask your mentor during your interview whether students in the lab present there.',
       url: '',
@@ -528,18 +507,6 @@ window.RM_DATA = (() => {
       ],
       ponder: ['What could old survey notebooks tell you that a new survey cannot?', 'Is a prairie that is slowly turning into forest a problem? For whom?', 'Could you identify plants well enough to survey a plot, or would you want to learn?'],
     },
-    mayer: {
-      latest: { title: 'Morphometrics, systematics and distribution of the Puerto Rican woodpecker (Melanerpes portoricensis)', venue: 'Thomson Fellowship project (MS), Spring–Summer 2024', year: 2024, link: 'https://www.uwp.edu/departments/biological-sciences/thomson-research-fellowship/',
-        said: '',
-        plain: 'This is a student project he supervised, listed on the department’s fellowship page. It measures and compares Puerto Rican woodpeckers to work out how they are related and where they live. His own faculty page does not list publications, so read his CV (linked on his profile) and ask him what he is working on.' },
-      today: 'Two supervised projects are listed: the quantitative genetics of body shape in sea snakes (2021 to 2022) and the woodpecker project (2024). He teaches evolutionary biology and vertebrate zoology.',
-      facts: [
-        { t: 'Did you know a Parkside student studied the genetics of the body shapes of sea snakes?', use: 'I saw that a student in your group studied the quantitative genetics of sea snake body shape, and I would love to understand how you study genetics through measurements.' },
-        { t: 'Did you know another project measured the Puerto Rican woodpecker to untangle how it is related to other woodpeckers?', use: 'I read about the Puerto Rican woodpecker project and was curious how measurements of a bird can show how species are related.' },
-        { t: 'Did you know he teaches both Evolutionary Biology and Vertebrate Zoology?', use: 'I saw you teach Evolutionary Biology and Vertebrate Zoology, and I would like to know which of your questions you most want students to explore.' },
-      ],
-      ponder: ['How can you tell two species apart when they look almost identical?', 'What would you measure on a skull to learn about relatedness?', 'Do you prefer specimens in a museum drawer or animals in the field?'],
-    },
   };
   FACULTY.forEach((f) => { f.spark = SPARK[f.id] || null; });
 
@@ -550,7 +517,7 @@ window.RM_DATA = (() => {
     body: 'Animals and health',
     evo:  'Fossils, evolution and form',
   };
-  const AREA_OF = { orlofske: 'eco', rogers: 'eco', richards: 'mol', lee: 'mol', higgs: 'mol', barber: 'mol', preuss: 'body', noto: 'evo', taft: 'evo', mayer: 'evo' };
+  const AREA_OF = { orlofske: 'eco', rogers: 'eco', richards: 'mol', lee: 'mol', higgs: 'mol', barber: 'mol', preuss: 'body', noto: 'evo', taft: 'evo' };
   FACULTY.forEach((f) => { f.area = AREA_OF[f.id] || 'mol'; });
 
 
