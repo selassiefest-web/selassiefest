@@ -365,14 +365,14 @@
     const nm = r.name ? r.name.trim() : '[Professor name]';
     const body = `Dear ${nm},
 
-I am applying to summer research programs for 2027 and I would be honored if you would write a letter of recommendation for me.
+I am applying to summer research programs for 2027. Do you feel you could write a strong, positive letter of recommendation for me? I would be honored if you could.
 
 ${line || '[YOUR OWN SENTENCE: why you are asking this person]'}
 
 These are the programs I am applying to, with their deadlines:
 ${list || '- (I will send you the list shortly)'}
 
-I will attach my r\u00e9sum\u00e9, unofficial transcript and a draft of my statement so you have what you need. If you can write the letter, the programs send you a link or ask you to email it, and I will tell you exactly which way for each one. If you are not able to write for me this time, I completely understand.
+I will attach my r\u00e9sum\u00e9, unofficial transcript and a draft of my statement so you have what you need. If you can write the letter, the programs send you a link or ask you to email it, and I will tell you exactly which way for each one. If you do not feel you could write a strong letter, please tell me honestly. I completely understand, and I would welcome your advice on who else to ask.
 
 Thank you for considering it.
 
