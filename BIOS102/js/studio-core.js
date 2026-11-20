@@ -17,6 +17,22 @@
   const mondayOf = (t) => { const d = new Date(t).getUTCDay(); return t - ((d + 6) % 7) * DAY; };   // Monday on or before t
   const fmt = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 
+  const DKEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const freeSlots = (profile) => DKEYS.map((k) => { const b = (profile && profile.weekBlack && profile.weekBlack[k]) || []; return (D.SLOTS || []).map((_, i) => i).filter((i) => b.indexOf(i) < 0); });
+  // Suggest the best times: long free runs first, until the hours you want are covered.
+  function suggestTimes(profile) {
+    const free = freeSlots(profile); const want = Number(profile && profile.weeklyHours) || 0; const runs = [];
+    free.forEach((f, d) => { let i = 0; while (i < f.length) { let j = i; while (j + 1 < f.length && f[j + 1] === f[j] + 1) j++; runs.push({ d, from: f[i], to: f[j], hours: (j - i + 1) * 2 }); i = j + 1; } });
+    const capacity = runs.reduce((a, r) => a + r.hours, 0); runs.sort((a, b) => b.hours - a.hours || a.d - b.d || a.from - b.from);
+    const picks = []; let sum = 0;
+    runs.forEach((r) => { if (sum >= want) return; const hrs = Math.min(r.hours, want - sum); const last = r.from + Math.ceil(hrs / 2) - 1; picks.push({ day: D.DAYS[r.d][1], d: r.d, label: D.DAYS[r.d][1] + ' ' + D.SLOTS[r.from][0] + ' to ' + D.SLOTS[last][1], hours: Math.min(hrs, (last - r.from + 1) * 2) }); sum += hrs; });
+    picks.sort((a, b) => a.d - b.d);
+    return { picks, capacity, want, enough: capacity >= want };
+  }
+  const YEAR_IDX = { 'First-year': 1, 'Sophomore': 2, 'Junior': 3, 'Senior': 4 };
+  const courseLevel = (code) => { const m = /\d{3}/.exec(String(code)); const n = m ? parseInt(m[0], 10) : 100; return Math.max(1, Math.min(6, Math.floor(n / 100))); };
+  // Courses a student of this year is likely to have finished (this level or below), plus anything already chosen.
+  function visibleCourses(list, year, showAll, done) { const y = YEAR_IDX[year] || 0; return list.filter((c) => showAll || (y && courseLevel(c) <= y) || (done || []).indexOf(c) >= 0); }
   // A "working week" is a Monday-start week that begins inside a period and is not touched by a break.
   function calendar(profile) {
     const hrs = Number(profile && profile.weeklyHours) || 0;
@@ -31,7 +47,11 @@
         if (m < s - 3 * DAY) continue;                                 // week mostly before the period
         const fri = m + 4 * DAY;
         const hit = breaks.some((b) => b[0] <= fri && b[1] >= m);
-        weeks.push({ n: 0, monday: m, period: pi, hours: hit ? 0 : hrs, broke: hit });
+        if (profile && profile.weekBlack) {
+          const free = freeSlots(profile); const black = new Set(profile.blackDates || []); let cap = 0;
+          for (let d = 0; d < 7; d++) { if (!black.has(iso(m + d * DAY))) cap += free[d].length * 2; }
+          weeks.push({ n: 0, monday: m, period: pi, hours: Math.min(hrs, cap), capacity: cap, broke: cap === 0 });
+        } else weeks.push({ n: 0, monday: m, period: pi, hours: hit ? 0 : hrs, capacity: hit ? 0 : hrs, broke: hit });
       }
     });
     weeks.sort((a, b) => a.monday - b.monday);
@@ -378,7 +398,7 @@
     return wrap('Faculty meeting packet', cover + '<div class="pb">' + strip(proposalHTML(st)) + '</div><div class="pb">' + strip(planHTML(st)) + '</div><div class="pb">' + strip(decisionHTML(st)) + '</div><div class="pb"><h1>Outreach email draft</h1><p class="small">To: ' + esc(e.to || '(add the PI’s email)') + '<br>Subject: ' + esc(e.subject) + '</p>' + para(e.body) + '</div>');
   }
 
-  const api = { esc, norm, words, filled, parse, iso, fmt, calendar, reserve, checkSchedule, scheduleTotals, reserveDrift, gapAnswered, gapScreen, gapScore, rankGaps, budgetTotals, fundingCheck, crossCheck, readiness, nextAction, sectionState, decisions, planHTML, proposalHTML, decisionHTML, emailDraft, packetHTML, funder, piCard, piName, money, FACT_LABEL, SECTION_KEYS, usedLabel, accessLabel };
+  const api = { suggestTimes, freeSlots, courseLevel, visibleCourses, YEAR_IDX, esc, norm, words, filled, parse, iso, fmt, calendar, reserve, checkSchedule, scheduleTotals, reserveDrift, gapAnswered, gapScreen, gapScore, rankGaps, budgetTotals, fundingCheck, crossCheck, readiness, nextAction, sectionState, decisions, planHTML, proposalHTML, decisionHTML, emailDraft, packetHTML, funder, piCard, piName, money, FACT_LABEL, SECTION_KEYS, usedLabel, accessLabel };
   root.StudioCore = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

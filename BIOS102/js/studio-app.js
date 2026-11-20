@@ -20,7 +20,7 @@
     const gap = (n) => ({ id: 'g' + n, title: '', a: {}, evidence: [], score: { value: 3, evidence: 3, access: 3, burden: 3, deliver: 3 }, dependencies: [], feasibleHours: true });
     return {
       v: 1, meta: {},
-      profile: { name: session.displayName || '', major: '', year: '', courses: '', skills: '', mode: '', modeNote: '', weeklyHours: 6, periods: [{ label: 'Semester 1', start: '', end: '' }, { label: 'Semester 2', start: '', end: '' }], breaks: [], reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 } },
+      profile: { name: session.displayName || '', major: '', majorName: '', declared: false, coursesDone: [], coursesOther: [], skillsDone: [], skillsOther: '', skillsNone: false, weekBlack: {}, blackDates: [], year: '', courses: '', skills: '', mode: '', modeNote: '', weeklyHours: 6, periods: [{ label: 'Semester 1', start: '', end: '' }, { label: 'Semester 2', start: '', end: '' }], breaks: [], reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 } },
       pi: '', metPi: false, identityChecks: { affiliation: { done: false, note: '' }, coauthors: { done: false, note: '' }, history: { done: false, note: '' } },
       sources: [], library: { items: [], analysis: {}, evidence: [], searches: [], screen: [] }, papers: [paper('foundational'), paper('recent')], resources: [], litChecks: [],
       gaps: [gap(1), gap(2), gap(3)], weights: {}, chosenGap: '', justification: '',
@@ -36,6 +36,11 @@
     S = blankState();
   }
   function migrate(o) {
+    if (o.profile) {
+      const p = o.profile; p.coursesDone = p.coursesDone || []; p.coursesOther = p.coursesOther || []; p.skillsDone = p.skillsDone || []; p.blackDates = p.blackDates || [];
+      if (!p.weekBlack) { p.weekBlack = {}; (p.breaks || []).forEach((b) => { const s = C.parse(b.start), e = C.parse(b.end); if (isNaN(s) || isNaN(e)) return; for (let t = s - ((new Date(s).getUTCDay() + 6) % 7) * 86400000; t <= e + (6 - ((new Date(e).getUTCDay() + 6) % 7)) * 86400000; t += 86400000) { const k = C.iso(t); if (p.blackDates.indexOf(k) < 0) p.blackDates.push(k); } }); }
+      if (p.majorName === undefined) { const m = String(p.major || ''); p.majorName = /molecular/i.test(m) ? 'Molecular Biology and Bioinformatics' : /biolog/i.test(m) ? 'Biological Sciences' : m ? 'Other' : ''; p.majorOther = p.majorName === 'Other' ? m.replace(/\s*\(.*\)\s*$/, '') : ''; p.declared = /declared/i.test(m) && !/not yet/i.test(m); }
+    }
     if (o.pi && o.pi !== 'rogers' && o.plan && o.plan.title && o.plan.title === D.EXAMPLE.plan.title) {
       const b = blankState(); ['library', 'papers', 'gaps', 'litChecks', 'chosenGap', 'justification', 'plan', 'proposal', 'claims', 'defense', 'sectionStatus', 'pending', 'weights', 'identityChecks'].forEach((k) => { o[k] = b[k]; }); o.meta = {}; o.budget = [];
     }
@@ -68,7 +73,7 @@
   // ---------- shell ----------
   const NAV = [
     ['dash', 'Mission Control', '<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>'],
-    ['me', '1 · Me and my hours', '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/>'],
+    ['me', '1 · About you', '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/>'],
     ['pi', '2 · PI and lab', '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'],
     ['gaps', '3 · Gap arena', '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'],
     ['plan', '4 · Research plan', '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/>'],
@@ -94,7 +99,7 @@
   const DEEP = { c_papers: ['pi', 'pi'], c_gap: ['gaps', 'Choose and justify'], c_obs: ['plan', 'Observation'], c_q: ['plan', 'Question'], c_ans: ['plan', 'Proposed answer'], c_pred: ['plan', 'Prediction'], c_mm: ['plan', 'Materials and methods'],
     after: ['after', ''], me: ['me', ''], pi: ['pi', 'identity'], papers: ['pi', 'deep'], res: ['pi', 'resources'], lib: ['pi', 'pi'], screen: ['pi', 'pi'], evid: ['pi', 'evidence'], gaps: ['gaps', 'Your evidence'], choice: ['gaps', 'Choose and justify'], fund: ['fund', ''],
     chain: ['plan', 'The chain'], plan: ['plan', 'Materials and methods'], drift: ['plan', 'Schedule'], pro: ['pro', ''], claims: ['pro', ''], twin: ['plan', 'Key facts'], def: ['meet', ''], pend: ['meet', ''] };
-  const STEPNAME = { me: '1 \u00b7 Me and my hours', gaps: '3 \u00b7 Gap Arena', plan: '4 \u00b7 Research plan', fund: '5 \u00b7 Funding', pro: '6 \u00b7 Grant proposal', meet: '7 \u00b7 Defend and meet', after: '8 \u00b7 After the meeting' };
+  const STEPNAME = { me: '1 \u00b7 About you', gaps: '3 \u00b7 Gap Arena', plan: '4 \u00b7 Research plan', fund: '5 \u00b7 Funding', pro: '6 \u00b7 Grant proposal', meet: '7 \u00b7 Defend and meet', after: '8 \u00b7 After the meeting' };
   function paginate(id, html) {
     const tpl = document.createElement('template'); tpl.innerHTML = html; const nodes = Array.from(tpl.content.children);
     const isBody = (n) => n.classList.contains('gs-pgbreak') || n.classList.contains('gs-card') || n.classList.contains('gs-cand') || n.classList.contains('gs-grid') || n.tagName === 'H2';
@@ -113,17 +118,17 @@
     if (WZ.want && WZ.want.id === id) { const k = real.findIndex((x) => x.t.indexOf(WZ.want.text) >= 0); if (k >= 0) WZ[id] = k; WZ.want = null; }
     const i = Math.max(0, Math.min(WZ[id] || 0, real.length - 1)); WZ[id] = i;
     const nextView = ORDER[ORDER.indexOf(id) + 1];
-    const statusOf = (x) => { let total = 0, filled = 0; x.nodes.forEach((n) => { n.querySelectorAll('input[data-bind],textarea[data-bind],select[data-bind]').forEach((el) => { if (el.type === 'range' || el.type === 'checkbox' || el.type === 'radio') return; total++; if (String(el.value || '').trim()) filled++; }); }); return total === 0 ? '' : filled === total ? 'done' : filled > 0 ? 'part' : 'todo'; };
+    const statusOf = (x) => { const marked = x.nodes.map((n) => (n.dataset && n.dataset.status) || (n.querySelector && (n.querySelector('[data-status]') || {}).dataset && n.querySelector('[data-status]').dataset.status)).find(Boolean); if (marked !== undefined) return marked; let total = 0, filled = 0; x.nodes.forEach((n) => { n.querySelectorAll('input[data-bind],textarea[data-bind],select[data-bind]').forEach((el) => { if (el.type === 'range' || el.type === 'checkbox' || el.type === 'radio') return; total++; if (String(el.value || '').trim()) filled++; }); }); return total === 0 ? '' : filled === total ? 'done' : filled > 0 ? 'part' : 'todo'; };
     const SYMB = { done: '\u2713', part: '\u25d0', todo: '\u25cb' };
     const stepsList = '<ol class="gs-steps" aria-label="Screens in this step">' + real.map((x, k) => { const st = statusOf(x); return '<li><button type="button" class="' + (k === i ? 'on ' : '') + (st ? 'st-' + st : '') + '" data-act="wz" data-w="' + id + '" data-v="' + k + '" aria-current="' + (k === i ? 'step' : 'false') + '"' + (st ? ' title="' + ({ done: 'Done', part: 'In progress', todo: 'Not started' }[st]) + '"' : '') + '><b>' + (st ? SYMB[st] : k + 1) + '</b><span>' + esc(x.t) + '</span></button></li>'; }).join('') + '</ol>' + W.legend();
     PGT[id] = real[i].t; const pctDone = Math.round(((i + 1) / real.length) * 100);
-    const steps = '<div class="gs-here"><div class="gs-crumb">Step ' + esc(STEPNAME[id] || id) + ' \u203a Screen ' + (i + 1) + ' of ' + real.length + ': ' + esc(real[i].t) + '</div><div class="gs-task"><b>On this screen:</b><ol class="gs-todo"><li>' + esc(real[i].task || 'Fill in what is on this screen, then press Next.') + '</li></ol></div><div class="gs-progress" role="progressbar" aria-valuenow="' + pctDone + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pctDone + '%"></i></div><details class="gs-allsteps"><summary>See all ' + real.length + ' screens</summary>' + stepsList + '</details></div>';
+    const steps = '<div class="gs-here"><div class="gs-crumb">Step ' + esc(STEPNAME[id] || id) + ' \u203a Screen ' + (i + 1) + ' of ' + real.length + ': ' + esc(real[i].t) + '</div><div class="gs-task"><b>On this screen:</b><ol class="gs-todo"><li>' + esc(real[i].task || ('Fill in "' + real[i].t + '", then press Next.')) + '</li></ol></div><div class="gs-progress" role="progressbar" aria-valuenow="' + pctDone + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pctDone + '%"></i></div><details class="gs-allsteps"><summary>See all ' + real.length + ' screens</summary>' + stepsList + '</details></div>';
     const foot = '<div class="gs-wizfoot"><button class="gs-btn2" data-act="wzb" data-w="' + id + '"' + (i === 0 ? ' disabled' : '') + '>\u2190 Back</button><span class="gs-count">Screen ' + (i + 1) + ' of ' + real.length + '</span><button class="gs-btn" data-act="wzn" data-w="' + id + '">' + (i === real.length - 1 ? (nextView ? 'Done here: on to the next step \u2192' : 'Finished') : 'Next: ' + esc(real[i + 1].t) + ' \u2192') + '</button></div>';
     return head.map((n) => n.outerHTML).join('') + steps + '<div class="gs-wzpage">' + real[i].nodes.map((n) => n.outerHTML).join('') + '</div>' + foot;
   }
   // ---- where you were: every jump (nav, chain node, gate, tile) remembers the place you left ----
   const NAVH = []; let lastLoc = null, skipPush = false; const PGT = {};
-  const VNAME = { dash: 'Mission Control', me: 'Me and my hours', pi: 'The PI\u2019s page', gaps: 'Gap Arena', plan: 'Research plan', fund: 'Funding', pro: 'Grant proposal', meet: 'Defend and meet', after: 'After the meeting', review: 'Instructor review', data: 'Backup and data' };
+  const VNAME = { dash: 'Mission Control', me: 'About you', pi: 'The PI\u2019s page', gaps: 'Gap Arena', plan: 'Research plan', fund: 'Funding', pro: 'Grant proposal', meet: 'Defend and meet', after: 'After the meeting', review: 'Instructor review', data: 'Backup and data' };
   function curLoc() { const lab = view === 'pi' && S.pi && window.StudioLab; return { view, n: lab ? StudioLab.ui.stage : (WZ[view] || 0), title: lab ? StudioLab.STAGES[StudioLab.ui.stage][1] : (PGT[view] || '') }; }
   const locLabel = (t) => VNAME[t.view] + (t.title ? ' \u203a ' + t.title : '');
   function doBack() { const t = NAVH.pop(); if (!t) return; skipPush = true; view = t.view; if (t.view === 'pi' && window.StudioLab) StudioLab.ui.stage = t.n; else WZ[t.view] = t.n; render(); skipPush = false; window.scrollTo(0, 0); }
@@ -145,7 +150,7 @@
   function refreshLive() { const el = $('#live'); if (el) { const L = { me: liveMe, gaps: liveGaps, plan: livePlan, fund: liveFund, pro: livePro }[view]; if (L) el.innerHTML = L(); } renderNavLight(); }
   function renderNavLight() { const r = R(); $('#navring').innerHTML = W.ring(r.pct, 'ready', 120); $$('#nav .gs-pip').forEach((p) => p.remove()); $$('#nav button[data-v]').forEach((b) => { const own = r.items.filter((i) => i.view === b.dataset.v); if (!own.length) return; const c = own.some((i) => i.level === 'block') ? '#fb7185' : own.some((i) => i.level === 'warn') ? '#fbbf24' : '#4ade80'; b.insertAdjacentHTML('beforeend', '<i class="gs-pip" style="--c:' + c + '"></i>'); }); }
   function wordCounts() { $$('[data-wc]').forEach((el) => { const n = C.words(getPath(S, el.dataset.wc)); const lim = Number(el.dataset.limit); el.textContent = n + (lim ? ' of ' + lim + ' words' : ' words'); el.classList.toggle('over', !!lim && n > lim); }); }
-  function exampleBanner() { return S.meta && S.meta.example ? '<div class="gs-demo"><strong>Worked example loaded.</strong> The student, dates, hours and budget uses are illustrative; the papers, dataset and funder facts are real and cited. Edit anything. <button class="gs-btn3 gs-sm" data-act="startMine">Start my own from scratch</button></div>' : ''; }
+  function exampleBanner() { return S.meta && S.meta.example ? '<div class="gs-demo"><strong>You are looking at the sample mission.</strong> The student, dates, hours and budget uses are illustrative; the papers, dataset and funder facts are real and cited. <button class="gs-btn3 gs-sm" data-act="startMine">Switch to my own mission</button></div>' : ''; }
 
   // ---------- Mission Control ----------
   function vDash() {
@@ -168,7 +173,7 @@
     const subSt = { 'Draft': 'todo', 'Revising after PI meeting': 'part', 'Ready to submit': 'part', 'Submitted': 'done', 'Awarded': 'done', 'Declined': 'alert', 'Resubmitting': 'part' }[S.submission.status] || 'todo';
     return '<p class="gs-kick">Research-to-Grant Studio · mission control</p><h1 class="gs-h1">Your mission, in one view</h1>' + exampleBanner() +
       '<div class="gs-card gs-glow gs-hero"><div>' + W.ring(r.pct, 'mission ready', 200) + '</div><div><div class="gs-next"><small>Next best action</small><p style="margin:4px 0 10px;font-size:1.05rem">' + esc(na.text) + '</p><button class="gs-btn" data-act="go" data-v="' + na.view + '">Take me there</button></div><p class="gs-note">' + r.blocks.length + ' blocked · ' + r.warns.length + ' open · ' + r.items.filter((i) => i.level === 'ok').length + ' clear. Every number on this page is computed from what you typed; nothing is entered twice.</p></div></div>' +
-      W.legend() + '<div class="gs-grid3">' +
+      (S.meta && S.meta.example ? '' : '<div class="gs-card gs-choose"><div class="gs-spread"><div><b>Not sure what to expect?</b><div class="gs-note" style="margin:2px 0 0">See a sample mission: a finished example you can click through. It never mixes with your own work.</div></div><div class="gs-row"><button class="gs-btn2" data-act="loadExample">See a sample mission</button><button class="gs-btn" data-act="nav" data-id="me">My mission</button></div></div></div>') + W.legend() + '<div class="gs-grid3">' +
       tile('Selected PI', esc(f ? f.honorific + ' ' + f.name : 'Not chosen yet'), esc(f ? f.oneLine : 'Step 2 \u00b7 PI and lab'), piSt, !S.pi ? 'pi' : gate('pi') !== 'ok' ? 'pi' : 'c_papers') +
       tile('Library', nLib + ' papers', S.library.items.filter((i) => i.coll === 'pi').length + ' PI \u00b7 ' + S.library.items.filter((i) => i.coll === 'related').length + ' related \u00b7 ' + S.library.evidence.length + ' evidence cards', libSt, 'c_papers') +
       tile('Project window', (isNaN(cal.first) ? 'Not set' : C.fmt(cal.first) + ' \u2192 ' + C.fmt(cal.last)), cal.total + ' h over ' + cal.totalWeeks + ' weeks' + (days != null ? (days > 0 ? ' \u00b7 starts in ' + days + ' days' : ' \u00b7 under way') : ''), winSt, 'me') +
@@ -192,23 +197,9 @@
   }
 
   // ---------- 1 · Me ----------
-  function vMe() {
-    const p = S.profile;
-    const periods = p.periods.map((x, i) => '<div class="gs-two" style="align-items:end;border-top:1px solid var(--line);padding-top:6px">' + inp('profile.periods.' + i + '.label', 'Period name') + inp('profile.periods.' + i + '.start', 'Start (first Monday)', { type: 'date' }) + inp('profile.periods.' + i + '.end', 'End', { type: 'date' }) + '<div><button class="gs-btn3 gs-sm gs-danger" data-act="delRow" data-p="profile.periods" data-i="' + i + '">Remove</button></div></div>').join('');
-    const breaks = p.breaks.map((x, i) => '<div class="gs-two" style="align-items:end;border-top:1px solid var(--line);padding-top:6px">' + inp('profile.breaks.' + i + '.label', 'Break name') + inp('profile.breaks.' + i + '.start', 'Start', { type: 'date' }) + inp('profile.breaks.' + i + '.end', 'End', { type: 'date' }) + '<div><button class="gs-btn3 gs-sm gs-danger" data-act="delRow" data-p="profile.breaks" data-i="' + i + '">Remove</button></div></div>').join('');
-    return '<p class="gs-kick">Step 1 of 8</p><h1 class="gs-h1">Start with your real constraints</h1><p class="gs-lede">Research that fits your life gets finished. Tell the studio what you actually have; it turns that into a calendar of hours before you plan any science.</p>' + exampleBanner() + loadExample() +
-      '<div class="gs-card"><h3>About you</h3><div class="gs-two">' + inp('profile.name', 'Your name') + inp('profile.major', 'Major (say "declared" if you have declared it)', { ph: 'For example: Biological Sciences (declared)' }) + sel('profile.year', 'Year', ['First-year', 'Sophomore', 'Junior', 'Senior']) + '</div>' + ta('profile.courses', 'Relevant coursework', { rows: 3 }) + ta('profile.skills', 'Skills you have (and what you have never done)', { rows: 3 }) +
-      '<label class="gs-f">What kind of research can you realistically do? ' + term('secondary', '(Existing-data is a real option)') + '</label><div class="gs-row">' + [['field', 'Field research'], ['bench', 'Bench research'], ['data', 'Computational or existing-data research']].map((m) => '<label style="display:flex;gap:8px;align-items:center"><input type="radio" name="mode" data-bind="profile.mode" value="' + m[0] + '"' + (p.mode === m[0] ? ' checked' : '') + '> ' + m[1] + '</label>').join('') + '</div>' + inp('profile.modeNote', 'Note about access (optional)') + '</div>' +
-      '<div class="gs-card"><h3>Your time</h3><div class="gs-two">' + inp('profile.weeklyHours', 'Hours per week you can commit', { num: 1, min: 1 }) + '</div><p class="gs-note">Weeks that overlap a break count as zero. A funder may require a minimum window (Thomson: two semesters, or a summer plus a semester).</p><h3 style="margin-top:12px">Research periods</h3>' + periods + '<button class="gs-btn3 gs-sm" data-act="addPeriod" style="margin-top:8px">+ Add a period</button><h3 style="margin-top:16px">Academic breaks and weeks you cannot work</h3>' + breaks + '<button class="gs-btn3 gs-sm" data-act="addBreak" style="margin-top:8px">+ Add a break</button></div>' +
-      '<div class="gs-card"><h3>How your hours are reserved</h3><div class="gs-grid3">' + Object.keys(W.CAT).map((k) => inp('profile.reserve.' + k, W.CAT[k][0] + ' (%)', { num: 1 })).join('') + '</div><p class="gs-note">Percentages are normalized, so they need not add to exactly 100.</p></div><div id="live"></div>';
-  }
+  function vMe() { return window.StudioMe.view(); }
   function loadExample() { return (S.meta && S.meta.example) ? '' : '<div class="gs-demo"><strong>Want to see a finished one first?</strong> The worked example is a complete journey (Dr. Rogers, an existing-data project, Thomson Fellowship) on a real public dataset. It replaces your workspace.<div style="margin-top:8px"><button class="gs-btn2 gs-sm" data-act="loadExample">Load the worked example</button></div></div>'; }
-  function liveMe() {
-    const cal = C.calendar(S.profile); const res = C.reserve(cal.total, S.profile.reserve);
-    return '<div class="gs-card gs-glow"><h3>Your calendar</h3>' + (cal.problems.length ? '<div class="gs-badbox">' + esc(cal.problems.join(' ')) + '</div>' : '') + '<div class="gs-grid3"><div class="gs-tile"><small>Total available</small><b>' + cal.total + ' hours</b><span>' + cal.totalWeeks + ' working weeks × ' + cal.weeklyHours + ' h</span></div><div class="gs-tile"><small>Break weeks skipped</small><b>' + cal.allWeeks.filter((w) => w.broke).length + '</b><span>count as zero hours</span></div></div><div style="margin-top:12px">' + W.hoursDonut(res, cal.total) + '</div>' + (cal.totalWeeks ? W.weekStrip(S, cal) : '') + '</div>';
-  }
-
-  // ---------- 2 · PI and lab ----------
+  function liveMe() { return window.StudioMe.live(); }
   const evClass = (id) => { const w = (PIS[id] && PIS[id].works[0]); return w && w.y >= 2024 ? ['ok', 'Active record: ' + w.y] : ['warn', 'Latest indexed paper: ' + (w ? w.y : 'none') + ' (ask)']; };
   function secIdentity() {
     const ex = D.PI_EXTRA[S.pi]; const f = C.piCard(S.pi); const pi = PIS[S.pi] || {};
@@ -394,6 +385,7 @@
     const b = e.target.closest('[data-act]'); if (!b) return; if (b.tagName === 'A') e.preventDefault();
     const a = b.dataset.act, i = Number(b.dataset.i), p = b.dataset.p;
     if (window.StudioLab && StudioLab.onClick(b)) return;
+    if (window.StudioMe && StudioMe.onClick(b)) return;
     switch (a) {
       case 'nav': { const t = DEEP[b.dataset.id]; if (!t) break; if (t[0] === 'pi') { if (S.pi && window.StudioLab) StudioLab.setStage(t[1]); } else if (t[1]) { WZ.want = { id: t[0], text: t[1] }; } go(t[0]); break; }
       case 'back': doBack(); break;
@@ -425,7 +417,7 @@
       case 'addFunder': { S.customFunders = S.customFunders || []; const id = 'ext' + (S.customFunders.length + 1); S.customFunders.push({ id, name: 'Outside opportunity ' + (S.customFunders.length + 1), kind: 'External', source: 'https://', verified: new Date().toISOString().slice(0, 10), status: 'NOT STATED', deadline: 'NOT STATED', period: 'NOT STATED', eligibility: 'NOT STATED', amount: 'NOT STATED', stipend: 0, supplies: 0, expenses: 'NOT STATED', route: 'NOT STATED', mentor: 'NOT STATED', materials: 'NOT STATED', reporting: 'NOT STATED', roles: { writes: 'NOT STATED', submits: 'NOT STATED', administers: 'NOT STATED' }, minSemesters: 0, unverified: ['Everything (fill in the official facts, then edit this entry)'] }); D.FUNDERS.push(S.customFunders[S.customFunders.length - 1]); saveNow(); render(); toast('Added. Edit its facts from the official page.'); break; }
       case 'pickPi': pickPi(b.dataset.id); break;
       case 'loadExample': Object.keys(WZ).forEach((k) => { WZ[k] = 0; }); if (confirm('This replaces your current workspace with the worked example. Save a backup first if you have work here. Continue?')) { S = clone(D.EXAMPLE); S.v = 1; S.weights = {}; S.customFunders = []; if (window.StudioLab) StudioLab.ui.stage = 0; saveNow(); view = 'dash'; render(); toast('Worked example loaded'); } break;
-      case 'startMine': if (confirm('Start from a blank workspace? The worked example will be removed from this browser.')) { S = blankState(); saveNow(); view = 'me'; render(); } break;
+      case 'startMine': if (confirm('Switch to your own mission? The sample mission will be removed from this browser.')) { S = blankState(); saveNow(); view = 'me'; render(); } break;
       case 'fillFacts': { const base = b.dataset.b; const cal = C.calendar(S.profile), bt = C.budgetTotals(S.budget); const f = S[base].facts; f.totalHours = cal.total; f.startDate = isNaN(cal.first) ? '' : C.iso(cal.first); f.endDate = isNaN(cal.last) ? '' : C.iso(cal.last); f.budgetTotal = bt.total; saveNow(); render(); toast('Filled hours, dates and budget from the system'); break; }
       case 'loadReq': { const lines = $('#reqbox').value.split('\n').map((x) => x.trim()).filter(Boolean); if (!lines.length) return toast('Paste at least one section line.'); const old = S.proposal.sections; S.proposal.sections = lines.map((ln, k) => { const parts = ln.split('|'); const title = parts[0].trim(); const lim = parseInt((parts[1] || '').replace(/\D/g, ''), 10) || 0; const m = old.find((o) => C.norm(o.title) === C.norm(title)); return { id: m ? m.id : 'sec' + k + Date.now() % 1000, title, limit: lim, text: m ? m.text : '' }; }); S.proposal.modelNote = 'FUNDER REQUIREMENTS LOADED by the student on ' + new Date().toISOString().slice(0, 10) + '. Check each section against the official instructions before marking it verified.'; saveNow(); render(); toast('Sections replaced. Text kept for matching titles.'); break; }
       case 'importDoi': importDoi($('#doiin').value); break;
@@ -470,6 +462,7 @@
     const path = t.dataset && t.dataset.bind; if (!path) return;
     let v = t.value; if (t.dataset.bool) v = t.checked; else if (t.type === 'checkbox') v = t.checked; else if (t.type === 'radio' && !t.checked) return; else if (t.dataset.num) v = t.value === '' ? '' : Number(t.value);
     if (path.indexOf('funding.resolutions.') === 0) { S.funding.resolutions[path.slice('funding.resolutions.'.length)] = v; } else setPath(S, path, v);
+    if (path.indexOf('profile.') === 0 && window.StudioMe) StudioMe.derive();
     if (path.indexOf('gaps.') === 0 && path.indexOf('.title') > 0 && !S.chosenGap) { /* keep choice empty until picked */ }
     const sv = $('[data-sv="' + path + '"]'); if (sv) sv.textContent = v;
     save(); wordCounts(); refreshLive();
@@ -524,6 +517,7 @@
   function run(env) {
     session = env.session; isInstructor = !!env.isInstructor; KEY = 'gs_state_v1_' + String(session.email || '').toLowerCase();
     load();
+    window.StudioMe.init({ S: () => S, render, save: saveNow, inp, sel, chk, pg, banner: exampleBanner });
     window.StudioLab.init({ S: () => S, render, save: saveNow, toast, esc, go, sel, inp, ta, chk, sections: { identity: secIdentity, sources: secSources, resources: secResources } });
     document.addEventListener('focusin', (e) => { if (e.target && e.target.tagName === 'TEXTAREA' && e.target.dataset.bind) window.__lastTa = e.target; });
     $('#who').textContent = session.displayName || session.email || '';

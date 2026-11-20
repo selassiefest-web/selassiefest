@@ -189,10 +189,30 @@ window.STUDIO_DATA = (() => {
     { id: 'r7', cite: 'Ladwig LM, Damschen EI, Rogers DA. 2018. Sixty years of community change in the prairie–savanna–forest mosaic of Wisconsin. Ecology and Evolution.', doi: '10.1002/ece3.4251' },
   ];
 
+  // Course codes exactly as supplied by the instructor. Titles are not shown because none were supplied.
+  const COURSES = {
+    science: ['BIOS 101', 'BIOS 102', 'BIOS 210', 'BIOS 260', 'BIOS 300', 'BIOS 301', 'BIOS 303', 'BIOS 305', 'BIOS 307', 'BIOS 309', 'BIOS 311', 'BIOS 313', 'BIOS 314', 'BIOS 317', 'BIOS 318', 'BIOS 324', 'BIOS 329', 'BIOS 330', 'BIOS 333', 'BIOS 336', 'BIOS 340', 'BIOS 341', 'BIOS 344', 'BIOS 351', 'BIOS 355', 'BIOS 414', 'BIOS 420', 'BIOS 435', 'BIOS 445', 'BIOS 453', 'BIOS 455', 'BIOS 489', 'BIOS 499', 'BIOS 509', 'BIOS 514',
+      'CHEM 101', 'CHEM 102', 'CHEM 104', 'CHEM 210', 'CHEM 307', 'CHEM 308', 'CHEM 321', 'CHEM 322', 'CHEM 323', 'CHEM 620',
+      'PHYS 105', 'PHYS 106', 'PHYS 201', 'PHYS 202',
+      'MATH 103', 'MATH 203', 'MATH 221', 'MATH 222', 'QM 210', 'QM 310', 'QM 490', 'UWX MA117',
+      'PSYC 101', 'PSYC 200', 'PSYC 250', 'PSYC 326', 'PSYC 327', 'PSYC 420', 'PSYC 491', 'SOCA 101', 'SOCA 250',
+      'CSCI 309', 'HIMT 350', 'BAMA 300X'],
+    gened: ['ENGL 101', 'UWX EN102', 'COMM 105', 'COMM 107', 'COMM 108', 'MATH 102', 'MATH 111', 'MATH 112', 'MATH 114', 'PHIL 201', 'ART 100', 'ART 102', 'ART 103', 'ART 122', 'ART 125', 'ENGL 106', 'ENGL 167', 'ENGL 168', 'ENGL 252', 'ENGL 253', 'ENGL 266', 'PHIL 101', 'PHIL 102', 'PHIL 205', 'PHIL 206', 'PHIL 215', 'MUSI 100', 'MUSI 101', 'MUSI 104', 'THEA 110', 'THEA 112', 'THEA 114', 'THEA 125', 'FREN 104', 'FREN 203', 'FREN 204', 'ITAL 104', 'ITAL 203', 'ITAL 204', 'SPAN 104', 'SPAN 203', 'SPAN 204', 'UWP 101', 'UWP 111', 'UWP 112'],
+  };
+  const COURSE_GROUPS = [['BIOS', 'Biology'], ['CHEM', 'Chemistry'], ['PHYS', 'Physics'], ['MATH|QM|UWX MA', 'Math and statistics'], ['PSYC|SOCA', 'Psychology and sociology'], ['CSCI|HIMT|BAMA', 'Computing, health and business']];
+  const GENED_GROUPS = [['ENGL|UWX EN|COMM', 'Writing and speaking'], ['MATH', 'Math'], ['PHIL', 'Philosophy'], ['ART|MUSI|THEA', 'Arts'], ['FREN|ITAL|SPAN', 'Languages'], ['UWP', 'University seminars']];
+  const YEARS = ['First-year', 'Sophomore', 'Junior', 'Senior'];
+  const SKILLS = ['Basic R or Python', 'Spreadsheets (Excel or Sheets)', 'Statistics (t-tests, regression)', 'Reading scientific papers', 'Scientific writing', 'Microscopy', 'Pipetting and making solutions', 'PCR or gel electrophoresis', 'Plant or animal identification', 'Field sampling', 'Lab safety training'];
+  const SLOTS = [['8:00 am', '10:00 am'], ['10:00 am', '12:00 pm'], ['12:00 pm', '2:00 pm'], ['2:00 pm', '4:00 pm'], ['4:00 pm', '6:00 pm'], ['6:00 pm', '8:00 pm'], ['8:00 pm', '10:00 pm']];
+  const DAYS = [['mon', 'Monday'], ['tue', 'Tuesday'], ['wed', 'Wednesday'], ['thu', 'Thursday'], ['fri', 'Friday'], ['sat', 'Saturday'], ['sun', 'Sunday']];
+
   const EXAMPLE = {
     meta: { example: true, label: 'Worked example (illustrative student; real public dataset)' },
     profile: {
-      name: 'Illustrative student (not a real person)', major: 'Biological Sciences (declared)', year: 'Junior',
+      name: 'Illustrative student (not a real person)', major: 'Biological Sciences (declared)', majorName: 'Biological Sciences', declared: true, year: 'Junior',
+      coursesDone: ['BIOS 101', 'BIOS 102', 'BIOS 210', 'BIOS 305'], coursesOther: [], skillsDone: ['Basic R or Python', 'Spreadsheets (Excel or Sheets)', 'Statistics (t-tests, regression)'], skillsOther: '',
+      weekBlack: { mon: [0, 1, 2, 3, 4, 5, 6], tue: [0, 1, 2, 5, 6], wed: [0, 1, 2, 3, 4, 5, 6], thu: [0, 1, 2, 4, 5, 6], fri: [0, 1, 2, 3, 4, 5, 6], sat: [2, 3, 4, 5, 6], sun: [0, 1, 2, 3, 4, 5, 6] },
+      blackDates: ['2027-03-15', '2027-03-16', '2027-03-17', '2027-03-18', '2027-03-19', '2027-03-20', '2027-03-21', '2027-11-22', '2027-11-23', '2027-11-24', '2027-11-25', '2027-11-26', '2027-11-27', '2027-11-28'],
       courses: 'BIOS 101 and 102, BIOS 210 Biostatistics, BIOS 305 Principles of Ecology',
       skills: 'Basic R from Biostatistics (t-tests, regression); spreadsheets; no lab or field research experience yet',
       mode: 'data', modeNote: 'Existing-data (secondary analysis): no field or bench access needed.',
@@ -461,5 +481,5 @@ window.STUDIO_DATA = (() => {
     EXAMPLE.library = L;
   })();
 
-  return { CHECKED, PI_EXTRA, FUNDERS, GLOSSARY, CRITERIA, GAP_QUESTIONS, SOURCE_KINDS, EXAMPLE, REFS };
+  return { COURSES, COURSE_GROUPS, GENED_GROUPS, YEARS, SKILLS, SLOTS, DAYS, CHECKED, PI_EXTRA, FUNDERS, GLOSSARY, CRITERIA, GAP_QUESTIONS, SOURCE_KINDS, EXAMPLE, REFS };
 })();
