@@ -21,7 +21,7 @@ where p.id = '85a2975b-ae91-4f6f-b7d7-7dd14181c167'
 update fs_partners set
   ball_with = 'them',
   last_contact_at = '2026-11-20 21:48:24+00',
-  next_step = 'Serato account CREATED Nov 20 (stephen@selassiefest.com; name "Rainbow DJ Lab / DJ VIBGYOR"). Waiting on Brad D (ticket 1231468) to confirm the account name is acceptable, add the software and state the number of activations (we need 13; not asked in the Nov 20 reply, ask again if he does not state it). Set up the generic student profile the day it arrives. Nudge Wed Nov 25 if silent (he is in New Zealand).',
+  next_step = 'Serato account CREATED Nov 20 (stephen@selassiefest.com; name "Rainbow DJ Lab / DJ VIBGYOR"). Brad asked Nov 18 for a school-name account email (e.g. Music@); stephen@ used. Waiting on Brad D (ticket 1231468) to confirm the account name is acceptable, add the software and state the number of activations (we need 13; not asked in the Nov 20 reply, ask again if he does not state it). Set up the generic student profile the day it arrives. Nudge Wed Nov 25 if silent (he is in New Zealand).',
   next_step_due = '2026-11-25',
   commitment = commitment || ' | Nov 20: Brad confirmed he only needs the Serato account email; account created and email given (stephen@selassiefest.com); account-name approval asked.'
 where id = '85a2975b-ae91-4f6f-b7d7-7dd14181c167'
@@ -70,7 +70,7 @@ where id = '25f4ac41-f367-4dbc-bf0d-e0f1843679ea'
 
 -- ===== DCASE newsletter =====
 update fs_grant_deadlines set
-  notes = coalesce(notes,'') || E'\n[2026-11-20] DCASE November Opportunities newsletter received Nov 19 (Message-ID <26d89441-494b-4fa9-80c0-c4c9cda7245c@dfw1s10mta1718.xt.local>): newsletter sign-up is working. No open organizational grant listed. Relevant: DCASE office hours with Cultural Grants staff Wed Dec 9, 11:30 am-1 pm, Chicago Cultural Center Learning Lab (registration required; not yet registered); NOITP call for artists due Dec 8, 11:59 pm (RTI NOITP row already submitted; check whether DCASE call is a separate form); DCASE Performing Arts/Music programming submissions for 2027 rolling; DCASE.partnerships@cityofchicago.com, 312.744.1047.'
+  notes = coalesce(notes,'') || E'\n[2026-11-20] DCASE November Opportunities newsletter received Nov 19 (Message-ID <26d89441-494b-4fa9-80c0-c4c9cda7245c@dfw1s10mta1718.xt.local>): newsletter received (sign-up appears to be working). No open organizational grant listed. Relevant: DCASE office hours with Cultural Grants staff Wed Dec 9, 11:30 am-1 pm, Chicago Cultural Center Learning Lab (registration required; not yet registered; newsletter text also says 3rd Wednesday monthly, so verify the Dec 9 date on the registration page); NOITP call for artists due Dec 8, 11:59 pm (RTI NOITP row already submitted; check whether DCASE call is a separate form); DCASE Performing Arts/Music programming submissions for 2027 rolling; DCASE.partnerships@cityofchicago.com, 312.744.1047.'
 where id = 'bb5d4340-0ec1-4da1-9b19-3ad9734ec5ed'
   and coalesce(notes,'') not like '%26d89441-494b-4fa9-80c0-c4c9cda7245c%';
 
