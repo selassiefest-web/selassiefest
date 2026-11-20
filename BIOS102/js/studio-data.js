@@ -212,6 +212,7 @@ window.STUDIO_DATA = (() => {
       name: 'Illustrative student (not a real person)', major: 'Biological Sciences (declared)', majorName: 'Biological Sciences', declared: true, year: 'Junior',
       coursesDone: ['BIOS 101', 'BIOS 102', 'BIOS 210', 'BIOS 305'], coursesOther: [], skillsDone: ['Basic R or Python', 'Spreadsheets (Excel or Sheets)', 'Statistics (t-tests, regression)'], skillsOther: '',
       weekBlack: { mon: [0, 1, 2, 3, 4, 5, 6], tue: [0, 1, 2, 5, 6], wed: [0, 1, 2, 3, 4, 5, 6], thu: [0, 1, 2, 4, 5, 6], fri: [0, 1, 2, 3, 4, 5, 6], sat: [2, 3, 4, 5, 6], sun: [0, 1, 2, 3, 4, 5, 6] },
+      classes: [{ id: 'k1', course: 'BIOS 305', days: ['mon', 'wed'], start: '10:00', end: '10:50', study: 0, color: '#4ade80' }, { id: 'k2', course: 'CHEM 102', days: ['mon', 'wed', 'fri'], start: '11:00', end: '11:53', study: 0, color: '#fb7185' }, { id: 'k3', course: 'BIOS 210', days: ['fri'], start: '14:00', end: '16:50', study: 0, color: '#60a5fa' }],
       blackDates: ['2027-03-15', '2027-03-16', '2027-03-17', '2027-03-18', '2027-03-19', '2027-03-20', '2027-03-21', '2027-11-22', '2027-11-23', '2027-11-24', '2027-11-25', '2027-11-26', '2027-11-27', '2027-11-28'],
       courses: 'BIOS 101 and 102, BIOS 210 Biostatistics, BIOS 305 Principles of Ecology',
       skills: 'Basic R from Biostatistics (t-tests, regression); spreadsheets; no lab or field research experience yet',

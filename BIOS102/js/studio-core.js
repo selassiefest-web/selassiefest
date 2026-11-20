@@ -18,16 +18,48 @@
   const fmt = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 
   const DKEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-  const freeSlots = (profile) => DKEYS.map((k) => { const b = (profile && profile.weekBlack && profile.weekBlack[k]) || []; return (D.SLOTS || []).map((_, i) => i).filter((i) => b.indexOf(i) < 0); });
+  const CLASS_COLORS = ['#fb7185', '#4ade80', '#fbbf24', '#60a5fa', '#a78bfa', '#f472b6', '#2dd4bf', '#fb923c'];
+  const toMin = (hhmm) => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || '')); return m ? (+m[1]) * 60 + (+m[2]) : NaN; };
+  const fmtMin = (m) => { const h = Math.floor(m / 60), mm = m % 60; return ((h + 11) % 12 + 1) + ':' + String(mm).padStart(2, '0') + ' ' + (h < 12 ? 'am' : 'pm'); };
+  const slotMin = (i) => [480 + 120 * i, 600 + 120 * i];
+  const nSlots = () => (D.SLOTS || []).length;
+  // slots touched by each class meeting (a class from 10:00 to 10:50 uses the 10 to 12 block)
+  function classBusy(profile) {
+    const out = DKEYS.map(() => new Set());
+    ((profile && profile.classes) || []).forEach((c) => { const s = toMin(c.start), e = toMin(c.end); if (isNaN(s) || isNaN(e) || e <= s) return; (c.days || []).forEach((dk) => { const d = DKEYS.indexOf(dk); if (d < 0) return; for (let i = 0; i < nSlots(); i++) { const [a, b] = slotMin(i); if (s < b && e > a) out[d].add(i); } }); });
+    return out;
+  }
+  const baseFree = (profile) => { const cb = classBusy(profile); return DKEYS.map((k, d) => { const b = (profile && profile.weekBlack && profile.weekBlack[k]) || []; return (D.SLOTS || []).map((_, i) => i).filter((i) => b.indexOf(i) < 0 && !cb[d].has(i)); }); };
+  // study time for each class goes into free weekday blocks (Monday to Friday, then Sunday), at most two blocks a day; Saturday stays free
+  function studyPlan(profile) {
+    const need = ((profile && profile.classes) || []).filter((c) => Number(c.study) > 0).map((c) => ({ c, left: Number(c.study) })); const out = DKEYS.map(() => []); if (!need.length) return out;
+    const base = baseFree(profile);
+    [0, 1, 2, 3, 4, 6].forEach((d) => { let used = 0; base[d].forEach((s) => { if (used >= 2) return; const t = need.filter((n) => n.left > 0).sort((a, b) => b.left - a.left)[0]; if (!t) return; out[d].push({ slot: s, course: t.c.course, color: t.c.color }); t.left -= 2; used++; }); });
+    return out;
+  }
+  const freeSlots = (profile) => { const sp = studyPlan(profile); return baseFree(profile).map((f, d) => f.filter((i) => !sp[d].some((x) => x.slot === i))); };
   // Suggest the best times: long free runs first, until the hours you want are covered.
   function suggestTimes(profile) {
     const free = freeSlots(profile); const want = Number(profile && profile.weeklyHours) || 0; const runs = [];
     free.forEach((f, d) => { let i = 0; while (i < f.length) { let j = i; while (j + 1 < f.length && f[j + 1] === f[j] + 1) j++; runs.push({ d, from: f[i], to: f[j], hours: (j - i + 1) * 2 }); i = j + 1; } });
     const capacity = runs.reduce((a, r) => a + r.hours, 0); runs.sort((a, b) => b.hours - a.hours || a.d - b.d || a.from - b.from);
     const picks = []; let sum = 0;
-    runs.forEach((r) => { if (sum >= want) return; const hrs = Math.min(r.hours, want - sum); const last = r.from + Math.ceil(hrs / 2) - 1; picks.push({ day: D.DAYS[r.d][1], d: r.d, label: D.DAYS[r.d][1] + ' ' + D.SLOTS[r.from][0] + ' to ' + D.SLOTS[last][1], hours: Math.min(hrs, (last - r.from + 1) * 2) }); sum += hrs; });
+    runs.forEach((r) => { if (sum >= want) return; const hrs = Math.min(r.hours, want - sum); const last = r.from + Math.ceil(hrs / 2) - 1; picks.push({ day: D.DAYS[r.d][1], d: r.d, fromSlot: r.from, toSlot: last, label: D.DAYS[r.d][1] + ' ' + D.SLOTS[r.from][0] + ' to ' + D.SLOTS[last][1], hours: Math.min(hrs, (last - r.from + 1) * 2) }); sum += hrs; });
     picks.sort((a, b) => a.d - b.d);
     return { picks, capacity, want, enough: capacity >= want };
+  }
+  function weekPattern(profile) {
+    const pat = DKEYS.map(() => ({ classes: [], study: [], research: [] }));
+    ((profile && profile.classes) || []).forEach((c, ci) => { const s = toMin(c.start), e = toMin(c.end); if (isNaN(s) || isNaN(e) || e <= s) return; (c.days || []).forEach((dk) => { const d = DKEYS.indexOf(dk); if (d >= 0) pat[d].classes.push({ kind: 'class', label: c.course || 'Class', from: s, to: e, color: c.color || CLASS_COLORS[ci % 8], time: fmtMin(s) + ' to ' + fmtMin(e) }); }); });
+    studyPlan(profile).forEach((arr, d) => arr.forEach((x) => { const [a, b] = slotMin(x.slot); pat[d].study.push({ kind: 'study', label: 'Study ' + (x.course || ''), from: a, to: b, color: x.color }); }));
+    suggestTimes(profile).picks.forEach((p) => { pat[p.d].research.push({ kind: 'research', label: 'Research', from: slotMin(p.fromSlot)[0], to: slotMin(p.toSlot)[1], color: '#22d3ee' }); });
+    pat.forEach((x) => { x.all = x.classes.concat(x.study, x.research).sort((a, b) => a.from - b.from); });
+    return pat;
+  }
+  function dayPlan(profile, isoDate, pat) {
+    const t = parse(isoDate); const inPeriod = ((profile && profile.periods) || []).some((p) => { const s = parse(p.start), e = parse(p.end); return !isNaN(s) && !isNaN(e) && t >= s && t <= e; });
+    const blocked = ((profile && profile.blackDates) || []).indexOf(isoDate) >= 0; const d = (new Date(t).getUTCDay() + 6) % 7; const p = pat || weekPattern(profile);
+    return { inPeriod, blocked, d, items: inPeriod && !blocked ? p[d].all : [] };
   }
   const YEAR_IDX = { 'First-year': 1, 'Sophomore': 2, 'Junior': 3, 'Senior': 4 };
   const courseLevel = (code) => { const m = /\d{3}/.exec(String(code)); const n = m ? parseInt(m[0], 10) : 100; return Math.max(1, Math.min(6, Math.floor(n / 100))); };
@@ -398,7 +430,7 @@
     return wrap('Faculty meeting packet', cover + '<div class="pb">' + strip(proposalHTML(st)) + '</div><div class="pb">' + strip(planHTML(st)) + '</div><div class="pb">' + strip(decisionHTML(st)) + '</div><div class="pb"><h1>Outreach email draft</h1><p class="small">To: ' + esc(e.to || '(add the PI’s email)') + '<br>Subject: ' + esc(e.subject) + '</p>' + para(e.body) + '</div>');
   }
 
-  const api = { suggestTimes, freeSlots, courseLevel, visibleCourses, YEAR_IDX, esc, norm, words, filled, parse, iso, fmt, calendar, reserve, checkSchedule, scheduleTotals, reserveDrift, gapAnswered, gapScreen, gapScore, rankGaps, budgetTotals, fundingCheck, crossCheck, readiness, nextAction, sectionState, decisions, planHTML, proposalHTML, decisionHTML, emailDraft, packetHTML, funder, piCard, piName, money, FACT_LABEL, SECTION_KEYS, usedLabel, accessLabel };
+  const api = { CLASS_COLORS, toMin, fmtMin, slotMin, classBusy, studyPlan, weekPattern, dayPlan, suggestTimes, freeSlots, courseLevel, visibleCourses, YEAR_IDX, esc, norm, words, filled, parse, iso, fmt, calendar, reserve, checkSchedule, scheduleTotals, reserveDrift, gapAnswered, gapScreen, gapScore, rankGaps, budgetTotals, fundingCheck, crossCheck, readiness, nextAction, sectionState, decisions, planHTML, proposalHTML, decisionHTML, emailDraft, packetHTML, funder, piCard, piName, money, FACT_LABEL, SECTION_KEYS, usedLabel, accessLabel };
   root.StudioCore = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
