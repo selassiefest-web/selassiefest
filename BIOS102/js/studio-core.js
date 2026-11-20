@@ -40,6 +40,7 @@
   const freeSlots = (profile) => { const sp = studyPlan(profile); return baseFree(profile).map((f, d) => f.filter((i) => !sp[d].some((x) => x.slot === i))); };
   // Suggest the best times: long free runs first, until the hours you want are covered.
   function suggestTimes(profile) {
+    if (profile && profile.events && root.StudioCal) return root.StudioCal.suggestTimes(profile);
     const free = freeSlots(profile); const want = Number(profile && profile.weeklyHours) || 0; const runs = [];
     free.forEach((f, d) => { let i = 0; while (i < f.length) { let j = i; while (j + 1 < f.length && f[j + 1] === f[j] + 1) j++; runs.push({ d, from: f[i], to: f[j], hours: (j - i + 1) * 2 }); i = j + 1; } });
     const capacity = runs.reduce((a, r) => a + r.hours, 0); runs.sort((a, b) => b.hours - a.hours || a.d - b.d || a.from - b.from);
@@ -71,6 +72,7 @@
     const periods = (profile && profile.periods) || [];
     const breaks = ((profile && profile.breaks) || []).map((b) => [parse(b.start), parse(b.end)]).filter((b) => !isNaN(b[0]) && !isNaN(b[1]));
     const weeks = [];
+    const calPat = (profile && profile.events && root.StudioCal) ? root.StudioCal.pattern(profile) : null;
     const problems = [];
     periods.forEach((p, pi) => {
       const s = parse(p.start), e = parse(p.end);
@@ -79,7 +81,10 @@
         if (m < s - 3 * DAY) continue;                                 // week mostly before the period
         const fri = m + 4 * DAY;
         const hit = breaks.some((b) => b[0] <= fri && b[1] >= m);
-        if (profile && profile.weekBlack) {
+        if (calPat) {
+          const cap = root.StudioCal.weekMinutes(profile, m, calPat) / 60;
+          weeks.push({ n: 0, monday: m, period: pi, hours: Math.round(Math.min(hrs, cap) * 4) / 4, capacity: Math.round(cap * 100) / 100, broke: cap < 1 });
+        } else if (profile && profile.weekBlack) {
           const free = freeSlots(profile); const black = new Set(profile.blackDates || []); let cap = 0;
           for (let d = 0; d < 7; d++) { if (!black.has(iso(m + d * DAY))) cap += free[d].length * 2; }
           weeks.push({ n: 0, monday: m, period: pi, hours: Math.min(hrs, cap), capacity: cap, broke: cap === 0 });

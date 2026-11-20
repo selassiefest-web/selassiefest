@@ -20,7 +20,7 @@
     const gap = (n) => ({ id: 'g' + n, title: '', a: {}, evidence: [], score: { value: 3, evidence: 3, access: 3, burden: 3, deliver: 3 }, dependencies: [], feasibleHours: true });
     return {
       v: 1, meta: {},
-      profile: { name: session.displayName || '', major: '', majorName: '', declared: false, coursesDone: [], coursesOther: [], skillsDone: [], skillsOther: '', skillsNone: false, weekBlack: {}, blackDates: [], year: '', courses: '', skills: '', mode: '', modeNote: '', weeklyHours: 6, periods: [{ label: 'Semester 1', start: '', end: '' }, { label: 'Semester 2', start: '', end: '' }], breaks: [], reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 } },
+      profile: { name: session.displayName || '', major: '', majorName: '', declared: false, coursesDone: [], coursesOther: [], skillsDone: [], skillsOther: '', skillsNone: false, classes: [], events: [], dayStart: '07:00', dayEnd: '22:00', minBlock: 60, year: '', courses: '', skills: '', mode: '', modeNote: '', weeklyHours: 6, periods: [{ label: 'Semester 1', start: '', end: '' }, { label: 'Semester 2', start: '', end: '' }], breaks: [], reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 } },
       pi: '', metPi: false, identityChecks: { affiliation: { done: false, note: '' }, coauthors: { done: false, note: '' }, history: { done: false, note: '' } },
       sources: [], library: { items: [], analysis: {}, evidence: [], searches: [], screen: [] }, papers: [paper('foundational'), paper('recent')], resources: [], litChecks: [],
       gaps: [gap(1), gap(2), gap(3)], weights: {}, chosenGap: '', justification: '',
@@ -38,7 +38,8 @@
   function migrate(o) {
     if (o.profile) {
       const p = o.profile; p.coursesDone = p.coursesDone || []; p.coursesOther = p.coursesOther || []; p.skillsDone = p.skillsDone || []; p.blackDates = p.blackDates || [];
-      if (!p.weekBlack) { p.weekBlack = {}; (p.breaks || []).forEach((b) => { const s = C.parse(b.start), e = C.parse(b.end); if (isNaN(s) || isNaN(e)) return; for (let t = s - ((new Date(s).getUTCDay() + 6) % 7) * 86400000; t <= e + (6 - ((new Date(e).getUTCDay() + 6) % 7)) * 86400000; t += 86400000) { const k = C.iso(t); if (p.blackDates.indexOf(k) < 0) p.blackDates.push(k); } }); }
+      if (!p.events && window.StudioCal) { p.events = window.StudioCal.fromLegacy(p); p.dayStart = p.dayStart || '07:00'; p.dayEnd = p.dayEnd || '22:00'; p.minBlock = p.minBlock || 60; }
+      if (false) { p.weekBlack = {}; (p.breaks || []).forEach((b) => { const s = C.parse(b.start), e = C.parse(b.end); if (isNaN(s) || isNaN(e)) return; for (let t = s - ((new Date(s).getUTCDay() + 6) % 7) * 86400000; t <= e + (6 - ((new Date(e).getUTCDay() + 6) % 7)) * 86400000; t += 86400000) { const k = C.iso(t); if (p.blackDates.indexOf(k) < 0) p.blackDates.push(k); } }); }
       if (p.majorName === undefined) { const m = String(p.major || ''); p.majorName = /molecular/i.test(m) ? 'Molecular Biology and Bioinformatics' : /biolog/i.test(m) ? 'Biological Sciences' : m ? 'Other' : ''; p.majorOther = p.majorName === 'Other' ? m.replace(/\s*\(.*\)\s*$/, '') : ''; p.declared = /declared/i.test(m) && !/not yet/i.test(m); }
     }
     if (o.pi && o.pi !== 'rogers' && o.plan && o.plan.title && o.plan.title === D.EXAMPLE.plan.title) {
@@ -145,7 +146,7 @@
     if (lastLoc && !skipPush && (cur.view !== lastLoc.view || Math.abs(cur.n - lastLoc.n) > 1)) { const top = NAVH[NAVH.length - 1]; if (!top || top.view !== lastLoc.view || top.n !== lastLoc.n) { NAVH.push(lastLoc); if (NAVH.length > 30) NAVH.shift(); } }
     lastLoc = cur;
     $('#view').innerHTML = backBar() + body;
-    refreshLive(); wordCounts(); addMics();
+    refreshLive(); wordCounts(); addMics(); if (window.StudioCalUI) StudioCalUI.afterRender();
   }
   function refreshLive() { const el = $('#live'); if (el) { const L = { me: liveMe, gaps: liveGaps, plan: livePlan, fund: liveFund, pro: livePro }[view]; if (L) el.innerHTML = L(); } renderNavLight(); }
   function renderNavLight() { const r = R(); $('#navring').innerHTML = W.ring(r.pct, 'ready', 120); $$('#nav .gs-pip').forEach((p) => p.remove()); $$('#nav button[data-v]').forEach((b) => { const own = r.items.filter((i) => i.view === b.dataset.v); if (!own.length) return; const c = own.some((i) => i.level === 'block') ? '#fb7185' : own.some((i) => i.level === 'warn') ? '#fbbf24' : '#4ade80'; b.insertAdjacentHTML('beforeend', '<i class="gs-pip" style="--c:' + c + '"></i>'); }); }
@@ -386,6 +387,7 @@
     const a = b.dataset.act, i = Number(b.dataset.i), p = b.dataset.p;
     if (window.StudioLab && StudioLab.onClick(b)) return;
     if (window.StudioMe && StudioMe.onClick(b)) return;
+    if (window.StudioCalUI && StudioCalUI.onClick(b)) return;
     switch (a) {
       case 'nav': { const t = DEEP[b.dataset.id]; if (!t) break; if (t[0] === 'pi') { if (S.pi && window.StudioLab) StudioLab.setStage(t[1]); } else if (t[1]) { WZ.want = { id: t[0], text: t[1] }; } go(t[0]); break; }
       case 'back': doBack(); break;
@@ -459,6 +461,7 @@
     if (t.dataset && t.dataset.status) { S.sectionStatus[t.dataset.status] = t.value; save(); refreshLive(); return; }
     if (t.id === 'restore') return;
     if (t.dataset && t.dataset.lab !== undefined && window.StudioLab && StudioLab.onInput(t)) return;
+    if (t.dataset && t.dataset.ed !== undefined && window.StudioCalUI && StudioCalUI.onInput(t)) return;
     const path = t.dataset && t.dataset.bind; if (!path) return;
     let v = t.value; if (t.dataset.bool) v = t.checked; else if (t.type === 'checkbox') v = t.checked; else if (t.type === 'radio' && !t.checked) return; else if (t.dataset.num) v = t.value === '' ? '' : Number(t.value);
     if (path.indexOf('funding.resolutions.') === 0) { S.funding.resolutions[path.slice('funding.resolutions.'.length)] = v; } else setPath(S, path, v);
@@ -517,6 +520,7 @@
   function run(env) {
     session = env.session; isInstructor = !!env.isInstructor; KEY = 'gs_state_v1_' + String(session.email || '').toLowerCase();
     load();
+    window.StudioCalUI.init({ S: () => S, render, save: saveNow });
     window.StudioMe.init({ S: () => S, render, save: saveNow, inp, sel, chk, pg, banner: exampleBanner });
     window.StudioLab.init({ S: () => S, render, save: saveNow, toast, esc, go, sel, inp, ta, chk, sections: { identity: secIdentity, sources: secSources, resources: secResources } });
     document.addEventListener('focusin', (e) => { if (e.target && e.target.tagName === 'TEXTAREA' && e.target.dataset.bind) window.__lastTa = e.target; });

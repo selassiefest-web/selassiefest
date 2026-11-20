@@ -272,3 +272,36 @@ details.gs-art { border-left: 4px solid var(--am); background: rgba(251, 191, 36
 .gs-cs { font-style: normal; font-size: .62rem; color: #ddd0ff; } .gs-cr { font-style: normal; font-size: .62rem; color: #7ee8fb; font-weight: 700; }
 .gs-agenda { list-style: none; margin: 6px 0; padding: 0; display: grid; gap: 6px; } .gs-agenda li { border-left: 5px solid var(--c); padding: 6px 10px; background: rgba(255, 255, 255, .05); border-radius: 0 8px 8px 0; } .gs-agenda li.study { border-left-style: dashed; } .gs-agenda li b { display: inline-block; min-width: 9.5em; }
 .gs-daypanel { margin: 10px 0 14px; }
+
+/* a calendar to live in */
+.gs-quick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0 12px; }
+.gs-qbtn { font: inherit; font-size: .84rem; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(148, 163, 184, .5); background: rgba(148, 163, 184, .12); color: #dbe2f3; cursor: pointer; } .gs-qbtn:hover { background: rgba(148, 163, 184, .25); color: #fff; } .gs-qbtn.cls { border-color: rgba(74, 222, 128, .6); background: rgba(74, 222, 128, .12); color: #d9ffe6; }
+.gs-calbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 8px; } .gs-caltitle { font-size: 1.1rem; margin: 0 6px; min-width: 14ch; }
+.gs-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; } .gs-seg button { font: inherit; padding: 6px 14px; background: transparent; color: var(--ink2); border: 0; cursor: pointer; } .gs-seg button.on { background: linear-gradient(90deg, rgba(34, 211, 238, .3), rgba(167, 139, 250, .3)); color: #fff; }
+.gs-jump { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: .84rem; color: var(--ink2); } .gs-jump input { width: auto; padding: 5px 8px; }
+.gs-wscroll { max-height: 640px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; background: rgba(5, 9, 26, .6); }
+.gs-wgrid { display: grid; min-width: 100%; } .gs-wcol { border-left: 1px solid rgba(148, 163, 255, .12); position: relative; min-width: 0; } .gs-hours { border-left: 0; position: sticky; left: 0; z-index: 3; background: rgba(5, 9, 26, .96); }
+.gs-wh { position: sticky; top: 0; z-index: 4; background: rgba(8, 13, 36, .97); border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: center; min-height: 34px; } .gs-wh b { display: block; font-size: .82rem; } .gs-wh span { font: .68rem 'JetBrains Mono', monospace; color: var(--mute); }
+.gs-wcol.today .gs-wh { background: rgba(34, 211, 238, .16); } .gs-wcol.outside .gs-wbody { background-image: repeating-linear-gradient(135deg, transparent 0 14px, rgba(255, 255, 255, .025) 14px 28px); }
+.gs-adrow { display: grid; gap: 2px; margin-top: 3px; } .gs-ad { font: inherit; font-size: .68rem; text-align: left; padding: 1px 5px; border-radius: 5px; border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 28%, #060a18); color: #e6ebf7; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.gs-wbody { position: relative; cursor: crosshair; touch-action: pan-y; user-select: none; } .gs-wbody.gs-blockedday { background: repeating-linear-gradient(135deg, rgba(148, 163, 184, .1), rgba(148, 163, 184, .1) 8px, rgba(148, 163, 184, .2) 8px, rgba(148, 163, 184, .2) 16px); }
+.gs-gline { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid rgba(148, 163, 255, .1); pointer-events: none; } .gs-gline b { position: absolute; left: 0; top: -9px; width: 44px; text-align: right; font: .64rem 'JetBrains Mono', monospace; color: var(--mute); font-weight: 400; padding-right: 4px; background: rgba(5, 9, 26, .96); }
+.gs-hours .gs-wbody, .gs-hours { cursor: default; }
+.gs-free { position: absolute; left: 0; right: 0; background: rgba(74, 222, 128, .07); border-left: 3px solid rgba(74, 222, 128, .5); pointer-events: none; }
+.gs-off { position: absolute; left: 0; right: 0; background: rgba(0, 0, 0, .28); pointer-events: none; }
+.gs-now { position: absolute; left: 0; right: 0; border-top: 2px solid #fb7185; z-index: 2; pointer-events: none; }
+.gs-ev { position: absolute; z-index: 1; border-radius: 6px; padding: 2px 5px; font: inherit; font-size: .7rem; line-height: 1.2; text-align: left; overflow: hidden; cursor: pointer; border: 1px solid; }
+.gs-ev .t { display: block; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .gs-ev .tm { display: block; opacity: .85; font-size: .64rem; }
+.gs-ev.event { background: repeating-linear-gradient(135deg, rgba(148, 163, 184, .2), rgba(148, 163, 184, .2) 6px, rgba(148, 163, 184, .32) 6px, rgba(148, 163, 184, .32) 12px); border-color: rgba(148, 163, 184, .65); color: #d7deee; }
+.gs-ev.class { background: color-mix(in srgb, var(--c) 42%, #060a18); border-color: var(--c); color: #fff; }
+.gs-ev.study { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--c) 16%, #060a18), color-mix(in srgb, var(--c) 16%, #060a18) 5px, color-mix(in srgb, var(--c) 28%, #060a18) 5px, color-mix(in srgb, var(--c) 28%, #060a18) 10px); border: 1px dashed var(--c); color: #eee; cursor: default; }
+.gs-ev.research { background: rgba(34, 211, 238, .26); border-color: #22d3ee; color: #d2f8ff; box-shadow: 0 0 12px rgba(34, 211, 238, .3); cursor: default; }
+.gs-ghost { position: absolute; left: 3px; right: 3px; border-radius: 6px; background: rgba(251, 191, 36, .25); border: 2px dashed #fbbf24; z-index: 5; pointer-events: none; }
+.gs-kchip.grey { --c: #94a3b8; } .gs-kchip.free { --c: #4ade80; }
+.gs-evlist { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; } .gs-evlist li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .gs-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.gs-editor { margin: 10px 0 14px; scroll-margin-top: 80px; }
+.gs-bigcal .gs-eday { min-height: 92px; } .gs-mt { display: block; font-style: normal; font-size: .64rem; padding: 0 5px; border-radius: 4px; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.gs-mt.cls { background: var(--c); color: #04121a; font-weight: 700; } .gs-mt.ev { background: rgba(148, 163, 184, .22); border: 1px solid rgba(148, 163, 184, .45); color: #d7deee; } .gs-mt.st { color: #ddd0ff; } .gs-mt.rs { color: #7ee8fb; font-weight: 700; } .gs-mt.more { color: var(--mute); }
+.gs-eday.today .n { color: #fb7185; }
+
+.gs-hbody { position: relative; cursor: default; }
