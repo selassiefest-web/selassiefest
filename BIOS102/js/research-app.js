@@ -857,7 +857,7 @@
       const row = document.createElement('div');
       row.className = 'rm-row'; row.style.margin = '4px 0 0';
       if (SR) {
-        row.innerHTML = '<button type="button" class="btn-s btn-sm" data-act="dictate">' + MIC_LABEL + '</button><span class="hint"></span>';
+        row.innerHTML = '<button type="button" class="btn-s btn-sm mic-btn" data-act="dictate">' + MIC_LABEL + '</button><span class="hint"></span>';
         row.firstChild.dataset.target = ta.id;
       } else {
         row.innerHTML = '<span class="hint">To speak instead of typing, use the microphone key on your phone or computer keyboard, or open this page in Chrome, Edge or Safari.</span>';
@@ -879,13 +879,27 @@
       ta.value = (ta.value && !/\s$/.test(ta.value) ? ta.value + ' ' : ta.value) + txt.trim();
       ta.dispatchEvent(new Event('input', { bubbles: true }));
     };
-    rec.onerror = (ev) => { hint.textContent = ev.error === 'not-allowed' ? 'The microphone is blocked. Allow it in your browser settings and try again.' : 'Could not hear you. Try again.'; };
-    rec.onend = () => { btn.textContent = MIC_LABEL; if (/^Listening/.test(hint.textContent)) hint.textContent = ''; rec = null; recBtn = null; };
-    btn.textContent = 'Stop'; hint.textContent = 'Listening... speak, then press Stop. Edit the text afterward.';
+    rec.onerror = (ev) => { btn.classList.remove('mic-live'); btn.classList.add('mic-err'); hint.textContent = ev.error === 'not-allowed' ? 'The microphone is blocked. Allow it in your browser settings and try again.' : 'Could not hear you. Try again.'; };
+    rec.onend = () => { btn.classList.remove('mic-live'); btn.textContent = MIC_LABEL; if (/^Listening/.test(hint.textContent)) hint.textContent = ''; rec = null; recBtn = null; };
+    btn.classList.remove('mic-err'); btn.classList.add('mic-live'); btn.textContent = 'Stop'; hint.textContent = 'Listening... speak, then press Stop. Edit the text afterward.';
     try { rec.start(); } catch (e) { hint.textContent = 'Could not start the microphone.'; }
   }
 
   function refreshKnowIfOpen() { if (view === 'know') refreshKnow(); }
+
+
+  // Tap a researcher photo to enlarge it; tap anywhere (or Esc) to close.
+  document.addEventListener('click', (ev) => {
+    const img = ev.target.closest && ev.target.closest('img.fac-photo');
+    if (!img) return;
+    const ov = document.createElement('div');
+    ov.className = 'photo-zoom'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', img.alt);
+    ov.innerHTML = '<img src="' + img.src + '" alt="' + img.alt.replace(/"/g, '&quot;') + '">';
+    const close = () => { ov.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    ov.addEventListener('click', close); document.addEventListener('keydown', onKey);
+    document.body.appendChild(ov);
+  });
 
   // ---------- boot ----------
   async function boot() {
