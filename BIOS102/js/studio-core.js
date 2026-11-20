@@ -1,0 +1,351 @@
+// BIOS102 Research-to-Grant Studio: the logic. Pure functions, no DOM, so it can be tested in Node.
+// Everything the dashboard shows (hours, rankings, mismatches, readiness) is computed here from the
+// student's saved state; nothing is typed in twice.
+(function (root) {
+  'use strict';
+  const D = (root.STUDIO_DATA) || {};
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
+  const words = (s) => { const t = String(s || '').trim(); return t ? t.split(/\s+/).length : 0; };
+  const filled = (s) => String(s == null ? '' : s).trim().length > 0;
+
+  // ---------- dates and the hours calendar ----------
+  const DAY = 86400000;
+  const parse = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : NaN; };
+  const iso = (t) => new Date(t).toISOString().slice(0, 10);
+  const mondayOf = (t) => { const d = new Date(t).getUTCDay(); return t - ((d + 6) % 7) * DAY; };   // Monday on or before t
+  const fmt = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+
+  // A "working week" is a Monday-start week that begins inside a period and is not touched by a break.
+  function calendar(profile) {
+    const hrs = Number(profile && profile.weeklyHours) || 0;
+    const periods = (profile && profile.periods) || [];
+    const breaks = ((profile && profile.breaks) || []).map((b) => [parse(b.start), parse(b.end)]).filter((b) => !isNaN(b[0]) && !isNaN(b[1]));
+    const weeks = [];
+    const problems = [];
+    periods.forEach((p, pi) => {
+      const s = parse(p.start), e = parse(p.end);
+      if (isNaN(s) || isNaN(e) || e < s) { problems.push('Period ' + (pi + 1) + ' has an invalid start or end date.'); return; }
+      for (let m = mondayOf(s); m <= e; m += 7 * DAY) {
+        if (m < s - 3 * DAY) continue;                                 // week mostly before the period
+        const fri = m + 4 * DAY;
+        const hit = breaks.some((b) => b[0] <= fri && b[1] >= m);
+        weeks.push({ n: 0, monday: m, period: pi, hours: hit ? 0 : hrs, broke: hit });
+      }
+    });
+    weeks.sort((a, b) => a.monday - b.monday);
+    const work = weeks.filter((w) => w.hours > 0);
+    work.forEach((w, i) => { w.n = i + 1; });
+    const total = work.reduce((a, w) => a + w.hours, 0);
+    const first = periods.length ? parse(periods[0].start) : NaN;
+    const last = periods.length ? parse(periods[periods.length - 1].end) : NaN;
+    return { weeks: work, allWeeks: weeks, totalWeeks: work.length, total, weeklyHours: hrs, first, last, problems, periods: periods.length };
+  }
+
+  // Largest-remainder split of `total` hours by percent, so the pieces always add to the total.
+  function reserve(total, pct) {
+    const keys = ['training', 'access', 'trouble', 'analysis', 'reporting'];
+    const sum = keys.reduce((a, k) => a + (Number(pct && pct[k]) || 0), 0) || 1;
+    const raw = keys.map((k) => ((Number(pct && pct[k]) || 0) / sum) * total);
+    const base = raw.map(Math.floor);
+    let left = total - base.reduce((a, b) => a + b, 0);
+    raw.map((r, i) => [r - Math.floor(r), i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (left > 0) { base[i]++; left--; } });
+    const out = {}; keys.forEach((k, i) => { out[k] = base[i]; }); return out;
+  }
+
+  function checkSchedule(plan, cal) {
+    const out = [];
+    const sch = (plan && plan.schedule) || [];
+    if (!sch.length) return [{ level: 'block', text: 'The week-by-week schedule is empty.' }];
+    const sorted = sch.slice().sort((a, b) => a.from - b.from);
+    let expect = 1;
+    sorted.forEach((p) => {
+      if (p.from !== expect) out.push({ level: 'block', text: 'Schedule gap or overlap: expected a phase to start at week ' + expect + ' but "' + p.label + '" starts at week ' + p.from + '.' });
+      expect = p.to + 1;
+      const wk = p.to - p.from + 1;
+      const hrs = cal.weeklyHours * wk;
+      const cat = Object.values(p.cat || {}).reduce((a, b) => a + b, 0);
+      if (cat !== hrs) out.push({ level: 'block', text: 'Weeks ' + p.from + '-' + p.to + ' hold ' + hrs + ' hours but the phase assigns ' + cat + '.' });
+    });
+    if (expect - 1 !== cal.totalWeeks) out.push({ level: 'block', text: 'The schedule covers ' + (expect - 1) + ' weeks but the calendar has ' + cal.totalWeeks + ' working weeks.' });
+    return out;
+  }
+  function scheduleTotals(plan) {
+    const t = { training: 0, access: 0, trouble: 0, analysis: 0, reporting: 0 };
+    ((plan && plan.schedule) || []).forEach((p) => Object.keys(p.cat || {}).forEach((k) => { t[k] = (t[k] || 0) + p.cat[k]; }));
+    return t;
+  }
+  function reserveDrift(plan, cal, pct) {
+    const target = reserve(cal.total, pct), have = scheduleTotals(plan), out = [];
+    Object.keys(target).forEach((k) => { const d = have[k] - target[k]; if (Math.abs(d) > Math.max(4, cal.total * 0.05)) out.push({ cat: k, target: target[k], have: have[k] }); });
+    return out;
+  }
+
+  // ---------- gaps: screen, then compare ----------
+  function gapAnswered(g) { return D.GAP_QUESTIONS.every((q) => filled(g.a && g.a[q[0]])); }
+  function gapScreen(g) {
+    const why = [];
+    (g.dependencies || []).forEach((d) => { if (d.critical && !filled(d.route)) why.push('Critical dependency with no route to resolve it: ' + d.text); });
+    if (g.feasibleHours === false) why.push('Does not fit the available hours.');
+    return { out: why.length > 0, why };
+  }
+  function gapScore(g, weights) {
+    const crit = D.CRITERIA; let num = 0, den = 0;
+    crit.forEach((c) => { const w = (weights && weights[c.id] != null) ? weights[c.id] : c.w; const s = Number(g.score && g.score[c.id]) || 0; num += w * s; den += w * 5; });
+    return den ? Math.round((num / den) * 100) : 0;
+  }
+  function rankGaps(gaps, weights) {
+    const rows = (gaps || []).map((g) => { const sc = gapScreen(g); return { g, screened: sc.out, why: sc.why, pct: gapScore(g, weights) }; });
+    const live = rows.filter((r) => !r.screened).sort((a, b) => b.pct - a.pct);
+    live.forEach((r, i) => { r.rank = i + 1; });
+    return { rows, live, out: rows.filter((r) => r.screened) };
+  }
+
+  // ---------- budget and funding ----------
+  function budgetTotals(budget) {
+    const t = { total: 0, student: 0, supplies: 0, other: 0 };
+    (budget || []).forEach((b) => { const a = Number(b.amount) || 0; t.total += a; if (b.pay === 'student') t.student += a; else if (b.pay === 'supplies') t.supplies += a; else t.other += a; });
+    return t;
+  }
+  const funder = (id) => (D.FUNDERS || []).find((f) => f.id === id);
+  function fundingCheck(st) {
+    const out = []; const cal = calendar(st.profile); const bt = budgetTotals(st.budget);
+    const f = funder(st.funding && st.funding.primary);
+    if (!f) return [{ level: 'block', text: 'No primary funding opportunity chosen.' }];
+    if (f.eligibility && /declared/i.test(f.eligibility) && !/declared/i.test((st.profile && st.profile.major) || '')) out.push({ level: 'block', text: f.name + ' requires a declared major. Your profile does not say "declared".' });
+    if (f.minSemesters && cal.periods < f.minSemesters) out.push({ level: 'block', text: f.name + ' funds ' + f.period + ' Your project window has ' + cal.periods + ' period(s). Extend the window or choose another funder.' });
+    if (f.stipend && Math.abs(bt.student - f.stipend) > 0.5) out.push({ level: 'block', text: 'Budget student stipend is $' + bt.student + ' but the call states $' + f.stipend + '.' });
+    if (f.supplies && bt.supplies > f.supplies + 0.5) out.push({ level: 'block', text: 'Budget supplies are $' + bt.supplies + ' which exceeds the $' + f.supplies + ' in the call.' });
+    if (f.supplies && bt.supplies < f.supplies - 0.5) out.push({ level: 'warn', text: 'Budget supplies are $' + bt.supplies + ' but the call provides $' + f.supplies + '. Leave the rest as an advisor reserve or explain.' });
+    (f.unverified || []).forEach((u) => { if (!filled(st.funding && st.funding.resolutions && st.funding.resolutions[f.id + '|' + u])) out.push({ level: 'warn', text: 'Unverified: ' + u + ' (' + f.name + '). Record how you resolved it.' }); });
+    if (!st.funding.alt || st.funding.alt === st.funding.primary) out.push({ level: 'block', text: 'Choose a different alternative opportunity and assess it.' });
+    else if (words(st.funding.altAssessment) < 20) out.push({ level: 'block', text: 'Write at least a short assessment of the alternative opportunity.' });
+    return out;
+  }
+
+  // ---------- twin facts: plan vs proposal vs the live system ----------
+  const FACT_LABEL = { aimCount: 'Number of aims', aimTitles: 'Aim statement', minReplicates: 'Minimum replicates per species', totalHours: 'Total hours', startDate: 'Start date', endDate: 'End date', deliverable: 'Final deliverable', budgetTotal: 'Total budget ($)' };
+  function crossCheck(st) {
+    const cal = calendar(st.profile), bt = budgetTotals(st.budget); const out = [];
+    const a = (st.plan && st.plan.facts) || {}, b = (st.proposal && st.proposal.facts) || {};
+    const truth = { totalHours: cal.total, startDate: isNaN(cal.first) ? '' : iso(cal.first), endDate: isNaN(cal.last) ? '' : iso(cal.last), budgetTotal: bt.total };
+    Object.keys(FACT_LABEL).forEach((k) => {
+      const A = norm(a[k]), B = norm(b[k]);
+      if (A !== B) out.push({ field: k, label: FACT_LABEL[k], plan: a[k], proposal: b[k], truth: truth[k] });
+      else if (truth[k] !== undefined && truth[k] !== '' && norm(truth[k]) !== A) out.push({ field: k, label: FACT_LABEL[k] + ' (both documents disagree with the calendar/budget)', plan: a[k], proposal: b[k], truth: truth[k] });
+    });
+    const planAims = (st.plan && st.plan.sections && st.plan.sections.aims) || '';
+    const proAims = ((st.proposal && st.proposal.sections) || []).find((s) => s.id === 'aims');
+    const n1 = (planAims.match(/\bAim\s+\d+/gi) || []).length, n2 = proAims ? (proAims.text.match(/\bAim\s+\d+/gi) || []).length : 0;
+    if (proAims && n1 !== n2) out.push({ field: 'aimText', label: 'Aims written in the two documents', plan: n1 + ' aim(s) in the plan text', proposal: n2 + ' aim(s) in the proposal text', truth: '' });
+    return out;
+  }
+
+  // ---------- readiness: every gate, with the reason ----------
+  const SECTION_KEYS = {
+    plan: ['background', 'evidence', 'gap', 'question', 'aims', 'hypotheses', 'variables', 'analysis', 'interpretation', 'approvals', 'handoff'],
+  };
+  function sectionState(st, key) { return (st.sectionStatus && st.sectionStatus[key]) || 'draft'; }
+  function readiness(st) {
+    const items = []; const add = (id, view, label, level, detail) => items.push({ id, view, label, level, detail });
+    const cal = calendar(st.profile);
+
+    // 1 constraints
+    const p = st.profile || {}; const miss = ['name', 'major', 'year', 'courses', 'skills', 'mode'].filter((k) => !filled(p[k]));
+    if (miss.length) add('me', 'me', 'Your constraints', 'block', 'Fill in: ' + miss.join(', '));
+    else if (!(cal.total > 0)) add('me', 'me', 'Your constraints', 'block', 'The calendar has no available hours. Add a period and weekly hours.');
+    else if (cal.problems.length) add('me', 'me', 'Your constraints', 'block', cal.problems.join(' '));
+    else add('me', 'me', 'Your constraints', 'ok', cal.total + ' hours across ' + cal.totalWeeks + ' weeks.');
+
+    // 2 PI and identity
+    const idc = st.identityChecks || {};
+    const idMiss = ['affiliation', 'coauthors', 'history'].filter((k) => !(idc[k] && idc[k].done && filled(idc[k].note)));
+    if (!st.pi) add('pi', 'pi', 'PI chosen and identity verified', 'block', 'Choose a PI.');
+    else if (idMiss.length) add('pi', 'pi', 'PI chosen and identity verified', 'block', 'Verify, with a note: ' + idMiss.join(', '));
+    else add('pi', 'pi', 'PI chosen and identity verified', 'ok', 'Affiliation, coauthors and publication history confirmed.');
+
+    // 3 papers
+    const papers = st.papers || []; const fp = papers.find((x) => x.role === 'foundational'), rp = papers.find((x) => x.role === 'recent');
+    const pOk = (x) => x && ['tested', 'support', 'uncertain', 'relates'].every((k) => filled(x[k])) && x.figureDone && filled(x.figure);
+    if (!pOk(fp) || !pOk(rp)) add('papers', 'pi', 'Foundational and recent paper, with a figure each', 'block', 'Both papers need the four answers and a figure you have actually opened and annotated.');
+    else add('papers', 'pi', 'Foundational and recent paper, with a figure each', 'ok', 'Both papers annotated.');
+
+    // 4 resources: two lights
+    const res = st.resources || []; const crit = res.filter((r) => r.critical);
+    const noEvid = crit.filter((r) => !r.used);
+    const hard = crit.filter((r) => r.access === 'unconfirmed' && !filled(r.route));
+    const soft = crit.filter((r) => r.access === 'unconfirmed' && filled(r.route));
+    if (!res.length) add('res', 'pi', 'Resource inventory', 'block', 'No resources listed.');
+    else if (hard.length) add('res', 'pi', 'Resource inventory', 'block', 'Critical resource with unconfirmed access and no plan B: ' + hard.map((r) => r.name).join('; '));
+    else if (noEvid.length) add('res', 'pi', 'Resource inventory', 'block', 'No evidence of past use recorded for: ' + noEvid.map((r) => r.name).join('; '));
+    else if (soft.length) add('res', 'pi', 'Resource inventory', 'warn', soft.length + ' critical resource(s) still need confirmation: ' + soft.map((r) => r.name).join('; '));
+    else add('res', 'pi', 'Resource inventory', 'ok', 'Every critical resource has evidence of use and confirmed access.');
+
+    // 5 gaps
+    const gaps = st.gaps || []; const rk = rankGaps(gaps, st.weights);
+    const unans = gaps.filter((g) => !gapAnswered(g));
+    if (gaps.length < 3) add('gaps', 'gaps', 'At least three candidate gaps', 'block', 'You have ' + gaps.length + '. Add ' + (3 - gaps.length) + ' more.');
+    else if (unans.length) add('gaps', 'gaps', 'At least three candidate gaps', 'block', 'Unanswered questions in: ' + unans.map((g) => '"' + g.title + '"').join('; '));
+    else add('gaps', 'gaps', 'At least three candidate gaps', 'ok', gaps.length + ' candidates, all eight questions answered.');
+    const chosen = gaps.find((g) => g.id === st.chosenGap); const chosenOut = chosen && gapScreen(chosen).out;
+    const live = rk.live.map((r) => r.g.id); const lit = st.litChecks || [];
+    const noLit = live.filter((id) => { const c = lit.find((l) => l.gapId === id); return !(c && ['sources', 'terms', 'date', 'closest', 'limits'].every((k) => filled(c[k]))); });
+    if (!chosen) add('choice', 'gaps', 'Chosen gap, justified', 'block', 'Choose a gap.');
+    else if (chosenOut) add('choice', 'gaps', 'Chosen gap, justified', 'block', 'The chosen gap fails the screen: ' + gapScreen(chosen).why.join(' '));
+    else if (words(st.justification) < 40) add('choice', 'gaps', 'Chosen gap, justified', 'block', 'Explain in at least 40 words why it beats the others.');
+    else if (noLit.length) add('choice', 'gaps', 'Chosen gap, justified', 'block', 'Literature check missing or incomplete for: ' + noLit.map((id) => gaps.find((g) => g.id === id).title).join('; '));
+    else add('choice', 'gaps', 'Chosen gap, justified', 'ok', 'Chosen "' + chosen.title + '"; literature checks recorded for all finalists.');
+
+    // 6 funding
+    const fc = fundingCheck(st); const fb = fc.filter((x) => x.level === 'block'), fw = fc.filter((x) => x.level === 'warn');
+    if (fb.length) add('fund', 'fund', 'Funding match', 'block', fb.map((x) => x.text).join(' '));
+    else if (fw.length) add('fund', 'fund', 'Funding match', 'warn', fw.length + ' item(s) unverified or open.');
+    else add('fund', 'fund', 'Funding match', 'ok', 'Primary and alternative assessed; eligibility checks pass.');
+
+    // 7 research plan
+    const pl = st.plan || {}; const ps = pl.sections || {};
+    const emptyPlan = SECTION_KEYS.plan.filter((k) => !filled(ps[k]));
+    const exps = pl.experiments || []; const badExp = exps.filter((e) => !['aim', 'title', 'design', 'materials', 'equip', 'methods', 'controls', 'replication', 'sample', 'decision'].every((k) => filled(e[k])));
+    const sch = checkSchedule(pl, cal); const drift = reserveDrift(pl, cal, p.reserve);
+    const fbk = pl.fallback || {};
+    const unver = SECTION_KEYS.plan.filter((k) => sectionState(st, 'plan.' + k) !== 'verified');
+    if (emptyPlan.length) add('plan', 'plan', 'Research plan complete', 'block', 'Empty sections: ' + emptyPlan.join(', '));
+    else if (!exps.length || badExp.length) add('plan', 'plan', 'Research plan complete', 'block', exps.length ? 'Incomplete experiment(s): ' + badExp.map((e) => '#' + e.n).join(', ') : 'No experiments or analyses listed.');
+    else if (sch.length) add('plan', 'plan', 'Research plan complete', 'block', sch.map((x) => x.text).join(' '));
+    else if (!(fbk.switchByWeek > 0) || !(fbk.hoursNeeded > 0)) add('plan', 'plan', 'Research plan complete', 'block', 'Set the latest week you can switch to the fallback and the hours it needs.');
+    else if (fbk.hoursNeeded > cal.weeklyHours * Math.max(0, cal.totalWeeks - fbk.switchByWeek)) add('plan', 'plan', 'Research plan complete', 'block', 'After week ' + fbk.switchByWeek + ' only ' + cal.weeklyHours * Math.max(0, cal.totalWeeks - fbk.switchByWeek) + ' hours remain but the fallback needs ' + fbk.hoursNeeded + '.');
+    else if (unver.length) add('plan', 'plan', 'Research plan complete', 'warn', unver.length + ' section(s) not yet marked verified by you.');
+    else add('plan', 'plan', 'Research plan complete', 'ok', 'All sections written and verified; schedule matches the calendar.');
+    if (drift.length) add('drift', 'plan', 'Schedule hours match your reserves', 'warn', drift.map((d) => d.cat + ': planned ' + d.have + ' vs reserve ' + d.target).join('; '));
+
+    // 8 proposal
+    const sec = (st.proposal && st.proposal.sections) || [];
+    const emptyPro = sec.filter((s) => !filled(s.text)); const over = sec.filter((s) => s.limit && words(s.text) > s.limit);
+    const unverP = sec.filter((s) => sectionState(st, 'pro.' + s.id) !== 'verified');
+    const badClaims = (st.claims || []).filter((c) => !c.verified);
+    const refIds = (st.refs || []).map((r) => r.id); const orphan = (st.claims || []).filter((c) => refIds.indexOf(c.ref) < 0);
+    if (!sec.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'No proposal sections.');
+    else if (emptyPro.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'Empty sections: ' + emptyPro.map((s) => s.title).join(', '));
+    else if (over.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'Over the length limit: ' + over.map((s) => s.title + ' (' + words(s.text) + '/' + s.limit + ')').join(', '));
+    else if (!(st.budget || []).length || !(st.budget || []).every((b) => filled(b.item) && filled(b.linksTo) && Number(b.amount) >= 0)) add('pro', 'pro', 'Grant proposal complete', 'block', 'Every budget line needs an item, an amount and the activity it supports.');
+    else if (unverP.length) add('pro', 'pro', 'Grant proposal complete', 'warn', unverP.length + ' section(s) not yet marked verified by you.');
+    else add('pro', 'pro', 'Grant proposal complete', 'ok', 'All sections written, within limits and verified.');
+    if (!(st.refs || []).length) add('claims', 'pro', 'Citations and claims verified', 'block', 'No references listed.');
+    else if (orphan.length) add('claims', 'pro', 'Citations and claims verified', 'block', 'Claim(s) point to a reference that is not listed.');
+    else if (badClaims.length) add('claims', 'pro', 'Citations and claims verified', 'warn', badClaims.length + ' claim(s) not yet checked against the source by you.');
+    else add('claims', 'pro', 'Citations and claims verified', 'ok', 'Every claim checked against its source.');
+
+    // 9 twin facts
+    const cc = crossCheck(st);
+    if (cc.length) add('twin', 'pro', 'Plan and proposal agree', 'block', cc.length + ' mismatch(es): ' + cc.map((x) => x.label).join('; '));
+    else add('twin', 'pro', 'Plan and proposal agree', 'ok', 'Aims, sample rule, hours, dates, deliverable and budget match everywhere.');
+
+    // 10 defense, pending actions
+    const dq = ['gap', 'comparison', 'analysis', 'assumption']; const dMiss = dq.filter((k) => words(st.defense && st.defense[k]) < 15);
+    if (dMiss.length) add('def', 'meet', 'Oral defense answers', 'block', 'Write at least 15 words for: ' + dMiss.join(', '));
+    else add('def', 'meet', 'Oral defense answers', 'ok', 'Four defense answers written.');
+    if (!(st.pending || []).length) add('pend', 'meet', 'Pending actions listed', 'block', 'List the signatures, letters and commitments still needed.');
+    else add('pend', 'meet', 'Pending actions listed', 'ok', (st.pending || []).length + ' pending actions listed for the PI.');
+
+    const score = items.reduce((a, i) => a + (i.level === 'ok' ? 1 : i.level === 'warn' ? 0.5 : 0), 0);
+    const pct = Math.round((score / items.length) * 100);
+    const blocks = items.filter((i) => i.level === 'block'), warns = items.filter((i) => i.level === 'warn');
+    return { items, pct, blocks, warns, ready: blocks.length === 0 && warns.length === 0, canDraft: true };
+  }
+
+  function nextAction(st) {
+    const r = readiness(st); const b = r.blocks[0] || r.warns[0];
+    return b ? { view: b.view, text: b.label + ': ' + b.detail } : { view: 'meet', text: 'Everything checks out. Export the packet and contact the PI.' };
+  }
+
+  // ---------- documents ----------
+  const money = (n) => '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const para = (s) => String(s || '').split(/\n{2,}|\n/).filter(Boolean).map((x) => '<p>' + esc(x) + '</p>').join('') || '<p><em>(empty)</em></p>';
+  const piCard = (id) => (root.RM_DATA && root.RM_DATA.FACULTY.find((f) => f.id === id)) || null;
+  const piName = (st) => { const f = piCard(st.pi); return f ? f.honorific + ' ' + f.name : 'the PI'; };
+  const PAGE_CSS = 'body{font:11.5pt/1.5 Georgia,serif;color:#111;max-width:7.2in;margin:0 auto;padding:.4in}h1{font:700 20pt Georgia,serif;margin:.1em 0}h2{font:700 13pt Arial,sans-serif;margin:1.1em 0 .2em;border-bottom:1px solid #999;padding-bottom:2px}h3{font:700 11pt Arial,sans-serif;margin:.8em 0 .1em}p{margin:.3em 0}table{border-collapse:collapse;width:100%;font:10pt Arial,sans-serif;margin:.5em 0}td,th{border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top}th{background:#eee}.banner{border:2px solid #b45309;background:#fff7e6;padding:8px 10px;font:700 10.5pt Arial,sans-serif;margin:0 0 12px}.ok{border-color:#15803d;background:#ecfdf3}.small{font:9pt Arial,sans-serif;color:#444}.pb{page-break-before:always}@page{margin:.6in}';
+  const wrap = (title, body) => '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>' + esc(title) + '</title><style>' + PAGE_CSS + '</style></head><body>' + body + '</body></html>';
+  function banner(st) {
+    const r = readiness(st);
+    if (r.ready) return '<div class="banner ok">Prepared packet: every readiness check passes. External signatures and PI commitments are still pending (listed on the decision sheet).</div>';
+    return '<div class="banner">DRAFT: NOT READY FOR OUTREACH. ' + r.blocks.length + ' blocking item(s), ' + r.warns.length + ' open warning(s): ' + esc(r.blocks.concat(r.warns).map((i) => i.label).join('; ')) + '.</div>';
+  }
+  function exampleBanner(st) { return st.meta && st.meta.example ? '<div class="banner">WORKED EXAMPLE: the student, dates, hours and budget uses are illustrative. The papers, dataset and funder facts are real and cited.</div>' : ''; }
+
+  function planHTML(st) {
+    const pl = st.plan, s = pl.sections, cal = calendar(st.profile);
+    const L = { background: 'Background', evidence: 'Supporting evidence', gap: 'The gap', question: 'Research question', aims: 'Specific aims', hypotheses: 'Hypotheses and predictions', variables: 'Variables, units, metadata, missing data and quality checks', analysis: 'Analysis plan, tables and figures', interpretation: 'Interpreting supportive, contradictory and inconclusive results', approvals: 'Training, supervision, permissions, safety and approvals', handoff: 'Handoff to the lab' };
+    let h = exampleBanner(st) + banner(st) + '<h1>Research plan</h1><p class="small">' + esc(pl.title || '') + '<br>Student: ' + esc(st.profile.name) + ' &middot; PI: ' + esc(piName(st)) + ' &middot; Window: ' + (isNaN(cal.first) ? '' : fmt(cal.first)) + ' to ' + (isNaN(cal.last) ? '' : fmt(cal.last)) + ' &middot; ' + cal.total + ' hours</p>';
+    ['background', 'evidence', 'gap', 'question', 'aims', 'hypotheses'].forEach((k) => { h += '<h2>' + L[k] + '</h2>' + para(s[k]); });
+    h += '<h2>Experiments and analyses</h2>';
+    pl.experiments.forEach((e) => {
+      h += '<h3>' + e.n + '. ' + esc(e.title) + ' (' + esc(e.aim) + ')</h3><table>' + [['Design', e.design], ['Materials and quantities', e.materials], ['Equipment or software', e.equip], ['Methods', e.methods], ['Controls or comparison groups', e.controls], ['Replication', e.replication], ['Sample-size rationale', e.sample], ['Decision it informs', e.decision]].map((r) => '<tr><th style="width:1.7in">' + r[0] + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>';
+    });
+    ['variables', 'analysis', 'interpretation'].forEach((k) => { h += '<h2>' + L[k] + '</h2>' + para(s[k]); });
+    h += '<h2>Week-by-week schedule</h2><table><tr><th>Weeks</th><th>Dates</th><th>Work</th><th>Hours</th></tr>' + pl.schedule.map((p) => {
+      const w1 = cal.weeks[p.from - 1], w2 = cal.weeks[p.to - 1]; const hr = Object.values(p.cat).reduce((a, b) => a + b, 0);
+      return '<tr><td>' + p.from + (p.to > p.from ? '&ndash;' + p.to : '') + '</td><td>' + (w1 ? fmt(w1.monday) : '') + (w2 && p.to > p.from ? ' &ndash; ' + fmt(w2.monday) : '') + '</td><td>' + esc(p.label) + '</td><td>' + hr + '</td></tr>';
+    }).join('') + '</table><p><strong>Fallback.</strong> Latest switch: end of week ' + pl.fallback.switchByWeek + '. ' + esc(pl.fallback.note) + '</p>';
+    h += '<h2>Resource inventory</h2><table><tr><th>Resource</th><th>Evidence the lab has used it</th><th>Can I use it for this project?</th></tr>' + st.resources.map((r) => '<tr><td>' + esc(r.name) + (r.critical ? ' <strong>(critical)</strong>' : '') + '<br><span class="small">Role: ' + esc(r.role) + '</span></td><td>' + esc(usedLabel(r.used)) + ': ' + esc(r.usedNote) + '<br><span class="small">Source: ' + esc(r.usedSrc) + '</span></td><td><strong>' + esc(accessLabel(r.access)) + '.</strong> ' + esc(r.accessNote) + (r.route ? '<br><span class="small">If not: ' + esc(r.route) + '</span>' : '') + '</td></tr>').join('') + '</table>';
+    h += '<h2>Cost inventory</h2>' + budgetTable(st);
+    h += '<h2>' + L.approvals + '</h2>' + para(s.approvals) + '<h2>' + L.handoff + '</h2>' + para(s.handoff);
+    return wrap('Research plan: ' + (pl.title || ''), h);
+  }
+  const usedLabel = (u) => ({ method: 'Described in methods or the dataset page', title: 'Named in a paper title or abstract only', profile: 'Named on a faculty profile or website', '': 'No evidence recorded' }[u || '']);
+  const accessLabel = (a) => ({ public: 'Public / open', confirmed: 'Confirmed for this project', unconfirmed: 'NOT CONFIRMED', '': 'Unknown' }[a || '']);
+  function budgetTable(st) {
+    const t = budgetTotals(st.budget);
+    return '<table><tr><th>Item</th><th>Amount</th><th>Supports (activity)</th><th>Basis</th></tr>' + st.budget.map((b) => '<tr><td>' + esc(b.item) + '</td><td>' + money(b.amount) + '</td><td>' + esc(b.linksTo) + '</td><td>' + esc(b.basis) + '</td></tr>').join('') + '<tr><th>Total</th><th>' + money(t.total) + '</th><th colspan="2">Student ' + money(t.student) + ' &middot; Supplies ' + money(t.supplies) + '</th></tr></table>';
+  }
+  function proposalHTML(st) {
+    const f = funder(st.funding.primary); const pr = st.proposal;
+    let h = exampleBanner(st) + banner(st) + '<h1>Grant proposal</h1><p class="small">' + esc(st.plan.title || '') + '<br>Applicant: ' + esc(st.profile.name) + ' &middot; Mentor: ' + esc(piName(st)) + ' &middot; Funder: ' + esc(f ? f.name : '') + '</p>';
+    if (pr.modelNote) h += '<p class="small"><em>' + esc(pr.modelNote) + '</em></p>';
+    pr.sections.forEach((s) => { h += '<h2>' + esc(s.title) + (s.limit ? ' <span class="small">(' + words(s.text) + ' of ' + s.limit + ' words)</span>' : '') + '</h2>' + para(s.text); if (s.id === 'budgetnote') h += budgetTable(st); });
+    h += '<h2>References</h2><ul style="list-style:none;padding:0">' + st.refs.map((r) => '<li>[' + esc(r.id) + '] ' + esc(r.cite) + ' <span class="small">doi:' + esc(r.doi) + '</span></li>').join('') + '</ul>';
+    h += '<h2>Claim ledger (student-verified)</h2><table><tr><th>Claim</th><th>Source</th><th>Checked</th></tr>' + st.claims.map((c) => '<tr><td>' + esc(c.text) + '</td><td>' + esc(c.ref) + '</td><td>' + (c.verified ? 'Yes' : 'NOT YET') + '</td></tr>').join('') + '</table>';
+    h += '<h2>Pending signatures, letters and commitments</h2><ul>' + st.pending.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+    return wrap('Grant proposal: ' + (st.plan.title || ''), h);
+  }
+  function decisions(st) {
+    const out = [];
+    (st.resources || []).filter((r) => r.access === 'unconfirmed').forEach((r) => out.push({ kind: 'Resource', text: 'Can I use "' + r.name + '" for this project? ' + (r.accessNote || '') }));
+    const f = funder(st.funding && st.funding.primary);
+    if (f) (f.unverified || []).forEach((u) => { const v = st.funding.resolutions && st.funding.resolutions[f.id + '|' + u]; if (!filled(v)) out.push({ kind: 'Funding', text: f.name + ': ' + u + ' (still unverified).' }); });
+    const fb = st.plan && st.plan.fallback; if (fb) out.push({ kind: 'Scheduling', text: 'Do you agree the go/switch checkpoint should be end of week ' + fb.switchByWeek + ' (fallback needs about ' + fb.hoursNeeded + ' hours)?' });
+    if (st.defense && st.defense.assumption) out.push({ kind: 'Science', text: 'The assumption most likely to change the project: ' + st.defense.assumption });
+    out.push({ kind: 'Supervision', text: 'Will you supervise (weekly meeting) and review my draft? This is a commitment only you can make.' });
+    (st.meeting && st.meeting.decisions || []).forEach((d) => { if (d.ask) out.push({ kind: 'Added', text: d.ask }); });
+    return out;
+  }
+  function decisionHTML(st) {
+    const rows = decisions(st);
+    let h = exampleBanner(st) + banner(st) + '<h1>Decision sheet for ' + esc(piName(st)) + '</h1><p class="small">One page: the decisions I need help with before I submit. From ' + esc(st.profile.name) + '.</p><table><tr><th style="width:1in">Type</th><th>Decision requested</th><th style="width:1.6in">Your answer</th></tr>' + rows.map((r) => '<tr><td>' + esc(r.kind) + '</td><td>' + esc(r.text) + '</td><td>&nbsp;</td></tr>').join('') + '</table>';
+    h += '<h2>Pending signatures, letters and commitments</h2><ul>' + st.pending.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+    return wrap('Decision sheet', h);
+  }
+  function emailDraft(st) {
+    const f = piCard(st.pi); const fu = funder(st.funding && st.funding.primary); const g = (st.gaps || []).find((x) => x.id === st.chosenGap);
+    const recent = (st.papers || []).find((x) => x.role === 'recent');
+    const first = (st.profile.name || '').split(' ')[0] || 'Student';
+    const subject = 'Request to meet: proposed student project connected to your recent paper';
+    const body = 'Dear ' + (f ? f.honorific + ' ' + f.last : 'Professor') + ',\n\n' +
+      'I am a ' + (st.profile.year || '').toLowerCase() + ' in ' + (st.profile.major || 'Biological Sciences') + '. I studied your work' + (recent ? ', especially "' + recent.title.replace(/\s*\(\d{4}\)$/, '') + '"' : '') + ', compared three possible contributions, and wrote a full research plan and grant proposal for the one that fits the science and the time I have.\n\n' +
+      'The contribution I propose: ' + (g ? g.title : '[chosen gap]') + '. ' + ((st.plan.sections.question) || '') + '\n\n' +
+      'I plan to apply to the ' + (fu ? fu.name : '[funding opportunity]') + '. I am attaching the proposal, the research plan and a one-page decision sheet. I would be grateful for 30 minutes to ask for your scientific feedback and a few decisions only you can make, including whether you could supervise the work.\n\n' +
+      'Could we meet during one of these windows? [add two or three times that work for you]\n\n' +
+      'Thank you for considering this.\n\n' + (st.profile.name || first) + '\n' + (st.profile.year || '') + ', ' + (st.profile.major || '') + '\n';
+    const to = f && f.email ? f.email : '';
+    return { to, subject, body, mailto: 'mailto:' + encodeURIComponent(to).replace(/%40/g, '@') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body) };
+  }
+  function packetHTML(st) {
+    const strip = (h) => h.replace(/^[\s\S]*?<body>/, '').replace(/<\/body>[\s\S]*$/, '').replace(/<div class="banner[^"]*">[\s\S]*?<\/div>/g, '');
+    const e = emailDraft(st);
+    const cover = exampleBanner(st) + banner(st) + '<h1>Faculty meeting packet</h1><p>For ' + esc(piName(st)) + '. From ' + esc(st.profile.name) + '.</p><p class="small">Contents: (1) grant proposal, (2) research plan, (3) one-page decision sheet, (4) outreach email draft. Outreach and submission stay under the student’s control.</p>';
+    return wrap('Faculty meeting packet', cover + '<div class="pb">' + strip(proposalHTML(st)) + '</div><div class="pb">' + strip(planHTML(st)) + '</div><div class="pb">' + strip(decisionHTML(st)) + '</div><div class="pb"><h1>Outreach email draft</h1><p class="small">To: ' + esc(e.to || '(add the PI’s email)') + '<br>Subject: ' + esc(e.subject) + '</p>' + para(e.body) + '</div>');
+  }
+
+  const api = { esc, norm, words, filled, parse, iso, fmt, calendar, reserve, checkSchedule, scheduleTotals, reserveDrift, gapAnswered, gapScreen, gapScore, rankGaps, budgetTotals, fundingCheck, crossCheck, readiness, nextAction, sectionState, decisions, planHTML, proposalHTML, decisionHTML, emailDraft, packetHTML, funder, piCard, piName, money, FACT_LABEL, SECTION_KEYS, usedLabel, accessLabel };
+  root.StudioCore = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);

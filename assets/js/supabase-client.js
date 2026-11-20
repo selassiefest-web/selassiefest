@@ -642,6 +642,7 @@ window.sfSupabase = {
   bios102MockGrade(sessionToken, answers) { return this.bios102Rpc('bios102_mock_grade', { p_session: sessionToken, p_answers: answers }); },
   // Instructor gradebook (/BIOS102/grades.html) -- see supabase/bios102-grades.sql.
   bios102GradesIsInstructor(sessionToken) { return this.bios102Rpc('bios102_grades_is_instructor', { p_session: sessionToken }); },
+  bios102StudioHasAccess(sessionToken) { return this.bios102Rpc('bios102_studio_has_access', { p_session: sessionToken }); },
   bios102GradesLoad(sessionToken) { return this.bios102Rpc('bios102_grades_load', { p_session: sessionToken }); },
   bios102GradesSave(sessionToken, name, columns, rows) { return this.bios102Rpc('bios102_grades_save', { p_session: sessionToken, p_name: name, p_columns: columns, p_rows: rows }); },
   // Letter-grade scale, one list for both grade pages -- see supabase/bios102-grade-scale.sql.

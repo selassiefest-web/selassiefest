@@ -217,7 +217,7 @@ window.RM_DATA = (() => {
         ['Summer–Fall 2015', 'The effects of land-use: comparing vegetative compositions between old growth and secondary growth forest communities'],
       ],
       mentorship: { level: 'few', note: 'One Thomson Fellowship project is listed (2015). Parkside has listed him as a thesis supervisor. Ask about current undergraduate projects.' },
-      readFirst: 'His 2019 paper in Science Advances, "The pace of plant community change is accelerating in remnant prairies".',
+      readFirst: 'His 2016 paper in Science Advances (Alstad et al.), "The pace of plant community change is accelerating in remnant prairies".',
       animals: false, outdoors: true, summerTravel: false,
       ask: ['Are there field seasons or survey projects where an undergraduate can help?', 'Do I need to know plant identification already, or do I learn it on the job?'],
     },

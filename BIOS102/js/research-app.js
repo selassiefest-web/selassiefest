@@ -914,6 +914,16 @@
     view$.addEventListener('input', handleInput);
     view$.addEventListener('change', handleInput);
     $('#steps').addEventListener('click', handleClick);
+    const sbtn = $('#studioBtn'), sdlg = $('#studioLocked');
+    if (sbtn) sbtn.addEventListener('click', async () => {
+      sbtn.disabled = true;
+      try {
+        const has = !!(await window.sfSupabase.bios102StudioHasAccess(session.sessionToken));
+        if (has) { window.location.href = '/BIOS102/grant-studio.html'; return; }
+        if (sdlg && sdlg.showModal) sdlg.showModal(); else flash('Ask harria01@uwp.edu for access.', true);
+      } catch (e) { flash('Could not check your access just now. Try again.', true); } finally { sbtn.disabled = false; }
+    });
+    const sclose = $('#studioClose'); if (sclose && sdlg) sclose.addEventListener('click', () => sdlg.close());
     document.addEventListener('visibilitychange', () => { if (document.hidden && saveTimer) { clearTimeout(saveTimer); pushServer(); } });
     render();
     if (view === 'know') refreshKnow();
