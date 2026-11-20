@@ -36,6 +36,9 @@
     S = blankState();
   }
   function migrate(o) {
+    if (o.pi && o.pi !== 'rogers' && o.plan && o.plan.title && o.plan.title === D.EXAMPLE.plan.title) {
+      const b = blankState(); ['library', 'papers', 'gaps', 'litChecks', 'chosenGap', 'justification', 'plan', 'proposal', 'claims', 'defense', 'sectionStatus', 'pending', 'weights', 'identityChecks'].forEach((k) => { o[k] = b[k]; }); o.meta = {}; o.budget = [];
+    }
     o.library = o.library || { items: [], analysis: {}, evidence: [], searches: [], screen: [] }; o.library.screen = o.library.screen || [];
     o.library.items = o.library.items || []; o.library.analysis = o.library.analysis || {}; o.library.evidence = o.library.evidence || []; o.library.searches = o.library.searches || [];
     (o.gaps || []).forEach((g) => { g.evidence = g.evidence || []; });
@@ -88,7 +91,7 @@
   const pg = (t, task) => '<div class="gs-pgbreak" data-t="' + esc(t) + '"' + (task ? ' data-task="' + esc(task) + '"' : '') + '></div>';
   // every chain node and gate chip jumps to the exact screen where that task is done
   const DEEP = { c_papers: ['pi', 'pi'], c_gap: ['gaps', 'Choose and justify'], c_obs: ['plan', 'Observation'], c_q: ['plan', 'Question'], c_ans: ['plan', 'Proposed answer'], c_pred: ['plan', 'Prediction'], c_mm: ['plan', 'Materials and methods'],
-    me: ['me', ''], pi: ['pi', 'identity'], papers: ['pi', 'deep'], res: ['pi', 'resources'], lib: ['pi', 'pi'], screen: ['pi', 'pi'], evid: ['pi', 'evidence'], gaps: ['gaps', 'Your evidence'], choice: ['gaps', 'Choose and justify'], fund: ['fund', ''],
+    after: ['after', ''], me: ['me', ''], pi: ['pi', 'identity'], papers: ['pi', 'deep'], res: ['pi', 'resources'], lib: ['pi', 'pi'], screen: ['pi', 'pi'], evid: ['pi', 'evidence'], gaps: ['gaps', 'Your evidence'], choice: ['gaps', 'Choose and justify'], fund: ['fund', ''],
     chain: ['plan', 'The chain'], plan: ['plan', 'Materials and methods'], drift: ['plan', 'Schedule'], pro: ['pro', ''], claims: ['pro', ''], twin: ['plan', 'Key facts'], def: ['meet', ''], pend: ['meet', ''] };
   const STEPNAME = { me: '1 \u00b7 Me and my hours', gaps: '3 \u00b7 Gap Arena', plan: '4 \u00b7 Research plan', fund: '5 \u00b7 Funding', pro: '6 \u00b7 Grant proposal', meet: '7 \u00b7 Defend and meet', after: '8 \u00b7 After the meeting' };
   function paginate(id, html) {
@@ -112,15 +115,30 @@
     const statusOf = (x) => { let total = 0, filled = 0; x.nodes.forEach((n) => { n.querySelectorAll('input[data-bind],textarea[data-bind],select[data-bind]').forEach((el) => { if (el.type === 'range' || el.type === 'checkbox' || el.type === 'radio') return; total++; if (String(el.value || '').trim()) filled++; }); }); return total === 0 ? '' : filled === total ? 'done' : filled > 0 ? 'part' : 'todo'; };
     const SYMB = { done: '\u2713', part: '\u25d0', todo: '\u25cb' };
     const stepsList = '<ol class="gs-steps" aria-label="Screens in this step">' + real.map((x, k) => { const st = statusOf(x); return '<li><button type="button" class="' + (k === i ? 'on ' : '') + (st ? 'st-' + st : '') + '" data-act="wz" data-w="' + id + '" data-v="' + k + '" aria-current="' + (k === i ? 'step' : 'false') + '"' + (st ? ' title="' + ({ done: 'Done', part: 'In progress', todo: 'Not started' }[st]) + '"' : '') + '><b>' + (st ? SYMB[st] : k + 1) + '</b><span>' + esc(x.t) + '</span></button></li>'; }).join('') + '</ol>' + W.legend();
-    const pctDone = Math.round(((i + 1) / real.length) * 100);
+    PGT[id] = real[i].t; const pctDone = Math.round(((i + 1) / real.length) * 100);
     const steps = '<div class="gs-here"><div class="gs-crumb">Step ' + esc(STEPNAME[id] || id) + ' \u203a Screen ' + (i + 1) + ' of ' + real.length + ': ' + esc(real[i].t) + '</div><div class="gs-task"><b>Your task here:</b> ' + esc(real[i].task || 'Fill in what is on this screen, then press Next.') + '</div><div class="gs-progress" role="progressbar" aria-valuenow="' + pctDone + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pctDone + '%"></i></div><details class="gs-allsteps"><summary>See all ' + real.length + ' screens</summary>' + stepsList + '</details></div>';
     const foot = '<div class="gs-wizfoot"><button class="gs-btn2" data-act="wzb" data-w="' + id + '"' + (i === 0 ? ' disabled' : '') + '>\u2190 Back</button><span class="gs-count">Screen ' + (i + 1) + ' of ' + real.length + '</span><button class="gs-btn" data-act="wzn" data-w="' + id + '">' + (i === real.length - 1 ? (nextView ? 'Done here: on to the next step \u2192' : 'Finished') : 'Next: ' + esc(real[i + 1].t) + ' \u2192') + '</button></div>';
     return head.map((n) => n.outerHTML).join('') + steps + '<div class="gs-wzpage">' + real[i].nodes.map((n) => n.outerHTML).join('') + '</div>' + foot;
   }
+  // ---- where you were: every jump (nav, chain node, gate, tile) remembers the place you left ----
+  const NAVH = []; let lastLoc = null, skipPush = false; const PGT = {};
+  const VNAME = { dash: 'Mission Control', me: 'Me and my hours', pi: 'The PI\u2019s page', gaps: 'Gap Arena', plan: 'Research plan', fund: 'Funding', pro: 'Grant proposal', meet: 'Defend and meet', after: 'After the meeting', review: 'Instructor review', data: 'Backup and data' };
+  function curLoc() { const lab = view === 'pi' && S.pi && window.StudioLab; return { view, n: lab ? StudioLab.ui.stage : (WZ[view] || 0), title: lab ? StudioLab.STAGES[StudioLab.ui.stage][1] : (PGT[view] || '') }; }
+  const locLabel = (t) => VNAME[t.view] + (t.title ? ' \u203a ' + t.title : '');
+  function doBack() { const t = NAVH.pop(); if (!t) return; skipPush = true; view = t.view; if (t.view === 'pi' && window.StudioLab) StudioLab.ui.stage = t.n; else WZ[t.view] = t.n; render(); skipPush = false; window.scrollTo(0, 0); }
+  function backBar() {
+    if (view === 'dash') return '';
+    const top = NAVH[NAVH.length - 1];
+    return '<div class="gs-backbar" role="navigation" aria-label="Where you were">' + (top ? '<button class="gs-btn2 gs-sm" data-act="back" title="Go back to the place you just left">\u21a9 Back to where you were: <b>' + esc(locLabel(top)) + '</b></button>' : '') + '<button class="gs-btn3 gs-sm" data-act="home">\u2302 Mission Control</button></div>';
+  }
   function render() {
     renderNav();
     const f = { dash: vDash, me: vMe, pi: vPi, gaps: vGaps, plan: vPlan, fund: vFund, pro: vPro, meet: vMeet, after: vAfter, review: vReview, data: vData }[view] || vDash;
-    $('#view').innerHTML = WIZ.indexOf(view) >= 0 ? paginate(view, f()) : f();
+    const body = WIZ.indexOf(view) >= 0 ? paginate(view, f()) : f();
+    const cur = curLoc();
+    if (lastLoc && !skipPush && (cur.view !== lastLoc.view || Math.abs(cur.n - lastLoc.n) > 1)) { const top = NAVH[NAVH.length - 1]; if (!top || top.view !== lastLoc.view || top.n !== lastLoc.n) { NAVH.push(lastLoc); if (NAVH.length > 30) NAVH.shift(); } }
+    lastLoc = cur;
+    $('#view').innerHTML = backBar() + body;
     refreshLive(); wordCounts(); addMics();
   }
   function refreshLive() { const el = $('#live'); if (el) { const L = { me: liveMe, gaps: liveGaps, plan: livePlan, fund: liveFund, pro: livePro }[view]; if (L) el.innerHTML = L(); } renderNavLight(); }
@@ -138,7 +156,8 @@
     const ms = r.blocks[0] || r.warns[0];
     const funder = C.funder(S.funding.primary);
     const gate = (id) => (r.items.find((i) => i.id === id) || {}).level;
-    const tile = (label, title, sub, st) => '<div class="gs-tile gs-t-' + st + '"><div class="gs-spread"><small>' + label + '</small>' + W.badge(st) + '</div><b>' + title + '</b><span>' + sub + '</span></div>';
+    const tile = (label, title, sub, st, target) => '<div class="gs-tile gs-t-' + st + ' gs-tile-go" role="button" tabindex="0" data-act="nav" data-id="' + target + '" title="Open this and work on it"><div class="gs-spread"><small>' + label + '</small>' + W.badge(st) + '</div><b>' + title + '</b><span>' + sub + '</span><em class="gs-open">' + (st === 'done' ? 'Review' : 'Work on this') + ' \u2192</em></div>';
+    const oneId = (r.blocks[0] || r.warns[0] || {}).id || 'me';
     const nLib = S.library.items.length;
     const piSt = !S.pi ? 'todo' : gate('pi') === 'ok' ? 'done' : 'part';
     const libSt = nLib === 0 ? 'todo' : (gate('lib') === 'ok' && gate('evid') === 'ok' && gate('screen') === 'ok') ? 'done' : 'part';
@@ -149,13 +168,13 @@
     return '<p class="gs-kick">Research-to-Grant Studio · mission control</p><h1 class="gs-h1">Your mission, in one view</h1>' + exampleBanner() +
       '<div class="gs-card gs-glow gs-hero"><div>' + W.ring(r.pct, 'mission ready', 200) + '</div><div><div class="gs-next"><small>Next best action</small><p style="margin:4px 0 10px;font-size:1.05rem">' + esc(na.text) + '</p><button class="gs-btn" data-act="go" data-v="' + na.view + '">Take me there</button></div><p class="gs-note">' + r.blocks.length + ' blocked · ' + r.warns.length + ' open · ' + r.items.filter((i) => i.level === 'ok').length + ' clear. Every number on this page is computed from what you typed; nothing is entered twice.</p></div></div>' +
       W.legend() + '<div class="gs-grid3">' +
-      tile('Selected PI', esc(f ? f.honorific + ' ' + f.name : 'Not chosen yet'), esc(f ? f.oneLine : 'Step 2 \u00b7 PI and lab'), piSt) +
-      tile('Library', nLib + ' papers', S.library.items.filter((i) => i.coll === 'pi').length + ' PI \u00b7 ' + S.library.items.filter((i) => i.coll === 'related').length + ' related \u00b7 ' + S.library.evidence.length + ' evidence cards', libSt) +
-      tile('Project window', (isNaN(cal.first) ? 'Not set' : C.fmt(cal.first) + ' \u2192 ' + C.fmt(cal.last)), cal.total + ' h over ' + cal.totalWeeks + ' weeks' + (days != null ? (days > 0 ? ' \u00b7 starts in ' + days + ' days' : ' \u00b7 under way') : ''), winSt) +
-      tile('Current milestone', esc(ms ? ms.label : 'Ready to meet'), esc(ms ? ms.detail.slice(0, 90) : 'All gates clear'), ms ? 'part' : 'done') +
-      tile('Open questions', String(oq), (S.pending || []).length + ' pending actions for the PI', oqSt) +
-      tile('Documents', 'Plan ' + planW + ' w \u00b7 Proposal ' + proW + ' w', funder ? esc(funder.name) : 'No funder', docSt) +
-      tile('Submission', esc(S.submission.status), 'You control outreach and submission', subSt) + '</div>' +
+      tile('Selected PI', esc(f ? f.honorific + ' ' + f.name : 'Not chosen yet'), esc(f ? f.oneLine : 'Step 2 \u00b7 PI and lab'), piSt, !S.pi ? 'pi' : gate('pi') !== 'ok' ? 'pi' : 'c_papers') +
+      tile('Library', nLib + ' papers', S.library.items.filter((i) => i.coll === 'pi').length + ' PI \u00b7 ' + S.library.items.filter((i) => i.coll === 'related').length + ' related \u00b7 ' + S.library.evidence.length + ' evidence cards', libSt, 'c_papers') +
+      tile('Project window', (isNaN(cal.first) ? 'Not set' : C.fmt(cal.first) + ' \u2192 ' + C.fmt(cal.last)), cal.total + ' h over ' + cal.totalWeeks + ' weeks' + (days != null ? (days > 0 ? ' \u00b7 starts in ' + days + ' days' : ' \u00b7 under way') : ''), winSt, 'me') +
+      tile('Current milestone', esc(ms ? ms.label : 'Ready to meet'), esc(ms ? ms.detail.slice(0, 90) : 'All gates clear'), ms ? 'part' : 'done', ms ? oneId : 'def') +
+      tile('Open questions', String(oq), (S.pending || []).length + ' pending actions for the PI', oqSt, oneId) +
+      tile('Documents', 'Plan ' + planW + ' w \u00b7 Proposal ' + proW + ' w', funder ? esc(funder.name) : 'No funder', docSt, gate('chain') !== 'ok' ? 'chain' : gate('plan') !== 'ok' ? 'plan' : 'pro') +
+      tile('Submission', esc(S.submission.status), 'You control outreach and submission', subSt, 'after') + '</div>' +
       '<h2 class="gs-h2">The research chain</h2><div class="gs-card">' + W.chain(S) + '</div><h2 class="gs-h2">Readiness gates</h2>' + W.gates(r.items) +
       '<div class="gs-grid" style="margin-top:16px"><div class="gs-card"><h3>Hours and where they go</h3>' + W.hoursDonut(tot, cal.total) + '<p class="gs-note">' + (hasSch ? 'From your week-by-week schedule.' : 'Default reserves; build your schedule in step 4.') + '</p></div>' +
       '<div class="gs-card"><h3>Candidate arena</h3>' + (rk.live.length ? W.radar(rk.live.filter((x) => (x.g.title || '').trim()), 240) : '<p class="gs-note">Name your candidates in step 3.</p>') + '</div>' +
@@ -363,6 +382,8 @@
     if (window.StudioLab && StudioLab.onClick(b)) return;
     switch (a) {
       case 'nav': { const t = DEEP[b.dataset.id]; if (!t) break; if (t[0] === 'pi') { if (S.pi && window.StudioLab) StudioLab.setStage(t[1]); } else if (t[1]) { WZ.want = { id: t[0], text: t[1] }; } go(t[0]); break; }
+      case 'back': doBack(); break;
+      case 'home': go('dash'); break;
       case 'wz': WZ[b.dataset.w] = Number(b.dataset.v); render(); window.scrollTo(0, 0); break;
       case 'wzb': WZ[b.dataset.w] = Math.max(0, (WZ[b.dataset.w] || 0) - 1); render(); window.scrollTo(0, 0); break;
       case 'wzn': { const id = b.dataset.w; const n0 = WZ[id] || 0; const before = $('#view').querySelectorAll('.gs-steps li').length; if (n0 >= before - 1) { const nv = ORDER[ORDER.indexOf(id) + 1]; if (nv) { go(nv); break; } } WZ[id] = n0 + 1; render(); window.scrollTo(0, 0); break; }
@@ -489,6 +510,7 @@
     $('#logout').addEventListener('click', () => { if (window.BIOS) BIOS.clearSession(); window.location.href = '/BIOS102/index.html'; });
     const v$ = $('#view'); v$.addEventListener('click', (e) => { zoomPhotos(e); const m = e.target.closest('[data-mic]'); if (m) return dictate(m); onClick(e); }); v$.addEventListener('input', onInput); v$.addEventListener('change', onChange);
     $('#nav').addEventListener('click', onClick);
+    v$.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[role="button"][data-act]')) { e.preventDefault(); e.target.click(); } });
     window.addEventListener('beforeunload', saveNow);
     view = 'dash'; render();
   }
