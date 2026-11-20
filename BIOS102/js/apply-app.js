@@ -311,11 +311,72 @@
     if (type === 'select') return `<div><label class="f" for="f-${id}">${esc(lab)}</label><select ${base}><option value="">Choose</option>${opts.map(([val, l]) => `<option value="${val}" ${v === val ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>`;
     return `<div><label class="f" for="f-${id}">${esc(lab)}</label><input type="${type}" ${base} value="${esc(v)}" ${type === 'text' || type === 'email' || type === 'tel' ? 'maxlength="200"' : ''}></div>`;
   }
+
+  // ---------------- one-box address ----------------
+  const ST = { alabama:'AL', alaska:'AK', arizona:'AZ', arkansas:'AR', california:'CA', colorado:'CO', connecticut:'CT', delaware:'DE', 'district of columbia':'DC', florida:'FL', georgia:'GA', hawaii:'HI', idaho:'ID', illinois:'IL', indiana:'IN', iowa:'IA', kansas:'KS', kentucky:'KY', louisiana:'LA', maine:'ME', maryland:'MD', massachusetts:'MA', michigan:'MI', minnesota:'MN', mississippi:'MS', missouri:'MO', montana:'MT', nebraska:'NE', nevada:'NV', 'new hampshire':'NH', 'new jersey':'NJ', 'new mexico':'NM', 'new york':'NY', 'north carolina':'NC', 'north dakota':'ND', ohio:'OH', oklahoma:'OK', oregon:'OR', pennsylvania:'PA', 'rhode island':'RI', 'south carolina':'SC', 'south dakota':'SD', tennessee:'TN', texas:'TX', utah:'UT', vermont:'VT', virginia:'VA', washington:'WA', 'west virginia':'WV', wisconsin:'WI', wyoming:'WY', 'puerto rico':'PR' };
+  const ST_ABBR = Object.values(ST);
+  const SUFFIX = 'street|st|avenue|ave|road|rd|drive|dr|boulevard|blvd|lane|ln|court|ct|place|pl|way|parkway|pkwy|terrace|ter|circle|cir|highway|hwy|trail|trl|square|sq|loop|alley|row|pike';
+  const UNIT_RE = /^(?:apartment|apt|unit|suite|ste|floor|fl|room|rm)\.?\s*#?\s*[A-Za-z0-9-]+|^#\s*[A-Za-z0-9-]+/i;
+  function parseAddress(raw) {
+    let t = String(raw || '').replace(/[\n\r]+/g, ', ').replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').replace(/^[,\s]+|[,\s.]+$/g, '');
+    const out = { addr1: '', addr2: '', city: '', state: '', zip: '', country: 'United States' };
+    if (!t) return out;
+    t = t.replace(/[,\s]+(united states of america|united states|u\.?s\.?a\.?|u\.?s\.?)$/i, '');
+    let m = t.match(/[,\s]+(\d{5})(?:[-\s](\d{4}))?$/);
+    if (m) { out.zip = m[1] + (m[2] ? '-' + m[2] : ''); t = t.slice(0, m.index); }
+    t = t.replace(/[,\s]+$/, '');
+    const low = t.toLowerCase();
+    const names = Object.keys(ST).sort((a, b) => b.length - a.length);
+    for (const n of names) {
+      if (low.endsWith(' ' + n) || low.endsWith(',' + n)) { out.state = ST[n]; t = t.slice(0, t.length - n.length).replace(/[,\s]+$/, ''); break; }
+    }
+    if (!out.state) {
+      m = t.match(/[,\s]([A-Za-z]{2})\.?$/);
+      if (m && ST_ABBR.indexOf(m[1].toUpperCase()) >= 0) { out.state = m[1].toUpperCase(); t = t.slice(0, m.index).replace(/[,\s]+$/, ''); }
+    }
+    const parts = t.split(', ').filter(Boolean);
+    if (parts.length >= 3) { out.addr1 = parts[0]; out.addr2 = parts.slice(1, -1).join(', '); out.city = parts[parts.length - 1]; }
+    else if (parts.length === 2) { out.addr1 = parts[0]; out.city = parts[1]; }
+    else {
+      const words = t.split(' ');
+      const sufRe = new RegExp('^(' + SUFFIX + ')\\.?$', 'i');
+      let idx = -1;
+      for (let i = words.length - 1; i >= 1; i--) if (sufRe.test(words[i])) { idx = i; break; }
+      if (idx >= 0) {
+        let end = idx;
+        if (words[end + 1] && /^(n|s|e|w|ne|nw|se|sw|north|south|east|west)\.?$/i.test(words[end + 1]) && words.length > end + 2) end++;
+        out.addr1 = words.slice(0, end + 1).join(' ');
+        let rest = words.slice(end + 1).join(' ');
+        const um = rest.match(UNIT_RE);
+        if (um) { out.addr2 = um[0]; rest = rest.slice(um[0].length); }
+        out.city = rest.trim();
+      } else out.addr1 = t;
+    }
+    const um2 = out.addr1.match(/^(.*?)[,\s]+((?:apartment|apt|unit|suite|ste)\.?\s*#?\s*[A-Za-z0-9-]+|#\s*[A-Za-z0-9-]+)$/i);
+    if (um2 && !out.addr2) { out.addr1 = um2[1]; out.addr2 = um2[2]; }
+    Object.keys(out).forEach((k) => { out[k] = String(out[k] || '').trim(); });
+    out.city = out.city.replace(/\b\w/g, (c) => c.toUpperCase());
+    return out;
+  }
+  const composeAddress = (pf) => [pf.addr1, pf.addr2, pf.city, [pf.state, pf.zip].filter(Boolean).join(' ')].filter((x) => x && String(x).trim()).join(', ');
+  function addressReadout() {
+    const pf = prof();
+    if (!String(pf.fullAddress || '').trim()) return '<span class="hint">Nothing yet. Press Speak and say your whole address, or type it.</span>';
+    const miss = [['addr1', 'street'], ['city', 'city'], ['state', 'state'], ['zip', 'ZIP code']].filter((x) => !String(pf[x[0]] || '').trim()).map((x) => x[1]);
+    const cells = [['Street', pf.addr1], ['Unit', pf.addr2], ['City', pf.city], ['State', pf.state], ['ZIP', pf.zip], ['Country', pf.country]].map((x) => '<span class="chip ' + (x[1] ? 'g' : 'w') + '"><b>' + x[0] + ':</b> ' + (x[1] ? esc(x[1]) : '\u2014') + '</span>').join(' ');
+    return '<div class="rm-row">' + cells + '</div>' + (miss.length ? '<p class="hint" style="color:#8a4f00">I could not find your ' + miss.join(', ') + '. Add it to the box above.</p>' : '<p class="hint">That is how it will be filled in on your applications. If something is wrong, fix the box above.</p>');
+  }
+  function vAddress() {
+    const pf = prof();
+    const v = pf.fullAddress != null ? pf.fullAddress : composeAddress(pf);
+    return '<div class="rm-card"><h3 class="rm-h3">Where you live</h3><label class="f" for="f-fullAddress">Your whole address in one box (street, apartment if any, city, state, ZIP)</label><textarea id="f-fullAddress" data-bind="profile.fullAddress" autocomplete="street-address" name="street-address" maxlength="300" style="min-height:64px" placeholder="For example: 1234 S Main St Apt 4B, Chicago, Illinois 60619">' + esc(v) + '</textarea><div id="addr-read" style="margin-top:8px">' + addressReadout() + '</div></div>';
+  }
+
   function vProfile() {
     return `<h1 class="rm-h1">My profile</h1>
       <p class="rm-lede">Type these once. Every program packet fills itself from this page. Your browser can also remember what you type here for other websites; accept its offer to save this information when it asks.</p>
       <div class="rm-card ${profilePct() === 100 ? 'green' : 'tint'}" id="meter"></div>
-      ${PF.map((g) => `<div class="rm-card"><h3 class="rm-h3">${esc(g.g)}</h3><div class="rm-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${g.f.map((f) => field(f, 'profile')).join('')}</div></div>`).join('')}
+      ${PF.map((g) => g.g === 'Where you live' ? vAddress() : `<div class="rm-card"><h3 class="rm-h3">${esc(g.g)}</h3><div class="rm-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${g.f.map((f) => field(f, 'profile')).join('')}</div></div>`).join('')}
       <div class="rm-card warn"><strong>Not stored here:</strong> Social Security number and date of birth. If a portal asks, type them in the portal yourself.</div>`;
   }
   function refreshProfileMeter() {
@@ -592,7 +653,7 @@ ${prof().email || ''}`;
     $$('textarea[data-bind], textarea[data-recline]').forEach((ta) => {
       if (ta.dataset.mic) return; ta.dataset.mic = '1';
       const row = document.createElement('div'); row.className = 'rm-row'; row.style.margin = '4px 0 0';
-      if (SR) { row.innerHTML = `<button type="button" class="btn-s btn-sm" data-act="dictate">${MIC}</button><span class="hint"></span>`; row.firstChild.dataset.target = ta.id; }
+      if (SR) { row.innerHTML = `<button type="button" class="btn-s btn-sm mic-btn" data-act="dictate">${MIC}</button><span class="hint"></span>`; row.firstChild.dataset.target = ta.id; }
       else row.innerHTML = '<span class="hint">To speak instead of typing, use the microphone key on your keyboard, or open this page in Chrome, Edge or Safari.</span>';
       ta.insertAdjacentElement('afterend', row);
     });
@@ -602,9 +663,9 @@ ${prof().email || ''}`;
     if (rec && recBtn === btn) { stopDictation(); return; }
     stopDictation(); rec = new SR(); recBtn = btn; rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = false;
     rec.onresult = (ev) => { let t = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) if (ev.results[i].isFinal) t += ev.results[i][0].transcript; if (!t) return; ta.value = (ta.value && !/\s$/.test(ta.value) ? ta.value + ' ' : ta.value) + t.trim(); ta.dispatchEvent(new Event('input', { bubbles: true })); };
-    rec.onerror = (ev) => { hint.textContent = ev.error === 'not-allowed' ? 'The microphone is blocked. Allow it in your browser settings and try again.' : 'Could not hear you. Try again.'; };
-    rec.onend = () => { btn.textContent = MIC; if (/^Listening/.test(hint.textContent)) hint.textContent = ''; rec = null; recBtn = null; };
-    btn.textContent = 'Stop'; hint.textContent = 'Listening... speak, then press Stop. Edit afterward.';
+    rec.onerror = (ev) => { btn.classList.remove('mic-live'); btn.classList.add('mic-err'); hint.textContent = ev.error === 'not-allowed' ? 'The microphone is blocked. Allow it in your browser settings and try again.' : 'Could not hear you. Try again.'; };
+    rec.onend = () => { btn.classList.remove('mic-live'); btn.textContent = MIC; if (/^Listening/.test(hint.textContent)) hint.textContent = ''; rec = null; recBtn = null; };
+    btn.classList.remove('mic-err'); btn.classList.add('mic-live'); btn.textContent = 'Stop'; hint.textContent = 'Listening... speak, then press Stop. Edit afterward.';
     try { rec.start(); } catch (e) { hint.textContent = 'Could not start the microphone.'; }
   }
 
@@ -673,7 +734,10 @@ ${prof().email || ''}`;
     const path = t.dataset && t.dataset.bind; if (!path) return;
     let val = t.value; if (t.type === 'checkbox') val = t.checked ? 'yes' : 'no';
     if (t.type === 'radio' && !t.checked) return;
-    setPath(S, path, val); save();
+    setPath(S, path, val);
+    if (path === 'profile.fullAddress') { const a = parseAddress(val); Object.keys(a).forEach((k) => setPath(S, 'profile.' + k, a[k])); const ar = $('#addr-read'); if (ar) ar.innerHTML = addressReadout(); }
+    save();
+
     if (path.indexOf('profile.') === 0 && view === 'profile') refreshProfileMeter();
     if (t.dataset.count) { const pid = path.split('.')[1]; const q = PR[pid].prompts.find((x) => x.id === t.dataset.count); const c = $('#cnt-' + t.dataset.count); if (c && q) { const lim = q.limit || {}; const wc = wordCount(val); const over = (lim.words && wc > lim.words) || (lim.chars && val.length > lim.chars); c.textContent = wc + ' words, ' + val.length + ' characters' + (lim.words ? ' (limit ' + lim.words + ' words)' : '') + (lim.chars ? ' (limit ' + lim.chars.toLocaleString() + ' characters)' : '') + (lim.note ? ' (' + lim.note + ')' : ''); c.style.color = over ? 'var(--bad)' : ''; c.style.fontWeight = over ? '700' : ''; } const br = $('#br-' + t.dataset.count); if (br) br.hidden = !/\[[^\]]*\]/.test(val); }
     if (path.indexOf('story.fields.') === 0) { const mb = $('#master-box'); if (mb) mb.innerHTML = masterBox(); }
