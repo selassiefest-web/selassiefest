@@ -3,7 +3,11 @@
   'use strict';
   const C = root.StudioCore; const esc = C.esc;
   const CAT = { training: ['Training', '#a78bfa'], access: ['Data access', '#22d3ee'], trouble: ['Troubleshooting', '#fbbf24'], analysis: ['Analysis', '#4ade80'], reporting: ['Reporting', '#f472b6'] };
-  const LVL = { ok: ['#4ade80', 'Clear'], warn: ['#fbbf24', 'Open'], block: ['#fb7185', 'Blocked'] };
+  const LVL = { ok: ['#4ade80', 'Done'], warn: ['#fbbf24', 'In progress'], block: ['#fb7185', 'To do'] };
+  const ST = { done: ['\u2713', 'Done'], part: ['\u25d0', 'In progress'], todo: ['\u25cb', 'Not started'], alert: ['!', 'Needs attention'] };
+  const SYM = { ok: '\u2713', warn: '\u25d0', block: '!' };
+  const badge = (st) => '<span class="gs-st gs-st-' + st + '"><i>' + ST[st][0] + '</i>' + ST[st][1] + '</span>';
+  const legend = () => '<div class="gs-keyrow" aria-label="Status key">' + ['done', 'part', 'todo', 'alert'].map(badge).join('') + '</div>';
 
   // Readiness ring: a glowing arc with the percent in the middle.
   function ring(pct, label, size) {
@@ -62,7 +66,7 @@
 
   // Gate chips (readiness items).
   function gates(items) {
-    return '<div class="gs-gates">' + items.map((i) => '<button type="button" class="gs-gate gs-' + i.level + '" data-act="go" data-v="' + i.view + '" title="' + esc(i.detail) + '"><span class="gs-gdot" style="--c:' + LVL[i.level][0] + '"></span><span class="gs-gt">' + esc(i.label) + '</span><span class="gs-gs">' + LVL[i.level][1] + '</span></button>').join('') + '</div>';
+    return '<div class="gs-gates">' + items.map((i) => '<button type="button" class="gs-gate gs-' + i.level + '" data-act="nav" data-id="' + i.id + '" title="' + esc(i.detail) + '"><span class="gs-gdot" style="--c:' + LVL[i.level][0] + '"></span><span class="gs-gt">' + esc(i.label) + '</span><span class="gs-gs gs-gs-' + i.level + '">' + SYM[i.level] + ' ' + LVL[i.level][1] + '</span></button>').join('') + '</div>';
   }
 
   // Budget donut by pay type or item.
@@ -77,18 +81,18 @@
     const g = (st.gaps || []).find((x) => x.id === st.chosenGap);
     const exps = (st.plan && st.plan.experiments) || [];
     const nodes = [
-      ['Papers', lib.filter((i) => i.coll === 'pi').length >= 3 && lib.filter((i) => i.coll === 'related').length >= 3, 'pi', lib.length + ' in library'],
-      ['Gap chosen', !!g && !C.gapScreen(g).out, 'gaps', g ? 'one chosen' : 'not yet'],
-      ['Observation', C.filled(ps.observation) && L.keysIn(ps.observation).length > 0, 'plan', 'from the papers'],
-      ['Question', /\?/.test(ps.question || ''), 'plan', 'ends in ?'],
-      ['Proposed answer', C.filled(ps.answer), 'plan', 'my hypothesis'],
-      ['Prediction', /\bif\b/i.test(ps.prediction || '') && /\bthen\b/i.test(ps.prediction || ''), 'plan', 'If ... then ...'],
-      ['Materials and methods', exps.length > 0 && exps.every((e) => ['design', 'materials', 'equip', 'methods', 'controls', 'replication', 'sample', 'decision'].every((k) => C.filled(e[k]))), 'plan', exps.length + ' experiment(s)'],
+      ['Papers', lib.filter((i) => i.coll === 'pi').length >= 3 && lib.filter((i) => i.coll === 'related').length >= 3, 'c_papers', lib.length + ' in library'],
+      ['Gap chosen', !!g && !C.gapScreen(g).out, 'c_gap', g ? 'one chosen' : 'not yet'],
+      ['Observation', C.filled(ps.observation) && L.keysIn(ps.observation).length > 0, 'c_obs', 'from the papers'],
+      ['Question', /\?/.test(ps.question || ''), 'c_q', 'ends in ?'],
+      ['Proposed answer', C.filled(ps.answer), 'c_ans', 'my hypothesis'],
+      ['Prediction', /\bif\b/i.test(ps.prediction || '') && /\bthen\b/i.test(ps.prediction || ''), 'c_pred', 'If ... then ...'],
+      ['Materials and methods', exps.length > 0 && exps.every((e) => ['design', 'materials', 'equip', 'methods', 'controls', 'replication', 'sample', 'decision'].every((k) => C.filled(e[k]))), 'c_mm', exps.length + ' experiment(s)'],
     ];
     const cur = nodes.findIndex((n) => !n[1]);
-    return '<div class="gs-chain" role="list">' + nodes.map((n, i) => '<button type="button" role="listitem" class="gs-cn' + (n[1] ? ' done' : '') + (i === cur ? ' cur' : '') + '" data-act="go" data-v="' + n[2] + '"><span class="gs-cn-dot">' + (n[1] ? '✓' : i + 1) + '</span><b>' + n[0] + '</b><small>' + n[3] + '</small></button>').join('<i class="gs-cn-line"></i>') + '</div>';
+    return '<div class="gs-chain" role="list">' + nodes.map((n, i) => '<button type="button" role="listitem" class="gs-cn' + (n[1] ? ' done' : '') + (i === cur ? ' cur' : '') + '" data-act="nav" data-id="' + n[2] + '" title="Go to the screen where you do this"><span class="gs-cn-dot">' + (n[1] ? '✓' : i + 1) + '</span><b>' + n[0] + '</b><small>' + n[3] + '</small></button>').join('<i class="gs-cn-line"></i>') + '</div>';
   }
 
-  root.StudioWidgets = { chain, CAT, LVL, ring, hoursDonut, weekStrip, radar, lights, gates, budgetBars };
+  root.StudioWidgets = { badge, legend, ST, chain, CAT, LVL, ring, hoursDonut, weekStrip, radar, lights, gates, budgetBars };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.StudioWidgets;
 })(typeof window !== 'undefined' ? window : globalThis);
