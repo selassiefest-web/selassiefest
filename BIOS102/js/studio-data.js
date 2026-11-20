@@ -208,6 +208,7 @@ window.STUDIO_DATA = (() => {
       reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 },
     },
     pi: 'rogers',
+    metPi: true,
     identityChecks: {
       affiliation: { done: true, note: 'Dryad dataset page lists "David Rogers (University of Wisconsin–Parkside)". OpenAlex lists the Parkside affiliation on 8 works.' },
       coauthors: { done: true, note: 'The 2026 paper and the dataset share the same three authors (Anderson, Rogers, McCulloh). The 2018 paper is Ladwig, Damschen, Rogers.' },

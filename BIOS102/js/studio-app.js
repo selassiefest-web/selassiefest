@@ -21,7 +21,7 @@
     return {
       v: 1, meta: {},
       profile: { name: session.displayName || '', major: '', year: '', courses: '', skills: '', mode: '', modeNote: '', weeklyHours: 6, periods: [{ label: 'Semester 1', start: '', end: '' }, { label: 'Semester 2', start: '', end: '' }], breaks: [], reserve: { training: 15, access: 15, trouble: 10, analysis: 35, reporting: 25 } },
-      pi: '', identityChecks: { affiliation: { done: false, note: '' }, coauthors: { done: false, note: '' }, history: { done: false, note: '' } },
+      pi: '', metPi: false, identityChecks: { affiliation: { done: false, note: '' }, coauthors: { done: false, note: '' }, history: { done: false, note: '' } },
       sources: [], library: { items: [], analysis: {}, evidence: [], searches: [], screen: [] }, papers: [paper('foundational'), paper('recent')], resources: [], litChecks: [],
       gaps: [gap(1), gap(2), gap(3)], weights: {}, chosenGap: '', justification: '',
       funding: { primary: 'thomson', alt: 'urap', resolutions: {}, altAssessment: '' },
@@ -39,6 +39,7 @@
     if (o.pi && o.pi !== 'rogers' && o.plan && o.plan.title && o.plan.title === D.EXAMPLE.plan.title) {
       const b = blankState(); ['library', 'papers', 'gaps', 'litChecks', 'chosenGap', 'justification', 'plan', 'proposal', 'claims', 'defense', 'sectionStatus', 'pending', 'weights', 'identityChecks'].forEach((k) => { o[k] = b[k]; }); o.meta = {}; o.budget = [];
     }
+    o.metPi = !!o.metPi || (o.identityChecks && Object.keys(o.identityChecks).some((k) => o.identityChecks[k] && o.identityChecks[k].done));
     o.library = o.library || { items: [], analysis: {}, evidence: [], searches: [], screen: [] }; o.library.screen = o.library.screen || [];
     o.library.items = o.library.items || []; o.library.analysis = o.library.analysis || {}; o.library.evidence = o.library.evidence || []; o.library.searches = o.library.searches || [];
     (o.gaps || []).forEach((g) => { g.evidence = g.evidence || []; });
@@ -211,12 +212,20 @@
   const evClass = (id) => { const w = (PIS[id] && PIS[id].works[0]); return w && w.y >= 2024 ? ['ok', 'Active record: ' + w.y] : ['warn', 'Latest indexed paper: ' + (w ? w.y : 'none') + ' (ask)']; };
   function secIdentity() {
     const ex = D.PI_EXTRA[S.pi]; const f = C.piCard(S.pi); const pi = PIS[S.pi] || {};
+    const pubmed = 'https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(f.last + ' ' + f.first[0] + '[Author] AND Parkside');
     const qs = [
-      ['affiliation', 'Is this person at UW\u2013Parkside?', 'Open the faculty page and read the title line under the name. It should say Biological Sciences.', [['Open the faculty page', f.profile]]],
-      ['coauthors', 'Do their coauthors fit their field?', 'Open the list of their papers and look at the other authors on one or two of them. Do those people work on similar science?', [pi.openalex ? ['Open their OpenAlex page', 'https://openalex.org/' + pi.openalex] : null, ['Search PubMed for their papers', 'https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(f.last + ' ' + f.first[0] + '[Author] AND Parkside')]].filter(Boolean)],
-      ['history', 'Are all the papers by this same person?', 'Some scientists share one name. Read three paper titles. Do they match what the faculty page says this person studies?', [['Search PubMed for their papers', 'https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(f.last + ' ' + f.first[0] + '[Author] AND Parkside')]]],
+      ['affiliation', 'Is this person at UW\u2013Parkside?', 'Think of the faculty page you just read. Does the title line under the name say Biological Sciences?', [], ''],
+      ['coauthors', 'Do their coauthors fit their field?', 'Open the list of their papers (either button). Look at the other authors on one or two of them. Do those people work on similar science?', [pi.openalex ? ['Open their OpenAlex page', 'https://openalex.org/' + pi.openalex] : null, ['Search PubMed for their papers', pubmed]].filter(Boolean), ''],
+      ['history', 'Are all the papers by this same person?', 'Use the same list of papers. Read three titles. Do they match what the faculty page says this researcher studies? Some scientists share one name.', [], '<div class="gs-warnbox"><b>What we found when we checked:</b> ' + esc(ex.identity) + '</div>'],
     ];
-    return '<div id="idq"><div class="gs-card"><p style="margin-top:0"><b>Why do this?</b> Before you build a project on someone\u2019s papers, make sure the papers really are theirs. There are three short questions. For each one: look, then check the box, then type one line about what you saw.</p><div class="gs-warnbox"><b>What we found when we checked:</b> ' + esc(ex.identity) + '</div></div>' + qs.map((q, n) => { const c = S.identityChecks[q[0]] || {}; const done = c.done && String(c.note || '').trim(); return '<div class="gs-card gs-q' + (done ? ' gs-q-done' : '') + '"><div class="gs-spread"><h3>Question ' + (n + 1) + ' of 3: ' + esc(q[1]) + '</h3>' + W.badge(done ? 'done' : (c.done || String(c.note || '').trim()) ? 'part' : 'todo') + '</div><p><b>How to check:</b> ' + esc(q[2]) + '</p><div class="gs-row">' + q[3].map((l) => '<a class="gs-btn2 gs-sm" target="_blank" rel="noopener" href="' + esc(l[1]) + '">' + esc(l[0]) + ' \u2197</a>').join('') + '</div>' + chk('identityChecks.' + q[0] + '.done', '<b>Yes, I checked this</b>') + ta('identityChecks.' + q[0] + '.note', 'One line: what did you see?', { rows: 2 }) + '</div>'; }).join('') + '</div>';
+    const isDone = (k) => { const c = S.identityChecks[k] || {}; return !!(c.done && String(c.note || '').trim()); };
+    let open = true; const out = qs.map((q, n) => {
+      const firstOpen = qs.findIndex((p) => !isDone(p[0])); const upTo = firstOpen < 0 ? qs.length - 1 : firstOpen;
+      if (n > upTo) return n === upTo + 1 ? '<p class="gs-note gs-later">Question ' + (n + 1) + ' of 3 appears when you finish question ' + n + '.</p>' : '';
+      const c = S.identityChecks[q[0]] || {}; const done = isDone(q[0]);
+      return '<div class="gs-card gs-q' + (done ? ' gs-q-done' : '') + '"><div class="gs-spread"><h3>Question ' + (n + 1) + ' of 3: ' + esc(q[1]) + '</h3>' + W.badge(done ? 'done' : (c.done || String(c.note || '').trim()) ? 'part' : 'todo') + '</div><p><b>How to check:</b> ' + esc(q[2]) + '</p>' + (q[3].length ? '<div class="gs-row">' + q[3].map((l) => '<a class="gs-btn2 gs-sm" target="_blank" rel="noopener" href="' + esc(l[1]) + '">' + esc(l[0]) + ' \u2197 (new tab)</a>').join('') + '</div>' : '') + q[4] + chk('identityChecks.' + q[0] + '.done', '<b>Yes, I checked this</b>') + ta('identityChecks.' + q[0] + '.note', 'One line: what did you see?', { rows: 2 }) + '</div>';
+    });
+    return '<div id="idq">' + out.join('') + '</div>';
   }
   function secSources() {
     return '<div class="gs-card"><p class="gs-note">Every source gets a date. Add each page you read; manual entry works for anything.</p>' + S.sources.map((s, i) => '<div class="gs-two" style="border-top:1px solid var(--line);padding-top:6px;align-items:end">' + sel('sources.' + i + '.kind', 'Type', D.SOURCE_KINDS) + inp('sources.' + i + '.title', 'Title') + inp('sources.' + i + '.url', 'Link') + inp('sources.' + i + '.date', 'Date read', { type: 'date' }) + inp('sources.' + i + '.note', 'What it told you') + '<div><button class="gs-btn3 gs-sm gs-danger" data-act="delRow" data-p="sources" data-i="' + i + '">Remove</button></div></div>').join('') + '<button class="gs-btn3 gs-sm" data-act="addSource" style="margin-top:8px">+ Add a source</button></div>';
@@ -467,7 +476,13 @@
     if (t.tagName === 'SELECT' && /^library\.items\.\d+\.(coll|read|fulltext)$/.test(path)) { saveNow(); render(); return; }
     if (t.dataset.rerender && e.type === 'change') { if (path.indexOf('papers.') === 0 && /\.doi$/.test(path)) { const i = Number(path.split('.')[1]); const w = (PIS[S.pi] || { works: [] }).works.find((x) => x.doi === v); if (w) S.papers[i].title = w.t + ' (' + w.y + ')'; } saveNow(); render(); }
   }
-  function onChange(e) { if (e.target.id === 'restore') return restore(e); if (e.target.dataset && (e.target.dataset.rerender || e.target.dataset.lab !== undefined)) onInput(e); }
+  // finishing a question reveals the next one (on change, so typing is never interrupted)
+  function revealIdentity() {
+    const done = (k) => { const c = S.identityChecks[k] || {}; return !!(c.done && String(c.note || '').trim()); };
+    const keys = ['affiliation', 'coauthors', 'history']; const first = keys.findIndex((k) => !done(k)); const expected = first < 0 ? 3 : first + 1;
+    if (document.querySelectorAll('#idq .gs-q').length !== expected || document.querySelectorAll('#idq .gs-q-done').length !== keys.filter(done).length) render();
+  }
+  function onChange(e) { if (e.target.dataset && /^identityChecks\./.test(e.target.dataset.bind || '')) { onInput(e); revealIdentity(); return; } if (e.target.id === 'restore') return restore(e); if (e.target.dataset && (e.target.dataset.rerender || e.target.dataset.lab !== undefined)) onInput(e); }
   function restore(e) {
     const fl = e.target.files && e.target.files[0]; if (!fl) return; const rd = new FileReader();
     rd.onload = () => { try { const got = JSON.parse(String(rd.result)); if (!got || got.v !== 1 || !got.plan || !got.proposal) throw new Error('bad'); S = got; saveNow(); render(); toast('Restored from your backup'); } catch (er) { toast('That file is not a Studio backup'); } };

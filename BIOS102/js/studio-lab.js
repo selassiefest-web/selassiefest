@@ -67,9 +67,12 @@
   }
 
   // ---------- the stages ----------
+  function sMeet() {
+    return '<h2 class="gs-h1" style="font-size:1.5rem">Meet the researcher</h2><p class="gs-lede">Start by reading about the person whose work you will study. Their faculty page says who they are and what they study. Do the steps above, then press Next.</p>';
+  }
   function sIdentity() {
     const f = card(), ex = D.PI_EXTRA[S().pi];
-    return '<h2 class="gs-h1" style="font-size:1.5rem">Is this really the right person?</h2><p class="gs-lede">Before you build on someone’s papers, make sure the papers are theirs. Several scientists can share one name, and databases sometimes mix them up. Open the pages below, look, then check each box and write what you saw.</p>' + art('trust, then verify', '<p>Databases build author profiles automatically, so errors happen. The faculty page is the one source you can trust to say who works here and what they study. Everything else gets checked against it.</p>') + X.sections.identity() + goal([[C.readiness(S()).items.find((i) => i.id === 'pi').level === 'ok', 'All three checks ticked, each with a note']]);
+    return '<h2 class="gs-h1" style="font-size:1.5rem">Is this really the right person?</h2><p class="gs-lede">Several scientists can share one name, and databases sometimes mix them up. These questions make sure the papers you will use really are this researcher\u2019s. Answer each one: look, check the box, and type one line about what you saw.</p>' + X.sections.identity() + goal([[C.readiness(S()).items.find((i) => i.id === 'pi').level === 'ok', 'All three questions answered']]);
   }
   function sSkills() {
     const q = ui.quiz; const ans = (k, v, good, why) => '<label class="gs-opt"><input type="radio" name="' + k + '" data-lab="quiz" data-k="' + k + '" value="' + v + '"' + (q[k] === v ? ' checked' : '') + '> ' + v + '</label>';
@@ -155,7 +158,7 @@
   }
 
   const STAGES = [
-    ['identity', 'Right person?', sIdentity], ['skills', 'Read an author list', sSkills], ['pi', 'The PI’s papers', sPi], ['widen', 'Widen the net', sWiden], ['library', 'Your library', sLibrary],
+    ['meet', 'Meet the PI', sMeet], ['identity', 'Right person?', sIdentity], ['skills', 'Read an author list', sSkills], ['pi', 'The PI’s papers', sPi], ['widen', 'Widen the net', sWiden], ['library', 'Your library', sLibrary],
     ['deep', 'Two deep reads', sDeep], ['analyse', 'Analyse', sAnalyse], ['evidence', 'Gap evidence', sEvidence], ['resources', 'Lab resources', sResources],
   ];
 
@@ -164,6 +167,7 @@
     const nPi = l.items.filter((x) => x.coll === 'pi').length, nRel = l.items.filter((x) => x.coll === 'related').length, exc = l.screen.filter((x) => x.decision === 'exclude').length;
     const modes = new Set(l.searches.map((x) => x.mode).filter((m) => m !== 'PI works')).size; const nLim = l.items.filter((x) => ((l.analysis[x.id] || {}).limits || '').trim()).length;
     const tri = (done, some) => done ? 'done' : some ? 'part' : 'todo';
+    if (id === 'meet') return s.metPi ? 'done' : 'todo';
     if (id === 'identity') return tri(g('pi') === 'ok', ['affiliation', 'coauthors', 'history'].some((k) => s.identityChecks[k] && s.identityChecks[k].done));
     if (id === 'skills') return tri(['q1', 'q2', 'q3'].every((k) => ui.quiz[k]), ['q1', 'q2', 'q3'].some((k) => ui.quiz[k]));
     if (id === 'pi') return tri(nPi >= 3 && exc >= 1, nPi > 0 || l.screen.length > 0);
@@ -180,7 +184,8 @@
   function taskHtml(id) {
     const f = card(); const nm = f.honorific + ' ' + f.last;
     const T = {
-      identity: [lnk(f.profile, 'Open ' + nm + '\u2019s faculty page') + '. Read who they are and what they study.', 'Come back here and ' + jump('idq', 'answer the 3 questions below') + '. For each one: check the box when you have looked, then type one line about what you saw.'],
+      meet: ['<a class="gs-inline" data-met="1" target="_blank" rel="noopener" href="' + esc(f.profile) + '">Open the faculty page ↗</a>. It opens in a new tab.', 'When you have read it, come back to this tab (the one called Research-to-Grant Studio) and press Next.'],
+      identity: ['Answer the question below: check the box and type one line.', 'The next question appears when you finish this one.'],
       skills: ['Read the four short cards below.', 'Then ' + jump('quiz', 'answer the 3 questions') + ' by pressing one answer each. Wrong answers cost nothing; they explain.'],
       pi: ['Press ' + jump('searchbtn', 'the big blue button') + '. Wait a few seconds for the list to appear.', 'For each paper in the list, press Include, Maybe or Exclude.'],
       widen: ['Choose one of the PI\u2019s papers in the box below.', 'Press one of the move buttons, then press Include, Maybe or Exclude on the results.'],
@@ -195,7 +200,7 @@
   const setStage = (id) => { const k = STAGES.findIndex((x) => x[0] === id); ui.stage = k < 0 ? 0 : k; ui.msg = ''; };
   function view() {
     const f = card(), s = S(); const st = STAGES[ui.stage]; const rd = C.readiness(s);
-    const head = '<p class="gs-kick">Step 2 of 8 · the PI’s page</p><div class="gs-minihead"><img class="fac-photo" src="/BIOS102/img/researchers/' + f.id + '.webp" alt="Photo badge of ' + esc(f.honorific + ' ' + f.last) + '" width="48" height="48"><div style="flex:1"><b style="font-size:1.1rem">' + esc(f.honorific + ' ' + f.name) + '</b><div class="gs-note" style="margin:0">' + esc(f.oneLine) + '</div></div><span class="gs-row"><a class="gs-btn3 gs-sm" target="_blank" rel="noopener" href="' + esc(f.profile) + '">Faculty page</a><button class="gs-btn3 gs-sm" data-act="lab:change">Change PI</button></span></div>';
+    const head = '<p class="gs-kick">Step 2 of 8 · the PI’s page</p><div class="gs-minihead"><img class="fac-photo" src="/BIOS102/img/researchers/' + f.id + '.webp" alt="Photo badge of ' + esc(f.honorific + ' ' + f.last) + '" width="48" height="48"><div style="flex:1"><b style="font-size:1.1rem">' + esc(f.honorific + ' ' + f.name) + '</b> <button class="gs-btn3 gs-sm" data-act="lab:change">Change PI</button><div class="gs-note" style="margin:2px 0 0">' + esc(f.oneLine) + '</div></div></div>';
     const steps = '<ol class="gs-steps" aria-label="Stages on the PI’s page">' + STAGES.map((x, i) => { const ss = stageStatus(i, rd); return '<li><button type="button" class="' + (i === ui.stage ? 'on ' : '') + 'st-' + ss + '" data-act="lab:stage" data-v="' + i + '" aria-current="' + (i === ui.stage ? 'step' : 'false') + '" title="' + ({ done: 'Done', part: 'In progress', todo: 'Not started' }[ss]) + '"><b>' + ({ done: '\u2713', part: '\u25d0', todo: '\u25cb' }[ss]) + '</b><span>' + esc(x[1]) + '</span></button></li>'; }).join('') + '</ol>' + root.StudioWidgets.legend();
     const pct = Math.round(((ui.stage + 1) / STAGES.length) * 100); const here = '<div class="gs-here"><div class="gs-crumb">Step 2 of 8 \u00b7 the PI\u2019s page \u203a Screen ' + (ui.stage + 1) + ' of ' + STAGES.length + ': ' + esc(st[1]) + '</div><div class="gs-task"><b>On this screen:</b>' + taskHtml(st[0]) + '</div><div class="gs-progress" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + pct + '%"></i></div><details class="gs-allsteps"><summary>See all ' + STAGES.length + ' screens</summary>' + steps + '</details></div>';
     const nav = '<div class="gs-wizfoot"><button class="gs-btn2" data-act="lab:back"' + (ui.stage === 0 ? ' disabled' : '') + '>← Back</button><span class="gs-count">Screen ' + (ui.stage + 1) + ' of ' + STAGES.length + '</span><button class="gs-btn" data-act="lab:next">' + (ui.stage === STAGES.length - 1 ? 'On to the Gap Arena →' : 'Next: ' + esc(STAGES[ui.stage + 1][1]) + ' →') + '</button></div>';
@@ -261,6 +266,6 @@
     if (k === 'q') { ui.q = t.value; const pos = t.selectionStart; X.render(); const el = document.getElementById('lq'); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch (e) { /* ignore */ } } return true; }
     return false;
   }
-  function init(ctx) { X = ctx; document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[data-side]'); if (!a) return; e.preventDefault(); const w = window.screen.availWidth || 1200, h = window.screen.availHeight || 800; const win = window.open(a.href, 'studio-paper', 'popup=yes,width=' + Math.floor(w / 2) + ',height=' + h + ',left=' + Math.floor(w / 2) + ',top=0'); if (!win) window.open(a.href, '_blank', 'noopener'); }); }
+  function init(ctx) { X = ctx; document.addEventListener('click', (e) => { const met = e.target.closest && e.target.closest('a[data-met]'); if (met) { S().metPi = true; X.save(); setTimeout(() => X.render(), 80); } const a = e.target.closest && e.target.closest('a[data-side]'); if (!a) return; e.preventDefault(); const w = window.screen.availWidth || 1200, h = window.screen.availHeight || 800; const win = window.open(a.href, 'studio-paper', 'popup=yes,width=' + Math.floor(w / 2) + ',height=' + h + ',left=' + Math.floor(w / 2) + ',top=0'); if (!win) window.open(a.href, '_blank', 'noopener'); }); }
   root.StudioLab = { setStage, init, view, onClick, onInput, ui, EV_TYPES, STAGES };
 })(typeof window !== 'undefined' ? window : globalThis);
