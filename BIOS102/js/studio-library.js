@@ -124,7 +124,31 @@
   }
   const unknownKeys = (st) => citedKeys(st).filter((k) => !itemByKey(st, k) && !(st.refs || []).some((r) => r.id === k));
 
-  const api = { OA, PARKSIDE, COLLECTIONS, normTitle, cleanDoi, lastName, makeKey, citeLabel, decodeAbstract, fromOpenAlex, findDup, dupes, merge, toBibtex, toRis, toCsv, toText, apa, parseBibtex, parseRis, retrieve, pubmed, fromPubmed, pubmedTerm, LIBRARY, fullTextRequest, CITE_RE, keysIn, citedKeys, itemByKey, renderCites, refList, unknownKeys, textsOf };
+  // ---- the skill of reading a result: who is the PI in this paper, and what kind of paper is it? ----
+  // In biology the first author usually did the hands-on work, the LAST author is usually the senior author who
+  // leads the lab and holds the funding, and everyone between contributed. A lab's own project papers therefore
+  // usually carry the PI's name last (or first, in a small group). A middle position often means a collaborator.
+  function rawAuthors(raw, src) { return src === 'pubmed' ? (raw.authors || []).map((n) => ({ name: String(n).replace(/^(.+)\s+([A-Z]{1,3})$/, '$2 $1'), id: '' })) : (raw.authorships || []).map((a) => ({ name: a.author.display_name, id: String(a.author.id || '').split('/').pop() })); }
+  function piPosition(authors, pi) {
+    const n = authors.length; if (!n || !pi) return { pos: '', n, at: -1 };
+    const ini = (pi.first || '').slice(0, 1).toLowerCase(), last = strip(pi.last || '').toLowerCase();
+    const at = authors.findIndex((a) => (pi.oa && a.id === pi.oa) || (strip(lastName(a.name)).toLowerCase() === last && (!ini || strip(a.name).toLowerCase().replace(/[^a-z]/g, '').indexOf(ini) >= 0 || /^[A-Za-z]{1,3}$/.test(String(a.name).trim().split(/\s+/).pop()))));
+    if (at < 0) return { pos: '', n, at };
+    return { pos: n === 1 ? 'only' : at === 0 ? 'first' : at === n - 1 ? 'last' : 'middle', n, at };
+  }
+  const POS_NOTE = { only: ['Sole author', 'cy', 'Written by the PI alone.'], last: ['Last author: senior author', 'ok', 'The PI is last: usually the senior author who leads the lab. This is very likely a project from the PI’s own lab, so it shows the lab’s research direction.'], first: ['First author: did the main work', 'ok', 'The PI is first: usually the person who did most of the work. Common in small groups and in older papers.'], middle: ['Middle author: contributor', 'warn', 'The PI is somewhere in the middle: usually a collaborator on someone else’s project. Do not assume this is the PI’s own research direction.'], '': ['PI not found in the author list', 'block', 'The PI’s name was not matched. This can mean a different person with a similar name, or a different spelling. Check the identity step before you use this paper.'] };
+  function kindOf(p) {
+    const t = String(p.title || ''), ty = String(p.type || ''), j = String(p.journal || '');
+    if (/^abstract\s*[\w-]*\d+/i.test(t) || /meeting abstract|supplement/i.test(j + ' ' + t)) return { key: 'abstract', label: 'Conference abstract', cls: 'warn', note: 'A one-paragraph summary of a poster or talk, not a full paper. It has little detail and is not a full peer-reviewed article. Look for the full paper by the same group.' };
+    if (ty === 'preprint' || /biorxiv|medrxiv|arxiv|research square|preprint|ssrn|zenodo/i.test(j)) return { key: 'preprint', label: 'Preprint', cls: 'warn', note: 'Posted before peer review. Useful and recent, but not yet checked by other scientists. Say so if you cite it.' };
+    if (ty === 'dataset' || /dryad|figshare/i.test(j)) return { key: 'dataset', label: 'Dataset', cls: 'cy', note: 'Data you may be able to reuse. Read the README before you plan around it.' };
+    if (ty === 'review') return { key: 'review', label: 'Review article', cls: 'cy', note: 'Summarises many studies. Great for background; the gaps it lists are a good place to look.' };
+    if (ty === 'book-chapter') return { key: 'chapter', label: 'Book chapter', cls: 'cy', note: 'Often a summary written for a book.' };
+    return { key: 'article', label: 'Research article', cls: 'ok', note: 'A full paper in a journal.' };
+  }
+  const SCREEN_REASONS = ['Not about the PI’s current research direction', 'PI is only a minor contributor', 'Conference abstract only (too little detail)', 'Preprint (not yet peer reviewed)', 'Too old for the question I am asking', 'Different organism or system', 'Different method, not useful for my design', 'Already have it (duplicate)', 'Other (write it in the notes)'];
+
+  const api = { rawAuthors, piPosition, POS_NOTE, kindOf, SCREEN_REASONS, OA, PARKSIDE, COLLECTIONS, normTitle, cleanDoi, lastName, makeKey, citeLabel, decodeAbstract, fromOpenAlex, findDup, dupes, merge, toBibtex, toRis, toCsv, toText, apa, parseBibtex, parseRis, retrieve, pubmed, fromPubmed, pubmedTerm, LIBRARY, fullTextRequest, CITE_RE, keysIn, citedKeys, itemByKey, renderCites, refList, unknownKeys, textsOf };
   root.StudioLib = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

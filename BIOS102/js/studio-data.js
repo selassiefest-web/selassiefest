@@ -447,6 +447,16 @@ window.STUDIO_DATA = (() => {
       { date: '2026-11-19', source: 'OpenAlex', mode: 'Related to a PI paper', terms: 'related works of doi:10.1002/ece3.73323 (2026 mesophication paper)', n: 6 },
       { date: '2026-11-19', source: 'OpenAlex', mode: 'Keyword', terms: 'intraspecific trait variation tree leaf traits temperate forest; published 2022 or later; articles', n: 8 },
     ];
+    L.screen = [
+      { key: '10.3389/ffgc.2021.754063', title: 'Montane Temperate-Boreal Forests Retain the Leaf Economic Spectrum Despite Intraspecific Variability', doi: '10.3389/ffgc.2021.754063', decision: 'include', reason: '', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1111/1365-2435.14549', title: 'Tree and mycorrhizal fungal diversity drive intraspecific and intraindividual trait variation in temperate forests', doi: '10.1111/1365-2435.14549', decision: 'include', reason: '', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1111/1365-2435.70411', title: 'Intraspecific variability rivals interspecific differences in root traits of temperate tree seedlings', doi: '10.1111/1365-2435.70411', decision: 'include', reason: '', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1002/pei3.70019', title: 'Intraspecific Trait Variation in Seedlings Reveals Independence Between Leaf and Root Traits but a Lack of an Independent Collaboration Axis Belowground', doi: '10.1002/pei3.70019', decision: 'exclude', reason: 'Different method, not useful for my design', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1080/07038992.2025.2608440', title: 'Mapping canopy foliar functional traits in a mixed temperate forest using imaging spectroscopy', doi: '10.1080/07038992.2025.2608440', decision: 'exclude', reason: 'Different method, not useful for my design', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1186/s12870-023-04097-y', title: 'Intraspecific variations in leaf functional traits of Cunninghamia lanceolata provenances', doi: '10.1186/s12870-023-04097-y', decision: 'exclude', reason: 'Different organism or system', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1111/geb.13789', title: 'Trait\u2013micro-environment relationships of forest herb communities across Europe', doi: '10.1111/geb.13789', decision: 'exclude', reason: 'Different organism or system', date: '2026-11-19', pos: '', kind: 'article' },
+      { key: '10.1007/s11676-022-01594-y', title: 'Leaf thermal tolerance and sensitivity of temperate tree species are correlated with leaf physiological and functional drought resistance traits', doi: '10.1007/s11676-022-01594-y', decision: 'exclude', reason: 'Not about the PI\u2019s current research direction', date: '2026-11-19', pos: '', kind: 'article' },
+    ];
     EXAMPLE.library = L;
   })();
 

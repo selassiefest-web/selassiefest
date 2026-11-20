@@ -208,6 +208,9 @@
     const nPi = lib.filter((i) => i.coll === 'pi').length, nRel = lib.filter((i) => i.coll === 'related').length;
     if (nPi < 3 || nRel < 3) add('lib', 'pi', 'Library: PI papers and related ongoing work', 'block', 'The library holds ' + nPi + ' of the PI\u2019s papers and ' + nRel + ' related papers. Retrieve at least 3 of each.');
     else add('lib', 'pi', 'Library: PI papers and related ongoing work', 'ok', nPi + ' PI papers and ' + nRel + ' related papers in the library.');
+    const scr = (st.library && st.library.screen) || []; const nEx = scr.filter((x) => x.decision === 'exclude' && filled(x.reason)).length;
+    if (scr.length < 5 || nEx < 1) add('screen', 'pi', 'Screening: decided, with reasons', 'warn', 'You have decided on ' + scr.length + ' search result(s) and excluded ' + nEx + ' with a reason. Real searches turn up papers that do not belong; screen at least 5 and exclude at least one, saying why.');
+    else add('screen', 'pi', 'Screening: decided, with reasons', 'ok', scr.length + ' results screened; ' + nEx + ' excluded with a reason.');
     // 5b evidence behind every candidate gap
     const ev = (st.library && st.library.evidence) || [];
     const evBad = ev.filter((e) => !filled(e.quote) || !lib.some((i) => i.id === e.item));
