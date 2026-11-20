@@ -4,6 +4,7 @@
 (function (root) {
   'use strict';
   const D = (root.STUDIO_DATA) || {};
+  const LIB = root.StudioLib;
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
   const words = (s) => { const t = String(s || '').trim(); return t ? t.split(/\s+/).length : 0; };
@@ -143,7 +144,7 @@
 
   // ---------- readiness: every gate, with the reason ----------
   const SECTION_KEYS = {
-    plan: ['background', 'evidence', 'gap', 'question', 'aims', 'hypotheses', 'variables', 'analysis', 'interpretation', 'approvals', 'handoff'],
+    plan: ['observation', 'background', 'evidence', 'gap', 'question', 'answer', 'prediction', 'aims', 'variables', 'analysis', 'interpretation', 'approvals', 'handoff'],
   };
   function sectionState(st, key) { return (st.sectionStatus && st.sectionStatus[key]) || 'draft'; }
   function readiness(st) {
@@ -202,6 +203,27 @@
     else if (fw.length) add('fund', 'fund', 'Funding match', 'warn', fw.length + ' item(s) unverified or open.');
     else add('fund', 'fund', 'Funding match', 'ok', 'Primary and alternative assessed; eligibility checks pass.');
 
+    // 4b library: the PI's papers and the closest ongoing work, retrieved and kept
+    const lib = (st.library && st.library.items) || [];
+    const nPi = lib.filter((i) => i.coll === 'pi').length, nRel = lib.filter((i) => i.coll === 'related').length;
+    if (nPi < 3 || nRel < 3) add('lib', 'pi', 'Library: PI papers and related ongoing work', 'block', 'The library holds ' + nPi + ' of the PI\u2019s papers and ' + nRel + ' related papers. Retrieve at least 3 of each.');
+    else add('lib', 'pi', 'Library: PI papers and related ongoing work', 'ok', nPi + ' PI papers and ' + nRel + ' related papers in the library.');
+    // 5b evidence behind every candidate gap
+    const ev = (st.library && st.library.evidence) || [];
+    const evBad = ev.filter((e) => !filled(e.quote) || !lib.some((i) => i.id === e.item));
+    const noEv = (st.gaps || []).filter((g) => filled(g.title) && !(g.evidence || []).some((id) => ev.some((e) => e.id === id)));
+    if (ev.length < 3) add('evid', 'gaps', 'Gap evidence from the papers', 'block', 'The evidence board has ' + ev.length + ' card(s). Collect at least 3 quotes from papers in your library.');
+    else if (evBad.length) add('evid', 'gaps', 'Gap evidence from the papers', 'block', evBad.length + ' evidence card(s) lack a quote or a source paper in the library.');
+    else if (noEv.length) add('evid', 'gaps', 'Gap evidence from the papers', 'block', 'No evidence card is linked to: ' + noEv.map((g) => '"' + g.title + '"').join('; '));
+    else add('evid', 'gaps', 'Gap evidence from the papers', 'ok', ev.length + ' evidence cards; every candidate cites at least one.');
+    // 6b the chain: observation > question > proposed answer > prediction
+    const ps0 = (st.plan && st.plan.sections) || {};
+    const chainMiss = ['observation', 'question', 'answer', 'prediction'].filter((k) => !filled(ps0[k]));
+    if (chainMiss.length) add('chain', 'plan', 'Observation, question, proposed answer, prediction', 'block', 'Write: ' + chainMiss.join(', '));
+    else if (!/\?/.test(ps0.question)) add('chain', 'plan', 'Observation, question, proposed answer, prediction', 'block', 'The research question must be a question (end it with a question mark).');
+    else if (!/\bif\b/i.test(ps0.prediction) || !/\bthen\b/i.test(ps0.prediction)) add('chain', 'plan', 'Observation, question, proposed answer, prediction', 'warn', 'Write the prediction as "If my proposed answer is correct, then ..." with a result you could measure, and say what would reject it.');
+    else if (!LIB.keysIn(ps0.observation).length) add('chain', 'plan', 'Observation, question, proposed answer, prediction', 'warn', 'Cite at least one paper from your library in the observation, like [@key].');
+    else add('chain', 'plan', 'Observation, question, proposed answer, prediction', 'ok', 'The chain is complete and the observation cites your library.');
     // 7 research plan
     const pl = st.plan || {}; const ps = pl.sections || {};
     const emptyPlan = SECTION_KEYS.plan.filter((k) => !filled(ps[k]));
@@ -223,16 +245,19 @@
     const emptyPro = sec.filter((s) => !filled(s.text)); const over = sec.filter((s) => s.limit && words(s.text) > s.limit);
     const unverP = sec.filter((s) => sectionState(st, 'pro.' + s.id) !== 'verified');
     const badClaims = (st.claims || []).filter((c) => !c.verified);
-    const refIds = (st.refs || []).map((r) => r.id); const orphan = (st.claims || []).filter((c) => refIds.indexOf(c.ref) < 0);
+    const refs = LIB.refList(st); const refIds = refs.map((r) => r.id); const orphan = (st.claims || []).filter((c) => refIds.indexOf(c.ref) < 0);
     if (!sec.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'No proposal sections.');
     else if (emptyPro.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'Empty sections: ' + emptyPro.map((s) => s.title).join(', '));
     else if (over.length) add('pro', 'pro', 'Grant proposal complete', 'block', 'Over the length limit: ' + over.map((s) => s.title + ' (' + words(s.text) + '/' + s.limit + ')').join(', '));
     else if (!(st.budget || []).length || !(st.budget || []).every((b) => filled(b.item) && filled(b.linksTo) && Number(b.amount) >= 0)) add('pro', 'pro', 'Grant proposal complete', 'block', 'Every budget line needs an item, an amount and the activity it supports.');
     else if (unverP.length) add('pro', 'pro', 'Grant proposal complete', 'warn', unverP.length + ' section(s) not yet marked verified by you.');
     else add('pro', 'pro', 'Grant proposal complete', 'ok', 'All sections written, within limits and verified.');
-    if (!(st.refs || []).length) add('claims', 'pro', 'Citations and claims verified', 'block', 'No references listed.');
+    const unk = LIB.unknownKeys(st); const noDoi = refs.filter((r) => r.fromLibrary && !r.doi);
+    if (unk.length) add('claims', 'pro', 'Citations and claims verified', 'block', 'Citation(s) that are not in your library: ' + unk.map((k) => '[@' + k + ']').join(', '));
+    else if (!refs.length) add('claims', 'pro', 'Citations and claims verified', 'block', 'Nothing is cited. Cite papers from your library with [@key].');
     else if (orphan.length) add('claims', 'pro', 'Citations and claims verified', 'block', 'Claim(s) point to a reference that is not listed.');
     else if (badClaims.length) add('claims', 'pro', 'Citations and claims verified', 'warn', badClaims.length + ' claim(s) not yet checked against the source by you.');
+    else if (noDoi.length) add('claims', 'pro', 'Citations and claims verified', 'warn', noDoi.length + ' cited paper(s) have no DOI to check: ' + noDoi.map((r) => r.id).join(', '));
     else add('claims', 'pro', 'Citations and claims verified', 'ok', 'Every claim checked against its source.');
 
     // 9 twin facts
@@ -260,7 +285,8 @@
 
   // ---------- documents ----------
   const money = (n) => '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  const para = (s) => String(s || '').split(/\n{2,}|\n/).filter(Boolean).map((x) => '<p>' + esc(x) + '</p>').join('') || '<p><em>(empty)</em></p>';
+  let CUR = null; const rc = (t) => LIB.renderCites(esc(t), CUR || {});
+  const para = (s) => String(s || '').split(/\n{2,}|\n/).filter(Boolean).map((x) => '<p>' + rc(x) + '</p>').join('') || '<p><em>(empty)</em></p>';
   const piCard = (id) => (root.RM_DATA && root.RM_DATA.FACULTY.find((f) => f.id === id)) || null;
   const piName = (st) => { const f = piCard(st.pi); return f ? f.honorific + ' ' + f.name : 'the PI'; };
   const PAGE_CSS = 'body{font:11.5pt/1.5 Georgia,serif;color:#111;max-width:7.2in;margin:0 auto;padding:.4in}h1{font:700 20pt Georgia,serif;margin:.1em 0}h2{font:700 13pt Arial,sans-serif;margin:1.1em 0 .2em;border-bottom:1px solid #999;padding-bottom:2px}h3{font:700 11pt Arial,sans-serif;margin:.8em 0 .1em}p{margin:.3em 0}table{border-collapse:collapse;width:100%;font:10pt Arial,sans-serif;margin:.5em 0}td,th{border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top}th{background:#eee}.banner{border:2px solid #b45309;background:#fff7e6;padding:8px 10px;font:700 10.5pt Arial,sans-serif;margin:0 0 12px}.ok{border-color:#15803d;background:#ecfdf3}.small{font:9pt Arial,sans-serif;color:#444}.pb{page-break-before:always}@page{margin:.6in}';
@@ -273,13 +299,14 @@
   function exampleBanner(st) { return st.meta && st.meta.example ? '<div class="banner">WORKED EXAMPLE: the student, dates, hours and budget uses are illustrative. The papers, dataset and funder facts are real and cited.</div>' : ''; }
 
   function planHTML(st) {
+    CUR = st;
     const pl = st.plan, s = pl.sections, cal = calendar(st.profile);
-    const L = { background: 'Background', evidence: 'Supporting evidence', gap: 'The gap', question: 'Research question', aims: 'Specific aims', hypotheses: 'Hypotheses and predictions', variables: 'Variables, units, metadata, missing data and quality checks', analysis: 'Analysis plan, tables and figures', interpretation: 'Interpreting supportive, contradictory and inconclusive results', approvals: 'Training, supervision, permissions, safety and approvals', handoff: 'Handoff to the lab' };
+    const L = { observation: 'Observation', answer: 'Proposed answer to the question (the hypothesis)', prediction: 'Prediction (what I expect to measure, and what would reject the answer)', background: 'Background', evidence: 'Supporting evidence', gap: 'The gap', question: 'Research question', aims: 'Specific aims', variables: 'Variables, units, metadata, missing data and quality checks', analysis: 'Analysis plan, tables and figures', interpretation: 'Interpreting supportive, contradictory and inconclusive results', approvals: 'Training, supervision, permissions, safety and approvals', handoff: 'Handoff to the lab' };
     let h = exampleBanner(st) + banner(st) + '<h1>Research plan</h1><p class="small">' + esc(pl.title || '') + '<br>Student: ' + esc(st.profile.name) + ' &middot; PI: ' + esc(piName(st)) + ' &middot; Window: ' + (isNaN(cal.first) ? '' : fmt(cal.first)) + ' to ' + (isNaN(cal.last) ? '' : fmt(cal.last)) + ' &middot; ' + cal.total + ' hours</p>';
-    ['background', 'evidence', 'gap', 'question', 'aims', 'hypotheses'].forEach((k) => { h += '<h2>' + L[k] + '</h2>' + para(s[k]); });
-    h += '<h2>Experiments and analyses</h2>';
+    ['observation', 'background', 'evidence', 'gap', 'question', 'answer', 'prediction', 'aims'].forEach((k) => { h += '<h2>' + L[k] + '</h2>' + para(s[k]); });
+    h += '<h2>Materials and methods: the experiments and analyses that test the prediction</h2>';
     pl.experiments.forEach((e) => {
-      h += '<h3>' + e.n + '. ' + esc(e.title) + ' (' + esc(e.aim) + ')</h3><table>' + [['Design', e.design], ['Materials and quantities', e.materials], ['Equipment or software', e.equip], ['Methods', e.methods], ['Controls or comparison groups', e.controls], ['Replication', e.replication], ['Sample-size rationale', e.sample], ['Decision it informs', e.decision]].map((r) => '<tr><th style="width:1.7in">' + r[0] + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</table>';
+      h += '<h3>' + e.n + '. ' + esc(e.title) + ' (' + esc(e.aim) + ')</h3><table>' + [['Design', e.design], ['Materials and quantities', e.materials], ['Equipment or software', e.equip], ['Methods', e.methods], ['Controls or comparison groups', e.controls], ['Replication', e.replication], ['Sample-size rationale', e.sample], ['Decision it informs', e.decision]].map((r) => '<tr><th style="width:1.7in">' + r[0] + '</th><td>' + rc(r[1]) + '</td></tr>').join('') + '</table>';
     });
     ['variables', 'analysis', 'interpretation'].forEach((k) => { h += '<h2>' + L[k] + '</h2>' + para(s[k]); });
     h += '<h2>Week-by-week schedule</h2><table><tr><th>Weeks</th><th>Dates</th><th>Work</th><th>Hours</th></tr>' + pl.schedule.map((p) => {
@@ -298,11 +325,12 @@
     return '<table><tr><th>Item</th><th>Amount</th><th>Supports (activity)</th><th>Basis</th></tr>' + st.budget.map((b) => '<tr><td>' + esc(b.item) + '</td><td>' + money(b.amount) + '</td><td>' + esc(b.linksTo) + '</td><td>' + esc(b.basis) + '</td></tr>').join('') + '<tr><th>Total</th><th>' + money(t.total) + '</th><th colspan="2">Student ' + money(t.student) + ' &middot; Supplies ' + money(t.supplies) + '</th></tr></table>';
   }
   function proposalHTML(st) {
+    CUR = st;
     const f = funder(st.funding.primary); const pr = st.proposal;
     let h = exampleBanner(st) + banner(st) + '<h1>Grant proposal</h1><p class="small">' + esc(st.plan.title || '') + '<br>Applicant: ' + esc(st.profile.name) + ' &middot; Mentor: ' + esc(piName(st)) + ' &middot; Funder: ' + esc(f ? f.name : '') + '</p>';
     if (pr.modelNote) h += '<p class="small"><em>' + esc(pr.modelNote) + '</em></p>';
     pr.sections.forEach((s) => { h += '<h2>' + esc(s.title) + (s.limit ? ' <span class="small">(' + words(s.text) + ' of ' + s.limit + ' words)</span>' : '') + '</h2>' + para(s.text); if (s.id === 'budgetnote') h += budgetTable(st); });
-    h += '<h2>References</h2><ul style="list-style:none;padding:0">' + st.refs.map((r) => '<li>[' + esc(r.id) + '] ' + esc(r.cite) + ' <span class="small">doi:' + esc(r.doi) + '</span></li>').join('') + '</ul>';
+    h += '<h2>References</h2><ul style="list-style:none;padding:0">' + LIB.refList(st).map((r) => '<li>' + esc(r.cite) + ' <span class="small">doi:' + esc(r.doi) + '</span></li>').join('') + '</ul>';
     h += '<h2>Claim ledger (student-verified)</h2><table><tr><th>Claim</th><th>Source</th><th>Checked</th></tr>' + st.claims.map((c) => '<tr><td>' + esc(c.text) + '</td><td>' + esc(c.ref) + '</td><td>' + (c.verified ? 'Yes' : 'NOT YET') + '</td></tr>').join('') + '</table>';
     h += '<h2>Pending signatures, letters and commitments</h2><ul>' + st.pending.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>';
     return wrap('Grant proposal: ' + (st.plan.title || ''), h);
@@ -319,6 +347,7 @@
     return out;
   }
   function decisionHTML(st) {
+    CUR = st;
     const rows = decisions(st);
     let h = exampleBanner(st) + banner(st) + '<h1>Decision sheet for ' + esc(piName(st)) + '</h1><p class="small">One page: the decisions I need help with before I submit. From ' + esc(st.profile.name) + '.</p><table><tr><th style="width:1in">Type</th><th>Decision requested</th><th style="width:1.6in">Your answer</th></tr>' + rows.map((r) => '<tr><td>' + esc(r.kind) + '</td><td>' + esc(r.text) + '</td><td>&nbsp;</td></tr>').join('') + '</table>';
     h += '<h2>Pending signatures, letters and commitments</h2><ul>' + st.pending.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>';
@@ -339,6 +368,7 @@
     return { to, subject, body, mailto: 'mailto:' + encodeURIComponent(to).replace(/%40/g, '@') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body) };
   }
   function packetHTML(st) {
+    CUR = st;
     const strip = (h) => h.replace(/^[\s\S]*?<body>/, '').replace(/<\/body>[\s\S]*$/, '').replace(/<div class="banner[^"]*">[\s\S]*?<\/div>/g, '');
     const e = emailDraft(st);
     const cover = exampleBanner(st) + banner(st) + '<h1>Faculty meeting packet</h1><p>For ' + esc(piName(st)) + '. From ' + esc(st.profile.name) + '.</p><p class="small">Contents: (1) grant proposal, (2) research plan, (3) one-page decision sheet, (4) outreach email draft. Outreach and submission stay under the student’s control.</p>';

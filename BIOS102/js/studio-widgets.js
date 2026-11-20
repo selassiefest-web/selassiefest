@@ -71,6 +71,24 @@
     return '<div class="gs-bbar">' + budget.map((b, i) => '<span style="flex:' + Math.max(0.5, (Number(b.amount) || 0) / tot * 100).toFixed(1) + ';background:' + COL[i % COL.length] + '" title="' + esc(b.item + ': ' + C.money(b.amount)) + '"></span>').join('') + '</div><ul class="gs-legend">' + budget.map((b, i) => '<li><i style="background:' + COL[i % COL.length] + '"></i>' + esc(b.item.length > 48 ? b.item.slice(0, 46) + '…' : b.item) + ' <b>' + C.money(b.amount) + '</b></li>').join('') + '</ul>';
   }
 
-  root.StudioWidgets = { CAT, LVL, ring, hoursDonut, weekStrip, radar, lights, gates, budgetBars };
+  // The research chain: papers > gap > observation > question > proposed answer > prediction > materials and methods.
+  function chain(st) {
+    const L = root.StudioLib; const lib = (st.library && st.library.items) || []; const ps = (st.plan && st.plan.sections) || {};
+    const g = (st.gaps || []).find((x) => x.id === st.chosenGap);
+    const exps = (st.plan && st.plan.experiments) || [];
+    const nodes = [
+      ['Papers', lib.filter((i) => i.coll === 'pi').length >= 3 && lib.filter((i) => i.coll === 'related').length >= 3, 'pi', lib.length + ' in library'],
+      ['Gap chosen', !!g && !C.gapScreen(g).out, 'gaps', g ? 'one chosen' : 'not yet'],
+      ['Observation', C.filled(ps.observation) && L.keysIn(ps.observation).length > 0, 'plan', 'from the papers'],
+      ['Question', /\?/.test(ps.question || ''), 'plan', 'ends in ?'],
+      ['Proposed answer', C.filled(ps.answer), 'plan', 'my hypothesis'],
+      ['Prediction', /\bif\b/i.test(ps.prediction || '') && /\bthen\b/i.test(ps.prediction || ''), 'plan', 'If ... then ...'],
+      ['Materials and methods', exps.length > 0 && exps.every((e) => ['design', 'materials', 'equip', 'methods', 'controls', 'replication', 'sample', 'decision'].every((k) => C.filled(e[k]))), 'plan', exps.length + ' experiment(s)'],
+    ];
+    const cur = nodes.findIndex((n) => !n[1]);
+    return '<div class="gs-chain" role="list">' + nodes.map((n, i) => '<button type="button" role="listitem" class="gs-cn' + (n[1] ? ' done' : '') + (i === cur ? ' cur' : '') + '" data-act="go" data-v="' + n[2] + '"><span class="gs-cn-dot">' + (n[1] ? '✓' : i + 1) + '</span><b>' + n[0] + '</b><small>' + n[3] + '</small></button>').join('<i class="gs-cn-line"></i>') + '</div>';
+  }
+
+  root.StudioWidgets = { chain, CAT, LVL, ring, hoursDonut, weekStrip, radar, lights, gates, budgetBars };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.StudioWidgets;
 })(typeof window !== 'undefined' ? window : globalThis);
