@@ -73,6 +73,10 @@ The main session: talks to Stephen, applies approved writes, runs approved sends
 
 Every funder gets its own pitch and its own ask. Read the funder's own pages first (in the real browser via Chrome when the site blocks fetches), then lead with the part of the program the funder says it funds, in its words, and request only the budget lines that fit it, at the program's exact rates and counts. Do not send the whole program or the biggest number to every funder. Example: Conagra Brands Foundation funds food insecurity, so its LOI asks $5,700 for 19 of the 39 snack Tuesdays (snack slice only, same $20 x 15 rate as the $11,700 budget line), with no nutrition-curriculum promise and no other budget lines. Never add a new commitment (for example a nutrition option) to one application unless Stephen approves it for that application. Agents preparing an application must show in their report what the funder funds, which budget lines were chosen and which were left out, and why. See `Claude outputs\conagra\conagra-loi-answers.md` for the worked example.
 
+## File early, never on the due date (Stephen, Nov 21, 2026)
+
+Submit every application, LOI and reply the first day it can be filed. Never schedule it for the deadline or a few days after the window opens unless the funder forces it (for example Conagra accepts LOIs only Jan 1-31, 2027, so file Jan 1, not Jan 4). When a window is not open yet, set the tracker next step and the calendar sentinel event to the opening day, and do all prep now.
+
 ## What this is
 
 A plain static HTML/CSS/JS site for SelassieFest (a roots reggae & cultural festival, run by Ras Tafari Inc, a 501c3). There is no build system, no package manager, and no server-side rendering — every page is a hand-authored, self-contained `.html` file, typically with its CSS inlined in a `<style>` block in the `<head>`. There is nothing to `npm install`, build, lint, or test in the traditional sense.
