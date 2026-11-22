@@ -182,6 +182,77 @@ footer { border-top: 1px solid var(--line); }
 .vip span { display: block; font-size: .72rem; font-weight: 780; letter-spacing: .16em; text-transform: uppercase; opacity: .9; margin-bottom: 4px; }
 .vip + .hero { padding-top: clamp(24px, 4vw, 44px); }
 @media (forced-colors: active) { .vip { border: 3px solid CanvasText; } }
+/* Missions section */
+.missions { padding-block: clamp(40px, 6vw, 72px) 0; }
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+}
+.mission-grid li {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  line-height: 1.3;
+}
+.mission-grid strong { display: block; font-size: .96rem; }
+.mission-grid .n {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 780;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.mission-grid .n::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+.mission-grid li.sway {
+  padding: 0;
+  border: 3px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, var(--spectrum) border-box;
+  box-shadow: 0 10px 26px #6750c933;
+}
+.mission-grid li.sway a { display: block; padding: 11px 13px; color: var(--ink); text-decoration: none; }
+.mission-grid li.sway .tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--spectrum);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 760;
+}
+.mission-feature {
+  scroll-margin-top: 24px;
+  margin-top: 22px;
+  padding: clamp(22px, 4vw, 44px);
+  border: 3px solid transparent;
+  border-radius: 26px;
+  background: linear-gradient(125deg, #f5efff, #f2f6ff 56%, #ebf9fa) padding-box, var(--spectrum) border-box;
+}
+.mission-feature h3 { font-size: clamp(1.8rem, 3.6vw, 2.8rem); font-weight: 820; letter-spacing: -.05em; line-height: 1.05; margin-bottom: 10px; }
+.mission-feature:target { box-shadow: 0 0 0 6px #6750c933; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 18px; }
+.chips li { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-weight: 700; font-size: .9rem; }
+.when { margin-bottom: 14px; line-height: 1.5; }
+.when span { display: block; color: var(--muted); font-size: .88rem; }
+.mission-feature .links { margin: 18px 0 0; }
+.mission-feature .links a:not(.button) { margin-left: 14px; }
+@media (max-width: 760px) { .mission-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 380px) { .mission-grid { grid-template-columns: 1fr; } }
 @media (max-width: 760px) {
   .hero, .details, .steps { grid-template-columns: 1fr; }
   .hero { padding-block: 44px; }
@@ -300,6 +371,40 @@ footer { border-top: 1px solid var(--line); }
       <li><h3>Shape the sound</h3><p>You show what happens when you lift or glide a hand above Sway to sweep a filter. Share one design decision that made the gesture work.</p></li>
       <li><h3>Play it both ways</h3><p>Students take turns with Sway, play the original and altered loop, and describe what they heard.</p></li>
     </ol>
+  </section>
+  <section class="missions" aria-labelledby="missions">
+    <p class="eyebrow">Where your class fits</p>
+    <h2 id="missions">The 14 Missions</h2>
+    <p class="lead">Every Tuesday the Lab features one Mission, and students work through all fourteen at their own pace. Your class lands on Mission 9.</p>
+    <ol class="mission-grid">
+      <li><span class="n" style="--dot:#e53935">Mission 1 · Red</span><strong>Meet the Machine</strong></li>
+      <li><span class="n" style="--dot:#e53935">Mission 2 · Red</span><strong>Build Your Crate</strong></li>
+      <li><span class="n" style="--dot:#fb8c00">Mission 3 · Orange</span><strong>Beats, Bars and Phrases</strong></li>
+      <li><span class="n" style="--dot:#fb8c00">Mission 4 · Orange</span><strong>Mix on the One</strong></li>
+      <li><span class="n" style="--dot:#fdd835">Mission 5 · Yellow</span><strong>Tempo with the Lights On</strong></li>
+      <li><span class="n" style="--dot:#fdd835">Mission 6 · Yellow</span><strong>Beatmatch by Ear</strong></li>
+      <li><span class="n" style="--dot:#43a047">Mission 7 · Green</span><strong>The Three Knobs</strong></li>
+      <li><span class="n" style="--dot:#43a047">Mission 8 · Green</span><strong>Make a Third Song</strong></li>
+      <li class="sway"><a href="#mission-9"><span class="n" style="--dot:#1e88e5">Mission 9 · Blue</span><strong>Hot Cues and Loops</strong><span class="tag">Your Sway class ↓</span></a></li>
+      <li><span class="n" style="--dot:#1e88e5">Mission 10 · Blue</span><strong>Word Flip</strong></li>
+      <li><span class="n" style="--dot:#3949ab">Mission 11 · Indigo</span><strong>Theme Clash Lab</strong></li>
+      <li><span class="n" style="--dot:#3949ab">Mission 12 · Indigo</span><strong>Mic, MC and Live Lab</strong></li>
+      <li><span class="n" style="--dot:#8e24aa">Mission 13 · Violet</span><strong>Build Your Set</strong></li>
+      <li><span class="n" style="--dot:#8e24aa">Mission 14 · Violet</span><strong>Rainbow Showcase</strong></li>
+    </ol>
+    <article class="mission-feature" id="mission-9" aria-labelledby="mission-9-title">
+      <p class="eyebrow">Your Sway class · Mission 9 · Blue</p>
+      <h3 id="mission-9-title">Hot Cues and Loops</h3>
+      <p class="lead">“I can grab any moment in a song instantly.”</p>
+      <ul class="chips" aria-label="Passport skills for Mission 9">
+        <li>Set 4 hot cues</li>
+        <li>Loop one word</li>
+        <li>Build a pad phrase</li>
+      </ul>
+      <p class="when"><strong>Proposed date · Tuesday, March 30, 2027 · 4:00–6:00 p.m. Chicago time</strong><span>Pending Chicago Park District confirmation</span></p>
+      <p>This is the Mission where students first work with pads and loops, which is exactly what your Sway lesson, One Loop, Two Ways, builds on.</p>
+      <p class="links"><a class="button" href="#lesson">See the lesson</a> <a href="https://selassiefest.com/dj-lab/about/curriculum.html">Explore the full curriculum</a></p>
+    </article>
   </section>
   <section class="details" aria-label="Class and visit details">
     <article>
