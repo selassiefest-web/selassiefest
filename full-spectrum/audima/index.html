@@ -111,27 +111,23 @@ figure { margin: 0; }
   box-shadow: 0 16px 36px #19162818;
   text-decoration: none;
 }
-.media {
-  position: relative;
+.sway-product {
   display: grid;
   place-items: center;
+  min-height: 230px;
   aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: radial-gradient(ellipse at 53% 75%, #674abb, #27204c 55%, #171529);
+  padding: clamp(14px, 3vw, 32px);
+  background: radial-gradient(ellipse at 50% 64%, #e7dcff, #f1f1ff 48%, #f8f9fc 76%);
 }
-.media img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-.play {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: #fff;
-  color: #111;
-  box-shadow: 0 3px 16px #0003;
+.sway-product img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 355px;
+  object-fit: contain;
 }
 .demo-label { display: block; padding: 13px 18px; font-weight: 720; }
+.demo-label:focus-visible { outline-offset: -5px; }
 figcaption { margin-top: 11px; }
 .lesson {
   padding: clamp(24px, 4vw, 50px);
@@ -170,11 +166,79 @@ figcaption { margin-top: 11px; }
 }
 .host p { max-width: 63ch; }
 footer { border-top: 1px solid var(--line); }
+.vip {
+  margin-top: clamp(20px, 3vw, 32px);
+  padding: 18px 26px;
+  border-radius: 18px;
+  background: var(--spectrum);
+  color: #fff;
+  text-align: center;
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.3;
+  box-shadow: 0 10px 28px #6750c955;
+}
+.vip span { display: block; font-size: .72rem; font-weight: 780; letter-spacing: .16em; text-transform: uppercase; opacity: .9; margin-bottom: 4px; }
+.vip + .hero { padding-top: clamp(24px, 4vw, 44px); }
+@media (forced-colors: active) { .vip { border: 3px solid CanvasText; } }
 @media (max-width: 760px) {
   .hero, .details, .steps { grid-template-columns: 1fr; }
   .hero { padding-block: 44px; }
 }
 @media (max-width: 380px) { .wrap { width: calc(100% - 32px); } }
+
+.sway-render {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3840 / 2650;
+  container-type: inline-size;
+}
+.sway-graphic-title {
+  position: absolute;
+  inset: 8% 3% auto;
+  z-index: 1;
+  color: #171529;
+  font-size: 1rem;
+  font-size: clamp(.8rem, 5.4cqi, 1.75rem);
+  font-weight: 820;
+  letter-spacing: -.045em;
+  line-height: 1.15;
+  text-align: center;
+}
+.sway-graphic-title .gradient { margin-inline: auto; }
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+    .sway-graphic-title .gradient {
+      background-size: 135% 100%;
+      animation: sway-title-colors 5s ease-in-out infinite alternate;
+    }
+  }
+}
+@keyframes sway-title-colors {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+.sway-render img { width: 100%; height: 100%; max-height: none; }
+.sway-lights { position: absolute; inset: 0; pointer-events: none; visibility: hidden; }
+.sway-render.loaded .sway-lights { visibility: visible; }
+.sway-light-bar {
+  position: absolute;
+  inset: 27.04% 14.22% auto 12.46%;
+  height: 2.78%;
+  background: linear-gradient(90deg, #ff3048 0 33.33%, #ffe237 33.33% 66.66%, #377bff 66.66%);
+  box-shadow: inset 0 0 4px #fff9;
+  clip-path: polygon(.5% 0, 99.5% 0, 100% 100%, 0 100%);
+}
+.sway-pad {
+  position: absolute;
+  inset: var(--top) auto auto var(--left);
+  width: 4.18%;
+  height: 4.7%;
+  border-radius: 11%;
+  transform: skewX(var(--angle));
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--pad) 72%, white), var(--pad) 67%, color-mix(in srgb, var(--pad) 52%, #10091d));
+}
 </style>
 </head>
 <body>
@@ -185,6 +249,7 @@ footer { border-top: 1px solid var(--line); }
   </div>
 </header>
 <main class="wrap">
+  <div class="vip" role="note"><span>Batch 5 VIP</span>Ras Tafari Inc. is proudly on the Audima VIP list for Sway, and we can’t wait to hear from you.</div>
   <section class="hero" aria-labelledby="invitation">
     <div>
       <p class="eyebrow">An invitation for Jeremy Buckley &amp; Isaac Jack</p>
@@ -195,11 +260,35 @@ footer { border-top: 1px solid var(--line); }
       <p class="note">We’ll choose the date together. The visit depends on Chicago Park District approval and the Lab’s launch.</p>
     </div>
     <figure>
-      <a class="demo" href="https://www.youtube.com/watch?v=RnAa7wgdjvg">
-        <div class="media"><img src="https://i.ytimg.com/vi/RnAa7wgdjvg/maxresdefault.jpg" alt="" onerror="this.remove()"><span class="play" aria-hidden="true">▶</span></div>
-        <span class="demo-label">Watch Audima’s Sway overview ↗</span>
-      </a>
-      <figcaption>Audima Labs · Sway MIDI controller</figcaption>
+      <div class="demo">
+        <div class="sway-product">
+          <div class="sway-render">
+            <span class="sway-graphic-title"><span class="gradient">Sway @ Rainbow DJ-Lab</span></span>
+            <img src="https://cdn.audima.com.au/media/images/Renders/webp/Renders_Sway%20MIDI%20Controller%20-%20BEV%20Angled.webp" alt="Sway MIDI controller" onload="this.parentElement.classList.add('loaded')">
+            <div class="sway-lights" aria-hidden="true">
+              <span class="sway-light-bar"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:9.66%;--angle:-9deg;--pad:#ff3048"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:14.31%;--angle:-9deg;--pad:#ff821b"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:18.88%;--angle:-9deg;--pad:#ffdb2f"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:23.53%;--angle:-9deg;--pad:#42d763"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:70.50%;--angle:9deg;--pad:#37c6ff"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:75.07%;--angle:9deg;--pad:#416bff"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:79.65%;--angle:9deg;--pad:#9749ff"></span>
+                <span class="sway-pad" style="--top:47.65%;--left:84.29%;--angle:9deg;--pad:#ed4fc6"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:9.00%;--angle:-9deg;--pad:#ff821b"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:13.64%;--angle:-9deg;--pad:#ffdb2f"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:18.36%;--angle:-9deg;--pad:#42d763"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:23.01%;--angle:-9deg;--pad:#37c6ff"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:70.87%;--angle:9deg;--pad:#416bff"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:75.52%;--angle:9deg;--pad:#9749ff"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:80.24%;--angle:9deg;--pad:#ed4fc6"></span>
+                <span class="sway-pad" style="--top:53.21%;--left:84.88%;--angle:9deg;--pad:#ff3048"></span>
+            </div>
+          </div>
+        </div>
+        <a class="demo-label" href="https://www.youtube.com/watch?v=RnAa7wgdjvg">Watch Sway in action <span aria-hidden="true">↗</span></a>
+      </div>
+      <figcaption>Rainbow DJ Lab lighting concept · Rainbow pads and a red, yellow, and blue light bar · Based on an Audima Labs product render</figcaption>
     </figure>
   </section>
   <section class="lesson" aria-labelledby="lesson">
@@ -233,7 +322,6 @@ footer { border-top: 1px solid var(--line); }
   <section class="host" aria-labelledby="host">
     <h2 id="host">Come teach with us.</h2>
     <p>Jeremy and Isaac, I’d love for our students to hear how Sway came together and then make something of their own with it. If the idea interests you, let’s find a Tuesday that works and plan the class together.</p>
-    <p>Ras Tafari Inc. is proudly a Batch 5 VIP on the Audima list for Sway, and we can’t wait to hear from you.</p>
     <p><strong>Stephen Henry</strong><br>President, Ras Tafari Inc. · Rainbow DJ Lab lead</p>
     <a class="button" href="mailto:stephen@selassiefest.com?subject=Rainbow%20DJ%20Lab%20guest%20class">Reply to Stephen</a>
   </section>
