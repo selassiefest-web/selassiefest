@@ -182,6 +182,42 @@ footer { border-top: 1px solid var(--line); }
 .vip span { display: block; font-size: .72rem; font-weight: 780; letter-spacing: .16em; text-transform: uppercase; opacity: .9; margin-bottom: 4px; }
 .vip + .hero { padding-top: clamp(24px, 4vw, 44px); }
 @media (forced-colors: active) { .vip { border: 3px solid CanvasText; } }
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .sway-pad { animation: sway-pad 2.2s ease-in-out infinite; }
+  .sway-lights .sway-pad:nth-child(2) { animation-delay: -0.00s; }
+  .sway-lights .sway-pad:nth-child(3) { animation-delay: -0.22s; }
+  .sway-lights .sway-pad:nth-child(4) { animation-delay: -0.44s; }
+  .sway-lights .sway-pad:nth-child(5) { animation-delay: -0.66s; }
+  .sway-lights .sway-pad:nth-child(6) { animation-delay: -0.88s; }
+  .sway-lights .sway-pad:nth-child(7) { animation-delay: -1.10s; }
+  .sway-lights .sway-pad:nth-child(8) { animation-delay: -1.32s; }
+  .sway-lights .sway-pad:nth-child(9) { animation-delay: -1.54s; }
+  .sway-lights .sway-pad:nth-child(10) { animation-delay: -0.11s; }
+  .sway-lights .sway-pad:nth-child(11) { animation-delay: -0.33s; }
+  .sway-lights .sway-pad:nth-child(12) { animation-delay: -0.55s; }
+  .sway-lights .sway-pad:nth-child(13) { animation-delay: -0.77s; }
+  .sway-lights .sway-pad:nth-child(14) { animation-delay: -0.99s; }
+  .sway-lights .sway-pad:nth-child(15) { animation-delay: -1.21s; }
+  .sway-lights .sway-pad:nth-child(16) { animation-delay: -1.43s; }
+  .sway-lights .sway-pad:nth-child(17) { animation-delay: -1.65s; }
+  .sway-light-bar { overflow: hidden; }
+  .sway-light-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 34%;
+    background: linear-gradient(90deg, transparent, #ffffffcc, transparent);
+    animation: sway-sweep 3.2s ease-in-out infinite alternate;
+  }
+}
+@keyframes sway-pad {
+  0%, 100% { filter: brightness(.7) saturate(.9); box-shadow: 0 0 0 transparent; }
+  50% { filter: brightness(1.4) saturate(1.3); box-shadow: 0 0 10px 2px var(--pad); }
+}
+@keyframes sway-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
 @media (max-width: 760px) {
   .hero, .details, .steps { grid-template-columns: 1fr; }
   .hero { padding-block: 44px; }
