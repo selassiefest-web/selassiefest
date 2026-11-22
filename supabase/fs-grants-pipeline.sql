@@ -1,3 +1,8 @@
+-- RETIRED 2026-11-21. Already applied; must NEVER be re-run.
+-- Re-running would overwrite the live role-checked versions of fs_grant_save, fs_grant_delete with this older version that has no role check (staff roles went live Nov 18, 2026).
+-- The guard below aborts the whole file before any statement runs. Kept for the historical record. Current versions: Claude outputs\securitys-staff-roles-2026-11-18.sql (private).
+do $$ begin raise exception 'RETIRED script (already applied; re-running would strip the staff role checks). Do not re-run.'; end $$;
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- Full Spectrum GRANT PIPELINE (Grants tab of /full-spectrum/partners.html).
 -- Turns the staff-only fs_grant_deadlines watch-list (fs-grant-deadlines.sql)

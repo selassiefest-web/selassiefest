@@ -1,3 +1,8 @@
+-- RETIRED 2026-11-21. Already applied; must NEVER be re-run.
+-- Re-running would overwrite the live role-checked versions of rs_review_decide with this older version that has no role check (staff roles went live Nov 18, 2026).
+-- The guard below aborts the whole file before any statement runs. Kept for the historical record. Current versions: Claude outputs\securitys-staff-roles-2026-11-18.sql (private).
+do $$ begin raise exception 'RETIRED script (already applied; re-running would strip the staff role checks). Do not re-run.'; end $$;
+
 -- Resident letter of support for Full Spectrum at Rainbow Beach (/full-spectrum/sign/).
 -- Modeled on how Illinois nominating-petition signatures are judged (10 ILCS 5/7-10, 5/10-4; electoral board
 -- records examinations): each signer signs in their own person, gives a complete residence address that is

@@ -1,3 +1,8 @@
+-- RETIRED 2026-11-21. Already applied; must NEVER be re-run.
+-- Re-running would overwrite the live role-checked versions of fs_partner_save, fs_partner_log, fs_partner_delete (and the login-links insert policy, which now requires status 'pending') with this older version that has no role check (staff roles went live Nov 18, 2026).
+-- The guard below aborts the whole file before any statement runs. Kept for the historical record. Current versions: Claude outputs\securitys-staff-roles-2026-11-18.sql (private).
+do $$ begin raise exception 'RETIRED script (already applied; re-running would strip the staff role checks). Do not re-run.'; end $$;
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- Full Spectrum Partner Tracker (/full-spectrum/partners.html) -- Stephen's
 -- private pipeline for bringing partners on board for Full Spectrum at

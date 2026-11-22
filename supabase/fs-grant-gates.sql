@@ -1,3 +1,8 @@
+-- RETIRED 2026-11-21. Already applied; must NEVER be re-run.
+-- Re-running would overwrite the live role-checked versions of fs_grant_save with this older version that has no role check (staff roles went live Nov 18, 2026).
+-- The guard below aborts the whole file before any statement runs. Kept for the historical record. Current versions: Claude outputs\securitys-staff-roles-2026-11-18.sql (private).
+do $$ begin raise exception 'RETIRED script (already applied; re-running would strip the staff role checks). Do not re-run.'; end $$;
+
 -- Full Spectrum grants: READINESS GATES. Replaces "skip / not eligible" for funders we cannot ask yet
 -- with the specific gate(s) that unlock them, so the Grants tab can show "what is missing" per funder.
 --   g0 Compliance and identity (IL AG registration, SAM.gov, one address, assumed-names consent)

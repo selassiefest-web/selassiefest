@@ -1,3 +1,8 @@
+-- RETIRED 2026-11-21. Already applied; must NEVER be re-run.
+-- Re-running would overwrite the live role-checked versions of fs_partner_logo_save with this older version that has no role check (staff roles went live Nov 18, 2026).
+-- The guard below aborts the whole file before any statement runs. Kept for the historical record. Current versions: Claude outputs\securitys-staff-roles-2026-11-18.sql (private).
+do $$ begin raise exception 'RETIRED script (already applied; re-running would strip the staff role checks). Do not re-run.'; end $$;
+
 -- Partner page logo: show a partner's own logo at the top of /partner/?k=<pitch_key>, only once they give permission.
 -- page_logo_url: the image to show (defaults to the logo they sent for their flyer, flyer->>'logo_url').
 -- page_logo_ok: staff tick this in the tracker when the partner says we may use their logo. Until then the page shows their name only.
