@@ -218,6 +218,16 @@ footer { border-top: 1px solid var(--line); }
   from { transform: translateX(-100%); }
   to { transform: translateX(300%); }
 }
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .sway-render img, .sway-lights {
+    transform-origin: 50% 70%;
+    animation: sway-rock 4.2s ease-in-out infinite alternate;
+  }
+}
+@keyframes sway-rock {
+  from { transform: translateX(-2.5%) rotate(-2.2deg); }
+  to { transform: translateX(2.5%) rotate(2.2deg); }
+}
 @media (max-width: 760px) {
   .hero, .details, .steps { grid-template-columns: 1fr; }
   .hero { padding-block: 44px; }
