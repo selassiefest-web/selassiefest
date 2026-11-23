@@ -165,7 +165,7 @@ const FRAMES = [
 
   { c:'red', c2:'gold', icon:'fa-hand-holding-dollar', image:'/full-spectrum/blick/img/05-two-fifty.jpg', tag:'$250 at Blick', label:'The commitment',
     headline:'Every dollar of our $250 art grant is spent at Blick',
-    bullets:['Jane Goodall&rsquo;s Roots &amp; Shoots awarded Ras Tafari Inc. a <b>$250 project grant</b> to make the art for a Rainbow Wednesday','It buys <b>art materials only</b>. We will buy all of it from Blick','A gift certificate from Blick would let each artist buy what that week&rsquo;s design needs across all 14 weeks','<a href="https://selassiefest.com/donors/?k=yef5fwsf95zjwbgt">See the lawn plan</a>'],
+    bullets:['Jane Goodall&rsquo;s Roots &amp; Shoots awarded Ras Tafari Inc. a <b>$250 project grant</b> to make the art for a Rainbow Wednesday','It buys <b>art materials only</b>. We will buy all of it from Blick','A gift certificate from Blick would let each artist buy what that week&rsquo;s design needs across all 14 weeks','<a href="https://selassiefest.com/donors/?k=yef5fwsf95zjwbgt" target="_blank" rel="noopener noreferrer">See the lawn plan</a>'],
     voice:['Here is our commitment.','Jane Goodall\'s Roots and Shoots awarded us a two hundred fifty dollar project grant to make the art for a Rainbow Wednesday.','It can only buy art materials. And we are spending every dollar of it at Blick.','A Blick gift certificate would let each artist buy what that week\'s design needs, across all fourteen weeks.'] },
 
   { c:'blue', c2:'gold', icon:'fa-people-group', image:'/full-spectrum/blick/img/06-the-crowd.jpg', tag:'300 a night', label:'The audience',
@@ -270,6 +270,11 @@ function renderFrames(){
   });
 }
 
+// Any web link inside the deck opens in a new tab so the narration keeps playing.
+function openLinksInNewTab(){
+  document.querySelectorAll('#frame-viewer a[href^="http"], #frame-viewer a[href^="/"]').forEach(a => { a.target = '_blank'; a.rel = 'noopener noreferrer'; });
+}
+
 function renderDots(){
   const dots = document.getElementById('progress-dots');
   dots.innerHTML = '';
@@ -364,7 +369,7 @@ function begin(withSound){
   state.playing = withSound;
   document.getElementById('start-screen').hidden = true;
   document.getElementById('deck').hidden = false;
-  renderFrames(); renderDots(); goTo(0);
+  renderFrames(); openLinksInNewTab(); renderDots(); goTo(0);
 }
 
 document.getElementById('begin-btn').addEventListener('click', () => begin(true));
