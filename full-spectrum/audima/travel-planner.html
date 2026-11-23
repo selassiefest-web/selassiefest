@@ -49,6 +49,10 @@ textarea{width:100%;min-height:300px;line-height:1.45}
 .chk input{margin-top:5px}
 .day{border-left:4px solid var(--rd-gold);padding:4px 12px;margin:8px 0;background:#fcfbf6}
 .day h4{margin:0;font-size:20px}
+details{border:1px solid var(--line);border-radius:8px;margin:10px 0;padding:6px 12px;background:#fcfbf6}
+summary{cursor:pointer;font-size:21px;padding:4px 0}
+details ul{margin:6px 0 8px;padding-left:22px}
+select.st,select.dst{max-width:190px}
 footer{text-align:center;color:#000;font-size:15px;padding:20px}
 @media print{nav,.noprint,button{display:none!important}body{background:#fff}section{break-inside:avoid;border:1px solid #bbb}td[contenteditable],div[contenteditable],input,select,textarea{background:#fff}}
 @media(max-width:700px){input.q,input.u{width:64px}th,td{padding:3px}}
@@ -61,7 +65,7 @@ footer{text-align:center;color:#000;font-size:15px;padding:20px}
 </header>
 <div class="stripe"></div>
 <nav>
-  <a href="#s1">1 Decision</a><a href="#s2">2 Travelers</a><a href="#s3">3 Flights</a><a href="#s4">4 Lodging</a><a href="#s5">5 Ground</a><a href="#s6">6 Meals</a><a href="#s7">7 Entry and legal</a><a href="#s8">8 Gear</a><a href="#s9">9 Hospitality</a><a href="#s10">10 Itinerary</a><a href="#s11">11 Budget</a><a href="#s12">12 Sources</a><a href="#s13">13 Checklist</a><a href="#s14">14 Backup plans</a>
+  <a href="#s1">1 Decision</a><a href="#s2">2 Travelers</a><a href="#s3">3 Flights</a><a href="#s4">4 Lodging</a><a href="#s5">5 Ground</a><a href="#s6">6 Meals</a><a href="#s7">7 Entry and legal</a><a href="#s8">8 Gear</a><a href="#s9">9 Hospitality, press, recognition</a><a href="#s10">10 Itinerary</a><a href="#s11">11 Budget</a><a href="#s12">12 Sources</a><a href="#s13">13 Checklist</a><a href="#s14">14 Backup plans</a>
   <span class="sp"></span>
   <span id="saved" style="font-size:15px;color:#000">autosave on</span>
   <button class="sm" data-act="export">Save copy (.json)</button>
@@ -326,21 +330,112 @@ Stephen</textarea>
 
 <section id="s9">
   <h2><span class="n">9</span>Hospitality, press and recognition</h2>
-  <p class="sub">What our invitation page already promises Audima: press effort, a documentarian, credit across pages, materials and social, Chicago retailer outreach, music-community invitations and a post-visit story. Make each promise a task with an owner.</p>
-  <table>
-    <tr><th>Promise / touch</th><th>Owner</th><th>Due</th><th>Done</th></tr>
-    <tr><td contenteditable="true">Welcome kit in the room (water, snacks, Chicago map, Sway T-shirt if a sponsor confirms, notebook, contact card with Stephen's 24/7 cell)</td><td contenteditable="true">Albert / volunteer</td><td contenteditable="true">Thu Mar 25</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Documentarian booked and parent consents on file</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 1</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Press release / media advisory (local music and education press, Chicago Park District comms)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 15</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Retailer visits: Chicago music shops that could stock Sway (introductions set up in advance)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 20</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Music-community invitation: producers, DJs, school teachers invited to the class as observers</td><td contenteditable="true">Albert</td><td contenteditable="true">Mar 22</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Credit lines: Audima on the DJ Lab pages, materials, social posts (Rainbow DJ Lab guest class)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 30</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Student moment: each student's first Sway try, photo with guests (consent)</td><td contenteditable="true">Instructors</td><td contenteditable="true">Mar 30</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true"><b>T-shirt sponsor:</b> find a sponsor to donate T-shirts that say Sway (if possible). We have no SelassieFest shirts. Needs: Audima&#39;s OK to use the Sway name and logo, art file, sizes for the two guests, instructors, volunteers and students, and a delivery date before Mar 25.</td><td contenteditable="true">Stephen</td><td contenteditable="true">Order by Feb 15</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Thank-you gift (Chicago-made, small) and handwritten card</td><td contenteditable="true">Stephen</td><td contenteditable="true">Apr 1</td><td><input type="checkbox"></td></tr>
-    <tr><td contenteditable="true">Post-visit story and photos to Audima within 7 days; thank-you note to hotel / airline sponsors</td><td contenteditable="true">Stephen</td><td contenteditable="true">Apr 8</td><td><input type="checkbox"></td></tr>
-  </table>
-  <div class="noprint"><button class="sm" data-act="addrow">+ add row</button></div>
+  <p class="sub">Open each dropdown. The tracker counts progress automatically. What our invitation page already promises Audima (press effort, a documentarian, credit, retailer outreach, music-community invitations, a post-visit story) is built into the tracker as tasks with an owner.</p>
+  <div class="kpis">
+    <div class="kpi"><b id="t-pct">0%</b><span>Tasks done</span></div>
+    <div class="kpi"><b id="t-done">0</b><span>Done</span></div>
+    <div class="kpi"><b id="t-open">0</b><span>Open</span></div>
+    <div class="kpi"><b id="t-blocked">0</b><span>Blocked or waiting</span></div>
+    <div class="kpi"><b id="d-ready">0</b><span>Documents ready</span></div>
+    <div class="kpi"><b id="d-need">0</b><span>Documents still needed</span></div>
+  </div>
+
+  <details open><summary><b>Hospitality</b>: how we host Isaac and Jeremy</summary>
+    <ul>
+      <li>Arrival Thu Mar 25: ORD meet-and-greet, volunteer driver, early check-in, welcome kit, light early dinner.</li>
+      <li>Two Jamaican dinner nights covered by Ras Tafari Inc.: Fri Mar 26 and Wed Mar 31. Other dinners follow the Chicago food list in section 6.</li>
+      <li>Recovery days Fri to Mon; Mon Mar 29 room visit at Rainbow Beach Park; class day Tue Mar 30 (3:30 to 7:00 pm).</li>
+      <li>Departure Thu Apr 1 with a thank-you gift and a farewell stop.</li>
+      <li>Everything dietary, accessibility and medical collected in advance.</li>
+    </ul>
+  </details>
+
+  <details><summary><b>Press</b>: reach every Chicago outlet</summary>
+    <ul>
+      <li>Chicago Park District confirms the date first, then Audima approves the wording, then we file.</li>
+      <li>Media advisory about Mar 16, press release Mar 23, reminder Mar 29, recap and photos Mar 31.</li>
+      <li>Outlets: newspapers, community and Black press, public media, TV and radio, music and trade press, calendar listings, local music shops and schools. Filing is online only.</li>
+      <li>Photo opportunity 3:30 to 4:30 pm. Photos and video only with signed parent consent.</li>
+      <li>Full kit (fact sheet, advisory, release, outlet table) is in the private press kit file; it is a draft and waits on the CPD hold.</li>
+    </ul>
+  </details>
+
+  <details><summary><b>Recognition</b>: credit, thanks and the record</summary>
+    <ul>
+      <li>Audima credited on DJ Lab pages, materials and social. Guests thanked in person and in writing.</li>
+      <li>Sway T-shirts if a sponsor donates them (we have no SelassieFest shirts).</li>
+      <li>Certificates for the guests and for students who complete Mission 9.</li>
+      <li>Thank-you notes to every sponsor, the hotel, the driver, the restaurants and CPD staff within a week.</li>
+      <li>Post-visit story and photos sent to Audima within 7 days; every cost and gift logged in the tracker.</li>
+    </ul>
+  </details>
+
+  <details open><summary><b>Tracker</b>: every task with owner, due date and status</summary>
+    <table id="trk">
+      <tr><th>Area</th><th>Task</th><th>Owner</th><th>Due (2027)</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Hotel booked or sponsor in-kind confirmed (2 rooms, Thu Mar 25 to Thu Apr 1); confirmation numbers saved</td><td contenteditable="true">Stephen</td><td contenteditable="true">Feb 15</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Hilton, Hyatt, IHG, Marriott asks are out or ready; tailor each to what it funds</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Early check-in request for Thu Mar 25 (arrival about 2:30 pm)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 18</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Quiet rooms, strong Wi-Fi, desk for gear</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Volunteer driver and backup driver named; insurance confirmed; numbers shared with guests 24 hours ahead</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 1</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Covers all local rides; $0 cash</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Airport meet-and-greet at ORD with name sign, welcome kit and bags help (Thu Mar 25, about 2:30 pm)</td><td contenteditable="true">Driver</td><td contenteditable="true">Mar 25</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Track the flight</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Welcome kit packed: water, snacks, Chicago map, notebook, contact card with Stephen&#39;s 24/7 cell, Sway T-shirt if sponsored</td><td contenteditable="true">Albert</td><td contenteditable="true">Mar 24</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Dietary needs, allergies and accessibility collected from both guests</td><td contenteditable="true">Stephen</td><td contenteditable="true">Feb 1</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Section 2 of this planner</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Jamaican dinner night 1 booked: Ja&#39; Grill, Fri Mar 26 (RTI pays, 5 people)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 10</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Confirm hours; reservation</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Jamaican dinner night 2 booked: Little Jamaica Jerk Cuisine, Wed Mar 31 (RTI pays, 5 people)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 10</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Confirm hours; carryout may be the only option</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Other dinners: pizza, Italian beef, Harold&#39;s list sent to the guests with addresses and hours</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 15</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Their own cost</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Mon Mar 29 room visit at Rainbow Beach Park: arrival time and who opens the room</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 22</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">CPD allows it; no projector, all hands on</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Class-day logistics: pickup 2:00 pm, set up 2:30 pm, class 3:30 to 7:00 pm, snack break, team dinner</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 22</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Harold&#39;s Chicken team dinner is optional</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Thank-you gift (Chicago-made, small) and handwritten card ready by Thu Apr 1</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 28</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Garrett Popcorn or similar</td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Departure: ride to ORD Thu Apr 1, optional Rainbow Cone stop</td><td contenteditable="true">Driver</td><td contenteditable="true">Apr 1</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Hospitality</td><td contenteditable="true">Travel funds ($4,000 flights) sent by wire or Wise after CPD confirms; travel expense agreement and receipts</td><td contenteditable="true">Stephen</td><td contenteditable="true">After CPD confirms</td><td><select class="st"><option>Blocked</option><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Waiting on CPD date; accountant check on reporting</td></tr>
+    <tr><td>Press</td><td contenteditable="true">CPD confirms the date, photo and press rules in writing</td><td contenteditable="true">Stephen</td><td contenteditable="true">Dec 15</td><td><select class="st"><option>Waiting on others</option><option>Not started</option><option>In progress</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Everything below waits on this</td></tr>
+    <tr><td>Press</td><td contenteditable="true">Audima approves wording, quotes and the Sway name and logo</td><td contenteditable="true">Isaac</td><td contenteditable="true">Feb 15</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Press</td><td contenteditable="true">Stephen&#39;s quote and boilerplate written and approved</td><td contenteditable="true">Stephen</td><td contenteditable="true">Feb 28</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">No quotes are written for anyone</td></tr>
+    <tr><td>Press</td><td contenteditable="true">Media advisory filed with every Chicago outlet (online tip forms)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 16</td><td><select class="st"><option>Blocked</option><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">CPD hold; Stephen says send</td></tr>
+    <tr><td>Press</td><td contenteditable="true">Press release filed (full release plus fact sheet)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 23</td><td><select class="st"><option>Blocked</option><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Press</td><td contenteditable="true">Calendar listings submitted (Choose Chicago, Time Out, Reader, Eventbrite)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 16</td><td><select class="st"><option>Blocked</option><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Press</td><td contenteditable="true">Documentarian booked and parent consents on file</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 1</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Section 7</td></tr>
+    <tr><td>Press</td><td contenteditable="true">Reminder to outlets Mon Mar 29; photo opportunity 3:30 to 4:30 pm briefing</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 29</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Press</td><td contenteditable="true">Recap and photos sent to outlets Wed Mar 31</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 31</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Press</td><td contenteditable="true">Retailer and school outreach: Chicago music shops invited to observe</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 20</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Promised to Audima</td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Credit for Audima on the DJ Lab pages, materials and social (Rainbow DJ Lab guest class)</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 30</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Promised on the invitation page</td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Sway T-shirt sponsor found (about 30 shirts); art and Audima approval</td><td contenteditable="true">Stephen</td><td contenteditable="true">Order by Feb 15</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">No SelassieFest shirts exist</td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Student moment: each student&#39;s first Sway try; photos only with consent</td><td contenteditable="true">Instructors</td><td contenteditable="true">Mar 30</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Guest certificate or plaque for Isaac and Jeremy; student participation certificates for Mission 9</td><td contenteditable="true">Stephen</td><td contenteditable="true">Mar 28</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Post-visit story and photos to Audima within 7 days</td><td contenteditable="true">Stephen</td><td contenteditable="true">Apr 8</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Thank-you notes to every sponsor and the hotel, airline, driver, restaurant and CPD staff</td><td contenteditable="true">Stephen</td><td contenteditable="true">Apr 8</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td>Recognition</td><td contenteditable="true">Log every cost and sponsor gift in the tracker; update the Audima row; close the loop</td><td contenteditable="true">Stephen</td><td contenteditable="true">Apr 8</td><td><select class="st"><option>Not started</option><option>In progress</option><option>Waiting on others</option><option>Blocked</option><option>Done</option><option>Dropped</option></select></td><td contenteditable="true">Supabase row b8d73772</td></tr>
+    </table>
+    <div class="noprint"><button class="sm" data-act="addtask">+ add task</button></div>
+  </details>
+
+  <details open><summary><b>Documents ready</b>: what exists and what is still needed</summary>
+    <table id="docs">
+      <tr><th>Document</th><th>Status</th><th>Where it is</th></tr>
+    <tr><td contenteditable="true">Reply to Isaac: travel offer, flight funds, class date</td><td><select class="dst"><option>Draft ready</option><option>Needed</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Planner section 1 draft; send only on "send"</td></tr>
+    <tr><td contenteditable="true">Invitation page for Audima (Mission 9)</td><td><select class="dst"><option>Ready</option><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">https://selassiefest.com/full-spectrum/audima/</td></tr>
+    <tr><td contenteditable="true">This travel and hospitality planner</td><td><select class="dst"><option>Ready</option><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">https://selassiefest.com/full-spectrum/audima/travel-planner.html</td></tr>
+    <tr><td contenteditable="true">Press kit: fact sheet, media advisory, press release, outlet list</td><td><select class="dst"><option>Draft ready</option><option>Needed</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Stephen&#39;s PC, Claude outputs, audima folder (private)</td></tr>
+    <tr><td contenteditable="true">Lesson outline for Mission 9, Hot Cues and Loops (for Isaac to review)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Based on https://selassiefest.com/dj-lab/curriculum.html</td></tr>
+    <tr><td contenteditable="true">Class-day run of show (setup, 3:30 to 7:00 pm, snack break, close)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Station layout map for 12 stations (all hands on, no projector)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Make after the Mar 29 room visit</td></tr>
+    <tr><td contenteditable="true">Invitation letter on Ras Tafari Inc. letterhead (purpose, dates, volunteer class, who pays what, EIN 42-3036705)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">For ESTA and airlines if asked</td></tr>
+    <tr><td contenteditable="true">Travel expense agreement: $4,000 flight funds, receipts, refund if cancelled</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Accountant or attorney to review</td></tr>
+    <tr><td contenteditable="true">Bank details from Audima and transfer receipt</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Never stored in this file</td></tr>
+    <tr><td contenteditable="true">Chicago Park District written approval of the date, photo and press rules</td><td><select class="dst"><option>Waiting</option><option>Needed</option><option>Draft ready</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Requested; ball with CPD</td></tr>
+    <tr><td contenteditable="true">Certificate of insurance for the class (if CPD asks)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Parent photo and video consent forms for students</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Guest release and media consent for Isaac and Jeremy</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Flight itineraries and confirmations (Audima books)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Audima sends</td></tr>
+    <tr><td contenteditable="true">ESTA approvals and travel insurance proof (Audima)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Audima sends</td></tr>
+    <tr><td contenteditable="true">Hotel confirmation numbers (or sponsor in-kind letters)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Driver sheet: names, phones, pickup times, backup driver</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Restaurant bookings: Ja&#39; Grill and Little Jamaica Jerk Cuisine</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Sway T-shirt art file, Audima logo approval and sponsor letter</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true"></td></tr>
+    <tr><td contenteditable="true">Sponsor thank-you letters (hotel, airline, printer, restaurants)</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">After the trip</td></tr>
+    <tr><td contenteditable="true">Post-visit story and photo set</td><td><select class="dst"><option>Needed</option><option>Draft ready</option><option>Waiting</option><option>Ready</option><option>Sent</option><option>Not required</option></select></td><td contenteditable="true">Apr 8</td></tr>
+    </table>
+    <div class="noprint"><button class="sm" data-act="adddoc">+ add document</button></div>
+  </details>
 </section>
 
 <section id="s10">
@@ -443,7 +538,7 @@ Stephen</textarea>
 
 <script>
 (function(){
-  var KEY='audima-travel-planner-v1', app=document.getElementById('app'), saved=document.getElementById('saved');
+  var KEY='audima-travel-planner-v2', app=document.getElementById('app'), saved=document.getElementById('saved');
   var initial=app.innerHTML;
   function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
   function sync(){
@@ -455,6 +550,7 @@ Stephen</textarea>
       Array.prototype.forEach.call(s.options,function(o,k){ if(k===s.selectedIndex) o.setAttribute('selected',''); else o.removeAttribute('selected'); });
     });
     app.querySelectorAll('textarea').forEach(function(t){ t.textContent=t.value; });
+    app.querySelectorAll('details').forEach(function(d){ if(d.open) d.setAttribute('open',''); else d.removeAttribute('open'); });
   }
   function save(){
     sync();
@@ -494,6 +590,13 @@ Stephen</textarea>
       var t=td.getAttribute('data-tier');
       td.textContent= t==='A'?money(tierA) : t==='B'?money(tierA+share) : money(all.tot-all['Audima']);
     });
+    var ts=document.querySelectorAll('#trk select.st'), n=0, dn=0, bl=0, dr=0;
+    ts.forEach(function(x){ if(x.value==='Dropped'){dr++;} else if(x.value==='Done'){dn++;} else if(x.value==='Blocked'||x.value==='Waiting on others'){bl++;} });
+    n=ts.length-dr;
+    set('t-done',dn); set('t-open',Math.max(0,n-dn-bl)); set('t-blocked',bl); set('t-pct',n?Math.round(dn*100/n)+'%':'0%');
+    var dd=document.querySelectorAll('#docs select.dst'), rd=0, nd=0;
+    dd.forEach(function(x){ if(x.value==='Ready'||x.value==='Sent') rd++; else if(x.value==='Needed'||x.value==='Draft ready'||x.value==='Waiting') nd++; });
+    set('d-ready',rd); set('d-need',nd);
     window._rollup={cats:cats,all:all,tierA:tierA,share:share};
   }
   function draft(){
@@ -527,7 +630,13 @@ Stephen</textarea>
     } else if(a==='addchk'){
       var m=document.getElementById('master'), d=document.createElement('div'); d.className='chk';
       d.innerHTML='<input type="checkbox"><span contenteditable="true">New item</span>'; m.appendChild(d); save();
-    } else if(a==='draft'){ calc(); draft(); }
+    } else if(a==='addtask'||a==='adddoc'){
+      var tb=document.getElementById(a==='addtask'?'trk':'docs'); var last=tb.rows[tb.rows.length-1]; var nr=last.cloneNode(true);
+      nr.querySelectorAll('td[contenteditable]').forEach(function(td){td.textContent='';});
+      nr.querySelectorAll('select').forEach(function(x){x.selectedIndex=0;});
+      tb.tBodies[0].appendChild(nr); calc(); save();
+    }
+    else if(a==='draft'){ calc(); draft(); }
     else if(a==='export'){
       sync(); var blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
       var l=document.createElement('a'); l.href=URL.createObjectURL(blob); l.download='audima-travel-planner-copy.html'; l.click();
