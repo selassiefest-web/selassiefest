@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Audima Visit: Options A, B and C Compared</title>
+<style>
+:root{--red:#D2292D;--gold:#EDBB2E;--blue:#2F6AC0;--line:#ddd8c8;--edit:#fffbe6}
+*{box-sizing:border-box}
+body{margin:0;font:19px/1.55 system-ui,Segoe UI,Arial,sans-serif;background:#f7f5ef;color:#000}
+header{background:#000;color:#fff;padding:20px 24px;border-bottom:6px solid var(--gold)}
+header h1{margin:0 0 6px;font-size:30px}
+header p{margin:0;font-size:17px;color:#fff}
+.stripe{height:6px;background:linear-gradient(90deg,var(--red) 33%,var(--gold) 33% 66%,var(--blue) 66%)}
+main{max-width:1150px;margin:0 auto;padding:16px}
+section{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:16px 0}
+h2{margin:0 0 8px;font-size:26px;border-left:6px solid var(--red);padding-left:10px}
+h3{font-size:21px;margin:12px 0 4px}
+table{width:100%;border-collapse:collapse;font-size:18px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#efeadb;color:#000;font-size:15px;text-transform:uppercase;letter-spacing:.3px}
+td.r,th.r{text-align:right}
+td[contenteditable],div[contenteditable],input,select{background:var(--edit)}
+input,select{font:inherit;font-size:18px;color:#000;border:1px solid var(--line);border-radius:4px;padding:3px 6px}
+input.n{width:120px;text-align:right}
+input.s{width:70px;text-align:center}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{border:2px solid #000;border-radius:10px;padding:14px 16px;background:#fff}
+.card.pick{border-color:var(--red);box-shadow:0 0 0 4px var(--gold)}
+.card h3{margin:0 0 4px;font-size:24px}
+.big{font-size:34px;font-weight:700}
+.row{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:4px 0;font-size:18px}
+.tag{display:inline-block;background:var(--gold);color:#000;font-weight:700;padding:2px 10px;border-radius:12px;font-size:15px}
+.note{background:#eaf1fb;border-left:5px solid var(--blue);padding:10px 14px;margin:10px 0;border-radius:4px;font-size:17px}
+.ok{background:#fff6d6;border-left:5px solid var(--gold);padding:10px 14px;margin:10px 0;border-radius:4px;font-size:17px}
+.warn{background:#fdecea;border-left:5px solid var(--red);padding:10px 14px;margin:10px 0;border-radius:4px;font-size:17px}
+.ctl{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.ctl label{font-size:18px}
+a{color:#000}
+.win{background:var(--gold);font-weight:700}
+@media print{.noprint{display:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Audima Visit to Chicago: Options A, B and C Compared</h1>
+<p>Rainbow DJ Lab guest class, Tue Mar 30, 2027 &middot; Isaac Jack and Jeremy Buckley, Sydney to Chicago &middot; Edit the yellow cells and every result recalculates &middot; Private working page (noindex)</p>
+</header>
+<div class="stripe"></div>
+<main id="app">
+
+<section>
+<h2>The three options</h2>
+<table>
+<tr><th>Option</th><th>What Ras Tafari Inc. does</th><th>What Audima does</th></tr>
+<tr><td><b>A. Hospitality + 60% of flights</b><br><span class="tag">Stephen&#39;s pick, Nov 23</span></td><td>Hosts the stay (hotel, volunteer driver, two sponsored Jamaican dinners) and sends 60% of the flight cost as funds</td><td>Books flights with their own points, pays the other 40%, insurance and own meals</td></tr>
+<tr><td><b>B. Hospitality only</b></td><td>Hosts the stay; sends nothing toward flights</td><td>Pays all flights</td></tr>
+<tr><td><b>C. Hospitality + 100% of flights</b></td><td>Hosts the stay and sends the full flight funds (or a sponsor pays them)</td><td>Pays only insurance, own meals and incidentals</td></tr>
+</table>
+<div class="note">I defined B and C so that the three options cover the full range: nothing toward flights (B), 60% (A), all of it (C). Earlier drafts called the flight-share tier B and the full trip C. Change the labels if you prefer them in a different order.</div>
+</section>
+
+<section>
+<h2>Inputs (edit these)</h2>
+<div class="ctl">
+<label>Total flights for both (USD) <input class="n" id="fbase" type="number" value="4000"></label>
+<label>Option A share paid by RTI (%) <input class="s" id="fpct" type="number" value="60"></label>
+<label><input type="checkbox" id="hotelgift"> Hotel rooms donated by a sponsor (Hilton, Hyatt, IHG, Marriott)</label>
+</div>
+<p style="font-size:17px">$4,000 is the ceiling you set. The purchasing target is $2,400 to $3,200 for both; if they book near the target, every flight figure below drops by a quarter or more. Flights are booked by Audima so they can use frequent flyer points.</p>
+</section>
+
+<section>
+<h2>Results at a glance</h2>
+<div class="cards" id="cards"></div>
+<div class="note" id="insight"></div>
+</section>
+
+<section>
+<h2>Where every dollar goes</h2>
+<p style="font-size:17px">Edit any amount or who pays. &quot;RTI&quot; is cash from Ras Tafari Inc.; &quot;Audima&quot; is the guests&#39; own money; &quot;In-kind&quot; is a sponsor gift. Flights are handled separately by option.</p>
+<table id="lines">
+<tr><th>Line</th><th class="r">Amount (USD)</th><th>Paid by</th><th>Basis</th></tr>
+</table>
+<table id="split">
+<tr><th>Totals by who pays</th><th class="r">A. Hospitality + 60%</th><th class="r">B. Hospitality only</th><th class="r">C. Hospitality + 100%</th></tr>
+</table>
+</section>
+
+<section>
+<h2>Judgment criteria: weighted scorecard</h2>
+<p style="font-size:17px">Score each option 1 (poor) to 5 (best) and set weights 1 to 5. The highest weighted total is highlighted. My starting scores are a judgment call: change them.</p>
+<table id="score">
+<tr><th>Criterion</th><th class="r">Weight</th><th class="r">A</th><th class="r">B</th><th class="r">C</th><th>Why</th></tr>
+</table>
+</section>
+
+<section>
+<h2>Decisions already locked (from the deliberation)</h2>
+<ul>
+<li>Guests: Isaac Jack and Jeremy Buckley (Audima Labs), flying from Sydney. Arrive Thu Mar 25, 2027; return Thu Apr 1 (or Apr 2 to 4).</li>
+<li>Class: Tue Mar 30, 2027, 3:30 to 7:00 pm at Rainbow Beach Park (pending CPD written confirmation). Mission 9, Hot Cues and Loops. No projector: all hands on, 12 stations.</li>
+<li>Flights: Economy, one stop (Air Canada via Vancouver first choice), total ceiling $4,000, target $2,400 to $3,200. Audima books them. We send funds by wire or Wise (ACH and Zelle need a US account).</li>
+<li>Hospitality: 2 rooms for 7 nights, volunteer driver for every local ride (no cost), recovery days Fri to Mon, Mon Mar 29 room visit (CPD allows).</li>
+<li>Dinners: 7 in Chicago. Two Jamaican dinners are sponsored, one by Jerky Jerk (Fri Mar 26) and one by our second affiliated restaurant (Wed Mar 31, name to confirm). The other dinners are the guests&#39; own.</li>
+<li>Removed or not needed: Lyft and Uber, SelassieFest shirts, the background check item, the projector.</li>
+<li>Recognition: Sway T-shirts if a sponsor donates them; press kit for every Chicago outlet drafted and on hold.</li>
+<li>Hold: nothing goes to Audima, sponsors or the press until Chicago Park District confirms the date and you say &quot;send&quot;.</li>
+</ul>
+</section>
+
+<section>
+<h2>Risks that apply to every option</h2>
+<div class="warn"><b>Date risk:</b> CPD has not confirmed Mar 30. Sending flight funds, or letting Audima book, before that is the biggest exposure. The safest sequence: CPD confirms, you send the reply, then funds go out. If the date moves, Audima needs flexible fares or the funds are returned or reduced, under a short travel agreement.</div>
+<div class="warn"><b>Tax and visa:</b> payments to foreign individuals can carry US reporting, and an honorarium can conflict with visitor status. Call it a travel expense grant and ask the board&#39;s accountant or attorney to confirm before any money moves.</div>
+<div class="ok"><b>Budget:</b> the 2027 budget ($134,670) has no flight or hotel line. Any RTI cash here is a new line you approve, or it must come from sponsor gifts. Hotel donations reduce it by about $2,450; sponsored dinners and shirts are in-kind.</div>
+</section>
+
+<section>
+<h2>Recommendation</h2>
+<div contenteditable="true" id="reco" style="border:1px solid var(--line);padding:10px 14px;border-radius:6px">Choose <b>A</b>. It answers Isaac&#39;s question with a firm, bounded offer (the stay plus 60% of the flights), it gives the guests real help with the long trip, it keeps our cash exposure well below the full-flight option, and it lets Audima use their points. Start the conversation with A, keep B as the floor if the budget is cut, and treat C as a stretch if a sponsor (United miles, a hotel) funds flights. Release funds only after CPD confirms the date.</div>
+</section>
+
+<footer style="text-align:center;font-size:15px;padding:20px">Planner with the full day-by-day plan: <a href="/full-spectrum/audima/travel-planner.html">travel-planner.html</a> &middot; Estimates only, verify before booking &middot; Ras Tafari Inc. EIN 42-3036705</footer>
+</main>
+
+<script>
+(function(){
+  var KEY='audima-options-v1';
+  var app=document.getElementById('app');
+  var LINES=[
+    ['Hotel: 2 rooms x 7 nights (14 room-nights at $175)',2450,'RTI','Section 4 of the planner'],
+    ['Hotel tax and fees (about 17.4%)',426,'RTI','Sponsors usually waive the room, not the tax: ask'],
+    ['Plug adapters and USB power',48,'RTI','Section 8'],
+    ['Immigration or legal consult (one hour, optional)',250,'RTI','Ask the board attorney first for a free answer'],
+    ['Volunteer driver, all local rides',0,'RTI','No cash'],
+    ['Jamaican dinner night 1 (Jerky Jerk) for 5',200,'In-kind','Sponsored dinner'],
+    ['Jamaican dinner night 2 (second restaurant) for 5',200,'In-kind','Sponsored dinner; restaurant to confirm'],
+    ['Sway T-shirts (about 30), if a sponsor donates',0,'In-kind','Value unknown until a sponsor confirms'],
+    ['ESTA applications (2)',80,'Audima','Estimate'],
+    ['Travel and medical insurance (2)',180,'Audima','Estimate; strongly recommended'],
+    ['Hotel incidentals deposit (2)',100,'Audima','Guests pay their own incidentals'],
+    ['Checked bags for Sway units (2)',300,'Audima','Airline fees'],
+    ['Their own meals, other than the two sponsored dinners (est. 16 person-days x $55)',880,'Audima','Planner: guests pay their own']
+  ];
+  var CRIT=[
+    ['Cost to Ras Tafari Inc.',5,[3,5,1],'B is lowest; A moderate; C highest'],
+    ['Answers what Isaac asked for',4,[5,2,5],'He asked for accommodation, flights or a contribution'],
+    ['Funding certainty (we can really pay for it)',4,[4,5,2],'C needs a sponsor or a new budget line'],
+    ['Goodwill and the relationship',3,[4,2,5],'Hosting plus a real flight contribution reads as a true partnership'],
+    ['Control if the date or plans change',3,[4,5,2],'Less money out the door before CPD confirms'],
+    ['Simplicity of paperwork and tax',2,[3,5,3],'No flight funds in B means no transfer to foreign individuals'],
+    ['Speed to say yes now',2,[5,5,3],'A and B can be offered immediately']
+  ];
+  var SC=['A','B','C'];
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
+  function build(){
+    var t=document.getElementById('lines');
+    LINES.forEach(function(l){
+      var r=t.insertRow();
+      r.innerHTML='<td contenteditable="true">'+l[0]+'</td><td class="r"><input class="n amt" type="number" value="'+l[1]+'"></td><td><select class="pay"><option'+(l[2]==='RTI'?' selected':'')+'>RTI</option><option'+(l[2]==='Audima'?' selected':'')+'>Audima</option><option'+(l[2]==='In-kind'?' selected':'')+'>In-kind</option></select></td><td contenteditable="true">'+l[3]+'</td>';
+    });
+    var sc=document.getElementById('score');
+    CRIT.forEach(function(c){
+      var r=sc.insertRow();
+      r.innerHTML='<td contenteditable="true">'+c[0]+'</td><td class="r"><input class="s w" type="number" min="1" max="5" value="'+c[1]+'"></td>'
+       +c[2].map(function(v,i){return '<td class="r"><input class="s sc'+SC[i]+'" type="number" min="1" max="5" value="'+v+'"></td>';}).join('')
+       +'<td contenteditable="true">'+c[3]+'</td>';
+    });
+  }
+  function calc(){
+    var base=parseFloat(document.getElementById('fbase').value)||0;
+    var pct=(parseFloat(document.getElementById('fpct').value)||0)/100;
+    var gift=document.getElementById('hotelgift').checked;
+    var rti=0,aud=0,ink=0;
+    document.querySelectorAll('#lines tr').forEach(function(r,i){
+      var a=r.querySelector('.amt'); if(!a) return;
+      var p=r.querySelector('.pay').value, v=parseFloat(a.value)||0;
+      var idx=i-1;
+      if(gift && idx<=1 && p==='RTI'){ ink+=v; return; }
+      if(p==='RTI') rti+=v; else if(p==='Audima') aud+=v; else ink+=v;
+    });
+    var S={
+      A:{n:'A. Hospitality + '+Math.round(pct*100)+'% of flights',rti:rti+base*pct,aud:aud+base*(1-pct),ink:ink,fl:base*pct},
+      B:{n:'B. Hospitality only',rti:rti,aud:aud+base,ink:ink,fl:0},
+      C:{n:'C. Hospitality + 100% of flights',rti:rti+base,aud:aud,ink:ink,fl:base}
+    };
+    // weighted score
+    var w=[],tot={A:0,B:0,C:0},maxw=0;
+    document.querySelectorAll('#score tr').forEach(function(r){
+      var wi=r.querySelector('.w'); if(!wi) return;
+      var wv=parseFloat(wi.value)||0; maxw+=wv*5;
+      SC.forEach(function(k){ tot[k]+=wv*(parseFloat(r.querySelector('.sc'+k).value)||0); });
+    });
+    var best='A'; SC.forEach(function(k){ if(tot[k]>tot[best]) best=k; });
+    var cards=document.getElementById('cards'); cards.innerHTML='';
+    SC.forEach(function(k){
+      var s=S[k], total=s.rti+s.aud+s.ink;
+      var d=document.createElement('div'); d.className='card'+(k==='A'?' pick':'');
+      d.innerHTML='<h3>'+s.n+'</h3>'+(k==='A'?'<span class="tag">Stephen&#39;s pick</span> ':'')+(k===best?'<span class="tag">Top score</span>':'')
+       +'<div class="big">'+money(s.rti)+'</div><div>Ras Tafari Inc. cash</div>'
+       +'<div class="row"><span>of which flights</span><b>'+money(s.fl)+'</b></div>'
+       +'<div class="row"><span>of which hospitality</span><b>'+money(s.rti-s.fl)+'</b></div>'
+       +'<div class="row"><span>Audima pays</span><b>'+money(s.aud)+'</b></div>'
+       +'<div class="row"><span>Sponsors (in-kind)</span><b>'+money(s.ink)+'</b></div>'
+       +'<div class="row"><span>Whole trip</span><b>'+money(total)+'</b></div>'
+       +'<div class="row"><span>RTI share of whole trip</span><b>'+(total?Math.round(s.rti*100/total):0)+'%</b></div>'
+       +'<div class="row"><span>Weighted score</span><b>'+tot[k]+' of '+maxw+'</b></div>';
+      cards.appendChild(d);
+    });
+    var sp=document.getElementById('split'); while(sp.rows.length>1) sp.deleteRow(1);
+    [['Ras Tafari Inc. cash','rti'],['Audima pays','aud'],['Sponsors (in-kind)','ink']].forEach(function(x){
+      var r=sp.insertRow(); r.innerHTML='<td>'+x[0]+'</td>'+SC.map(function(k){return '<td class="r">'+money(S[k][x[1]])+'</td>';}).join('');
+    });
+    var r2=sp.insertRow(); r2.innerHTML='<td><b>Whole trip</b></td>'+SC.map(function(k){return '<td class="r"><b>'+money(S[k].rti+S[k].aud+S[k].ink)+'</b></td>';}).join('');
+    var r3=sp.insertRow(); r3.innerHTML='<td><b>Weighted score</b></td>'+SC.map(function(k){return '<td class="r'+(k===best?' win':'')+'"><b>'+tot[k]+'</b></td>';}).join('');
+    var diff=S.A.rti-S.B.rti, diff2=S.C.rti-S.A.rti;
+    document.getElementById('insight').innerHTML='<b>What the 60% costs:</b> moving from B to A adds '+money(diff)+' of RTI cash and saves Audima the same amount; moving from A to C adds another '+money(diff2)+'. Every option assumes the volunteer driver and the two sponsored dinners.';
+  }
+  function sync(){
+    app.querySelectorAll('input').forEach(function(i){ if(i.type==='checkbox'){ if(i.checked) i.setAttribute('checked',''); else i.removeAttribute('checked'); } else i.setAttribute('value',i.value); });
+    app.querySelectorAll('select').forEach(function(s){ Array.prototype.forEach.call(s.options,function(o,k){ if(k===s.selectedIndex) o.setAttribute('selected',''); else o.removeAttribute('selected'); }); });
+  }
+  function save(){ sync(); try{ localStorage.setItem(KEY,JSON.stringify({lines:document.getElementById('lines').innerHTML,score:document.getElementById('score').innerHTML,reco:document.getElementById('reco').innerHTML,fbase:document.getElementById('fbase').value,fpct:document.getElementById('fpct').value,gift:document.getElementById('hotelgift').checked})); }catch(e){} }
+  build();
+  try{
+    var st=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(st){ document.getElementById('lines').innerHTML=st.lines; document.getElementById('score').innerHTML=st.score; document.getElementById('reco').innerHTML=st.reco; document.getElementById('fbase').value=st.fbase; document.getElementById('fpct').value=st.fpct; document.getElementById('hotelgift').checked=st.gift; }
+  }catch(e){}
+  calc();
+  app.addEventListener('input',function(){calc();save();});
+  app.addEventListener('change',function(){calc();save();});
+})();
+</script>
+</body>
+</html>
