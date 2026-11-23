@@ -186,8 +186,8 @@ footer.page{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 2
 
 <section aria-labelledby="s2">
   <div class="sec-head"><span class="idx">02 / Topology</span><h2 id="s2">How your station plays together</h2><span class="meta" id="topo-meta"></span></div>
-  <div class="topology"><svg id="topo" viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signal and power diagram of your current build"></svg>
-  <div class="legend"><span><i style="border-color:var(--c-audio)"></i>Audio</span><span><i style="border-color:var(--c-data);border-top-style:dashed"></i>Data / control</span><span><i style="border-color:var(--c-ac);border-top-style:dotted"></i>AC power</span></div></div>
+  <div class="topology"><svg id="topo" viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signal and power diagram of your current build"></svg>
+  <p class="note" id="topo-note" style="margin:14px 0 0"></p><div class="legend"><span><i style="border-color:var(--c-audio)"></i>Audio</span><span><i style="border-color:var(--c-data);border-top-style:dashed"></i>Data / control</span><span><i style="border-color:var(--c-ac);border-top-style:dotted"></i>AC power</span></div></div>
 </section>
 
 <section aria-labelledby="s3">
@@ -385,25 +385,45 @@ function wiring(d){
   $('#wire').innerHTML=r.join('');
 }
 function topo(d){
-  const N=(x,y,w,h,col,tag,name,sub)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#16161e" stroke="${col}"/><text x="${x+12}" y="${y+20}" font-family="JetBrains Mono" font-size="9" fill="#e6e1d6" letter-spacing="1">${tag}</text><text x="${x+12}" y="${y+41}" font-family="Fraunces" font-size="15" fill="#f0ece4">${name}</text><text x="${x+12}" y="${y+57}" font-family="JetBrains Mono" font-size="8" fill="#e6e1d6">${sub}</text></g>`;
-  const L=(x1,y1,x2,y2,col,dash,lab,lx,ly)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="1.5" ${dash?`stroke-dasharray="${dash}"`:''}/>${lab?`<text x="${lx}" y="${ly}" font-family="JetBrains Mono" font-size="8" fill="${col}" text-anchor="middle">${lab}</text>`:''}`;
-  let s='<line x1="0" y1="335" x2="900" y2="335" stroke="#2a2a35"/>';
-  if(d.laptop) s+=N(30,40,190,70,'#8bb7ff','HOST','ThinkPad E14','Serato DJ Pro');
-  if(d.sway)   s+=N(30,200,190,70,'#ca93ff','GESTURE','Sway','USB-C data + PD power');
-  s+=N(350,120,200,76,'#baf2cd','DECK',d.core.name,d.sa?'standalone · USB drive':'controller');
-  s+=N(690,40,180,70,'#75e4a2','CUE','Shure SRH440A','donated');
-  if(S.pa) s+=N(690,200,180,70,'#ef6864','SHARED','Room PA','MG06 + 2× DBR10');
-  s+=N(350,255,200,56,'#ffd078','AC · UPSTREAM',d.strip?'Surge protector':'Wall receptacle',d.plugs+' plug'+(d.plugs>1?'s':'')+' in use');
-  if(d.laptop&&!d.sa) s+=L(220,70,350,140,'#8bb7ff','4 3','USB-A data',280,90);
-  if(d.laptop&&d.sa) s+=L(220,80,350,140,'#8bb7ff','4 3','USB (Serato mode)',280,90);
-  if(d.sway&&d.laptop) s+=L(125,200,125,110,'#8bb7ff','4 3','USB-C data',150,160);
-  s+=L(550,150,690,80,'#75e4a2',null,'headphone out',640,100);
-  if(S.pa) s+=L(550,170,690,235,'#ef6864',null,'master RCA → mixer',640,215);
-  s+=L(450,255,450,196,'#ffd078','2 3',null,0,0);
-  if(d.sway) s+=L(350,283,220,255,'#ffd078','2 3',null,0,0);
-  if(d.laptop) s+=L(350,270,200,110,'#ffd078','2 3',null,0,0);
-  s+=`<text x="30" y="355" font-family="JetBrains Mono" font-size="7" fill="#c9c3b6" letter-spacing="1">FIG. 02 · ${d.core.name.toUpperCase()}${d.sway?' + SWAY':''}${d.laptop?' + SERATO':''}</text>`;
-  $('#topo').innerHTML=s; $('#topo-meta').textContent='Live · redraws with your choices';
+  const hw=HW[d.core.id];
+  const N=(x,y,w,h,col,tag,name,sub,sub2,dash)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#16161e" stroke="${col}" ${dash?'stroke-dasharray="5 3"':''}/><text x="${x+12}" y="${y+20}" font-family="JetBrains Mono" font-size="9" fill="#e6e1d6" letter-spacing="1">${tag}</text><text x="${x+12}" y="${y+41}" font-family="Fraunces" font-size="15" fill="#f0ece4">${name}</text>${sub?`<text x="${x+12}" y="${y+57}" font-family="JetBrains Mono" font-size="8" fill="#e6e1d6">${sub}</text>`:''}${sub2?`<text x="${x+12}" y="${y+70}" font-family="JetBrains Mono" font-size="8" fill="#c9c3b6">${sub2}</text>`:''}</g>`;
+  const L=(x1,y1,x2,y2,col,dash,lab,lx,ly)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="1.5" ${dash?`stroke-dasharray="${dash}"`:''}/>${lab?`<text x="${lx}" y="${ly}" font-family="JetBrains Mono" font-size="8" fill="${col}" text-anchor="middle" paint-order="stroke" stroke="#16161e" stroke-width="3">${lab}</text>`:''}`;
+  const why=d.sway&&d.sa?'REQUIRED BY SWAY':(!d.sa?'REQUIRED BY DDJ-FLX4':'OPTIONAL');
+  let s='<line x1="0" y1="385" x2="900" y2="385" stroke="#2a2a35"/>';
+  // left column
+  if(d.laptop) s+=N(30,30,190,76,'#8bb7ff','HOST · '+why,'ThinkPad E14','Serato DJ Pro · donated');
+  if(d.prep)   s+=N(30,30,190,76,'#8bb7ff','SHARED · LOADS DRIVES','Prep computer','rekordbox, one per lab',null,true);
+  if(d.sway)   s+=N(30,170,190,70,'#ca93ff','GESTURE','Sway','USB-C data + PD power');
+  // centre
+  const showDrive=d.sa&&d.drives;
+  if(showDrive) s+=N(350,20,200,62,'#ffd078','STUDENT DRIVE','USB music drive','dual USB-A / USB-C');
+  s+=N(350,125,200,88,'#baf2cd','DECK',d.core.name,d.sa?'standalone · no computer needed':'controller · needs laptop','out: '+hw.out.split(' (')[0]);
+  s+=N(350,290,200,76,'#ffd078','AC · UPSTREAM',d.strip?'Surge protector':'Wall receptacle',d.plugs+' plug'+(d.plugs>1?'s':'')+' in use');
+  // right
+  s+=N(690,20,180,62,'#75e4a2','CUE','Shure SRH440A','donated');
+  if(S.pa){
+    s+=N(690,125,180,70,'#ef6864','SHARED','Mixer MG06','2 mics + deck feed');
+    s+=N(690,250,85,56,'#ef6864','LEFT','DBR10','');
+    s+=N(785,250,85,56,'#ef6864','RIGHT','DBR10','');
+  }
+  // data lines
+  if(d.laptop&&!d.sa) s+=L(220,68,350,150,'#8bb7ff','4 3','USB-A data',270,100);
+  if(d.laptop&&d.sa)  s+=L(220,68,350,150,'#8bb7ff','4 3','USB (Serato mode)',275,100);
+  if(d.prep&&showDrive) s+=L(220,60,350,50,'#ffd078','4 3','loads music',285,45);
+  if(d.sway&&d.laptop) s+=L(125,170,125,106,'#8bb7ff','4 3','USB-C data',150,142);
+  if(showDrive) s+=L(450,82,450,125,'#ffd078',null,'plugs in',478,106);
+  // audio
+  s+=L(550,145,690,55,'#75e4a2',null,'headphone jack',640,92);
+  if(S.pa){ s+=L(550,175,690,160,'#ef6864',null,'RCA → mixer',620,158);
+            s+=L(732,195,732,250,'#ef6864',null,null,0,0); s+=L(828,195,828,250,'#ef6864',null,null,0,0); }
+  // power
+  s+=L(450,290,450,213,'#ffd078','2 3',null,0,0);
+  if(d.sway) s+=L(350,330,200,240,'#ffd078','2 3',null,0,0);
+  if(d.laptop) s+=L(350,310,150,106,'#ffd078','2 3',null,0,0);
+  s+=`<text x="30" y="378" font-family="JetBrains Mono" font-size="7" fill="#c9c3b6" letter-spacing="1">FIG. 02 · ${d.core.name.toUpperCase()}${d.sway?' + SWAY':''}${d.laptop?' + LAPTOP':' · NO LAPTOP'}</text>`;
+  $('#topo').innerHTML=s;
+  $('#topo-meta').textContent='Live · redraws with your choices';
+  $('#topo-note').innerHTML=(d.laptop?(d.sway&&d.sa?'<b>Why the laptop is here:</b> Sway needs a laptop with Serato. Turn Sway off and the laptop disappears.':(!d.sa?'<b>Why the laptop is here:</b> the DDJ-FLX4 is a controller and needs a laptop to make sound. Pick a self-contained machine to remove it.':'<b>Laptop:</b> optional with this machine.')):'<b>No laptop:</b> this machine plays music from the student’s USB drive. A shared computer outside the station loads the drives.');
 }
 function bom(d,t){
   const row=i=>`<tr><td>${i.p.name} <span style="color:var(--dim)">· ${i.p.brand}</span></td><td>${i.qty}</td><td>${i.p.monthly?money(i.p.monthly)+'/mo':(i.p.price===0?'donated':money(i.p.price))}</td><td>${i.p.monthly?money(i.p.monthly*i.qty)+'/mo':money((i.p.price||0)*i.qty)}</td></tr>`;
