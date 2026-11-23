@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Blick x Rainbow DJ Lab: a narrated pitch deck on six ways Blick Art Materials is recognized as the art partner of Rainbow Wednesdays.">
+<title>Blick x Rainbow DJ Lab: The Art Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  /* Palette: Blick's own site leans on a near-black ink with red, blue and yellow accents;
+     those sit right beside Rainbow Beach's three bands (red, gold, blue). */
+  :root{
+    --bg:#FFFFFF; --paper:#F5F6F7; --ink:#231F20; --ink-soft:#3F4044; --ink-faint:#727779; --line:#E5E9EA;
+    --red:#E50914; --gold:#F9D949; --blue:#1976D3; --coral:#E26F56; --night:#231F20;
+    --rd-red:#D2292D; --rd-gold:#EDBB2E; --rd-blue:#2F6AC0; --rd-green:#4B5320;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg); color:var(--ink); font-family:"Roboto",-apple-system,"Segoe UI",Arial,sans-serif; overflow:hidden;}
+  button{font:inherit; color:inherit; background:none; cursor:pointer; border:0;}
+  h1,h2{font-family:"Montserrat",sans-serif; font-weight:800; letter-spacing:-0.015em;}
+  .stripe{height:8px; background:linear-gradient(90deg,var(--red) 0 33.34%,var(--gold) 33.34% 66.67%,var(--blue) 66.67% 100%);}
+  .tri{background:linear-gradient(90deg,var(--red) 0 33.34%,var(--gold) 33.34% 66.67%,var(--blue) 66.67% 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  #start-screen{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:24px 16px; overflow-y:auto; background:radial-gradient(circle at 15% 10%, rgba(229,9,20,.10), transparent 45%), radial-gradient(circle at 90% 90%, rgba(25,118,211,.12), transparent 45%), var(--bg);}
+  #start-screen[hidden]{display:none;}
+  .start-card{max-width:640px; text-align:center;}
+  .logo-slot{display:inline-block; border:2px dashed var(--ink-faint); border-radius:10px; padding:8px 18px; margin-bottom:18px; font-weight:700; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);}
+  .start-kicker{font-size:.76rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--red); margin-bottom:14px;}
+  .start-title{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(2.1rem,7vw,3.5rem); line-height:1.05; margin-bottom:16px;}
+  .start-sub{color:var(--ink-soft); line-height:1.6; margin-bottom:24px;}
+  .start-begin{display:inline-flex; align-items:center; gap:10px; padding:15px 32px; border-radius:999px; background:var(--ink); color:#fff; font-weight:800; font-size:1rem; border-bottom:5px solid transparent; border-image:linear-gradient(90deg,var(--red) 0 33.34%,var(--gold) 33.34% 66.67%,var(--blue) 66.67% 100%) 1; transition:transform .2s;}
+  .start-begin:hover{transform:translateY(-2px);}
+  .start-quiet{display:block; margin:12px auto 0; font-size:.85rem; color:var(--ink-soft); text-decoration:underline;}
+  .start-note{margin-top:18px; font-size:.75rem; color:var(--ink-faint); line-height:1.6;}
+
+  #deck{position:fixed; inset:0; display:flex; flex-direction:column;}
+  #deck[hidden]{display:none;}
+  #progress-dots{display:flex; gap:5px; padding:14px 16px 10px; overflow-x:auto; scrollbar-width:none; flex-shrink:0;}
+  #progress-dots::-webkit-scrollbar{display:none;}
+  .dot{flex-shrink:0; width:14px; height:4px; border-radius:2px; background:var(--line); transition:.25s;}
+  .dot.active{background:var(--c,var(--red)); width:26px;}
+  .dot.seen{background:#c9cfd1;}
+  #frame-viewer{position:relative; flex:1; overflow:hidden;}
+  .frame{position:absolute; inset:0; display:flex; flex-direction:column; opacity:0; transform:translateX(24px); transition:opacity .4s ease, transform .4s ease; pointer-events:none;}
+  .frame.active{opacity:1; transform:none; pointer-events:auto;}
+  .frame-visual{position:relative; flex:0 0 34%; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:20px; overflow:hidden; background-size:cover; background-position:center;
+    background-color:var(--c);
+    background-image:radial-gradient(circle at 25% 25%, rgba(255,255,255,.28), transparent 55%), linear-gradient(150deg,var(--c),var(--c2));}
+  .frame-visual .big{font-size:clamp(3rem,10vw,6.5rem); color:#fff; filter:drop-shadow(0 6px 24px rgba(0,0,0,.35));}
+  .frame-visual .tagword{font-family:"Montserrat",sans-serif; font-weight:900; font-size:clamp(1rem,3vw,1.6rem); letter-spacing:.12em; text-transform:uppercase; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.45); text-align:center;}
+  .frame-visual.has-img{justify-content:flex-end; align-items:flex-start;}
+  .frame-visual.has-img .tagword{font-size:clamp(.85rem,2.2vw,1.15rem); text-align:left;}
+  .frame-counter{position:absolute; top:12px; right:16px; font-size:.72rem; letter-spacing:.1em; color:rgba(255,255,255,.85); z-index:2;}
+  .frame-content{flex:1 1 auto; padding:18px 20px 16px; overflow-y:auto; background:var(--bg);}
+  .frame-content-inner{max-width:700px;}
+  .batch-label{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--c); margin-bottom:10px;}
+  .headline{font-size:1.45rem; line-height:1.18; margin-bottom:14px;}
+  .bullet-list{list-style:none; margin:0 0 14px;}
+  .bullet-list li{position:relative; padding-left:22px; margin-bottom:9px; font-size:1rem; color:var(--ink-soft); line-height:1.5;}
+  .bullet-list li::before{content:''; position:absolute; left:0; top:.5em; width:10px; height:10px; border-radius:3px; background:var(--c);}
+  .bullet-list li b{color:var(--ink);}
+  .six{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:4px 0 12px;}
+  .six div{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-weight:700; font-size:.92rem; background:var(--paper);}
+  .six i{width:22px; text-align:center; color:var(--c);}
+  .note{font-size:.78rem; color:var(--ink-faint); line-height:1.5; margin-top:6px;}
+  .cta-buttons{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;}
+  .cta-btn{display:inline-flex; align-items:center; gap:8px; font-size:.88rem; font-weight:700; padding:12px 20px; border-radius:999px; border:1px solid var(--line); color:var(--ink); text-decoration:none;}
+  .cta-btn.primary{background:var(--red); border-color:var(--red); color:#fff;}
+
+  .controls{flex-shrink:0; display:flex; flex-direction:column; gap:8px; padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:var(--paper);}
+  .seek-row{display:flex; align-items:center; gap:10px; width:100%; max-width:760px; margin:0 auto; font-size:.72rem; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .seek-row input[type=range]{flex:1; accent-color:var(--red); height:6px; cursor:pointer;}
+  .seek-row .slide-count{min-width:54px; text-align:right;}
+  .btn-row{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .controls button{width:42px; height:42px; border-radius:50%; border:1px solid #c9cfd1; font-size:.95rem; display:flex; align-items:center; justify-content:center; transition:.2s; background:#fff;}
+  .controls button:hover{border-color:var(--red); color:var(--red);}
+  .controls button:disabled{opacity:.3; cursor:default;}
+  .controls button.on{border-color:var(--red); color:var(--red);}
+  #nav-next,#nav-prev{width:50px; height:50px; font-size:1.2rem;}
+  #nav-play{width:60px; height:60px; font-size:1.4rem; background:var(--red); border-color:var(--red); color:#fff;}
+  #nav-play:hover{color:#fff; filter:brightness(1.08);}
+  .controls button.pill{width:auto; border-radius:999px; padding:0 14px; font-size:.75rem; font-weight:700; letter-spacing:.06em; gap:6px;}
+
+  @media (min-width:820px){
+    .frame{flex-direction:row;}
+    .frame-visual{flex:0 0 42%; min-height:0;}
+    .frame-content{padding:40px 48px; display:flex; flex-direction:column;}
+    .frame-content-inner{margin:auto 0;}
+    .headline{font-size:2.05rem;}
+  }
+  @media (prefers-reduced-motion: reduce){ .frame{transition:none;} }
+</style>
+</head>
+<body>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="stripe" style="border-radius:4px; margin:0 auto 22px; max-width:220px;"></div>
+    <div class="logo-slot">Blick logo goes here, supplied by Blick</div>
+    <div class="start-kicker">Ras Tafari Inc. &middot; Rainbow DJ Lab &middot; Rainbow Wednesdays</div>
+    <div class="start-title">Blick <span class="tri">x</span> Rainbow DJ Lab<br>The Art Partner</div>
+    <div class="start-sub">A 15-slide narrated walkthrough of six ways Blick Art Materials is recognized all summer: logo, print, flyering, digital, social media and discount coupons handed out on the lawn. About five minutes.</div>
+    <button class="start-begin" id="begin-btn"><i class="fa-solid fa-play"></i> Begin with narration</button>
+    <button class="start-quiet" id="begin-quiet">or click through without sound</button>
+    <div class="start-note">Narration plays slide by slide and moves on by itself; pause, skip or turn off Auto any time. Space plays or pauses; arrow keys or swipe change slides.</div>
+  </div>
+</div>
+
+<div id="deck" hidden>
+  <div class="stripe"></div>
+  <div id="progress-dots"></div>
+  <div id="frame-viewer"></div>
+  <div class="controls">
+    <div class="seek-row">
+      <span id="time-cur">0:00</span>
+      <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Narration position">
+      <span id="time-dur">0:00</span>
+      <span class="slide-count" id="slide-count">1 / 15</span>
+    </div>
+    <div class="btn-row">
+      <button id="nav-replay" aria-label="Restart this slide's narration" title="Restart this slide"><i class="fa-solid fa-rotate-left"></i></button>
+      <button id="nav-prev" aria-label="Previous slide" title="Previous slide"><i class="fa-solid fa-backward-step"></i></button>
+      <button id="nav-play" aria-label="Play or pause narration" title="Play / pause (space)"><i class="fa-solid fa-play"></i></button>
+      <button id="nav-next" aria-label="Next slide" title="Next slide"><i class="fa-solid fa-forward-step"></i></button>
+      <button id="nav-mute" aria-label="Mute narration" title="Mute"><i class="fa-solid fa-volume-high"></i></button>
+      <button id="nav-auto" class="pill on" aria-pressed="true" title="Automatically go to the next slide when narration ends"><i class="fa-solid fa-forward"></i> Auto</button>
+      <button id="nav-speed" class="pill" title="Narration speed">1x</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONTACT = { email: 'stephen@selassiefest.com', phone: '872-255-9333' };
+
+/* Image slots: save each DALL-E image as /full-spectrum/blick/img/NN-name.jpg.
+   A slide with no image file yet shows its colour panel and icon instead. */
+const FRAMES = [
+  { c:'red', c2:'blue', icon:'fa-palette', image:'/full-spectrum/blick/img/01-title-lawn-art.jpg', tag:'The Art Partner', label:'Blick x Rainbow DJ Lab',
+    headline:'Blick, the art partner of Rainbow Wednesdays',
+    bullets:['<b>14 free Wednesday evenings</b>, 4 to 8 pm, from June 2, 2027','Children and neighbors <b>make the art that decorates the scene</b>','Every dollar of our art-materials grant is spent at <b>Blick</b>'],
+    voice:['Thank you for a few minutes with us.','This is Blick and the Rainbow DJ Lab: the art partner of Rainbow Wednesdays.','Fourteen free Wednesday evenings. Children and neighbors making the art that decorates the scene. And every dollar of our art-materials grant spent at Blick.'] },
+
+  { c:'blue', c2:'red', icon:'fa-pen-nib', image:'/full-spectrum/blick/img/02-single-pen.jpg', tag:'Since 1911', label:'Why Blick',
+    headline:'It started with a single pen. It never stopped supporting artists.',
+    bullets:['Blick began with a single pen in 1911 and is <b>still family-owned</b>','Blick says it supports artists at <b>all stages</b> of their journey, and believes art education benefits everyone','Blick works with <b>local artists and arts organizations</b> across the country. Rainbow Wednesdays is exactly that: a local art project, made by neighbors'],
+    voice:['Why Blick?','Blick began with a single pen in 1911, and it is still family owned.','Blick says it supports artists at every stage, and believes art education benefits us all.','Rainbow Wednesdays is a local art project, made by neighbors. That is who Blick says it wants to work with.'] },
+
+  { c:'gold', c2:'coral', icon:'fa-music', image:'/full-spectrum/blick/img/03-djlab.jpg', tag:'Rainbow DJ Lab', label:'Who we are',
+    headline:'A free DJ class for Chicago children, and a summer series for everyone',
+    bullets:['<b>Rainbow DJ Lab:</b> free, every Tuesday 4 to 6 pm, opening January 12, 2027; 12 student stations; 14 Missions','<b>Rainbow Wednesdays:</b> 14 free, alcohol-free family evenings on the lawn','From <b>Ras Tafari Inc.</b>, a Chicago 501(c)(3) that produced SelassieFest 2026, which drew about <b>273 people</b>'],
+    voice:['Who are we?','Ras Tafari Inc. is a Chicago nonprofit. We produced SelassieFest last July, and about two hundred seventy-three people came.','Now we are opening the Rainbow DJ Lab, a free class for children every Tuesday from January twelfth, and Rainbow Wednesdays, fourteen free family evenings on the lawn.'] },
+
+  { c:'coral', c2:'red', icon:'fa-brush', image:'/full-spectrum/blick/img/04-making-the-art.jpg', tag:'Made by neighbors', label:'The scene',
+    headline:'The art is made by the community, then it lights up the lawn',
+    bullets:['<b>Teens from the DJ Lab</b> invite families and elders to choose each night&rsquo;s color and theme','Neighbors <b>dye scrims and paint lanterns</b>; ribbons, a DJ booth wrap and lamp-post color complete the ring','Everything is rolled, folded and brought back <b>every Wednesday</b>: we swap the night&rsquo;s color, not the art','Colors: <b>red, gold and blue</b>, the three bands of Rainbow Beach&rsquo;s namesake division'],
+    voice:['Here is the scene.','Teens from the DJ Lab invite families and elders to choose each night\'s color and theme.','Neighbors dye the scrims and paint lanterns. Ribbons, a booth wrap and lamp post color finish the ring.','Red, gold and blue, the three bands of the Rainbow Division, the name Rainbow Beach carries.'] },
+
+  { c:'red', c2:'gold', icon:'fa-hand-holding-dollar', image:'/full-spectrum/blick/img/05-two-fifty.jpg', tag:'$250 at Blick', label:'The commitment',
+    headline:'Every dollar of our $250 art grant is spent at Blick',
+    bullets:['Jane Goodall&rsquo;s Roots &amp; Shoots awarded Ras Tafari Inc. a <b>$250 project grant</b> to make the art for a Rainbow Wednesday','It buys <b>art materials only</b>. We will buy all of it from Blick','A gift certificate from Blick would let each artist buy what that week&rsquo;s design needs across all 14 weeks','<a href="https://selassiefest.com/donors/?k=yef5fwsf95zjwbgt">See the lawn plan</a>'],
+    voice:['Here is our commitment.','Jane Goodall\'s Roots and Shoots awarded us a two hundred fifty dollar project grant to make the art for a Rainbow Wednesday.','It can only buy art materials. And we are spending every dollar of it at Blick.','A Blick gift certificate would let each artist buy what that week\'s design needs, across all fourteen weeks.'] },
+
+  { c:'blue', c2:'gold', icon:'fa-people-group', image:'/full-spectrum/blick/img/06-the-crowd.jpg', tag:'300 a night', label:'The audience',
+    headline:'The crowd Blick would meet: families, teens, elders, artists',
+    bullets:['Goal: <b>300 people a night</b>, about <b>4,200 visits</b> over 14 nights','Free, alcohol-free, Wednesdays 4 to 8 pm, <b>June 2 to September 1, 2027</b>','Planned for Rainbow Beach Park in South Shore, Chicago (subject to Chicago Park District approval)','A first-time festival of ours drew about <b>273 people</b> after only 47 days of planning'],
+    voice:['Who will be there?','Our goal is three hundred people a night, about four thousand two hundred visits over fourteen nights.','Families, teens, elders and artists, on free alcohol free Wednesday evenings from June second to September first.','It is planned for Rainbow Beach Park in South Shore, subject to Chicago Park District approval.'] },
+
+  { c:'ink', c2:'red', icon:'fa-star', spectrum:true, image:'/full-spectrum/blick/img/07-six-ways.jpg', tag:'Six ways', label:'The offer',
+    headline:'Six ways Blick shows up, all summer',
+    six:[['fa-stamp','Logo recognition'],['fa-print','Print'],['fa-file-lines','Flyering'],['fa-globe','Digital'],['fa-hashtag','Social media shout-out'],['fa-ticket','Discount coupons on site']],
+    bullets:['Each one is built so the <b>children and neighbors see Blick every week</b>','Next six slides: one for each'],
+    voice:['Here is the offer.','Six ways Blick shows up, all summer.','Logo recognition. Print. Flyering. Digital. A social media shout out. And discount coupons handed out on the lawn.','Each one is built so the children and neighbors see Blick every single week.'] },
+
+  { c:'red', c2:'ink', icon:'fa-stamp', image:'/full-spectrum/blick/img/08-logo-booth.jpg', tag:'1 of 6', label:'Logo recognition',
+    headline:'Blick&rsquo;s logo where everyone looks',
+    bullets:['On the <b>banner at the DJ booth</b> and on the <b>art wall</b>, every night','On our <b>program page</b> and in our <b>pitch deck</b>','On the <b>Blick tent</b> where the coupons are handed out','Logo files, size and placement are <b>approved by Blick&rsquo;s marketing team first</b>'],
+    voice:['Number one: logo recognition.','Blick\'s logo goes on the banner at the DJ booth and on the art wall, every night.','It is on our program page, in this pitch deck, and on the Blick tent where coupons are handed out.','Blick\'s marketing team approves the logo files, size and placement first.'] },
+
+  { c:'blue', c2:'ink', icon:'fa-print', image:'/full-spectrum/blick/img/09-print.jpg', tag:'2 of 6', label:'Print',
+    headline:'Blick in print, from the first poster to the last',
+    bullets:['Blick credited as <b>the art partner</b> on printed posters and programs for the series','A printed <b>thank-you card</b> for Blick, signed by the artists and children','Everything goes to <b>Blick for approval</b> before it prints'],
+    voice:['Number two: print.','Blick is credited as the art partner on the printed posters and programs for the series.','There is also a printed thank you card for Blick, signed by the artists and children.','Everything goes to Blick for approval before anything is printed.'] },
+
+  { c:'gold', c2:'red', icon:'fa-file-lines', image:'/full-spectrum/blick/img/10-flyer.jpg', tag:'3 of 6', label:'Flyering',
+    headline:'Flyers in the neighborhood, with Blick on them',
+    bullets:['Rainbow Wednesdays flyers carry <b>&ldquo;Art partner: Blick&rdquo;</b> and the Blick logo','Handed out at the DJ Lab, at neighborhood businesses and at every Wednesday','Each flyer points to the <b>Blick coupon</b> at the Blick tent'],
+    voice:['Number three: flyering.','Every Rainbow Wednesdays flyer says Art partner, Blick, with the Blick logo.','They go out at the DJ Lab, at neighborhood businesses, and at every Wednesday.','And each flyer points families to the Blick coupon at the Blick tent.'] },
+
+  { c:'blue', c2:'coral', icon:'fa-globe', image:'/full-spectrum/blick/img/11-digital.jpg', tag:'4 of 6', label:'Digital',
+    headline:'Blick on every page families visit',
+    bullets:['Blick&rsquo;s name and logo on our <b>Rainbow Wednesdays page</b> and in this <b>narrated pitch deck</b>','A <b>Blick credit</b> in every email and web update about the series','A page of <b>photos of the art</b> being made, each crediting Blick materials'],
+    voice:['Number four: digital.','Blick\'s name and logo appear on our Rainbow Wednesdays page and in this narrated deck.','Every email and web update about the series carries a Blick credit.','And a page of photos shows the art being made, each one crediting Blick materials.'] },
+
+  { c:'red', c2:'blue', icon:'fa-hashtag', image:'/full-spectrum/blick/img/12-social.jpg', tag:'5 of 6', label:'Social media shout-out',
+    headline:'A shout-out Blick can share',
+    bullets:['A <b>launch thank-you post</b>, then a Blick credit in <b>each night&rsquo;s post</b>','We tag Blick&rsquo;s own channels so Blick can reshare: <b>Instagram @blickartmaterials</b>, <b>TikTok @blick_art</b>, Facebook, Pinterest and YouTube','Photos and video of <b>children and neighbors making the art</b>, with permission from families'],
+    voice:['Number five: the social media shout out.','A launch thank you post, then a Blick credit in each night\'s post.','We tag Blick\'s own channels, Instagram at blickartmaterials and TikTok at blick art, so Blick can reshare the story.','Photos and video show children and neighbors making the art, always with permission from families.'] },
+
+  { c:'gold', c2:'blue', icon:'fa-ticket', image:'/full-spectrum/blick/img/13-coupon-tent.jpg', tag:'6 of 6', label:'Discount coupons on site',
+    headline:'The Blick tent: volunteers hand out Blick coupons on the lawn',
+    bullets:['A <b>Blick tent</b> on the lawn, staffed by <b>Ras Tafari Inc. volunteers</b>','Families and artists take a <b>Blick discount coupon</b> home, from Blick&rsquo;s own offer','Children can try the same materials at a <b>make-and-take table</b>','Blick supplies the coupons and approves the tent design'],
+    voice:['Number six: discount coupons on site.','A Blick tent on the lawn, staffed by Ras Tafari volunteers.','Families and artists take home a Blick discount coupon, from Blick\'s own offer.','Children can try the same materials at a make and take table. Blick supplies the coupons and approves the tent design.'] },
+
+  { c:'coral', c2:'gold', icon:'fa-clock', image:'/full-spectrum/blick/img/14-a-night.jpg', tag:'A Wednesday', label:'A night with Blick',
+    headline:'What a Wednesday looks like with Blick in it',
+    bullets:['<b>4 pm</b> Gates open; the Blick tent is staffed and the coupons are out','<b>5 pm</b> Neighbors dye, paint and decorate with Blick materials','<b>Sundown</b> The lanterns light; the DJ booth wears the Blick banner','<b>Each night</b> A thank-you to Blick from the microphone','<b>After</b> Photos, counts and links go to Blick'],
+    voice:['A Wednesday with Blick in it.','At four, gates open, and the Blick tent is staffed with coupons out.','At five, neighbors dye, paint and decorate with Blick materials.','At sundown the lanterns light, and the DJ booth wears the Blick banner.','Every night, a thank you to Blick from the microphone. And afterward, photos, counts and links go to Blick.'] },
+
+  { c:'red', c2:'blue', icon:'fa-handshake', image:'/full-spectrum/blick/img/15-thank-you.jpg', tag:'Let&rsquo;s paint it', label:'Next step', cta:true,
+    headline:'Paint it red, gold and blue, with Blick',
+    bullets:['<b>Our ask:</b> a Blick gift certificate toward the art materials for the 14 weekly artworks','<b>Our promise:</b> all six recognitions above, approved by Blick&rsquo;s marketing team first','We will report back with <b>photos, attendance counts and post links</b> after each night','Thank you. We would love to make this with you.'],
+    voice:['So here is our ask.','A Blick gift certificate toward the art materials for the fourteen weekly artworks.','In return, all six recognitions you just saw, approved by Blick\'s marketing team first.','We will report back with photos, attendance counts and links after every night.','Thank you. We would love to paint it red, gold and blue with Blick.'] }
+];
+
+// Add recorded narration here later, e.g. { 1:'/full-spectrum/blick/audio/slide-01.mp3' }.
+// Slides without a file are read aloud by the browser voice.
+const AUDIO = {};
+const player = new Audio();
+const ADVANCE_DELAY = 1200;
+let advanceTimer = null, speakTok = 0;
+const clearAdvance = () => { clearTimeout(advanceTimer); advanceTimer = null; };
+const state = { index:0, playing:false, auto:true, rate:1, seen:new Set() };
+const hasSpeech = 'speechSynthesis' in window;
+
+function renderFrames(){
+  const viewer = document.getElementById('frame-viewer');
+  viewer.innerHTML = '';
+  FRAMES.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'frame';
+    el.style.setProperty('--c', `var(--${f.c})`);
+    el.style.setProperty('--c2', `var(--${f.c2})`);
+    const bullets = f.bullets.map(b => `<li>${b}</li>`).join('');
+    const six = f.six ? `<div class="six">${f.six.map(s => `<div><i class="fa-solid ${s[0]}"></i>${s[1]}</div>`).join('')}</div>` : '';
+    const cta = f.cta ? `<div class="cta-buttons"><a class="cta-btn primary" href="mailto:${CONTACT.email}"><i class="fa-solid fa-envelope"></i> Email us</a><a class="cta-btn" href="tel:${CONTACT.phone.replace(/[^0-9]/g,'')}"><i class="fa-solid fa-phone"></i> ${CONTACT.phone}</a></div>` : '';
+    el.innerHTML = `
+      <div class="frame-visual" id="vis-${i}">
+        <span class="frame-counter">${String(i + 1).padStart(2,'0')} / ${FRAMES.length}</span>
+        <i class="fa-solid ${f.icon} big" aria-hidden="true"></i>
+        <span class="tagword">${f.tag}</span>
+      </div>
+      <div class="frame-content"><div class="frame-content-inner">
+        <span class="batch-label">${f.label}</span>
+        <h1 class="headline">${f.headline}</h1>
+        ${six}<ul class="bullet-list">${bullets}</ul>
+        ${cta}
+      </div></div>`;
+    viewer.appendChild(el);
+    if (f.image) {
+      const im = new Image();
+      im.onload = () => {
+        const v = document.getElementById('vis-' + i);
+        v.classList.add('has-img');
+        v.style.backgroundImage = `linear-gradient(to top, rgba(35,31,32,.7), rgba(35,31,32,0) 45%), url('${f.image}')`;
+        const big = v.querySelector('.big'); if (big) big.remove();
+      };
+      im.src = f.image;
+    }
+  });
+}
+
+function renderDots(){
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML = '';
+  FRAMES.forEach((f, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot'; d.style.setProperty('--c', `var(--${f.c})`);
+    d.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    d.addEventListener('click', () => goTo(i));
+    dots.appendChild(d);
+  });
+}
+
+const $ = id => document.getElementById(id);
+const fmt = t => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+
+function syncUI(){
+  $('nav-play').innerHTML = '<i class="fa-solid fa-' + (state.playing ? 'pause' : 'play') + '"></i>';
+  $('nav-prev').disabled = state.index === 0;
+  $('nav-next').disabled = state.index === FRAMES.length - 1;
+  $('slide-count').textContent = (state.index + 1) + ' / ' + FRAMES.length;
+  $('nav-auto').classList.toggle('on', state.auto);
+  $('nav-auto').setAttribute('aria-pressed', state.auto);
+  $('nav-speed').textContent = state.rate + 'x';
+  $('nav-mute').innerHTML = '<i class="fa-solid fa-volume-' + (player.muted ? 'xmark' : 'high') + '"></i>';
+  $('nav-mute').classList.toggle('on', player.muted);
+}
+
+function slideDone(){
+  if (!state.playing) return;
+  if (state.auto && state.index < FRAMES.length - 1) { advanceTimer = setTimeout(() => goTo(state.index + 1), ADVANCE_DELAY); }
+  else { state.playing = false; syncUI(); }
+}
+
+function speakCurrent(){
+  if (!hasSpeech) { state.playing = false; syncUI(); return; }
+  speechSynthesis.cancel();
+  const tok = ++speakTok;
+  const u = new SpeechSynthesisUtterance(FRAMES[state.index].voice.join(' '));
+  u.rate = state.rate; u.volume = player.muted ? 0 : 1;
+  u.onend = () => { if (tok === speakTok) slideDone(); };
+  speechSynthesis.speak(u);
+}
+
+function playCurrent(){
+  clearAdvance();
+  if (player.src && AUDIO[state.index + 1]) { player.play().catch(() => { state.playing = false; syncUI(); }); }
+  else { speakCurrent(); }
+}
+
+function stopAll(){ player.pause(); speakTok++; if (hasSpeech) speechSynthesis.cancel(); }
+
+function goTo(index){
+  if (index < 0 || index >= FRAMES.length) return;
+  clearAdvance(); stopAll();
+  state.index = index; state.seen.add(index);
+  document.querySelectorAll('.frame').forEach((el, i) => el.classList.toggle('active', i === index));
+  document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i === index); d.classList.toggle('seen', state.seen.has(i) && i !== index); });
+  const src = AUDIO[index + 1];
+  if (src) { player.src = src; player.defaultPlaybackRate = state.rate; player.playbackRate = state.rate; } else { player.removeAttribute('src'); }
+  $('seek').value = 0; $('time-cur').textContent = '0:00'; $('time-dur').textContent = '0:00';
+  syncUI();
+  if (state.playing) playCurrent();
+}
+
+function togglePlay(){
+  if (state.playing) { state.playing = false; clearAdvance(); stopAll(); syncUI(); return; }
+  state.playing = true; syncUI();
+  if (player.ended) player.currentTime = 0;
+  playCurrent();
+}
+
+player.addEventListener('loadedmetadata', () => { $('time-dur').textContent = fmt(player.duration); });
+player.addEventListener('timeupdate', () => {
+  $('time-cur').textContent = fmt(player.currentTime);
+  if (player.duration) $('seek').value = Math.round(player.currentTime / player.duration * 1000);
+});
+player.addEventListener('ended', slideDone);
+$('seek').addEventListener('input', e => { if (player.duration) player.currentTime = e.target.value / 1000 * player.duration; });
+
+function begin(withSound){
+  state.playing = withSound;
+  document.getElementById('start-screen').hidden = true;
+  document.getElementById('deck').hidden = false;
+  renderFrames(); renderDots(); goTo(0);
+}
+
+document.getElementById('begin-btn').addEventListener('click', () => begin(true));
+document.getElementById('begin-quiet').addEventListener('click', () => begin(false));
+$('nav-next').addEventListener('click', () => goTo(state.index + 1));
+$('nav-prev').addEventListener('click', () => goTo(state.index - 1));
+$('nav-play').addEventListener('click', togglePlay);
+$('nav-replay').addEventListener('click', () => { clearAdvance(); state.playing = true; syncUI(); if (AUDIO[state.index + 1]) { player.currentTime = 0; } playCurrent(); });
+$('nav-mute').addEventListener('click', () => { player.muted = !player.muted; syncUI(); if (state.playing && !AUDIO[state.index + 1]) speakCurrent(); });
+$('nav-auto').addEventListener('click', () => { state.auto = !state.auto; if (!state.auto) clearAdvance(); syncUI(); });
+$('nav-speed').addEventListener('click', () => { const r = [1, 1.25, 1.5, 0.75]; state.rate = r[(r.indexOf(state.rate) + 1) % r.length]; player.defaultPlaybackRate = state.rate; player.playbackRate = state.rate; syncUI(); if (state.playing && !AUDIO[state.index + 1]) speakCurrent(); });
+document.addEventListener('keydown', e => {
+  if (document.getElementById('deck').hidden) return;
+  if (e.key === ' ') { if (e.target.closest('button, input, a')) return; e.preventDefault(); togglePlay(); }
+  if (e.key === 'ArrowRight') goTo(state.index + 1);
+  if (e.key === 'ArrowLeft') goTo(state.index - 1);
+});
+let tx = null;
+document.addEventListener('touchstart', e => { if (!document.getElementById('deck').hidden) tx = e.touches[0].clientX; }, { passive:true });
+document.addEventListener('touchend', e => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 60) goTo(state.index + (dx < 0 ? 1 : -1));
+  tx = null;
+}, { passive:true });
+</script>
+</body>
+</html>
