@@ -54,6 +54,8 @@ div[contenteditable]{border:1px solid var(--line);border-radius:12px;padding:12p
 .ctl label{font-size:16px}
 .win{background:#e8f1fd;font-weight:700}
 .chk{display:flex;gap:8px;padding:3px 0}
+details.drop summary{cursor:pointer;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:820;letter-spacing:-.05em;line-height:1.05}
+details.drop[open] summary{margin-bottom:14px}
 button,.button{display:inline-block;font:inherit;font-size:16px;font-weight:700;padding:9px 18px;border:0;border-radius:999px;background:var(--blue);color:#fff;cursor:pointer;text-decoration:none}
 button:hover,.button:hover{background:#074d97}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;margin-top:30px}
@@ -89,7 +91,7 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;marg
 <label>Option A share paid by RTI (%) <input class="s" id="fpct" type="number" value="60"></label>
 <label><input type="checkbox" id="hotelgift"> If a sponsor donates the hotel rooms (we are seeking sponsorship from Hilton, Hyatt, IHG and Marriott)</label>
 </div>
-<p style="font-size:17px">The flight budget for both guests is capped at $4,000 combined. The purchasing target is $2,400 to $3,200 for both; if they book near the target, every flight figure below drops by a quarter or more. Flights are booked by Audima so they can use frequent flyer points.</p>
+<p style="font-size:17px">The flight budget for both guests is capped at $4,000 combined. The purchasing target is $2,400 to $3,200 for both; if they book near the target, every flight figure below drops by a quarter or more. Flights are booked by Audima so they can use frequent flyer points, if they have them.</p>
 </section>
 
 <section>
@@ -109,6 +111,16 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;marg
 </table>
 </section>
 
+
+<section>
+<details class="drop">
+<summary>Judgment criteria: weighted scorecard</summary>
+<p style="font-size:17px">Score each option 1 (poor) to 5 (best) and set weights 1 to 5. The starting scores are only a suggestion: change any of them to reflect what matters most to you.</p>
+<table id="score">
+<tr><th>Criterion</th><th class="r">Weight</th><th class="r">A</th><th class="r">B</th><th class="r">C</th><th>Why</th></tr>
+</table>
+</details>
+</section>
 
 <section>
 <h2>What is already settled</h2>
@@ -147,6 +159,15 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;marg
     ['Checked bags for Sway units (2)',300,'Audima','Airline fees'],
     ['Some meals, other than the two sponsored dinners (est. 16 person-days x $55)',880,'Audima','Planner: guests pay their own']
   ];
+  var CRIT=[
+    ['Cost to Ras Tafari Inc.',5,[3,5,1],'B is lowest; A moderate; C highest'],
+    ['Answers what Isaac asked for',4,[5,2,5],'He asked for accommodation, flights or a contribution'],
+    ['Funding certainty (we can really pay for it)',4,[4,5,2],'C needs a sponsor or a new budget line'],
+    ['Goodwill and the relationship',3,[4,2,5],'Hosting plus a real flight contribution reads as a true partnership'],
+    ['Control if the date or plans change',3,[4,5,2],'Less money out the door before CPD confirms'],
+    ['Simplicity of paperwork and tax',2,[3,5,3],'No flight funds in B means no transfer to foreign individuals'],
+    ['Speed to say yes now',2,[5,5,3],'A and B can be offered immediately']
+  ];
   var SC=['A','B','C'];
   function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
   function build(){
@@ -155,8 +176,27 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;marg
       var r=t.insertRow();
       r.innerHTML='<td contenteditable="true">'+l[0]+'</td><td class="r"><input class="n amt" type="number" value="'+l[1]+'"></td><td><select class="pay"><option'+(l[2]==='RTI'?' selected':'')+'>RTI</option><option'+(l[2]==='Audima'?' selected':'')+'>Audima</option><option'+(l[2]==='In-kind'?' selected':'')+'>In-kind</option></select></td><td contenteditable="true">'+l[3]+'</td>';
     });
+    var sc=document.getElementById('score');
+    CRIT.forEach(function(c){
+      var r=sc.insertRow();
+      r.innerHTML='<td contenteditable="true">'+c[0]+'</td><td class="r"><input class="s w" type="number" min="1" max="5" value="'+c[1]+'"></td>'
+       +c[2].map(function(v,i){return '<td class="r"><input class="s sc'+SC[i]+'" type="number" min="1" max="5" value="'+v+'"></td>';}).join('')
+       +'<td contenteditable="true">'+c[3]+'</td>';
+    });
+  }
+  function totals(){
+    var sc=document.getElementById('score'),tot={A:0,B:0,C:0},maxw=0;
+    var old=document.getElementById('scoretot'); if(old) old.parentNode.removeChild(old);
+    Array.prototype.forEach.call(sc.rows,function(r){
+      var wi=r.querySelector('.w'); if(!wi) return;
+      var wv=parseFloat(wi.value)||0; maxw+=wv*5;
+      SC.forEach(function(k){ tot[k]+=wv*(parseFloat(r.querySelector('.sc'+k).value)||0); });
+    });
+    var t=sc.insertRow(); t.id='scoretot';
+    t.innerHTML='<td><b>Weighted total (out of '+maxw+')</b></td><td></td>'+SC.map(function(k){return '<td class="r"><b>'+tot[k]+'</b></td>';}).join('')+'<td></td>';
   }
   function calc(){
+    totals();
     var base=parseFloat(document.getElementById('fbase').value)||0;
     var pct=(parseFloat(document.getElementById('fpct').value)||0)/100;
     var gift=document.getElementById('hotelgift').checked;
@@ -199,11 +239,11 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:.88rem;marg
     app.querySelectorAll('input').forEach(function(i){ if(i.type==='checkbox'){ if(i.checked) i.setAttribute('checked',''); else i.removeAttribute('checked'); } else i.setAttribute('value',i.value); });
     app.querySelectorAll('select').forEach(function(s){ Array.prototype.forEach.call(s.options,function(o,k){ if(k===s.selectedIndex) o.setAttribute('selected',''); else o.removeAttribute('selected'); }); });
   }
-  function save(){ sync(); try{ localStorage.setItem(KEY,JSON.stringify({lines:document.getElementById('lines').innerHTML,fbase:document.getElementById('fbase').value,fpct:document.getElementById('fpct').value,gift:document.getElementById('hotelgift').checked})); }catch(e){} }
+  function save(){ sync(); try{ localStorage.setItem(KEY,JSON.stringify({lines:document.getElementById('lines').innerHTML,score:document.getElementById('score').innerHTML,fbase:document.getElementById('fbase').value,fpct:document.getElementById('fpct').value,gift:document.getElementById('hotelgift').checked})); }catch(e){} }
   build();
   try{
     var st=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(st){ document.getElementById('lines').innerHTML=st.lines; document.getElementById('fbase').value=st.fbase; document.getElementById('fpct').value=st.fpct; document.getElementById('hotelgift').checked=st.gift; }
+    if(st){ document.getElementById('lines').innerHTML=st.lines; if(st.score) document.getElementById('score').innerHTML=st.score; document.getElementById('fbase').value=st.fbase; document.getElementById('fpct').value=st.fpct; document.getElementById('hotelgift').checked=st.gift; }
   }catch(e){}
   calc();
   app.addEventListener('input',function(){calc();save();});
