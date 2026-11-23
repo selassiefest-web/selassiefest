@@ -343,6 +343,17 @@ player.addEventListener('timeupdate', () => {
 player.addEventListener('ended', slideDone);
 $('seek').addEventListener('input', e => { if (player.duration) player.currentTime = e.target.value / 1000 * player.duration; });
 
+// narration.txt is the editable script: if it loads, its lines replace each slide's built-in voice lines.
+// Format: a "=== SLIDE 03 - title ===" heading, then one spoken line per row.
+fetch('/full-spectrum/blick/narration.txt?v=' + Date.now()).then(r => r.ok ? r.text() : '').then(t => {
+  t.split(/^=== SLIDE (\d+)[^\n]*===\s*$/m).forEach((chunk, k, arr) => {
+    if (k % 2 === 1) {
+      const lines = (arr[k + 1] || '').split('\n').map(x => x.trim()).filter(Boolean);
+      if (lines.length && FRAMES[+chunk - 1]) FRAMES[+chunk - 1].voice = lines;
+    }
+  });
+}).catch(() => {});
+
 function begin(withSound){
   state.playing = withSound;
   document.getElementById('start-screen').hidden = true;
