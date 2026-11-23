@@ -184,7 +184,7 @@ const FRAMES = [
     bullets:['On the <b>banner at the DJ booth</b> and on the <b>art wall</b>, every night','On our <b>program page</b> and in our <b>pitch deck</b>','On the <b>Blick tent</b> where the coupons are handed out','Logo files, size and placement are <b>approved by Blick&rsquo;s marketing team first</b>'],
     voice:['Number one: logo recognition.','Blick\'s logo goes on the banner at the DJ booth and on the art wall, every night.','It is on our program page, in this pitch deck, and on the Blick tent where coupons are handed out.','Blick\'s marketing team approves the logo files, size and placement first.'] },
 
-  { c:'blue', c2:'ink', icon:'fa-print', image:'/full-spectrum/blick/img/09-print.jpg', tag:'2 of 6', label:'Print',
+  { c:'blue', c2:'ink', icon:'fa-print', image:'/full-spectrum/blick/img/09-print.png', tag:'2 of 6', label:'Print',
     headline:'Blick in print, from the first poster to the last',
     bullets:['Blick credited as <b>the art partner</b> on printed posters and programs for the series','A printed <b>thank-you card</b> for Blick, signed by the artists and children','Everything goes to <b>Blick for approval</b> before it prints'],
     voice:['Number two: print.','Blick is credited as the art partner on the printed posters and programs for the series.','There is also a printed thank you card for Blick, signed by the artists and children.','Everything goes to Blick for approval before anything is printed.'] },
@@ -265,6 +265,7 @@ function renderFrames(){
         v.prepend(pic); v.prepend(bg);
         const big = v.querySelector('.big'); if (big) big.remove();
       };
+      im.onerror = () => { const alt = f.image.replace(/\.(png|jpg)$/i, m => m.toLowerCase() === '.png' ? '.jpg' : '.png'); if (im.dataset.alt !== '1') { im.dataset.alt = '1'; f.image = alt; im.src = alt; } };
       im.src = f.image;
     }
   });
