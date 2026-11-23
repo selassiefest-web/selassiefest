@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2nd Chance Housing | SSI, Chase and rent payments</title>
+<style>
+  :root { --ink: #172b27; --muted: #4d5f5a; --bg: #f0f4f2; --card: #ffffff; --line: #d6e1db; --brand: #163e35; --link: #075a47;
+          --soft: #edf5f1; --head: #e7f1ec; --warn-bg: #fff5d9; --warn: #a16a06; --good: #1d6b3a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { background: var(--brand); color: #fff; padding: 2.5rem max(1.25rem, calc((100% - 900px) / 2)); }
+  header p { margin: 0; }
+  .eyebrow { opacity: .85; font-size: .95rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.08; margin: .45em 0 .35em; }
+  main { max-width: 940px; margin: auto; padding: 1.25rem; }
+  nav { display: flex; flex-wrap: wrap; gap: .5rem; margin: .25rem 0 .5rem; }
+  nav a { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: .35rem .9rem; text-decoration: none; font-weight: 600; }
+  section { background: var(--card); padding: clamp(1rem, 4vw, 2rem); margin: 1rem 0; border: 1px solid var(--line); border-radius: .8rem; }
+  h2, h3 { line-height: 1.25; }
+  h2 { margin-top: 0; }
+  h3 { margin: 1.6rem 0 .4rem; font-size: 1.12rem; }
+  h3:first-of-type { margin-top: 1rem; }
+  a { color: var(--link); }
+  .sub { color: var(--muted); margin-top: -.25rem; }
+  table { width: 100%; border-collapse: collapse; margin: .75rem 0; }
+  th, td { text-align: left; vertical-align: top; padding: .55rem .5rem; border-bottom: 1px solid var(--line); }
+  th { background: var(--head); }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn); padding: .8rem 1rem; border-radius: 0 .4rem .4rem 0; }
+  .good { background: var(--soft); border-left: 4px solid var(--good); padding: .8rem 1rem; border-radius: 0 .4rem .4rem 0; }
+  blockquote { border-left: 4px solid #286955; margin: 1rem 0; padding: .6rem 1rem; background: var(--soft); border-radius: 0 .4rem .4rem 0; }
+  /* Questions: every question is its own bullet */
+  ul.qs { padding-left: 1.3rem; margin: .4rem 0 .8rem; }
+  ul.qs > li { margin: .45rem 0; padding-left: .15rem; }
+  ul.qs > li::marker { color: var(--brand); }
+  .label { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--brand);
+           background: var(--head); border-radius: .3rem; padding: .05rem .45rem; margin: .6rem 0 .1rem; }
+  .known { margin: .3rem 0 .5rem; }
+  .answer { margin: .15rem 0 0; color: var(--muted); }
+  .answer strong { color: var(--ink); }
+  .write { display: none; }
+  ol.steps > li { margin-top: .7rem; }
+  footer { font-size: .88rem; color: var(--muted); max-width: 940px; margin: 0 auto 2rem; padding: 0 1.25rem; }
+  @media print {
+    body, section { background: #fff; }
+    header { background: #fff; color: #000; padding: 0 0 .5rem; border-bottom: 2px solid #000; }
+    nav { display: none; }
+    section { padding: .4rem 0; border: 0; margin: .6rem 0; }
+    a { color: #000; }
+    h2, h3, .label { break-after: avoid; }
+    tr, ul.qs > li { break-inside: avoid; }
+    /* a line to write the answer on, under each question, when printed */
+    .write { display: block; border-bottom: 1px solid #999; height: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <p class="eyebrow">2nd Chance Housing · 6626 N. Bourbon St., Milwaukee, WI 53224</p>
+  <h1>Paying rent by bank account on SSI</h1>
+  <p>Planning guide for Al Harris and the Chase Brown Deer banker · updated November 23, 2026</p>
+</header>
+
+<main>
+<nav aria-label="Sections">
+  <a href="#fees">Our Stripe fees</a><a href="#owner">Questions for Al</a><a href="#chase">Questions for Chase</a><a href="#process">Tenant steps</a>
+</nav>
+
+<section id="fees" aria-labelledby="fees-h">
+  <h2 id="fees-h">What 2nd Chance Housing pays Stripe</h2>
+  <p class="sub">Stripe's published U.S. pricing. The card, bank, verification and failed-payment fees match what our own Stripe accounts were charged in
+    October and November 2026 (we have had no disputes).
+    These are charges to 2nd Chance Housing. Tenants pay no fee in the portal.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th scope="col">Payment or event</th><th scope="col">Stripe fee</th><th scope="col" class="num">On $900 rent</th></tr></thead>
+    <tbody>
+      <tr><td>Debit card (a Chase debit card counts as a card)</td><td>2.9% + $0.30</td><td class="num">$26.40</td></tr>
+      <tr><td>Bank account (ACH)</td><td>0.8%, never more than $5</td><td class="num">$5.00</td></tr>
+      <tr><td>Instant bank verification (when the tenant links the bank)</td><td>$1.50 per verification</td><td class="num">$1.50</td></tr>
+      <tr><td>Failed bank payment (not enough money in the account)</td><td>$4 per failure</td><td class="num">$4.00</td></tr>
+      <tr><td>Disputed bank payment</td><td>$15 per dispute</td><td class="num">$15.00</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="good"><strong>$21.40 saved on every $900 rent paid by bank instead of card</strong> (about $257 a year per tenant).
+    In the portal the tenant picks <strong>bank account</strong>. Typing a Chase debit card number is still a card payment at 2.9% + $0.30.</p>
+  <p class="note">The portal takes <strong>debit cards only</strong>: a credit card payment is refunded automatically. Card rules do not allow a surcharge on
+    debit cards, so the way to save is to move tenants to bank payments, not to add a card fee.</p>
+  <p><a href="https://stripe.com/pricing">Stripe standard pricing</a> · <a href="https://stripe.com/pricing/local-payment-methods">Stripe ACH fees</a> ·
+    <a href="https://stripe.com/payments/us-bank-payments">Stripe bank payment comparison</a></p>
+</section>
+
+<section id="owner" aria-labelledby="owner-h">
+  <h2 id="owner-h">Questions for Al and 2nd Chance Housing</h2>
+  <p class="sub">Each question with the answer we propose. Decide the open ones before tenants are told.</p>
+  <ul class="qs">
+    <li><strong>Will a tenant paying by bank pay any fee in the portal?</strong>
+      <p class="answer"><strong>Answer:</strong> No. The portal adds $0. 2nd Chance Housing pays Stripe's processing and bank verification charges.</p></li>
+    <li><strong>What happens if a bank payment fails or is returned?</strong>
+      <p class="answer"><strong>Proposed:</strong> 2nd Chance Housing absorbs Stripe's $4 failed-payment fee. We tell the tenant privately what happened and how to pay again.
+        During the pilot, the tenant starts each payment; no automatic retries.</p></li>
+    <li><strong>What if a tenant pays on time but the bank payment is still processing?</strong>
+      <p class="answer"><strong>Decision needed:</strong> The portal already shows a bank payment as “Processing” and keeps the time it was sent, so the tenant is
+        not asked to pay twice. Decide how the due date and late fee are treated when an on-time payment later fails, and check it against the lease and any program rules.</p></li>
+    <li><strong>What if a tenant's SSI is still on the government card, or they cannot open an account yet?</strong>
+      <p class="answer"><strong>Proposed:</strong> Keep a way to pay while they wait for ID, account approval or the first SSI deposit (debit card in the portal, Zelle
+        or money order). Any bank account the tenant already has works too. Check the lease and program rules before changing the accepted ways to pay.</p></li>
+    <li><strong>Does staff need the tenant's bank login, account numbers or Social Security number?</strong>
+      <p class="answer"><strong>Answer:</strong> No. The tenant enters their own bank details and approves the payment in Stripe's screens. Staff can help find the
+        right buttons in the portal and check the payment status, nothing more.</p></li>
+  </ul>
+</section>
+
+<section id="chase" aria-labelledby="chase-h">
+  <h2 id="chase-h">Questions for Chase Brown Deer</h2>
+  <p><strong>Chase Brown Deer</strong> · 8800 W. Brown Deer Rd., Milwaukee, WI 53224 · <a href="tel:+14143656306">414-365-6306</a>.
+    Ask for a personal banker and individual appointment times for tenants.</p>
+  <blockquote>Hi, I'm Al Harris with 2nd Chance Housing. We're helping tenants open their first bank accounts so they can pay rent through our portal.
+    Some live entirely on SSI, get it on a government benefits card, and have $0 to spare. Could you walk us through opening an empty account, moving the
+    SSI deposit without a gap, and paying the first two months of rent without bank fees?</blockquote>
+
+  <h3>1. Opening an account with $0</h3>
+  <p class="known"><span class="label">What Chase publishes</span><br>Chase Secure Banking has no minimum opening deposit. Chase asks for two original, valid IDs.</p>
+  <span class="label">Ask the branch</span>
+  <ul class="qs">
+    <li>Can I walk in with $0 and leave with an open account?<span class="write"></span></li>
+    <li>Will a signed lease or a letter from my landlord prove my current address if my photo ID shows an old address?<span class="write"></span></li>
+    <li>What can I use to prove my address if my utilities are included in my rent?<span class="write"></span></li>
+    <li>What can I use as a second ID if I don't have a standard one?<span class="write"></span></li>
+    <li>Can the account stay open at $0 until my first SSI deposit arrives?<span class="write"></span></li>
+  </ul>
+
+  <h3>2. Keeping the account free every month</h3>
+  <p class="known"><span class="label">What Chase publishes</span><br>No monthly fee for at least the first two statement periods on a new account. After that the fee is $4.95,
+    waived with at least $250 in qualifying electronic deposits per statement period, which can include government benefits.</p>
+  <span class="label">Ask the banker</span>
+  <ul class="qs">
+    <li>Does my SSI deposit count as a qualifying electronic deposit?<span class="write"></span></li>
+    <li>What are my statement dates?<span class="write"></span></li>
+    <li>What happens if my benefit is less than $250?<span class="write"></span></li>
+    <li>What happens if my deposit posts in a different statement period than usual?<span class="write"></span></li>
+    <li>Can you waive the monthly fee while I switch over?<span class="write"></span></li>
+  </ul>
+
+  <h3>3. Moving SSI from the benefits card without missing a payment</h3>
+  <span class="label">Ask the banker</span>
+  <ul class="qs">
+    <li>Can you give me a direct-deposit form?<span class="write"></span></li>
+    <li>Can you show me my routing number and account number?<span class="write"></span></li>
+    <li>Who can help if I have a representative payee?<span class="write"></span></li>
+    <li>How should the account be titled if I have a representative payee?<span class="write"></span></li>
+  </ul>
+  <span class="label">Ask Social Security (800-772-1213)</span>
+  <ul class="qs">
+    <li>Who can ask for the switch: me, my payee, or the bank?<span class="write"></span></li>
+    <li>Where will my next payment go?<span class="write"></span></li>
+    <li>When does the change take effect?<span class="write"></span></li>
+    <li>How do I report the new account?<span class="write"></span></li>
+  </ul>
+
+  <h3>4. If the rent payment arrives before my SSI does</h3>
+  <p class="known"><span class="label">What Chase publishes</span><br>No overdraft fees on Secure Banking.</p>
+  <span class="label">Ask the banker</span>
+  <ul class="qs">
+    <li>If a rent payment from my account is refused or returned, does Chase charge me anything?<span class="write"></span></li>
+    <li>How do I tell a pending deposit from money I can actually spend?<span class="write"></span></li>
+    <li>How do I set up a low-balance alert?<span class="write"></span></li>
+  </ul>
+
+  <h3>5. What can still cost me money</h3>
+  <span class="label">Ask the banker</span>
+  <ul class="qs">
+    <li>What do I pay to use an ATM that isn't Chase's?<span class="write"></span></li>
+    <li>Does taking out cash at this branch cost anything?<span class="write"></span></li>
+    <li>Do paper statements cost anything?<span class="write"></span></li>
+    <li>What does a replacement debit card cost?<span class="write"></span></li>
+    <li>How can I check my balance without a smartphone?<span class="write"></span></li>
+    <li>Can I have the written fee schedule?<span class="write"></span></li>
+    <li>Which charges am I most likely to run into, and how do I avoid them?<span class="write"></span></li>
+  </ul>
+
+  <p><a href="https://www.chase.com/locator/banking/us/wi/milwaukee/8800-w-brown-deer-rd">Brown Deer branch</a> ·
+    <a href="https://personal.chase.com/personal/secure-banking">Chase Secure Banking</a> ·
+    <a href="https://www.chase.com/content/dam/chase-ux/documents/personal/checking/acceptable-forms-of-identification.pdf">Chase ID checklist</a></p>
+</section>
+
+<section id="process" aria-labelledby="process-h">
+  <h2 id="process-h">From the first appointment to the first bank payment</h2>
+  <ol class="steps">
+    <li><strong>Before the visit.</strong> 2nd Chance Housing gets the banker's name, the list of documents, and appointment times. The tenant checks that the
+      account fits their SSI amount and payment date.</li>
+    <li><strong>At Chase.</strong> The tenant opens Secure Banking if it fits, and leaves with the direct-deposit form, the written fee schedule, and how to
+      check money available. A tenant who already has a bank account can skip to step 4.</li>
+    <li><strong>With Social Security.</strong> The tenant or their representative calls Social Security at <a href="tel:+18007721213">800-772-1213</a>
+      (or uses <a href="https://www.ssa.gov/myaccount/">my Social Security</a>) to move the deposit to the new account. Keep the benefits card, and a way to
+      pay rent, until the first deposit shows as available at Chase.</li>
+    <li><strong>In the portal.</strong> The tenant chooses <strong>bank account</strong>, follows Stripe's steps to link the bank, checks the amount, and
+      approves one rent payment. Save the confirmation. A bank payment can take up to four business days to clear.</li>
+    <li><strong>After paying.</strong> Check that the portal moves from Processing to Paid. If it fails, contact 2nd Chance Housing to confirm what is still
+      owed before paying again (each failed try costs $4).</li>
+  </ol>
+  <p class="note"><strong>Before telling tenants about the $0 option:</strong> confirm that the tenant can open and use the account without fees in their
+    situation, and that they know what to do if their benefit or rent payment is late.</p>
+  <p><a href="https://www.ssa.gov/deposit/howtosign.htm">SSA direct deposit instructions</a> ·
+    <a href="https://www.ssa.gov/blog/en/posts/2024-04-11.html">SSA: reporting a new financial account</a> ·
+    <a href="https://docs.stripe.com/payments/ach-direct-debit">Stripe ACH verification and payment status</a></p>
+</section>
+</main>
+<footer>2nd Chance Housing Inc. · Stripe fees checked against our own Stripe accounts on November 23, 2026. Chase figures are as Chase publishes them; confirm at the branch.</footer>
+</body>
+</html>
