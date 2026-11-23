@@ -193,6 +193,7 @@ footer.page{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 2
 <section aria-labelledby="s3">
   <div class="sec-head"><span class="idx">03 / Wiring</span><h2 id="s3">Wire the station</h2><span class="meta">Follows your choices</span></div>
   <div class="panel"><table><thead><tr><th>Path</th><th>Connection</th></tr></thead><tbody id="wire"></tbody></table></div>
+  <details class="panel" id="setup" open style="margin-top:14px"><summary style="cursor:pointer;font-weight:500">First setup and test <span class="mono" style="font-size:.62rem;color:var(--muted)"> · from published guides, verify on the bench</span></summary><ol style="margin-top:12px"></ol></details>
 </section>
 
 <section aria-labelledby="s4">
@@ -231,7 +232,7 @@ const P={
  phones:{brand:'Shure · SRH440A',name:'Wired studio headphones',price:0,img:'Shure-SRH440A-Headphones',sp:'Shure donation: twelve pairs, one for each of the 12 student stations. Instructors and the guest bring their own for stations 13 to 15.',link:'https://www.shure.com/en-US/products/headphones/srh440?variant=SRH440A'},
  strip:{brand:'Eaton Tripp Lite · ISOBAR4ULTRA',name:'Four-outlet surge protector',price:114.83,img:'Eaton-Tripp-Lite-ISOBAR4ULTRA',sp:'One grounded venue receptacle feeds up to four plugs. Indoor reference; outdoor use needs GFCI distribution.',link:'https://www.digikey.com/en/products/detail/eaton-corporation/ISOBAR4ULTRA/20194658'},
  anker:{brand:'Anker 313 Ace 45W · A2677',name:'FLX4 power adapter',price:30,img:'Anker-A2677-313-Ace-45W-USB-C-PD',sp:'USB-C PD, 9 V / 3 A output to the FLX4 power port. Allowance.',link:'https://service.anker.com/product-description/a085g000004zwC6AAI/anker-313-charger-ace-45w'},
- swaypsu:{brand:'Audima-approved USB-C PD · SKU pending',name:'Sway power supply',price:30,img:'Audima-Labs-Sway',sp:'Allowance. Confirm voltage, wattage, U.S. plug and box contents with Audima before duplicating. Image shows the Sway it powers.',link:'https://audima.com.au/get-Started/'},
+ swaypsu:{brand:'Audima-approved USB-C PD · SKU pending',name:'Sway power supply',price:30,img:'Audima-Labs-Sway',sp:'Allowance. Audima says Sway needs a regulated USB-C Power Delivery (PD) supply and that a non-PD source can damage it. Voltage, wattage, U.S. plug and box contents are still to confirm. Do not reuse the FLX4’s 9 V / 3 A spec for Sway. Image shows the Sway it powers.',link:'https://audima.com.au/get-Started/'},
  usbcc:{brand:'StarTech · USB2CC1MNC · 1 m',name:'USB-C to USB-C cable',price:8.35,img:'StarTech-USB2CC1MNC-USB-C-to-USB-C',sp:'Sway data, Sway power, FLX4 power. Use any suitable supplied cables first.',link:'https://www.digikey.com/en/products/detail/startech-com/USB2CC1MNC/23351092'},
  usbac:{brand:'StarTech · USB2AC3FBKE',name:'USB-A to USB-C data cable',price:8.45,img:'StarTech-USB2AC3FBKE-USB-A-to-USB-C',sp:'FLX4 data to the laptop, so the charger and Sway data keep their own USB-C ports.',link:'https://www.digikey.com/en/products/detail/startech-com/USB2CC1MNC/23351092'},
  drive:{brand:'SanDisk-style dual USB-A / USB-C drive · allowance',name:'Take-home USB music drive',price:15,img:'SanDisk-Ultra-Dual-Drive-Go-USB-Drive-Example',sp:'One for every student. It plugs into the deck at class and goes home at graduation. The dual USB-A and USB-C plug fits every machine here, including the XDJ-AN, which takes USB-C only.',link:'https://alphatheta.com/en/information/important-notice-for-customers-using-usb-devices-with-our-dj-equipment/'},
@@ -246,12 +247,12 @@ const P={
  xlr:{brand:'XLR female to XLR male',name:'Balanced XLR cables',qty:4,price:25,img:'Hosa-MCL-125-XLR-Cable-Example',sp:'Two mic leads plus two mixer-to-speaker leads. $25 allowance each; pick lengths after measuring the room.',link:'https://www.sweetwater.com/c1033--Hosa_10_foot_Microphone_Cables'}
 };
 const HW={
- flx4:{hp:'front 3.5 mm stereo jack (per Station 01)',out:'MASTER RCA L/R'},
- xdjan:{hp:'one 3.5 mm stereo mini jack',out:'MASTER 2 RCA L/R (also has an XLR master)'},
- omnis:{hp:'two jacks: ¼-inch and 3.5 mm',out:'rear RCA (shared with Booth) or XLR master'},
- rx3:{hp:'¼-inch stereo jack (retailers also list a 3.5 mm jack, but Pioneer’s own page calls it an input, so use the ¼-inch)',out:'MASTER 2 RCA L/R (also has an XLR master)'},
- opus:{hp:'two jacks: ¼-inch and 3.5 mm',out:'MASTER 2 RCA L/R (also has an XLR master)'},
- az:{hp:'two jacks: ¼-inch and 3.5 mm',out:'MASTER 2 RCA L/R (also has an XLR master)'}
+ flx4:{hp:'front 3.5 mm stereo jack (per Station 01)',out:'MASTER RCA L/R',pwr:'9 V / 3 A USB-C PD supply'},
+ xdjan:{hp:'one 3.5 mm stereo mini jack',out:'MASTER 2 RCA L/R (also has an XLR master)',pwr:'supplied adapter'},
+ omnis:{hp:'two jacks: ¼-inch and 3.5 mm',out:'rear RCA (shared with Booth) or XLR master',pwr:'supplied power adapter'},
+ rx3:{hp:'¼-inch stereo jack (retailers also list a 3.5 mm jack, but Pioneer’s own page calls it an input, so use the ¼-inch)',out:'MASTER 2 RCA L/R (also has an XLR master)',pwr:'supplied AC power cord'},
+ opus:{hp:'two jacks: ¼-inch and 3.5 mm',out:'MASTER 2 RCA L/R (also has an XLR master)',pwr:'supplied AC power cord'},
+ az:{hp:'two jacks: ¼-inch and 3.5 mm',out:'MASTER 2 RCA L/R (also has an XLR master)',pwr:'supplied AC power cord'}
 };
 const PA_KEYS=['mic','mixer','spk','stand','rca','xlr'];
 let S={core:'flx4',laptop:1,sway:1,pa:1,n:1,drv:1,students:12,spares:2,acc:2,trk:0};
@@ -337,12 +338,13 @@ function render(){
   const b=$('#t-badge');b.className='badge '+(bad?'no':'ok');b.textContent=bad?'Incomplete':'Complete build';
   wiring(d); topo(d); bom(d,t);
   try{location.hash=btoa(JSON.stringify({c:S.core,l:S.laptop,s:S.sway,p:S.pa,n:S.n,v:S.drv,st:S.students,sp:S.spares,a:S.acc,k:S.trk}))}catch(e){}
-  isaac(d);
+  isaac(d);setup(d);
 }
 function checks(d,t){
   const c=[]; const ok=(t,x)=>c.push({s:'ok',t,d:x}), w=(t,x)=>c.push({s:'warn',t,d:x}), b=(t,x)=>c.push({s:'bad',t,d:x});
   const hw=HW[d.core.id];
   ok('Sound source.',`${d.core.name} is the deck system.`);
+  if(d.laptop&&d.sa)ok('Serato licence.',d.core.pro==='Pro hardware unlock'?d.core.name+' unlocks Serato DJ Pro while it is connected, so standard use needs no subscription.':d.core.name+' needs a paid Serato DJ Pro licence; Serato’s planned donation is meant to cover it.');
   d.laptop?ok('Computer and software.','Windows ThinkPad runs Serato DJ Pro. Serato is donated, so $0 (retail $11.99 a month).'):ok('No computer at the station.','Plays from the student’s USB drive.');
   ok('Cue audio.',`Donated Shure SRH440A into the ${hw.hp}.`);
   ok('Adapters.','Nothing to buy. The SRH440A comes with a threaded ¼-inch adapter: leave it on for a ¼-inch jack, unscrew it for a 3.5 mm jack. The Hosa lead goes straight from the deck’s RCA outputs to the mixer.');
@@ -369,11 +371,11 @@ function wiring(d){
   if(d.laptop)row('Socket '+(sk++),`Original Lenovo charger ${A} laptop charging port.`);
   if(d.sway)row('Socket '+(sk++),`Confirmed USB-C PD supply ${A} Sway dedicated power port.`);
   if(!d.sa)row('Socket '+(sk++),`9 V / 3 A USB-C PD supply ${A} FLX4 power input.`);
-  else row('Socket '+(sk++),`Supplied adapter ${A} ${d.core.name} power input.`);
+  else row('Socket '+(sk++),`${HW[d.core.id].pwr[0].toUpperCase()+HW[d.core.id].pwr.slice(1)} ${A} ${d.core.name} power input.`);
   if(d.strip&&sk<=4)row('Socket '+sk,'Open. Check plug fit with all supplies installed.');
   if(!d.sa)row('USB data',`FLX4 device port ${A} laptop USB-A via the USB-A to USB-C data cable.`);
   if(d.sway)row('USB data',`Sway data ${A} laptop USB-C.`);
-  if(d.sa&&d.laptop)row('USB data',`${d.core.name} ${A} laptop for Serato mode. Use the cable supplied with the deck; confirm on the bench.`);
+  if(d.sa&&d.laptop)row('USB data',d.core.id==='rx3'?`Laptop USB-A ${A} RX3 rear USB-B computer port. A USB cable is listed in the RX3 box; confirm it is there.`:`${d.core.name} ${A} laptop for Serato mode. Use the cable supplied with the deck; confirm on the bench.`);
   if(d.sa)row('Music',`Student plugs their USB drive (loaded with rekordbox) into the deck. Play from the onboard controls.`);
   row('Headphone audio',`${d.core.name} ${HW[d.core.id].hp} ${A} Shure SRH440A. Keep the ¼-inch adapter on for a ¼-inch jack; remove it for 3.5 mm.`);
   if(S.pa){
@@ -433,9 +435,20 @@ function bom(d,t){
     d.lab.map(row).join('')+`<tr class="sub"><td colspan="3">Drives, prep computer and music, once per lab (one-time)</td><td>${money(t.lo)}</td></tr>`;
   $('#bomf').innerHTML=`<tr><td colspan="3">Total one-time</td><td>${money(t.lab)}</td></tr>`+(t.mo?`<tr><td colspan="3">Streaming music, monthly</td><td>${money(t.mo)}/mo</td></tr>`:'');
 }
+function setup(d){
+  const el=$('#setup'); if(!el)return;
+  if(!d.sway&&!(d.sa&&d.laptop)){el.style.display='none';return;} el.style.display='';
+  const steps=[];
+  if(d.core.id==='rx3')steps.push('Install the XDJ-RX3 Windows audio driver and check its firmware. Connect the RX3 directly to the laptop, set SOURCE to SOFTWARE CONTROL, and press LOAD 1 and LOAD 2 to put both decks under software control. Open Serato DJ Pro and confirm playback and headphone cueing.');
+  else if(!d.sa)steps.push('Install Serato DJ Pro and connect the DDJ-FLX4. Confirm playback and headphone cueing.');
+  else steps.push('Install the '+d.core.name+' driver, connect it to the laptop and open Serato DJ Pro. Confirm playback and headphone cueing (check the deck’s manual for its computer mode).');
+  if(d.sway)steps.push('Connect and power Sway. In Serato go to Setup, then MIDI, select Sway and enable it. Enter MIDI Assign mode and map one gesture to a sampler trigger or an effect. Save the mapping, restart the station, and confirm Sway reconnects and the gesture still works. Audima lists a separate Windows driver for firmware updates.');
+  steps.push('Test live Stems or any other heavy feature you plan to teach on the exact laptop before buying in quantity.');
+  el.querySelector('ol').innerHTML=steps.map(x=>'<li style="margin:0 0 10px 18px">'+x+'</li>').join('');
+}
 function isaac(d){
   const q=[
-   `Sway power supply: what exact voltage, wattage, U.S. plug and SKU should we buy, and what comes in the box?`,
+   `Sway power supply: your page says a regulated USB-C Power Delivery supply is required. What exact voltage and wattage, U.S. plug and SKU should we buy, and are the supply and both USB-C cables in the box?`,
    `Sway with the ${d.core.name}: we are planning to run Sway as a second MIDI controller in Serato DJ Pro on a Windows laptop alongside it. Please confirm this works and tell us any setup steps.`,
    `Laptop: is a Lenovo ThinkPad E14 Gen 7 (Intel, 16 GB RAM, 512 GB SSD) enough for Serato DJ Pro and the Sway Windows app together?`,
    `Ports: we plan one USB-C data cable and one USB-C power cable per Sway. Is that right?`];
