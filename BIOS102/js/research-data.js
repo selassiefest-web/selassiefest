@@ -238,19 +238,20 @@ window.RM_DATA = (() => {
   // ---- Interest cards (Stage 1) ------------------------------------------
   // Each card is a concrete thing a student might do. The student rates it 1-5.
   // Ratings become a preference vector over TAGS; matching is a transparent dot product.
+  // The first eight cover field, bench, animals, code, collections, data, plants and microbes, so a student who stops at eight still sees every kind of work.
   const CARDS = [
     { id: 'c_stream', text: 'Wade into a river with a net, collect insects, and identify them under a microscope', tags: { aquatic: 1, ecology: 1, field: 1, conservation: 0.6 } },
     { id: 'c_starve', text: 'Grow bacteria and work out how they survive when their food runs out', tags: { microbes: 1, genes: 0.5, wetlab: 1, health: 0.5 } },
-    { id: 'c_algae', text: 'Edit the genes of green algae and see what changes in how they grow', tags: { genes: 1, plants: 1, wetlab: 1 } },
     { id: 'c_mice', text: 'Care for lab mice and track how diet and body clocks change their health', tags: { animals: 1, health: 1, animalfac: 1.2, microbes: 0.4 } },
-    { id: 'c_fossil', text: 'Dig for fossils in the field, then build 3D models of dinosaur bones', tags: { paleo: 1, evolution: 0.8, form: 0.8, field: 1, computing: 0.4 } },
-    { id: 'c_fins', text: 'Dissect fish and test how their fins bend, to learn how limbs evolved', tags: { form: 1, evolution: 0.8, animals: 0.7, wetlab: 0.5, collections: 0.4 } },
     { id: 'c_code', text: 'Write code that compares protein sequences to figure out how enzymes evolved', tags: { proteins: 1, computing: 1.2, evolution: 0.7 } },
-    { id: 'c_prairie', text: 'Survey prairie and forest plots and compare them with records from the 1950s', tags: { plants: 1, ecology: 1, conservation: 0.8, field: 1, computing: 0.5 } },
-    { id: 'c_yeast', text: 'Use yeast to discover how a cell decides which genes to switch on', tags: { genes: 1, proteins: 0.7, wetlab: 1 } },
     { id: 'c_museum', text: 'Measure skulls and feathers from museum collections to sort out which species are related', tags: { collections: 1, evolution: 1, form: 0.7, computing: 0.5 } },
-    { id: 'c_parasite', text: 'Search fish and insects for parasites and work out how they spread', tags: { ecology: 0.8, health: 0.5, aquatic: 0.6, wetlab: 0.5, field: 0.4 } },
+    { id: 'c_fossil', text: 'Dig for fossils in the field, then build 3D models of dinosaur bones', tags: { paleo: 1, evolution: 0.8, form: 0.8, field: 1, computing: 0.4 } },
     { id: 'c_stats', text: 'Spend a day turning messy data into graphs and statistics that answer a question', tags: { computing: 1 } },
+    { id: 'c_algae', text: 'Edit the genes of green algae and see what changes in how they grow', tags: { genes: 1, plants: 1, wetlab: 1 } },
+    { id: 'c_prairie', text: 'Survey prairie and forest plots and compare them with records from the 1950s', tags: { plants: 1, ecology: 1, conservation: 0.8, field: 1, computing: 0.5 } },
+    { id: 'c_fins', text: 'Dissect fish and test how their fins bend, to learn how limbs evolved', tags: { form: 1, evolution: 0.8, animals: 0.7, wetlab: 0.5, collections: 0.4 } },
+    { id: 'c_yeast', text: 'Use yeast to discover how a cell decides which genes to switch on', tags: { genes: 1, proteins: 0.7, wetlab: 1 } },
+    { id: 'c_parasite', text: 'Search fish and insects for parasites and work out how they spread', tags: { ecology: 0.8, health: 0.5, aquatic: 0.6, wetlab: 0.5, field: 0.4 } },
     { id: 'c_gut', text: 'Study the microbes in the human gut and how they affect health', tags: { microbes: 1, health: 1, wetlab: 0.5 } },
   ];
 

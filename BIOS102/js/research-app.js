@@ -62,7 +62,24 @@
     clearTimeout(flash.t);
     flash.t = setTimeout(() => { el.className = 'saved'; }, err ? 7000 : 1400);
   }
+  // Milestones are written once and never removed, so progress counts do not shrink when a status changes later
+  // (for example Emailed -> They said not now).
+  function recordMilestones() {
+    const m = S.milestones = S.milestones || { emailed: {}, interviewed: {} };
+    m.emailed = m.emailed || {}; m.interviewed = m.interviewed || {};
+    const now = new Date().toISOString();
+    if (!m.opened) m.opened = now;
+    if (S.profileDone && !m.cardsDone) m.cardsDone = now;
+    if ((S.shortlist || []).length && !m.listed) m.listed = now;
+    Object.entries(S.outreach || {}).forEach(([id, o]) => {
+      const st = o && o.status;
+      if (['sent', 'scheduled', 'done'].indexOf(st) >= 0 && !m.emailed[id]) m.emailed[id] = now;
+      if (st === 'done' && !m.interviewed[id]) m.interviewed[id] = now;
+    });
+    if (S.final && S.final.askSentAt && !m.asked) m.asked = S.final.askSentAt;
+  }
   function save(now) {
+    recordMilestones();
     S._t = Date.now();
     try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* private mode: server copy still works */ }
     clearTimeout(saveTimer);
@@ -152,6 +169,9 @@
     { id: 'interview', label: 'Interviews', n: 4 },
     { id: 'decide', label: 'Decide and ask', n: 5 },
   ];
+  function outreachStarted() {
+    return Object.values(S.outreach || {}).some((o) => o && o.status && o.status !== 'none');
+  }
   function stepDone(id) {
     const list = S.shortlist || [];
     const doneIv = list.some((i) => E.outreachOf(S, i).status === 'done');
@@ -208,9 +228,9 @@
     return `
       <div class="rm-hero"><h1 class="rm-h1">Hi ${first}. Let&rsquo;s find the research that fits you.</h1>
       <p class="rm-lede">UW&ndash;Parkside&rsquo;s biology faculty run real labs and field projects, and the department openly invites students to schedule an appointment with any of them to talk about research. This page walks you through doing exactly that: figure out what you care about, see who studies it, then set up and run your own interviews.</p></div>
-      <div class="rm-card warn"><strong>Check your UWP Outlook every day.</strong> Professors will reply to your university email, and replies sometimes land in Junk or Other. If you set up Outlook on your phone, turn on notifications.</div>
-      <div class="rm-card tint"><strong>Feeling nervous or behind? That is normal.</strong> You do not have to do everything today. Each step below can take 10 minutes, and the page saves your place. Your first step is only to rate a few activities.</div>
       ${next ? `<div class="rm-card green"><div class="rm-spread"><div><div class="band s1">Your next step</div><p style="margin:4px 0 0;font-size:18px">${esc(next.text)}</p></div><button class="btn-p" data-act="go" data-v="${next.stage === 'debrief' ? 'decide' : next.stage === 'know' ? 'know' : next.stage}">Go</button></div></div>` : ''}
+      <div class="rm-card tint"><strong>Feeling nervous or behind? That is normal.</strong> You do not have to do everything today. Each step below can take 10 minutes, and the page saves your place. Your first step is only to rate a few activities.</div>
+      ${outreachStarted() ? `<div class="rm-card warn"><strong>Check your UWP Outlook every day.</strong> Professors will reply to your university email, and replies sometimes land in Junk or Other. If you set up Outlook on your phone, turn on notifications.</div>` : ''}
       <div class="rm-grid">
         ${steps.map(([id, n, t, d]) => `<div class="rm-card" style="margin:0"><div class="rm-row"><span class="rank">${n}</span><h3 class="rm-h3" style="margin:0">${t}</h3>${stepDone(id) ? '<span class="chip g">done</span>' : ''}</div><p style="margin:8px 0 12px" class="rm-muted">${d}</p><button class="btn-s btn-sm" data-act="go" data-v="${id}">${stepDone(id) ? 'Review' : 'Open'}</button></div>`).join('')}
       </div>
@@ -296,6 +316,7 @@
         <p class="one">${esc(f.oneLine)}</p>
         ${x.reasons.length && x.band !== 'Less likely a fit' ? `<div><strong>Why it fits you</strong><ul class="why" style="margin:4px 0 4px 18px;padding:0">${x.reasons.map((r) => `<li>You liked: ${esc(r)}</li>`).join('')}</ul></div>` : ''}
         ${x.cautions.map((c) => `<div class="caution">&#9888; ${esc(c)}</div>`).join('')}
+        <div class="rm-muted" style="margin:6px 0;font-size:14px"><div><strong>Interest fit:</strong> ${esc(x.band)}</div><div><strong>Could you do it?</strong> ${x.feasibility.state === 'ok' ? '&#10003; ' : '&#9888; '}${esc(x.feasibility.text)}</div><div><strong>Open to students?</strong> &#63; ${esc(x.availability.text)}</div></div>
         <div>${evidenceChips(f)}</div>
         <div><button class="btn-t" data-act="openFac" data-id="${f.id}">${ui.open[f.id] ? 'Hide details' : 'What would I actually do? Read more'}</button></div>
         ${ui.open[f.id] ? facDetail(f) : ''}</div>`;
@@ -627,25 +648,29 @@
     try { data = await window.sfSupabase.bios102RmOverview(session.sessionToken); } catch (e) { return `<h1 class="rm-h1">Class view</h1><div class="rm-card warn">Instructors only.</div>`; }
     const st = data.students || [];
     const n = st.length;
+    // Counts use recorded milestones (set once, never undone). Students saved before milestones existed fall back to current status.
+    const ms = (s) => s.milestones || {};
     const started = st.filter((s) => s.started).length;
-    const profile = st.filter((s) => s.profileDone).length;
-    const listed = st.filter((s) => (s.shortlist || []).length).length;
-    const stat = (s, set) => Object.values(s.outreach || {}).some((o) => set.indexOf(o.status) >= 0);
-    const emailed = st.filter((s) => stat(s, ['sent', 'scheduled', 'done'])).length;
-    const interviewed = st.filter((s) => stat(s, ['done'])).length;
-    const decided = st.filter((s) => s.final).length;
+    const profile = st.filter((s) => ms(s).cardsDone || s.profileDone).length;
+    const listed = st.filter((s) => ms(s).listed || (s.shortlist || []).length).length;
+    const hasEm = (s, id) => !!((ms(s).emailed || {})[id]) || ['sent', 'scheduled', 'done'].indexOf(((s.outreach || {})[id] || {}).status) >= 0;
+    const hasIv = (s, id) => !!((ms(s).interviewed || {})[id]) || ((s.outreach || {})[id] || {}).status === 'done';
+    const ids = (s) => Object.keys(Object.assign({}, ms(s).emailed || {}, ms(s).interviewed || {}, s.outreach || {}));
+    const emailed = st.filter((s) => ids(s).some((id) => hasEm(s, id))).length;
+    const interviewed = st.filter((s) => ids(s).some((id) => hasIv(s, id))).length;
+    const decided = st.filter((s) => s.final || ms(s).asked).length;
     const demand = D.FACULTY.map((f) => ({ f, listed: st.filter((s) => (s.shortlist || []).indexOf(f.id) >= 0).length,
-      sent: st.filter((s) => ['sent', 'scheduled', 'done'].indexOf((s.outreach || {})[f.id] && s.outreach[f.id].status) >= 0).length,
-      done: st.filter((s) => ((s.outreach || {})[f.id] || {}).status === 'done').length })).sort((a, b) => b.listed - a.listed);
+      sent: st.filter((s) => hasEm(s, f.id)).length,
+      done: st.filter((s) => hasIv(s, f.id)).length })).sort((a, b) => b.listed - a.listed);
     const stage = (s) => !s.started ? 'Not started' : s.final ? 'Decided' : Object.values(s.outreach || {}).some((o) => o.status === 'done') ? 'Interviewed' : Object.values(s.outreach || {}).some((o) => ['sent', 'scheduled'].indexOf(o.status) >= 0) ? 'Emailed' : (s.shortlist || []).length ? 'Has a list' : s.profileDone ? 'Has matches' : 'In the cards';
     return `
       <h1 class="rm-h1">Class view</h1>
-      <p class="rm-lede">Progress only. You cannot see anyone&rsquo;s written answers or interview notes. Use the demand table to keep any one professor from being swamped.</p>
+      <p class="rm-lede">Progress only. You cannot see anyone&rsquo;s written answers or interview notes. The demand table shows student interest, not a professor&rsquo;s capacity, so check with a professor before steering students toward or away from them.</p>
       <div class="rm-grid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
         ${[['On the roster', n], ['Opened it', started], ['Finished cards', profile], ['Picked professors', listed], ['Emailed', emailed], ['Interviewed', interviewed], ['Decided', decided]].map(([l, v]) => `<div class="rm-card" style="margin:0;text-align:center"><div class="rank" style="font-size:32px">${v}</div><div class="rm-muted">${l}</div></div>`).join('')}
       </div>
       <h2 class="rm-h2">Demand by professor</h2>
-      <div class="tablewrap"><table class="rm"><thead><tr><th>Professor</th><th>On a student&rsquo;s list</th><th>Emailed</th><th>Interviewed</th></tr></thead><tbody>${demand.map((d) => `<tr><td>${esc(d.f.honorific + ' ' + d.f.name)}</td><td>${d.listed}${d.listed >= 6 ? ' <span class="chip w">crowded</span>' : ''}</td><td>${d.sent}</td><td>${d.done}</td></tr>`).join('')}</tbody></table></div>
+      <div class="tablewrap"><table class="rm"><thead><tr><th>Professor</th><th>Students interested (on their list)</th><th>Emailed</th><th>Interviewed</th></tr></thead><tbody>${demand.map((d) => `<tr><td>${esc(d.f.honorific + ' ' + d.f.name)}</td><td>${d.listed}</td><td>${d.sent}</td><td>${d.done}</td></tr>`).join('')}</tbody></table></div>
       <h2 class="rm-h2">Students</h2>
       <div class="tablewrap"><table class="rm"><thead><tr><th>Name</th><th>Where they are</th><th>List</th></tr></thead><tbody>${st.map((s) => `<tr><td>${esc(s.name)}</td><td>${esc(stage(s))}</td><td>${esc((s.shortlist || []).map((i) => (F[i] ? F[i].last : i)).join(', '))}</td></tr>`).join('')}</tbody></table></div>
       <p class="rm-muted">To add students, put their rows in <code>bios102_students</code> (see <code>supabase/bios102-add-students.sql</code>). They sign in with the same email link as the rest of the Lab Companion.</p>`;

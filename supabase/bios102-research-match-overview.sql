@@ -2,6 +2,7 @@
 -- Removes each student's interview fit ratings from the output (the page promises instructors never
 -- see written answers or notes, and the Class view never used the ratings), and counts a student as
 -- "decided" only once the ask email is marked sent, not as soon as a first choice is clicked.
+-- Also returns the recorded milestone timestamps (set once, never undone) that the Class view counts from.
 -- Safe to re-run. Apply: supabase db query --linked -f supabase/bios102-research-match-overview.sql
 begin;
 
@@ -28,6 +29,7 @@ begin
           select jsonb_object_agg(k, jsonb_build_object('status', v ->> 'status'))
           from jsonb_each(coalesce(r.state -> 'outreach', '{}'::jsonb)) as o(k, v)
         ), '{}'::jsonb),
+        'milestones', coalesce(r.state -> 'milestones', '{}'::jsonb),
         'final', case when r.state -> 'final' ->> 'askSentAt' is not null then r.state -> 'final' ->> 'faculty' end,
         'updated_at', r.updated_at
       ) order by s.display_name)

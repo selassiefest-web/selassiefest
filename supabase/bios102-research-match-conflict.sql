@@ -2,7 +2,9 @@
 -- The client sends its state with a "_base" key = the "_t" of the server version it last loaded or
 -- saved. If the stored state's "_t" differs, the save is refused with 'rm_conflict' and the page
 -- asks the student which version to keep. Equality check, so device clocks do not matter.
--- A client that does not send "_base" (an old cached page) still saves as before.
+-- Saves for one student are serialized with an advisory lock, so two simultaneous FIRST saves cannot both
+-- insert: the second sees the row and is checked against it. Once a row has a "_t", a client that sends no
+-- "_base" (an old cached page) is refused with rm_conflict instead of overwriting; the student reloads.
 -- Safe to re-run (create or replace). Apply: supabase db query --linked -f supabase/bios102-research-match-conflict.sql
 begin;
 
@@ -27,10 +29,11 @@ begin
   if octet_length(p_state::text) > 200000 then
     raise exception 'state too large';
   end if;
+  perform pg_advisory_xact_lock(hashtext('bios102_rm:' || v_email));
   select true, r.state ->> '_t' into v_has_row, v_cur_t
     from bios102_research_state r where r.email = v_email for update;
-  if coalesce(v_has_row, false) and (p_state ? '_base') and v_cur_t is not null
-     and v_cur_t is distinct from (p_state ->> '_base') then
+  if coalesce(v_has_row, false) and v_cur_t is not null
+     and (not (p_state ? '_base') or v_cur_t is distinct from (p_state ->> '_base')) then
     raise exception 'rm_conflict: a newer version was saved from another device';
   end if;
   insert into bios102_research_state (email, state)

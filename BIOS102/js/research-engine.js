@@ -87,7 +87,12 @@ window.RM_ENGINE = (() => {
         .slice(0, 2)
         .map((x) => x.c.text);
       lukewarm.forEach((t) => cautions.push('You were lukewarm on: "' + t + '", which is part of this work.'));
-      return { f, raw, score: raw + bonus, reasons, cautions };
+      // Three separate questions: does the work interest you (score), could you practically do it (feasibility),
+      // and does the lab have room (availability: never published on the pages checked, so always something to verify).
+      const practical = cautions.filter((c) => /live animals|fieldwork trips|summer travel/.test(c));
+      const feasibility = practical.length ? { state: 'check', text: practical[0] } : { state: 'ok', text: 'Nothing you told us conflicts with this lab. Hours and prerequisites still need confirming.' };
+      const availability = { state: 'unknown', text: 'Openings are not published. Ask whether ' + f.honorific + ' ' + f.last + ' is taking undergraduates now, and what the prerequisites are.' };
+      return { f, raw, score: raw + bonus, reasons, cautions, feasibility, availability };
     });
     // No interest signal at all (every card Maybe, no choices): do not crown a winner from the mentorship bonus alone.
     const noSignal = rows.every((r) => Math.abs(r.raw) < 0.0001);
