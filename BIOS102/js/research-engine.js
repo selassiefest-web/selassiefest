@@ -89,6 +89,8 @@ window.RM_ENGINE = (() => {
       lukewarm.forEach((t) => cautions.push('You were lukewarm on: "' + t + '", which is part of this work.'));
       return { f, raw, score: raw + bonus, reasons, cautions };
     });
+    // No interest signal at all (every card Maybe, no choices): do not crown a winner from the mentorship bonus alone.
+    const noSignal = rows.every((r) => Math.abs(r.raw) < 0.0001);
     rows.sort((a, b) => b.score - a.score);
     const top = rows[0] ? Math.max(rows[0].score, 0.0001) : 1;
     rows.forEach((r, i) => {
@@ -98,6 +100,7 @@ window.RM_ENGINE = (() => {
       r.band = i === 0 ? 'Strongest match'
         : (gap >= 0.8 ? 'Strong match' : gap >= 0.55 ? 'Worth a conversation' : 'Less likely a fit');
       if (r.score <= 0) r.band = 'Less likely a fit';
+      if (noSignal) { r.band = 'No clear preference yet'; r.rel = 0; r.noSignal = true; }
     });
     return rows;
   }
@@ -258,6 +261,11 @@ ${sig(student)}`,
     return ((state && state.outreach) || {})[id] || { status: 'none' };
   }
 
+  // The ask counts as sent only for the professor it was sent to (older records without askSentTo are trusted).
+  function askSentFor(fin) {
+    return !!(fin && fin.askSentAt && (!fin.askSentTo || fin.askSentTo === fin.faculty));
+  }
+
   // The single most useful thing to do next, plus a short list.
   function nextActions(state) {
     const out = [];
@@ -290,7 +298,14 @@ ${sig(student)}`,
     if (list.length && !live.length) out.push({ stage: 'matches', text: 'Everyone on your list said not now or did not reply. Add another professor from your matches, or tap Try again on one of them.', urgency: 2 });
     const doneCount = list.filter((id) => outreachOf(s, id).status === 'done' && outreachOf(s, id).fit && Number(outreachOf(s, id).fit.overall) > 0).length;
     if (doneCount && !(s.final && s.final.faculty)) out.push({ stage: 'decide', text: 'Compare your interviews and choose where to ask for a place.', urgency: 2 });
-    if (s.final && s.final.faculty) out.push({ stage: 'decide', text: 'Send your ask to ' + (F[s.final.faculty] ? F[s.final.faculty].honorific + ' ' + F[s.final.faculty].last : 'your first choice') + '.', urgency: 2 });
+    if (s.final && s.final.faculty) {
+      const ff = F[s.final.faculty];
+      const nm2 = ff ? ff.honorific + ' ' + ff.last : 'your first choice';
+      if (askSentFor(s.final)) {
+        const dd = daysSince(s.final.askSentAt);
+        out.push({ stage: 'decide', text: 'Your ask to ' + nm2 + ' was sent' + (s.final.askSentAt ? ' ' + fmtDate(s.final.askSentAt) : '') + (dd !== null ? ' (' + dd + ' day' + (dd === 1 ? '' : 's') + ' ago)' : '') + '. While you wait, follow up after 7 days, visit office hours, and ask about registering for credit.', urgency: dd !== null && dd >= 7 ? 3 : 0 });
+      } else out.push({ stage: 'decide', text: 'Send your ask to ' + nm2 + '.', urgency: 2 });
+    }
     out.sort((a, b) => b.urgency - a.urgency);
     return out;
   }
@@ -315,6 +330,6 @@ ${sig(student)}`,
     computePrefs, answeredCount, profileComplete, matchAll, fingerprint,
     interviewRequest, followUp, thankYou, askEmail, mailto, outlookCompose, outlookEvent, MIN_CARDS,
     fmtDate, fmtDateTime, daysSince, icsEvent,
-    STATUS, outreachOf, nextActions, finalRanking,
+    STATUS, outreachOf, nextActions, askSentFor, finalRanking,
   };
 })();

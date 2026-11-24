@@ -156,7 +156,7 @@
     const list = S.shortlist || [];
     const doneIv = list.some((i) => E.outreachOf(S, i).status === 'done');
     return { know: !!S.profileDone, matches: !!S.profileDone && list.length > 0, meet: list.length > 0,
-      interview: doneIv, decide: !!(S.final && S.final.askSentAt) }[id] || false;
+      interview: doneIv, decide: E.askSentFor(S.final) }[id] || false;
   }
   function go(v) {
     if (['home', 'know', 'matches', 'meet', 'interview', 'decide', 'class'].indexOf(v) < 0) v = 'home';   // never save or show a view that does not exist
@@ -583,7 +583,7 @@
         <label class="f" for="as">When you could start (required)</label><input type="text" id="as" data-bind="final.askStart" data-redraft="1" value="${esc(fin.askStart || '')}" placeholder="for example: next spring semester" />
         <label class="f">Preview</label><div class="preview" id="ask-prev"><b>To:</b> ${esc(draft.to)}\n<b>Subject:</b> ${esc(draft.subject)}\n\n${esc(draft.body)}</div>
         <p class="need" id="ask-need" ${askReady(fin) ? 'hidden' : ''}>Write your own reason (at least a sentence) and when you could start, with no [brackets] left, to unlock the buttons.</p>
-        <div class="rm-row"><button class="btn-p" data-act="mailAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Open in my email app</button><button class="btn-s" data-act="copyAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Copy it</button>${fin.askSentAt ? '<span class="chip g">sent</span>' : `<button class="btn-s" data-act="markAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">I sent it</button>`}</div></div>
+        <div class="rm-row"><button class="btn-p" data-act="mailAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Open in my email app</button><button class="btn-s" data-act="copyAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">Copy it</button>${E.askSentFor(fin) ? '<span class="chip g">sent</span>' : `<button class="btn-s" data-act="markAsk" ${askReady(fin) ? '' : 'disabled'} data-needs="ask">I sent it</button>`}</div></div>
         <h2 class="rm-h2">Your next 30 days</h2>${planHtml()}
         <div class="rm-card green rm-spread"><div><strong>Want this plan in your inbox?</strong><div class="rm-muted">We email it only to your own roster address.</div></div><div class="rm-row"><button class="btn-p" data-act="emailPlan" id="emailPlanBtn">Email me my plan</button><button class="btn-s" data-act="printPlan">Print it</button></div></div>`;
     }
@@ -603,7 +603,7 @@
     const add = (days, text) => { const d = new Date(today.getTime() + days * 86400000); items.push({ d, text }); };
     const fin = S.final || {};
     const f = F[fin.faculty];
-    if (!fin.askSentAt && f) add(0, 'Send your ask to ' + f.honorific + ' ' + f.last + ', then tap "I sent it".');
+    if (!E.askSentFor(fin) && f) add(0, 'Send your ask to ' + f.honorific + ' ' + f.last + ', then tap "I sent it".');
     add(7, 'If there is no reply, send one short follow-up. Visit office hours if you can.');
     if (f) add(10, 'Ask ' + f.honorific + ' ' + f.last + ' how to register for independent study or credit, and the deadline for next semester.');
     const k = S.answers.constraints || {};
@@ -753,7 +753,7 @@
       case 'markThanked': if (!guardDraft(E.thankYou(student(), F[id], O(id)))) break; O(id).thanked = new Date().toISOString(); save(); render(); break;
       case 'mailAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; window.location.href = E.mailto(askDraft()); break;
       case 'copyAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; copy(asText(askDraft()), 'Ask copied'); break;
-      case 'markAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; S.final.askSentAt = new Date().toISOString(); save(); render(); flash('Marked as sent'); break;
+      case 'markAsk': if (!askReady(S.final) || !guardDraft(askDraft())) break; S.final.askSentAt = new Date().toISOString(); S.final.askSentTo = S.final.faculty; save(); render(); flash('Marked as sent'); break;
       case 'printPlan': printPlan(); break;
       case 'resetAll': resetAll(); break;
       case 'dictate': toggleDictation(b); break;
