@@ -22,7 +22,7 @@ from (values
   '[{"name":"Stender Von Oehsen","email":"Stender.VonOehsen@cityofchicago.org","role":"City of Chicago (public listings: youth programs, DFSS and the My CHI. My Future. data contact; unverified)"}]',
   'A short video call about listing the free Rainbow DJ Lab where the City connects youth to out-of-school programs.',
   'Introduce ourselves (draft, Stephen says send): the Deputy Mayor''s Nov 25 follow-up, one-paragraph program, ask for a 15-minute call.',
-  'Named in Khari Humphries'' Nov 25, 2026 follow-up email. [src:msgid-AT6PR09MB13092348DFD563D79CEBF98CBFA432]'),
+  'Named in Khari Humphries'' Nov 25, 2026 follow-up email. His email body spells the name ''Von Oehson'' while the address spells it ''VonOehsen'': confirm the spelling before using it in a salutation. [src:msgid-AT6PR09MB13092348DFD563D79CEBF98CBFA432]'),
  ('e0b74f53-8ac6-4d91-b245-6fc03b0a4d84', 'MCMF South Shore and MCMF Citywide (named by Deputy Mayor Humphries)', null,
   '[]',
   'Find the right contact for each, then ask for a short call.',
