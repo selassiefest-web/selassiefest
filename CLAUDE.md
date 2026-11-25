@@ -54,6 +54,8 @@ The list (each needs: a partner row, outreach sent or drafted for Stephen to sen
 13. Introduction-only funders and sponsors (no unsolicited proposals; approach through a grantee): CME Group Foundation, United Way of Metro Chicago, Robert R. McCormick Foundation, LISC Chicago, Allstate Foundation, Boeing, Nike, Chicago Bulls, JPMorgan Chase, Bally's Chicago.
 Guardrails for this expansion: one project description, three asks (Park District: free public workshop and showcase; After School Matters: multiweek learning plan and what teens produce; MCMF/DFSS: paid youth crew designing and running a beach event). Never copy the Obama Foundation or Rainbow Beach Park Advisory Council mentions in the research into any outreach or page (standing rules). Verify every deadline, amount and eligibility rule on the funder's own page before it goes in a row; the research's figures are leads, not facts.
 
+**Never ask Stephen to choose between contact addresses or between candidate contacts (Stephen, Nov 25, 2026).** List every contact we have, verified and unverified, in the .md and the row, say which is verified, and use the best one. Do not make him pick. If a contact bounces, try the next one yourself.
+
 Tracker work for these goes through partner-records-steward, then the reviewer, then the main session applies. Sends only after Stephen says send (Outlook compose set up for him in Chrome, same tab; he presses Send).
 
 ## Mail in Partnered or BOB means UPDATE THE TRACKER. Never ask. Check before you comment. (Stephen, Nov 25, 2026; standing order)
