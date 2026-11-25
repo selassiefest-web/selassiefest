@@ -29,7 +29,7 @@ It does **not** ask for health, allergy, pickup, custody or emergency-contact de
 
 ## What it costs
 
-**Nothing.** There's no tuition, and all equipment is provided: controllers, laptops, headphones and earplugs. You will never be asked to buy gear.
+**Nothing.** There's no tuition, and all equipment is provided: DJ decks, headphones and earplugs. You will never be asked to buy gear.
 
 ## Who can join
 

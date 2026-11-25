@@ -34,7 +34,7 @@ Kids share controllers in stations of 4, and the class uses headphones. Our clea
 
 - **Hands:** everyone cleans their hands at the start of class and before Deck Time.
 - **Headphones:** ear cushions and headbands are **wiped with disinfectant wipes between users**. A child keeps the same pair for the whole class when possible. You're welcome to send your child's own wired headphones.
-- **Controllers and laptops:** jog wheels, buttons, knobs and keyboards are **wiped down before and after every class**, and **between users** when someone is sick or has sneezed or coughed on the gear.
+- **DJ decks and the laptop:** jog wheels, buttons, knobs and keyboards are **wiped down before and after every class**, and **between users** when someone is sick or has sneezed or coughed on the gear.
 - **Microphones** (Mic, MC and Live Lab): the grille is wiped between users, and kids don't put mouths on the mic.
 - **Earplugs** are free, single-use, and never shared.
 

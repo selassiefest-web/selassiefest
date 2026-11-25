@@ -5,7 +5,7 @@ description: A free DJ class for Chicago kids and families at Rainbow Beach Park
 
 ## Welcome, families
 
-Rainbow DJ Lab is a free DJ class run by Ras Tafari Inc., a Chicago not-for-profit and 501(c)(3) public charity. Children learn to mix music on real DJ controllers in small groups, with coaches who think out loud, plenty of movement, and no grades or tests. The course ends with a showcase that families attend.
+Rainbow DJ Lab is a free DJ class run by Ras Tafari Inc., a Chicago not-for-profit and 501(c)(3) public charity. Children learn to mix music on real DJ decks, one for each child, with coaches who think out loud, plenty of movement, and no grades or tests. The course ends with a showcase that families attend.
 
 The Lab is the free DJ-class part of **Full Spectrum at Rainbow Beach**, a proposed year-round music and culture program at Rainbow Beach Park (3111 E. 77th St., Chicago, IL 60649). In the class app, you'll see the course called "Rainbow DJ Academy." It's the same course.
 
@@ -44,7 +44,7 @@ See the [Curriculum](/dj-lab/about/curriculum.html) for every session, or [The j
 
 ### 3. What does it cost?
 
-**Nothing.** There's no tuition, and all equipment is provided: controllers, laptops, headphones and earplugs. You don't need to buy anything.
+**Nothing.** There's no tuition, and all equipment is provided: DJ decks, headphones and earplugs. You don't need to buy anything.
 
 Ras Tafari Inc. is seeking grants and donations for its DJ gear, which will belong to the Lab's programs. No Ras Tafari Inc. officer, director or staff member is paid for work on the Lab today; any paid role needs approval by directors with no stake in it. See [Financial transparency](/dj-lab/governance/financial-transparency.html) and the [conflict of interest policy](/dj-lab/governance/conflict-of-interest.html).
 

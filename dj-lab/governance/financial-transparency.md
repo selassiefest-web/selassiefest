@@ -27,18 +27,19 @@ Here is the **one-page budget for the DJ classes** (item 14 on the [launch check
 | Payroll costs if the instructors are employees | Reserve of about 10% of the $19,500 instructor pay; $0 if they are independent trainers | $1,950 | |
 | Class app, family email and hosting | Estimate, about $50 a month | $600 | |
 | **Total cash** | | **$75,123** | |
-| Pioneer DJ / AlphaTheta DDJ-FLX10 4-channel controllers or similar (brand open to our equipment partner) | **Being sought** through grants and donations; 13 × about $1,729 (12 stations + a spare) | | $22,477 |
-| Apple laptops (MacBook Pro 14-inch), one per station and a spare | **Being sought** through grants and donations; 13 × about $1,599 new-retail planning price | | $20,787 |
-| Laptop cooling stands (aluminum, vented) | **Being sought** through grants and donations; 13 × about $35 | | $455 |
-| Monitors, one per station, with cable | **Being sought** through grants and donations; 13 × about $145 | | $1,885 |
-| Volume-limited headphones (85 dB) | **Being sought** through grants and donations; 13 × about $30 | | $390 |
+| AlphaTheta XDJ-AN self-contained DJ decks | **Being sought** through grants and donations; 13 × $1,199 (12 stations + the instructor deck, which doubles as the spare) | | $15,587 |
+| One Windows laptop for the Lab | **Being sought** through grants and donations; loads the USB drives and runs Serato and Sway | | $1,279 |
+| Sway gesture controller, one | **Being sought** through grants and donations; with power supply, cables and surge protector | | $777 |
+| Room sound | **Being sought** through grants and donations; speakers, stands, mixer and cables | | $1,213 |
+| Take-home USB music drives | **Being sought** through grants and donations; 14 × $15 | | $210 |
+| Headphones for the instructor deck | **Being sought** through grants and donations; 1 × about $30; Shure donated 12 pairs | | $30 |
 | Power strips, cable management | **Being sought** through grants and donations; 13 × about $17 + about $150 of cord covers and ties | | $380 |
 | Tables for the 12 stations and spare | **Being sought** through grants and donations; 7 six-foot tables × about $80, two stations to a table | | $560 |
 | 4 modern LED DJ booths for Rainbow Wednesdays | **Being sought** through grants and donations; 4 × about $1,800 (professional LED video-panel booth). A basic LED-strip facade is about $190 to $275 each; a curved indoor LED booth about $3,600 | | $7,200 |
-| 10% equipment contingency | repairs, replacements, shipping | | $5,413 |
-| **Total equipment value** | | | **$59,547** |
+| 10% equipment contingency | repairs, replacements, shipping | | $2,724 |
+| **Total equipment value** | | | **$29,960** |
 | Program coordination | Ras Tafari Inc. officers, unpaid | | not valued |
-| **Everything, first year** | | **$75,123** | **$59,547** |
+| **Everything, first year** | | **$75,123** | **$29,960** |
 
 - **About $75,100 in cash for the first year, plus about $59,500 of equipment sought through grants and donations: about $134,600 in all.** Q-Ality Sound is $1,200 for each Rainbow Wednesday. Children join any Tuesday, so there is no fixed per-child cost.
 - **The DJ gear is being sought through grants and donations and will be owned by Ras Tafari Inc.** It will be a charitable asset, inventoried and used only for Ras Tafari Inc. programs (see [equipment use](/dj-lab/governance/equipment-use-agreement-qality.html)). It's reused every Tuesday, so it doesn't need to be bought again.

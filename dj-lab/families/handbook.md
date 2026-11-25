@@ -79,7 +79,7 @@ There are **no grades and no tests**. Kids rate themselves with a traffic light 
 ## Food and drinks
 
 - Water is welcome. Please send it in a bottle with a lid.
-- Drinks and food stay away from the controllers and laptops.
+- Drinks and food stay away from the DJ decks and the laptop.
 - No food is shared without parent permission.
 - Tell us about every allergy on the registration form (part of full registration after launch). We follow your child's Food Allergy & Anaphylaxis Emergency Care Plan (the FARE form).
 
