@@ -173,6 +173,7 @@
   function shell() {
     $('app').insertAdjacentHTML('beforeend',
       '<p class="lede" style="margin-top:0">Instructor-only. Names are first names, with a last initial only where two students share one; nothing here is visible to students. Excused or missing scores are blank and are left out of every statistic, never counted as zero.</p>' +
+      '<div class="toolbar" id="viewas" style="border-color:var(--accent);background:var(--accent-soft)"></div>' +
       '<div class="toolbar" id="topbar2"></div>' +
       '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
       '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
@@ -182,7 +183,14 @@
   }
   function say(m) { ui.msg = m; if ($('msg')) $('msg').textContent = m; }
 
+  function renderViewAs() {
+    if (!$('viewas')) return;
+    $('viewas').innerHTML = '<b>View as a student</b><label><select id="va-pick"><option value="">choose a student&hellip;</option>' + cur.rows.map(function (x) { return '<option value="' + esc(x.student) + '"' + (ui.vaPick === x.student ? ' selected' : '') + '>' + esc(x.student) + (x.data && x.data.status ? ' (' + esc((STATUS[x.data.status] || '').toLowerCase()) + ')' : '') + '</option>'; }).join('') + '</select></label>' +
+      '<button class="b pri" type="button" id="va-go">View as this student &rarr;</button>' +
+      '<span>Opens in a new tab: the exact response that student’s own login gets from the server, with a privacy check. Each view is logged.</span>';
+  }
   function renderTop() {
+    renderViewAs();
     var opts = sets.map(function (s) { return '<option value="' + s.id + '"' + (cur.id === s.id ? ' selected' : '') + '>' + esc(s.name) + '</option>'; }).join('');
     var colOpts = cur.columns.map(function (c) { return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>'; }).join('');
     $('topbar2').innerHTML =
@@ -887,6 +895,7 @@
   }
   document.addEventListener('change', async function (e) {
     var t = e.target;
+    if (t.id === 'va-pick') { ui.vaPick = t.value; return; }
     if (t.id === 'setpick') { pick(t.value); render(); }
     else if (t.dataset.status != null) { var sr = cur.rows.filter(function (r) { return r.student === t.dataset.status; })[0]; if (t.value) sr.data.status = t.value; else delete sr.data.status; cur.dirty = true; say('Unsaved changes. Press Save changes to keep it.'); render(); }
     else if (t.id === 'ins-exam') { ui.exam = t.value; render(); }
@@ -916,6 +925,7 @@
   });
   document.addEventListener('click', async function (e) {
     var t = e.target.closest('button, a[data-stu], th[data-sort]'); if (!t) return;
+    if (t.id === 'va-go') { var vp = $('va-pick').value; if (!vp) { $('va-pick').focus(); return; } window.open('/BIOS102/my-grades.html?preview=' + encodeURIComponent(vp), '_blank', 'noopener'); return; }
     if (t.dataset.exam) { ui.exam = t.dataset.exam; render(); return; }
     if (t.dataset.sort) { ui.sortDir = ui.sortKey === t.dataset.sort ? -ui.sortDir : 1; ui.sortKey = t.dataset.sort; render(); }
     else if (t.dataset.stu) { e.preventDefault(); ui.stu = t.dataset.stu; render(); }
