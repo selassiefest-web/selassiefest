@@ -776,7 +776,7 @@
   }
 
   /* ---------------- Final lab scores (for the instructors who set the final course grade) ---------------- */
-  var FINAL_NOTE = 'A note from Professor Harris, BIOS 102 lab: These lab scores are final. Every student has already received the maximum leeway and credit available this semester, so raising any score further would not reflect their true performance in the lab. The lab counts for 50% of the course. The final grade for each student is yours to set.';
+  var FINAL_NOTE = 'A note from Albert: These lab scores are final. Every student has already received the maximum leeway and credit available this semester, so raising any score further would not reflect their true performance in the lab. \u2014 Albert';
   var EXAM_MAX = { exam1: 120, exam2: 50, exam3: 120 };
   function finalRows() {
     return cur.rows.map(function (r) {
@@ -792,10 +792,10 @@
       return o;
     });
   }
-  var FINAL_HEAD = ['Student', 'Login email', 'Status', 'Lab score (%)', 'Lab points earned', 'Lab points possible', 'Lab share of the final grade (50%)', 'Exam 1 (of 120)', 'Exam 2 (of 50)', 'Exam 3 (of 120)', 'Lab 1a assignments (of 15)', 'Lab participation (of 30)', 'Lab write-ups (of 35)', 'Quizzes (of 70)', 'Check'];
+  var FINAL_HEAD = ['Student', 'Login email', 'Status', 'Lab score (%)', 'Lab share of the final grade (50%)'];
   function r2(v) { return isNum(v) ? Math.round(v * 100) / 100 : (v == null ? '' : v); }
   function finalTable(rows) {
-    return rows.map(function (o) { return [o.student, o.email, o.status, r2(o.pct), r2(o.earned), r2(o.possible), r2(o.share), r2(o.exam1), r2(o.exam2), r2(o.exam3), r2(o.assign), r2(o.partic), r2(o.labs), r2(o.quiz), o.check]; });
+    return rows.map(function (o) { return [o.student, o.email, o.status, r2(o.pct), r2(o.share)]; });
   }
   function finalStamp() {
     var at = ui.labFinal;
@@ -809,7 +809,7 @@
       (missing.length ? '<div class="hint" style="background:var(--amber-soft);margin:10px 0"><b>' + missing.length + ' student' + (missing.length > 1 ? 's are' : ' is') + ' still missing a score.</b> ' + Object.keys(missing.reduce(function (m, o) { m[o.check] = 1; return m; }, {})).map(function (k) { return esc(k) + ': ' + missing.filter(function (o) { return o.check === k; }).map(function (o) { return esc(o.student); }).join(', '); }).join('. ') + '. Enter exam scores under Gradebook &rarr; Edit scores.</div>' : '') +
       '<div class="ctl"><button class="b pri" type="button" id="fin-xlsx">Download Excel (.xlsx)</button><button class="b" type="button" id="fin-csv">Download CSV</button>' +
       (canMark ? '<button class="b" type="button" id="fin-mark">Mark lab scores final</button><button class="b" type="button" id="fin-unmark">Back to draft</button>' : '') + '</div>' +
-      '<div class="help">The file has one row per student, with the login email so you can match your roster. Lab score = points earned \u00F7 lab points possible; an excused item leaves the course for that student. Students who dropped or are on leave have no score.</div></div>';
+      '<div class="help">The file has one row per student: name, login email (to match your roster), status, lab score and its 50% share. Students who dropped or are on leave have no score.</div></div>';
     h += '<div class="scroll" style="margin-top:14px"><table class="t"><thead><tr>' + FINAL_HEAD.map(function (x, i) { return '<th' + (i < 3 ? ' class="l"' : '') + '>' + esc(x) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       finalTable(rows).map(function (r) { return '<tr>' + r.map(function (x, i) { return '<td' + (i < 3 ? ' class="l"' : '') + '>' + esc(x) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
     $('view').innerHTML = h;
@@ -881,7 +881,7 @@
       { name: 'xl/workbook.xml', text: H + '<workbook xmlns="' + T + 'spreadsheetml/2006/main" xmlns:r="' + T + 'officeDocument/2006/relationships"><sheets><sheet name="Final lab scores" sheetId="1" r:id="rId1"/><sheet name="Note" sheetId="2" r:id="rId2"/></sheets></workbook>' },
       { name: 'xl/_rels/workbook.xml.rels', text: H + '<Relationships ' + ns + '><Relationship Id="rId1" Type="' + T + 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="' + T + 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="' + T + 'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
       { name: 'xl/styles.xml', text: H + '<styleSheet xmlns="' + T + 'spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
-      { name: 'xl/worksheets/sheet1.xml', text: sheetXml(data, [14, 30, 18, 13, 14, 14, 20, 13, 13, 13, 18, 18, 16, 13, 28], true) },
+      { name: 'xl/worksheets/sheet1.xml', text: sheetXml(data, [16, 32, 20, 14, 34], true) },
       { name: 'xl/worksheets/sheet2.xml', text: sheetXml(note, [18, 90], false) }
     ];
     saveBlob(zipStore(files), 'BIOS102-lab-scores-' + fileStamp() + '.xlsx');
