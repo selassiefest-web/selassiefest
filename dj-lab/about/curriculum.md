@@ -79,7 +79,7 @@ Spotlight is volunteers only. Coaches never call on a child who didn't sign up. 
 
 - **DJ decks:** one AlphaTheta XDJ-AN per station, so every child has their own. One Lab laptop at the instructor deck loads the USB drives and runs Serato and Sway.
 - **Software:** Serato DJ Lite from Mission 9 on.
-- **Hearing:** headphone volume is capped on every laptop, and earplugs are available free. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
+- **Hearing:** headphone volume is capped at every station, and earplugs are available free. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
 - **Clean lyrics only:** radio edits, checked when crates are built.
 
 ## Related pages

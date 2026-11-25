@@ -44,7 +44,7 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch
 - **Never face bad weather alone.** Staff decide when to move indoors. In lightning, the group stays inside until 30 minutes after the last thunder.
 - **Never in the water.** Children do not swim during the program.
 - **Never handle a conflict alone.** Staff step in. See [Peer harm protocol](/dj-lab/safety/peer-harm-protocol.html).
-- **Never set their own volume past the cap.** Headphone volume is capped on every laptop.
+- **Never set their own volume past the cap.** Headphone volume is capped at every station.
 
 ## Related pages
 

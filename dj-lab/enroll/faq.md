@@ -68,7 +68,7 @@ We follow your child's **Food Allergy & Anaphylaxis Emergency Care Plan** (the F
 We have a Code Adam–style lost-child plan: the whole team is alerted, the exits are covered, staff search, and we call 911 if the child isn't found within 10 minutes. You're called at once. If there's any incident, you're told **the same day by phone**, and a written report follows within 24 hours. Coaches log every incident in the class app, and each entry is emailed to Stephen Henry. See the [lost child plan](/dj-lab/safety/lost-child-plan.html).
 
 ### 20. Will loud music hurt my child's hearing?
-Headphone volume is **capped on every laptop**, earplugs are free, the main speaker level is checked with a sound meter, and children stay out of the zone right in front of the speakers. The main speaker and stage come from **Q-Ality Sound**, but the Lab's safety lead has the final say on volume: Q-Ality turns it down at once, or the session pauses. Q-Ality's crew never supervise children, get no family data and take no photos or recordings. We also coach kids on healthy listening habits.
+Headphone volume is **capped at every station**, earplugs are free, the main speaker level is checked with a sound meter, and children stay out of the zone right in front of the speakers. The main speaker and stage come from **Q-Ality Sound**, but the Lab's safety lead has the final say on volume: Q-Ality turns it down at once, or the session pauses. Q-Ality's crew never supervise children, get no family data and take no photos or recordings. We also coach kids on healthy listening habits.
 
 ### 21. What music will they hear?
 **Clean lyrics only:** radio edits, checked when crates (music collections) are built.

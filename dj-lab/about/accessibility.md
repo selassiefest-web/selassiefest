@@ -14,14 +14,14 @@ The Lab is not running yet. The options below are commitments for when it does. 
 - **Indoors (fall through spring):** classes are planned for the Rainbow Beach Park fieldhouse, when space is available.
 - **Outdoors (summer):** classes are planned for the park lawn, as the park approves.
 - **What we haven't confirmed yet:** step-free routes, accessible restrooms, and accessible parking for the specific rooms and lawn areas we'll use. These will be checked during the site walk with park staff that is part of the [launch checklist](/dj-lab/governance/index.html), and posted on [Locations](/dj-lab/enroll/locations.html) and [Transportation and parking](/dj-lab/enroll/transportation-parking.html).
-- **At the station:** controllers sit on tables. If your child uses a wheelchair or needs a different height or seat, tell us and we'll set up the station to fit.
+- **At the station:** DJ decks sit on tables. If your child uses a wheelchair or needs a different height or seat, tell us and we'll set up the station to fit.
 
 ## Sensory-friendly options
 
 DJ class involves music, lights and a busy room. We plan for that.
 
 - **A quieter station.** On request, your child can work at the station farthest from the main speaker.
-- **Ear protection.** Headphone volume is capped on every laptop, and earplugs are free for any child, any time. Your child may also bring their own ear defenders. Children stay out of the zone in front of the speakers. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
+- **Ear protection.** Headphone volume is capped at every station, and earplugs are free for any child, any time. Your child may also bring their own ear defenders. Children stay out of the zone in front of the speakers. See [Hearing safety](/dj-lab/safety/hearing-safety.html).
 - **A visual schedule on screen.** Every class follows the same 9 blocks, and the [live class app](/dj-lab/live/) shows which block is happening now and what the Mission is. Children can see what's next without having to ask.
 - **Movement breaks.** Every class has a built-in Move Break. A child who needs to move at other times can ask.
 - **A calm place to reset.** A cool-down space, always with an adult in view, is available to any child who needs a break. It's a support, not a punishment. See [Cool-down space](/dj-lab/safety/cooldown-space.html).

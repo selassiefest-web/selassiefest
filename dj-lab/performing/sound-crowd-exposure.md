@@ -7,7 +7,7 @@ description: How the Lab protects children's hearing and comfort when they perfo
 
 These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch requirement.
 
-- **Headphones are capped.** Headphone volume is capped on every Lab laptop, in class and at events.
+- **Headphones are capped.** Headphone volume is capped at every station, in class and at events.
 - **Earplugs are free.** Children (and parents) can have them at any time, with no need to ask twice.
 - **Speakers are checked with a meter.** The main speaker's level is checked with a sound meter. The exact target level and where it's measured will be written into each event's plan before the first event.
 - **There is a no-go zone.** Children stay out of the zone directly in front of the speakers, whether they are performing or watching.
@@ -34,7 +34,7 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is a launch
 | Moment | What we do |
 |---|---|
 | Before the event | We pass on the speaker-level plan and the no-go zone to the sound crew (Q-Ality Sound at Lab events). The Lab's safety lead has final authority over volume and stage access; the crew complies at once, or the set pauses. See [Hearing safety](/dj-lab/safety/hearing-safety.html). |
-| Check-in | Earplugs are offered. The child's headphones are checked on a capped Lab laptop. |
+| Check-in | Earplugs are offered. The child's headphones are checked at a capped station. |
 | Waiting to perform | Children wait in a quieter spot with their named Lab adult, away from the speakers. |
 | On stage | The DJ listens through capped headphones. The Lab adult watches for signs of discomfort, such as covering ears or wincing. |
 | After the set | A quiet break before rejoining the crowd. |

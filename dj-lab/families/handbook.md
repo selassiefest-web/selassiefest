@@ -60,7 +60,7 @@ There are **no grades and no tests**. Kids rate themselves with a traffic light 
 - **A refillable water bottle** with your child's name on it. We take water breaks every block in warm weather.
 - **Any rescue medicine** your child needs (epinephrine auto-injector or inhaler), handed to staff at check-in with the signed authorization. See [Health](#health) below.
 - **Weather layers** for outdoor summer sessions: a hat, and sunscreen applied at home.
-- **Your own headphones? Not needed.** The Lab provides headphones with volume capped on every laptop. Free earplugs are available.
+- **Your own headphones? Not needed.** The Lab provides headphones with volume capped at every station. Free earplugs are available.
 
 ## What not to bring
 

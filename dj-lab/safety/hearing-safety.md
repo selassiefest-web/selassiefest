@@ -20,7 +20,7 @@ Our classes are 90 minutes to 2 hours, once a week. We still keep levels well un
 
 | Area | Rule |
 |---|---|
-| **Headphones** | Volume is capped on every Lab laptop before class. Headphones are on-ear or over-ear, not earbuds |
+| **Headphones** | Volume is capped at every station before class (the XDJ-AN manual lists a headphone level knob but no built-in cap, so the capping method must be in place before the first class). Headphones are on-ear or over-ear, not earbuds |
 | **Headphone time** | DJ jobs rotate every 3 minutes 45 seconds, so no child wears headphones nonstop. Co-pilot, Hype and Logger can listen at lower volume or off-ear. Coaches teach a "60/60"-style habit: keep volume around 60% or lower and take breaks |
 | **Main speaker** | Set before class and checked with a sound meter. Lab limit: an average under **80 dBA** at the nearest place children stand or sit, and adjusted down if it reads higher |
 | **Speaker zone** | No child stands or sits in the zone directly in front of the speakers, within about 10 feet. Staff mark it with tape or cones |

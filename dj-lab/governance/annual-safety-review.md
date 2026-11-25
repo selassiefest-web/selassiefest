@@ -45,7 +45,7 @@ Once a year, and after every season, Ras Tafari Inc. will look back at how safe 
 - Every concern about an adult passed to the Chicago Park District, and whether it went the same day.
 
 ### Environment
-- Sound meter checks of the main speaker; headphone volume caps on every laptop.
+- Sound meter checks of the main speaker; headphone volume caps at every station.
 - Q-Ality Sound: did its staff stay within sound, stage and lighting? Did they comply at once with every safety-lead request on volume or stage access? Were there any pauses? Were its insurance certificates current?
 - Lightning and heat decisions: were they made by the rules?
 - Emergency action plan: is it current? Was a drill held? Does it need updating after any change to the fieldhouse or lawn?

@@ -31,7 +31,7 @@ These are policies Ras Tafari Inc. commits to. Formal board adoption is itself a
 - **Every adult completes Illinois DCFS mandated reporter training** before working with children.
 - **Your child goes home only with an adult on your authorized-pickup list**, after a photo ID check. Every release is logged.
 - **Restroom buddy system**, with an adult waiting at the entrance. Staff never enter a stall area with a child.
-- **Headphone volume is capped** on every laptop, and earplugs are free. The Lab's safety lead controls the main-speaker volume.
+- **Headphone volume is capped** at every station, and earplugs are free. The Lab's safety lead controls the main-speaker volume.
 - **Clean lyrics only.** Every song is a radio edit, checked when crates are built.
 
 Read the full picture in [Safety](/dj-lab/safety/index.html), starting with the [Youth protection policy](/dj-lab/safety/youth-protection-policy.html).
