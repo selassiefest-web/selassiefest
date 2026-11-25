@@ -224,7 +224,7 @@
     var exams = scored.filter(function (c) { return /exam/i.test(c.label) || c.group === 'Exams'; }).filter(function (c) { return rows.filter(function (r) { return pctOf(r, c) != null; }).length >= 3; });
     var ex = ui.exam && colByKey(ui.exam) && exams.indexOf(colByKey(ui.exam)) >= 0 ? colByKey(ui.exam) : exams[0];
     var work = scored.filter(function (c) { return c !== ex && !/exam/i.test(c.label) && rows.some(function (r) { return pctOf(r, c) != null; }); });
-    var h = '<div class="bar"><b>Insights</b>' + (exams.length ? '<label>Exam <select id="ins-exam">' + exams.map(function (c) { return '<option value="' + esc(c.key) + '"' + (c === ex ? ' selected' : '') + '>' + esc(c.label) + '</option>'; }).join('') + '</select></label>' : '') +
+    var h = '<div class="bar"><b>Insights</b>' +
       '<span>Everything below is in percent of each column’s maximum, so different-sized columns compare fairly. Excused or blank scores are left out, never counted as zero.</span></div>';
 
     var story = [];
@@ -253,7 +253,10 @@
     h += '<div class="card2" style="margin-bottom:16px"><h3>What the numbers say</h3>' + story.map(function (x) { return '<p style="margin-bottom:8px;line-height:1.55">' + x + '</p>'; }).join('') + '</div>';
 
     h += '<div class="grid2">';
-    if (ex) h += '<div><h3 class="ins-h">Grade distribution: ' + esc(ex.label) + '</h3>' + bandChart(ex, rows) + '</div>';
+    if (ex) {
+      var allEx = scored.filter(function (c) { return /exam/i.test(c.label) || c.group === 'Exams'; });
+      h += '<div><h3 class="ins-h" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px">Grade distribution: ' + esc(ex.label) + ' <span style="display:inline-flex;gap:6px;font-weight:400">' + allEx.map(function (c) { var ok = exams.indexOf(c) >= 0; return '<button class="b" type="button" data-exam="' + esc(c.key) + '"' + (c === ex ? ' style="background:var(--accent);color:#fff;border-color:var(--accent)" aria-pressed="true"' : '') + (ok ? '' : ' disabled title="No scores yet"') + '>' + esc(c.label.replace(/s*(final)/, '')) + '</button>'; }).join('') + '</span></h3>' + bandChart(ex, rows) + '</div>';
+    }
     h += '<div><h3 class="ins-h">Every student against the class</h3>' + stripChart(scored.filter(function (c) { return rows.some(function (r) { return pctOf(r, c) != null; }); }), rows) + '</div></div>';
     h += '<h3 class="ins-h" style="margin-top:22px">Heat map: where each student stands in each column</h3>' + heatmap(scored, rows, ex);
     if (ex && work.length) h += '<div class="grid2" style="margin-top:22px"><div><h3 class="ins-h">What goes with ' + esc(ex.label) + '?</h3>' + corrBars(ex, work, rows) + '</div><div><h3 class="ins-h">Who may need a conversation</h3>' + attention(ex, scored, rows) + '</div></div>';
@@ -909,6 +912,7 @@
   });
   document.addEventListener('click', async function (e) {
     var t = e.target.closest('button, a[data-stu], th[data-sort]'); if (!t) return;
+    if (t.dataset.exam) { ui.exam = t.dataset.exam; render(); return; }
     if (t.dataset.sort) { ui.sortDir = ui.sortKey === t.dataset.sort ? -ui.sortDir : 1; ui.sortKey = t.dataset.sort; render(); }
     else if (t.dataset.stu) { e.preventDefault(); ui.stu = t.dataset.stu; render(); }
     else if (t.id === 'f-add') { var k = $('f-col').value, op = $('f-op').value, v = parseFloat($('f-val').value); if (!k) return say('Pick a column to filter.'); if (op !== 'blank' && op !== 'has' && !isNum(v)) return say('Enter a value.'); ui.filters.push({ key: k, op: op, v: v }); say(''); render(); }

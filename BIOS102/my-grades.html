@@ -297,6 +297,14 @@
     return '<div class="note"><b>' + num(sc) + ' of ' + P.M + '</b> on Exam 3 (' + f(sc / P.M * 100, 1) + '%) makes your lab grade <b>' + f(lab, 1) + '%</b>' +
       (LEC == null ? '. Type your lecture percent above to see your overall grade.' : ' and your overall grade ' + overallTxt(lab) + '.') + '</div>';
   }
+  function wantOut(P, T) {   // T = wanted overall percent
+    if (T == null) return '<div class="help">Pick a letter, or type the overall percent you want.</div>';
+    if (LEC == null) return '<div class="note amber">Type your lecture percent at the top first. The score you need depends on it.</div>';
+    var n = neededPts(P, T);
+    if (n <= 0) return '<div class="note">An overall <b>' + f(T, 1) + '%</b> (' + bandOf(T) + ') is already secured. Any score on Exam 3 keeps it.</div>';
+    if (n > P.M + 1e-9) return '<div class="note">An overall <b>' + f(T, 1) + '%</b> (' + bandOf(T) + ') is not possible from here, even with a perfect Exam 3. The most you can reach is <b>' + fg(overall((P.fp + P.M) / P.base * 100), 1) + '%</b> (' + bandOf(overall((P.fp + P.M) / P.base * 100)) + ').</div>';
+    return '<div class="note">For an overall <b>' + f(T, 1) + '%</b> (' + bandOf(T) + ') you need <b>' + num(n) + ' of ' + P.M + '</b> on Exam 3, which is <b>' + f(Math.ceil(n / P.M * 1000 - 1e-9) / 10, 1) + '%</b>.</div>';
+  }
   function finalDyn(P) {
     var lo = P.fp / P.base * 100, hi = (P.fp + P.M) / P.base * 100, h;
     if (LEC == null) {
@@ -323,7 +331,10 @@
     if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
     h += '<p class="lead" style="margin-top:12px">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your lab. You have earned <b>' + num(P.fp) + '</b> points so far.</p><div id="fin-dyn">' + finalDyn(P) + '</div>';
     if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of lab work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
-    h += '<div class="ctl" style="margin-top:12px"><label>If I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px"> of ' + P.M + ' on Exam 3</label></div><div id="fin-out">' + finalOut(P, null) + '</div>' +
+    h += '<h3 style="margin:16px 0 4px;font-size:1rem">What if I score this on Exam 3?</h3>' +
+      '<div class="ctl"><label>I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px"> of ' + P.M + '</label><label>or <input type="number" id="fin-pct" min="0" max="100" step="0.1" style="width:76px"> % on Exam 3</label></div><div id="fin-out">' + finalOut(P, null) + '</div>' +
+      '<h3 style="margin:16px 0 4px;font-size:1rem">What do I need on Exam 3 for the grade I want?</h3>' +
+      '<div class="ctl"><label>I want an overall grade of <select id="want-letter"><option value="">choose a letter</option>' + BIOS.getGradeScale().filter(function (s) { return s.min > 0; }).map(function (s) { return '<option value="' + s.min + '">' + esc(s.letter) + ' (' + s.min + '%+)</option>'; }).join('') + '</select></label><label>or <input type="number" id="want-pct" min="0" max="100" step="0.1" style="width:76px"> % overall</label></div><div id="want-out">' + wantOut(P, null) + '</div>' +
       '<div class="help">Letter cutoffs use the BIOS102 scale (' + BIOS.scaleText() + '), applied to the overall grade. It assumes lab and lecture count the same way toward the final. Points are rounded up to the next half point, so the score shown always reaches the letter. This is a what-if; it changes nothing in your actual grades.</div></div>';
     return h;
   }
@@ -344,6 +355,7 @@
       else if (sv !== null && String(sv) !== String(+t.value)) t.value = sv;   // out of range: pull it back inside 0 to the item's points
       S.pick.score = sv;
     }
+    else if (t.id === 'want-letter') { if ($('want-pct')) $('want-pct').value = t.value; $('want-out').innerHTML = wantOut(finalPlan(), t.value === '' ? null : +t.value); }
     else if (t.dataset && t.dataset.pjx != null) { var P = pjState(); if (t.checked) P.ex[t.dataset.pjx] = true; else delete P.ex[t.dataset.pjx]; $('sec-proj').outerHTML = projectionHTML(); }
   });
   document.addEventListener('input', function (e) {
@@ -352,10 +364,13 @@
       LEC = t.value === '' ? null : clampNum(t.value, 0, 100); lecSet(LEC);
       var P0 = finalPlan(); if ($('fin-dyn')) $('fin-dyn').innerHTML = (P0.done || P0.excused) ? '' : finalDyn(P0);
       if ($('fin-out')) { var s0 = $('fin-score'); $('fin-out').innerHTML = finalOut(P0, s0 && s0.value !== '' ? clampNum(s0.value, 0, P0.M) : null); }
+      if ($('want-out')) { var wp = $('want-pct'); $('want-out').innerHTML = wantOut(P0, wp && wp.value !== '' ? clampNum(wp.value, 0, 100) : null); }
       if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
       return;
     }
-    if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); $('fin-out').innerHTML = finalOut(finalPlan(), fv); return; }
+    if (t.id === 'want-pct') { var wv = t.value === '' ? null : clampNum(t.value, 0, 100); if ($('want-letter')) $('want-letter').value = ''; $('want-out').innerHTML = wantOut(finalPlan(), wv); return; }
+    if (t.id === 'fin-pct') { var pv2 = t.value === '' ? null : clampNum(t.value, 0, 100), PP = finalPlan(); if ($('fin-score')) $('fin-score').value = pv2 == null ? '' : Math.round(pv2 * PP.M) / 100; $('fin-out').innerHTML = finalOut(PP, pv2 == null ? null : pv2 * PP.M / 100); return; }
+    if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); $('fin-out').innerHTML = finalOut(finalPlan(), fv); if ($('fin-pct')) $('fin-pct').value = fv == null ? '' : Math.round(fv / finalPlan().M * 1000) / 10; return; }
     if (t.dataset.pj != null) {
       var v =Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
       document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
