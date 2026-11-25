@@ -158,13 +158,13 @@ footer.page{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 2
 <header class="main">
   <div class="lab-id"><span class="dot"></span><span>Rainbow DJ Lab</span><span class="sep">/</span><span>System Builder</span><span class="sep">/</span><span>Rev. 02</span></div>
   <h1>Build your <em>station</em></h1>
-  <p class="lede">Start from the Station 01 reference build, then swap in alternates. Every swap pulls in the cables, power, software and checks it needs, so the system you end up with is complete.</p>
+  <p class="lede">Our plan is the XDJ-AN at every station with one shared Windows laptop. Swap in alternates to compare. Every swap pulls in the cables, power, software and checks it needs, so the system you end up with is complete.</p>
   <p class="lede mono" style="font-size:.7rem;color:var(--dim)">Prices: U.S. references checked November 22, 2026, from Station 01. Tax, shipping, furniture, installation excluded.</p>
 </header>
 
 <section aria-labelledby="s0">
   <div class="sec-head"><span class="idx">Step 1</span><h2 id="s0">Pick the DJ machine</h2><span class="meta">You can change anything after</span></div>
-  <p class="note">Not sure? Start with the first one, the Station 01 controller. “Self-contained” machines have their own screen and play music from a USB drive, so they need no laptop. Each card shows the full price per station with your current choices.</p>
+  <p class="note">Our pick is the XDJ-AN. “Self-contained” machines have their own screen and play music from a USB drive, so the whole lab shares one laptop. The DDJ-FLX4 needs a laptop at every station. Each card shows the price per station; shared items are added once in the total.</p>
   <div class="opts" id="o-core"></div>
   <div class="you" id="you"></div>
   <div class="bar"><label class="stations" style="margin-left:0">How many stations are you pricing? <input id="n" type="number" min="1" max="15" value="1"> <span style="text-transform:none;letter-spacing:0">(12 student stations plus instructors and the guest, up to 15)</span></label>
@@ -175,7 +175,7 @@ footer.page{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 2
   <div class="sec-head"><span class="idx">Step 2</span><h2 id="s1">Swap any part you like</h2><span class="meta">“Required” parts are added for you</span></div>
 
 
-  <div class="slot"><div class="slot-h"><span class="tag">Add-ons</span><h3>Gesture control, computer, software and music drives</h3><span class="why">Sway works with any deck. The Windows laptop and Serato are added automatically when you use the DDJ-FLX4 or Sway. Self-contained machines need USB drives.</span></div><div class="togs" id="o-add"></div></div>
+  <div class="slot"><div class="slot-h"><span class="tag">Add-ons</span><h3>Gesture control, computer, software and music drives</h3><span class="why">With a self-contained machine the lab needs one Windows laptop: it loads the USB drives and runs Serato with one Sway at that station. The DDJ-FLX4 needs a laptop at every station.</span></div><div class="togs" id="o-add"></div></div>
 
   <div class="slot"><div class="slot-h"><span class="tag">Headphones</span><h3>Headphones</h3><span class="why">Included on every build.</span></div><div class="togs" id="o-phones"></div></div>
 
@@ -255,35 +255,42 @@ const HW={
  az:{hp:'two jacks: ¼-inch and 3.5 mm',out:'MASTER 2 RCA L/R (also has an XLR master)',pwr:'supplied AC power cord'}
 };
 const PA_KEYS=['mic','mixer','spk','stand','rca','xlr'];
-let S={core:'flx4',laptop:1,sway:1,pa:1,n:1,drv:1,students:12,spares:2,acc:2,trk:0};
+let S={core:'xdjan',laptop:1,sway:1,pa:1,n:12,drv:1,students:12,spares:2,acc:2,trk:0};
 
 /* ── RULES ── */
 function derive(s){
   const core=CORE.find(c=>c.id===s.core), sa=core.standalone;
-  const laptopLock = !sa || s.sway;
-  const laptop = laptopLock ? 1 : s.laptop;
+  const laptopLock = true;
+  const laptop = 1; // controller: one per station; self-contained: one for the whole lab
   const sway = s.sway;
   const items=[]; const add=(p,qty=1)=>items.push({p,qty});
   add({...core},1);
-  if(laptop){add(P.laptop);add(P.serato);}
-  if(sway){add(P.sway);add(P.swaypsu);}
+  if(!sa){add(P.laptop);add(P.serato);}
+  if(sway&&!sa){add(P.sway);add(P.swaypsu);}
   add(P.phones);
-  let plugs=0; if(laptop)plugs++; if(sway)plugs++; plugs++;
+  let plugs=0; if(!sa){plugs++; if(sway)plugs++;} plugs++;
   const strip = plugs>1;
   if(strip)add(P.strip);
   if(!sa)add(P.anker);
-  const usbcc=(sway?2:0)+(!sa?1:0);
+  const usbcc=!sa?(sway?2:0)+1:0;
   if(usbcc)add(P.usbcc,usbcc);
   if(!sa)add(P.usbac);
   const pa=[]; if(s.pa)PA_KEYS.forEach(k=>pa.push({p:P[k],qty:P[k].qty||1}));
   // lab-level (shared) items
-  const drv=(sa||s.drv)?1:0, drives=drv?(s.students||0)+(s.spares||0):0, prep=sa&&!laptop;
+  const drv=(sa||s.drv)?1:0, drives=drv?(s.students||0)+(s.spares||0):0, prep=sa&&!sway;
   const lab=[];
+  if(sa){
+    lab.push({p:{...P.laptop,sp:'One Windows laptop for the whole lab: loads the USB drives, and runs Serato and Sway at one station.'},qty:1});
+    lab.push({p:P.serato,qty:1});
+    if(sway){lab.push({p:P.sway,qty:1},{p:P.swaypsu,qty:1},{p:P.usbcc,qty:2},{p:P.strip,qty:1});}
+  }
   if(drives)lab.push({p:P.drive,qty:drives});
-  if(prep)lab.push({p:{...P.laptop,name:'Drive-prep computer (shared)',sp:'One shared Windows computer with the free rekordbox program loads music onto the USB drives. Counted once for the lab.'},qty:1});
   if(s.acc)lab.push({p:P.stream,qty:s.acc});
   if(s.trk)lab.push({p:{...P.tracks,price:s.trk},qty:1});
-  return {core,sa,laptop,laptopLock,sway,items,plugs,strip,pa,drives,drv,prep,lab};
+  const d={core,sa,laptop,laptopLock,sway,items,plugs,strip,pa,drives,drv,prep,lab};
+  // view = the station drawn and wired (for self-contained decks, the one laptop station when Sway is on)
+  d.view={...d,laptop:(!sa||sway)?1:0,plugs:(sa&&sway)?3:plugs,strip:(sa&&sway)?true:strip};
+  return d;
 }
 function totals(d,s){
   let st=0; d.items.forEach(i=>{st+=(i.p.price||0)*i.qty;});
@@ -313,49 +320,49 @@ function musicCard(){const p=P.stream;return `<div class="tog" style="cursor:def
 function render(){
   const d=derive(S), t=totals(d,S);
   // presets
-  $('#you').innerHTML='<b>Your build:</b> '+d.core.name+(d.laptop?' + Windows laptop with Serato':' (no laptop)')+(d.sway?' + Sway gesture device':'')+(d.drives?' + '+d.drives+' take-home USB drives':'')+(S.pa?' + shared room PA':'');
+  $('#you').innerHTML='<b>Your build:</b> '+d.core.name+(d.sa?' at each station + one Windows laptop with Serato for the lab'+(d.sway?' + one Sway':''):' + Windows laptop with Serato at each station'+(d.sway?' + Sway gesture device':''))+(d.drives?' + '+d.drives+' take-home USB drives':'')+(S.pa?' + shared room PA':'');
   // core
   $('#o-core').innerHTML=CORE.map(c=>{const dd=derive({...S,core:c.id,laptop:c.standalone?S.laptop:1}),tt=totals(dd,S);return optCard({...c,sp:c.sp+'<br><b style="color:var(--text)">'+money(tt.st)+' per station</b> with your choices'},`data-core="${c.id}"`,{on:S.core===c.id})}).join('');
   // add-ons
   $('#o-add').innerHTML=
-    togCard(P.laptop,'laptop',{on:d.laptop,locked:d.laptopLock,lockMsg:d.sway&&d.sa?'Required by Sway':'Required by the DDJ-FLX4'})+
+    togCard(P.laptop,'laptop',{on:d.laptop,locked:d.laptopLock,lockMsg:d.sa?'One for the whole lab':'Required at every station'})+
     togCard(P.serato,'laptop',{on:d.laptop,locked:d.laptopLock,lockMsg:'Comes with the laptop'})+
-    togCard(P.sway,'sway',{on:d.sway,locked:false})+driveCard(d)+musicCard();
+    togCard(d.sa?{...P.sway,sp:P.sway.sp+' One for the lab, at the laptop station.'}:P.sway,'sway',{on:d.sway,locked:false})+driveCard(d)+musicCard();
   $('#o-phones').innerHTML=togCard(P.phones,'x',{on:true,locked:true,lockMsg:'Included on every build'});
   $('#o-pa').innerHTML=`<button class="tog" data-tog="pa" aria-pressed="${S.pa?'true':'false'}" style="grid-column:1/-1;grid-template-columns:300px 1fr"><div class="photo" style="display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:170px"><div style="position:relative"><img src="${IMG['Yamaha-DBR10-Powered-Speaker']}" alt="Left speaker"><span class="mono" style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.62rem;color:#222;letter-spacing:.14em;z-index:2">LEFT</span></div><div style="position:relative"><img src="${IMG['Yamaha-DBR10-Powered-Speaker']}" alt="Right speaker" style="transform:scaleX(-1)"><span class="mono" style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.62rem;color:#222;letter-spacing:.14em;z-index:2">RIGHT</span></div></div><div class="ob"><span class="state">${S.pa?'In your build':'Not included · click to add'}</span><h4>Shared room PA: left and right speakers</h4><span class="px">$1,212.71</span><span class="sp">Stereo sound, no surround needed. One speaker plays the left channel and one plays the right, both aimed at the students. Includes the Yamaha MG06 mixer, two DBR10 speakers on stands, Hosa RCA lead, four XLR leads, plus two donated Shure SM58-LC microphones. Counted once for the whole lab.</span></div></button>`;
   // auto
-  const autoItems=d.items.filter(i=>['strip','anker','swaypsu','usbcc','usbac'].some(k=>P[k]===i.p)).concat(d.prep?d.lab.filter(i=>i.p.name.startsWith('Drive-prep')):[]);
+  const autoItems=d.items.concat(d.lab).filter(i=>['strip','anker','swaypsu','usbcc','usbac'].some(k=>P[k]===i.p));
   const paItems=d.pa;
   $('#o-auto').innerHTML=autoItems.concat(paItems).map(i=>`<div class="a"><div class="photo">${img(i.p.img,i.p.name)}</div><div class="ob"><span class="brand">${i.p.brand}</span><h4>${i.p.name}${i.qty>1?`<span class="qty">×${i.qty}</span>`:''}</h4><span class="px${i.p.price===0?' free':''}">${i.p.price===0?'$0 · donated':money(i.p.price)+(i.qty>1?' each':'')}</span></div></div>`).join('')||'<p class="note">No extra parts.</p>';
   // tally
   $('#t-station').textContent=money(t.st);$('#t-lab-l').textContent=S.n>1?'Total: '+S.n+' stations'+(S.pa?' + shared PA':''):'Total'+(S.pa?' with shared PA':'');$('#t-lab').textContent=money(t.lab);
   $('#t-mo').textContent=t.mo?money(t.mo)+' a month':'none';
-  $('#t-sock').textContent=d.plugs+(d.strip?' of 4 on strip':' (no strip)');
+  $('#t-sock').textContent=(d.sa&&d.sway)?'1 per station; 3 at laptop station':d.plugs+(d.strip?' of 4 on strip':' (no strip)');
   // checks
   const C=checks(d,t); const bad=C.filter(c=>c.s==='bad').length, warn=C.filter(c=>c.s==='warn').length;
   $('#checks').innerHTML=C.map(c=>`<li class="${c.s}"><span class="m">${c.s==='ok'?'✓':c.s==='bad'?'✕':'!'}</span><span><b>${c.t}</b> ${c.d}</span></li>`).join('');
   $('#chk-meta').textContent=bad?bad+' problem(s)':warn+' item(s) to verify';
   const b=$('#t-badge');b.className='badge '+(bad?'no':'ok');b.textContent=bad?'Incomplete':'Complete build';
-  wiring(d); topo(d); bom(d,t);
+  wiring(d.view); topo(d.view); bom(d,t);
   try{location.hash=btoa(JSON.stringify({c:S.core,l:S.laptop,s:S.sway,p:S.pa,n:S.n,v:S.drv,st:S.students,sp:S.spares,a:S.acc,k:S.trk}))}catch(e){}
-  isaac(d);setup(d);
+  isaac(d);setup(d.view);
 }
 function checks(d,t){
   const c=[]; const ok=(t,x)=>c.push({s:'ok',t,d:x}), w=(t,x)=>c.push({s:'warn',t,d:x}), b=(t,x)=>c.push({s:'bad',t,d:x});
   const hw=HW[d.core.id];
   ok('Sound source.',`${d.core.name} is the deck system.`);
   if(d.laptop&&d.sa)ok('Serato licence.',d.core.pro==='Pro hardware unlock'?d.core.name+' unlocks Serato DJ Pro while it is connected, so standard use needs no subscription.':d.core.name+' needs a paid Serato DJ Pro licence; Serato’s planned donation is meant to cover it.');
-  d.laptop?ok('Computer and software.','Windows ThinkPad runs Serato DJ Pro. Serato is donated, so $0 (retail $11.99 a month).'):ok('No computer at the station.','Plays from the student’s USB drive.');
+  ok('Computer and software.',(d.sa?'One shared Windows ThinkPad for the lab runs Serato DJ Pro; the other stations play from USB drives.':'A Windows ThinkPad at each station runs Serato DJ Pro.')+' Serato is donated, so $0 (retail $11.99 a month).');
   ok('Cue audio.',`Donated Shure SRH440A into the ${hw.hp}.`);
   ok('Adapters.','Nothing to buy. The SRH440A comes with a threaded ¼-inch adapter: leave it on for a ¼-inch jack, unscrew it for a 3.5 mm jack. The Hosa lead goes straight from the deck’s RCA outputs to the mixer.');
-  d.plugs<=4?ok('Power.',d.strip?`${d.plugs} of 4 surge-protector sockets used, one upstream receptacle.`:'One plug, one receptacle.'):b('Power.',`${d.plugs} plugs but only 4 sockets.`);
-  if(d.sway)ok('Sway.',`Sway works with the ${d.core.name} through Serato DJ Pro on the laptop. Audima will confirm; see the questions below.`);
+  if(d.sa&&d.sway)ok('Power.','One plug at each station. The laptop station uses 3 of 4 surge-protector sockets.'); else d.plugs<=4?ok('Power.',d.strip?`${d.plugs} of 4 surge-protector sockets used, one upstream receptacle.`:'One plug, one receptacle.'):b('Power.',`${d.plugs} plugs but only 4 sockets.`);
+  if(d.sway)ok('Sway.',`Sway works with the ${d.core.name} through Serato DJ Pro on the laptop${d.sa?' (one Sway, one station)':''}. Audima will confirm; see the questions below.`);
   else w('Sway.','Not in this build. Turn it on under Step 2 to add gesture control; the laptop and Serato come with it.');
   S.pa?ok('Room sound.',`Shared PA included. The ${d.core.name} sends sound out of its ${hw.out} to the Hosa lead and the mixer.`):w('Room sound.','No PA in this build. Students hear only their headphones; a PA is needed for instruction and showcases.');
   if(d.drives){ok('Take-home USB drives.',`${d.drives} drives (${S.students} students plus ${S.spares} spares) at ${money(P.drive.price)}. Each student keeps theirs at graduation.`);
     if(d.sa)ok('Drive type.',d.core.id==='xdjan'?'The XDJ-AN takes USB-C drives only and has one USB slot, so the dual USB-A/USB-C drive is the right choice.':'Dual USB-A/USB-C drives fit any USB slot.');}
-  if(d.prep)ok('Drive-prep computer.','A shared ThinkPad with the free rekordbox program is included once for the lab.');
-  else if(d.laptop)ok('Drive prep.','The station laptops can load the drives, so no extra computer is needed.');
+  if(d.sa)ok('Drive prep.','The shared laptop loads the drives with the free rekordbox program.');
+  else ok('Drive prep.','The station laptops can load the drives, so no extra computer is needed.');
   S.trk>0?ok('Music for the drives.',`${money(S.trk)} set aside for purchased or licensed tracks.`):w('Music for the drives.','Nothing budgeted yet. Set an amount for purchased tracks, or plan on artist-donated music only.');
   if(S.acc)ok('Teaching library.',`${S.acc} streaming account${S.acc>1?'s':''} at ${money(P.stream.monthly)} a month for instructors.`);
   w('Keeping the drive.','Loading a student’s drive with tracks from the teaching library may not be allowed by the music service. Put only music we own or may share, plus the student’s own mixes, on a drive that goes home.');
@@ -390,7 +397,7 @@ function topo(d){
   const hw=HW[d.core.id];
   const N=(x,y,w,h,col,tag,name,sub,sub2,dash)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#16161e" stroke="${col}" ${dash?'stroke-dasharray="5 3"':''}/><text x="${x+12}" y="${y+20}" font-family="JetBrains Mono" font-size="9" fill="#e6e1d6" letter-spacing="1">${tag}</text><text x="${x+12}" y="${y+41}" font-family="Fraunces" font-size="15" fill="#f0ece4">${name}</text>${sub?`<text x="${x+12}" y="${y+57}" font-family="JetBrains Mono" font-size="8" fill="#e6e1d6">${sub}</text>`:''}${sub2?`<text x="${x+12}" y="${y+70}" font-family="JetBrains Mono" font-size="8" fill="#c9c3b6">${sub2}</text>`:''}</g>`;
   const L=(x1,y1,x2,y2,col,dash,lab,lx,ly)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="1.5" ${dash?`stroke-dasharray="${dash}"`:''}/>${lab?`<text x="${lx}" y="${ly}" font-family="JetBrains Mono" font-size="8" fill="${col}" text-anchor="middle" paint-order="stroke" stroke="#16161e" stroke-width="3">${lab}</text>`:''}`;
-  const why=d.sway&&d.sa?'REQUIRED BY SWAY':(!d.sa?'REQUIRED BY DDJ-FLX4':'OPTIONAL');
+  const why=d.sa?'ONE PER LAB':'REQUIRED BY DDJ-FLX4';
   let s='<line x1="0" y1="385" x2="900" y2="385" stroke="#2a2a35"/>';
   // left column
   if(d.laptop) s+=N(30,30,190,76,'#8bb7ff','HOST · '+why,'ThinkPad E14','Serato DJ Pro · donated');
@@ -425,14 +432,14 @@ function topo(d){
   s+=`<text x="30" y="378" font-family="JetBrains Mono" font-size="7" fill="#c9c3b6" letter-spacing="1">FIG. 02 · ${d.core.name.toUpperCase()}${d.sway?' + SWAY':''}${d.laptop?' + LAPTOP':' · NO LAPTOP'}</text>`;
   $('#topo').innerHTML=s;
   $('#topo-meta').textContent='Live · redraws with your choices';
-  $('#topo-note').innerHTML=(d.laptop?(d.sway&&d.sa?'<b>Why the laptop is here:</b> Sway needs a laptop with Serato. Turn Sway off and the laptop disappears.':(!d.sa?'<b>Why the laptop is here:</b> the DDJ-FLX4 is a controller and needs a laptop to make sound. Pick a self-contained machine to remove it.':'<b>Laptop:</b> optional with this machine.')):'<b>No laptop:</b> this machine plays music from the student’s USB drive. A shared computer outside the station loads the drives.');
+  $('#topo-note').innerHTML=(d.laptop?(d.sway&&d.sa?'<b>This is the one laptop station.</b> Sway needs a laptop with Serato. Every other station is the deck alone, playing from the student’s USB drive.':(!d.sa?'<b>Why the laptop is here:</b> the DDJ-FLX4 is a controller and needs a laptop to make sound. Pick a self-contained machine to remove it.':'<b>Laptop:</b> optional with this machine.')):'<b>No laptop at the station:</b> this machine plays music from the student’s USB drive. The one shared laptop loads the drives.');
 }
 function bom(d,t){
   const row=i=>`<tr><td>${i.p.name} <span style="color:var(--dim)">· ${i.p.brand}</span></td><td>${i.qty}</td><td>${i.p.monthly?money(i.p.monthly)+'/mo':(i.p.price===0?'donated':money(i.p.price))}</td><td>${i.p.monthly?money(i.p.monthly*i.qty)+'/mo':money((i.p.price||0)*i.qty)}</td></tr>`;
   $('#bom').innerHTML=d.items.map(row).join('')+`<tr class="sub"><td colspan="3">Station subtotal (one-time)</td><td>${money(t.st)}</td></tr>`+
     (S.n>1?`<tr class="sub"><td colspan="3">× ${S.n} stations</td><td>${money(t.st*S.n)}</td></tr>`:'')+
     (S.pa?d.pa.map(row).join('')+`<tr class="sub"><td colspan="3">Shared PA, once per lab</td><td>${money(t.pa)}</td></tr>`:'')+
-    d.lab.map(row).join('')+`<tr class="sub"><td colspan="3">Drives, prep computer and music, once per lab (one-time)</td><td>${money(t.lo)}</td></tr>`;
+    d.lab.map(row).join('')+`<tr class="sub"><td colspan="3">Shared items (laptop, drives, music), once per lab (one-time)</td><td>${money(t.lo)}</td></tr>`;
   $('#bomf').innerHTML=`<tr><td colspan="3">Total one-time</td><td>${money(t.lab)}</td></tr>`+(t.mo?`<tr><td colspan="3">Streaming music, monthly</td><td>${money(t.mo)}/mo</td></tr>`:'');
 }
 function setup(d){
