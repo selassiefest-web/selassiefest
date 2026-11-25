@@ -222,7 +222,7 @@
   }
   function pjOutHTML() {
     var k = pjCalc(); if (k.pct == null) return '<div class="help">Nothing left to project.</div>';
-    var h = '<div class="tiles"><div><small>Your projected final grade</small><b>' + fg(k.pct, 1) + '%</b><small>grade band ' + bandOf(k.pct) + '</small></div>' +
+    var h = '<div class="tiles"><div><small>Your projected final grade</small><b>' + fg(k.pct, 1) + '%</b><small>' + (LEC == null ? 'your lab grade' : 'overall ' + fg(overall(k.pct), 1) + '% = ' + bandOf(overall(k.pct))) + '</small></div>' +
       '<div><small>Points you would have at the end</small><b>' + num(k.N) + '</b><small>out of ' + num(k.D) + '</small></div>' +
       '<div><small>Points of work left to earn</small><b>' + num(k.rem) + '</b><small>still ahead of you</small></div></div>';
     h += '<p class="lead">If you score ' + k.items.filter(function (it) { return !k.P.ex[it.key]; }).map(function (it) { return f(k.P.pct[it.key], 0) + '% on ' + esc(it.label.toLowerCase()); }).join(', ') + ', your course ends at <b>' + fg(k.pct, 1) + '%</b> (' + num(k.N) + ' of ' + num(k.D) + ' points).' + (k.rec > 0 ? ' That includes <b>' + num(k.rec) + ' points</b> of make-up work from the box above.' : '') + '</p>';
@@ -230,7 +230,7 @@
     var T = k.P.target, t;
     if (k.need == null) t = 'There is no remaining work to earn.';
     else if (k.need <= 0) t = 'A final grade of ' + T + '% is already secured, whatever the rest turns out to be.';
-    else if (k.need > 100.0001) { var best = (k.c.fp + k.rec + k.rem) / k.D * 100; t = T + '% is out of reach from here (it would take more than 100% on everything left). The most you can finish with is <b>' + fg(best, 1) + '%</b> (grade band ' + bandOf(best) + '), so try a target you can reach, or see what an excuse or make-up work would change.'; }
+    else if (k.need > 100.0001) { var best = (k.c.fp + k.rec + k.rem) / k.D * 100; t = T + '% is out of reach from here (it would take more than 100% on everything left). The most you can finish with is <b>' + fg(best, 1) + '%</b>, so try a target you can reach, or see what an excuse or make-up work would change.'; }
     else t = 'To finish with <b>at least ' + T + '%</b>, you need an average of <b>' + f(k.need, 1) + '%</b> on the ' + num(k.rem) + ' points still to earn (' + num((T / 100) * k.D - k.c.fp - k.rec) + ' more points).';
     return h + '<div class="note">' + t + '</div>';
   }
@@ -248,7 +248,7 @@
         '<span><input type="number" min="0" max="100" step="1" value="' + v + '" data-pj="' + it.key + '"' + (ex ? ' disabled' : '') + ' style="width:62px"> %</span>' +
         '<label class="x"><input type="checkbox" data-pjx="' + it.key + '"' + (ex ? ' checked' : '') + '> Excused</label></div>';
     }).join('');
-    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">Grade bands here use the BIOS102 scale (' + BIOS.scaleText() + '). This is a what-if: it changes nothing in your actual grades.</div></div>';
+    return h + '<div id="pj-out" style="margin-top:14px">' + pjOutHTML() + '</div><div class="help">This is your lab grade. Your letter grade is for lab and lecture together (see the box at the top). This is a what-if: it changes nothing in your actual grades.</div></div>';
   }
 
   /* ---- my scores ---- */
@@ -279,31 +279,52 @@
     var other = remItems().filter(function (it) { return it.key !== 'exam3'; }).reduce(function (s, it) { return s + it.R; }, 0);
     return { c: c, base: base, M: M, fp: c.fp, other: other, done: isNum(data.exam3), excused: (data.excused || []).indexOf('exam3') >= 0 };
   }
-  function neededPts(P, T) { return Math.ceil((BIOS.clampNum(T / 100 * P.base - P.fp, -1e6, 1e6) * 2) - 1e-9) / 2; }
+  // Lab is 50% of the overall course grade; lecture is the other 50% and is scored by the lecture instructors.
+  // Students type their lecture percent, so a letter is only ever shown for the OVERALL grade, never for the lab alone.
+  var LAB_W = 0.5, LEC_KEY = 'bios102_lecture_pct';
+  function lecGet() { try { var v = parseFloat(localStorage.getItem(LEC_KEY)); return isFinite(v) ? Math.max(0, Math.min(100, v)) : null; } catch (e) { return null; } }
+  function lecSet(v) { try { if (v == null) localStorage.removeItem(LEC_KEY); else localStorage.setItem(LEC_KEY, String(v)); } catch (e) { /* private window: keep it for this visit only */ } }
+  var LEC = null;
+  function overall(labPct) { return LAB_W * labPct + (1 - LAB_W) * LEC; }
+  function overallTxt(labPct) { var o = overall(labPct); return '<b>' + fg(o, 1) + '%</b>, which is a <b>' + bandOf(o) + '</b>'; }
+  function neededPts(P, T) {   // Exam 3 points that bring the OVERALL grade to T, given the lecture percent
+    var labNeed = (T - (1 - LAB_W) * LEC) / LAB_W;
+    return Math.ceil(((labNeed / 100 * P.base - P.fp) * 2) - 1e-9) / 2;
+  }
   function finalOut(P, sc) {
     if (sc == null) return '<div class="help">Type a score to see the grade it would give.</div>';
-    var pct = (P.fp + sc) / P.base * 100;
-    return '<div class="note"><b>' + num(sc) + ' of ' + P.M + '</b> on Exam 3 (' + f(sc / P.M * 100, 1) + '%) would give you <b>' + fg(pct, 1) + '%</b>, which is a <b>' + bandOf(pct) + '</b>.</div>';
+    var lab = (P.fp + sc) / P.base * 100;
+    return '<div class="note"><b>' + num(sc) + ' of ' + P.M + '</b> on Exam 3 (' + f(sc / P.M * 100, 1) + '%) makes your lab grade <b>' + f(lab, 1) + '%</b>' +
+      (LEC == null ? '. Type your lecture percent above to see your overall grade.' : ' and your overall grade ' + overallTxt(lab) + '.') + '</div>';
   }
-  function finalHTML() {
-    var P = finalPlan(), h = '<div class="card2" id="sec-final"><h2>The final exam: what do I need?</h2>';
-    if (P.excused) return h + '<div class="note">You are excused from Exam 3, so it is not part of your course. Your total grade so far is <b>' + fg(P.fp / P.base * 100, 1) + '%</b> (' + bandOf(P.fp / P.base * 100) + ').</div></div>';
-    if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your final grade is <b>' + fg(P.fp / P.base * 100, 1) + '%</b>, a <b>' + bandOf(P.fp / P.base * 100) + '</b>.</div></div>';
-    var lo = P.fp / P.base * 100, hi = (P.fp + P.M) / P.base * 100;
-    h += '<p class="lead">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your course. You have earned <b>' + num(P.fp) + '</b> points so far. Here is the score on Exam 3 that gets each letter grade.</p>' +
-      '<div class="tiles"><div><small>If you score 0 on Exam 3</small><b>' + fg(lo, 1) + '%</b><small>' + bandOf(lo) + '</small></div>' +
-      '<div><small>If you score ' + P.M + ' (perfect)</small><b>' + fg(hi, 1) + '%</b><small>' + bandOf(hi) + '</small></div></div>';
+  function finalDyn(P) {
+    var lo = P.fp / P.base * 100, hi = (P.fp + P.M) / P.base * 100, h;
+    if (LEC == null) {
+      return '<div class="note amber">Type your lecture percent above. Your overall letter grade needs both halves of the course, so none is shown until you do.</div>' +
+        '<div class="tiles"><div><small>Your lab grade now (Exam 3 not counted)</small><b>' + f(lo, 1) + '%</b></div><div><small>Your lab grade with a perfect Exam 3</small><b>' + f(hi, 1) + '%</b></div></div>';
+    }
+    h = '<div class="tiles"><div><small>Overall if you score 0 on Exam 3</small><b>' + fg(overall(lo), 1) + '%</b><small>' + bandOf(overall(lo)) + '</small></div>' +
+      '<div><small>Overall if you score ' + P.M + ' (perfect)</small><b>' + fg(overall(hi), 1) + '%</b><small>' + bandOf(overall(hi)) + '</small></div></div>';
     var sc = BIOS.getGradeScale().filter(function (s) { return s.min > 0; });
-    h += '<div class="scroll"><table class="t"><thead><tr><th>Letter grade</th><th>Course grade needed</th><th>Score needed on Exam 3</th><th>Percent on Exam 3</th></tr></thead><tbody>' + sc.map(function (s) {
+    h += '<div class="scroll"><table class="t"><thead><tr><th>Overall letter grade</th><th>Overall % needed</th><th>Score needed on Exam 3</th><th>Percent on Exam 3</th></tr></thead><tbody>' + sc.map(function (s) {
       var n = neededPts(P, s.min), cell;
       if (n <= 0) cell = '<td colspan="2" style="text-align:left;color:var(--text-dim)">Already secured. Any score keeps it.</td>';
       else if (n > P.M + 1e-9) cell = '<td colspan="2" style="text-align:left;color:var(--text-dim)">Not possible, even with a perfect score.</td>';
       else cell = '<td><b>' + num(n) + '</b> of ' + P.M + '</td><td>' + f(Math.ceil(n / P.M * 1000 - 1e-9) / 10, 1) + '%</td>';
       return '<tr><td><b>' + esc(s.letter) + '</b></td><td>' + s.min + '%</td>' + cell + '</tr>';
     }).join('') + '</tbody></table></div>';
-    if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
+    return h;
+  }
+  function finalHTML() {
+    var P = finalPlan(), h = '<div class="card2" id="sec-final"><h2>My overall grade and the final exam</h2>' +
+      '<p class="lead">The lab is <b>50%</b> of your overall grade and lecture is the other <b>50%</b>. A letter grade only means something for the two together, so this page shows letters for your <b>overall</b> grade, not for the lab alone. Your lecture grade comes from your lecture instructors, so type it in as a percent.</p>' +
+      '<div class="ctl"><label>My lecture grade <input type="number" id="lec-pct" min="0" max="100" step="0.1" style="width:84px" value="' + (LEC == null ? '' : LEC) + '"> %</label><span class="help" style="margin:0">Saved on this device only.</span></div>';
+    if (P.excused) return h + '<div class="note">You are excused from Exam 3, so it is not part of your lab. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
+    if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
+    h += '<p class="lead" style="margin-top:12px">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your lab. You have earned <b>' + num(P.fp) + '</b> points so far.</p><div id="fin-dyn">' + finalDyn(P) + '</div>';
+    if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of lab work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
     h += '<div class="ctl" style="margin-top:12px"><label>If I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px"> of ' + P.M + ' on Exam 3</label></div><div id="fin-out">' + finalOut(P, null) + '</div>' +
-      '<div class="help">Letter cutoffs use the BIOS102 scale (' + BIOS.scaleText() + '). Points are rounded up to the next half point, so the score shown always reaches the letter. This is a what-if; it changes nothing in your actual grades.</div></div>';
+      '<div class="help">Letter cutoffs use the BIOS102 scale (' + BIOS.scaleText() + '), applied to the overall grade. It assumes lab and lecture count the same way toward the final. Points are rounded up to the next half point, so the score shown always reaches the letter. This is a what-if; it changes nothing in your actual grades.</div></div>';
     return h;
   }
 
@@ -327,6 +348,13 @@
   });
   document.addEventListener('input', function (e) {
     var t = e.target; if (!D || !t.dataset) return;
+    if (t.id === 'lec-pct') {
+      LEC = t.value === '' ? null : clampNum(t.value, 0, 100); lecSet(LEC);
+      var P0 = finalPlan(); if ($('fin-dyn')) $('fin-dyn').innerHTML = (P0.done || P0.excused) ? '' : finalDyn(P0);
+      if ($('fin-out')) { var s0 = $('fin-score'); $('fin-out').innerHTML = finalOut(P0, s0 && s0.value !== '' ? clampNum(s0.value, 0, P0.M) : null); }
+      if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
+      return;
+    }
     if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); $('fin-out').innerHTML = finalOut(finalPlan(), fv); return; }
     if (t.dataset.pj != null) {
       var v =Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
@@ -376,6 +404,7 @@
     data = D.data; cv = data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
+    LEC = lecGet();
     render();
     if (banner) $('app').insertAdjacentHTML('afterbegin', banner);
   })();
