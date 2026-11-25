@@ -21,37 +21,37 @@ from (values
 where not exists (select 1 from fs_partners p where p.id = v.id::uuid or p.name ilike '%rainbow cone%' or p.email ilike '%rainbowcone.com%');
 
 insert into fs_partners (id, name, category, website, email, contacts, partner_types, program_parts, stage, ball_with, ask, next_step, next_step_due, source, notes)
-select v.id::uuid, v.name, v.category, v.website, v.email, v.contacts::jsonb, v.ptypes::text[], v.parts::text[], v.stage, 'us', v.ask, v.next_step, v.due::date, v.source, v.notes
+select v.id::uuid, v.name, v.category, v.website, v.email, v.contacts::jsonb, v.ptypes::text[], v.parts::text[], v.stage, v.ball, v.ask, v.next_step, v.due::date, v.source, v.notes
 from (values
  ('b4d92f63-8ea5-4c70-b162-3f0a7d5e9c12', 'Project Exploration (My CHI. My Future. Community Anchor, Austin)', 'Community org', 'https://projectexploration.org', 'jwilliams@projectexploration.org',
   '[{"name":"Janeicia Williams","title":"director of community ecosystem (per Stephen; not verified by us)","email":"jwilliams@projectexploration.org"}]',
-  '{programming,marketing}', '{classes}', 'reached_out',
+  '{programming,marketing}', '{classes}', 'reached_out', 'them',
   'A short video call to learn how teen programming (the Aug 19, 2026 teen beach party and My CHI. My Future. work) is run, and whether the free Rainbow DJ Lab and Rainbow Wednesdays can be listed or co-promoted for teens.',
   'Stephen emailed Janeicia Williams the afternoon of Nov 25, 2026 (exact time not recorded). Ball is with her. If silent by Wed Dec 2, 2026, one short nudge in the same thread (draft only; Stephen says send). Public contact: their site shows only a web form, no email. Owner: Stephen.',
   '2026-12-02', 'Deputy Mayor Humphries meeting Nov 25, 2026 (MCMF referral) and Stephen''s research',
   'VERIFIED by us: City of Chicago Dec 2024 release names Project Exploration as a My CHI. My Future. Community Anchor Organization (Austin); Sun-Times Sept 10, 2026 article on the Aug 19, 2026 teen beach party (20 Project Exploration youth employees, Janeicia Williams helped oversee); Chicago open-data permit record "Club Tae Beach Party", North Ave Beach Event Space, Aug 19, 2026. NOT verified by us: jwilliams@projectexploration.org (from My CHI. My Future. per Stephen), her title, the public name "CHI-SHORE", whether Project Exploration holds the 2027 anchor role. Her address is also a contact on the MCMF row e0b74f53-8ac6-4d91-b245-6fc03b0a4d84, which stays the Humphries-referral row. The Sun-Times piece concerns teen gatherings and conflict: ask how safety was run, do not accuse. Do not say the Park District or the City approved anything. [src:projectexploration-partner-2026-11-25]'),
  ('c5ea3074-9fb6-4d81-8273-401b8e6fad23', 'Lost Boyz Inc. (My CHI. My Future. Community Anchor, South Shore)', 'Community org', null, null,
   '[]',
-  '{programming}', '{classes}', 'not_contacted',
+  '{programming}', '{classes}', 'not_contacted', 'us',
   'Find who runs the My CHI. My Future. South Shore convenings, then ask for a short video call and a place on their partner list.',
   'Find a public contact on Lost Boyz Inc.''s own website (lostboyz.org was not reachable from our check Nov 25, 2026) or the My CHI. My Future. partners page; do not guess an address. Then draft a short intro for Stephen. Due Wed Dec 2, 2026. Owner: Stephen.',
   '2026-12-02', 'City of Chicago Dec 17, 2024 DFSS release; Deputy Mayor Humphries "MCMF South Shore" Nov 25, 2026',
   'VERIFIED: the City''s Dec 17, 2024 DFSS release (https://www.chicago.gov/city/en/depts/fss/provdrs/youth/news/2024/december/-local-organizations-to-present-youth-focused-community-plans-at.html) lists Lost Boyz Inc. as the South Shore Community Anchor Organization (anchors host monthly youth-stakeholder convenings and community plans). NOT verified: that it holds the role in 2027, and that it is what Humphries meant by "MCMF South Shore". No contact found. Related row: MCMF e0b74f53-8ac6-4d91-b245-6fc03b0a4d84. [src:lostboyz-partner-2026-11-25]'),
  ('d6fb4185-a0c7-4e92-9384-512c9f7b0e34', 'Chicago DFSS Youth Services: My CHI. My Future. public inbox', 'Civic/government', 'https://explore.mychimyfuture.org', 'MyCHIMyFuture@cityofchicago.org',
   '[{"name":"My CHI. My Future. public inbox","email":"MyCHIMyFuture@cityofchicago.org"}]',
-  '{programming,marketing}', '{classes,wednesdays}', 'not_contacted',
+  '{programming,marketing}', '{classes,wednesdays}', 'not_contacted', 'us',
   'A direct contact at DFSS Youth Services and the South Shore partners; invitations to the citywide partner meetings; listing of the free Rainbow DJ Lab where My CHI. My Future. connects youth to programs.',
   'Draft email ready for Stephen (not sent): C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\todays-outreach\email-my-chi-my-future-inbox.html. Stephen says send; else a nudge Wed Dec 2, 2026. Owner: Stephen.',
   '2026-11-25', 'Address supplied by Stephen Nov 25, 2026',
   'MyCHIMyFuture@cityofchicago.org was supplied by Stephen and is NOT verified by us (mychimyfuture.org does not display it in what we could read Nov 25). VERIFIED: the City''s Dec 17, 2024 DFSS release lists dfss@cityofchicago.org as the press contact, DFSS at 1615 W. Chicago Ave, 5th Floor, Chicago 60622, and describes citywide My CHI. My Future. partner meetings; public site https://explore.mychimyfuture.org has a Partners tab. Related: Stender Von Oehsen row d9a63e42-7fb5-4c80-a134-5ebf2a9c3d73 (named by Humphries) and MCMF row e0b74f53. Do not say the City or the Park District approved anything. [src:dfss-mcmf-partner-2026-11-25]'),
  ('e70c5296-b1d8-4fa3-a495-623da08c1f45', 'Urban Male Network (claimed 2025 Safe Spaces partner, South Shore)', 'Community org', null, null,
   '[]',
-  '{programming}', '{classes}', 'not_contacted',
+  '{programming}', '{classes}', 'not_contacted', 'us',
   'Learn whether Urban Male Network runs South Shore youth programming we should coordinate with; possible intro through My CHI. My Future.',
   'Verify the organization and find its official site and public contact; do not contact until verified. Due Wed Dec 2, 2026. Owner: Stephen.',
   '2026-12-02', 'Research pasted by Stephen Nov 25, 2026',
   'NOT verified by us: the claim that Urban Male Network was the 2025 Safe Spaces partner for South Shore and Greater Grand Crossing, and whether it has any 2027 role. No contact, no address, no site found. Row exists for tracking only. Related: MCMF row e0b74f53-8ac6-4d91-b245-6fc03b0a4d84. [src:urbanmale-partner-2026-11-25]')
-) as v(id, name, category, website, email, contacts, ptypes, parts, stage, ask, next_step, due, source, notes)
+) as v(id, name, category, website, email, contacts, ptypes, parts, stage, ball, ask, next_step, due, source, notes)
 where not exists (select 1 from fs_partners p where p.id = v.id::uuid or lower(p.name) = lower(v.name)
   or (v.email is not null and v.email not ilike '%projectexploration.org' and lower(p.email) = lower(v.email)));
 
