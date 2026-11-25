@@ -71,7 +71,7 @@
   /* ---- how this course is graded (published assignments in the Canvas course) ---- */
   // Total points, no category weights: grade = points earned / points in the whole course.
   // An excused assignment leaves the course entirely (it is not a zero and not a score).
-  var LATE = 10;          // Quiz 7 was published after the grade export the totals come from
+  var LATE = 0;           // was 10 while Quiz 7 was missing from the export; the Nov 24 export includes it
   var BASE = 440;         // 15 assignments + 30 participation + 35 lab write-ups + 70 quizzes + 290 exams
   var ITEMS = [
     ['Assignments', 'Lab 1a: Scientific Method', 1.75], ['Assignments', 'Lab 1a: Phylogeny Reading', 2.5], ['Assignments', 'Lab 1a: Evolution Videos', 2],
@@ -264,15 +264,52 @@
       // a category with nothing graded yet is "not graded yet", not a score of zero
       if (gk && x.key !== 'exams' && !(isNum(gk.cd) && gk.cd > 0) && !(gk.cp > 0)) return '<tr><td>' + esc(x.label) + '</td><td colspan="4" style="text-align:left;color:var(--text-dim)">Not graded yet</td></tr>';
       if (!isNum(v)) return '<tr><td>' + esc(x.label) + '</td><td colspan="4" style="text-align:left;color:var(--text-dim)">' + ((data.excused || []).indexOf(x.key) >= 0 ? 'Excused' : 'No score yet') + '</td></tr>';
-      var p = v / x.max * 100;
-      return '<tr><td>' + esc(x.label) + '</td><td>' + num(v) + '</td><td>' + num(x.max) + '</td><td>' + f(p, 1) + '%</td><td><div class="bar"><i style="width:' + Math.min(100, p) + '%"></i></div></td></tr>';
+      var mx = x.max;
+      // a category shows points earned out of the points graded for this student (an excused quiz is not in it)
+      if (gk && x.key !== 'exams' && isNum(gk.cd) && gk.cd > 0 && isNum(gk.cp)) { v = gk.cp; mx = gk.cd; }
+      var p = v / mx * 100;
+      return '<tr><td>' + esc(x.label) + '</td><td>' + num(v) + '</td><td>' + num(mx) + '</td><td>' + f(p, 1) + '%</td><td><div class="bar"><i style="width:' + Math.min(100, p) + '%"></i></div></td></tr>';
     }).join('') + '</tbody></table></div><div class="help">Category rows (assignments, participation, lab write-ups, quizzes) show points earned out of the points graded so far in that category.</div></div>';
+    return h;
+  }
+
+  /* ---- the final exam (Exam 3): what score gives which letter ---- */
+  function finalPlan() {
+    var c = cvOf(), base = c.fd - exPoints(autoExcused()), M = ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p;
+    var other = remItems().filter(function (it) { return it.key !== 'exam3'; }).reduce(function (s, it) { return s + it.R; }, 0);
+    return { c: c, base: base, M: M, fp: c.fp, other: other, done: isNum(data.exam3), excused: (data.excused || []).indexOf('exam3') >= 0 };
+  }
+  function neededPts(P, T) { return Math.ceil((BIOS.clampNum(T / 100 * P.base - P.fp, -1e6, 1e6) * 2) - 1e-9) / 2; }
+  function finalOut(P, sc) {
+    if (sc == null) return '<div class="help">Type a score to see the grade it would give.</div>';
+    var pct = (P.fp + sc) / P.base * 100;
+    return '<div class="note"><b>' + num(sc) + ' of ' + P.M + '</b> on Exam 3 (' + f(sc / P.M * 100, 1) + '%) would give you <b>' + fg(pct, 1) + '%</b>, which is a <b>' + bandOf(pct) + '</b>.</div>';
+  }
+  function finalHTML() {
+    var P = finalPlan(), h = '<div class="card2" id="sec-final"><h2>The final exam: what do I need?</h2>';
+    if (P.excused) return h + '<div class="note">You are excused from Exam 3, so it is not part of your course. Your total grade so far is <b>' + fg(P.fp / P.base * 100, 1) + '%</b> (' + bandOf(P.fp / P.base * 100) + ').</div></div>';
+    if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your final grade is <b>' + fg(P.fp / P.base * 100, 1) + '%</b>, a <b>' + bandOf(P.fp / P.base * 100) + '</b>.</div></div>';
+    var lo = P.fp / P.base * 100, hi = (P.fp + P.M) / P.base * 100;
+    h += '<p class="lead">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your course. You have earned <b>' + num(P.fp) + '</b> points so far. Here is the score on Exam 3 that gets each letter grade.</p>' +
+      '<div class="tiles"><div><small>If you score 0 on Exam 3</small><b>' + fg(lo, 1) + '%</b><small>' + bandOf(lo) + '</small></div>' +
+      '<div><small>If you score ' + P.M + ' (perfect)</small><b>' + fg(hi, 1) + '%</b><small>' + bandOf(hi) + '</small></div></div>';
+    var sc = BIOS.getGradeScale().filter(function (s) { return s.min > 0; });
+    h += '<div class="scroll"><table class="t"><thead><tr><th>Letter grade</th><th>Course grade needed</th><th>Score needed on Exam 3</th><th>Percent on Exam 3</th></tr></thead><tbody>' + sc.map(function (s) {
+      var n = neededPts(P, s.min), cell;
+      if (n <= 0) cell = '<td colspan="2" style="text-align:left;color:var(--text-dim)">Already secured. Any score keeps it.</td>';
+      else if (n > P.M + 1e-9) cell = '<td colspan="2" style="text-align:left;color:var(--text-dim)">Not possible, even with a perfect score.</td>';
+      else cell = '<td><b>' + num(n) + '</b> of ' + P.M + '</td><td>' + f(Math.ceil(n / P.M * 1000 - 1e-9) / 10, 1) + '%</td>';
+      return '<tr><td><b>' + esc(s.letter) + '</b></td><td>' + s.min + '%</td>' + cell + '</tr>';
+    }).join('') + '</tbody></table></div>';
+    if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
+    h += '<div class="ctl" style="margin-top:12px"><label>If I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px"> of ' + P.M + ' on Exam 3</label></div><div id="fin-out">' + finalOut(P, null) + '</div>' +
+      '<div class="help">Letter cutoffs use the BIOS102 scale (' + BIOS.scaleText() + '). Points are rounded up to the next half point, so the score shown always reaches the letter. This is a what-if; it changes nothing in your actual grades.</div></div>';
     return h;
   }
 
   function render() {
     $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Only you can see this page, along with your instructors. Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
-      scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
+      finalHTML() + scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
   }
 
   /* ---- events ---- */
@@ -290,8 +327,9 @@
   });
   document.addEventListener('input', function (e) {
     var t = e.target; if (!D || !t.dataset) return;
+    if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); $('fin-out').innerHTML = finalOut(finalPlan(), fv); return; }
     if (t.dataset.pj != null) {
-      var v = Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
+      var v =Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
       document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
       $('pj-out').innerHTML = pjOutHTML();
     } else if (t.id === 'pj-target') { pjState().target = Math.max(0, Math.min(100, +t.value || 0)); $('pj-out').innerHTML = pjOutHTML(); }
