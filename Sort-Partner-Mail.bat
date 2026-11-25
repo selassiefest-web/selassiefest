@@ -8,7 +8,7 @@ echo  SelassieFest: sort partner mail (stephen@selassiefest.com)
 echo ============================================================
 echo  1. PREVIEW ONLY: list partner mail. MOVES NOTHING.
 echo  2. MOVE partner mail to Partnered now and save the new ones to BOB
-echo  3. MOVE now and keep doing it automatically every hour
+echo  3. MOVE now and keep doing it automatically every 15 minutes
 echo  4. Self-test: check the partner list (no Microsoft sign-in)
 echo ============================================================
 choice /c 1234 /n /m "Choose 1-4: "
