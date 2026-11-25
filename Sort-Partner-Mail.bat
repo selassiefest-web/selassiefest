@@ -6,9 +6,9 @@ cd /d "%~dp0"
 echo ============================================================
 echo  SelassieFest: sort partner mail (stephen@selassiefest.com)
 echo ============================================================
-echo  1. Dry run: show which Inbox messages are from partners (changes nothing)
-echo  2. APPLY: move them to Partnered and save the new ones to BOB
-echo  3. APPLY and run it automatically every hour from now on
+echo  1. PREVIEW ONLY: list partner mail. MOVES NOTHING.
+echo  2. MOVE partner mail to Partnered now and save the new ones to BOB
+echo  3. MOVE now and keep doing it automatically every hour
 echo  4. Self-test: check the partner list (no Microsoft sign-in)
 echo ============================================================
 choice /c 1234 /n /m "Choose 1-4: "

@@ -4,9 +4,9 @@
     Sorts partner mail out of the stephen@selassiefest.com Outlook Inbox into the "Partnered" folder
     and saves each newly sorted message to C:\Users\mkepr\Downloads\BOB as an .eml file.
 .DESCRIPTION
-    1. Reads the compiled partner list (partner-senders.json: every partner, funder and contact address
-       in the tracker, plus the partner domains). Claude refreshes that file on request; the script does
-       not need Supabase.
+    1. Rebuilds the partner list from the live database on every run (compile-partners.py, which uses the
+       signed-in supabase CLI): every partner, funder, contact and donor address, plus partner domains.
+       If the database cannot be reached, the last saved partner-senders.json is used and a warning logged.
     2. Signs in to Microsoft Graph as stephen@selassiefest.com (browser sign-in, same account as
        Export-Partnered-Mail.ps1) and reads the whole Inbox (or the last -Days days).
     3. A message is a PARTNER message when its sender address is a partner / contact address, or its
@@ -84,9 +84,21 @@ function Get-DomainOf([string]$text) {
     return $null
 }
 
+function Update-PartnerList {
+    # Rebuild the list from the LIVE database on every run. If that fails, the last saved list is used.
+    $compiler = Join-Path (Split-Path -Parent $PartnerFile) 'compile-partners.py'
+    $python = Join-Path $env:LOCALAPPDATA 'Python\bin\python.exe'
+    try {
+        if (-not (Test-Path -LiteralPath $python)) { $python = (Get-Command python -ErrorAction Stop).Source }
+        Write-SortLog 'Reading every partner, funder and contact from the live database...'
+        $output = & $python -I $compiler 2>&1
+        if ($LASTEXITCODE -ne 0) { throw (@($output) | Select-Object -Last 1) }
+    } catch {
+        Write-SortLog "WARNING: could not refresh from the database; using the saved list. $($_.Exception.Message)"
+    }
+}
+
 function Get-PartnerSenders {
-    # The compiled partner list (every partner, funder and contact address from the tracker) lives in a file.
-    # Claude regenerates it with: python "Claude outputs\partner-sort\compile-partners.py"
     if (-not (Test-Path -LiteralPath $PartnerFile -PathType Leaf)) {
         throw "Partner list not found: $PartnerFile. Ask Claude to compile it (compile-partners.py)."
     }
@@ -145,7 +157,7 @@ function Test-PartnerMessage($Partners, $Message) {
         elseif ($fromDomain -eq $p -or $fromDomain.EndsWith(".$p")) { $isPlatform = $true }
     }
     if ($isPlatform) {
-        $text = (' ' + (([string]$Message.subject + ' ' + [string]$Message.bodyPreview).ToLowerInvariant() -replace '[^a-z0-9]+', ' ') + ' ')
+        $text = (' ' + (([string]$Message.from.emailAddress.name + ' ' + [string]$Message.subject + ' ' + [string]$Message.bodyPreview).ToLowerInvariant() -replace '[^a-z0-9]+', ' ') + ' ')
         $best = $null
         foreach ($al in $Partners.Aliases) {
             if ($al.Length -ge 5 -and $text.Contains(' ' + $al + ' ')) { if (-not $best -or $al.Length -gt $best.Length) { $best = $al } }
@@ -294,6 +306,7 @@ try {
         throw
     }
 
+    Update-PartnerList
     $partners = Get-PartnerSenders
     Write-SortLog ("Partner list: {0} addresses and {1} domains ({2})." -f $partners.Emails.Count, $partners.Domains.Count, $partners.Source)
 
@@ -316,7 +329,7 @@ try {
         } else { Write-SortLog "[dry] The folder '$folderName' does not exist; -Apply would create it."; $partnered = @{ id = 'DRY' } }
     }
 
-    $scanned = 0; $matched = @()
+    $scanned = 0; $matched = @(); $unmatched = @()
     foreach ($m in Get-InboxMessages) {
         $scanned++
         $addr = [string]$m.from.emailAddress.address
@@ -326,14 +339,21 @@ try {
                 Id = [string]$m.id; Subject = [string]$m.subject; Received = $m.receivedDateTime
                 From = $addr; Why = $why
             }
+        } else {
+            $unmatched += "{0}`t{1}`t{2}" -f $addr, [string]$m.from.emailAddress.name, [string]$m.subject
         }
     }
     Write-SortLog ("Looked at {0} Inbox message(s); {1} are from partners." -f $scanned, $matched.Count)
 
+    # Everything left in the Inbox is listed here, so a missed partner can be spotted.
+    $leftFile = Join-Path $statePath 'not-matched.txt'
+    Set-Content -LiteralPath $leftFile -Value ($unmatched | Sort-Object) -Encoding utf8
+    Write-SortLog "Messages NOT matched to a partner are listed in $leftFile"
+
     if (-not $Apply) {
         $matched | Select-Object -First 60 | ForEach-Object { '{0:yyyy-MM-dd HH:mm}  {1,-40} {2}  [{3}]' -f ([datetime]$_.Received).ToLocalTime(), $_.From, $_.Subject, $_.Why }
         if ($matched.Count -gt 60) { Write-Host "... and $($matched.Count - 60) more." }
-        Write-Host 'Dry run finished. Nothing was changed. Run Sort-Partner-Mail.bat (option 2) or add -Apply to do it.' -ForegroundColor Cyan
+        Write-Host 'DRY RUN ONLY: NOTHING WAS MOVED. To move these, run Sort-Partner-Mail.bat again and press 2 (once) or 3 (now and every hour).' -ForegroundColor Yellow
         return
     }
 
