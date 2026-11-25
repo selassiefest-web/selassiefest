@@ -283,8 +283,8 @@
   // Students type their lecture percent, so a letter is only ever shown for the OVERALL grade, never for the lab alone.
   var LAB_W = 0.5, LEC_KEY = 'bios102_lecture_pct';
   function lecGet() { try { var v = parseFloat(localStorage.getItem(LEC_KEY)); return isFinite(v) ? Math.max(0, Math.min(100, v)) : null; } catch (e) { return null; } }
-  function lecSet(v) { try { if (v == null) localStorage.removeItem(LEC_KEY); else localStorage.setItem(LEC_KEY, String(v)); } catch (e) { /* private window: keep it for this visit only */ } }
-  var LEC = null;
+  function lecSet(v) { try { if (PREVIEW) return; if (v == null) localStorage.removeItem(LEC_KEY); else localStorage.setItem(LEC_KEY, String(v)); } catch (e) { /* private window: keep it for this visit only */ } }
+  var LEC = null, PREVIEW = false;   // PREVIEW: an instructor viewing as a student never reads or writes the instructor's own saved lecture percent
   function overall(labPct) { return LAB_W * labPct + (1 - LAB_W) * LEC; }
   function overallTxt(labPct) { var o = overall(labPct); return '<b>' + fg(o, 1) + '%</b>, which is a <b>' + bandOf(o) + '</b>'; }
   function neededPts(P, T) {   // Exam 3 points that bring the OVERALL grade to T, given the lecture percent
@@ -340,7 +340,7 @@
   }
 
   function render() {
-    $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Only you can see this page, along with your instructors. Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
+    $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Only you can see this page, along with your instructors (each time an instructor views your page, it is logged). Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
       finalHTML() + scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
   }
 
@@ -400,13 +400,16 @@
   (async function () {
     var pv = new URLSearchParams(location.search).get('preview'), banner = '';
     if (pv) {
-      // Instructor preview: bios102_grades_load only answers instructor sessions, so a student cannot use this.
+      // Instructor "view as": the server runs the same function a student's own login runs (bios102_grades_payload) and audits it.
+      PREVIEW = true;
       try {
-        var all = await window.sfSupabase.bios102GradesLoad(session.sessionToken), set = (all.sets || [])[0], row = set && set.rows.filter(function (r) { return r.student === pv; })[0];
-        if (!row) { $('app').innerHTML = '<div class="card2"><h2>No student called \u201C' + esc(pv) + '\u201D in the gradebook</h2></div>'; return; }
-        D = row.data && row.data.status === 'dropped' ? { found: false } : { found: true, first: pv.split(' ')[0], columns: set.columns, data: row.data };
-        banner = '<div class="note amber" style="position:sticky;top:64px;z-index:5"><b>Instructor preview</b>: this is what <b>' + esc(pv) + '</b> sees when they log in. Students only ever receive their own row. Nothing you do here changes anything. <a href="/BIOS102/grades.html">Back to the gradebook</a></div>';
-      } catch (err) { $('app').innerHTML = '<div class="card2"><h2>Preview is for instructors</h2><p class="lead">Log in with an instructor account to preview a student\u2019s page.</p></div>'; return; }
+        D = await window.sfSupabase.bios102GradesViewAs(session.sessionToken, pv);
+        var au = D && D.audit || {};
+        var ok = au.rows_sent != null && au.rows_sent <= 1 && !au.other_students_named && !au.other_emails_present;
+        banner = '<div class="note amber" style="position:sticky;top:64px;z-index:5"><b>Instructor view as ' + esc(pv) + '</b>: this is the exact response the server gives that student’s own login. ' +
+          (au.note ? esc(au.note) + '. ' : '<b>Privacy check: ' + (ok ? 'passed' : 'FAILED') + '.</b> The server sent <b>' + (au.rows_sent == null ? '?' : au.rows_sent) + ' row</b> (' + (au.bytes || '?') + ' bytes); other students’ names in it: <b>' + (au.other_students_named || 0) + '</b>; other students’ emails in it: <b>' + (au.other_emails_present || 0) + '</b>. ') +
+          'Nothing here changes any grade. This view is logged. <a href="/BIOS102/grades.html">Back to the gradebook</a></div>';
+      } catch (err) { $('app').innerHTML = '<div class="card2"><h2>View as is for instructors</h2><p class="lead">Log in with an instructor account to view a student’s page.</p></div>'; return; }
     }
     else try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
     catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
@@ -419,7 +422,7 @@
     data = D.data; cv = data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
-    LEC = lecGet();
+    LEC = PREVIEW ? null : lecGet();
     render();
     if (banner) $('app').insertAdjacentHTML('afterbegin', banner);
   })();

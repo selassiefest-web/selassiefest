@@ -650,6 +650,9 @@ window.sfSupabase = {
   bios102GradeScaleSet(sessionToken, scale) { return this.bios102Rpc('bios102_grade_scale_set', { p_session: sessionToken, p_scale: scale }); },
   // A student's own row only (/BIOS102/my-grades.html) -- see supabase/bios102-grades-student.sql.
   bios102GradesMine(sessionToken) { return this.bios102Rpc('bios102_grades_mine', { p_session: sessionToken }); },
+  // Instructor "view as": the exact payload that student's own login receives, plus an audit; logged. See supabase/bios102-grades-view-as.sql.
+  bios102GradesViewAs(sessionToken, student) { return this.bios102Rpc('bios102_grades_view_as', { p_session: sessionToken, p_student: student }); },
+  bios102GradesIsolationAudit(sessionToken) { return this.bios102Rpc('bios102_grades_isolation_audit', { p_session: sessionToken }); },
   // Instructor read of the Cnidaria video quiz (Lab 7 points) -- see supabase/bios102-video-quiz-results.sql.
   bios102VideoQuizResults(sessionToken) { return this.bios102Rpc('bios102_video_quiz_results', { p_session: sessionToken }); },
   // Research Match (/BIOS102/research-match.html) -- see supabase/bios102-research-match.sql.

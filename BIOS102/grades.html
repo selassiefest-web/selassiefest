@@ -755,7 +755,7 @@
     if (ui.stu) {
       var r0 = cur.rows.filter(function (r) { return r.student === ui.stu; })[0];
       if (r0) {
-        h += '<h2 style="margin-top:24px">' + esc(r0.student) + ' <a class="b" style="font-size:.8rem;text-decoration:none;margin-left:10px" target="_blank" rel="noopener" href="/BIOS102/my-grades.html?preview=' + encodeURIComponent(r0.student) + '">Preview as this student &rarr;</a></h2><div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>Score</th><th>Class mean</th><th>Difference</th><th>z</th></tr></thead><tbody>' + cur.columns.map(function (col) {
+        h += '<h2 style="margin-top:24px">' + esc(r0.student) + ' <a class="b" style="font-size:.8rem;text-decoration:none;margin-left:10px" target="_blank" rel="noopener" href="/BIOS102/my-grades.html?preview=' + encodeURIComponent(r0.student) + '">View as this student &rarr;</a></h2><div class="scroll"><table class="t"><thead><tr><th class="l">Column</th><th>Score</th><th>Class mean</th><th>Difference</th><th>z</th></tr></thead><tbody>' + cur.columns.map(function (col) {
           var v = show(r0, col), vals = colValues(col, analysisRows()), mm = vals.length ? mean(vals) : NaN, ss = sd(vals);
           return '<tr><td class="l">' + esc(col.label) + '</td><td>' + (v == null ? 'excused' : f(v, 1)) + '</td><td>' + f(mm, 1) + '</td><td>' + (v == null ? '-' : (v - mm >= 0 ? '+' : '') + f(v - mm, 1)) + '</td><td>' + (v == null ? '-' : f((v - mm) / ss, 2)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
@@ -774,6 +774,8 @@
     h += '<div class="card2" style="margin-top:16px"><h3>Letter-grade scale</h3><p class="help" style="margin-top:0">One scale for this page and every student’s My grades page, stored in the database. A score gets the highest letter whose minimum it reaches. Minimums must go down from top to bottom, and the last one must be 0.</p><div id="sc-rows">' +
       BIOS.getGradeScale().map(function (b, i) { return '<label style="display:inline-block;margin:0 14px 8px 0"><b style="display:inline-block;min-width:26px">' + esc(b.letter) + '</b> from <input type="number" step="0.01" min="0" max="100" data-sc-min="' + i + '" value="' + b.min + '" style="width:72px"' + (b.min === 0 ? ' disabled' : '') + '>%</label>'; }).join('') +
       '</div><button class="b pri" type="button" id="sc-save">Save scale</button></div>';
+    h += '<div class="card2" style="margin-top:16px"><h3>Privacy check: does each student see only their own row?</h3><p class="help" style="margin-top:0">Runs on the server, using the same function every student’s own login uses. For each student it counts the rows sent and looks for any other student’s name or email in what was sent. To see one student’s page exactly as they see it, use <b>View as this student</b> on the Students tab. Each check and each view is logged.</p>' +
+      '<button class="b pri" type="button" id="priv-run">Run privacy check</button><div id="priv-out" style="margin-top:12px"></div></div>';
     $('view').innerHTML = h;
   }
   function parseCSV(t) {
@@ -951,6 +953,14 @@
     else if (t.id === 'vq-reload') { ui.vq = null; render(); }
     else if (t.id === 'vq-csv') vqCsv();
     else if (t.id === 'imp-go') finishImport();
+    else if (t.id === 'priv-run') {
+      var po = $('priv-out'); po.textContent = 'Checking…';
+      try {
+        var res = await window.sfSupabase.bios102GradesIsolationAudit(session.sessionToken), bad = res.filter(function (x) { return !x.ok; });
+        po.innerHTML = '<div class="hint" style="background:' + (bad.length ? 'var(--amber-soft)' : 'var(--accent-soft)') + '"><b>' + (bad.length ? bad.length + ' of ' + res.length + ' FAILED' : 'Passed: all ' + res.length + ' students') + '.</b> ' + (bad.length ? 'See the rows marked FAILED.' : 'Each student’s response holds at most their own row, and no other student’s name or email.') + '</div>' +
+          '<div class="scroll"><table class="t"><thead><tr><th class="l">Student</th><th>Rows sent</th><th>Bytes</th><th>Other names found</th><th>Other emails found</th><th>Result</th></tr></thead><tbody>' + res.map(function (x) { return '<tr><td class="l">' + esc(x.student) + '</td><td>' + x.rows_sent + '</td><td>' + x.bytes + '</td><td>' + x.other_students_named + '</td><td>' + x.other_emails_present + '</td><td>' + (x.ok ? 'ok' : '<b>FAILED</b>') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+      } catch (err) { po.textContent = 'The check could not run: ' + (err && err.message || err); }
+    }
     else if (t.id === 'sc-save') {
       var cur0 = BIOS.getGradeScale(), nxt = cur0.map(function (b, i) { var inp = document.querySelector('[data-sc-min="' + i + '"]'); return { letter: b.letter, min: b.min === 0 ? 0 : clampNum(inp && inp.value, 0, 100) }; });
       if (nxt.some(function (b) { return b.min === null; })) return say('Every minimum needs to be a number from 0 to 100.');
