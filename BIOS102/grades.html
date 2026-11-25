@@ -743,7 +743,7 @@
       h += '<tr><td class="l">' + (i + 1) + '</td><td class="l"><a href="#" data-stu="' + esc(r.student) + '">' + esc(r.student) + '</a></td><td>' + f(v, 1) + '</td><td' + (Math.abs(z) >= 1.5 ? ' style="color:var(--amber)"' : '') + '>' + f(z, 2) + '</td><td>' + f(below, 0) + '</td><td>' + (v - m >= 0 ? '+' : '') + f(v - m, 1) + '</td></tr>';
     });
     var excl = rows.filter(function (r) { return !isNum(show(r, c)); });
-    h += '</tbody></table></div>' + (excl.length ? '<div class="help">Left out (no score): ' + excl.map(function (r) { return esc(r.student); }).join(', ') + '</div>' : '');
+    h += '</tbody></table></div>' + (excl.length ? '<div class="help">Left out of the ranking: ' + excl.map(function (r) { return esc(r.student) + ' (' + (c && (r.data.excused || []).indexOf(c.key) >= 0 ? 'excused' : 'no score') + ')'; }).join(', ') + '</div>' : '');
     if (ui.stu) {
       var r0 = cur.rows.filter(function (r) { return r.student === ui.stu; })[0];
       if (r0) {
