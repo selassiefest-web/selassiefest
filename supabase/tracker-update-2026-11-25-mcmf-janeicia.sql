@@ -12,7 +12,7 @@ where id = 'e0b74f53-8ac6-4d91-b245-6fc03b0a4d84'
   and coalesce(notes, '') not like '%[janeicia 2026-11-25]%';
 
 update fs_partners set
-  notes = coalesce(notes, '') || ' | [keystone-video 2026-11-25] Stephen and Albert watched the video Khari sent, "James Jordan Boys & Girls Club - Keystone Teen Party (2003)" (https://www.youtube.com/watch?v=w3sW0sldplg), and are excited to plan an updated 2027 version as part of Rainbow Wednesdays. A 2027 teen party is a plan, not a commitment, and needs the Park District''s approval.',
+  notes = coalesce(notes, '') || ' | [keystone-video 2026-11-25] Stephen and Albert watched the video Khari sent in his Nov 25 email (Message-ID fragment AT6PR09MB13092348DFD563D79CEBF98CBFA432), "James Jordan Boys & Girls Club - Keystone Teen Party (2003)" (https://www.youtube.com/watch?v=w3sW0sldplg), and are excited to plan an updated 2027 version as part of Rainbow Wednesdays. A 2027 teen party is a plan, not a commitment, and needs the Park District''s approval.',
   updated_at = now()
 where name = 'Office of Mayor Brandon Johnson'
   and coalesce(notes, '') not like '%[keystone-video 2026-11-25]%';
