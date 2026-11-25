@@ -281,10 +281,16 @@
   }
   // Lab is 50% of the overall course grade; lecture is the other 50% and is scored by the lecture instructors.
   // Students type their lecture percent, so a letter is only ever shown for the OVERALL grade, never for the lab alone.
-  var LAB_W = 0.5, LEC_KEY = 'bios102_lecture_pct';
-  function lecGet() { try { var v = parseFloat(localStorage.getItem(LEC_KEY)); return isFinite(v) ? Math.max(0, Math.min(100, v)) : null; } catch (e) { return null; } }
-  function lecSet(v) { try { if (PREVIEW) return; if (v == null) localStorage.removeItem(LEC_KEY); else localStorage.setItem(LEC_KEY, String(v)); } catch (e) { /* private window: keep it for this visit only */ } }
-  var LEC = null, PREVIEW = false;   // PREVIEW: an instructor viewing as a student never reads or writes the instructor's own saved lecture percent
+  var LAB_W = 0.5;
+  // The numbers a student types are saved to their ACCOUNT (Supabase), so they follow the student to any device.
+  var saveT = null;
+  function saveState() {
+    if (PREVIEW) return;   // an instructor viewing as a student never writes anything
+    clearTimeout(saveT);
+    saveT = setTimeout(function () { window.sfSupabase.bios102GradesStateSet(session.sessionToken, { lec: LEC, exam3: FIN.score, want: FIN.want }).catch(function () { /* keep working; it saves on the next change */ }); }, 600);
+  }
+  function lecSet() { saveState(); }
+  var LEC = null, PREVIEW = false, FIN = { score: null, want: null };   // PREVIEW: an instructor viewing as a student never reads or writes the instructor's own saved lecture percent
   function overall(labPct) { return LAB_W * labPct + (1 - LAB_W) * LEC; }
   function overallTxt(labPct) { var o = overall(labPct); return '<b>' + fg(o, 1) + '%</b>, which is a <b>' + bandOf(o) + '</b>'; }
   function neededPts(P, T) {   // Exam 3 points that bring the OVERALL grade to T, given the lecture percent
@@ -326,21 +332,21 @@
   function finalHTML() {
     var P = finalPlan(), h = '<div class="card2" id="sec-final"><h2>My overall grade and the final exam</h2>' +
       '<p class="lead">The lab is <b>50%</b> of your overall grade and lecture is the other <b>50%</b>. A letter grade only means something for the two together, so this page shows letters for your <b>overall</b> grade, not for the lab alone. Your lecture grade comes from your lecture instructors, so type it in as a percent.</p>' +
-      '<div class="ctl"><label>My lecture grade <input type="number" id="lec-pct" min="0" max="100" step="0.1" style="width:84px" value="' + (LEC == null ? '' : LEC) + '"> %</label><span class="help" style="margin:0">Saved on this device only.</span></div>';
+      '<div class="ctl"><label>My lecture grade <input type="number" id="lec-pct" min="0" max="100" step="0.1" style="width:84px" value="' + (LEC == null ? '' : LEC) + '"> %</label><span class="help" style="margin:0">Saved to your account.</span></div>';
     if (P.excused) return h + '<div class="note">You are excused from Exam 3, so it is not part of your lab. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
     if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
     h += '<p class="lead" style="margin-top:12px">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your lab. You have earned <b>' + num(P.fp) + '</b> points so far.</p><div id="fin-dyn">' + finalDyn(P) + '</div>';
     if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of lab work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
     h += '<h3 style="margin:16px 0 4px;font-size:1rem">What if I score this on Exam 3?</h3>' +
-      '<div class="ctl"><label>I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px"> of ' + P.M + '</label><label>or <input type="number" id="fin-pct" min="0" max="100" step="0.1" style="width:76px"> % on Exam 3</label></div><div id="fin-out">' + finalOut(P, null) + '</div>' +
+      '<div class="ctl"><label>I score <input type="number" id="fin-score" min="0" max="' + P.M + '" step="0.5" style="width:84px" value="' + (FIN.score == null ? '' : FIN.score) + '"> of ' + P.M + '</label><label>or <input type="number" id="fin-pct" min="0" max="100" step="0.1" style="width:76px" value="' + (FIN.score == null ? '' : Math.round(FIN.score / P.M * 1000) / 10) + '"> % on Exam 3</label></div><div id="fin-out">' + finalOut(P, FIN.score) + '</div>' +
       '<h3 style="margin:16px 0 4px;font-size:1rem">What do I need on Exam 3 for the grade I want?</h3>' +
-      '<div class="ctl"><label>I want an overall grade of <select id="want-letter"><option value="">choose a letter</option>' + BIOS.getGradeScale().filter(function (s) { return s.min > 0; }).map(function (s) { return '<option value="' + s.min + '">' + esc(s.letter) + ' (' + s.min + '%+)</option>'; }).join('') + '</select></label><label>or <input type="number" id="want-pct" min="0" max="100" step="0.1" style="width:76px"> % overall</label></div><div id="want-out">' + wantOut(P, null) + '</div>' +
+      '<div class="ctl"><label>I want an overall grade of <select id="want-letter"><option value="">choose a letter</option>' + BIOS.getGradeScale().filter(function (s) { return s.min > 0; }).map(function (s) { return '<option value="' + s.min + '">' + esc(s.letter) + ' (' + s.min + '%+)</option>'; }).join('') + '</select></label><label>or <input type="number" id="want-pct" min="0" max="100" step="0.1" style="width:76px" value="' + (FIN.want == null ? '' : FIN.want) + '"> % overall</label></div><div id="want-out">' + wantOut(P, FIN.want) + '</div>' +
       '<div class="help">Letter cutoffs use the BIOS102 scale (' + BIOS.scaleText() + '), applied to the overall grade. It assumes lab and lecture count the same way toward the final. Points are rounded up to the next half point, so the score shown always reaches the letter. This is a what-if; it changes nothing in your actual grades.</div></div>';
     return h;
   }
 
   function render() {
-    $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Only you can see this page, along with your instructors (each time an instructor views your page, it is logged). Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
+    $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
       finalHTML() + scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
   }
 
@@ -355,7 +361,7 @@
       else if (sv !== null && String(sv) !== String(+t.value)) t.value = sv;   // out of range: pull it back inside 0 to the item's points
       S.pick.score = sv;
     }
-    else if (t.id === 'want-letter') { if ($('want-pct')) $('want-pct').value = t.value; $('want-out').innerHTML = wantOut(finalPlan(), t.value === '' ? null : +t.value); }
+    else if (t.id === 'want-letter') { if ($('want-pct')) $('want-pct').value = t.value; FIN.want = t.value === '' ? null : +t.value; saveState(); $('want-out').innerHTML = wantOut(finalPlan(), t.value === '' ? null : +t.value); }
     else if (t.dataset && t.dataset.pjx != null) { var P = pjState(); if (t.checked) P.ex[t.dataset.pjx] = true; else delete P.ex[t.dataset.pjx]; $('sec-proj').outerHTML = projectionHTML(); }
   });
   document.addEventListener('input', function (e) {
@@ -368,9 +374,9 @@
       if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
       return;
     }
-    if (t.id === 'want-pct') { var wv = t.value === '' ? null : clampNum(t.value, 0, 100); if ($('want-letter')) $('want-letter').value = ''; $('want-out').innerHTML = wantOut(finalPlan(), wv); return; }
-    if (t.id === 'fin-pct') { var pv2 = t.value === '' ? null : clampNum(t.value, 0, 100), PP = finalPlan(); if ($('fin-score')) $('fin-score').value = pv2 == null ? '' : Math.round(pv2 * PP.M) / 100; $('fin-out').innerHTML = finalOut(PP, pv2 == null ? null : pv2 * PP.M / 100); return; }
-    if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); $('fin-out').innerHTML = finalOut(finalPlan(), fv); if ($('fin-pct')) $('fin-pct').value = fv == null ? '' : Math.round(fv / finalPlan().M * 1000) / 10; return; }
+    if (t.id === 'want-pct') { var wv = t.value === '' ? null : clampNum(t.value, 0, 100); if ($('want-letter')) $('want-letter').value = ''; FIN.want = wv; saveState(); $('want-out').innerHTML = wantOut(finalPlan(), wv); return; }
+    if (t.id === 'fin-pct') { var pv2 = t.value === '' ? null : clampNum(t.value, 0, 100), PP = finalPlan(); if ($('fin-score')) $('fin-score').value = pv2 == null ? '' : Math.round(pv2 * PP.M) / 100; FIN.score = pv2 == null ? null : Math.round(pv2 * PP.M) / 100; saveState(); $('fin-out').innerHTML = finalOut(PP, FIN.score); return; }
+    if (t.id === 'fin-score') { var fv = t.value === '' ? null : clampNum(t.value, 0, ITEMS.filter(function (x) { return x.key === 'exam3'; })[0].p); FIN.score = fv; saveState(); $('fin-out').innerHTML = finalOut(finalPlan(), fv); if ($('fin-pct')) $('fin-pct').value = fv == null ? '' : Math.round(fv / finalPlan().M * 1000) / 10; return; }
     if (t.dataset.pj != null) {
       var v =Math.max(0, Math.min(100, +t.value || 0)); pjState().pct[t.dataset.pj] = v;
       document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
@@ -422,7 +428,7 @@
     data = D.data; cv = data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
-    LEC = PREVIEW ? null : lecGet();
+    if (!PREVIEW) { try { var st = await window.sfSupabase.bios102GradesStateGet(session.sessionToken) || {}; LEC = isNum(st.lec) ? st.lec : null; FIN.score = isNum(st.exam3) ? st.exam3 : null; FIN.want = isNum(st.want) ? st.want : null; } catch (e) { /* start blank */ } }
     render();
     if (banner) $('app').insertAdjacentHTML('afterbegin', banner);
   })();
