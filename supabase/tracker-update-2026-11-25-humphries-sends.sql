@@ -49,6 +49,14 @@ update fs_grant_deadlines set
 where program ilike '%ARCS%' and funder = 'Chicago Park District'
   and coalesce(notes, '') not like '%[sent-marie 2026-11-25]%';
 
+-- 3b. Mayor's Office row: next step after the sends (the Nov 25 step is done)
+update fs_partners set
+  next_step = 'Nov 25, 2026 sends done (Reply to Khari cc Addison Rao; four introductions; ARCS update to Marie Huels and Ivry Ector). WAIT for Khari to name the MCMF program and contacts. If silent by Wed Dec 2, 2026, one short nudge in the same thread. A letter of support from his office is still unanswered (asked in Albert''s Nov 25 11:01 am email). No ask of his office on the ARCS decision.',
+  next_step_due = '2026-12-02',
+  updated_at = now()
+where name = 'Office of Mayor Brandon Johnson'
+  and coalesce(next_step, '') not like 'Nov 25, 2026 sends done%';
+
 -- 4. Calendar: follow-up check
 insert into rti_calendar_events (key, title, starts_at, ends_at, place, notes)
 values ('humphries-referrals-followup-2026-12-02', 'Check replies: Drummond, Loza, Von Oehsen, Williams, Humphries (MCMF contacts)',
