@@ -85,7 +85,7 @@
   var STD = { assignments: 15, participation: 30, labs: 35, quizzes: 60 };
   var GROUP_LABEL = { assignments: 'Lab 1a assignments', participation: 'Lab participation', labs: 'Lab write-ups', quizzes: 'Quizzes' };
 
-  var D = null, data = null, cv = null, S = { exc: [], pick: { item: 0, status: 'posted', score: null }, mk: {}, pj: null, init: false };
+  var D = null, data = null, cv = null, S = { exc: [], pick: { item: 0, status: 'posted', score: null }, mk: {}, mkOn: {}, mkCredit: 80, pj: null, init: false };
 
   function cvOf() { return { cp: cv.cp, cd: cv.cd, fp: cv.fp, fd: cv.fd + LATE, g: cv.g }; }
   function autoExcused() { return (data.excused || []).filter(function (k) { return !isNum(data[k]); }); }
@@ -93,30 +93,18 @@
   // Letter grades come from the database scale via the shared BIOS helpers (BIOS102/js/app.js).
   var bandOf = BIOS.bandOf, fg = BIOS.fmtGrade, clampNum = BIOS.clampNum;
 
-  /* ---- make-up work: graded points that are lost today and could be turned in ---- */
-  function lostGroups() {
-    var g = cv.g || {}, out = [];
-    ['assignments', 'participation', 'labs', 'quizzes'].forEach(function (k) {
-      var x = g[k]; if (!x || !isNum(x.cd) || !isNum(x.cp)) return;
-      var L = x.cd - x.cp; if (L > 0.01) out.push({ key: k, L: L, cp: x.cp, cd: x.cd });
-    });
-    return out;
+  /* ---- where my points came from, item by item (data.items is saved with each student's row) ---- */
+  function itemsOf() { return Array.isArray(data.items) ? data.items : []; }
+  function notTurnedIn() { return itemsOf().map(function (x, i) { return { i: i, x: x }; }).filter(function (o) { return !o.x.x && !isNum(o.x.s); }); }
+  function partialItems() { return itemsOf().filter(function (x) { return !x.x && isNum(x.s) && x.s < x.p - 1e-9; }).sort(function (a, b) { return (b.p - b.s) - (a.p - a.s); }); }
+  function lateOpen() { var t = D && D.late_until ? Date.parse(D.late_until) : NaN; return isFinite(t) ? Date.now() <= t : false; }
+  function lateText() {
+    var t = D && D.late_until ? new Date(D.late_until) : null; if (!t || isNaN(t)) return '';
+    return t.toLocaleString('en-US', { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' (Chicago time)';
   }
-  // groups where nothing has been graded or earned at all (work not turned in, or not graded yet)
-  function emptyGroups() {
-    var g = cv.g || {}, out = [];
-    ['assignments', 'participation', 'labs', 'quizzes'].forEach(function (k) {
-      var x = g[k]; if (!x) return;
-      var fd = isNum(x.fd) ? x.fd : STD[k];
-      if ((x.cp || 0) === 0 && (x.fp || 0) === 0 && !(isNum(x.cd) && x.cd > 0) && fd > 0) out.push({ key: k, fd: fd });
-    });
-    return out;
-  }
-  function mkRecovered() {
-    var tot = 0;
-    lostGroups().forEach(function (g) { var m = S.mk[g.key]; if (m && m.pts > 0) tot += Math.min(m.pts, g.L) * m.credit / 100; });
-    return tot;
-  }
+  // points from not-turned-in items the student ticks, at the credit they choose; only while the late-work window is open
+  function mkRecovered() { if (!lateOpen()) return 0; var cr = S.mkCredit / 100; return notTurnedIn().reduce(function (s, o) { return s + (S.mkOn[o.i] ? o.x.p * cr : 0); }, 0); }
+  function mkPtsIn(g) { if (!lateOpen()) return 0; return notTurnedIn().reduce(function (s, o) { return s + (S.mkOn[o.i] && o.x.g === g ? o.x.p : 0); }, 0); }
 
   /* ---- excuse machine ---- */
   function excuseCalc(list) {
@@ -163,28 +151,35 @@
     return h + '</div>';
   }
 
-  /* ---- make-up what-if ---- */
+  /* ---- a closer look at my points (calm wording on purpose: no "missed", "lost" or "zero") ---- */
   function makeupHTML() {
-    var groups = lostGroups(), c = cvOf(), empty = emptyGroups(), h = '<div class="card2" id="sec-makeup"><h2>If I turned in missed work</h2>' +
-      '<p class="lead">Work that was not turned in counts as zero. If you turned it in and earned some credit, those points are added to what you have earned. The course stays the same size. Whether late work is accepted is your instructor’s decision; this just shows what it would be worth.</p>';
-    if (empty.length) h += '<div class="note amber"><b>Nothing has earned credit yet in: ' + empty.map(function (g) { return GROUP_LABEL[g.key] + ' (' + num(g.fd) + ' points)'; }).join(', ') + '.</b> Work that has not been turned in or graded yet is part of \u201Cthe rest of the course\u201D in the box below. Turn the slider for it up to see what turning it in would be worth.</div>';
-    if (!groups.length) return h + (empty.length ? '' : '<div class="note">No graded points are missing right now, so there is nothing to make up. Nice.</div>') + '</div>';
-    h += groups.map(function (g) {
-      var m = S.mk[g.key] || (S.mk[g.key] = { pts: 0, credit: 80 });
-      return '<div class="row mk"><div><b>' + GROUP_LABEL[g.key] + '</b><small>' + num(g.cp) + ' of ' + num(g.cd) + ' graded points earned; ' + num(g.L) + ' not earned (work not turned in, or points you could earn back)</small></div>' +
-        '<div class="cell">Points of missed work you would turn in: <b id="mkp-' + g.key + '">' + num(m.pts) + '</b><input type="range" min="0" max="' + g.L + '" step="0.25" value="' + m.pts + '" data-mk="' + g.key + '" data-f="pts" aria-label="Points of missed work for ' + GROUP_LABEL[g.key] + '"></div>' +
-        '<div class="cell">Credit you would earn on it: <b id="mkc-' + g.key + '">' + m.credit + '%</b><input type="range" min="0" max="100" step="5" value="' + m.credit + '" data-mk="' + g.key + '" data-f="credit" aria-label="Credit earned on missed work for ' + GROUP_LABEL[g.key] + '"></div></div>';
-    }).join('');
-    return h + '<div id="mk-out">' + makeupOut() + '</div></div>';
+    if (!itemsOf().length) return '';
+    var nt = notTurnedIn(), pi = partialItems(), open = lateOpen();
+    var h = '<div class="card2" id="sec-makeup"><h2>A closer look at my points</h2>';
+    if (!nt.length) h += '<div class="note"><b>Everything is accounted for.</b> Every assignment, quiz, lab and lab write-up has a score. Nothing is missing.</div>';
+    else {
+      h += '<h3 style="margin:14px 0 4px;font-size:1rem">Not turned in yet</h3>' +
+        '<p class="lead">' + (open ? 'Your instructor will accept late work until <b>' + lateText() + '</b>. Whether late work earns full or partial credit is your instructor’s decision, so the credit below is only a guess to help you plan.'
+          : 'The late-work window closed on ' + lateText() + ', so these scores stay as they are.') + '</p>' +
+        nt.map(function (o) {
+          return open ? '<label style="display:flex;gap:8px;align-items:center;margin:4px 0"><input type="checkbox" data-mki="' + o.i + '"' + (S.mkOn[o.i] ? ' checked' : '') + '> ' + esc(o.x.l) + ' <span class="help" style="margin:0">(' + num(o.x.p) + ' points)</span></label>'
+            : '<div style="margin:4px 0">' + esc(o.x.l) + ' <span class="help" style="margin:0">(' + num(o.x.p) + ' points)</span></div>';
+        }).join('');
+      if (open) h += '<div class="cell" style="margin-top:8px">Credit I might earn on late work: <b id="mkc">' + S.mkCredit + '%</b><input type="range" id="mk-credit" min="0" max="100" step="5" value="' + S.mkCredit + '" aria-label="Credit I might earn on late work"></div><div id="mk-out">' + makeupOut() + '</div>';
+    }
+    if (pi.length) {
+      var tot = pi.reduce(function (s, x) { return s + (x.p - x.s); }, 0);
+      h += '<h3 style="margin:16px 0 4px;font-size:1rem">Points on work I already turned in</h3>' +
+        '<p class="lead">These pieces are finished and graded. Being a few points short on a piece is normal, and one small difference does not decide your grade. In all, it is <b>' + num(tot) + ' points</b> across <b>' + pi.length + '</b> ' + (pi.length === 1 ? 'piece' : 'pieces') + ' of work.</p>' +
+        '<details><summary style="cursor:pointer;color:var(--accent)">See which ones</summary><div class="scroll"><table class="t"><thead><tr><th>Piece of work</th><th>My score</th><th>Out of</th></tr></thead><tbody>' +
+        pi.map(function (x) { return '<tr><td>' + esc(x.l) + '</td><td>' + num(x.s) + '</td><td>' + num(x.p) + '</td></tr>'; }).join('') + '</tbody></table></div><div class="help">If a score here looks wrong to you, tell your instructor.</div></details>';
+    }
+    return h + '</div>';
   }
   function makeupOut() {
     var c = cvOf(), rec = mkRecovered(), D0 = c.fd - exPoints(autoExcused());
-    if (rec <= 0) return '<div class="help">Move the sliders to see what turning in missed work would be worth.</div>';
-    return '<div class="scroll"><table class="t"><thead><tr><th></th><th>Now</th><th>With the make-up work</th></tr></thead><tbody>' +
-      '<tr><td>Points you have earned</td><td>' + num(c.fp) + '</td><td>' + num(c.fp + rec) + '</td></tr>' +
-      '<tr><td><b>Total grade so far</b></td><td><b>' + pc(c.fp / D0 * 100) + '</b></td><td><b>' + pc((c.fp + rec) / D0 * 100) + '</b></td></tr>' +
-      '<tr><td>Average on the work graded so far</td><td>' + pc(c.cp / c.cd * 100) + '</td><td>' + pc((c.cp + rec) / c.cd * 100) + '</td></tr></tbody></table></div>' +
-      '<p class="lead" style="margin-top:10px">That adds <b>' + num(rec) + ' points</b>, which lifts your total grade by <b>' + f(rec / D0 * 100, 2) + ' percentage points</b>. This is also counted in the projection below.</p>';
+    if (rec <= 0) return '<div class="help">Tick an item to see what turning it in could add.</div>';
+    return '<div class="note">Turning in the items you ticked, at ' + S.mkCredit + '% credit, would add <b>' + num(rec) + ' points</b>. Your lab grade would go from <b>' + f(c.fp / D0 * 100, 1) + '%</b> to <b>' + f((c.fp + rec) / D0 * 100, 1) + '%</b> (' + f(rec / D0 * 100, 1) + ' percentage points). This is also counted in the planner below.</div>';
   }
 
   /* ---- projection ---- */
@@ -198,7 +193,7 @@
       var x = g[a[0]] || {}, fd = isNum(x.fd) ? x.fd : STD[a[0]], cd = isNum(x.cd) ? x.cd : 0;
       if (a[0] === 'quizzes') fd += LATE;
       var unp = Math.max(0, (x.fp || 0) - (x.cp || 0)), unpPoss = a[0] === 'quizzes' ? Math.ceil(unp / 10 - 1e-9) * 10 : unp;
-      var R = Math.max(0, fd - cd - unpPoss); if (R > 0.01) items.push({ key: a[0], label: a[1], R: R });
+      var R = Math.max(0, fd - cd - unpPoss - mkPtsIn(a[0])); if (R > 0.01) items.push({ key: a[0], label: a[1], R: R });
     });
     return items;
   }
@@ -361,6 +356,7 @@
       else if (sv !== null && String(sv) !== String(+t.value)) t.value = sv;   // out of range: pull it back inside 0 to the item's points
       S.pick.score = sv;
     }
+    else if (t.dataset && t.dataset.mki != null) { S.mkOn[t.dataset.mki] = t.checked; $('mk-out').innerHTML = makeupOut(); if ($('sec-proj')) $('sec-proj').outerHTML = projectionHTML(); }
     else if (t.id === 'want-letter') { if ($('want-pct')) $('want-pct').value = t.value; FIN.want = t.value === '' ? null : +t.value; saveState(); $('want-out').innerHTML = wantOut(finalPlan(), t.value === '' ? null : +t.value); }
     else if (t.dataset && t.dataset.pjx != null) { var P = pjState(); if (t.checked) P.ex[t.dataset.pjx] = true; else delete P.ex[t.dataset.pjx]; $('sec-proj').outerHTML = projectionHTML(); }
   });
@@ -382,12 +378,9 @@
       document.querySelectorAll('[data-pj="' + t.dataset.pj + '"]').forEach(function (el) { if (el !== t) el.value = v; });
       $('pj-out').innerHTML = pjOutHTML();
     } else if (t.id === 'pj-target') { pjState().target = Math.max(0, Math.min(100, +t.value || 0)); $('pj-out').innerHTML = pjOutHTML(); }
-    else if (t.dataset.mk != null) {
-      var m = S.mk[t.dataset.mk] || (S.mk[t.dataset.mk] = { pts: 0, credit: 80 }), lg = lostGroups().filter(function (g) { return g.key === t.dataset.mk; })[0];
-      if (!lg || (t.dataset.f !== 'pts' && t.dataset.f !== 'credit')) return;
-      m[t.dataset.f] = clampNum(t.value, 0, t.dataset.f === 'pts' ? lg.L : 100) || 0;
-      $('mkp-' + t.dataset.mk).textContent = num(m.pts); $('mkc-' + t.dataset.mk).textContent = m.credit + '%';
-      $('mk-out').innerHTML = makeupOut(); $('pj-out') && ($('pj-out').innerHTML = pjOutHTML());
+    else if (t.id === 'mk-credit') {
+      S.mkCredit = clampNum(t.value, 0, 100) || 0; $('mkc').textContent = S.mkCredit + '%';
+      $('mk-out').innerHTML = makeupOut(); if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
     }
   });
   document.addEventListener('click', function (e) {

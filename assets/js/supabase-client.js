@@ -655,6 +655,9 @@ window.sfSupabase = {
   // The numbers a student types on My grades (lecture percent, wanted Exam 3 score / overall grade): saved to their account. See supabase/bios102-grades-student-state.sql.
   bios102GradesStateGet(sessionToken) { return this.bios102Rpc('bios102_grades_state_get', { p_session: sessionToken }); },
   bios102GradesStateSet(sessionToken, state) { return this.bios102Rpc('bios102_grades_state_set', { p_session: sessionToken, p_state: state }); },
+  // The late-work deadline students see on My grades (instructor-only). See supabase/bios102-grades-late-deadline.sql.
+  bios102GradesSettingGet(sessionToken) { return this.bios102Rpc('bios102_grades_setting_get', { p_session: sessionToken }); },
+  bios102GradesSettingSet(sessionToken, key, value) { return this.bios102Rpc('bios102_grades_setting_set', { p_session: sessionToken, p_key: key, p_value: value }); },
   bios102GradesIsolationAudit(sessionToken) { return this.bios102Rpc('bios102_grades_isolation_audit', { p_session: sessionToken }); },
   // Instructor read of the Cnidaria video quiz (Lab 7 points) -- see supabase/bios102-video-quiz-results.sql.
   bios102VideoQuizResults(sessionToken) { return this.bios102Rpc('bios102_video_quiz_results', { p_session: sessionToken }); },
