@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/BIOS102/css/docket.css" />
   <link rel="stylesheet" href="/BIOS102/css/style.css" />
   <style>
+    @media (min-width: 801px) { .sd-head { aspect-ratio: auto; min-height: 108px; margin-bottom: 0; } .sd-head .rm-lede { margin-bottom: 0; } }
     .wrap.mid { max-width: 920px; }
     .card2 { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-panel); padding: 16px 18px; margin-bottom: 18px; }
     .card2 h2 { font-size: 1.15rem; margin-bottom: 6px; }
@@ -48,7 +49,7 @@
 </head>
 <body>
   <div id="topbar" class="topbar"></div>
-  <div class="sd-wrap" style="max-width:1100px;margin:0 auto;padding:18px 20px 0"><header class="sd-head"><div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/grades-student.webp)"></div><p class="sd-kicker">Your grades</p><h1 class="rm-h1">My grades</h1><p class="rm-lede">Only you and your instructors can see this page.</p></header></div>
+  <div class="sd-wrap" style="max-width:1100px;margin:0 auto;padding:12px 20px 0"><header class="sd-head"><div class="sd-bannerbg" style="background-image:url(/BIOS102/img/headers/grades-student.webp)"></div><p class="sd-kicker">Your grades</p><h1 class="rm-h1">My grades</h1><p class="rm-lede">Only you and your instructors can see this page.</p></header></div>
   <div class="wrap mid" id="app"><p class="lead" id="loading">Loading your grades&hellip;</p></div>
   <footer class="site-foot">BIOS102 Lab Companion &middot; your grades are private to you and your instructors</footer>
 
@@ -171,7 +172,7 @@
     if (pi.length) {
       var tot = pi.reduce(function (s, x) { return s + (x.p - x.s); }, 0);
       h += '<h3 style="margin:16px 0 4px;font-size:1rem">Points on work I already turned in</h3>' +
-        '<p class="lead">These pieces are finished and graded. Being a few points short on a piece is normal, and one small difference does not decide your grade. In all, it is <b>' + num(tot) + ' points</b> across <b>' + pi.length + '</b> ' + (pi.length === 1 ? 'piece' : 'pieces') + ' of work.</p>' +
+        '<p class="lead">These pieces are finished and graded. Being a few points short on a piece is normal, and one small difference does not decide your grade. In all, it is <b>' + num(tot) + (Math.abs(tot - 1) < 1e-9 ? ' point' : ' points') + '</b> across <b>' + pi.length + '</b> ' + (pi.length === 1 ? 'piece' : 'pieces') + ' of work.</p>' +
         '<details><summary style="cursor:pointer;color:var(--accent)">See which ones</summary><div class="scroll"><table class="t"><thead><tr><th>Piece of work</th><th>My score</th><th>Out of</th></tr></thead><tbody>' +
         pi.map(function (x) { return '<tr><td>' + esc(x.l) + '</td><td>' + num(x.s) + '</td><td>' + num(x.p) + '</td></tr>'; }).join('') + '</tbody></table></div><div class="help">If a score here looks wrong to you, tell your instructor.</div></details>';
     }
@@ -341,9 +342,19 @@
     return h;
   }
 
+  /* ---- Exam 3 study guide (a dropdown, loaded only when a student opens it) ---- */
+  function studyHTML() {
+    var src = '/BIOS102/exam-3-study-guide.html' + (PREVIEW ? '?nosave=1' : '');
+    return '<div class="card2" id="sec-study"><details id="study-details" data-src="' + src + '">' +
+      '<summary style="cursor:pointer;font-size:1.1rem;font-weight:500;color:var(--text)">Exam 3 study guide <span class="help" style="font-weight:400;margin:0">(for students interested in what they need to know to do well on the exam)</span></summary>' +
+      '<p class="lead" style="margin-top:10px">A checklist of what to be able to do on Exam 3. Mark each one <b>Can do from memory</b> or <b>Practice again</b>.' + (PREVIEW ? ' (View as: nothing you mark here is saved.)' : ' Your marks are saved to your account, so they are there on any device.') + '</p>' +
+      '<iframe id="study-frame" title="BIOS 102 Lab Exam 3 study guide" style="width:100%;height:78vh;min-height:420px;border:1px solid var(--border);border-radius:10px;background:#fff"></iframe>' +
+      '<div class="help"><a href="' + src + '" target="_blank" rel="noopener">Open the study guide in its own page</a></div></details></div>';
+  }
+
   function render() {
     $('app').innerHTML = '<h1>My grades, ' + esc(D.first) + '</h1><p class="lede">Use it to understand your grade and to try out “what if” questions. Nothing you do here changes your actual grade.</p>' +
-      finalHTML() + scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML();
+      finalHTML() + scoresHTML() + excuseHTML() + makeupHTML() + projectionHTML() + studyHTML();
   }
 
   /* ---- events ---- */
@@ -384,6 +395,10 @@
       $('mk-out').innerHTML = makeupOut(); if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
     }
   });
+  document.addEventListener('toggle', function (e) {
+    var d = e.target; if (!d || d.id !== 'study-details' || !d.open) return;
+    var fr = $('study-frame'); if (fr && !fr.getAttribute('src')) fr.setAttribute('src', d.dataset.src);
+  }, true);
   document.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t || !D) return;
     if (t.id === 'ex-add') {

@@ -46,8 +46,10 @@ end;
 $$;
 grant execute on function bios102_video_quiz_results(uuid) to anon, authenticated;
 
--- parso004@rangers.uwp.edu: the Cnidaria video quiz and the Porifera/Cnidaria lesson only.
-insert into bios102_students (email, display_name, major, allowed_pages)
-values ('parso004@rangers.uwp.edu', 'Guest student', 'Student',
-        array['/BIOS102/cnidaria-video-quiz.html', '/BIOS102/porifera-cnidaria.html'])
-on conflict (email) do update set allowed_pages = excluded.allowed_pages;
+-- One guest student is limited to the Cnidaria video quiz and the Porifera/Cnidaria lesson only.
+-- Already applied to the live database. The student's real address is deliberately NOT kept in this public repo.
+-- To add another page-restricted student, run this with their address:
+-- insert into bios102_students (email, display_name, major, allowed_pages)
+-- values ('student@rangers.uwp.edu', 'Guest student', 'Student',
+--         array['/BIOS102/cnidaria-video-quiz.html', '/BIOS102/porifera-cnidaria.html'])
+-- on conflict (email) do update set allowed_pages = excluded.allowed_pages;
