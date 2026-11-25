@@ -32,6 +32,24 @@ For each .eml, in this order:
 7. **Obey the standing rules**: CPD hold (no partner sends until CPD's GO), Roland silent until Wed Nov 4, 2026, no Obama / Rainbow Beach PAC, use the old South Holland address on IRS-matched registries. If the email needs a reply, keep its Message-ID for `in_reply_to`/`references`, draft it, show it in the browser, and send only after Stephen says "send".
 8. **Report back** in a few lines with full file paths: what the email said, every row changed, what is still open and who owns it. If something is ambiguous (two possible rows, a figure that conflicts with the tracker), say so and ask; do not guess or silently skip.
 
+## HYPERFOCUS: ONLY the Humphries partner list, until it is done (Stephen, Nov 25, 2026; runs 48 hours, to Fri Nov 27, 2026 about 4 pm CT, or until Stephen says it is done)
+
+**Do NOT talk about, work on, offer or raise anything else until this list's approach is done.** No BIOS102, no unrelated grants, FOIA, decks, site work or clean-up side trips. If something else comes up, log it in one line in `legal/documents-inbox/CURRENT-STATUS.md` and go back to this list. Stephen's own instruction in chat overrides this note.
+
+The list (each needs: a partner row, outreach sent or drafted for Stephen to send, a reply watch, a dated next step):
+1. Deputy Mayor Khari Humphries and Addison Rao (Mayor's Office): waiting on the MCMF program and contacts; letter of support still unanswered.
+2. Temeszja Drummond (Chicago Park District).
+3. Adrian Loza (Chicago Park District).
+4. Stender Von Oehsen (City of Chicago).
+5. Janeicia Williams and Project Exploration (Aug 19, 2026 North Avenue Beach teen party; site plan, run of show, budget, debrief).
+6. My CHI. My Future. (MCMF) and DFSS Youth Services (public inbox MyCHIMyFuture@cityofchicago.org; citywide partner meeting invitations).
+7. Lost Boyz Inc. (My CHI. My Future. South Shore community anchor per the City's Dec 2024 page; 2027 role unconfirmed).
+8. Urban Male Network (claimed 2025 Safe Spaces partner for South Shore and Greater Grand Crossing; unverified).
+9. Marie Huels and Ivry Ector (Park District ARCS review; update sent Nov 25).
+10. The Boys & Girls Club in the Rainbow Beach area (Stephen asked Nov 25 to add it). FOUND Nov 25, 2026 on https://bgcc.org/clubs/ (official list of 9 clubs): NO active club in South Shore or near Rainbow Beach. Yelp lists a Boys & Girls Clubs of Chicago club at 1733 E. 75th St., (773) 667-3639, marked CLOSED. The club in the Keystone Teen Party video Khari sent is the James R. Jordan Club, 2102 W. Monroe St., Chicago 60612, 312-226-2323 (West Side). Stephen to confirm which one he means before a row and outreach are made.
+
+Tracker work for these goes through partner-records-steward, then the reviewer, then the main session applies. Sends only after Stephen says send (Outlook compose set up for him in Chrome, same tab; he presses Send).
+
 ## Mail in Partnered or BOB means UPDATE THE TRACKER. Never ask. Check before you comment. (Stephen, Nov 25, 2026; standing order)
 
 - **A message in the Outlook "Partnered" folder, or an .eml in `C:\Users\mkepr\Downloads\BOB\`, is the signal to update the tracker. Do not ask "do you want that, or did you mean something else?", "should I log this?" or any variant.** Run the full .eml due-diligence below and report what changed.

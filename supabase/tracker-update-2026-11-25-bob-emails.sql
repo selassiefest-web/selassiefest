@@ -1,5 +1,6 @@
 -- BOB .eml batch, files modified Nov 25, 2026. Safe to re-run: every write is guarded by a Message-ID fragment or an expected current value.
 -- Not changed (already in Supabase): CCRx send (ccrx-sent), AlphaTheta Nov 24 reply, Wisdom submission row, Oriental/4imprint submission rows, Musician's Friend bounce status.
+-- Douglas L. Allen (douglas.allen@afccchicago.com) is an RTI officer (Stephen, Nov 25, 2026): NO external partner row and NO activity row for him. His Nov 1 reply is not logged here (no related 'Who do we know?' row exists to hold a note).
 -- Ignored on purpose: Nov 25 [Calendar] reminders; TRC Events comp-request notifications (Jul 2026, site-form tests); Bongo Beach PAC contact form (Sep 2026, not a partner).
 begin;
 
@@ -31,9 +32,9 @@ where id = '965d7d84-5464-4632-bac0-c97920af6468'
 update fs_grant_deadlines set
   status = 'declined',
   decision_on = '2026-11-25',
-  next_step = 'DECLINED Nov 25, 2026 6:52 am CT by George Buck: their advisory board will not accept NEW requests from outside DeKalb County (limited funds; they still support a few Chicago groups that already depend on them). Do not file the Mar 1, 2027 application and do not nudge. No other angle on this fund. Owner: not assigned.',
+  next_step = 'DECLINED Nov 25, 2026 6:52 am CT by George Buck: their advisory board will not accept NEW requests from outside DeKalb County (limited funds; they still support a few Chicago groups that already depend on them). Do not file the Mar 1, 2027 application and do not nudge. No other angle identified; revisit only if the fund''s policy changes. Owner: not assigned.',
   next_step_due = null,
-  notes = coalesce(notes,'') || E'\n[2026-11-25] REPLY George Buck, Nov 25 2026 12:52 UTC (6:52 am CT), from george@dekalbcountyfoundation.org (our inquiry went to george@dekalbccf.org; same person, new domain on the reply), Message-ID <165FE057-4F28-447D-8B18-DC362DBC70F4@dekalbcountyfoundation.org>, in reply to <CO6P220MB0338730DAB3A1C089499BD0ED7432@CO6P220MB0338.NAMP220.PROD.OUTLOOK.COM>: still supports a few long-time Chicago organizations; advisory board decided not to accept new requests from outside DeKalb County; wishes us well. This contradicts the guidelines page (Chicago-area groups with a DeKalb preference). Supersedes the Dec 2 nudge, the Jan 1 filing plan and the $11,990 request. Prior next_step_due 2026-12-02. [src:msgid-165FE057-4F28-447D-8B18-DC362DBC70F4]',
+  notes = coalesce(notes,'') || E'\n[2026-11-25] REPLY George Buck, Nov 25 2026 12:52 UTC (6:52 am CT), from george@dekalbcountyfoundation.org (our inquiry went to george@dekalbccf.org; same person, new domain on the reply), Message-ID <165FE057-4F28-447D-8B18-DC362DBC70F4@dekalbcountyfoundation.org>, in reply to <CO6P220MB0338730DAB3A1C089499BD0ED7432@CO6P220MB0338.NAMP220.PROD.OUTLOOK.COM>: still supports a few long-time Chicago organizations; advisory board decided not to accept new requests from outside DeKalb County; wishes us well. This contradicts the guidelines page (Chicago-area groups with a DeKalb preference). Supersedes the Dec 2 nudge and the Jan 1 filing plan. Our inquiry to him cited $12,103 (7 controllers x $1,729); the planned filing was $11,990. Prior next_step_due 2026-12-02. [src:msgid-165FE057-4F28-447D-8B18-DC362DBC70F4]',
   updated_at = now()
 where id = '013d3944-c420-4534-b9af-7f3a604c0235'
   and status = 'drafting'
@@ -97,7 +98,7 @@ where id = '845df475-8d46-4800-bfec-55eb54cae276'
 insert into fs_partners (id, name, category, website, email, contacts, partner_types, program_parts, stage, ball_with, ask, next_step, next_step_due, source, notes, last_contact_at)
 select 'b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'Silent Events (Discglow wireless headphones)', 'Headphones', 'https://silentevents.com', 'jackie@silentevents.com',
   '[{"name":"Jackie Zondlo","title":"Event Logistics & Operations Manager","email":"jackie@silentevents.com"},{"name":"Emily Kennedy-Taber","title":"Account & Sponsorship Coordinator","email":"emily@silentevents.com"}]'::jsonb,
-  array['in_kind'], array['festivals'], 'in_conversation', 'us',
+  array[]::text[], array['festivals'], 'on_hold', 'us',
   'Quote only (a purchase, not a donation). Albert asked for a 1,000-headphone new-purchase estimate for the Jul 10, 2026 organizational meeting.',
   'Open question for Stephen/Albert: is Silent Events still wanted for 2027? Jackie asked (Jul 9, 2026) to be told of any update; none is logged since. Estimate of Jul 9, 2026 is $49,599 (prices may have changed). Owner: Albert Harris (contact on thread); due date unknown.',
   null::date,
@@ -112,10 +113,10 @@ select 'c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', 'S. Wolf & Associates (Lio Insura
   '[{"name":"Charlie Kosyla","email":"charlie@swolfways.com","title":"S. Wolf & Associates (placed the policy)"},{"name":"Trey Elder","email":"trey@swolfways.com","title":"Director of Account Management and Retention (issues COIs)"},{"name":"Oskar Nasman","title":"Lio Insurance underwriter","email":"oskar.nasman@lioinsurance.com"}]'::jsonb,
   array[]::text[], 'confirmed', 'us',
   'Vendor, not a donor. Policy LIO1100198319-00 (Lio Insurance, Nonprofit and Social Services) bound Oct 22, 2026, effective Oct 22, 2026 to Oct 22, 2027; premium $650, direct bill, fixed annual.',
-  'Stephen to confirm from his mailbox: (a) the $650 premium is paid through the LIO payment portal (guide attached to the Oct 23 email), (b) the "Comments and Subjectivities" items on the Confirmation of Coverage are cleared, (c) a certificate naming the Chicago Park District exists (the Oct 23 COI names the City of Chicago Dept of Cultural Affairs & Special Events only). Not answerable from the emails; owner Stephen; due date unknown.',
+  'Stephen to confirm from his mailbox, three items still open on the Confirmation of Coverage (LIO1100198319-00): (1) the "Comments and Subjectivities" items are cleared, (2) the Signed TRIA Rejection Form is returned, (3) the Signed LIO Application is returned; plus (4) the $650 premium is paid through the LIO payment portal (guide attached to the Oct 23 email). The Chicago Park District certificate EXISTS: Trey Elder sent "2627 COI - Chicago Park District.pdf" and the endorsement page Oct 27, 2026 12:01:19 CDT. Whether items 1 to 3 were ever closed is not answerable from the emails; owner Stephen; due date unknown.',
   null::date,
   'Emails Oct 23, 2026',
-  'OLD THREAD logged Nov 25, 2026. Oct 23 COI (certificate holder DCASE, waiver of subrogation, additional insured City of Chicago DCASE) describes the festival 07/24-07/25/2027 "with 150 attendees": 150 is the festival figure on the COI and is NOT the Rainbow Wednesdays goal (300 a night); flag if it is ever copied into a Rainbow Wednesdays packet. Vendor row; Stephen may prefer notes only.',
+  'OLD THREAD logged Nov 25, 2026. Oct 27, 2026: Stephen asked Charlie to reissue the COI naming the Chicago Park District as additional insured (15:24:29 UTC, BOB 20261027-152433Z); Charlie answered 15:26:34 UTC that Trey would provide it; Trey sent "2627 COI - Chicago Park District.pdf" and "Endorsement page (1).pdf" at 17:01:19 UTC (BOB 20261027-170143Z). Oct 23 COI (certificate holder DCASE, waiver of subrogation, additional insured City of Chicago DCASE) describes the festival 07/24-07/25/2027 "with 150 attendees": 150 is the festival figure on the COI and is NOT the Rainbow Wednesdays goal (300 a night); flag if it is ever copied into a Rainbow Wednesdays packet. Vendor row; Stephen may prefer notes only.',
   '2026-10-23 18:06:18+00'
 where not exists (select 1 from fs_partners where id = 'c3f702e4-7d9c-4051-9e83-2f4bad6c9a33' or name like 'S. Wolf%');
 
@@ -125,25 +126,12 @@ select 'd40813f5-8ead-4162-8f94-305cbe7dab44', 'John Pearson (Field Marshall): n
   '[{"name":"John Pearson","email":"chicagotacticalmedic@icloud.com","title":"addressed as Field Marshall"}]'::jsonb,
   array['marketing'], 'reached_out', 'them',
   'Warm introductions to the 12 invitation-only funders in Stephen''s Oct 31, 2026 "Who do we know?" email.',
-  'John said Oct 31 he would check with a couple of people and get back; nothing logged since, and our Nov 13 reply-by date has passed. One short email nudge (proposed by us, not agreed with John): Mon Nov 30, 2026. Owner: Stephen. Online only.',
+  'John said Oct 31 he would check with a couple of people and get back; nothing logged since, and our Nov 13 reply-by date has passed. One short email nudge (proposed by us, not agreed with John): Mon Nov 30, 2026, subject to the CPD hold; Stephen decides. Owner: Stephen. Online only.',
   '2026-11-30',
   'Reply Oct 31, 2026 to our "Who do we know?" email',
   'OLD THREAD logged Nov 25, 2026. Organization he represents: unknown. Our email asked for introductions only, no money.',
   '2026-11-01 03:43:09+00'
 where not exists (select 1 from fs_partners where id = 'd40813f5-8ead-4162-8f94-305cbe7dab44' or email = 'chicagotacticalmedic@icloud.com');
-
--- 8d. Douglas Allen (AFCC): "Who do we know?" reply
-insert into fs_partners (id, name, category, email, contacts, partner_types, stage, ball_with, ask, next_step, next_step_due, source, notes, last_contact_at)
-select 'e51924a6-9fbe-4273-80a5-416dcf8ebc55', 'Allen''s Family Counseling Center Chicago (Douglas Allen): network introductions', 'Other', 'douglas.allen@afccchicago.com',
-  '[{"name":"Douglas Allen","title":"CEO, Allen''s Family Counseling Center Chicago","email":"douglas.allen@afccchicago.com"}]'::jsonb,
-  array['marketing'], 'reached_out', 'parked',
-  'Warm introductions to the 12 invitation-only funders in Stephen''s Oct 31, 2026 "Who do we know?" email.',
-  'No action: Douglas answered Nov 1, 2026 that he knows of the organizations but no one personally. Do not re-ask for these 12; keep him for other asks.',
-  null::date,
-  'Reply Nov 1, 2026 to our "Who do we know?" email',
-  'OLD THREAD logged Nov 25, 2026. Douglas is also a recipient of the SelassieFest ticket comp-request notices (TRC Events); no other relationship recorded here.',
-  '2026-11-01 15:38:43+00'
-where not exists (select 1 from fs_partners where id = 'e51924a6-9fbe-4273-80a5-416dcf8ebc55' or email = 'douglas.allen@afccchicago.com');
 
 -- ===== 9. One activity entry per source email. created_at = the real send time. Guard = Message-ID fragment (frag) already in any summary. =====
 insert into fs_partner_activity (partner_id, kind, summary, stage_after, by_email, by_name, created_at)
@@ -157,26 +145,30 @@ from (values
   'Nov 25, 2026 10:14 am CT: Lindsey Auz, Marketing Manager, Andy''s Frozen Custard (lindsey.auz@eatandys.com), "Donation Request - Ras Tafari Inc.": would love to donate 50 mini custard cups for the event on March 9th; pickup the day of or day prior, any time after 11 AM; will share with the Chicago team on Archer Avenue. APPROVAL/offer only; nothing delivered or received. No dollar value. Event date conflicts with our May 18, 2027 request. Message-ID <DS2PR17MB2950417E6113D80AA4DD1F868D84432@DS2PR17MB295041.namprd17.prod.outlook.com>.'),
  ('6e38015f-cccf-4c25-bc91-34afaa27b5c3', '712f6175-d9c3-4a40-aac7-e7ab77a35b38', 'reached_out', '2026-11-25 09:42:30+00',
   'Nov 25, 2026 3:42 am CT: 4imprint One By One confirmation (onebyone@4imprint.com): application received, up to six weeks to process, they will email the applicant. Receipt only; no decision. Message-ID <712f6175-d9c3-4a40-aac7-e7ab77a35b38@us-exch-01.4imprint.com>.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CA+PaOCugVKPLPFkYPxPRH12rr0VDS9QRtJb2n+XLDj=LbPMDMQ', 'in_conversation', '2026-07-02 19:35:39+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CA+PaOCugVKPLPFkYPxPRH12rr0VDS9QRtJb2n+XLDj=LbPMDMQ', 'on_hold', '2026-07-02 19:35:39+00',
   'Jul 2, 2026 2:35 pm CT: Emily Kennedy-Taber (Silent Events) thanked Albert for his phone inquiry; estimate to follow in a few business days; flyer attached. Message-ID <CA+PaOCugVKPLPFkYPxPRH12rr0VDS9QRtJb2n+XLDj=LbPMDMQ@mail.gmail.com>. Logged Nov 25, 2026.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VBKCbCdSN4p+JS2uLaZs9nEXqxmNrMDSBdcDpjDuJPeeg', 'in_conversation', '2026-07-07 21:09:07+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VBKCbCdSN4p+JS2uLaZs9nEXqxmNrMDSBdcDpjDuJPeeg', 'on_hold', '2026-07-07 21:09:07+00',
   'Jul 7, 2026 4:09 pm CT: Jackie Zondlo (Silent Events): 2026 timing unlikely; like-new headphones about $36,000 if paperwork and payment by end of week, or rental about $7,000; 90-day warranty on like-new; interested in 2027. Message-ID <CAL9n7VBKCbCdSN4p+JS2uLaZs9nEXqxmNrMDSBdcDpjDuJPeeg@mail.gmail.com>. Logged Nov 25, 2026.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAKSj72grjAv4YNqpcBguj+7Gq7_camf_NxYf5kSF77JN-ptYGg', 'in_conversation', '2026-07-07 22:09:26+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAKSj72grjAv4YNqpcBguj+7Gq7_camf_NxYf5kSF77JN-ptYGg', 'on_hold', '2026-07-07 22:09:26+00',
   'Jul 7, 2026 5:09 pm CT: Albert (from selassiefest@gmail.com) asked Jackie for an itemized estimate for the NEW purchase only, for the Jul 10, 2026 10 am organizational meeting. Message-ID <CAKSj72grjAv4YNqpcBguj+7Gq7_camf_NxYf5kSF77JN-ptYGg@mail.gmail.com>. Logged Nov 25, 2026.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VAa9VohuJ4kFFismh5Fd5GjxqRa2kcmRwFeanb77jL+kQ', 'in_conversation', '2026-07-09 19:15:29+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VAa9VohuJ4kFFismh5Fd5GjxqRa2kcmRwFeanb77jL+kQ', 'on_hold', '2026-07-09 19:15:29+00',
   'Jul 9, 2026 2:15 pm CT: Jackie Zondlo sent the estimate (PDF attached): 1,000 new Discglow three-channel headphones at $45, 4 multi-listener systems, transmitters, 25 cabling bags, charging docs, shipping; TOTAL $49,599; 60-day lead time after payment; +4% for credit card; prices may change. Offered to start paperwork on approval. Message-ID <CAL9n7VAa9VohuJ4kFFismh5Fd5GjxqRa2kcmRwFeanb77jL+kQ@mail.gmail.com>. Logged Nov 25, 2026.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAKSj72hnQcXUVgdSSXW_3mFE8JTrC01CB+8nD=keOziH10oYYA', 'in_conversation', '2026-07-09 19:47:16+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAKSj72hnQcXUVgdSSXW_3mFE8JTrC01CB+8nD=keOziH10oYYA', 'on_hold', '2026-07-09 19:47:16+00',
   'Jul 9, 2026 2:47 pm CT: Albert acknowledged the estimate, ready for his Friday meeting. No approval. Message-ID <CAKSj72hnQcXUVgdSSXW_3mFE8JTrC01CB+8nD=keOziH10oYYA@mail.gmail.com>. Logged Nov 25, 2026.'),
- ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VAn820wzMUukfRVFC85XsTbfnhh047epe_ufuFBQLDYAQ', 'in_conversation', '2026-07-09 20:27:10+00',
+ ('b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22', 'CAL9n7VAn820wzMUukfRVFC85XsTbfnhh047epe_ufuFBQLDYAQ', 'on_hold', '2026-07-09 20:27:10+00',
   'Jul 9, 2026 3:27 pm CT: Jackie replied that she would wait for our update. Last contact; nothing later logged. Message-ID <CAL9n7VAn820wzMUukfRVFC85XsTbfnhh047epe_ufuFBQLDYAQ@mail.gmail.com>. Logged Nov 25, 2026.'),
  ('c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', 'CAH9Z7cfe-FOuEQiu9_R+GTGAyz1kv8aE+cOS1ofXAnfVnKkhsQ', 'confirmed', '2026-10-23 16:43:21+00',
   'Oct 23, 2026 11:43 am CT: Charlie Kosyla (S. Wolf & Associates) to Stephen, cc Trey Elder: general liability policy LIO1100198319-00 bound; attached Confirmation of Coverage (effective Oct 22, 2026 to Oct 22, 2027, premium $650, direct bill; still waiting on "Comments and Subjectivities"), policy, application, and our 2026 COI, 2027 quote request and CPD ARCS application. Asked Trey for an immediate COI with waiver of subrogation per the park district contact. Message-ID <CAH9Z7cfe-FOuEQiu9_R+GTGAyz1kv8aE+cOS1ofXAnfVnKkhsQ@mail.gmail.com>. Logged Nov 25, 2026.'),
  ('c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', 'CAPb8-9so4E_DMxMmnx0qtF+WOar=0K8iJsA0q67ha-St7+_=xw', 'confirmed', '2026-10-23 18:06:18+00',
-  'Oct 23, 2026 1:06 pm CT: Trey Elder (S. Wolf) sent the COI for the 2027 fest (certificate holder City of Chicago Dept of Cultural Affairs & Special Events; additional insured and waiver of subrogation; states 150 attendees for the 07/24-25/2027 festival) and the LIO payment-portal guide for direct payment. COI delivered to us; our acknowledgment not logged. Message-ID <CAPb8-9so4E_DMxMmnx0qtF+WOar=0K8iJsA0q67ha-St7+_=xw@mail.gmail.com>. Logged Nov 25, 2026.'),
+  'Oct 23, 2026 1:06 pm CT: Trey Elder (S. Wolf) sent the COI for the 2027 fest (certificate holder City of Chicago Dept of Cultural Affairs & Special Events; additional insured and waiver of subrogation; states 150 attendees for the 07/24-25/2027 festival) and the LIO payment-portal guide for direct payment. COI delivered to us; our acknowledgment not logged. A second COI naming the Chicago Park District followed Oct 27 (see the three Oct 27 entries). Message-ID <CAPb8-9so4E_DMxMmnx0qtF+WOar=0K8iJsA0q67ha-St7+_=xw@mail.gmail.com>. Logged Nov 25, 2026.'),
+ ('c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', '010001a17df67fe3-75c263ce-814a-484f-8235-1b5ac8ac1636-000000', 'confirmed', '2026-10-27 15:24:29+00',
+  'Oct 27, 2026 10:24 am CT (15:24:29 UTC): Stephen (stephen@selassiefest.com) asked Charlie Kosyla (contactus@swolfways.com), subject "URGENT: Policy LIO1100198319-00: Chicago Park District must be ADDITIONAL INSURED", to reissue the certificate with the Chicago Park District (4830 S. Western Ave.) as certificate holder and additional insured, primary and non-contributory (CG 20 26 or equivalent), description naming the Rainbow DJ Lab and Full Spectrum programs at Rainbow Beach Park under a CPD ARCS partnership; attached Ras-Tafari-Inc-Park-District-COI-request.pdf. Message-ID <010001a17df67fe3-75c263ce-814a-484f-8235-1b5ac8ac1636-000000@email.amazonses.com>. BOB 20261027-152433Z. Logged Nov 25, 2026.'),
+ ('c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', 'src-charlie-reply-2026-10-27T152634Z', 'confirmed', '2026-10-27 15:26:34+00',
+  'Oct 27, 2026 10:26 am CT (15:26:34 UTC): Charlie Kosyla (S. Wolf & Associates) replied to Stephen that Trey would provide the Park District certificate if he had not already. Evidence is the quoted text inside Trey''s 17:01 UTC email; Charlie''s own Message-ID was not captured (no separate BOB file). Logged Nov 25, 2026.'),
+ ('c3f702e4-7d9c-4051-9e83-2f4bad6c9a33', 'CAPb8-9uPPKEjHSNj0-yRzs5+cXL-1KjRCHw1JFDoy=NWQHxvYw', 'confirmed', '2026-10-27 17:01:19+00',
+  'Oct 27, 2026 12:01:19 pm CT (17:01:19 UTC): Trey Elder (S. Wolf) sent the COI naming the Chicago Park District ("2627 COI - Chicago Park District.pdf") and "Endorsement page (1).pdf", apologizing for the delay (out sick the prior week). COI for the Park District DELIVERED to us; our acknowledgment not logged. Still open on the Confirmation of Coverage: Comments and Subjectivities, Signed TRIA Rejection Form, Signed LIO Application. Message-ID <CAPb8-9uPPKEjHSNj0-yRzs5+cXL-1KjRCHw1JFDoy=NWQHxvYw@mail.gmail.com>. BOB 20261027-170143Z. Logged Nov 25, 2026.'),
  ('d40813f5-8ead-4162-8f94-305cbe7dab44', '85B93916-72F0-4FA4-8B74-00B53C338EF9', 'reached_out', '2026-11-01 03:43:09+00',
-  'Oct 31, 2026 10:43 pm CT: John Pearson replied to "Who do we know? Twelve names that could open doors for the DJ Lab": off the top he knows no one with relationships to any of the 12; will check with a couple of people and get back. Message-ID <85B93916-72F0-4FA4-8B74-00B53C338EF9@icloud.com>. Logged Nov 25, 2026.'),
- ('e51924a6-9fbe-4273-80a5-416dcf8ebc55', 'SA0PR16MB3886B3234724CB0EAF95D8CBF96B2', 'reached_out', '2026-11-01 15:38:43+00',
-  'Nov 1, 2026 9:38 am CT: Douglas Allen (CEO, Allen''s Family Counseling Center Chicago) replied to "Who do we know?": knows of the organizations, no one personally. Message-ID <SA0PR16MB3886B3234724CB0EAF95D8CBF96B2@SA0PR16MB3886.namprd16.prod.outlook.com>. Logged Nov 25, 2026.')
+  'Oct 31, 2026 10:43 pm CT: John Pearson replied to "Who do we know? Twelve names that could open doors for the DJ Lab": off the top he knows no one with relationships to any of the 12; will check with a couple of people and get back. Message-ID <85B93916-72F0-4FA4-8B74-00B53C338EF9@icloud.com>. Logged Nov 25, 2026.')
 ) as v(pid, frag, stage_after, at, summary)
 where exists (select 1 from fs_partners p where p.id = v.pid::uuid)
   and not exists (select 1 from fs_partner_activity a where a.summary like '%' || v.frag || '%');
@@ -197,7 +189,7 @@ insert into rti_calendar_events (key, title, starts_at, ends_at, place, notes) v
  ('oriental-reapply-2026-11-25', 'Oriental Trading: reapply with the 501(c)(3) address (765 E 154th St, South Holland)', timestamptz '2026-11-25 17:00-06', timestamptz '2026-11-25 17:15-06', 'https://orientaltrading.requestitem.com/',
   'Their Nov 25 answer invites reapplication with the address on the IRS letter. Grant d14f32bd, partner 965d7d84. Form only; Stephen presses Submit.'),
  ('pearson-nudge-2026-11-30', 'John Pearson: one short email nudge on the 12-funder introductions', timestamptz '2026-11-30 09:30-06', timestamptz '2026-11-30 09:45-06', 'Email: chicagotacticalmedic@icloud.com',
-  'Proposed by us, not agreed with John. Partner d40813f5-8ead-4162-8f94-305cbe7dab44. Send only after Stephen says send.')
+  'Proposed by us, not agreed with John. Subject to the CPD hold; Stephen decides. Partner d40813f5-8ead-4162-8f94-305cbe7dab44. Send only after Stephen says send.')
 on conflict (key) do nothing;
 
 commit;
@@ -207,6 +199,6 @@ select 'oriental grant' as t, status as s, next_step_due::text as d from fs_gran
 union all select 'oriental partner', stage || '/' || ball_with, next_step_due::text from fs_partners where id = '965d7d84-5464-4632-bac0-c97920af6468'
 union all select 'dekalb grant', status, next_step_due::text from fs_grant_deadlines where id = '013d3944-c420-4534-b9af-7f3a604c0235'
 union all select 'andys grant', status, next_step_due::text from fs_grant_deadlines where id = '8c21a12a-bf69-4a3d-abc4-728d916f34ee'
-union all select 'new partner ' || left(name, 24), stage || '/' || ball_with, next_step_due::text from fs_partners where id in ('a1d5e0c2-5b7a-4e3f-9c61-0d2f8b4a7e11','b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22','c3f702e4-7d9c-4051-9e83-2f4bad6c9a33','d40813f5-8ead-4162-8f94-305cbe7dab44','e51924a6-9fbe-4273-80a5-416dcf8ebc55')
-union all select 'activity rows from this batch (expect 14)', count(*)::text, null from fs_partner_activity where summary like '%[src:msgid-%' and partner_id in ('965d7d84-5464-4632-bac0-c97920af6468','a1d5e0c2-5b7a-4e3f-9c61-0d2f8b4a7e11','6e38015f-cccf-4c25-bc91-34afaa27b5c3','b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22','c3f702e4-7d9c-4051-9e83-2f4bad6c9a33','d40813f5-8ead-4162-8f94-305cbe7dab44','e51924a6-9fbe-4273-80a5-416dcf8ebc55')
+union all select 'new partner ' || left(name, 24), stage || '/' || ball_with, next_step_due::text from fs_partners where id in ('a1d5e0c2-5b7a-4e3f-9c61-0d2f8b4a7e11','b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22','c3f702e4-7d9c-4051-9e83-2f4bad6c9a33','d40813f5-8ead-4162-8f94-305cbe7dab44')
+union all select 'activity rows from this batch (expect 16 on first run)', count(*)::text, null from fs_partner_activity where summary like '%[src:msgid-%' and partner_id in ('965d7d84-5464-4632-bac0-c97920af6468','a1d5e0c2-5b7a-4e3f-9c61-0d2f8b4a7e11','6e38015f-cccf-4c25-bc91-34afaa27b5c3','b2e6f1d3-6c8b-4f40-8d72-1e3a9c5b8f22','c3f702e4-7d9c-4051-9e83-2f4bad6c9a33','d40813f5-8ead-4162-8f94-305cbe7dab44')
 union all select 'event ' || key, active::text, starts_at::text from rti_calendar_events where key in ('andys-check-2026-12-10','oriental-check-2026-12-28','wurlitzer-nudge-2026-12-02','wurlitzer-file-2027-01-01','andys-confirm-2026-11-25','oriental-reapply-2026-11-25','pearson-nudge-2026-11-30');
