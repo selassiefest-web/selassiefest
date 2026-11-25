@@ -443,10 +443,30 @@ Deno.serve(async (req) => {
       // {"lesson":"mygrades"} announces the updated My grades page (Exam 3 planner, overall grade, study guide). Same exclusions.
       const mygrades = body.lesson === "mygrades";
       let excluded = new Set<string>();
+      // mygrades only: what each student has not turned in (items with no score and no excuse), and the live late-work deadline
+      const outstanding = new Map<string, string[]>();
+      let lateUntil = "";
+      if (mygrades) {
+        const { data: st } = await admin.from("bios102_grade_settings").select("value").eq("key", "late_until").maybeSingle();
+        const iso = st?.value ? String(st.value) : "";
+        const t = Date.parse(iso);
+        if (t && t > Date.now()) {
+          lateUntil = new Date(t).toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" }) + " Central";
+        }
+      }
       if (videograde || sperm || mockexam2 || mygrades) {
         const { data: gr, error: gErr } = await admin.from("bios102_grade_rows").select("email, data");
         if (gErr) throw gErr;
         excluded = new Set((gr ?? []).filter((r) => r.data?.status && r.email).map((r) => String(r.email).toLowerCase()));
+        if (mygrades && lateUntil) {
+          for (const r of gr ?? []) {
+            if (!r.email || r.data?.status) continue;
+            const items = (Array.isArray(r.data?.items) ? r.data.items : [])
+              .filter((it: { x?: unknown; s?: unknown; l?: unknown }) => !it.x && typeof it.s !== "number")
+              .map((it: { l?: unknown }) => escapeHtml(String(it.l ?? "")));
+            if (items.length) outstanding.set(String(r.email).toLowerCase(), items);
+          }
+        }
       }
       const recipients = body.test
         ? [{ email: TO, name: "Preview Student" }]
@@ -461,7 +481,7 @@ Deno.serve(async (req) => {
       for (const s of recipients) {
         const first = escapeHtml(String(s.name).split(" ")[0]);
         const subject = mygrades ? MYGRADES_SUBJECT : mockexam2 ? "BIOS102 Lab Exam 2 mock exam is ready (60 questions)" : sperm ? "BIOS102 required: Follow the Sperm (Exercise 7)" : videograde ? "BIOS102: Cnidaria video quiz (due Tuesday 3 PM) and your grade planner" : mockopen ? "BIOS102 mock exam is open now" : arrived ? "ARRIVED" : spores ? "BIOS102: a 5-minute way to lock in homosporous vs. heterosporous" : `BIOS102 ${Q} is ready`;
-        const html = mygrades ? mygradesHtml(first) : mockexam2 ? `
+        const html = mygrades ? mygradesHtml(first, outstanding.get(String(s.email).toLowerCase()) ? { items: outstanding.get(String(s.email).toLowerCase())!, until: lateUntil } : null) : mockexam2 ? `
               <p>Hi ${first},</p>
               <p>The <strong>Lab Exam 2 mock exam</strong> is ready, just in time for Tuesday. It covers Labs 7 and 8: Porifera, Cnidaria, Platyhelminthes, Nematoda and Annelida.</p>
               <p><a href="https://selassiefest.com/BIOS102/mock-exam-2.html">Take the mock exam</a></p>
