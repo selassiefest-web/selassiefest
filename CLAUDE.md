@@ -36,6 +36,8 @@ For each .eml, in this order:
 
 **Do NOT talk about, work on, offer or raise anything else until this list's approach is done.** No BIOS102, no unrelated grants, FOIA, decks, site work or clean-up side trips. If something else comes up, log it in one line in `legal/documents-inbox/CURRENT-STATUS.md` and go back to this list. Stephen's own instruction in chat overrides this note.
 
+**START HERE when the blitz begins (about 6 pm CT Nov 25): read `C:\Users\mkepr\Documents\GitHub\selassiefest\.claude-notes\next-session.md` and follow it exactly. Ignore any older handoff.** The full 43-row list is `C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\todays-outreach\48-hour-blitz-list.md`; finished drafts are in `C:\Users\mkepr\Documents\GitHub\selassiefest\Claude outputs\blitz-drafts\`.
+
 The list (each needs: a partner row, outreach sent or drafted for Stephen to send, a reply watch, a dated next step):
 1. Deputy Mayor Khari Humphries and Addison Rao (Mayor's Office): waiting on the MCMF program and contacts; letter of support still unanswered.
 2. Temeszja Drummond (Chicago Park District).
