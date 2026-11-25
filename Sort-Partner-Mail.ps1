@@ -139,6 +139,11 @@ function Test-PartnerMessage($Partners, $Message) {
     $why = Test-PartnerSender $Partners $from
     if ($why) { return $why }
 
+    # A reply inside a conversation already filed in Partnered (an address-only rule was tried and dropped: it pulled in marketing mail).
+    if ($script:PartneredContext) {
+        if ($Message.conversationId -and $script:PartneredContext.Conversations.Contains([string]$Message.conversationId)) { return 'reply in a Partnered conversation' }
+    }
+
     if ($from -and (Test-OwnAddress $from)) {
         foreach ($r in @($Message.toRecipients) + @($Message.ccRecipients)) {
             $to = [string]$r.emailAddress.address
@@ -214,12 +219,32 @@ function Get-InboxMessages {
         $since = (Get-Date).AddDays(-$Days).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
         $filter = '&$filter=receivedDateTime ge ' + $since
     }
-    $uri = 'https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id,subject,from,toRecipients,ccRecipients,bodyPreview,receivedDateTime&$orderby=receivedDateTime desc&$top=100' + $filter
+    $uri = 'https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id,subject,from,toRecipients,ccRecipients,bodyPreview,receivedDateTime,conversationId&$orderby=receivedDateTime desc&$top=100' + $filter
     while ($uri) {
         $page = Get-GraphPage $uri
         foreach ($m in $page.value) { $m }
         $uri = $page.'@odata.nextLink'
     }
+}
+
+# Everything already filed in Partnered tells us who our partners are, even when the tracker does not hold the address yet
+# (a reply from a new person or a different domain). Returns the conversation ids and the exact addresses seen there.
+function Get-PartneredContext($Folder) {
+    $ctx = @{ Conversations = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal); Addresses = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase) }
+    if (-not $Folder -or $Folder.id -eq 'DRY') { return $ctx }
+    $uri = ('https://graph.microsoft.com/v1.0/me/mailFolders/{0}/messages?$select=conversationId,from,toRecipients,ccRecipients&$top=100' -f [uri]::EscapeDataString([string]$Folder.id))
+    while ($uri) {
+        $page = Get-GraphPage $uri
+        foreach ($m in $page.value) {
+            if ($m.conversationId) { [void]$ctx.Conversations.Add([string]$m.conversationId) }
+            foreach ($x in @($m.from) + @($m.toRecipients) + @($m.ccRecipients)) {
+                $a = [string]$x.emailAddress.address
+                if ($a -and $a -match '@' -and -not (Test-OwnAddress $a) -and $a -notmatch '^(?i)(no-?reply|donotreply|do-not-reply|notifications?|mailer-daemon|postmaster)') { [void]$ctx.Addresses.Add($a.Trim().ToLowerInvariant()) }
+            }
+        }
+        $uri = $page.'@odata.nextLink'
+    }
+    $ctx
 }
 
 # ---------------------------------------------------------------------------------------------
@@ -328,6 +353,9 @@ try {
             Write-SortLog "Created folder $folderName."
         } else { Write-SortLog "[dry] The folder '$folderName' does not exist; -Apply would create it."; $partnered = @{ id = 'DRY' } }
     }
+
+    $script:PartneredContext = Get-PartneredContext $partnered
+    Write-SortLog ('Partnered already holds {0} conversation(s) and {1} address(es) used to recognise replies.' -f $script:PartneredContext.Conversations.Count, $script:PartneredContext.Addresses.Count)
 
     $scanned = 0; $matched = @(); $unmatched = @()
     foreach ($m in Get-InboxMessages) {
