@@ -234,7 +234,38 @@ window.BIOS = (() => {
   }
   function scaleText() { return gradeScale.map((s) => s.letter + ' ' + s.min).join(', '); }
 
+  // Point totals worked out from the student's own scores (data.items + exam1..3), so a score typed in the gradebook
+  // (for example Exam 3) is reflected everywhere at once and nothing depends on a Canvas import. Same meaning as the
+  // stored data.cv: cd/cp = points graded/earned so far, fd = points in the whole course (excused items leave it),
+  // fp = points earned. An excused exam stays in fd; the pages subtract it themselves (see autoExcused).
+  function cvFromData(d) {
+    const items = d && Array.isArray(d.items) ? d.items : null;
+    if (!items || !items.length) return null;
+    const ok = (v) => typeof v === 'number' && isFinite(v);
+    const g = {};
+    ['assignments', 'participation', 'labs', 'quizzes', 'exams'].forEach((k) => { g[k] = { cp: 0, cd: 0, fp: 0, fd: 0 }; });
+    items.forEach((it) => {
+      const x = g[it.g];
+      if (!x || it.x) return;
+      x.fd += it.p;
+      if (ok(it.s)) { x.cp += it.s; x.cd += it.p; x.fp += it.s; }
+    });
+    [['exam1', 120], ['exam2', 50], ['exam3', 120]].forEach((e) => {
+      g.exams.fd += e[1];
+      if (ok(d[e[0]])) { g.exams.cp += d[e[0]]; g.exams.cd += e[1]; g.exams.fp += d[e[0]]; }
+    });
+    const r4 = (n) => Math.round(n * 10000) / 10000;
+    const t = { cp: 0, cd: 0, fp: 0, fd: 0, g: {} };
+    Object.keys(g).forEach((k) => {
+      ['cp', 'cd', 'fp', 'fd'].forEach((m) => { t[m] += g[k][m]; });
+      t.g[k] = { cp: r4(g[k].cp), cd: r4(g[k].cd), fp: r4(g[k].fp), fd: r4(g[k].fd) };
+    });
+    ['cp', 'cd', 'fp', 'fd'].forEach((m) => { t[m] = r4(t[m]); });
+    return t;
+  }
+
   return {
+    cvFromData,
     loadGradeScale, getGradeScale, setGradeScaleLocal, bandOf, fmtGrade, clampNum, scaleText,
     getSession, setSession, clearSession, requireSession, mountTopbar,
     escapeHtml, humanizeKey, getExercises, getExercise,

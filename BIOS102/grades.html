@@ -177,7 +177,7 @@
       '<div class="toolbar" id="topbar2"></div>' +
       '<div class="chips" id="chips" style="margin-bottom:12px"></div>' +
       '<div class="tabs2" id="tabs"></div><div class="msg" id="msg" role="status"></div><div id="view"></div>');
-    $('tabs').innerHTML = [['insights', 'Insights'], ['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['quiz', 'Video quiz'], ['manage', 'Import & manage']]
+    $('tabs').innerHTML = [['insights', 'Insights'], ['book', 'Gradebook'], ['stats', 'Statistics'], ['charts', 'Charts'], ['people', 'Students'], ['quiz', 'Video quiz'], ['final', 'Final lab scores'], ['manage', 'Import & manage']]
       .map(function (t) { return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
     $('tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { ui.tab = b.dataset.tab; render(); } });
   }
@@ -211,7 +211,7 @@
 
   function render() {
     renderTop();
-    ({ insights: viewInsights, book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, quiz: viewQuiz, manage: viewManage })[ui.tab]();
+    ({ insights: viewInsights, book: viewBook, stats: viewStats, charts: viewCharts, people: viewPeople, quiz: viewQuiz, final: viewFinal, manage: viewManage })[ui.tab]();
     $('msg').textContent = ui.msg;
   }
 
@@ -450,7 +450,7 @@
     var h = '<div class="toolbar"><button class="b' + (ui.edit ? ' on' : '') + '" id="edit" type="button">' + (ui.edit ? 'Editing: on' : 'Edit scores') + '</button>' +
       '<button class="b pri" id="save" type="button"' + (cur.dirty ? '' : ' disabled') + '>Save changes</button>' +
       '<button class="b" id="csv" type="button">Download CSV (current view)</button>' +
-      '<span>Click a column heading to sort. Untick a student to leave them out of the statistics. Students marked dropped or on leave are always left out (change that under Edit scores). Red is below the pass line. Clear a cell while editing to mark it excused.</span></div>';
+      '<span>Click a column heading to sort. Untick a student to leave them out of the statistics. Students marked dropped or on leave are always left out (change that under Edit scores). Red is below the pass line. Type exam scores in the boxes while editing, then Save changes: students see them right away. Lab item scores come from the Canvas export.</span></div>';
     h += '<div class="scroll" style="max-height:70vh"><table class="t"><thead><tr class="grp"><th></th><th class="l"></th>' +
       groups.map(function (g) { return '<th colspan="' + g.n + '" style="text-align:center">' + esc(g.g) + '</th>'; }).join('') + '</tr><tr><th></th><th class="l" data-sort="_n">Student</th>' +
       cur.columns.map(function (c) { return '<th data-sort="' + esc(c.key) + '">' + esc(c.label) + (ui.sortKey === c.key ? (ui.sortDir > 0 ? ' ▲' : ' ▼') : '') + (c.formula ? '<span class="tag">calc</span>' : '') + '</th>'; }).join('') + '</tr>';
@@ -461,7 +461,7 @@
       h += '<tr class="' + (ui.off[r.student] || r.data.status ? 'off' : '') + '"><td><input type="checkbox" data-inc="' + esc(r.student) + '"' + (ui.off[r.student] || r.data.status ? '' : ' checked') + (r.data.status ? ' disabled' : '') + ' aria-label="Include ' + esc(r.student) + '"></td><td class="l">' + esc(r.student) +
         (ui.edit ? ' <select data-status="' + esc(r.student) + '" aria-label="Status for ' + esc(r.student) + '"><option value="">active</option>' + Object.keys(STATUS).map(function (k) { return '<option value="' + k + '"' + (r.data.status === k ? ' selected' : '') + '>' + STATUS[k] + '</option>'; }).join('') + '</select>' : (r.data.status ? '<span class="tag">' + esc(STATUS[r.data.status] || r.data.status) + '</span>' : '')) + '</td>' +
         cur.columns.map(function (c) {
-          if (ui.edit && !c.formula) { var v = r.data[c.key]; return '<td><input type="number" step="any" data-cell="' + esc(r.student) + '|' + esc(c.key) + '" value="' + (isNum(v) ? v : '') + '"></td>'; }
+          if (ui.edit && !c.formula && /^exam[0-9]$/.test(c.key)) { var v = r.data[c.key]; return '<td><input type="number" step="any" data-cell="' + esc(r.student) + '|' + esc(c.key) + '" value="' + (isNum(v) ? v : '') + '"></td>'; }
           return fmtCell(r, c);
         }).join('') + '</tr>';
     });
@@ -579,9 +579,9 @@
   // overall average and hurts when it was above. Item list = the published assignments in the Canvas course
   // (Assignments page, read 2026-10-26). Quiz 7 was published after the grade export, so the export's totals
   // do not include it yet. User-facing wording avoids the LMS's own terms: an excuse is an excuse.
-  var LATE = 10;          // Quiz 7: published after the grade export, so the export's totals leave it out
+  var LATE = 0;           // was 10 while Quiz 7 was missing from the Canvas export; the scores now carry every item
   var BASE_FINAL = 440;   // 15 assignments + 30 participation + 35 lab reports + 70 quizzes (7 x 10) + 290 exams
-  function cvOf(r) { var c = r.data.cv; return c ? { cp: c.cp, cd: c.cd, fp: c.fp, fd: c.fd + LATE, g: c.g } : null; }
+  function cvOf(r) { var c = BIOS.cvFromData(r.data) || r.data.cv; return c ? { cp: c.cp, cd: c.cd, fp: c.fp, fd: c.fd + LATE, g: c.g } : null; }
   var ITEMS = [
     ['Assignments', 'Lab 1a: Scientific Method', 1.75], ['Assignments', 'Lab 1a: Phylogeny Reading', 2.5], ['Assignments', 'Lab 1a: Evolution Videos', 2],
     ['Assignments', 'Lab 1a: Strange Fish (Part I)', 2], ['Assignments', 'Lab 1a: Strange Fish (Part II)', 5], ['Assignments', 'Lab 1a: Strange Fish (Part III)', 1.75],
@@ -773,6 +773,118 @@
       }
     }
     $('view').innerHTML = h;
+  }
+
+  /* ---------------- Final lab scores (for the instructors who set the final course grade) ---------------- */
+  var FINAL_NOTE = 'A note from Professor Harris, BIOS 102 lab: These lab scores are final. Every student has already received the maximum leeway and credit available this semester, so raising any score further would not reflect their true performance in the lab. The lab counts for 50% of the course. The final grade for each student is yours to set.';
+  var EXAM_MAX = { exam1: 120, exam2: 50, exam3: 120 };
+  function finalRows() {
+    return cur.rows.map(function (r) {
+      var st = r.data.status, c = BIOS.cvFromData(r.data) || r.data.cv, o = { student: r.student, email: r.email || '', status: st ? (STATUS[st] || st) : '', ok: false, check: '' };
+      if (st || !c) return o;
+      var exc = (r.data.excused || []).filter(function (k) { return !isNum(r.data[k]); });
+      var base = c.fd - exc.reduce(function (s, k) { return s + (EXAM_MAX[k] || 0); }, 0), g = c.g || {};
+      o.ok = true; o.earned = c.fp; o.possible = base; o.pct = base > 0 ? c.fp / base * 100 : null; o.share = o.pct == null ? null : o.pct / 2;
+      ['exam1', 'exam2', 'exam3'].forEach(function (k) { o[k] = isNum(r.data[k]) ? r.data[k] : (exc.indexOf(k) >= 0 ? 'excused' : ''); });
+      o.assign = (g.assignments || {}).fp; o.partic = (g.participation || {}).fp; o.labs = (g.labs || {}).fp; o.quiz = (g.quizzes || {}).fp;
+      var miss = ['exam1', 'exam2', 'exam3'].filter(function (k) { return o[k] === ''; });
+      o.check = miss.length ? miss.map(function (k) { return 'Exam ' + k.slice(4); }).join(', ') + ' not entered' : '';
+      return o;
+    });
+  }
+  var FINAL_HEAD = ['Student', 'Login email', 'Status', 'Lab score (%)', 'Lab points earned', 'Lab points possible', 'Lab share of the final grade (50%)', 'Exam 1 (of 120)', 'Exam 2 (of 50)', 'Exam 3 (of 120)', 'Lab 1a assignments (of 15)', 'Lab participation (of 30)', 'Lab write-ups (of 35)', 'Quizzes (of 70)', 'Check'];
+  function r2(v) { return isNum(v) ? Math.round(v * 100) / 100 : (v == null ? '' : v); }
+  function finalTable(rows) {
+    return rows.map(function (o) { return [o.student, o.email, o.status, r2(o.pct), r2(o.earned), r2(o.possible), r2(o.share), r2(o.exam1), r2(o.exam2), r2(o.exam3), r2(o.assign), r2(o.partic), r2(o.labs), r2(o.quiz), o.check]; });
+  }
+  function finalStamp() {
+    var at = ui.labFinal;
+    return at ? 'FINAL (marked ' + new Date(at).toLocaleDateString('en-US', { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ')' : 'DRAFT (scores may still change)';
+  }
+  function viewFinal() {
+    var rows = finalRows(), scored = rows.filter(function (o) { return o.ok; }), missing = scored.filter(function (o) { return o.check; });
+    var canMark = /^harria01@uwp\.edu$/i.test((session && session.email) || '');
+    var h = '<div class="card2"><h3>Final lab scores</h3><p style="line-height:1.6;margin:0 0 10px">' + esc(FINAL_NOTE) + '</p>' +
+      '<div class="hint" id="fin-status" style="margin:10px 0"></div>' +
+      (missing.length ? '<div class="hint" style="background:var(--amber-soft);margin:10px 0"><b>' + missing.length + ' student' + (missing.length > 1 ? 's are' : ' is') + ' still missing a score.</b> ' + Object.keys(missing.reduce(function (m, o) { m[o.check] = 1; return m; }, {})).map(function (k) { return esc(k) + ': ' + missing.filter(function (o) { return o.check === k; }).map(function (o) { return esc(o.student); }).join(', '); }).join('. ') + '. Enter exam scores under Gradebook &rarr; Edit scores.</div>' : '') +
+      '<div class="ctl"><button class="b pri" type="button" id="fin-xlsx">Download Excel (.xlsx)</button><button class="b" type="button" id="fin-csv">Download CSV</button>' +
+      (canMark ? '<button class="b" type="button" id="fin-mark">Mark lab scores final</button><button class="b" type="button" id="fin-unmark">Back to draft</button>' : '') + '</div>' +
+      '<div class="help">The file has one row per student, with the login email so you can match your roster. Lab score = points earned \u00F7 lab points possible; an excused item leaves the course for that student. Students who dropped or are on leave have no score.</div></div>';
+    h += '<div class="scroll" style="margin-top:14px"><table class="t"><thead><tr>' + FINAL_HEAD.map(function (x, i) { return '<th' + (i < 3 ? ' class="l"' : '') + '>' + esc(x) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      finalTable(rows).map(function (r) { return '<tr>' + r.map(function (x, i) { return '<td' + (i < 3 ? ' class="l"' : '') + '>' + esc(x) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+    $('view').innerHTML = h;
+    loadFinalFlag();
+  }
+  async function loadFinalFlag() {
+    try { var s = await window.sfSupabase.bios102GradesSettingGet(session.sessionToken); ui.labFinal = s && s.lab_final_at || null; } catch (e) { ui.labFinal = ui.labFinal || null; }
+    paintFinalFlag();
+  }
+  function paintFinalFlag() {
+    var el = $('fin-status'); if (!el) return;
+    el.style.background = ui.labFinal ? 'var(--accent-soft)' : 'var(--amber-soft)';
+    el.innerHTML = '<b>Status: ' + esc(finalStamp()) + '.</b>' + (ui.labFinal ? '' : ' Professor Harris will mark the lab scores final when they are ready.');
+  }
+  function fileStamp() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return (ui.labFinal ? 'FINAL' : 'DRAFT') + '-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function saveBlob(blob, name) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  function downloadFinalCsv() {
+    var NL = String.fromCharCode(13, 10), cell = function (x) { x = String(x == null ? '' : x); return /[",]/.test(x) || x.indexOf(NL.charAt(1)) >= 0 ? '"' + x.split('"').join('""') + '"' : x; };
+    var lines = [FINAL_HEAD].concat(finalTable(finalRows())).map(function (r) { return r.map(cell).join(','); });
+    saveBlob(new Blob(['\uFEFF' + lines.join(NL) + NL], { type: 'text/csv;charset=utf-8' }), 'BIOS102-lab-scores-' + fileStamp() + '.csv');
+  }
+  // A small, dependency-free .xlsx writer (an Excel file is a zip of XML; this stores the parts uncompressed).
+  var CRC_T = null;
+  function crc32(b) {
+    if (!CRC_T) { CRC_T = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC_T[n] = c >>> 0; } }
+    var crc = 0xFFFFFFFF; for (var i = 0; i < b.length; i++) crc = CRC_T[(crc ^ b[i]) & 255] ^ (crc >>> 8); return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zipStore(files) {
+    var enc = new TextEncoder(), parts = [], central = [], offset = 0;
+    files.forEach(function (fl) {
+      var nm = enc.encode(fl.name), data = enc.encode(fl.text), crc = crc32(data), size = data.length;
+      var lh = new DataView(new ArrayBuffer(30)); lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(12, 0x21, true); lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true); lh.setUint16(26, nm.length, true);
+      parts.push(new Uint8Array(lh.buffer), nm, data);
+      var ch = new DataView(new ArrayBuffer(46)); ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(14, 0x21, true); ch.setUint32(16, crc, true); ch.setUint32(20, size, true); ch.setUint32(24, size, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), nm); offset += 30 + nm.length + size;
+    });
+    var cd = central.reduce(function (s, p) { return s + p.length; }, 0), end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cd, true); end.setUint32(16, offset, true);
+    return new Blob(parts.concat(central, [new Uint8Array(end.buffer)]), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  function colName(i) { var s = ''; i++; while (i > 0) { var m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
+  function xml(s) { return String(s).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;').split('"').join('&quot;'); }
+  function sheetXml(rows, widths, boldFirst) {
+    var x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols>' +
+      widths.map(function (w, i) { return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>'; }).join('') + '</cols><sheetData>';
+    rows.forEach(function (r, ri) {
+      x += '<row r="' + (ri + 1) + '">' + r.map(function (v, ci) {
+        var ref = colName(ci) + (ri + 1), st = boldFirst && ri === 0 ? ' s="1"' : '';
+        if (isNum(v)) return '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>';
+        if (v === '' || v == null) return '';
+        return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xml(v) + '</t></is></c>';
+      }).join('') + '</row>';
+    });
+    return x + '</sheetData></worksheet>';
+  }
+  function downloadFinalXlsx() {
+    var data = [FINAL_HEAD].concat(finalTable(finalRows()));
+    var note = [['BIOS 102 lab: final lab scores'], [''], ['Status', finalStamp()], ['Exported', new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }) + ' (Chicago time)'], [''], [FINAL_NOTE]];
+    var T = 'http://schemas.openxmlformats.org/', ns = 'xmlns="' + T + 'package/2006/relationships"', H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    var files = [
+      { name: '[Content_Types].xml', text: H + '<Types xmlns="' + T + 'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+      { name: '_rels/.rels', text: H + '<Relationships ' + ns + '><Relationship Id="rId1" Type="' + T + 'officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: 'xl/workbook.xml', text: H + '<workbook xmlns="' + T + 'spreadsheetml/2006/main" xmlns:r="' + T + 'officeDocument/2006/relationships"><sheets><sheet name="Final lab scores" sheetId="1" r:id="rId1"/><sheet name="Note" sheetId="2" r:id="rId2"/></sheets></workbook>' },
+      { name: 'xl/_rels/workbook.xml.rels', text: H + '<Relationships ' + ns + '><Relationship Id="rId1" Type="' + T + 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="' + T + 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="' + T + 'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
+      { name: 'xl/styles.xml', text: H + '<styleSheet xmlns="' + T + 'spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+      { name: 'xl/worksheets/sheet1.xml', text: sheetXml(data, [14, 30, 18, 13, 14, 14, 20, 13, 13, 13, 18, 18, 16, 13, 28], true) },
+      { name: 'xl/worksheets/sheet2.xml', text: sheetXml(note, [18, 90], false) }
+    ];
+    saveBlob(zipStore(files), 'BIOS102-lab-scores-' + fileStamp() + '.xlsx');
   }
 
   /* ---------------- Import & manage ---------------- */
@@ -986,6 +1098,12 @@
     else if (t.id === 'vq-reload') { ui.vq = null; render(); }
     else if (t.id === 'vq-csv') vqCsv();
     else if (t.id === 'imp-go') finishImport();
+    else if (t.id === 'fin-csv') downloadFinalCsv();
+    else if (t.id === 'fin-xlsx') downloadFinalXlsx();
+    else if (t.id === 'fin-mark' || t.id === 'fin-unmark') {
+      try { var sf = await window.sfSupabase.bios102GradesSettingSet(session.sessionToken, 'lab_final_at', t.id === 'fin-mark' ? new Date().toISOString() : null); ui.labFinal = sf && sf.lab_final_at || null; paintFinalFlag(); }
+      catch (err) { $('fin-status').textContent = 'Could not save: ' + (err && err.message || err); }
+    }
     else if (t.id === 'late-save' || t.id === 'late-clear') {
       var iso = t.id === 'late-clear' ? null : inputToIso($('late-input').value);
       if (t.id === 'late-save' && !iso) { $('late-msg').textContent = 'Pick a date and time first.'; return; }

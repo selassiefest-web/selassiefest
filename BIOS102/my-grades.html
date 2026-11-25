@@ -85,6 +85,7 @@
   var STD = { assignments: 15, participation: 30, labs: 35, quizzes: 60 };
   var GROUP_LABEL = { assignments: 'Lab 1a assignments', participation: 'Lab participation', labs: 'Lab write-ups', quizzes: 'Quizzes' };
 
+  function hasPts(x) { return !!(x && x.found && x.data && (x.data.cv || (Array.isArray(x.data.items) && x.data.items.length))); }
   var D = null, data = null, cv = null, S = { exc: [], pick: { item: 0, status: 'posted', score: null }, mk: {}, mkOn: {}, mkCredit: 80, pj: null, init: false };
 
   function cvOf() { return { cp: cv.cp, cd: cv.cd, fp: cv.fp, fd: cv.fd + LATE, g: cv.g }; }
@@ -147,7 +148,7 @@
     h += '<p class="lead" style="margin-top:12px"><b>In plain words.</b> Your grade is a fraction: the points you have earned on top, the points in the whole course on the bottom. Excusing an assignment takes it off the bottom (and off the top too, if you had a score on it). When the bottom number gets smaller, the same points are a bigger share of it.</p>' +
       '<p class="lead"><b>With your numbers.</b> You have earned ' + num(c.fp) + ' points. Out of ' + num(D0) + ' points that is ' + pc(tg0) + '. With ' + names + ' excused the course is ' + num(D1) + ' points, and the same ' + num(m.fin.n) + ' points is ' + pc(tg1) + '.</p>' +
       '<p class="lead"><b>Your workload does not change.</b> You still do all the same remaining work. What changes is that each point now moves your grade more: earning 10 more points adds ' + f(up(D0), 1) + ' to your percentage when the course is ' + num(D0) + ' points, and ' + (D1 > 0 ? f(up(D1), 1) : '-') + ' when it is ' + num(D1) + '.</p>' +
-      '<p class="lead"><b>Excused or not?</b> Being excused is like scoring exactly your usual percentage on that assignment. If you would have scored higher than your usual, the excuse costs you a little; if lower, it helps. Not turning something in (a zero) is the worst outcome, which is why a blank and an excuse are so different.</p>';
+      '<p class="lead"><b>Excused or not?</b> Being excused is like scoring exactly your usual percentage on that assignment. If you would have scored higher than your usual, the excuse costs you a little; if lower, it helps. An excuse takes a piece out of your course completely, while a blank just waits for a score. That is the main difference between the two.</p>';
     return h + '</div>';
   }
 
@@ -329,7 +330,7 @@
       '<p class="lead">The lab is <b>50%</b> of your overall grade and lecture is the other <b>50%</b>. A letter grade only means something for the two together, so this page shows letters for your <b>overall</b> grade, not for the lab alone. Your lecture grade comes from your lecture instructors, so type it in as a percent.</p>' +
       '<div class="ctl"><label>My lecture grade <input type="number" id="lec-pct" min="0" max="100" step="0.1" style="width:84px" value="' + (LEC == null ? '' : LEC) + '"> %</label><span class="help" style="margin:0">Saved to your account.</span></div>';
     if (P.excused) return h + '<div class="note">You are excused from Exam 3, so it is not part of your lab. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
-    if (P.done) return h + '<div class="note">Your Exam 3 score is in. Your lab grade is <b>' + f(P.fp / P.base * 100, 1) + '%</b>.</div><div id="fin-dyn"></div></div>';
+    if (P.done) { var labNow = P.fp / P.base * 100; return h + '<div class="note">Your Exam 3 score is in. Your lab grade is <b>' + f(labNow, 1) + '%</b>' + (LEC == null ? '. Type your lecture percent above to see your overall grade.' : ', and with your lecture grade your overall grade is ' + overallTxt(labNow) + '.') + '</div><div id="fin-dyn"></div></div>'; }
     h += '<p class="lead" style="margin-top:12px">Exam 3 is worth <b>' + P.M + ' of the ' + num(P.base) + ' points</b> in your lab. You have earned <b>' + num(P.fp) + '</b> points so far.</p><div id="fin-dyn">' + finalDyn(P) + '</div>';
     if (P.other > 0.01) h += '<div class="note amber">This assumes the other ' + num(P.other) + ' points of lab work still open earn nothing. The planner at the bottom of this page handles that work too.</div>';
     h += '<h3 style="margin:16px 0 4px;font-size:1rem">What if I score this on Exam 3?</h3>' +
@@ -364,7 +365,7 @@
     var t = e.target; if (!D || !t.dataset) return;
     if (t.id === 'lec-pct') {
       LEC = t.value === '' ? null : clampNum(t.value, 0, 100); lecSet(LEC);
-      var P0 = finalPlan(); if ($('fin-dyn')) $('fin-dyn').innerHTML = (P0.done || P0.excused) ? '' : finalDyn(P0);
+      var P0 = finalPlan(); if (P0.done || P0.excused) { $('sec-final').outerHTML = finalHTML(); return; } if ($('fin-dyn')) $('fin-dyn').innerHTML = finalDyn(P0);
       if ($('fin-out')) { var s0 = $('fin-score'); $('fin-out').innerHTML = finalOut(P0, s0 && s0.value !== '' ? clampNum(s0.value, 0, P0.M) : null); }
       if ($('want-out')) { var wp = $('want-pct'); $('want-out').innerHTML = wantOut(P0, wp && wp.value !== '' ? clampNum(wp.value, 0, 100) : null); }
       if ($('pj-out')) $('pj-out').innerHTML = pjOutHTML();
@@ -412,13 +413,13 @@
     }
     else try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
     catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
-    if (!pv && (!D || !D.found || !D.data || !D.data.cv)) {
+    if (!pv && (!hasPts(D))) {
       // Instructors have no student row. bios102_grades_load only answers instructor sessions, so success means send them to the gradebook.
       try { await window.sfSupabase.bios102GradesLoad(session.sessionToken); D = null; $('app').innerHTML = '<div class="card2"><h2>You are signed in as an instructor</h2><p class="lead">Taking you to the gradebook. <a href="/BIOS102/grades.html">Open the gradebook</a>. To see a student’s view, use “Preview as this student” there.</p></div>'; location.replace('/BIOS102/grades.html'); return; } catch (e) { /* not an instructor: fall through to the student message */ }
     }
-    if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = banner + '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
+    if (!hasPts(D)) { D = null; $('app').innerHTML = banner + '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
     await BIOS.loadGradeScale(session.sessionToken);
-    data = D.data; cv = data.cv;
+    data = D.data; cv = BIOS.cvFromData(data) || data.cv;
     // exams a student is already excused from start with that excuse switched on, so the comparison is ready
     autoExcused().forEach(function (k) { var i = ITEMS.findIndex(function (x) { return x.key === k; }); if (i >= 0) S.exc.push({ item: i, status: 'missing', score: 0 }); });
     if (!PREVIEW) { try { var st = await window.sfSupabase.bios102GradesStateGet(session.sessionToken) || {}; LEC = isNum(st.lec) ? st.lec : null; FIN.score = isNum(st.exam3) ? st.exam3 : null; FIN.want = isNum(st.want) ? st.want : null; } catch (e) { /* start blank */ } }
