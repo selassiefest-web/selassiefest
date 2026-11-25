@@ -367,6 +367,10 @@
     }
     else try { D = await window.sfSupabase.bios102GradesMine(session.sessionToken); }
     catch (err) { $('app').innerHTML = '<div class="card2"><h2>Could not load your grades</h2><p class="lead">Please try again in a moment. If it keeps happening, tell your instructor.</p></div>'; return; }
+    if (!pv && (!D || !D.found || !D.data || !D.data.cv)) {
+      // Instructors have no student row. bios102_grades_load only answers instructor sessions, so success means send them to the gradebook.
+      try { await window.sfSupabase.bios102GradesLoad(session.sessionToken); D = null; $('app').innerHTML = '<div class="card2"><h2>You are signed in as an instructor</h2><p class="lead">Taking you to the gradebook. <a href="/BIOS102/grades.html">Open the gradebook</a>. To see a student’s view, use “Preview as this student” there.</p></div>'; location.replace('/BIOS102/grades.html'); return; } catch (e) { /* not an instructor: fall through to the student message */ }
+    }
     if (!D || !D.found || !D.data || !D.data.cv) { D = null; $('app').innerHTML = banner + '<div class="card2"><h2>Your grades are not available here yet</h2><p class="lead">Nothing has been set up for your account on this page. Please check with your instructor.</p></div>'; return; }
     await BIOS.loadGradeScale(session.sessionToken);
     data = D.data; cv = data.cv;
