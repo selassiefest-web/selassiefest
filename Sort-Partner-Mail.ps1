@@ -20,7 +20,7 @@
     pwsh .\Sort-Partner-Mail.ps1                 # dry run: lists what would move
     pwsh .\Sort-Partner-Mail.ps1 -Apply          # move + export new ones to BOB
     pwsh .\Sort-Partner-Mail.ps1 -Apply -Days 14 # only look at the last 14 days of the Inbox
-    pwsh .\Sort-Partner-Mail.ps1 -InstallSchedule # also run it every 15 minutes in the background
+    pwsh .\Sort-Partner-Mail.ps1 -InstallSchedule # also run it every hour in the background
     pwsh .\Sort-Partner-Mail.ps1 -SelfTest       # check the partner list and matching, no Microsoft sign-in
 #>
 [CmdletBinding()]
@@ -269,7 +269,7 @@ function Register-SortSchedule {
     $service.Connect()
     $root = $service.GetFolder('\')
     $definition = $service.NewTask(0)
-    $definition.RegistrationInfo.Description = 'Move partner mail from the Inbox to Partnered and save new ones to BOB, every 15 minutes.'
+    $definition.RegistrationInfo.Description = 'Move partner mail from the Inbox to Partnered and save new ones to BOB, every hour.'
     $definition.Settings.StartWhenAvailable = $true
     $definition.Settings.DisallowStartIfOnBatteries = $false
     $definition.Settings.StopIfGoingOnBatteries = $false
@@ -279,17 +279,17 @@ function Register-SortSchedule {
     $definition.Principal.UserId = $user
     $definition.Principal.LogonType = 3
     $definition.Principal.RunLevel = 0
-    $trigger = $definition.Triggers.Create(2)   # daily, repeating every 15 minutes all day
+    $trigger = $definition.Triggers.Create(2)   # daily, repeating every hour all day
     $trigger.DaysInterval = 1
     $trigger.StartBoundary = (Get-Date).Date.ToString('yyyy-MM-ddTHH:mm:ss', [Globalization.CultureInfo]::InvariantCulture)
-    $trigger.Repetition.Interval = 'PT15M'
+    $trigger.Repetition.Interval = 'PT1H'
     $trigger.Repetition.Duration = 'P1D'
     $action = $definition.Actions.Create(0)
     $action.Path = Join-Path $PSHOME 'pwsh.exe'
     $action.Arguments = '-NoLogo -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File "{0}" -Apply -Scheduled' -f $PSCommandPath
     $action.WorkingDirectory = $PSScriptRoot
     $registered = $root.RegisterTaskDefinition($taskName, $definition, 6, $user, $null, 3, $null)
-    Write-SortLog "Scheduled '$($registered.Name)' to run every 15 minutes. Next run: $($registered.NextRunTime)"
+    Write-SortLog "Scheduled '$($registered.Name)' to run every hour. Next run: $($registered.NextRunTime)"
 }
 
 # ---------------------------------------------------------------------------------------------
