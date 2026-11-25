@@ -267,11 +267,16 @@
     var W = Math.max(520, 62 * bands.length + 44), Hh = 300, L = 30, B = 46, T = 30, bw = (W - L - 14) / bands.length, s = '';
     bands.forEach(function (b, i) {
       var bh = (Hh - T - B) * counts[i] / mx, x = L + i * bw + 4, y = Hh - B - bh, col = 'rgb(' + b[3].join(',') + ')', cx = x + (bw - 8) / 2;
-      s += '<rect x="' + x + '" y="' + y + '" width="' + (bw - 8) + '" height="' + Math.max(bh, 2) + '" rx="5" fill="' + col + '"/>' +
+      // hover: who is in this letter band, best score first
+      var who = rows.filter(function (r) { var p = pctOf(r, ex); return isNum(p) && p >= b[1] && p < b[2]; }).sort(function (u, v) { return pctOf(v, ex) - pctOf(u, ex); })
+        .map(function (r) { return r.student + ' (' + f(pctOf(r, ex), 1) + '%)'; });
+      s += '<g><title>' + esc(b[0] + ': ' + (who.length ? who.join(', ') : 'no students')) + '</title>' +
+        '<rect x="' + x + '" y="' + T + '" width="' + (bw - 8) + '" height="' + (Hh - B - T + 40) + '" fill="transparent"/>' +
+        '<rect x="' + x + '" y="' + y + '" width="' + (bw - 8) + '" height="' + Math.max(bh, 2) + '" rx="5" fill="' + col + '"/>' +
         '<text x="' + cx + '" y="' + (y - 18) + '" text-anchor="middle" style="fill:#17241f;font-size:15px;font-weight:500">' + counts[i] + '</text>' +
         '<text x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle">' + f(counts[i] / a.length * 100, 0) + '%</text>' +
         '<text x="' + cx + '" y="' + (Hh - B + 18) + '" text-anchor="middle" style="fill:#17241f;font-size:14px">' + b[0] + '</text>' +
-        '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[1] === 0 ? '<' + (bands[i - 1] ? bands[i - 1][1] : 0) : b[1] + '+') + '</text>';
+        '<text x="' + cx + '" y="' + (Hh - B + 33) + '" text-anchor="middle">' + (b[1] === 0 ? '<' + (bands[i - 1] ? bands[i - 1][1] : 0) : b[1] + '+') + '</text></g>';
     });
     s += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '" stroke="#cfc5b2"/>';
     return '<svg class="chart" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="Grade distribution">' + s + '</svg>';
