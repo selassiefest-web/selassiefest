@@ -64,11 +64,10 @@ h1,h2,h3,p,figure,ul,ol{margin:0}
 .bar ul a:hover{color:var(--pop)}
 
 /* hero */
-.hero{position:relative;height:100svh;min-height:26rem;display:grid;align-items:end;isolation:isolate;overflow:hidden;background:#000}
-.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
+.hero{position:relative;aspect-ratio:16/9;display:grid;align-items:end;isolation:isolate;overflow:hidden;background:#000}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:-3}
 .hero .poster{background-size:cover;background-position:center}
-.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:9rem;z-index:-2;background:linear-gradient(180deg,#000a,#0000)}
-.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:5rem;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0000,var(--bg))}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:6rem;z-index:-2;background:linear-gradient(180deg,#0008,#0000)}
 .intro{padding-top:clamp(2.5rem,6vw,4.5rem)}
 .intro h1{margin-top:.2rem}
 .sound{position:fixed;z-index:70;top:4.7rem;right:max(4%,1rem);display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-radius:999px;border:1px solid #fff6;background:color-mix(in srgb,var(--bg) 75%,transparent);backdrop-filter:blur(12px);color:var(--ink);font:700 .9rem/1 'Jost',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 24px #0008;transition:transform .2s,border-color .2s}
@@ -187,7 +186,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
 <section class="hero" aria-labelledby="title">
   <div class="poster" id="poster" role="img" aria-label="Neon listening bar where guests dance, a woman DJ plays the decks, and a cocktail and jerk chicken leg dinner sit on the bar."></div>
   <video id="heroVideo" loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
-  <span class="scroll-cue" aria-hidden="true"></span>
+  
   <button class="sound" id="sound" type="button" aria-pressed="false" hidden></button>
 </section>
 
