@@ -107,17 +107,6 @@ h2{font-family:var(--display);font-weight:900;text-transform:var(--title-tt);let
 .caps{font-size:.8rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:.8rem}
 .lede{max-width:56ch;color:var(--muted);font-size:1.15rem;margin-top:1rem}
 
-/* countdown */
-.clock{background:linear-gradient(135deg,var(--panel2),var(--panel));border-block:1px solid var(--line);text-align:center}
-.clock .live{display:none;font-family:var(--display);font-size:clamp(2rem,7vw,4.5rem);color:var(--pop);text-shadow:0 0 30px var(--glow)}
-.clock.is-live .live{display:block;animation:pulse 1.8s ease-in-out infinite}
-.clock.is-live .count{display:none}
-@keyframes pulse{50%{opacity:.7;text-shadow:0 0 50px var(--accent)}}
-.count{display:flex;justify-content:center;gap:clamp(.6rem,3vw,1.6rem);margin-top:1.4rem}
-.count div{min-width:4.6rem;padding:.9rem .5rem;border:1px solid var(--line);border-radius:.6rem;background:#0004}
-.count strong{display:block;font-family:var(--display);font-size:clamp(1.9rem,6vw,3.4rem);line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;text-shadow:0 0 22px var(--glow)}
-.count span{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-
 /* flyer */
 .flyer-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(2rem,6vw,5rem);align-items:center}
 .flyer{position:relative;perspective:1200px}
@@ -177,7 +166,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .marquee .track,.scroll-cue::after,.clock.is-live .live{animation:none}
+  .marquee .track,.scroll-cue::after{animation:none}
   .rv{opacity:1;transform:none;transition:none}
   .flyer img{transition:none}
 }
@@ -213,18 +202,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
 </section>
 
 <div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
-
-<section class="band clock" id="clock" aria-labelledby="clock-title"><div class="wrap">
-  <p class="caps" id="clock-title">Next Reggae Wednesday at Blaqs Lounge</p>
-  <p class="live">Doors are open. Tonight is on!</p>
-  <div class="count" role="timer" aria-live="off">
-    <div><strong id="cd-d">0</strong><span>Days</span></div>
-    <div><strong id="cd-h">00</strong><span>Hours</span></div>
-    <div><strong id="cd-m">00</strong><span>Min</span></div>
-    <div><strong id="cd-s">00</strong><span>Sec</span></div>
-  </div>
-  <p class="lede" style="margin-inline:auto" id="clock-note">Happy hour starts at 4 PM Chicago time.</p>
-</div></section>
 
 <section class="band" id="flyer" aria-labelledby="night-title"><div class="wrap flyer-grid">
   <div class="flyer rv" id="flyerBox"><img id="flyerImg" width="1122" height="1402" alt="Reggae Wednesdays flyer: $5 happy hour cocktails 4 PM to 6 PM, weekly guest DJs, jerk chicken leg dinner. Blaqs Lounge, 7628 S. Cottage Grove Ave, Chicago, IL 60619. 872-255-9333. blaqslounge.com."></div>
@@ -319,24 +296,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
     });
     box.addEventListener('mouseleave', function () { img.style.transform = ''; });
   }
-
-  /* countdown to Wednesday 4 PM, Chicago time */
-  var clock = document.getElementById('clock');
-  var fmt = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', weekday: 'short', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false});
-  var DAYS = {Sun:0, Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6};
-  function tick() {
-    var o = {}; fmt.formatToParts(new Date()).forEach(function (p) { o[p.type] = p.value; });
-    var t = DAYS[o.weekday] * 86400 + (+o.hour % 24) * 3600 + (+o.minute) * 60 + (+o.second);
-    var WEEK = 7 * 86400, start = 3 * 86400 + 16 * 3600, end = start + 10 * 3600;
-    var live = t >= start && t < end;
-    clock.classList.toggle('is-live', live);
-    var d = live ? 0 : ((start - t) % WEEK + WEEK) % WEEK;
-    document.getElementById('cd-d').textContent = Math.floor(d / 86400);
-    document.getElementById('cd-h').textContent = String(Math.floor(d % 86400 / 3600)).padStart(2, '0');
-    document.getElementById('cd-m').textContent = String(Math.floor(d % 3600 / 60)).padStart(2, '0');
-    document.getElementById('cd-s').textContent = String(d % 60).padStart(2, '0');
-  }
-  tick(); setInterval(tick, 1000);
 
   /* switch vibe */
   document.getElementById('swap').addEventListener('click', function () {
