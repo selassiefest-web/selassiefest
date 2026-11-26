@@ -64,21 +64,24 @@ h1,h2,h3,p,figure,ul,ol{margin:0}
 .bar ul a:hover{color:var(--pop)}
 
 /* hero */
-.hero{position:relative;min-height:100svh;display:grid;align-items:end;isolation:isolate;overflow:hidden;background:#000}
+.hero{position:relative;height:100svh;min-height:26rem;display:grid;align-items:end;isolation:isolate;overflow:hidden;background:#000}
 .hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3}
 .hero .poster{background-size:cover;background-position:center}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:
-  linear-gradient(180deg,#0009 0%,#0000 24%,#0000 38%,color-mix(in srgb,var(--bg) 70%,transparent) 76%,var(--bg) 100%),
-  radial-gradient(120% 80% at 50% 110%,var(--glow),transparent 60%)}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
-  background:repeating-linear-gradient(0deg,#fff1 0 1px,#0000 1px 3px)}
-.hero-in{padding:7rem 0 clamp(2.2rem,6vw,4.5rem)}
-.presents{display:flex;align-items:center;gap:.9rem;font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:var(--ink);text-shadow:0 1px 10px #000}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:9rem;z-index:-2;background:linear-gradient(180deg,#000a,#0000)}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:5rem;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0000,var(--bg))}
+.intro{padding-top:clamp(2.5rem,6vw,4.5rem)}
+.intro h1{margin-top:.2rem}
+.sound{position:fixed;z-index:70;top:4.7rem;right:max(4%,1rem);display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-radius:999px;border:1px solid #fff6;background:color-mix(in srgb,var(--bg) 75%,transparent);backdrop-filter:blur(12px);color:var(--ink);font:700 .9rem/1 'Jost',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 24px #0008;transition:transform .2s,border-color .2s}
+.sound:hover{transform:scale(1.05);border-color:var(--accent)}
+.sound[hidden]{display:none}
+.sound svg{width:1.15rem;height:1.15rem;fill:currentColor}
+.hero-in{padding:0}
+.presents{display:flex;align-items:center;gap:.9rem;font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:var(--ink);}
 .presents::before,.presents::after{content:"";height:1px;width:clamp(1.5rem,6vw,4rem);background:currentColor;opacity:.7}
 h1{font-family:var(--display);font-weight:900;text-transform:var(--title-tt);letter-spacing:var(--title-ls);line-height:.92;margin:.7rem 0 1.1rem;
   font-size:clamp(3rem,12.5vw,10.5rem);text-wrap:balance}
-h1 .l1{display:block;color:#fff;text-shadow:0 0 34px var(--glow2),0 6px 30px #000a}
-h1 .l2{display:block;color:var(--accent);text-shadow:0 0 38px var(--glow),0 6px 30px #000a;font-size:.86em}
+h1 .l1{display:block;color:#fff;text-shadow:0 0 34px var(--glow2)}
+h1 .l2{display:block;color:var(--accent);text-shadow:0 0 38px var(--glow);font-size:.86em}
 :root[data-theme="holo"] h1 .l2{background:linear-gradient(90deg,#ff4fd8,#ff7ce9 45%,#00e5ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px var(--glow))}
 .chips{display:flex;flex-wrap:wrap;gap:.6rem;margin:0 0 1.6rem;padding:0;list-style:none}
 .chips li{padding:.5rem 1rem;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(8px);font-weight:700;font-size:.95rem}
@@ -183,8 +186,13 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
 <main id="top">
 <section class="hero" aria-labelledby="title">
   <div class="poster" id="poster" role="img" aria-label="Neon listening bar where guests dance, a woman DJ plays the decks, and a cocktail and jerk chicken leg dinner sit on the bar."></div>
-  <video id="heroVideo" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
-  <div class="wrap hero-in">
+  <video id="heroVideo" loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+  <span class="scroll-cue" aria-hidden="true"></span>
+  <button class="sound" id="sound" type="button" aria-pressed="false" hidden></button>
+</section>
+
+<section class="band intro">
+  <div class="wrap">
     <p class="presents">Prestige Promotions presents</p>
     <h1 id="title"><span class="l1">Reggae</span><span class="l2">Wednesdays</span></h1>
     <ul class="chips" aria-label="Highlights">
@@ -198,7 +206,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
       <a class="btn ghost" href="#schedule">See the night</a>
     </div>
   </div>
-  <span class="scroll-cue" aria-hidden="true"></span>
 </section>
 
 <div class="marquee" aria-hidden="true"><div class="track" id="track"></div></div>
@@ -261,8 +268,23 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.6rem 2rem;justify-content:space-be
   document.getElementById('poster').style.backgroundImage = 'url(' + A.poster + ')';
   document.getElementById('flyerImg').src = A.flyer;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!still) { v.poster = A.poster; v.src = A.video; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
-  else { v.remove(); }
+  var sb = document.getElementById('sound');
+  var ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>Sound off';
+  var OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v2.2l2.5 2.5V12zM19 12a7 7 0 0 1-.9 3.4l1.5 1.5A9 9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 4v-6.7l4.2 4.2c-.7.5-1.4.9-2.2 1.1v2.1a9 9 0 0 0 3.5-1.7l2 2 1.3-1.3L4.3 3zM12 5 9.9 6.9 12 9V5z"/></svg>Sound on';
+  var userStopped = false;
+  function paint() { var on = !v.muted; sb.innerHTML = on ? ON : OFF; sb.setAttribute('aria-pressed', on ? 'true' : 'false'); sb.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on'); }
+  function unlock() { removeEventListener('pointerdown', unlock, true); removeEventListener('keydown', unlock, true); removeEventListener('touchend', unlock, true);
+    if (!userStopped && v.muted) { v.muted = false; v.volume = 1; var q = v.play(); if (q && q.catch) q.catch(function(){}); paint(); } }
+  if (!still) {
+    v.poster = A.poster; v.src = A.video; v.muted = false; v.volume = 1; sb.hidden = false;
+    var p = v.play();
+    var armed = function () { v.muted = true; var r = v.play(); if (r && r.catch) r.catch(function(){}); paint();
+      addEventListener('pointerdown', unlock, true); addEventListener('keydown', unlock, true); addEventListener('touchend', unlock, true); };
+    if (p && p.then) { p.then(paint, armed); } else { armed(); }
+    paint();
+    sb.addEventListener('click', function () { userStopped = v.muted ? false : true; v.muted = !v.muted; if (!v.muted) { v.volume = 1; var r = v.play(); if (r && r.catch) r.catch(function(){}); } paint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { v.pause(); } else { var r = v.play(); if (r && r.catch) r.catch(function(){}); } });
+  } else { v.remove(); }
 
   /* marquee */
   var words = ['$5 Happy Hour','Jerk Chicken Leg Dinner','Weekly Guest DJs','Every Wednesday','4 PM – 2 AM','Blaqs Lounge','Cottage Grove Ave'];
